@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -99,23 +102,14 @@ public class DOMParserUtil {
      * @param replacement
      */
     public static void replaceNodeText(Document document, String containerNodeName, String nodeName, String toReplace, String replacement) {
-        final NodeList nodeList = document.getElementsByTagName(containerNodeName);
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                // iterate all nodes inside the container one
-                final NodeList childNodes = node.getChildNodes();
-                if (childNodes != null) {
-                    for (int j=0; j < childNodes.getLength(); j++) {
-                        Node childNode = childNodes.item(j);
-                        if (Objects.equals(nodeName, childNode.getNodeName()) && Objects.equals(toReplace, childNode.getTextContent())) {
-                            childNode.setTextContent(replacement);
-                        }
-                    }
-                }
-            }
-        }
+        asStream(document.getElementsByTagName(containerNodeName))
+                .forEach(containerNode -> asStream(containerNode.getChildNodes())
+                        .filter(childNode -> Objects.equals(nodeName, childNode.getNodeName()) && Objects.equals(toReplace, childNode.getTextContent()))
+                        .forEach(childNode -> childNode.setTextContent(replacement)));
+    }
+
+    public static String getAttributeValue(Node containerNode, String attributeName) {
+        return (containerNode.getAttributes() != null && containerNode.getAttributes().getNamedItem(attributeName) != null) ? containerNode.getAttributes().getNamedItem(attributeName).getNodeValue() : null;
     }
 
     /**
@@ -128,19 +122,12 @@ public class DOMParserUtil {
      * @return
      */
     public static Map<Node, String> getAttributeValues(Document document, String containerNodeName, String attributeName) {
-        Map<Node, String> toReturn = new HashMap<>();
-        final NodeList nodeList = document.getElementsByTagName(containerNodeName);
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                Node attributeNode = node.getAttributes().getNamedItem(attributeName);
-                if (attributeNode != null) {
-                    toReturn.put(node, attributeNode.getNodeValue());
-                }
-            }
-        }
-        return toReturn;
+        return asStream(document.getElementsByTagName(containerNodeName))
+                .filter(containerNode -> containerNode.getAttributes() != null && containerNode.getAttributes().getNamedItem(attributeName) != null)
+                .collect(Collectors.toMap(
+                        containerNode -> containerNode,
+                        containerNode -> containerNode.getAttributes().getNamedItem(attributeName).getNodeValue()
+                ));
     }
 
     /**
@@ -154,121 +141,167 @@ public class DOMParserUtil {
      */
     public static Map<Node, String> getAttributeValues(Document document, String attributeName) {
         Map<Node, String> toReturn = new HashMap<>();
-        final NodeList nodeList = document.getChildNodes();
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                populateAttributeValuesMap(nodeList.item(i), attributeName, toReturn);
-            }
-        }
+        asStream(document.getChildNodes())
+                .forEach(childNode -> populateAttributeValuesMap(childNode, attributeName, toReturn));
         return toReturn;
     }
 
     public static void setAttributeValue(Document document, String containerNodeName, String attributeName, String attributeValue) {
-        final NodeList nodeList = document.getElementsByTagName(containerNodeName);
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                final NamedNodeMap attributes = node.getAttributes();
-                if (attributes != null) {
-                    Node attributeNode = attributes.getNamedItem(attributeName);
-                    if (attributeNode != null) {
-                        attributeNode.setNodeValue(attributeValue);
-                    }
-                }
-            }
-        }
+        asStream(document.getElementsByTagName(containerNodeName))
+                .map(Node::getAttributes)
+                .map(attributes -> attributes.getNamedItem(attributeName))
+                .filter(Objects::nonNull)
+                .forEach(attributeNode -> attributeNode.setNodeValue(attributeValue));
     }
 
+    /**
+     * Create <b>childNodeName</b> nodes in <b>all containerNodeName</b> presents in the document
+     * @param document
+     * @param containerNodeName
+     * @param childNodeName
+     * @param nodeContent
+     * @return
+     */
     public static Map<Node, Node> createNodes(Document document, String containerNodeName, String childNodeName, String nodeContent) {
-        Map<Node, Node> toReturn = new HashMap<>();
-        final NodeList nodeList = document.getElementsByTagName(containerNodeName);
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                Node childNode = document.createElement(childNodeName);
-                node.appendChild(childNode);
-                if (nodeContent != null) {
-                    childNode.setTextContent(nodeContent);
-                }
-                toReturn.put(node, childNode);
-            }
-        }
-        return toReturn;
-    }
-
-    public static Map<Node, List<Node>> getChildrenNodes(String fullXml, String containerNodeName, String childNodeName) throws Exception {
-        Document document = getDocument(fullXml);
-        return getChildrenNodes(document, containerNodeName, childNodeName);
-    }
-
-    public static Map<Node, List<Node>> getChildrenNodes(Document document, String containerNodeName, String childNodeName) {
-        Map<Node, List<Node>> toReturn = new HashMap<>();
-        final NodeList nodeList = document.getElementsByTagName(containerNodeName);
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                // iterate all nodes inside the container one
-                final NodeList childNodes = node.getChildNodes();
-                if (childNodes != null) {
-                    List<Node> value = new ArrayList<>();
-                    toReturn.put(node, value);
-                    for (int j = 0; j < childNodes.getLength(); j++) {
-                        Node childNode = childNodes.item(j);
-                        if (Objects.equals(childNode.getNodeName(), childNodeName)) {
-                            value.add(childNode);
-                        }
-                    }
-                }
-            }
-        }
-        return toReturn;
-    }
-
-    public static Map<Node, List<Node>> getChildrenNodes(Node node, String containerNodeName, String childNodeName) {
-        Map<Node, List<Node>> toReturn = new HashMap<>();
-        final NodeList nodeList = node.getChildNodes();
-        if (nodeList != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node containerNode = nodeList.item(i);
-                if (Objects.equals(containerNode.getNodeName(), containerNodeName)) {
-                    // iterate all nodes inside the container one
-                    final NodeList childNodes = containerNode.getChildNodes();
-                    if (childNodes != null) {
-                        if (childNodes.getLength() > 0) {
-                            List<Node> value = new ArrayList<>();
-                            toReturn.put(containerNode, value);
-                            for (int j = 0; j < childNodes.getLength(); j++) {
-                                Node childNode = childNodes.item(j);
-                                if (Objects.equals(childNode.getNodeName(), childNodeName)) {
-                                    value.add(childNode);
-                                }
+        return asStream(document.getElementsByTagName(containerNodeName))
+                .collect(Collectors.toMap(
+                        containerNode -> containerNode,
+                        containerNode -> {
+                            Node childNode = document.createElement(childNodeName);
+                            containerNode.appendChild(childNode);
+                            if (nodeContent != null) {
+                                childNode.setTextContent(nodeContent);
                             }
+                            return childNode;
                         }
-                    }
-                }
-            }
+                ));
+    }
+
+    /**
+     * Create <b>childNodeName</b> nodes in <b>all containerNodeName</b>s presents in <b>all mainContainerNode</b>s of the document
+     * @param document
+     * @param containerNodeName
+     * @param childNodeName
+     * @param nodeContent
+     * @return
+     */
+    public static Map<Node, Node> createNestedNodes(Document document, String mainContainerNodeName, String containerNodeName, String childNodeName, String nodeContent) {
+        Map<Node, Node> toReturn = new HashMap<>();
+        asStream(document.getElementsByTagName(mainContainerNodeName))
+                .map(Node::getChildNodes)
+                .forEach(containerNodeList ->
+                                 asStream(containerNodeList)
+                                         .filter(containerNode -> Objects.equals(containerNodeName, containerNode.getNodeName()))
+                                         .forEach(containerNode -> {
+                                             Node childNode = document.createElement(childNodeName);
+                                             containerNode.appendChild(childNode);
+                                             if (nodeContent != null) {
+                                                 childNode.setTextContent(nodeContent);
+                                             }
+                                             toReturn.put(containerNode, childNode);
+                                         }));
+        return toReturn;
+    }
+
+    /**
+     * Create a <b>nodeToCreateName</b> <code>Node</code> inside <b>containerNode</b>.
+     * If <b>nodeContent</b> is not null, add it as text content.
+     * If <b>position</b> is not null, put the created node at position 0
+     *
+     * @param containerNode
+     * @param nodeToCreateName
+     * @param nodeContent
+     * @param position
+     * @return
+     */
+    public static Node createNodeAtPosition(Node containerNode, String nodeToCreateName, String nodeContent, Integer position) {
+        Node toReturn = containerNode.getOwnerDocument().createElement(nodeToCreateName);
+        if (nodeContent != null) {
+            toReturn.setTextContent(nodeContent);
+        }
+        if (containerNode.hasChildNodes() && position != null && position < containerNode.getChildNodes().getLength()) {
+            Node positionNode = containerNode.getChildNodes().item(position);
+            containerNode.insertBefore(toReturn, positionNode);
+        } else {
+            containerNode.appendChild(toReturn);
         }
         return toReturn;
     }
 
-    public static List<Node> getChildrenNodes(Node node, String childNodeName) {
-        List<Node> toReturn = new ArrayList<>();
-        final NodeList childNodes = node.getChildNodes();
-        if (childNodes != null) {
-            // iterate all the "container" nodes
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node childNode = childNodes.item(i);
-                if (Objects.equals(childNode.getNodeName(), childNodeName)) {
-                    toReturn.add(childNode);
-                }
-            }
-        }
+    /**
+     * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in fullXml
+     * @param fullXml
+     * @param containerNodeName
+     * @param childNodeName
+     * @return
+     */
+    public static Map<Node, List<Node>> getChildrenNodesMap(String fullXml, String containerNodeName, String childNodeName) throws Exception {
+        Document document = getDocument(fullXml);
+        return getChildrenNodesMap(document, containerNodeName, childNodeName);
+    }
+
+    /**
+     * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in document
+     * @param document
+     * @param containerNodeName
+     * @param childNodeName
+     * @return
+     */
+    public static Map<Node, List<Node>> getChildrenNodesMap(Document document, String containerNodeName, String childNodeName) {
+        return asStream(document.getElementsByTagName(containerNodeName))
+                .collect(Collectors.toMap(
+                        containerNode -> containerNode,
+                        containerNode -> asStream(containerNode.getChildNodes())
+                                .filter(childNode -> Objects.equals(childNode.getNodeName(), childNodeName))
+                                .collect(Collectors.toList())
+                ));
+    }
+
+    public static Map<Node, List<Node>> getChildrenNodesMap(Node node, String containerNodeName, String childNodeName) {
+        return asStream(node.getChildNodes())
+                .filter(containerNode -> Objects.equals(containerNode.getNodeName(), containerNodeName))
+                .collect(Collectors.toMap(
+                        containerNode -> containerNode,
+                        containerNode -> asStream(containerNode.getChildNodes())
+                                .filter(childNode -> Objects.equals(childNode.getNodeName(), childNodeName))
+                                .collect(Collectors.toList())
+                ));
+    }
+
+
+    public static List<Node> getChildrenNodesList(Node node, String childNodeName) {
+        return asStream(node.getChildNodes()).filter(childNode -> Objects.equals(childNode.getNodeName(), childNodeName)).collect(Collectors.toList());
+    }
+
+    /**
+     * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in <b>all mainContainerNodeName</b>s of the document
+     * @param document
+     * @param mainContainerNodeName
+     * @param containerNodeName
+     * @param childNodeName
+     * @return
+     */
+    public static Map<Node, List<Node>> getNestedChildrenNodesMap(Document document, String mainContainerNodeName, String containerNodeName, String childNodeName) {
+        Map<Node, List<Node>> toReturn = new HashMap<>();
+        asStream(document.getElementsByTagName(mainContainerNodeName))
+                .map(mainContainerNode -> getChildrenNodesMap(mainContainerNode, containerNodeName, childNodeName))
+                .forEach(toReturn::putAll);
         return toReturn;
+    }
+
+    public static List<Node> getNestedChildrenNodesList(Document document, String grandParentNodeName, String parentNodeName, String childNodeName) {
+        return asStream(document.getElementsByTagName(childNodeName))
+                .filter(childNode -> {
+                    Node parentNode = childNode.getParentNode();
+                    Node grandParentNode = parentNode.getParentNode();
+                    return Objects.equals(parentNodeName, parentNode.getNodeName()) && Objects.equals(grandParentNodeName, grandParentNode.getNodeName());
+                }).collect(Collectors.toList());
+    }
+
+    public static List<Node> getNestedChildrenNodesList(Node node, String containerName, String childNodeName) {
+        return asStream(node.getOwnerDocument().getElementsByTagName(childNodeName))
+                .filter(childNode -> Objects.equals(containerName, childNode.getParentNode().getNodeName()) && Objects.equals(node, childNode.getParentNode().getParentNode()))
+                .collect(Collectors.toList());
     }
 
     public static Document getDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
@@ -300,7 +333,7 @@ public class DOMParserUtil {
      * @param attributeName
      * @param toPopulate
      */
-    private static void populateAttributeValuesMap(Node node, String attributeName, Map<Node, String> toPopulate) {
+    protected static void populateAttributeValuesMap(Node node, String attributeName, Map<Node, String> toPopulate) {
         final NamedNodeMap attributes = node.getAttributes();
         if (attributes != null) {
             Node attributeNode = attributes.getNamedItem(attributeName);
@@ -308,11 +341,21 @@ public class DOMParserUtil {
                 toPopulate.put(node, attributeNode.getNodeValue());
             }
         }
-        final NodeList childNodes = node.getChildNodes();
-        if (childNodes != null) {
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                populateAttributeValuesMap(childNodes.item(i), attributeName, toPopulate);
-            }
+        asStream(node.getChildNodes()).forEach(childNode -> populateAttributeValuesMap(childNode, attributeName, toPopulate));
+    }
+
+    /**
+     * Return a <code>Stream</code> out of the given <code>NodeList</code>.
+     * It <b>nodeList</b> is <code>null</code>, returns an empty stream
+     * @param nodeList
+     * @return
+     */
+    protected static Stream<Node> asStream(NodeList nodeList) {
+        if (nodeList == null) {
+            return new ArrayList<Node>().stream();
+        } else {
+            AtomicInteger n = new AtomicInteger(0);
+            return Stream.generate(() -> nodeList.item(n.getAndIncrement())).limit(nodeList.getLength());
         }
     }
 }

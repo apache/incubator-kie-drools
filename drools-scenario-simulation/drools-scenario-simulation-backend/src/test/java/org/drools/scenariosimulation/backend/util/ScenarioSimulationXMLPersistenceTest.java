@@ -61,7 +61,7 @@ public class ScenarioSimulationXMLPersistenceTest {
             String toMigrate = getFileContent("scesim-1-0.scesim");
             Document document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_0to1_1().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(document, "expressionIdentifier", "type");
+            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, "expressionIdentifier", "type");
             assertNotNull(retrieved);
             assertEquals(1, retrieved.size());
             retrieved.forEach((node, typeNodes) -> {
@@ -80,10 +80,11 @@ public class ScenarioSimulationXMLPersistenceTest {
             String toMigrate = getFileContent("scesim-1-1.scesim");
             Document document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_1to1_2().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(document, "ScenarioSimulationModel", "dmoSession");
+            Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
             assertNotNull(retrieved);
             assertEquals(1, retrieved.size());
-            retrieved = DOMParserUtil.getChildrenNodes(document, "ScenarioSimulationModel", "type");
+            assertEquals(1, retrieved.values().iterator().next().size());
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
             commonVerifySingleNodeSingleChild(retrieved, "RULE");
             commonCheckDocument(document, "1.2");
         } catch (Exception e) {
@@ -97,13 +98,15 @@ public class ScenarioSimulationXMLPersistenceTest {
             String toMigrate = getFileContent("scesim-1-2.scesim");
             Document document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_2to1_3().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(document, "factMappings", "FactMapping");
-            assertNotNull(retrieved);
-            assertEquals(1, retrieved.size());
-            List<Node> factMappingNodes = retrieved.values().iterator().next();
+            List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+            assertNotNull(factMappingsNodes);
+            assertEquals(1, factMappingsNodes.size());
+            List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
             for (Node factMappingNode : factMappingNodes) {
-                List<Node> expressionElementsNodes = DOMParserUtil.getChildrenNodes(factMappingNode, "expressionElements");
-                assertTrue(expressionElementsNodes.size() >= 1);
+                List<Node> expressionElementsNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "expressionElements");
+                assertEquals(1, expressionElementsNodes.size());
+                List<Node> stepNodes = DOMParserUtil.getNestedChildrenNodesList(expressionElementsNodes.get(0), "ExpressionElement", "step");
+                assertEquals(1, stepNodes.size());
             }
             commonCheckDocument(document, "1.3");
         } catch (Exception e) {
@@ -117,45 +120,45 @@ public class ScenarioSimulationXMLPersistenceTest {
             String toMigrate = getFileContent("scesim-1-3-rule.scesim");
             Document document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_3to1_4().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "fileName");
+            Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "fileName");
             commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "kieSession");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieSession");
             commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "kieBase");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieBase");
             commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "ruleFlowGroup");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "ruleFlowGroup");
             commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmoSession");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
             commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "skipFromBuild");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
             commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "type");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
             commonVerifySingleNodeSingleChild(retrieved, "RULE");
             commonCheckDocument(document, "1.4");
 
             toMigrate = getFileContent("scesim-1-3-dmn_1.scesim");
             document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_3to1_4().accept(document);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmnNamespace");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
             commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmnName");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
             commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "skipFromBuild");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
             commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "type");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
             commonVerifySingleNodeSingleChild(retrieved, "DMN");
             commonCheckDocument(document, "1.4");
 
             toMigrate = getFileContent("scesim-1-3-dmn_2.scesim");
             document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_3to1_4().accept(document);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmnNamespace");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
             commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmnName");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
             commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "skipFromBuild");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
             commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "type");
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
             commonVerifySingleNodeSingleChild(retrieved, "DMN");
             commonCheckDocument(document, "1.4");
         } catch (Exception e) {
@@ -169,7 +172,7 @@ public class ScenarioSimulationXMLPersistenceTest {
             String toMigrate = getFileContent("scesim-1-4-rule.scesim");
             Document document = DOMParserUtil.getDocument(toMigrate);
             migrationInstance.from1_4to1_5().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(document, "simulationDescriptor", "dmoSession");
+            List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "dmoSession");
             assertNotNull(retrieved);
             assertTrue(retrieved.isEmpty());
             commonCheckDocument(document, "1.5");
@@ -269,11 +272,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
         assertNotNull(toCheck.getSimulation().getSimulationDescriptor());
-        toCheck.getSimulation().getUnmodifiableScenarios().forEach(scenario -> {
-            scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
-//                assertNotNull(factMappingValue.getFactIdentifier());
-//                assertNotNull(factMappingValue.getExpressionIdentifier());
-            });
-        });
+        toCheck.getSimulation().getUnmodifiableScenarios().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        }));
     }
 }
