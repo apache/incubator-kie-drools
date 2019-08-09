@@ -64,7 +64,11 @@ public class AccumulateInline {
 
     private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
     private final List<String> contextFieldNames = new ArrayList<>();
-    private Set<String> usedExtDeclrs = new HashSet<>();
+    private Set<String> usedExternalDeclarations = new HashSet<>();
+
+    public Set<String> getUsedExternalDeclarations() {
+        return usedExternalDeclarations;
+    }
 
     private MvelCompiler mvelCompiler;
 
@@ -97,7 +101,6 @@ public class AccumulateInline {
 
         parseInitBlock();
 
-        boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
         MethodDeclaration accumulateMethod = accumulateInlineClass.getMethodsByName("accumulate").get(0);
 
@@ -115,8 +118,8 @@ public class AccumulateInline {
                             .getBoxedType();
         } else {
             allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
-            usedExtDeclrs.addAll(allNamesInActionBlock);
-            useLegacyAccumulate = true;
+            usedExternalDeclarations.addAll(allNamesInActionBlock);
+            throw new UnsupportedInlineAccumulate();
         }
 
         Optional<MethodDeclaration> optReverseMethod = Optional.empty();
@@ -132,14 +135,13 @@ public class AccumulateInline {
                 optReverseMethod = Optional.of(reverseMethod);
             } else {
                 allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
-                usedExtDeclrs.addAll(allNamesInActionBlock);
-                useLegacyAccumulate = true;
+                usedExternalDeclarations.addAll(allNamesInActionBlock);
+                throw new UnsupportedInlineAccumulate();
             }
         }
 
-        if (useLegacyAccumulate || !usedExtDeclrs.isEmpty()) {
-            new LegacyAccumulate(context, accumulateDescr, this.basePattern, usedExtDeclrs).build();
-            return;
+        if (!usedExternalDeclarations.isEmpty()) {
+            throw new UnsupportedInlineAccumulate();
         }
 
         for (DeclarationSpec d : accumulateDeclarations) {
@@ -248,7 +250,7 @@ public class AccumulateInline {
                         Expression target = new FieldAccessExpr(getDataNameExpr(), variableName);
                         Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
                         initMethodBody.addStatement(initStmt);
-                        initStmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExtDeclrs::add);
+                        initStmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExternalDeclarations::add);
                     });
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
                 }

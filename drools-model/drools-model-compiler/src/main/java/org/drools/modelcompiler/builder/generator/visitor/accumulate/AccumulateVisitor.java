@@ -114,7 +114,7 @@ public abstract class AccumulateVisitor {
                 try {
                     accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) input).getIdentifier());
                 } catch (UnsupportedInlineAccumulate e) {
-                    new LegacyAccumulate(context, descr, basePattern, externalDeclrs).build();
+                    new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
                 }
             } else if (input instanceof AndDescr) {
                 BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
@@ -131,7 +131,7 @@ public abstract class AccumulateVisitor {
                     try {
                         accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) binding).getIdentifier());
                     } catch (UnsupportedInlineAccumulate e) {
-                        new LegacyAccumulate(context, descr, basePattern, externalDeclrs).build();
+                        new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
                     }
                 }
             } else {
