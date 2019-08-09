@@ -65,6 +65,7 @@ public class AccumulateInline {
     private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
     private final List<String> contextFieldNames = new ArrayList<>();
     private Set<String> usedExternalDeclarations = new HashSet<>();
+    private Type singleAccumulateType;
 
     Set<String> getUsedExternalDeclarations() {
         return usedExternalDeclarations;
@@ -88,6 +89,7 @@ public class AccumulateInline {
         }
 
         mvelCompiler = new MvelCompiler(mvelCompilerContext);
+        singleAccumulateType = null;
     }
 
     /**
@@ -101,7 +103,6 @@ public class AccumulateInline {
 
         parseInitBlock();
 
-        Type singleAccumulateType = null;
         MethodDeclaration accumulateMethod = accumulateInlineClass.getMethodsByName("accumulate").get(0);
 
         ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
@@ -116,6 +117,9 @@ public class AccumulateInline {
                     context.getDeclarationById(nameExpr)
                             .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
                             .getBoxedType();
+
+            writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
+
         } else {
             allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
             usedExternalDeclarations.addAll(allNamesInActionBlock);
@@ -137,7 +141,8 @@ public class AccumulateInline {
                 supportsReverseMethod
                         .getBody()
                         .orElseThrow(InvalidInlineTemplateException::new)
-                        .addStatement(parseStatement("return true;"));
+                        .addStatement(parseStatement("return true;"))
+                ;
             } else {
                 allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
                 usedExternalDeclarations.addAll(allNamesInActionBlock);
@@ -164,8 +169,6 @@ public class AccumulateInline {
         for (DeclarationSpec d : accumulateDeclarations) {
             context.addDeclaration(d);
         }
-
-        writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
 
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = accumulateInlineClass.getMethodsByName("getResult").get(0);
