@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.testdata;
+package org.optaplanner.core.impl.testdata.domain.score.lavish;
 
 import java.util.ArrayList;
 import java.util.List;

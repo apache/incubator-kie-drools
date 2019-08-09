@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.testdata;
+package org.optaplanner.core.impl.testdata.domain.score.lavish;
 
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
-public class TestdataLavishEntityGroup extends TestdataObject {
+public class TestdataLavishValue extends TestdataObject {
 
-    public TestdataLavishEntityGroup() {
+    private TestdataLavishValueGroup valueGroup;
+
+    public TestdataLavishValue() {
     }
 
-    public TestdataLavishEntityGroup(String code) {
+    public TestdataLavishValue(String code, TestdataLavishValueGroup valueGroup) {
         super(code);
+        this.valueGroup = valueGroup;
+    }
+
+    public TestdataLavishValueGroup getValueGroup() {
+        return valueGroup;
+    }
+
+    public void setValueGroup(TestdataLavishValueGroup valueGroup) {
+        this.valueGroup = valueGroup;
     }
 
 }

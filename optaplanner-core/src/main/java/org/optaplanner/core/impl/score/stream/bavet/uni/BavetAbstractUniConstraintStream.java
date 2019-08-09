@@ -109,19 +109,21 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
-            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+            Function<A, GroupKey_> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream
                 = new BavetGroupedBiConstraintStream<>(constraint, collector.finisher());
         BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
                 = new BavetGroupByBridgeUniConstraintStream<>(constraint, biStream, groupKeyMapping, collector);
         addChildStream(bridge);
         return biStream;
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @Override

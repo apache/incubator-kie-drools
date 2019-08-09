@@ -35,7 +35,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         maximumCapacity(constraintFactory); // TODO Doesn't work
         serviceConflict(constraintFactory);
         serviceLocationSpread(constraintFactory);
-        serviceDependency(constraintFactory);
+        serviceDependency(constraintFactory); // TODO has bug
         transientUsage(constraintFactory); // TODO Doesn't work
 
         loadCost(constraintFactory); // TODO Doesn't work
