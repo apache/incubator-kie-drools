@@ -236,7 +236,7 @@ public class AccumulateInline {
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
 
         for (Statement stmt : initBlock.getStatements()) {
-            final BlockStmt initMethodBody = initMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"));
+            final BlockStmt initMethodBody = initMethod.getBody().orElseThrow(InvalidInlineTemplateException::new);
             if (stmt instanceof ExpressionStmt && ((ExpressionStmt) stmt).getExpression() instanceof VariableDeclarationExpr) {
                 VariableDeclarationExpr vdExpr = (VariableDeclarationExpr) ((ExpressionStmt) stmt).getExpression();
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
@@ -303,14 +303,15 @@ public class AccumulateInline {
                 final Expression expression =
                         typedExpression
                                 .getTypedExpression()
-                                .orElseThrow(() -> new IllegalStateException("Typed expression is not present!"))
+                                .orElseThrow(InvalidInlineTemplateException::new)
                                 .getExpression();
 
                 forceCastForName(parameterName, singleAccumulateType, expression);
                 rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, expression);
                 convertedExpressionStatement.setExpression(expression);
             }
-            accumulateMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!")).addStatement(convertedExpressionStatement);
+            accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new)
+                    .addStatement(convertedExpressionStatement);
         }
     }
 }
