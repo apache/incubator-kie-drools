@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -57,9 +59,9 @@ public class AccumulateInline {
     private AccumulateDescr accumulateDescr;
     private PatternDescr basePattern;
 
-    private ClassOrInterfaceDeclaration templateClass;
-    private ClassOrInterfaceDeclaration templateContextClass;
-    private String targetClassName;
+    private ClassOrInterfaceDeclaration accumulateInlineClass;
+    private ClassOrInterfaceDeclaration contextData;
+    private String accumulateInlineClassName;
 
     private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
     private final List<String> contextFieldNames = new ArrayList<>();
@@ -68,9 +70,9 @@ public class AccumulateInline {
     private MvelCompiler mvelCompiler;
 
     AccumulateInline(RuleContext context,
-                            PackageModel packageModel,
-                            AccumulateDescr descr,
-                            PatternDescr basePattern) {
+                     PackageModel packageModel,
+                     AccumulateDescr descr,
+                     PatternDescr basePattern) {
         this.context = context;
         this.packageModel = packageModel;
         this.accumulateDescr = descr;
@@ -78,52 +80,12 @@ public class AccumulateInline {
 
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
-        for(DeclarationSpec ds : context.getAllDeclarations()) {
+        for (DeclarationSpec ds : context.getAllDeclarations()) {
             mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
         }
 
         mvelCompiler = new MvelCompiler(mvelCompilerContext);
     }
-
-    // TODO: Move to class template
-    private static final String ACCUMULATE_INLINE_FUNCTION =
-            "public class AccumulateInlineFunction implements org.kie.api.runtime.rule.AccumulateFunction<AccumulateInlineFunction.ContextData> {\n" +
-                    "\n" +
-                    "    public static class ContextData implements java.io.Serializable {\n" +
-                    "        // context fields will go here.\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, ClassNotFoundException {\n" +
-                    "        // functions are stateless, so nothing to serialize\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {\n" +
-                    "        // functions are stateless, so nothing to serialize\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public ContextData createContext() {\n" +
-                    "        return new ContextData();\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public void init(ContextData data) {\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public void accumulate(ContextData data, Object $single) {\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public void reverse(ContextData data, Object $single) {\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public Object getResult(ContextData data) {\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public boolean supportsReverse() {\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public Class<?> getResultType() {\n" +
-                    "    }\n" +
-                    "}";
-
 
     /**
      * By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding in the accumulate code/expressions.
@@ -138,7 +100,7 @@ public class AccumulateInline {
 
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
-        MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
+        MethodDeclaration accumulateMethod = accumulateInlineClass.getMethodsByName("accumulate").get(0);
 
         ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
 
@@ -153,8 +115,8 @@ public class AccumulateInline {
                             .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
                             .getBoxedType();
         } else {
-            allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
-            usedExtDeclrs.addAll(allNamesInActionBlock );
+            allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
+            usedExtDeclrs.addAll(allNamesInActionBlock);
             useLegacyAccumulate = true;
         }
 
@@ -163,32 +125,32 @@ public class AccumulateInline {
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
 
-        if(accumulateDescr.getReverseCode() != null) {
+        if (accumulateDescr.getReverseCode() != null) {
             Collection<String> allNamesInReverseBlock = collectNamesInBlock(reverseBlock, context);
             if (allNamesInReverseBlock.size() == 1) {
-                MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
+                MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
                 reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
                 optReverseMethod = Optional.of(reverseMethod);
             } else {
-                allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
-                usedExtDeclrs.addAll(allNamesInActionBlock );
+                allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
+                usedExtDeclrs.addAll(allNamesInActionBlock);
                 useLegacyAccumulate = true;
             }
         }
 
-        if ( useLegacyAccumulate || !usedExtDeclrs.isEmpty() ) {
+        if (useLegacyAccumulate || !usedExtDeclrs.isEmpty()) {
             new LegacyAccumulate(context, accumulateDescr, this.basePattern, usedExtDeclrs).build();
             return;
         }
 
-        for(DeclarationSpec d : accumulateDeclarations) {
+        for (DeclarationSpec d : accumulateDeclarations) {
             context.addDeclaration(d);
         }
 
         writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
 
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
-        MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
+        MethodDeclaration resultMethod = accumulateInlineClass.getMethodsByName("getResult").get(0);
         Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
         Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
         if (returnExpression instanceof NameExpr) {
@@ -197,65 +159,79 @@ public class AccumulateInline {
         rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, returnExpression);
         resultMethod
                 .getBody()
-                .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                .orElseThrow(InvalidInlineTemplateException::new)
                 .addStatement(new ReturnStmt(returnExpression));
-        MethodDeclaration getResultTypeMethod = templateClass.getMethodsByName("getResultType").get(0);
+        MethodDeclaration getResultTypeMethod = accumulateInlineClass.getMethodsByName("getResultType").get(0);
         getResultTypeMethod
                 .getBody()
-                .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                .orElseThrow(InvalidInlineTemplateException::new)
                 .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
 
         if (optReverseMethod.isPresent()) {
-            MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
+            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod
                     .getBody()
-                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(parseStatement("return true;"));
 
             writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
         } else {
-            MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
+            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod
                     .getBody()
-                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(parseStatement("return false;"));
 
-            MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
+            MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
             reverseMethod
                     .getBody()
-                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
         }
 
         // add resulting accumulator class into the package model
-        this.packageModel.addGeneratedPOJO(templateClass);
+        this.packageModel.addGeneratedPOJO(accumulateInlineClass);
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
-        functionDSL.addArgument( new MethodReferenceExpr(new NameExpr(targetClassName ), new NodeList<>(), "new") );
-        functionDSL.addArgument(context.getVarExpr(identifier) );
+        functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
+        functionDSL.addArgument(context.getVarExpr(identifier));
 
         final String bindingId = this.basePattern.getIdentifier();
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
-        asDSL.addArgument( context.getVarExpr( bindingId ) );
+        asDSL.addArgument(context.getVarExpr(bindingId));
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
     }
 
     private void initInlineAccumulateTemplate() {
-        targetClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
-        String code = ACCUMULATE_INLINE_FUNCTION.replaceAll("AccumulateInlineFunction", targetClassName);
+        accumulateInlineClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
 
-        CompilationUnit templateCU = StaticJavaParser.parse(code);
-        templateClass = templateCU.getClassByName(targetClassName).orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
+        CompilationUnit templateCU;
+        try {
+            templateCU = StaticJavaParser.parseResource("AccumulateInlineTemplate.java");
+        } catch (IOException e) {
+            throw new InvalidInlineTemplateException(e);
+        }
 
+        ClassOrInterfaceDeclaration parsedClass =
+                templateCU
+                        .getClassByName("AccumulateInlineFunction")
+                        .orElseThrow(InvalidInlineTemplateException::new);
 
-        // TODO change this
-        templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
+        parsedClass.setName(accumulateInlineClassName);
+        parsedClass.findAll(ClassOrInterfaceType.class, c -> "CONTEXT_DATA_GENERIC".equals(c.asString()))
+                .forEach(c -> c.setName(accumulateInlineClassName + ".ContextData"));
+
+        this.accumulateInlineClass = parsedClass;
+
+        contextData = this.accumulateInlineClass.findFirst(ClassOrInterfaceDeclaration.class
+                , c -> "ContextData".equals(c.getNameAsString()))
+                .orElseThrow(InvalidInlineTemplateException::new);
     }
 
     private void parseInitBlock() {
-        MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
+        MethodDeclaration initMethod = accumulateInlineClass.getMethodsByName("init").get(0);
         ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
 
@@ -266,22 +242,22 @@ public class AccumulateInline {
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
                     final String variableName = vd.getNameAsString();
                     contextFieldNames.add(variableName);
-                    templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
+                    contextData.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                                                                                        initMethodBody.addStatement(statement);
-                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration ).forEach(usedExtDeclrs::add );
+                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExtDeclrs::add);
                                                                                    }
                     );
-                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString()) ));
+                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
                 }
             } else {
-                if(stmt.isExpressionStmt()) {
+                if (stmt.isExpressionStmt()) {
                     final Expression statementExpression = stmt.asExpressionStmt().getExpression();
-                    if(statementExpression.isAssignExpr()) {
+                    if (statementExpression.isAssignExpr()) {
                         final AssignExpr assignExpr = statementExpression.asAssignExpr();
                         final String targetName = assignExpr.getTarget().asNameExpr().toString();
                         // Mvel allows using a field without declaration
-                        if(!contextFieldNames.contains(targetName)) {
+                        if (!contextFieldNames.contains(targetName)) {
                             contextFieldNames.add(targetName);
                             final String variableName = assignExpr.getTarget().toString();
                             final Expression initCreationExpression = assignExpr.getValue();
@@ -291,12 +267,11 @@ public class AccumulateInline {
                                             .map(t -> DrlxParseUtil.classToReferenceType((Class<?>) t))
                                             .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
 
-                            templateContextClass.addField(type, variableName, Modifier.publicModifier().getKeyword());
+                            contextData.addField(type, variableName, Modifier.publicModifier().getKeyword());
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
                             accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), type.asString())));
                         }
-
                     }
                 } else {
                     initMethodBody.addStatement(stmt); // add as-is.
@@ -304,7 +279,6 @@ public class AccumulateInline {
             }
         }
     }
-
 
     private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {
         if (optInitializer.isPresent()) {
@@ -339,5 +313,4 @@ public class AccumulateInline {
             accumulateMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!")).addStatement(convertedExpressionStatement);
         }
     }
-
 }
