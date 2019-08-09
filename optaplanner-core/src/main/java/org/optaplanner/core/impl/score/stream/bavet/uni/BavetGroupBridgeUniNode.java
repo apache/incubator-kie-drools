@@ -22,22 +22,22 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiNode;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiTuple;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
-public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniNode<A> {
+public final class BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniNode<A> {
 
     private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, GroupKey_> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
-    private final BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode;
+    private final BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> biNode;
 
-    private final Map<GroupKey_, BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_>> tupleMap;
+    private final Map<GroupKey_, BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_>> tupleMap;
 
-    public BavetGroupByBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
+    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector,
-            BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode) {
+            BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> biNode) {
         super(session, nodeOrder);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
@@ -47,13 +47,13 @@ public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Res
     }
 
     @Override
-    public BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractUniTuple<A> parentTuple) {
-        return new BavetGroupByBridgeUniTuple<>(this, parentTuple);
+    public BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+        return new BavetGroupBridgeUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> tuple) {
+    public void refresh(BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> tuple) {
         if (tuple.getChildTuple() != null) {
-            BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> childTuple = tuple.getChildTuple();
+            BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple = tuple.getChildTuple();
             GroupKey_ oldGroupKey = childTuple.getGroupKey();
             int parentCount = childTuple.decreaseParentCount();
             tuple.getUndoAccumulator().run();
@@ -71,7 +71,7 @@ public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Res
         if (tuple.isActive()) {
             A a = tuple.getFactA();
             GroupKey_ groupKey = groupKeyMapping.apply(a);
-            BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> childTuple = tupleMap.computeIfAbsent(groupKey,
+            BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple = tupleMap.computeIfAbsent(groupKey,
                     k -> biNode.createTuple(groupKey, collector.supplier().get()));
             int parentCount = childTuple.increaseParentCount();
 
@@ -93,7 +93,7 @@ public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Res
 
     @Override
     public String toString() {
-        return "GroupByBridge()";
+        return "GroupBridge()";
     }
 
     // ************************************************************************

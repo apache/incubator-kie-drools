@@ -16,17 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiTuple;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
 
-public final class BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniTuple<A> {
+public final class BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniTuple<A> {
 
-    private final BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node;
+    private final BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node;
     private final BavetAbstractUniTuple<A> parentTuple;
 
     private Runnable undoAccumulator;
-    private BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> childTuple;
+    private BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple;
 
-    public BavetGroupByBridgeUniTuple(BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node,
+    public BavetGroupBridgeUniTuple(BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node,
             BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
@@ -40,7 +40,7 @@ public final class BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Re
 
     @Override
     public String toString() {
-        return "GroupByBridge(" + getFactsString() + ") with " + (childTuple == null ? 0 : 1) + " children";
+        return "GroupBridge(" + getFactsString() + ") with " + (childTuple == null ? 0 : 1) + " children";
     }
 
     // ************************************************************************
@@ -48,7 +48,7 @@ public final class BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Re
     // ************************************************************************
 
     @Override
-    public BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> getNode() {
+    public BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> getNode() {
         return node;
     }
 
@@ -65,11 +65,11 @@ public final class BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Re
         this.undoAccumulator = undoAccumulator;
     }
 
-    public BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> getChildTuple() {
+    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> getChildTuple() {
         return childTuple;
     }
 
-    public void setChildTuple(BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> childTuple) {
+    public void setChildTuple(BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple) {
         this.childTuple = childTuple;
     }
 

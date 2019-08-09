@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -112,10 +112,10 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream
-                = new BavetGroupedBiConstraintStream<>(constraint, collector.finisher());
-        BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
-                = new BavetGroupByBridgeUniConstraintStream<>(constraint, biStream, groupKeyMapping, collector);
+        BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream
+                = new BavetGroupBiConstraintStream<>(constraint, collector.finisher());
+        BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
+                = new BavetGroupBridgeUniConstraintStream<>(constraint, biStream, groupKeyMapping, collector);
         addChildStream(bridge);
         return biStream;
     }

@@ -22,12 +22,12 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
-public final class BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
+public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
         extends BavetAbstractBiConstraintStream<Solution_, GroupKey_, Result_> {
 
     private final Function<ResultContainer_, Result_> finisher;
 
-    public BavetGroupedBiConstraintStream(BavetConstraint<Solution_> bavetConstraint,
+    public BavetGroupBiConstraintStream(BavetConstraint<Solution_> bavetConstraint,
             Function<ResultContainer_, Result_> finisher) {
         super(bavetConstraint);
         this.finisher = finisher;
@@ -38,24 +38,24 @@ public final class BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultCo
     // ************************************************************************
 
     @Override
-    public BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
+    public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
-        return (BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
+        return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
     }
 
     @Override
-    protected BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+    protected BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetGroupedBiNode<>(buildPolicy.getSession(), nodeOrder, finisher);
+        return new BavetGroupBiNode<>(buildPolicy.getSession(), nodeOrder, finisher);
     }
 
     @Override
     public String toString() {
-        return "Grouped() with " + childStreamList.size()  + " children";
+        return "Group() with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************

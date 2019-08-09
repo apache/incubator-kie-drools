@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public final class BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_> {
+public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_> {
 
-    private final BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> node;
+    private final BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> node;
 
     private GroupKey_ groupKey;
     private int parentCount;
@@ -31,7 +31,7 @@ public final class BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> ext
 
     protected List<BavetAbstractBiTuple<GroupKey_, Result_>> childTupleList;
 
-    public BavetGroupedBiTuple(BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> node,
+    public BavetGroupBiTuple(BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> node,
             GroupKey_ groupKey, ResultContainer_ resultContainer) {
         this.node = node;
         this.groupKey = groupKey;
@@ -70,7 +70,7 @@ public final class BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> ext
 
     @Override
     public String toString() {
-        return "Grouped(" + getFactsString() + ")";
+        return "Group(" + getFactsString() + ")";
     }
 
     // ************************************************************************
@@ -78,7 +78,7 @@ public final class BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> ext
     // ************************************************************************
 
     @Override
-    public BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> getNode() {
+    public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> getNode() {
         return node;
     }
 

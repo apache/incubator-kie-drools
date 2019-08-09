@@ -23,13 +23,13 @@ import java.util.function.Function;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
-public final class BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiNode<GroupKey_, Result_> {
+public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiNode<GroupKey_, Result_> {
 
     private final Function<ResultContainer_, Result_> finisher;
 
     private final List<BavetAbstractBiNode<GroupKey_, Result_>> childNodeList = new ArrayList<>();
 
-    public BavetGroupedBiNode(BavetConstraintSession session, int nodeOrder,
+    public BavetGroupBiNode(BavetConstraintSession session, int nodeOrder,
             Function<ResultContainer_, Result_> finisher) {
         super(session, nodeOrder);
         this.finisher = finisher;
@@ -51,17 +51,17 @@ public final class BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> exte
     // ************************************************************************
 
     @Override
-    public BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractBiTuple<GroupKey_, Result_> parentTuple) {
+    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractBiTuple<GroupKey_, Result_> parentTuple) {
         throw new IllegalStateException("The Grouped node (" + getClass().getSimpleName()
                 + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
-    public BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(
+    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(
             GroupKey_ groupKey, ResultContainer_ resultContainer) {
-        return new BavetGroupedBiTuple<>(this, groupKey, resultContainer);
+        return new BavetGroupBiTuple<>(this, groupKey, resultContainer);
     }
 
-    public void refresh(BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> tuple) {
+    public void refresh(BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> tuple) {
         List<BavetAbstractBiTuple<GroupKey_, Result_>> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractBiTuple<GroupKey_, Result_> childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
@@ -80,7 +80,7 @@ public final class BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> exte
 
     @Override
     public String toString() {
-        return "Grouped() with " + childNodeList.size()  + " children";
+        return "Group() with " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************
