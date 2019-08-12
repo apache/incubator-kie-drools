@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> extends BavetIndex<Tuple_> {
 
@@ -88,13 +88,13 @@ public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> 
             case LESS_THAN:
                 selectedComparisonMap = comparisonMap.headMap(comparisonIndexProperty, false);
                 break;
-            case LESS_THAN_OR_EQUAL_TO:
+            case LESS_THAN_OR_EQUAL:
                 selectedComparisonMap = comparisonMap.headMap(comparisonIndexProperty, true);
                 break;
             case GREATER_THAN:
                 selectedComparisonMap = comparisonMap.tailMap(comparisonIndexProperty, false);
                 break;
-            case GREATER_THAN_OR_EQUAL_TO:
+            case GREATER_THAN_OR_EQUAL:
                 selectedComparisonMap = comparisonMap.tailMap(comparisonIndexProperty, true);
                 break;
             default:

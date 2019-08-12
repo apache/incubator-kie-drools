@@ -167,7 +167,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntity.class,
-                            equalTo(TestdataLavishEntity::getEntityGroup))
+                            equal(TestdataLavishEntity::getEntityGroup))
                     .penalize();
         });
 
@@ -210,8 +210,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntity.class,
-                            equalTo(TestdataLavishEntity::getEntityGroup),
-                            equalTo(TestdataLavishEntity::getIntegerProperty))
+                            equal(TestdataLavishEntity::getEntityGroup),
+                            equal(TestdataLavishEntity::getIntegerProperty))
                     .penalize();
         });
 
@@ -282,7 +282,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.fromUniquePair(TestdataLavishEntity.class,
-                    equalTo(TestdataLavishEntity::getIntegerProperty)
+                    equal(TestdataLavishEntity::getIntegerProperty)
             ).penalize();
         });
 
@@ -598,7 +598,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
             constraint.from(TestdataLavishEntity.class)
                     .filter(entity -> entity.getEntityGroup() == entityGroup)
                     .filter(entity -> entity.getStringProperty().equals("MyString1"))
-                    .join(TestdataLavishEntity.class, equalTo(TestdataLavishEntity::getIntegerProperty))
+                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
                     .penalize();
         });
 
@@ -613,7 +613,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(constraint.from(TestdataLavishEntity.class)
                             .filter(entity -> entity.getEntityGroup() == entityGroup)
                             .filter(entity -> entity.getStringProperty().equals("MyString1")),
-                            equalTo(TestdataLavishEntity::getIntegerProperty))
+                            equal(TestdataLavishEntity::getIntegerProperty))
                     .penalize();
         });
 

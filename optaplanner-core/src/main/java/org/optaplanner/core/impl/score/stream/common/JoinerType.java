@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.common;
+package org.optaplanner.core.impl.score.stream.common;
 
 public enum JoinerType {
-    EQUAL_TO,
+    EQUAL,
     LESS_THAN,
-    LESS_THAN_OR_EQUAL_TO,
+    LESS_THAN_OR_EQUAL,
     GREATER_THAN,
-    GREATER_THAN_OR_EQUAL_TO,
-    CONTAINS,
-    IS_CONTAINED_BY,
-    INTERSECTING_WITH,
+    GREATER_THAN_OR_EQUAL,
+    CONTAINING,
+    INTERSECTING,
     DISJOINT;
 
     public JoinerType flip() {
         switch (this) {
             case LESS_THAN:
                 return GREATER_THAN;
-            case LESS_THAN_OR_EQUAL_TO:
-                return GREATER_THAN_OR_EQUAL_TO;
+            case LESS_THAN_OR_EQUAL:
+                return GREATER_THAN_OR_EQUAL;
             case GREATER_THAN:
                 return LESS_THAN;
-            case GREATER_THAN_OR_EQUAL_TO:
-                return LESS_THAN_OR_EQUAL_TO;
+            case GREATER_THAN_OR_EQUAL:
+                return LESS_THAN_OR_EQUAL;
             default:
                 throw new IllegalStateException("The joinerType (" + this + ") is not supported.");
         }

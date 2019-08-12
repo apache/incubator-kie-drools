@@ -90,7 +90,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void roomConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.ROOM_CONFLICT);
-        c.fromUniquePair(Talk.class, equalTo(Talk::getRoom))
+        c.fromUniquePair(Talk.class, equal(Talk::getRoom))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize(Talk::overlappingDurationInMinutes);
@@ -105,7 +105,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void speakerConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.SPEAKER_CONFLICT);
-        c.fromUniquePair(Talk.class, intersectingWith(Talk::getSpeakerList))
+        c.fromUniquePair(Talk.class, intersecting(Talk::getSpeakerList))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize(Talk::overlappingDurationInMinutes);
@@ -115,7 +115,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.TALK_PREREQUISITE_TALKS);
         c.from(Talk.class)
                 .join(Talk.class,
-                        contains(Talk::getPrerequisiteTalkSet, Function.identity()),
+                        containing(Talk::getPrerequisiteTalkSet, Function.identity()),
                         lessThan(talk1 -> talk1.getTimeslot().getStartDateTime(),
                                 talk2 -> talk2.getTimeslot().getEndDateTime()))
                 .penalize(Talk::combinedDurationInMinutes);
@@ -123,7 +123,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void talkMutuallyExclusiveTalksTags(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS);
-        c.fromUniquePair(Talk.class, intersectingWith(Talk::getMutuallyExclusiveTalksTagSet))
+        c.fromUniquePair(Talk.class, intersecting(Talk::getMutuallyExclusiveTalksTagSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize((talk1, talk2) -> talk1.overlappingMutuallyExclusiveTalksTagCount(talk2)
@@ -132,7 +132,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
 //    protected void consecutiveTalksPause(ConstraintFactory constraintFactory) {
 //        Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.CONSECUTIVE_TALKS_PAUSE);
-//        c.fromUniquePair((Talk.class, intersectingWith(Talk::getSpeakerList))
+//        c.fromUniquePair((Talk.class, intersecting(Talk::getSpeakerList))
 //                .filter((talk1, talk2) -> !talk1.getTimeslot().pauseExists(talk2.getTimeslot(), $minimumPause))
 //                .penalize(Talk::combinedDurationInMinutes);
 //    }
@@ -142,7 +142,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         c.from(Talk.class)
                 .filter(talk -> talk.getCrowdControlRisk() > 0)
                 // No fromUniquePair() because we want both [A, B] and [B, A].
-                .join(Talk.class, equalTo(Talk::getTimeslot))
+                .join(Talk.class, equal(Talk::getTimeslot))
                 .filter((talk1, talk2) -> talk1 != talk2)
                 .groupBy((talk1, talk2) -> talk1, countBi())
                 .filter((talk, count) -> count != 1)
@@ -230,7 +230,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void themeTrackConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT);
-        c.fromUniquePair(Talk.class, intersectingWith(Talk::getThemeTrackTagSet))
+        c.fromUniquePair(Talk.class, intersecting(Talk::getThemeTrackTagSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize((talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
@@ -240,8 +240,8 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     protected void themeTrackRoomStability(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.THEME_TRACK_ROOM_STABILITY);
         c.fromUniquePair(Talk.class,
-                equalTo(talk -> talk.getTimeslot().getStartDateTime().toLocalDate()),
-                intersectingWith(Talk::getThemeTrackTagSet))
+                equal(talk -> talk.getTimeslot().getStartDateTime().toLocalDate()),
+                intersecting(Talk::getThemeTrackTagSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .filter((talk1, talk2) -> talk1.getRoom() != talk2.getRoom())
@@ -251,7 +251,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void sectorConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.SECTOR_CONFLICT);
-        c.fromUniquePair(Talk.class, intersectingWith(Talk::getSectorTagSet))
+        c.fromUniquePair(Talk.class, intersecting(Talk::getSectorTagSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize((talk1, talk2) -> talk1.overlappingSectorCount(talk2)
@@ -262,8 +262,8 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.AUDIENCE_TYPE_DIVERSITY);
         c.fromUniquePair(Talk.class,
                 // Timeslot.overlaps() is deliberately not used
-                equalTo(Talk::getTimeslot),
-                intersectingWith(Talk::getAudienceTypeSet))
+                equal(Talk::getTimeslot),
+                intersecting(Talk::getAudienceTypeSet))
                 .reward((talk1, talk2) -> talk1.overlappingAudienceTypeCount(talk2)
                         * talk1.getTimeslot().getDurationInMinutes());
     }
@@ -271,8 +271,8 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     protected void audienceTypeThemeTrackConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.AUDIENCE_TYPE_THEME_TRACK_CONFLICT);
         c.fromUniquePair(Talk.class,
-                intersectingWith(Talk::getThemeTrackTagSet),
-                intersectingWith(Talk::getAudienceTypeSet))
+                intersecting(Talk::getThemeTrackTagSet),
+                intersecting(Talk::getAudienceTypeSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize((talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
@@ -284,7 +284,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.AUDIENCE_LEVEL_DIVERSITY);
         c.fromUniquePair(Talk.class,
                 // Timeslot.overlaps() is deliberately not used
-                equalTo(Talk::getTimeslot))
+                equal(Talk::getTimeslot))
                 .filter((talk1, talk2) -> talk1.getAudienceLevel() != talk2.getAudienceLevel())
                 .reward((talk1, talk2) -> talk1.getTimeslot().getDurationInMinutes());
     }
@@ -294,7 +294,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         c.from(Talk.class)
                 // fromUniquePair() not wanted due to lessThan(Talk::getAudienceLevel)
                 .join(Talk.class,
-                        intersectingWith(Talk::getContentTagSet),
+                        intersecting(Talk::getContentTagSet),
                         lessThan(Talk::getAudienceLevel),
                         greaterThan(talk1 -> talk1.getTimeslot().getEndDateTime(),
                                 talk2 -> talk2.getTimeslot().getStartDateTime()))
@@ -304,7 +304,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
 
     protected void contentConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.CONTENT_CONFLICT);
-        c.fromUniquePair(Talk.class, intersectingWith(Talk::getContentTagSet))
+        c.fromUniquePair(Talk.class, intersecting(Talk::getContentTagSet))
                 // TODO Support joiner for time overlap
                 .filter(Talk::overlapsTime)
                 .penalize((talk1, talk2) -> talk1.overlappingContentCount(talk2)
@@ -315,7 +315,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY);
         c.fromUniquePair(Talk.class,
                 // Timeslot.overlaps() is deliberately not used
-                equalTo(Talk::getTimeslot))
+                equal(Talk::getTimeslot))
                 .filter((talk1, talk2) -> !talk1.getLanguage().equals(talk2.getLanguage()))
                 .reward((talk1, talk2) -> talk1.getTimeslot().getDurationInMinutes());
     }

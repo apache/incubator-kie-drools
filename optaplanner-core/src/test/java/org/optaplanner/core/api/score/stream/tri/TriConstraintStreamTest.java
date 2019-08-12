@@ -71,7 +71,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equalTo(TestdataLavishEntity::getValue, Function.identity()))
+                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
                     .join(TestdataLavishExtra.class)
                     .filter((entity, value, extra) -> value.getCode().equals("MyValue 1")
                             && extra.getCode().equals("MyExtra 1"))
@@ -130,12 +130,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalize();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalize((entity, value, extra) -> 20);
         });
@@ -159,12 +159,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalize();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalizeLong((entity, value, extra) -> 20L);
         });
@@ -188,12 +188,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalize();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalizeBigDecimal((entity, value, extra) -> new BigDecimal("0.2"));
         });
@@ -217,12 +217,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .reward();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .reward((entity, value, extra) -> 20);
         });
@@ -246,12 +246,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .reward();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .rewardLong((entity, value, extra) -> 20L);
         });
@@ -275,12 +275,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .reward();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
                     .from(TestdataEntity.class)
-                    .join(TestdataValue.class, equalTo(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .rewardBigDecimal((entity, value, extra) -> new BigDecimal("0.2"));
         });
@@ -307,7 +307,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 //            constraint.from(TestdataLavishEntity.class)
 //                    .filter(entity -> entity.getEntityGroup() == entityGroup)
 //                    .filter(entity -> entity.getStringProperty().equals("MyString1"))
-//                    .join(TestdataLavishEntity.class, equalTo(TestdataLavishEntity::getIntegerProperty))
+//                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
 //                    .penalize();
 //        });
 //
@@ -322,7 +322,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 //                    .join(constraint.from(TestdataLavishEntity.class)
 //                            .filter(entity -> entity.getEntityGroup() == entityGroup)
 //                            .filter(entity -> entity.getStringProperty().equals("MyString1")),
-//                            equalTo(TestdataLavishEntity::getIntegerProperty))
+//                            equal(TestdataLavishEntity::getIntegerProperty))
 //                    .penalize();
 //        });
 //

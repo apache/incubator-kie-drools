@@ -50,7 +50,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * and match if {@link TriPredicate#test(Object, Object, Object)} returns true.
      * <p>
      * Important: This is slower and less scalable than {@link BiConstraintStream#join(UniConstraintStream, TriJoiner[])}
-     * with a proper {@link TriJoiner} predicate (such as {@link Joiners#equalTo(BiFunction, Function)},
+     * with a proper {@link TriJoiner} predicate (such as {@link Joiners#equal(BiFunction, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
      * @param predicate never null
      * @return never null

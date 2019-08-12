@@ -20,8 +20,9 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.examples.nqueens.domain.Queen;
+
+import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
 
@@ -36,13 +37,13 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
         c.fromUniquePair(Queen.class,
-                Joiners.equalTo(Queen::getRowIndex)
+                equal(Queen::getRowIndex)
         ).penalize();
         // fromUniquePair() is syntactic sugar for from().join(..., lessThan(getId())
 //        c.from(Queen.class)
 //                .join(Queen.class,
-//                        Joiners.equalTo(Queen::getRowIndex),
-//                        Joiners.lessThan(Queen::getId))
+//                        equal(Queen::getRowIndex),
+//                        lessThan(Queen::getId))
 //                .penalize();
     }
 
@@ -50,7 +51,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
         c.fromUniquePair(Queen.class,
-                Joiners.equalTo(Queen::getAscendingDiagonalIndex)
+                equal(Queen::getAscendingDiagonalIndex)
         ).penalize();
     }
 
@@ -58,7 +59,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
         c.fromUniquePair(Queen.class,
-                Joiners.equalTo(Queen::getDescendingDiagonalIndex)
+                equal(Queen::getDescendingDiagonalIndex)
         ).penalize();
     }
 

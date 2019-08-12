@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.bi;
 import java.util.List;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 

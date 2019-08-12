@@ -52,7 +52,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * and match if {@link BiPredicate#test(Object, Object)} returns true.
      * <p>
      * Important: This is slower and less scalable than {@link UniConstraintStream#join(UniConstraintStream, BiJoiner[])}
-     * with a proper {@link BiJoiner} predicate (such as {@link Joiners#equalTo(Function, Function)},
+     * with a proper {@link BiJoiner} predicate (such as {@link Joiners#equal(Function, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
      * @param predicate never null
      * @return never null

@@ -35,7 +35,8 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     }
 
     protected void requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("requiredCpuPowerTotal", HardSoftScore.ofHard(1));
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "requiredCpuPowerTotal", HardSoftScore.ofHard(1));
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
@@ -43,7 +44,8 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     }
 
     protected void requiredMemoryTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("requiredMemoryTotal", HardSoftScore.ofHard(1));
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "requiredMemoryTotal", HardSoftScore.ofHard(1));
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
@@ -51,7 +53,8 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     }
 
     protected void requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("requiredNetworkBandwidthTotal", HardSoftScore.ofHard(1));
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "requiredNetworkBandwidthTotal", HardSoftScore.ofHard(1));
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
@@ -59,7 +62,8 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     }
 
     protected void computerCost(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("computerCost", HardSoftScore.ofSoft(1));
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "computerCost", HardSoftScore.ofSoft(1));
         c.from(CloudProcess.class)
                 // TODO Simplify by using:
                 // .groupBy(CloudProcess::getComputer)

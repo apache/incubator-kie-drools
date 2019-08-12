@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.tri;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 

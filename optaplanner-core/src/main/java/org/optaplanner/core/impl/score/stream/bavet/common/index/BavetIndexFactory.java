@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common.index;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public class BavetIndexFactory {
 
@@ -27,10 +27,10 @@ public class BavetIndexFactory {
     public BavetIndexFactory(AbstractJoiner joiner) {
         joinerTypes = joiner.getJoinerTypes();
         for (int i = 0; i < joinerTypes.length; i++) {
-            if (joinerTypes[i] != JoinerType.EQUAL_TO && i != (joinerTypes.length - 1)) {
+            if (joinerTypes[i] != JoinerType.EQUAL && i != (joinerTypes.length - 1)) {
                 throw new IllegalArgumentException("The joinerType (" + joinerTypes[i]
                         + ") is currently only supported as the last joinerType.\n"
-                        + ((joinerTypes[i + 1] == JoinerType.EQUAL_TO)
+                        + ((joinerTypes[i + 1] == JoinerType.EQUAL)
                         ? "Maybe move the next joinerType (" + joinerTypes[i + 1]
                         + ") before this joinerType (" + joinerTypes[i] + ")."
                         : "Maybe put the next joinerType (" + joinerTypes[i + 1]
@@ -44,7 +44,7 @@ public class BavetIndexFactory {
             return new BavetNoneIndex<>();
         }
         JoinerType lastJoinerType = joinerTypes[joinerTypes.length - 1];
-        if (lastJoinerType == JoinerType.EQUAL_TO) {
+        if (lastJoinerType == JoinerType.EQUAL) {
             return new BavetEqualsIndex<>();
         } else {
             // Use flip() to model A < B as B > A

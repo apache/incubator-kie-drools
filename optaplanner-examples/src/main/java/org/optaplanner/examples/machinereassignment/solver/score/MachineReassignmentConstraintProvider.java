@@ -53,10 +53,11 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.
      */
     private void maximumCapacity(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.MAXIMUM_CAPACITY, HardSoftLongScore.ofHard(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.MAXIMUM_CAPACITY, HardSoftLongScore.ofHard(1L));
         constraint.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                        equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
                 )
                 .groupBy(
                         (machineCapacity, processAssignment) -> machineCapacity, sumLong(
@@ -71,11 +72,11 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Conflict: Processes of the same service must run on distinct machines.
      */
     private void serviceConflict(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.SERVICE_CONFLICT,
-                HardSoftLongScore.ofHard(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ofHard(1L));
         constraint.fromUniquePair(MrProcessAssignment.class,
-                equalTo(MrProcessAssignment::getMachine),
-                equalTo(MrProcessAssignment::getService)
+                equal(MrProcessAssignment::getMachine),
+                equal(MrProcessAssignment::getService)
         ).penalize();
     }
 
@@ -83,8 +84,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Spread: Processes of the same service must be serviceLocationSpread out across locations.
      */
     private void serviceLocationSpread(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.SERVICE_LOCATION_SPREAD,
-                HardSoftLongScore.ofHard(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ofHard(1L));
         constraint.from(MrProcessAssignment.class)
                 .groupBy(MrProcessAssignment::getService,
                         ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
@@ -97,14 +98,14 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * of the other service.
      */
     private void serviceDependency(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.SERVICE_DEPENDENCY,
-                HardSoftLongScore.ofHard(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.SERVICE_DEPENDENCY, HardSoftLongScore.ofHard(1L));
         constraint.from(MrServiceDependency.class)
                 .join(MrProcessAssignment.class,
-                        equalTo(MrServiceDependency::getFromService, MrProcessAssignment::getService))
+                        equal(MrServiceDependency::getFromService, MrProcessAssignment::getService))
                 // TODO this is a bug, the constraint is implemented incorrectly, it should probably use .notExist() instead
                 .join(MrProcessAssignment.class,
-                        equalTo((serviceDependency, processAssignment) -> serviceDependency.getToService(), MrProcessAssignment::getService))
+                        equal((serviceDependency, processAssignment) -> serviceDependency.getToService(), MrProcessAssignment::getService))
                 .filter((serviceDependency, processAssignmentFrom, processAssignmentTo) ->
                         !processAssignmentFrom.getNeighborhood().equals(processAssignmentTo.getNeighborhood()))
                 .penalize();
@@ -115,12 +116,12 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * machine as the newly assigned machine.
      */
     private void transientUsage(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.TRANSIENT_USAGE,
-                HardSoftLongScore.ofHard(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.TRANSIENT_USAGE, HardSoftLongScore.ofHard(1L));
         constraint.from(MrMachineCapacity.class)
                 .filter(MrMachineCapacity::isTransientlyConsumed)
                 .join(constraint.from(MrProcessAssignment.class).filter(MrProcessAssignment::isMoved),
-                        equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
                 )
                 .groupBy((machineCapacity, processAssignment) -> machineCapacity,
                         sumLong((machineCapacity, processAssignment)
@@ -139,11 +140,11 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Load: The safety capacity for each resource for each machine should not be exceeded.
      */
     private void loadCost(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.LOAD_COST,
-                HardSoftLongScore.ofSoft(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.LOAD_COST, HardSoftLongScore.ofSoft(1L));
         constraint.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                        equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
                 )
                 .groupBy(
                         (machineCapacity, processAssignment) -> machineCapacity, sumLong(
@@ -162,8 +163,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         throw new UnsupportedOperationException("Not yet implemented due to missing support for quad streams.");
 
         /* TODO: requires quad streams support and groupBy taking two collectors. Alternatively, use a shadow variable.
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.BALANCE_COST,
-                                                                          HardSoftLongScore.ofSoft(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraintName.BALANCE_COST, HardSoftLongScore.ofSoft(1L));
         constraint.from(MrBalancePenalty.class)
                 .join(MrProcessAssignment.class)
                 .groupBy((penalty) -> penalty, (penalty, assignment) -> assignment.getMachine(),
@@ -182,8 +183,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Process move cost: A process has a move cost.
      */
     private void processMoveCost(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.PROCESS_MOVE_COST,
-                HardSoftLongScore.ofSoft(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.PROCESS_MOVE_COST, HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .penalizeLong(MrProcessAssignment::getProcessMoveCost);
@@ -196,8 +197,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         throw new UnsupportedOperationException("Not yet implemented due to missing aggregation function.");
 
         /* TODO: requires max aggregation function
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.SERVICE_MOVE_COST,
-                                                                          HardSoftLongScore.ofSoft(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraintName.SERVICE_MOVE_COST, HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
@@ -210,8 +211,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
      */
     private void machineMoveCost(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.MACHINE_MOVE_COST,
-                HardSoftLongScore.ofSoft(1L));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                MrConstraints.MACHINE_MOVE_COST, HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .penalizeLong(MrProcessAssignment::getMachineMoveCost);

@@ -50,8 +50,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "teacherConflict", HardSoftScore.ofHard(1));
         c.from(Lecture.class)
                 .join(Lecture.class,
-                        equalTo(Lecture::getTeacher),
-                        equalTo(Lecture::getPeriod),
+                        equal(Lecture::getTeacher),
+                        equal(Lecture::getPeriod),
                         lessThan(Lecture::getId))
                 .penalize();
     }
@@ -61,7 +61,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "curriculumConflict", HardSoftScore.ofHard(1));
         c.from(Lecture.class)
                 .join(Lecture.class,
-                        equalTo(Lecture::getPeriod),
+                        equal(Lecture::getPeriod),
                         lessThan(Lecture::getId))
                 .filter((lecture1, lecture2) -> lecture1.getCurriculumList().stream()
                         .anyMatch(lecture -> lecture2.getCurriculumList().contains(lecture)))
@@ -75,10 +75,10 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "conflictingLecturesDifferentCourseInSamePeriod", HardSoftScore.ofHard(1));
         c.from(CourseConflict.class)
                 .join(Lecture.class,
-                        equalTo(CourseConflict::getLeftCourse, Lecture::getCourse))
+                        equal(CourseConflict::getLeftCourse, Lecture::getCourse))
                 .join(Lecture.class,
-                        equalTo((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
-                        equalTo((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
+                        equal((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
+                        equal((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
                 .penalize((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
@@ -88,8 +88,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "conflictingLecturesSameCourseInSamePeriod", HardSoftScore.ofHard(1));
         c.from(Lecture.class)
                 .join(Lecture.class,
-                        equalTo(Lecture::getCourse, Lecture::getCourse),
-                        equalTo(Lecture::getPeriod, Lecture::getPeriod),
+                        equal(Lecture::getCourse, Lecture::getCourse),
+                        equal(Lecture::getPeriod, Lecture::getPeriod),
                         lessThan(Lecture::getId, Lecture::getId))
                 .penalize((lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
     }
@@ -108,8 +108,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "unavailablePeriodPenalty", HardSoftScore.ofHard(10));
         c.from(UnavailablePeriodPenalty.class)
                 .join(Lecture.class,
-                        equalTo(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
-                        equalTo(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
+                        equal(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
+                        equal(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
                 .penalize();
     }
 
