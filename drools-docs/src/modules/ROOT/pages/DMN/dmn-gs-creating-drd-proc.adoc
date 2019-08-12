@@ -11,7 +11,7 @@ image::dmn/dmn-traffic-violations-drd.png[]
 
 .Procedure
 . On the *traffic-violation* project's home page, click *Add Asset*.
-. On the *Add Asset* page, click *DMN Decision*. The *Create new DMN* window is opened.
+. On the *Add Asset* page, click *DMN*. The *Create new DMN* window is opened.
 .. In the *Create new DMN* window, enter `Traffic Violation` in the *DMN* name field.
 .. From the *Package* list, select `org.kie.example.traffic.traffic_violation`.
 .. Click *Ok*. The DMN asset in the DMN designer is opened.

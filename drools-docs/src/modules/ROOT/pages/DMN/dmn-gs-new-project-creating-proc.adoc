@@ -16,7 +16,7 @@ image::getting-started/spaces-teams.png[]
 
 . Click *Add Project*.
 . Enter `traffic-violation` in the *Name* field.
-. Click *Show Advanced Options* to expand the GAV fields and enter the following values:
+. Click *Configure Advanced Options* to expand the GAV fields and enter the following values:
 * *Group ID*: `org.kie.example.traffic`
 * *Artifact ID*: `traffic-violation`
 * *Version*: `1.0.0`
