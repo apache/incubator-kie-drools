@@ -205,4 +205,39 @@ public class ReflectionProtoGeneratorTest {
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
     }
+    
+    @Test
+    public void testPersonAsModelProtoFile() {
+        
+        Proto proto = generator.generate("org.kie.kogito.test.persons", Person.class);
+        assertThat(proto).isNotNull();
+        
+        assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
+        assertThat(proto.getSyntax()).isEqualTo("proto2");
+        assertThat(proto.getMessages()).hasSize(1);
+        
+        ProtoMessage person = proto.getMessages().get(0);
+        assertThat(person).isNotNull();
+        assertThat(person.getName()).isEqualTo("Person");
+        assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.test.persons");        
+        assertThat(person.getFields()).hasSize(3);
+        
+        ProtoField field = person.getFields().get(0);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("adult");
+        assertThat(field.getType()).isEqualTo("bool");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        
+        field = person.getFields().get(1);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("age");
+        assertThat(field.getType()).isEqualTo("int32");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        
+        field = person.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+    }
 }

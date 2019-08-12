@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,11 +24,23 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             Proto proto = new Proto(packageName, headers);
 
             for (Class<?> clazz : dataModel) {
-                messageFromClass(proto, clazz);
+                messageFromClass(proto, clazz, null);
             }
             return proto;
         } catch (Exception e) {
             throw new RuntimeException("Error while generating proto for data model", e);
+        }
+    }
+    
+
+    @Override
+    public Proto generate(String packageName, Class<?> dataModel, String... headers) {
+        try {
+            Proto proto = new Proto(packageName, headers);
+            messageFromClass(proto, dataModel, packageName);        
+            return proto;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating proto for model class " + dataModel, e);
         }
     }
 
@@ -58,7 +69,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         return dataModelClasses;
     }
 
-    protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz) throws Exception {
+    protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName) throws Exception {
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
         Generated generatedData = clazz.getAnnotation(Generated.class);
@@ -66,7 +77,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
 
             name = generatedData.name().isEmpty() ? name : generatedData.name();
         }
-        ProtoMessage message = new ProtoMessage(name, clazz.getPackage().getName());
+        ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
             if (pd.getName().equals("class")) {
@@ -88,7 +99,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             String protoType = protoType(fieldTypeString);
 
             if (protoType == null) {
-                ProtoMessage another = messageFromClass(proto, fieldType);
+                ProtoMessage another = messageFromClass(proto, fieldType, packageName);
                 protoType = another.getName();
             }
 
@@ -98,22 +109,24 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         proto.addMessage(message);
         return message;
     }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    
     protected void generateModelClassProto(Class<?> modelClazz, String targetDirectory) throws Exception {
 
         Generated generatedData = modelClazz.getAnnotation(Generated.class);
         if (generatedData != null) {
 
-            String processId = generatedData.reference();
-            Collection classes = Collections.singleton(modelClazz);
-            Proto modelProto = generate(modelClazz.getPackage().getName(), classes, "import \"kogito-index.proto\";", 
+            String processId = generatedData.reference();            
+            Proto modelProto = generate(modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";", 
                                         "import \"kogito-types.proto\";", 
                                         "option kogito_model = \"" + generatedData.name() +"\";");
+            ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
+            modelMessage.addField("repeated", "org.kie.kogito.index.model.ProcessInstanceMeta", "processInstances");
+            
             Path protoFilePath = Paths.get(targetDirectory, "classes", "/persistence/" + processId + ".proto");
 
             Files.createDirectories(protoFilePath.getParent());
             Files.write(protoFilePath, modelProto.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
+
 }

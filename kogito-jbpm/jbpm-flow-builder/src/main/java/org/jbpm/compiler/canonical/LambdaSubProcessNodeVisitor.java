@@ -35,6 +35,7 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.Node;
 
@@ -69,7 +70,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         Map<String, String> outputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
 
         String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
-        ModelMetaData subProcessModel = new ModelMetaData(subProcessId, metadata.getPackageName(), subProcessModelClassName, VariableDeclarations.of(inputTypes));
+        ModelMetaData subProcessModel = new ModelMetaData(subProcessId, metadata.getPackageName(), subProcessModelClassName, WorkflowProcess.PRIVATE_VISIBILITY, VariableDeclarations.of(inputTypes));
 
         retValue.findAll(ClassOrInterfaceType.class)
                 .stream()

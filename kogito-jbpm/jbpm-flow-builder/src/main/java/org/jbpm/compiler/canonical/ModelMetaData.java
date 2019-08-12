@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.internal.kogito.codegen.Generated;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -59,13 +60,15 @@ public class ModelMetaData {
     private final String modelClassSimpleName;
     private final VariableDeclarations variableScope;
     private String modelClassName;
+    private String visibility;
 
-    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, VariableDeclarations variableScope) {
+    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope) {
         this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
         this.variableScope = variableScope;
         this.modelClassName = packageName + '.' + modelClassSimpleName;
+        this.visibility = visibility;
     }
 
     public String generate() {
@@ -133,9 +136,12 @@ public class ModelMetaData {
             throw new RuntimeException("Cannot find class declaration in the template");
         }
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
-        modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogit-codegen")), 
+        
+        if (!WorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
+            modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogit-codegen")), 
                                                                                                                           new MemberValuePair("reference", new StringLiteralExpr(processId)),
                                                                                                                           new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))))));
+        }
         modelClass.setName(modelClassSimpleName);
 
         // setup of the toMap method body
