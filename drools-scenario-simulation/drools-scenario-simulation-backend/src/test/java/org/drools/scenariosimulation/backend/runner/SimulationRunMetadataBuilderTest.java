@@ -16,9 +16,9 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
+import org.drools.scenariosimulation.api.model.AuditLog;
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
@@ -26,9 +26,10 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class SimulationRunMetadataBuilderTest {
 
@@ -67,13 +68,14 @@ public class SimulationRunMetadataBuilderTest {
         assertEquals(2, build.getOutputCounter().get("d1"), 0.1);
         assertEquals(1, build.getOutputCounter().get("d2"), 0.1);
         assertEquals(2, build.getScenarioCounter().get(scenarioWithIndex1).size(), 0.1);
-        assertEquals(2, build.getAuditMessagesMap().size());
-        build.getAuditMessagesMap().values().forEach(auditMessageMap -> {
-            assertEquals(messages.size(), auditMessageMap.size());
-            messages.forEach(message -> {
-                assertTrue(auditMessageMap.containsKey(message.getText()));
-                assertEquals(message.getLevel().name(), auditMessageMap.get(message.getText()));
-            });
-        });
+        AuditLog retrieved =  build.getAuditLog();
+        assertNotNull(retrieved);
+        final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
+        assertNotNull(auditLogLines);
+        assertEquals(messages.size() * 2, auditLogLines.size());
+        for (int i = 0; i < messages.size(); i ++) {
+            DMNMessage dmnMessage = messages.get(i);
+            commonCheckAuditLogLine(auditLogLines.get(i), dmnMessage.getText(), dmnMessage.getLevel().name());
+        }
     }
 }

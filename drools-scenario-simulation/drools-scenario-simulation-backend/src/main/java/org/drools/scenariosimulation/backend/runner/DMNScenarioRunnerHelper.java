@@ -72,20 +72,19 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
-        for (DMNMessage message : dmnResult.getMessages()) {
-            scenarioResultMetadata.addAuditMessage(message.getText(), message.getLevel().name());
-        }
-
         for (DecisionNode decision : dmnModel.getDecisions()) {
             scenarioResultMetadata.addAvailable(decision.getName());
         }
-
         for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
             if (SUCCEEDED.equals(decisionResult.getEvaluationStatus())) {
                 scenarioResultMetadata.addExecuted(decisionResult.getDecisionName());
             }
+            if (decisionResult.getMessages().isEmpty()) {
+                scenarioResultMetadata.addAuditMessage(decisionResult.getDecisionName(), decisionResult.getEvaluationStatus().name());
+            } else {
+                decisionResult.getMessages().forEach(dmnMessage -> scenarioResultMetadata.addAuditMessage(dmnMessage.getText(), dmnMessage.getLevel().name()));
+            }
         }
-
         return scenarioResultMetadata;
     }
 

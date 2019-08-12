@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -90,16 +91,12 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     protected ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext, ScenarioWithIndex scenarioWithIndex) {
         CoverageAgendaListener coverageAgendaListener = (CoverageAgendaListener) requestContext.get(COVERAGE_LISTENER);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
-        List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
-
         Set<String> availableRules = (Set<String>) requestContext.get(RULES_AVAILABLE);
-
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
-
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
-        auditMessages.forEach(msg -> scenarioResultMetadata.addAuditMessage(msg, "INFO"));
-
+        coverageAgendaListener
+                .getAuditsMessages().forEach(auditMessage -> scenarioResultMetadata.addAuditMessage(auditMessage, "INFO"));
         return scenarioResultMetadata;
     }
 

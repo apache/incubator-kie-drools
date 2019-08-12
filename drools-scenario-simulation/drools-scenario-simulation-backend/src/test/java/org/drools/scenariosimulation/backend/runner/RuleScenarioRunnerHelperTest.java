@@ -17,12 +17,16 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -48,6 +52,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
 import static org.junit.Assert.assertEquals;
@@ -56,6 +61,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
@@ -344,14 +350,17 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void extractResultMetadata() {
-        Map<String, Integer> coverageData = new HashMap<>();
+        Map<String, Integer> coverageData = new LinkedHashMap<>();
         coverageData.put("rule1", 2);
         coverageData.put("rule2", 2);
         CoverageAgendaListener coverageAgendaListenerMock = createCoverageAgendaListenerWithData(coverageData);
 
         ScenarioWithIndex scenarioWithIndexMock = mock(ScenarioWithIndex.class);
+        Scenario scenarioMock = mock(Scenario.class);
+        when(scenarioMock.getDescription()).thenReturn("DESCRIPTION");
+        when(scenarioWithIndexMock.getScenario()).thenReturn(scenarioMock);
 
-        Map<String, Object> requestContext = new HashMap<>();
+        Map<String, Object> requestContext = new LinkedHashMap<>();
         requestContext.put(COVERAGE_LISTENER, coverageAgendaListenerMock);
         requestContext.put(RULES_AVAILABLE, coverageData.keySet());
 
@@ -362,13 +371,18 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(2, scenarioResultMetadata.getExecuted().size());
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
+        List<String> expectedMessages = new ArrayList<>();
+        commonAddMessageString(Arrays.asList("rule1", "rule2"), expectedMessages);
 
-        final Map<String, String> auditMessagesMap = scenarioResultMetadata.getAuditMessagesMap();
-        assertEquals(4, auditMessagesMap.size());
-        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule1", 1)));
-        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule1", 2)));
-        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule2", 1)));
-        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule2", 2)));
-        auditMessagesMap.values().forEach(severity -> assertEquals("INFO", severity));
+        final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
+        assertEquals(expectedMessages.size(), auditLogLines.size());
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), "INFO");
+        }
+    }
+
+    private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
+        ruleNames.forEach(ruleName ->
+                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(CoverageAgendaListener.generateAuditMessage(ruleName, index))));
     }
 }

@@ -23,10 +23,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -54,6 +56,12 @@ public class TestUtils {
             Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
             return createDMNMessageMock("dmnMessage-" + index, level);
         }).collect(Collectors.toList());
+    }
+
+    public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedMessage, String expectedLevel) {
+        assertNotNull(toCheck);
+        assertEquals(expectedMessage, toCheck.getMessage());
+        assertEquals(expectedLevel, toCheck.getLevel());
     }
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {

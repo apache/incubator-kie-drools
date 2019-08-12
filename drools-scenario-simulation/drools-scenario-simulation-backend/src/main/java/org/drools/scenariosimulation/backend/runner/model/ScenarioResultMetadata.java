@@ -16,12 +16,15 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
 import static java.util.Collections.unmodifiableMap;
@@ -34,9 +37,9 @@ public class ScenarioResultMetadata {
     protected final Map<String, Integer> executed = new HashMap<>();
 
     /**
-     * Map of the messages to print in the CSV report: <b>key</b> is the message, <b>value</b> is the severity level
+     * The <code>List</code> of audit log lines
      */
-    protected final Map<String, String> auditMessagesMap = new LinkedHashMap<>();
+    protected final List<AuditLogLine> auditLogLines = new ArrayList<>();
 
     protected final ScenarioWithIndex scenarioWithIndex;
 
@@ -61,13 +64,23 @@ public class ScenarioResultMetadata {
     }
 
     /**
-     * Add an <b>audit</b> message to <code>auditMessagesMap</code>: <b>key</b> is the message, <b>value</b> is the severity level
+     * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
+     *
      * @param message
      * @param severity
      */
     public void addAuditMessage(String message, String severity) {
-        auditMessagesMap.put(message, severity);
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getScenario().getDescription(), message, severity));
     }
+
+    /**
+     * Add a <code>List&lt;AuditLogLine&gt;</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
+     * @param toAdd
+     */
+    public void addAuditLogLines(List<AuditLogLine> toAdd) {
+        auditLogLines.addAll(toAdd);
+    }
+
 
     public Set<String> getAvailable() {
         return unmodifiableSet(available);
@@ -82,11 +95,10 @@ public class ScenarioResultMetadata {
     }
 
     /**
-     * Return an <b>unmodifiable</b> representation of <code>auditMessagesMap</code>
-     * @return
+     * @return an <b>unmodifiable</b> version of {@link ScenarioResultMetadata#auditLogLines}
      */
-    public Map<String, String> getAuditMessagesMap() {
-        return unmodifiableMap(auditMessagesMap);
+    public List<AuditLogLine> getAuditLogLines() {
+        return Collections.unmodifiableList(auditLogLines);
     }
 
     public ScenarioWithIndex getScenarioWithIndex() {

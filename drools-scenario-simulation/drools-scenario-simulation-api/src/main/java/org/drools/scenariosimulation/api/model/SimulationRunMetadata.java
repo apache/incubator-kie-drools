@@ -18,25 +18,20 @@ package org.drools.scenariosimulation.api.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.unmodifiableMap;
-
 /**
  * Aggregation of all metadata information about a simulation run
  */
 public class SimulationRunMetadata {
 
+    /**
+     * <code>AuditLog</code>> representing the log to print in the CSV report
+     */
+    protected AuditLog auditLog;
     protected int available;
     protected int executed;
     protected double coveragePercentage;
-
     protected Map<String, Integer> outputCounter = new HashMap<>();
-
     protected Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter = new HashMap<>();
-
-    /**
-     * Map of the messages to print in the CSV report: inside the <b>value</b> Map, <b>key</b> is the message, <b>value</b> is the severity level
-     */
-    protected final Map<ScenarioWithIndex, Map<String, String>> auditMessagesMap = new HashMap<>();
 
     public SimulationRunMetadata() {
         // CDI
@@ -46,10 +41,10 @@ public class SimulationRunMetadata {
                                  int executed,
                                  Map<String, Integer> outputCounter,
                                  Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter,
-                                 Map<ScenarioWithIndex, Map<String, String>> auditMessages) {
+                                 AuditLog auditLog) {
         this.available = available;
         this.executed = executed;
-        this.auditMessagesMap.putAll(auditMessages);
+        this.auditLog = auditLog;
         this.outputCounter.putAll(outputCounter);
         this.scenarioCounter.putAll(scenarioCounter);
         this.coveragePercentage = (double) executed / available;
@@ -75,11 +70,7 @@ public class SimulationRunMetadata {
         return scenarioCounter;
     }
 
-    /**
-     * Return an <b>unmodifiable</b> representation of <code>auditMessagesMap</code>
-     * @return
-     */
-    public Map<ScenarioWithIndex, Map<String, String>> getAuditMessagesMap() {
-        return unmodifiableMap(auditMessagesMap);
+    public AuditLog getAuditLog() {
+        return auditLog;
     }
 }
