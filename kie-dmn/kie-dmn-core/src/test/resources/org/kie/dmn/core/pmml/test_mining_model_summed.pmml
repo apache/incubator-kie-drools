@@ -1,0 +1,74 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://www.dmg.org/PMML-4_2">
+  <Header />
+
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="input1" optype="continuous" />
+    <DataField dataType="double" name="input2" optype="continuous" />
+    <DataField dataType="double" name="input3" optype="continuous"/>
+    <DataField dataType="double" name="result" optype="continuous"/>
+  </DataDictionary>
+
+  <MiningModel modelName="SampleMiningModel" functionName="regression">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" />
+      <MiningField name="input2" usageType="active" />
+      <MiningField name="input3" usageType="active" />
+      <MiningField name="result" usageType="target" />
+    </MiningSchema>
+    <Output>
+      <OutputField name="result" targetField="result" />
+    </Output>
+
+    <Segmentation multipleModelMethod="sum">
+      <Segment>
+        <SimplePredicate field="input1" operator="lessThan" value="50" />
+        <RegressionModel modelName="regression1" functionName="regression" algorithmName="regression" targetFieldName="result">
+          <MiningSchema>
+            <MiningField name="input1" usageType="active" />
+            <MiningField name="input2" usageType="active" />
+            <MiningField name="input3" usageType="active" />
+            <MiningField name="result" usageType="target" />
+          </MiningSchema>
+          <RegressionTable intercept="500">
+            <NumericPredictor name="input1" exponent="1" coefficient="2" />
+            <NumericPredictor name="input2" exponent="1" coefficient="5" />
+            <NumericPredictor name="input3" exponent="2" coefficient="1" />
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+      <Segment>
+        <SimplePredicate field="input1" operator="greaterThan" value="150" />
+        <RegressionModel modelName="regression2" functionName="regression" algorithmName="regression" targetFieldName="result">
+          <MiningSchema>
+            <MiningField name="input1" usageType="active" />
+            <MiningField name="input2" usageType="active" />
+            <MiningField name="input3" usageType="active" />
+            <MiningField name="result" usageType="target" />
+          </MiningSchema>
+          <RegressionTable intercept="-500">
+            <NumericPredictor name="input1" exponent="1" coefficient="1" />
+            <NumericPredictor name="input2" exponent="1" coefficient="1" />
+            <NumericPredictor name="input3" exponent="1" coefficient="1" />
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+      <Segment>
+        <SimplePredicate field="input1" operator="lessThan" value="100" />
+        <RegressionModel modelName="regression3" functionName="regression" algorithmName="linearRegression" targetFieldName="result">
+          <MiningSchema>
+            <MiningField name="input1" usageType="active" />
+            <MiningField name="input2" usageType="active" />
+            <MiningField name="input3" usageType="active" />
+            <MiningField name="result" usageType="target" />
+          </MiningSchema>
+          <RegressionTable intercept="800">
+            <NumericPredictor name="input1" exponent="2" coefficient="2" />
+            <NumericPredictor name="input2" exponent="2" coefficient="2" />
+            <NumericPredictor name="input3" exponent="2" coefficient="2" />
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

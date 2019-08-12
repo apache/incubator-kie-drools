@@ -52,7 +52,7 @@ public class OverlapsFunctionTest {
         FunctionTestUtil.assertResult( overlapsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( overlapsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "c", "k", Range.RangeBoundary.CLOSED ) ),
@@ -60,11 +60,11 @@ public class OverlapsFunctionTest {
         FunctionTestUtil.assertResult( overlapsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "c", "k", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( overlapsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.OPEN, "a", "k", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
     }
 
 }

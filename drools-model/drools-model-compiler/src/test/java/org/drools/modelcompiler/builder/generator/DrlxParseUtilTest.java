@@ -24,6 +24,8 @@ import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
 import static org.junit.Assert.*;
@@ -34,11 +36,11 @@ public class DrlxParseUtilTest {
     public void prependTest() {
 
         final Expression expr = StaticJavaParser.parseExpression("getAddressName().startsWith(\"M\")");
-        final NameExpr nameExpr = new NameExpr("_this");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals("_this.getAddressName().startsWith(\"M\")", concatenated.toString());
+        assertEquals(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")", concatenated.toString());
     }
 
     @Test(expected = IllegalStateException.class)

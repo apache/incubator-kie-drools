@@ -18,10 +18,9 @@ package org.drools.core.command.runtime.rule;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -38,8 +37,7 @@ public class FireAllRulesCommand implements ExecutableCommand<Integer>, Identifi
     @XmlAttribute
     private int          max          = -1;
 
-    @XmlTransient
-    // TODO: make sure that all drools AgendaFilter implementations are serializable
+    @XmlAnyElement(lax = true)
     private AgendaFilter agendaFilter = null;
 
     @XmlAttribute(name="out-identifier")

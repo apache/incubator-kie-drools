@@ -1330,7 +1330,7 @@ public class DefaultAgenda
 
         public boolean toFireUntilHalt() {
             synchronized (stateMachineLock) {
-                if ( currentState == ExecutionState.FIRING_UNTIL_HALT ) {
+                if ( currentState == ExecutionState.FIRING_UNTIL_HALT || currentState == ExecutionState.HALTING ) {
                     return false;
                 }
                 waitAndEnterExecutionState( ExecutionState.FIRING_UNTIL_HALT );

@@ -52,11 +52,13 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
+
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
     protected RuleContext context;
@@ -183,10 +185,6 @@ public abstract class AbstractExpressionBuilder {
         return scope instanceof NameExpr ? (( NameExpr ) scope).getNameAsString() : null;
     }
 
-    private boolean isThisExpression( Expression leftExpr ) {
-        return leftExpr instanceof NameExpr && ((NameExpr)leftExpr).getName().getIdentifier().equals("_this");
-    }
-
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
         return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
     }
@@ -255,7 +253,7 @@ public abstract class AbstractExpressionBuilder {
 
         // Use Number.class if they're both Numbers but different in order to use best possible type in the index
         Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {
-            if (Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r) && !l.equals(r)) {
+            if ((Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r)) && !l.equals(r)) {
                 return Number.class;
             } else {
                 return l;

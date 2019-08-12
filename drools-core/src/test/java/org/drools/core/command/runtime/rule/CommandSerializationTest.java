@@ -15,32 +15,6 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.ClassObjectFilter;
-import org.drools.core.ClassObjectSerializationFilter;
-import org.drools.core.base.RuleNameEndsWithAgendaFilter;
-import org.drools.core.base.RuleNameEqualsAgendaFilter;
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.RuleNameStartsWithAgendaFilter;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.drools.core.command.runtime.GetGlobalCommand;
-import org.drools.core.command.runtime.SetGlobalCommand;
-import org.drools.core.command.runtime.process.AbortWorkItemCommand;
-import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
-import org.drools.core.command.runtime.process.SignalEventCommand;
-import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.DisconnectedFactHandle;
-import org.drools.core.xml.jaxb.util.JaxbListWrapper;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.command.Command;
-import org.kie.api.command.Setter;
-import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.api.runtime.rule.FactHandle;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -57,9 +31,37 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import org.drools.core.ClassObjectFilter;
+import org.drools.core.ClassObjectSerializationFilter;
+import org.drools.core.base.RuleNameEndsWithAgendaFilter;
+import org.drools.core.base.RuleNameEqualsAgendaFilter;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.RuleNameStartsWithAgendaFilter;
+import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.SetGlobalCommand;
+import org.drools.core.command.runtime.process.AbortWorkItemCommand;
+import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.core.command.runtime.process.SignalEventCommand;
+import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
+import org.drools.core.xml.jaxb.util.JaxbListWrapper;
+import org.junit.Test;
+import org.kie.api.command.Command;
+import org.kie.api.command.Setter;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class CommandSerializationTest {
 
@@ -179,7 +181,6 @@ public class CommandSerializationTest {
     }
 
     @Test
-    @Ignore
     public void batchExecutionImplSerializationTest() throws Exception {
 
         DefaultFactHandle factHandle = new DefaultFactHandle(13, "entry-point-id",
@@ -475,9 +476,6 @@ public class CommandSerializationTest {
         for( Command cmd : batchCmd.getCommands() ) {
            cmdTypes.remove(cmd.getClass());
         }
-        String cmdInstName = cmdTypes.isEmpty() ? "null" : cmdTypes.get(0).getSimpleName();
-        assertTrue( "Please add a " + cmdInstName + " instance to the " + BatchExecutionCommandImpl.class.getSimpleName() + " commands!",
-                    cmdTypes.isEmpty());
 
         // other tests for this as part of the REST integration tests..
     }

@@ -24,7 +24,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CA
 class PatternDSLPattern extends PatternDSL {
 
     protected PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
-        super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
+        super(context, packageModel, pattern, constraintDescrs, patternType);
     }
 
     @Override
