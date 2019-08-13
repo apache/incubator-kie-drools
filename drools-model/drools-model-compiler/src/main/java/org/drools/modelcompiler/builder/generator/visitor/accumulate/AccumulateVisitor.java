@@ -48,6 +48,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemicolon;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
@@ -115,6 +116,8 @@ public abstract class AccumulateVisitor {
                     accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) input).getIdentifier());
                 } catch (UnsupportedInlineAccumulate e) {
                     new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
+                } catch (MissingSemicolonInlineAccumulateException e) {
+                    context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage()));
                 }
             } else if (input instanceof AndDescr) {
                 BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
@@ -405,8 +408,7 @@ public abstract class AccumulateVisitor {
 
 
     private BlockStmt parseBlockAddSemicolon(String block) {
-        final String withTerminator = block.endsWith(";") ? block : block + ";";
-        return StaticJavaParser.parseBlock("{" + withTerminator + "}");
+        return StaticJavaParser.parseBlock(String.format("{%s}", addSemicolon(block)));
     }
 
     static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
