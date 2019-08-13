@@ -14,21 +14,23 @@ public class MvelCompilerTest implements CompilerTest {
 
     @Test
     public void testConvertPropertyToAccessor() {
+        String expectedJavaCode = "{ $p.getParent().getParent().getName(); }";
+
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parent.getParent().name; } ",
-             "{ $p.getParent().getParent().getName(); }");
+             expectedJavaCode);
 
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.getParent().parent.name; } ",
-             "{ $p.getParent().getParent().getName(); }");
+             expectedJavaCode);
 
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parent.parent.name; } ",
-             "{ $p.getParent().getParent().getName(); }");
+             expectedJavaCode);
 
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.getParent().getParent().getName(); } ",
-             "{ $p.getParent().getParent().getName(); }");
+             expectedJavaCode);
     }
 
     @Test
@@ -79,8 +81,8 @@ public class MvelCompilerTest implements CompilerTest {
     @Test
     public void testSetterPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ $p.nickamePublic = \"Luca\"; } ",
-             "{ $p.nickamePublic = \"Luca\"; } ");
+             "{ $p.nickName = \"Luca\"; } ",
+             "{ $p.nickName = \"Luca\"; } ");
     }
 
     @Test
@@ -144,6 +146,22 @@ public class MvelCompilerTest implements CompilerTest {
                      "    m.put(\"content\", l);\n" +
                      "    System.out.println(((java.util.ArrayList) m.get(\"content\")).get(0));\n" +
                      "    list.add(((java.util.ArrayList) m.get(\"content\")).get(0));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimal() {
+        test("{ " +
+                     "    BigDecimal sum = 0;\n" +
+                     "    BigDecimal money = 10;\n" +
+                     "    sum += money;\n" +
+                     "    sum -= money;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
+                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(10);\n" +
+                     "    sum = sum.add(money);\n" +
+                     "    sum = sum.subtract(money);\n" +
                      "}");
     }
 
