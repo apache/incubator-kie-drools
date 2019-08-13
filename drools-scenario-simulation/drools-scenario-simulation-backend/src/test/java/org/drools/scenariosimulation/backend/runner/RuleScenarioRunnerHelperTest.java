@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -383,11 +382,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     }
 
     private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
-        final AtomicInteger counter = new AtomicInteger(0);
         ruleNames.forEach(ruleName ->
-                                  IntStream.range(1, 3).forEach(index -> {
-                                      String message = "Execution # " + counter.addAndGet(1) + " - " + CoverageAgendaListener.generateAuditMessage(ruleName);
-                                      expectedMessages.add(message);
-                                  }));
+                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(CoverageAgendaListener.generateAuditMessage(ruleName))));
     }
 }

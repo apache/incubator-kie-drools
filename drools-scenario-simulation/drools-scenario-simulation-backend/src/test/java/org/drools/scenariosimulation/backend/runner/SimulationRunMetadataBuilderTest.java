@@ -16,6 +16,7 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.AuditLogLine;
@@ -51,10 +52,11 @@ public class SimulationRunMetadataBuilderTest {
         result2.addAvailable("d1");
         result2.addAvailable("d2");
         result2.addAvailable("d3");
-
+        final AtomicInteger counter = new AtomicInteger(0);
         messages.forEach(message -> {
-            result1.addAuditMessage(message.getText(), message.getLevel().name());
-            result2.addAuditMessage(message.getText(), message.getLevel().name());
+            final int i = counter.addAndGet(1);
+            result1.addAuditMessage(i, message.getText(), message.getLevel().name());
+            result2.addAuditMessage(i, message.getText(), message.getLevel().name());
         });
 
         SimulationRunMetadataBuilder builder = SimulationRunMetadataBuilder.create();
@@ -68,12 +70,12 @@ public class SimulationRunMetadataBuilderTest {
         assertEquals(2, build.getOutputCounter().get("d1"), 0.1);
         assertEquals(1, build.getOutputCounter().get("d2"), 0.1);
         assertEquals(2, build.getScenarioCounter().get(scenarioWithIndex1).size(), 0.1);
-        AuditLog retrieved =  build.getAuditLog();
+        AuditLog retrieved = build.getAuditLog();
         assertNotNull(retrieved);
         final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
         assertNotNull(auditLogLines);
         assertEquals(messages.size() * 2, auditLogLines.size());
-        for (int i = 0; i < messages.size(); i ++) {
+        for (int i = 0; i < messages.size(); i++) {
             DMNMessage dmnMessage = messages.get(i);
             commonCheckAuditLogLine(auditLogLines.get(i), dmnMessage.getText(), dmnMessage.getLevel().name());
         }

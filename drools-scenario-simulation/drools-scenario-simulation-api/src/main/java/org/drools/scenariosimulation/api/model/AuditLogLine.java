@@ -20,7 +20,9 @@ package org.drools.scenariosimulation.api.model;
  */
 public class AuditLogLine {
 
+    private int scenarioIndex;
     private String scenario;
+    private int executionIndex;
     private String message;
     private String level;
 
@@ -28,14 +30,24 @@ public class AuditLogLine {
         // CDI
     }
 
-    public AuditLogLine(String scenario, String message, String level) {
+    public AuditLogLine(int scenarioIndex, String scenario, int executionIndex, String message, String level) {
+        this.scenarioIndex = scenarioIndex;
         this.scenario = scenario;
+        this.executionIndex = executionIndex;
         this.message = message;
         this.level = level;
     }
 
+    public int getScenarioIndex() {
+        return scenarioIndex;
+    }
+
     public String getScenario() {
         return scenario;
+    }
+
+    public int getExecutionIndex() {
+        return executionIndex;
     }
 
     public String getMessage() {

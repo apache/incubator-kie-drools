@@ -39,7 +39,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -82,12 +81,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                 scenarioResultMetadata.addExecuted(decisionResult.getDecisionName());
             }
             if (decisionResult.getMessages().isEmpty()) {
-                String message = "Execution # " + counter.addAndGet(1) + " - " + decisionResult.getDecisionName();
-                scenarioResultMetadata.addAuditMessage(message, decisionResult.getEvaluationStatus().name());
+                scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), decisionResult.getDecisionName(), decisionResult.getEvaluationStatus().name());
             } else {
                 decisionResult.getMessages().forEach(dmnMessage -> {
-                    String message = "Execution # " + counter.addAndGet(1) + " - " + dmnMessage.getText();
-                    scenarioResultMetadata.addAuditMessage(message, dmnMessage.getLevel().name());
+                    scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), dmnMessage.getText(), dmnMessage.getLevel().name());
                 });
             }
         }

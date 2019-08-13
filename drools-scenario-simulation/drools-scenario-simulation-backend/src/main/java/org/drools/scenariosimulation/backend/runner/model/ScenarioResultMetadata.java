@@ -65,12 +65,12 @@ public class ScenarioResultMetadata {
 
     /**
      * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
-     *
+     * @param messageIndex
      * @param message
      * @param severity
      */
-    public void addAuditMessage(String message, String severity) {
-        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getScenario().getDescription(), message, severity));
+    public void addAuditMessage(int messageIndex, String message, String severity) {
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScenario().getDescription(), messageIndex, message, severity));
     }
 
     /**
@@ -80,7 +80,6 @@ public class ScenarioResultMetadata {
     public void addAuditLogLines(List<AuditLogLine> toAdd) {
         auditLogLines.addAll(toAdd);
     }
-
 
     public Set<String> getAvailable() {
         return unmodifiableSet(available);

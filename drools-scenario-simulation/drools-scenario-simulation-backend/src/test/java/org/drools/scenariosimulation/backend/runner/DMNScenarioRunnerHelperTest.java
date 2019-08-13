@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import org.drools.scenariosimulation.api.model.AuditLogLine;
@@ -65,7 +64,6 @@ import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGenerat
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.mockito.Matchers.any;
@@ -251,10 +249,8 @@ public class DMNScenarioRunnerHelperTest {
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
         assertNotNull(auditLogLines);
         assertEquals(decisionResults.size(), auditLogLines.size());
-        final AtomicInteger counter = new AtomicInteger(0);
         for (int i = 0; i < decisionResults.size(); i ++) {
-            String message = "Execution # " + counter.addAndGet(1) + " - " + decisionResults.get(i).getDecisionName();
-            commonCheckAuditLogLine(auditLogLines.get(i), message, decisionResults.get(i).getEvaluationStatus().name());
+            commonCheckAuditLogLine(auditLogLines.get(i), decisionResults.get(i).getDecisionName(), decisionResults.get(i).getEvaluationStatus().name());
         }
     }
 
