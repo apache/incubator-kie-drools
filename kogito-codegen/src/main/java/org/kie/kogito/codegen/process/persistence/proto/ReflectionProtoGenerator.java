@@ -24,7 +24,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             Proto proto = new Proto(packageName, headers);
 
             for (Class<?> clazz : dataModel) {
-                messageFromClass(proto, clazz, null);
+                messageFromClass(proto, clazz, null, null, null);
             }
             return proto;
         } catch (Exception e) {
@@ -34,10 +34,10 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
     
 
     @Override
-    public Proto generate(String packageName, Class<?> dataModel, String... headers) {
+    public Proto generate(String messageComment, String fieldComment, String packageName, Class<?> dataModel, String... headers) {
         try {
             Proto proto = new Proto(packageName, headers);
-            messageFromClass(proto, dataModel, packageName);        
+            messageFromClass(proto, dataModel, packageName, messageComment, fieldComment);        
             return proto;
         } catch (Exception e) {
             throw new RuntimeException("Error while generating proto for model class " + dataModel, e);
@@ -69,7 +69,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         return dataModelClasses;
     }
 
-    protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName) throws Exception {
+    protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
         Generated generatedData = clazz.getAnnotation(Generated.class);
@@ -99,13 +99,13 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             String protoType = protoType(fieldTypeString);
 
             if (protoType == null) {
-                ProtoMessage another = messageFromClass(proto, fieldType, packageName);
+                ProtoMessage another = messageFromClass(proto, fieldType, packageName, messageComment, fieldComment);
                 protoType = another.getName();
             }
 
-            message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName());
+            message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(fieldComment);
         }
-
+        message.setComment(messageComment);
         proto.addMessage(message);
         return message;
     }
@@ -116,11 +116,15 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         if (generatedData != null) {
 
             String processId = generatedData.reference();            
-            Proto modelProto = generate(modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";", 
+            Proto modelProto = generate("@Indexed",
+                                        "@Field(store = Store.YES, analyze = Analyze.YES)",
+                                        modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";",                                        
                                         "import \"kogito-types.proto\";", 
-                                        "option kogito_model = \"" + generatedData.name() +"\";");
+                                        "option kogito_model = \"" + generatedData.name() +"\";", 
+                                        "option kogito_id = \"" + processId +"\";");
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
-            modelMessage.addField("repeated", "org.kie.kogito.index.model.ProcessInstanceMeta", "processInstances");
+            modelMessage.addField("repeated", "org.kie.kogito.index.model.ProcessInstanceMeta", "processInstances")
+            .setComment("@Field(store = Store.YES, analyze = Analyze.YES)");
             
             Path protoFilePath = Paths.get(targetDirectory, "classes", "/persistence/" + processId + ".proto");
 

@@ -6,6 +6,8 @@ public class ProtoField {
     private String type;
     private String name;
     private int index;
+    
+    private String comment;
 
     public ProtoField(String applicability, String type, String name, int index) {
         super();
@@ -39,9 +41,21 @@ public class ProtoField {
         this.name = name;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
     @Override
     public String toString() {
-        return "\t" + applicability + " " + type + " " + name + " = " + index + "; \n";
+        StringBuilder tostring = new StringBuilder();
+        if (comment != null) {
+            tostring.append("\t/* " + comment + " */ \n");
+        }
+        tostring.append("\t" + applicability + " " + type + " " + name + " = " + index + "; \n");
+        return tostring.toString();
     }
 
     @Override

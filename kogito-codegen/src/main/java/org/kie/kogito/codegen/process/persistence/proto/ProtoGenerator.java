@@ -22,7 +22,7 @@ public interface ProtoGenerator<T> {
 
     Proto generate(String packageName, Collection<T> dataModel, String... headers);
     
-    Proto generate(String packageName, T dataModel, String... headers);
+    Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers);
     
     Collection<T> extractDataClasses(Collection<T> input, String targetDirectory);
 
