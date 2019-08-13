@@ -1888,4 +1888,77 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("Mario is very old", result.getValue());
 
     }
+
+    @Test
+    public void testMapAbbreviatedComparison() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "    Map(this['money'] >= 65 && <= 75)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("money", new BigDecimal(70));
+
+        ksession.insert( map );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testHalfBinary() {
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(this > 2 && < 5)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testMapPrimitiveComparison() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $m : Map()\n" +
+                "    Person(age == $m['age'] )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("age", 20);
+        Person john = new Person("John", 20);
+
+        ksession.insert( map );
+        ksession.insert( john );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testBigDecimalIntCoercion() {
+        String str = "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $r : Result( value <= 20 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        Result fact = new Result();
+        fact.setValue( new BigDecimal(10) );
+        ksession1.insert( fact );
+        assertEquals( 1, ksession1.fireAllRules() );
+    }
 }

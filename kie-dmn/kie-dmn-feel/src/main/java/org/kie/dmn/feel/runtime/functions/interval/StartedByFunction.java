@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions.interval;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
@@ -56,10 +57,13 @@ public class StartedByFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range2", "cannot be null"));
         }
         try {
-            boolean result =
-                    range1.getLowBoundary() == Range.RangeBoundary.CLOSED && range2.getLowBoundary() == Range.RangeBoundary.CLOSED &&
-                    range1.getLowEndPoint().compareTo( range2.getLowEndPoint() ) == 0 && range2.getHighEndPoint().compareTo( range1.getHighEndPoint() ) < 0 ;
-            return FEELFnResult.ofResult( result );
+            boolean result = range1.getLowEndPoint().compareTo(range2.getLowEndPoint()) == 0 &&
+                             range1.getLowBoundary() == range2.getLowBoundary() &&
+                             (range2.getHighEndPoint().compareTo(range1.getHighEndPoint()) < 0 ||
+                              (range2.getHighEndPoint().compareTo(range1.getHighEndPoint()) == 0 &&
+                               (range2.getHighBoundary() == RangeBoundary.OPEN ||
+                                range1.getHighBoundary() == RangeBoundary.CLOSED)));
+            return FEELFnResult.ofResult(result);
         } catch( Exception e ) {
             // values are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));

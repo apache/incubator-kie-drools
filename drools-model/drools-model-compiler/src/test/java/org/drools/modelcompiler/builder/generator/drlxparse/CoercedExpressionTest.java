@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -95,19 +97,43 @@ public class CoercedExpressionTest {
     }
 
     @Test
-    public void castToObject() {
-        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getItems().get((Integer) 1)", java.lang.Object.class);
-        final TypedExpression right = expr("2000", int.class);
-        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
-        assertEquals(expr("(java.lang.Object)2000", int.class), coerce.getCoercedRight());
-    }
-
-    @Test
     public void castToShort() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAgeAsShort()", java.lang.Short.class);
         final TypedExpression right = expr("40", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("(short)40", int.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void castMaps() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", Integer.class);
+        final TypedExpression right = expr("$m.get(\"age\")", java.util.Map.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("(java.lang.Integer)$m.get(\"age\")", Map.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void doNotCastNumberLiteralInt() {
+        final TypedExpression left = expr("getValue()", java.lang.Object.class);
+        final TypedExpression right = expr("20", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("20", int.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void doNotCastNumberLiteralShort() {
+        final TypedExpression left = expr("getValue()", java.lang.Object.class);
+        final TypedExpression right = expr("20", short.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("20", short.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void doNotCastNumberLiteralDouble() {
+        final TypedExpression left = expr("getValue()", java.lang.Object.class);
+        final TypedExpression right = expr("20", double.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("20", double.class), coerce.getCoercedRight());
     }
 
     @Test

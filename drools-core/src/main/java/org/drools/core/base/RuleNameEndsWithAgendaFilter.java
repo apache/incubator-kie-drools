@@ -16,20 +16,30 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.Activation;
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
 /**
  * Filters activations based on a specified rule name suffix.
  */
-public class RuleNameEndsWithAgendaFilter
-    implements
-    AgendaFilter {
+@XmlRootElement(name="rule-name-ends-with-agenda-filter")
+@XmlAccessorType(XmlAccessType.NONE)
+public class RuleNameEndsWithAgendaFilter implements AgendaFilter, Serializable {
 
-    private final String  suffix;
+    @XmlAttribute
+    private String  suffix;
 
-    private final boolean accept;
+    @XmlAttribute
+    private boolean accept;
+
+    public RuleNameEndsWithAgendaFilter() {
+    }
 
     public RuleNameEndsWithAgendaFilter(final String suffix) {
         this( suffix,
@@ -48,6 +58,14 @@ public class RuleNameEndsWithAgendaFilter
 
     public boolean isAccept() {
         return accept;
+    }
+
+    public void setSuffix( String suffix ) {
+        this.suffix = suffix;
+    }
+
+    public void setAccept( boolean accept ) {
+        this.accept = accept;
     }
 
     public boolean accept( Match activation ) {

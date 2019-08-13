@@ -133,11 +133,14 @@ public class RuleModel implements HasImports,
         }
 
         if (pat instanceof CompositeFactPattern) {
-            for (IPattern iPattern : ((CompositeFactPattern) pat).getPatterns()) {
-                SingleFieldConstraint fieldConstraint = getLHSBoundField(iPattern,
-                                                                         var);
-                if (fieldConstraint != null) {
-                    return fieldConstraint;
+            final IFactPattern[] patterns = ((CompositeFactPattern) pat).getPatterns();
+            if (patterns != null) {
+                for (IPattern iPattern : patterns) {
+                    SingleFieldConstraint fieldConstraint = getLHSBoundField(iPattern,
+                                                                             var);
+                    if (fieldConstraint != null) {
+                        return fieldConstraint;
+                    }
                 }
             }
         }
@@ -186,11 +189,14 @@ public class RuleModel implements HasImports,
         }
 
         if (pat instanceof CompositeFactPattern) {
-            for (IPattern iPattern : ((CompositeFactPattern) pat).getPatterns()) {
-                String type = getLHSBindingType(iPattern,
-                                                var);
-                if (type != null) {
-                    return type;
+            final IFactPattern[] patterns = ((CompositeFactPattern) pat).getPatterns();
+            if (patterns != null) {
+                for (IPattern iPattern : patterns) {
+                    String type = getLHSBindingType(iPattern,
+                                                    var);
+                    if (type != null) {
+                        return type;
+                    }
                 }
             }
         }
@@ -755,10 +761,13 @@ public class RuleModel implements HasImports,
         }
 
         if (pat instanceof CompositeFactPattern) {
-            for (IFactPattern p : ((CompositeFactPattern) pat).getPatterns()) {
-                findBoundVariableNames(con,
-                                       result,
-                                       p);
+            final IFactPattern[] patterns = ((CompositeFactPattern) pat).getPatterns();
+            if (patterns != null) {
+                for (IFactPattern p : patterns) {
+                    findBoundVariableNames(con,
+                                           result,
+                                           p);
+                }
             }
         }
 
