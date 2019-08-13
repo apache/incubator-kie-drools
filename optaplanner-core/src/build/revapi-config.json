@@ -51,6 +51,24 @@
           "fieldName": "STEP_COUNTING_HILL_CLIMBING",
           "elementKind": "enumConstant",
           "justification": "Add Great Deluge"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<S> org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::buildScoreInliner(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "buildScoreInliner",
+          "elementKind": "method",
+          "justification": "Users don't create their own ScoreDefinition implementations."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, org.optaplanner.core.api.score.constraint.ConstraintMatchTotal> org.optaplanner.core.api.score.holder.ScoreHolder<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::getConstraintMatchTotalMap()",
+          "package": "org.optaplanner.core.api.score.holder",
+          "classSimpleName": "ScoreHolder",
+          "methodName": "getConstraintMatchTotalMap",
+          "elementKind": "method",
+          "justification": "Users don't create their own ScoreHolder implementations."
         }
       ]
     }
