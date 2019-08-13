@@ -120,8 +120,10 @@
     <profile>
       <id>run-code-coverage</id>
       <properties>
-        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
         <jacoco.excludes>*Lexer</jacoco.excludes>
+
+        <!-- jacoco.exec.file is defined in kie-parent -->
+        <!--suppress UnresolvedMavenProperty -->
         <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
         <surefire.argLine>
           -Dfile.encoding=${project.build.sourceEncoding}
