@@ -99,7 +99,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         final AtomicInteger counter = new AtomicInteger(0);
         coverageAgendaListener
                 .getAuditsMessages().forEach(auditMessage -> {
-                    String message = "Execution # " + counter.addAndGet(1) + "; " + auditMessage;
+                    String message = "Execution # " + counter.addAndGet(1) + " - " + auditMessage;
                     scenarioResultMetadata.addAuditMessage(message, "INFO");
         });
         return scenarioResultMetadata;

@@ -386,7 +386,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         final AtomicInteger counter = new AtomicInteger(0);
         ruleNames.forEach(ruleName ->
                                   IntStream.range(1, 3).forEach(index -> {
-                                      String message = "Execution # " + counter.addAndGet(1) + "; " + CoverageAgendaListener.generateAuditMessage(ruleName);
+                                      String message = "Execution # " + counter.addAndGet(1) + " - " + CoverageAgendaListener.generateAuditMessage(ruleName);
                                       expectedMessages.add(message);
                                   }));
     }

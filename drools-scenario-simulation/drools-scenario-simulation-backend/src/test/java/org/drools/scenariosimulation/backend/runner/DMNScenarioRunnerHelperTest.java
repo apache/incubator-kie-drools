@@ -253,7 +253,7 @@ public class DMNScenarioRunnerHelperTest {
         assertEquals(decisionResults.size(), auditLogLines.size());
         final AtomicInteger counter = new AtomicInteger(0);
         for (int i = 0; i < decisionResults.size(); i ++) {
-            String message = "Execution # " + counter.addAndGet(1) + "; " + decisionResults.get(i).getDecisionName();
+            String message = "Execution # " + counter.addAndGet(1) + " - " + decisionResults.get(i).getDecisionName();
             commonCheckAuditLogLine(auditLogLines.get(i), message, decisionResults.get(i).getEvaluationStatus().name());
         }
     }
