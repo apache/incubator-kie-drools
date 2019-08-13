@@ -44,6 +44,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemicolon;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
@@ -54,6 +55,7 @@ public class AccumulateInline {
 
     protected final RuleContext context;
     protected final PackageModel packageModel;
+    private final String REVERSE = "reverse";
     private AccumulateDescr accumulateDescr;
     private PatternDescr basePattern;
 
@@ -100,7 +102,7 @@ public class AccumulateInline {
         context.pushExprPointer(accumulateDSL::addArgument);
 
         parseInitBlock();
-        Collection<String> allNamesInActionBlock = parseAccumulateMethod(externalDeclarations);
+        Collection<String> allNamesInActionBlock = parseActionBlock(externalDeclarations);
         parseReverseBlock(externalDeclarations, allNamesInActionBlock);
         parseResultMethod();
 
@@ -145,7 +147,8 @@ public class AccumulateInline {
 
     private void parseInitBlock() {
         MethodDeclaration initMethod = getMethodFromTemplateClass("init");
-        ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
+        String mvelBlock = addCurlyBracesToBlock(addSemicolon(accumulateDescr.getInitCode()));
+        ParsingResult initCodeCompilationResult = mvelCompiler.compile(mvelBlock);
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
 
         for (Statement stmt : initBlock.getStatements()) {
@@ -185,10 +188,15 @@ public class AccumulateInline {
         }
     }
 
-    private Collection<String> parseAccumulateMethod(Set<String> externalDeclarations) {
+    private Collection<String> parseActionBlock(Set<String> externalDeclarations) {
         MethodDeclaration accumulateMethod = getMethodFromTemplateClass("accumulate");
 
-        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
+        String actionCode = accumulateDescr.getActionCode();
+        if(blockIsNonEmptyWithoutSemicolon(actionCode)) {
+            throw new MissingSemicolonInlineAccumulateException("action");
+        }
+
+        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(actionCode));
 
         BlockStmt actionBlock = actionBlockCompilationResult.statementResults();
 
@@ -212,14 +220,19 @@ public class AccumulateInline {
     }
 
     private void parseReverseBlock(Set<String> externalDeclarations, Collection<String> allNamesInActionBlock) {
-        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
+        String reverseCode = accumulateDescr.getReverseCode();
+        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(reverseCode));
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
 
-        if (accumulateDescr.getReverseCode() != null) {
+        if (reverseCode != null) {
+            if(blockIsNonEmptyWithoutSemicolon(reverseCode)) {
+                throw new MissingSemicolonInlineAccumulateException(REVERSE);
+            }
+
             Collection<String> allNamesInReverseBlock = collectNamesInBlock(reverseBlock, context);
             if (allNamesInReverseBlock.size() == 1) {
-                MethodDeclaration reverseMethod = getMethodFromTemplateClass("reverse");
+                MethodDeclaration reverseMethod = getMethodFromTemplateClass(REVERSE);
                 reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
                 writeAccumulateMethod(contextFieldNames, reverseMethod, reverseBlock);
 
@@ -240,7 +253,7 @@ public class AccumulateInline {
                     .orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(parseStatement("return false;"));
 
-            MethodDeclaration reverseMethod = getMethodFromTemplateClass("reverse");
+            MethodDeclaration reverseMethod = getMethodFromTemplateClass(REVERSE);
             reverseMethod
                     .getBody()
                     .orElseThrow(InvalidInlineTemplateException::new)
@@ -288,5 +301,9 @@ public class AccumulateInline {
 
     private MethodDeclaration getMethodFromTemplateClass(String init) {
         return accumulateInlineClass.getMethodsByName(init).get(0);
+    }
+
+    private boolean blockIsNonEmptyWithoutSemicolon(String block) {
+        return !"".equals(block) && !block.endsWith(";");
     }
 }

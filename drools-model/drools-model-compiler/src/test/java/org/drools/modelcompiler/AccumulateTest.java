@@ -1284,6 +1284,83 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(new BigDecimal(300), list.get(0));
+
+    }
+
+    @Test
+    public void testSemicolonMissingInInit() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0),\n" +
+                "                action( sum += $age; ),\n" +
+                "                reverse( sum -= $age; ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person john = new Person("John", 23);
+        ksession.insert(john);
+
+        Person paul = new Person("Paul", 40);
+        ksession.insert(paul);
+
+        Person jones = new Person("Jones", 16);
+        ksession.insert(jones);
+
+        ksession.fireAllRules();
+
+        assertEquals(63, list.get(0));
+    }
+
+
+    @Test(expected = AssertionError.class)
+    public void testSemicolonMissingInAction() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0; ),\n" +
+                "                action( sum += $age ),\n" +
+                "                reverse( sum -= $age; ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+       getKieSession(str);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testSemicolonMissingInReverse() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0; ),\n" +
+                "                action( sum += $age; ),\n" +
+                "                reverse( sum -= $age ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+        getKieSession(str);
     }
 
 }

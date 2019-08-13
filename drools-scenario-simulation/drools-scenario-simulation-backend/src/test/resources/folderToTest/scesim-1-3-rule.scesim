@@ -27,6 +27,16 @@
         </factMappingValues>
         <simulationDescriptor reference="../../../simulationDescriptor"/>
       </Scenario>
+      <Scenario>
+        <factMappingValues>
+          <FactMappingValue/>
+        </factMappingValues>
+        <simulationDescriptor>
+          <factMappings/>
+          <type>RULE</type>
+          <skipFromBuild>false</skipFromBuild>
+        </simulationDescriptor>
+      </Scenario>
     </scenarios>
   </simulation>
   <imports>

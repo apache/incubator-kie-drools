@@ -1,4 +1,4 @@
-<ScenarioSimulationModel version="1.2">
+<ScenarioSimulationModel version="1.4">
   <simulation>
     <simulationDescriptor>
       <factMappings>
@@ -17,7 +17,7 @@
           <expressionAlias>lengthYears</expressionAlias>
         </FactMapping>
       </factMappings>
-      <dmoSession></dmoSession>
+      <dmoSession>default</dmoSession>
       <type>RULE</type>
     </simulationDescriptor>
     <scenarios>
