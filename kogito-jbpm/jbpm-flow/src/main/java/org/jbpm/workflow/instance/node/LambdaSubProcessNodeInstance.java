@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.spi.ProcessContext;
 import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -92,7 +93,8 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
         ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
         ((ProcessInstanceImpl) legacyProcessInstance).setParentProcessInstanceId(getProcessInstance().getId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessInstanceId(getProcessInstance().getRootProcessInstanceId() == null ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
         ((ProcessInstanceImpl) legacyProcessInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         
         processInstance.start();

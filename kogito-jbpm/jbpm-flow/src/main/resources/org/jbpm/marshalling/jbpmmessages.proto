@@ -52,6 +52,7 @@ message ProcessInstance {
     optional int32 sla_compliance = 21;
     optional string root_process_instance_id = 22;
     optional int64 start_date = 23;
+    optional string root_process_id = 24;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;

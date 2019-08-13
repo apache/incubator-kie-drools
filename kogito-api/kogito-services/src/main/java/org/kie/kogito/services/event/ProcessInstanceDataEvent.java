@@ -36,6 +36,7 @@ public class ProcessInstanceDataEvent implements DataEvent<ProcessInstanceEventB
     private final String kogitoParentProcessinstanceId;
     private final String kogitoRootProcessinstanceId;
     private final String kogitoProcessId;
+    private final String kogitoRootProcessId;
     private final String kogitoProcessinstanceState;
 
     public ProcessInstanceDataEvent(String source, Map<String, String> metaData, ProcessInstanceEventBody body) {
@@ -50,6 +51,7 @@ public class ProcessInstanceDataEvent implements DataEvent<ProcessInstanceEventB
         this.kogitoParentProcessinstanceId = metaData.get(ProcessInstanceEventBody.PARENT_ID_META_DATA);
         this.kogitoRootProcessinstanceId = metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA);
         this.kogitoProcessId = metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA);
+        this.kogitoRootProcessId = metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA);
         this.kogitoProcessinstanceState = metaData.get(ProcessInstanceEventBody.STATE_META_DATA);
     }
 
@@ -97,6 +99,10 @@ public class ProcessInstanceDataEvent implements DataEvent<ProcessInstanceEventB
 
     public String getKogitoProcessId() {
         return kogitoProcessId;
+    }
+    
+    public String getKogitoRootProcessId() {
+        return kogitoRootProcessId;
     }
 
     public String getKogitoProcessinstanceState() {

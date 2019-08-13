@@ -115,6 +115,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getRootProcessInstanceId() != null) {
             _instance.setRootProcessInstanceId(workFlow.getRootProcessInstanceId());
         }
+        if (workFlow.getRootProcessId() != null) {
+            _instance.setRootProcessId(workFlow.getRootProcessId());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -605,6 +608,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setState( _instance.getState() );
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
         processInstance.setRootProcessInstanceId(_instance.getRootProcessInstanceId());
+        processInstance.setRootProcessId(_instance.getRootProcessId());
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         processInstance.setDeploymentId(_instance.getDeploymentId());
         processInstance.setCorrelationKey(_instance.getCorrelationKey());

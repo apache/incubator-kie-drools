@@ -311,5 +311,10 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             return null;
         }
 
+        @Override
+        public String getRootProcessId() {
+            return null;
+        }
+
     }
 }

@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -204,7 +205,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
 	    	((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
-	    	((ProcessInstanceImpl) processInstance).setRootProcessInstanceId(getProcessInstance().getRootProcessInstanceId() == null ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+	    	((ProcessInstanceImpl) processInstance).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+	        ((ProcessInstanceImpl) processInstance).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
 	    	((ProcessInstanceImpl) processInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
 
 	    	kruntime.startProcessInstance(processInstance.getId());

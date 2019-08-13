@@ -198,6 +198,7 @@ public class PublishEventTest extends AbstractCodegenTest {
                 assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull(); 
                 assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull(); 
                 assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+                assertThat(processDataEvent.getKogitoRootProcessId()).isNull();
                 assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("ParentProcess");
                 assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
             } else {
@@ -206,6 +207,7 @@ public class PublishEventTest extends AbstractCodegenTest {
                 assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNotNull(); 
                 assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNotNull();
                 assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("SubProcess");
+                assertThat(processDataEvent.getKogitoRootProcessId()).isEqualTo("ParentProcess");
                 assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
             }        
         }

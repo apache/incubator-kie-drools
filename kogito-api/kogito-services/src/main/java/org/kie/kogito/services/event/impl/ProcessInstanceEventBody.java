@@ -27,12 +27,14 @@ public class ProcessInstanceEventBody {
     public static final String PARENT_ID_META_DATA = "kogito.processinstance.parentInstanceId";
     public static final String ROOT_ID_META_DATA = "kogito.processinstance.rootInstanceId";
     public static final String PROCESS_ID_META_DATA = "kogito.processinstance.processId";
+    public static final String ROOT_PROCESS_ID_META_DATA = "kogito.processinstance.rootProcessId";
     public static final String STATE_META_DATA = "kogito.processinstance.state";
 
     private String id;
     private String parentInstanceId;
     private String rootInstanceId;
     private String processId;
+    private String rootProcessId;
     private String processName;
     private Date startDate;
     private Date endDate;
@@ -60,6 +62,10 @@ public class ProcessInstanceEventBody {
 
     public String getProcessId() {
         return processId;
+    }
+    
+    public String getRootProcessId() {
+        return rootProcessId;
     }
 
     public String getProcessName() {
@@ -96,13 +102,14 @@ public class ProcessInstanceEventBody {
         metadata.put(PARENT_ID_META_DATA, parentInstanceId);
         metadata.put(ROOT_ID_META_DATA, rootInstanceId);
         metadata.put(PROCESS_ID_META_DATA, processId);
+        metadata.put(ROOT_PROCESS_ID_META_DATA, rootProcessId);
         metadata.put(STATE_META_DATA, String.valueOf(state));
         return metadata;
     }
     @Override
     public String toString() {
-        return "ProcessInstanceEventBody [id=" + id + ", parentInstanceId=" + parentInstanceId + ", rootInstanceId=" + rootInstanceId + ", processId=" + processId + ", processName=" + processName +
-                ", startDate=" + startDate + ", endDate=" + endDate + "]";
+        return "ProcessInstanceEventBody [id=" + id + ", parentInstanceId=" + parentInstanceId + ", rootInstanceId=" + rootInstanceId + ", processId=" + processId + ", rootProcessId=" + rootProcessId + ", processName=" +
+               processName + ", startDate=" + startDate + ", endDate=" + endDate + ", state=" + state + "]";
     }
     
     @Override
@@ -159,6 +166,11 @@ public class ProcessInstanceEventBody {
         
         public Builder processId(String processId) {
             instance.processId = processId;
+            return this;
+        }
+        
+        public Builder rootProcessId(String rootProcessId) {
+            instance.rootProcessId = rootProcessId;
             return this;
         }
 

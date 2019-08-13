@@ -96,6 +96,12 @@ public interface ProcessInstance
     String getRootProcessInstanceId();
     
     /**
+     * The id of the root process definition that is related to this process instance.
+     * @return the id of the root process definition that is related to this process instance
+     */
+    String getRootProcessId();
+    
+    /**
      * Returns current snapshot of process instance variables
      * @return non empty map of process instance variables
      */

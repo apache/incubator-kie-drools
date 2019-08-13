@@ -86,6 +86,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())
+                .rootProcessId(pi.getRootProcessId())
                 .processName(pi.getProcessName())
                 .startDate(pi.getStartDate())
                 .endDate(pi.getEndDate())

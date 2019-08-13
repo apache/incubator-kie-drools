@@ -61,6 +61,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private String parentProcessInstanceId;
     private String rootProcessInstanceId;
     private String description;
+    private String rootProcessId;
 
     public void setId(final String id) {
         this.id = id;
@@ -291,8 +292,16 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 
     public void setRootProcessInstanceId(String rootProcessInstanceId) {
         this.rootProcessInstanceId = rootProcessInstanceId;
+    }    
+    
+    public String getRootProcessId() {
+        return rootProcessId;
     }
     
+    public void setRootProcessId(String rootProcessId) {
+        this.rootProcessId = rootProcessId;
+    }
+
     public String getDescription() {
 		if (description == null) {
 			description = process.getName();			
