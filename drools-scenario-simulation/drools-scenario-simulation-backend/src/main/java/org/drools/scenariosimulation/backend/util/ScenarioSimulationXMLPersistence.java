@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +31,10 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
+import org.w3c.dom.Document;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -78,20 +79,19 @@ public class ScenarioSimulationXMLPersistence {
         return currentVersion;
     }
 
-    public static String cleanUpUnusedNodes(String input) {
-        String toRemove = "<simulationDescriptor reference\\b[^>]*>(.*?)";
-        return input.replaceAll(toRemove, "");
+    public static String cleanUpUnusedNodes(String input) throws Exception {
+        return DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
     }
 
     public String marshal(final ScenarioSimulationModel sc) {
         return xt.toXML(sc);
     }
 
-    public ScenarioSimulationModel unmarshal(final String rawXml) {
+    public ScenarioSimulationModel unmarshal(final String rawXml) throws Exception {
         return unmarshal(rawXml, true);
     }
 
-    public ScenarioSimulationModel unmarshal(final String rawXml, boolean migrate) {
+    public ScenarioSimulationModel unmarshal(final String rawXml, boolean migrate) throws Exception {
         if (rawXml == null) {
             return new ScenarioSimulationModel();
         }
@@ -104,10 +104,9 @@ public class ScenarioSimulationXMLPersistence {
         return internalUnmarshal(xml);
     }
 
-    public String migrateIfNecessary(String rawXml) {
-        rawXml = cleanUpUnusedNodes(rawXml);
+    public String migrateIfNecessary(String rawXml) throws Exception {
         String fileVersion = extractVersion(rawXml);
-        Function<String, String> migrator = getMigrationStrategy().start();
+        ThrowingConsumer<Document> migrator = getMigrationStrategy().start();
         boolean supported;
         switch (fileVersion) {
             case "1.0":
@@ -134,7 +133,9 @@ public class ScenarioSimulationXMLPersistence {
                                                        .append(currentVersion).toString());
         }
         migrator = migrator.andThen(getMigrationStrategy().end());
-        return migrator.apply(rawXml);
+        Document document = DOMParserUtil.getDocument(rawXml);
+        migrator.accept(document);
+        return DOMParserUtil.getString(document);
     }
 
     public String extractVersion(String rawXml) {
@@ -154,7 +155,7 @@ public class ScenarioSimulationXMLPersistence {
         this.migrationStrategy = migrationStrategy;
     }
 
-    protected ScenarioSimulationModel internalUnmarshal(String xml) {
+    protected ScenarioSimulationModel internalUnmarshal(String xml) throws Exception {
         xml = cleanUpUnusedNodes(xml);
         Object o = xt.fromXML(xml);
         return (ScenarioSimulationModel) o;
