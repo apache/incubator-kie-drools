@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.AuditLogLine;
@@ -95,8 +96,12 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
+        final AtomicInteger counter = new AtomicInteger(0);
         coverageAgendaListener
-                .getAuditsMessages().forEach(auditMessage -> scenarioResultMetadata.addAuditMessage(auditMessage, "INFO"));
+                .getAuditsMessages().forEach(auditMessage -> {
+                    String message = "Execution # " + counter.addAndGet(1) + "; " + auditMessage;
+                    scenarioResultMetadata.addAuditMessage(message, "INFO");
+        });
         return scenarioResultMetadata;
     }
 

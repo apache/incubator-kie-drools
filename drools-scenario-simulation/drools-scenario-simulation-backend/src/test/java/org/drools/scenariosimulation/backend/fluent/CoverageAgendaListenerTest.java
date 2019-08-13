@@ -43,11 +43,11 @@ public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
         assertNull(ruleExecuted.get("rule4"));
 
         List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
-        assertEquals(auditMessages.get(0), coverageAgendaListener.generateAuditMessage("rule1", 1));
-        assertEquals(auditMessages.get(1), coverageAgendaListener.generateAuditMessage("rule1", 2));
-        assertEquals(auditMessages.get(2), coverageAgendaListener.generateAuditMessage("rule2", 1));
-        assertEquals(auditMessages.get(3), coverageAgendaListener.generateAuditMessage("rule2", 2));
-        assertEquals(auditMessages.get(4), coverageAgendaListener.generateAuditMessage("rule3", 1));
+        assertEquals(auditMessages.get(0), coverageAgendaListener.generateAuditMessage("rule1"));
+        assertEquals(auditMessages.get(1), coverageAgendaListener.generateAuditMessage("rule1"));
+        assertEquals(auditMessages.get(2), coverageAgendaListener.generateAuditMessage("rule2"));
+        assertEquals(auditMessages.get(3), coverageAgendaListener.generateAuditMessage("rule2"));
+        assertEquals(auditMessages.get(4), coverageAgendaListener.generateAuditMessage("rule3"));
         assertTrue(auditMessages.size() == 5);
     }
 }

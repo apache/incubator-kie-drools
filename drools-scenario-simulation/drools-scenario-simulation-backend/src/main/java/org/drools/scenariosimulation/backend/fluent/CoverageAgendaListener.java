@@ -32,8 +32,8 @@ public class CoverageAgendaListener extends DefaultAgendaEventListener {
     protected Map<String, Integer> ruleExecuted = new HashMap<>();
     protected List<String> auditsMessages = new ArrayList<>();
 
-    public static String generateAuditMessage(String ruleName, Integer counter) {
-        return "Executed rule: " + ruleName + " (" + counter + ")";
+    public static String generateAuditMessage(String ruleName) {
+        return "Executed rule: " + ruleName;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CoverageAgendaListener extends DefaultAgendaEventListener {
         InternalRule rule = (InternalRule) beforeMatchFiredEvent.getMatch().getRule();
         String ruleKey = prettyFullyQualifiedName(rule);
         ruleExecuted.compute(ruleKey, (r, counter) -> counter == null ? 1 : counter + 1);
-        auditsMessages.add(generateAuditMessage(ruleKey, ruleExecuted.get(ruleKey)));
+        auditsMessages.add(generateAuditMessage(ruleKey));
     }
 
     public Map<String, Integer> getRuleExecuted() {
