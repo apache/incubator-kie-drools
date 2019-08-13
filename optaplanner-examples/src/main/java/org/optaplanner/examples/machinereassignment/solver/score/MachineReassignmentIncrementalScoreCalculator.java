@@ -298,8 +298,7 @@ public class MachineReassignmentIncrementalScoreCalculator
             }
             // Service conflict
             MrService service = processAssignment.getService();
-            Integer serviceProcessCountInteger = serviceBag.get(service);
-            int serviceProcessCount = serviceProcessCountInteger == null ? 0 : serviceProcessCountInteger;
+            int serviceProcessCount = serviceBag.computeIfAbsent(service, k -> 0);
             if (serviceProcessCount > 1) {
                 hardScore += (serviceProcessCount - 1);
             }
@@ -307,8 +306,11 @@ public class MachineReassignmentIncrementalScoreCalculator
             if (serviceProcessCount > 1) {
                 hardScore -= (serviceProcessCount - 1);
             }
-            serviceProcessCountInteger = serviceProcessCount == 0 ? null : serviceProcessCount;
-            serviceBag.put(service, serviceProcessCountInteger);
+            if (serviceProcessCount == 0) {
+                serviceBag.remove(service);
+            } else {
+                serviceBag.put(service, serviceProcessCount);
+            }
             // Balance cost
             doBalancePenaltyCosts();
             // Move costs
@@ -327,8 +329,7 @@ public class MachineReassignmentIncrementalScoreCalculator
             }
             // Service conflict
             MrService service = processAssignment.getService();
-            Integer serviceProcessCountInteger = serviceBag.get(service);
-            int serviceProcessCount = serviceProcessCountInteger == null ? 0 : serviceProcessCountInteger;
+            int serviceProcessCount = serviceBag.computeIfAbsent(service, k -> 0);
             if (serviceProcessCount > 1) {
                 hardScore += (serviceProcessCount - 1);
             }
@@ -336,8 +337,11 @@ public class MachineReassignmentIncrementalScoreCalculator
             if (serviceProcessCount > 1) {
                 hardScore -= (serviceProcessCount - 1);
             }
-            serviceProcessCountInteger = serviceProcessCount == 0 ? null : serviceProcessCount;
-            serviceBag.put(service, serviceProcessCountInteger);
+            if (serviceProcessCount == 0) {
+                serviceBag.remove(service);
+            } else {
+                serviceBag.put(service, serviceProcessCount);
+            }
             doBalancePenaltyCosts();
             // Move costs
             if (processAssignment.isMoved()) {
@@ -513,13 +517,11 @@ public class MachineReassignmentIncrementalScoreCalculator
             }
             for (Map.Entry<MrService, Integer> entry : machineScorePart.serviceBag.entrySet()) {
                 Integer serviceProcessCount = entry.getValue();
-                if (serviceProcessCount == null) {
-                    serviceProcessCount = 0;
+                if (serviceProcessCount > 1) {
+                    serviceConflictMatchTotal.addConstraintMatch(
+                            Arrays.asList(machineScorePart.machine, entry.getKey()),
+                            HardSoftLongScore.of(- (serviceProcessCount - 1), 0));
                 }
-                serviceConflictMatchTotal.addConstraintMatch(
-                        Arrays.asList(entry.getKey()),
-                        HardSoftLongScore.of(- (serviceProcessCount - 1), 0));
-
             }
         }
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {

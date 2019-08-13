@@ -741,7 +741,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         } else {
             analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(excessMap.size())
                     .append(" ConstraintMatch(s) which are in excess (and should not be there):\n");
-            excessMap.values().stream().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            excessMap.values().stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
                     .forEach(constraintMatch -> analysis.append("    ").append(constraintMatch).append("\n"));
             if (excessMap.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
                 analysis.append("    ... ").append(excessMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
@@ -753,7 +753,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         } else {
             analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(missingMap.size())
                     .append(" ConstraintMatch(s) which are missing:\n");
-            missingMap.values().stream().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            missingMap.values().stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
                     .forEach(constraintMatch -> analysis.append("    ").append(constraintMatch).append("\n"));
             if (missingMap.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
                 analysis.append("    ... ").append(missingMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
