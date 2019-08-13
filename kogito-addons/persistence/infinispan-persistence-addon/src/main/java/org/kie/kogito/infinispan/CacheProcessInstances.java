@@ -38,7 +38,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     
     public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String proto, MessageMarshaller<?>...marshallers) {
         this.process = process;    
-        this.cache = cacheManager.administration().getOrCreateCache(process.id(), (String)null);
+        this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", (String)null);
         
         this.marshaller = new ProcessInstanceMarshaller(new ProtoStreamObjectMarshallingStrategy(proto, marshallers));
     }
