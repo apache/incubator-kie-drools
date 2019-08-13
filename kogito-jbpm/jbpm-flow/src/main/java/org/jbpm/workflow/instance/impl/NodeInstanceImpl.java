@@ -387,7 +387,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type, boolean fireEvents) {
-        
+        leaveTime = new Date();
         boolean hidden = false;
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;

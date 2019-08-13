@@ -249,6 +249,53 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(events).isNotNull().hasSize(0);
     }
     
+    @Test
+    public void testExclusiveGatewayStartToEnd() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("gateway/ExclusiveSplit.bpmn2");        
+        assertThat(app).isNotNull();
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
+        uow.start();
+        
+        Process<? extends Model> p = app.processes().processById("ExclusiveSplit");
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("x", "First");
+        params.put("y", "None");
+        Model m = p.createModel();
+        m.fromMap(params);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");              
+        uow.end();
+
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+        
+        DataEvent<?> event = events.get(0);
+        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
+        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull(); 
+        assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull(); 
+        assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("ExclusiveSplit");
+        assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "ExclusiveSplit", "Test", 2);
+        
+        assertThat(body.getNodeInstances()).hasSize(6).extractingResultOf("getNodeType").contains("StartNode", "ActionNode", "Split", "Join", "EndNode", "WorkItemNode");
+        
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+    }
+    
     /*
      * Helper methods
      */
