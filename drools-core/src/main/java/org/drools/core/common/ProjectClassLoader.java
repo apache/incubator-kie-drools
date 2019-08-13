@@ -346,7 +346,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     public void setDroolsClassLoader(ClassLoader droolsClassLoader) {
-        if (getParent() != droolsClassLoader && isOsgiClassLoader(droolsClassLoader)) {
+        if (getParent() != droolsClassLoader && isModularClassLoader(droolsClassLoader)) {
             this.droolsClassLoader = droolsClassLoader;
             if (CACHE_NON_EXISTING_CLASSES) {
                 nonExistingClasses.clear();
@@ -354,8 +354,16 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         }
     }
 
-    private boolean isOsgiClassLoader(ClassLoader cl) {
-        return Stream.of( cl.getClass().getInterfaces() ).map( i -> i.getSimpleName() ).anyMatch( name -> name.equals( "BundleReference" ) );
+    private static boolean isModularClassLoader(ClassLoader cl) {
+        return isOsgiClassLoader(cl) || isJbossModuleClassLoader(cl);
+    }
+
+    private static boolean isJbossModuleClassLoader(ClassLoader cl) {
+        return "org.jboss.modules".equals( cl.getClass().getPackage().getName() );
+    }
+
+    private static boolean isOsgiClassLoader(ClassLoader cl) {
+        return Stream.of( cl.getClass().getInterfaces() ).map( Class::getSimpleName ).anyMatch( name -> name.equals( "BundleReference" ) );
     }
 
     // WARNING: This is and should be used just for testing purposes.

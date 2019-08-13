@@ -165,7 +165,4 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     <N extends NetworkNode> N getTupleSource();
 
     boolean isExpired();
-    void setExpired( boolean expired );
-
-
 }

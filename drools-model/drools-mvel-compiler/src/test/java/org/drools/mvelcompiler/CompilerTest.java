@@ -25,6 +25,7 @@ interface CompilerTest {
         imports.add("java.util.ArrayList");
         imports.add("java.util.HashMap");
         imports.add("java.util.Map");
+        imports.add("java.math.BigDecimal");
         imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());

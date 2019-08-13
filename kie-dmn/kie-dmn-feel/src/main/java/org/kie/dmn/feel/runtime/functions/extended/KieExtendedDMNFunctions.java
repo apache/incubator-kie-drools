@@ -19,7 +19,23 @@ package org.kie.dmn.feel.runtime.functions.extended;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.interval.*;
+import org.kie.dmn.feel.runtime.functions.interval.AfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.BeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.CoincidesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.DuringFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.IncludesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.MeetsFunction;
+import org.kie.dmn.feel.runtime.functions.interval.MetByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedAfterByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedBeforeByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsAfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsBeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNAllFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNAnyFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNCountFunction;
@@ -71,6 +87,10 @@ public class KieExtendedDMNFunctions {
                                                                         IncludesFunction.INSTANCE,
                                                                         OverlapsFunction.INSTANCE,
                                                                         OverlappedByFunction.INSTANCE,
+                                                                        OverlapsBeforeFunction.INSTANCE,
+                                                                        OverlappedBeforeByFunction.INSTANCE,
+                                                                        OverlapsAfterFunction.INSTANCE,
+                                                                        OverlappedAfterByFunction.INSTANCE,
                                                                         MeetsFunction.INSTANCE,
                                                                         MetByFunction.INSTANCE
 

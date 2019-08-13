@@ -54,7 +54,7 @@ public class DuringFunctionTest {
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( duringFunction.invoke( "f",
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( duringFunction.invoke( "a",
                 new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.CLOSED )),
                 Boolean.FALSE );
@@ -68,7 +68,7 @@ public class DuringFunctionTest {
         FunctionTestUtil.assertResult( duringFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( duringFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED ) ),

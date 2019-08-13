@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions.interval;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
@@ -40,7 +41,9 @@ public class DuringFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = value.compareTo( range.getLowEndPoint() ) > 0 && value.compareTo( range.getHighEndPoint() ) < 0;
+            boolean result = (range.getLowEndPoint().compareTo(value) < 0 && range.getHighEndPoint().compareTo(value) > 0) ||
+                             (range.getLowEndPoint().compareTo(value) == 0 && range.getLowBoundary() == RangeBoundary.CLOSED) ||
+                             (range.getHighEndPoint().compareTo(value) == 0 && range.getHighBoundary() == RangeBoundary.CLOSED);
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable
@@ -56,9 +59,14 @@ public class DuringFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range2", "cannot be null"));
         }
         try {
-            boolean result =
-                    range1.getLowEndPoint().compareTo( range2.getLowEndPoint() ) > 0 &&
-                    range1.getHighEndPoint().compareTo( range2.getHighEndPoint() ) < 0;
+            boolean result = (range2.getLowEndPoint().compareTo(range1.getLowEndPoint()) < 0 ||
+                              (range2.getLowEndPoint().compareTo(range1.getLowEndPoint()) == 0 &&
+                               (range2.getLowBoundary() == RangeBoundary.CLOSED ||
+                                range1.getLowBoundary() == RangeBoundary.OPEN))) &&
+                             (range2.getHighEndPoint().compareTo(range1.getHighEndPoint()) > 0 ||
+                              (range2.getHighEndPoint().compareTo(range1.getHighEndPoint()) == 0 &&
+                               (range2.getHighBoundary() == RangeBoundary.CLOSED ||
+                                range1.getHighBoundary() == RangeBoundary.OPEN)));
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable

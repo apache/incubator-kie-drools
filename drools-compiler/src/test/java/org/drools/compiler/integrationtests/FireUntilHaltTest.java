@@ -16,14 +16,22 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -141,5 +149,52 @@ public class FireUntilHaltTest extends CommonTestMethodBase {
         }
         assertFalse("Thread should have died!", alive);
         assertEquals(1, list.size());
+    }
+
+
+    @Test(timeout = 10_000L)
+    public void testDisposeAfterMarshall() throws InterruptedException, IOException {
+        // DROOLS-4413
+
+        String str = "package com.sample\n" +
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "then\n" +
+                "  System.out.println($s);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        Thread t = new Thread(() -> {
+            System.out.println("Firing.");
+            latch.countDown();
+            ksession.fireUntilHalt();
+            System.out.println("Halted.");
+        });
+        t.start();
+
+        // wait fireUntilHalt to be invoked
+        latch.await();
+        Thread.sleep( 100L );
+
+        // Halt the session without adding any facts
+        ksession.halt();
+
+        KieMarshallers kMarshallers = KieServices.Factory.get().getMarshallers();
+        ObjectMarshallingStrategy oms = kMarshallers.newSerializeMarshallingStrategy();
+        Marshaller marshaller = kMarshallers.newMarshaller( kbase, new ObjectMarshallingStrategy[]{ oms } );
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            marshaller.marshall(baos, ksession);
+        }
+
+        // Destroy
+        ksession.dispose();
+        ksession.destroy();
+
+        // Wait for our thread to exit
+        // ** The thread exits if we call t.interrupt();
+        t.join();
     }
 }

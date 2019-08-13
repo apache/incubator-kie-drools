@@ -5696,4 +5696,45 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testCollectExpiredEvent() {
+        // DROOLS-4393
+        final String drl =
+                "import java.util.Collection\n" +
+                "declare Integer @role( event ) @expires( 3h ) end\n" +
+                "declare Long @role( event ) @expires( 3h ) end\n" +
+                " " +
+                "rule SAME when\n" +
+                "  $i: Integer()\n" +
+                "  Long( intValue == $i )\n" +
+                "then\n" +
+                "  System.out.println(\"SAME\");\n" +
+                "end\n" +
+                "rule COLLECT when\n" +
+                "  Collection(size > 2) from collect (Number())\n" +
+                "then\n" +
+                "  System.out.println(\"COLLECT\");\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+
+            SessionPseudoClock clock = (( SessionPseudoClock ) ksession.getSessionClock());
+
+            ksession.insert(1);
+            clock.advanceTime(2, TimeUnit.HOURS);
+            ksession.insert(2L);
+            assertEquals(0, ksession.fireAllRules());
+
+            clock.advanceTime(2, TimeUnit.HOURS); // Should expire first event
+            ksession.insert(1L);
+            assertEquals(0, ksession.fireAllRules());
+
+        } finally {
+            ksession.dispose();
+        }
+    }
+
 }
