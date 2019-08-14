@@ -205,6 +205,7 @@ public class ScenarioBeanUtilTest {
     public void getFieldTest() {
         assertNotNull(getField(Person.class, "firstName"));
         assertNotNull(getField(SubPerson.class, "firstName"));
+        assertNotNull(getField(SubPerson.class, "additionalField"));
         Assertions.assertThatThrownBy(() -> getField(Person.class, "notExistingField"))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessageStartingWith("Impossible to find field with name ");
