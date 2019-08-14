@@ -71,7 +71,7 @@ public class ScenarioBeanUtil {
             currentObject = scenarioBeanWrapper.getBean();
         }
 
-        Field last = currentObject.getClass().getDeclaredField(lastStep);
+        Field last = getField(currentObject.getClass(), lastStep);
         last.setAccessible(true);
         last.set(currentObject, propertyValue);
     }
@@ -85,19 +85,12 @@ public class ScenarioBeanUtil {
         Object currentObject = rootObject;
 
         for (String step : steps) {
-            Field declaredField = null;
-            try {
-                if (currentObject == null) {
-                    throw new ScenarioException(new StringBuilder().append("Impossible to reach field ")
-                                                        .append(step).append(" because a step is not instantiated")
-                                                        .toString());
-                }
-                declaredField = currentClass.getDeclaredField(step);
-            } catch (NoSuchFieldException e) {
-                throw new ScenarioException(new StringBuilder().append("Impossible to find field with name '")
-                                                    .append(step).append("' in class ")
-                                                    .append(currentClass.getCanonicalName()).toString(), e);
+            if (currentObject == null) {
+                throw new ScenarioException(new StringBuilder().append("Impossible to reach field ")
+                                                    .append(step).append(" because a step is not instantiated")
+                                                    .toString());
             }
+            Field declaredField = getField(currentClass, step);
             declaredField.setAccessible(true);
             currentClass = declaredField.getType();
             try {
@@ -216,6 +209,29 @@ public class ScenarioBeanUtil {
         } catch (ClassNotFoundException | NullPointerException e) {
             throw new ScenarioException(new StringBuilder().append("Impossible to load class ").append(className).toString(), e);
         }
+    }
+
+    /**
+     * Look for a field (public or not) with name fieldName in Class clazz and in its superclasses
+     * @param clazz
+     * @param fieldName
+     * @return
+     */
+    public static Field getField(Class<?> clazz, String fieldName) {
+        return internalGetField(clazz.getCanonicalName(), clazz, fieldName);
+    }
+
+    private static Field internalGetField(String canonicalClassName, Class<?> clazz, String fieldName) {
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            if (clazz.getSuperclass() != null) {
+                return internalGetField(canonicalClassName, clazz.getSuperclass(), fieldName);
+            }
+        }
+        throw new ScenarioException(new StringBuilder().append("Impossible to find field with name '")
+                                            .append(fieldName).append("' in class ")
+                                            .append(canonicalClassName).toString());
     }
 
     private static boolean isPrimitive(String className) {

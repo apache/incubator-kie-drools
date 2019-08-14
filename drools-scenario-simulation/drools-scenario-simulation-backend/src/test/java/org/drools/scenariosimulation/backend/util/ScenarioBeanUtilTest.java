@@ -27,14 +27,17 @@ import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.NotEmptyConstructor;
 import org.drools.scenariosimulation.backend.model.Person;
+import org.drools.scenariosimulation.backend.model.SubPerson;
 import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.junit.Test;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
+import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getField;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -196,5 +199,15 @@ public class ScenarioBeanUtilTest {
         Assertions.assertThatThrownBy(() -> loadClass("NotExistingClass", classLoader))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Impossible to load class NotExistingClass");
+    }
+
+    @Test
+    public void getFieldTest() {
+        assertNotNull(getField(Person.class, "firstName"));
+        assertNotNull(getField(SubPerson.class, "firstName"));
+        assertNotNull(getField(SubPerson.class, "additionalField"));
+        Assertions.assertThatThrownBy(() -> getField(Person.class, "notExistingField"))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessageStartingWith("Impossible to find field with name ");
     }
 }
