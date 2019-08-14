@@ -181,7 +181,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
         String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
         Document document = DOMParserUtil.getDocument(afterMigration);
-        commonCheckVersion(document, "1.6");
+        commonCheckVersion(document, "1.7");
     }
 
     @Test
