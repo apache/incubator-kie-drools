@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 
+import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getField;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
 
 public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
@@ -80,7 +81,7 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
             if (result instanceof Map) {
                 return ((Map) result).get(fieldName);
             } else {
-                Field declaredField = result.getClass().getDeclaredField(fieldName);
+                Field declaredField = getField(result.getClass(), fieldName);
                 declaredField.setAccessible(true);
                 return declaredField.get(result);
             }
@@ -109,7 +110,7 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
             returnMap.put(fieldName, fieldValue);
         } else {
             try {
-                Field declaredField = toReturn.getClass().getDeclaredField(fieldName);
+                Field declaredField = getField(toReturn.getClass(), fieldName);
                 declaredField.setAccessible(true);
                 declaredField.set(toReturn, fieldValue);
             } catch (Exception e) {
@@ -124,7 +125,7 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
             if (ScenarioSimulationSharedUtils.isMap(className)) {
                 return new AbstractMap.SimpleEntry<>(genericClasses.get(genericClasses.size() - 1), Collections.emptyList());
             }
-            Field declaredField = element.getClass().getDeclaredField(fieldName);
+            Field declaredField = getField(element.getClass(), fieldName);
             Class<?> fieldType = declaredField.getType();
             List<String> genericsString = new ArrayList<>();
             if (declaredField.getGenericType() instanceof ParameterizedType) {
