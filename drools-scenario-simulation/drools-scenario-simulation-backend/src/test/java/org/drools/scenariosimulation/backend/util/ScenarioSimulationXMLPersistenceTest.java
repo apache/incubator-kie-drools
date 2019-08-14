@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -176,9 +177,23 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
-
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+        assertNotNull(factMappingsNodes);
+        assertEquals(1, factMappingsNodes.size());
+        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
+        for (Node factMappingNode : factMappingNodes) {
+            List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
+            String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
+            assertNotNull(expressionIdentifierName);
+            List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
+            assertEquals(1, columnWidthNodes.size());
+            String columnWidth = columnWidthNodes.get(0).getTextContent();
+            assertNotNull(columnWidth);
+            assertFalse(columnWidth.isEmpty());
+            double columnWidthDouble = Double.parseDouble(columnWidth);
+            assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
+        }
         commonCheck(toMigrate, document, "1.7");
-        System.out.println(document.toString());
     }
 
     @Test
