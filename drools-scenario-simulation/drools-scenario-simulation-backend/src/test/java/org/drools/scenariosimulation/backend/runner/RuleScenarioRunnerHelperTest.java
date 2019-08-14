@@ -30,34 +30,41 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.fluent.AbstractRuleCoverageTest;
+import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
-public class RuleScenarioRunnerHelperTest {
+public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     private static final String NAME = "NAME";
     private static final double AMOUNT = 10;
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
-    private static final RuleScenarioRunnerHelper runnerHelper = new RuleScenarioRunnerHelper(null);
+    private static final RuleScenarioRunnerHelper runnerHelper = new RuleScenarioRunnerHelper();
 
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
@@ -333,5 +340,27 @@ public class RuleScenarioRunnerHelperTest {
         ResultWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
         assertFalse(directMapping.isSatisfied());
         assertEquals("No direct mapping available", directMapping.getErrorMessage().get());
+    }
+
+    @Test
+    public void extractResultMetadata() {
+        Map<String, Integer> coverageData = new HashMap<>();
+        coverageData.put("rule1", 2);
+        coverageData.put("rule2", 2);
+        CoverageAgendaListener coverageAgendaListenerMock = createCoverageAgendaListenerWithData(coverageData);
+
+        ScenarioWithIndex scenarioWithIndexMock = mock(ScenarioWithIndex.class);
+
+        Map<String, Object> requestContext = new HashMap<>();
+        requestContext.put(COVERAGE_LISTENER, coverageAgendaListenerMock);
+        requestContext.put(RULES_AVAILABLE, coverageData.keySet());
+
+        ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContext, scenarioWithIndexMock);
+
+        assertEquals(scenarioWithIndexMock, scenarioResultMetadata.getScenarioWithIndex());
+        assertEquals(2, scenarioResultMetadata.getAvailable().size());
+        assertEquals(2, scenarioResultMetadata.getExecuted().size());
+        assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
+        assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
     }
 }

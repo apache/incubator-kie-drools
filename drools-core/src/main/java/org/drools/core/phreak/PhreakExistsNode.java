@@ -476,8 +476,8 @@ public class PhreakExistsNode {
 
                     // we know that older tuples have been checked so continue previously
                     for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {
-                        if (constraints.isAllowedCachedLeft(contextEntry,
-                                                            newBlocker.getFactHandleForEvaluation())) {
+                        if (!newBlocker.isDeleted() && constraints.isAllowedCachedLeft(contextEntry,
+                                                                                       newBlocker.getFactHandleForEvaluation())) {
                             leftTuple.setBlocker(newBlocker);
                             newBlocker.addBlocked(leftTuple);
 

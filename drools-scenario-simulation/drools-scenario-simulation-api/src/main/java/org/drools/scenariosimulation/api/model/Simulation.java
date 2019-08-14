@@ -71,7 +71,7 @@ public class Simulation {
         if (index < 0 || index > scenarios.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
-        Scenario scenario = new Scenario(simulationDescriptor);
+        Scenario scenario = new Scenario();
         scenarios.add(index, scenario);
         return scenario;
     }

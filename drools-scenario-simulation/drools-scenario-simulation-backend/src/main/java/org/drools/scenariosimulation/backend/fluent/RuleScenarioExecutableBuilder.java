@@ -16,92 +16,75 @@
 
 package org.drools.scenariosimulation.backend.fluent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.Set;
 import java.util.function.Function;
 
-import org.drools.scenariosimulation.api.model.FactIdentifier;
-import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.builder.fluent.ExecutableBuilder;
-import org.kie.internal.builder.fluent.KieSessionFluent;
+import org.kie.internal.definition.rule.InternalRule;
 
-public class RuleScenarioExecutableBuilder {
+public interface RuleScenarioExecutableBuilder {
 
-    public static String DEFAULT_APPLICATION = "defaultApplication";
+    String COVERAGE_LISTENER = "COVERAGE_LISTENER";
+    String RULES_AVAILABLE = "RULES_AVAILABLE";
 
-    private final KieSessionFluent kieSessionFluent;
-    private final ExecutableBuilder executableBuilder;
-    private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
-
-    protected static final BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
-        KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
-        if (kieSessionModel == null) {
-            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
+    static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName, boolean stateless) {
+        if (stateless) {
+            return new RuleStatelessScenarioExecutableBuilder(kieContainer, kieSessionName);
+        } else {
+            return new RuleStatefulScenarioExecutableBuilder(kieContainer, kieSessionName);
         }
-        kieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
-        return kc;
-    };
-
-    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String kieSessionName) {
-        executableBuilder = ExecutableBuilder.create();
-
-        kieSessionFluent = executableBuilder
-                .newApplicationContext(DEFAULT_APPLICATION)
-                .setKieContainer(kieContainer)
-                .newSessionCustomized(kieSessionName, forcePseudoClock);
     }
 
-    private RuleScenarioExecutableBuilder(KieContainer kieContainer) {
-        this(kieContainer, null);
+    static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
+        return new RuleStatefulScenarioExecutableBuilder(kieContainer);
     }
 
-    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName) {
-        return new RuleScenarioExecutableBuilder(kieContainer, kieSessionName);
+    void addInternalCondition(Class<?> clazz,
+                              Function<Object, ResultWrapper> checkFunction,
+                              ScenarioResult scenarioResult);
+
+    void setActiveAgendaGroup(String agendaGroup);
+
+    void setActiveRuleFlowGroup(String ruleFlowGroup);
+
+    void insert(Object element);
+
+    Map<String, Object> run();
+
+    /**
+     * Method to calculate actual number of available rules filtered by active agenda group
+     * @param kieBase
+     * @param activeAgendaGroup name of the active agenda group. Use <code>null</code> if default one
+     * @return
+     */
+    default Set<String> getAvailableRules(KieBase kieBase, String activeAgendaGroup) {
+        Set<String> toReturn = new HashSet<>();
+        for (KiePackage kiePackage : kieBase.getKiePackages()) {
+            for (Rule rule : kiePackage.getRules()) {
+                InternalRule internalRule = (InternalRule) rule;
+
+                // main agenda group is always executed after the active one
+                if (internalRule.isMainAgendaGroup()) {
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
+                } else if (Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
+                }
+            }
+        }
+
+        return toReturn;
     }
 
-    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
-        return new RuleScenarioExecutableBuilder(kieContainer);
-    }
-
-    public void addInternalCondition(Class<?> clazz,
-                                     Function<Object, ResultWrapper> checkFunction,
-                                     ScenarioResult scenarioResult) {
-        internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
-                .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));
-    }
-
-    public void setActiveAgendaGroup(String agendaGroup) {
-        kieSessionFluent.setActiveAgendaGroup(agendaGroup);
-    }
-
-    public void setActiveRuleFlowGroup(String ruleFlowGroup) {
-        kieSessionFluent.setActiveRuleFlowGroup(ruleFlowGroup);
-    }
-
-    public void insert(Object element) {
-        kieSessionFluent.insert(element);
-    }
-
-    public RequestContext run() {
-        Objects.requireNonNull(executableBuilder, "Executable builder is null, please invoke create(KieContainer, )");
-
-        kieSessionFluent.fireAllRules();
-        internalConditions.values()
-                .forEach(factToCheck -> kieSessionFluent.addCommand(new ValidateFactCommand(factToCheck)));
-
-        kieSessionFluent.dispose().end();
-
-        return ExecutableRunner.create().execute(executableBuilder.getExecutable());
+    static String prettyFullyQualifiedName(Rule rule) {
+        String packageName = rule.getPackageName();
+        return rule.getName() + (packageName != null && !packageName.isEmpty() ? " (" + packageName + ")" : "");
     }
 }

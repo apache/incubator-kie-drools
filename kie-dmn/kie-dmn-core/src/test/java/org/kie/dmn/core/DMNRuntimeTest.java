@@ -2521,5 +2521,54 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("full name"), is("supervisor of John")));
         assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("supervisor"), nullValue()));
     }
+
+    @Test
+    public void testDTinputExprCollectionWithAllowedValuesA() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379.dmn", this.getClass());
+        testDTinputExprCollectionWithAllowedValues(runtime);
+    }
+
+    @Test
+    public void testDTinputExprCollectionWithAllowedValuesB() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379b.dmn", this.getClass());
+        testDTinputExprCollectionWithAllowedValues(runtime);
+    }
+
+    private void testDTinputExprCollectionWithAllowedValues(final DMNRuntime runtime) {
+        // DROOLS-4379 DMN decision table input expr collection with allowedValues
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_95436b7a-7268-4713-bf84-58bff10407b4", "Dessin 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("test", Arrays.asList("r2", "r1"));
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("D4"), is("Contains r1"));
+        assertThat((List<?>) result.get("D5"), contains(is("r1"), is("r2")));
+    }
+
+    @Test
+    public void testInputDataWithSlash() {
+        // DROOLS-4390 DMN correct FEEL grammar exclusion
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Slash.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_efb0df9e-cd3a-4bda-b731-e6b184a6cd73", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("A/B", "A");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision Table"), is("A"));
+        assertThat(result.get("Litteral Expression"), is("A"));
+    }
 }
 

@@ -16,7 +16,9 @@
 
 package org.drools.model;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.datasources.DataStore;
@@ -62,11 +64,11 @@ import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
+import org.drools.model.impl.Exchange;
 import org.drools.model.impl.From0Impl;
 import org.drools.model.impl.From1Impl;
 import org.drools.model.impl.From2Impl;
 import org.drools.model.impl.From3Impl;
-import org.drools.model.impl.Exchange;
 import org.drools.model.impl.GlobalImpl;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -454,11 +456,29 @@ public class DSL {
 
     // Legay case - source is defined in the generated Invoker class
     public static AccumulateFunction accFunction( Class<?> accFunctionClass) {
-        return new AccumulateFunction(null, accFunctionClass);
+        return accFunction( accFunctionClass, null );
     }
 
     public static AccumulateFunction accFunction( Class<?> accFunctionClass, Argument source) {
-        return new AccumulateFunction(source, accFunctionClass);
+        return accFunction( classToSupplier( accFunctionClass ), source);
+    }
+
+    public static AccumulateFunction accFunction( Supplier<?> functionSupplier ) {
+        return accFunction(functionSupplier, null);
+    }
+
+    public static AccumulateFunction accFunction( Supplier<?> functionSupplier, Argument source) {
+        return new AccumulateFunction(source, functionSupplier);
+    }
+
+    private static Supplier<?> classToSupplier(Class<?> cls) {
+        return () -> {
+            try {
+                return cls.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException( e );
+            }
+        };
     }
 
     // -- Temporal Constraints --

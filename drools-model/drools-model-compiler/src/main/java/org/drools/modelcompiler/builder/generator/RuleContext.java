@@ -223,9 +223,6 @@ public class RuleContext {
         final String bindingId = d.getBindingId();
         final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
         if (declarationById.isPresent()) {
-            if ( d.getDeclarationClass().isAssignableFrom( declarationById.get().getDeclarationClass() )) {
-                return;
-            }
             removeDeclarationById(bindingId);
         }
         this.scopedDeclarations.put(d.getBindingId(), d);

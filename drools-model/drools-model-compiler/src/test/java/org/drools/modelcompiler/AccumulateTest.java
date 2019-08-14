@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +41,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -1144,6 +1144,223 @@ public class AccumulateTest extends BaseModelTest {
 
         assertEquals(1, list.size());
         assertEquals(5, list.get(0).intValue());
+    }
+
+    @Test
+    public void testPatternMatchingOverNumberWhileAccumulatingShort() {
+        String drl=
+                "import " + AccumulateResult.class.getCanonicalName() + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule \"accumulate_max_short_using_double\"\n" +
+                "	dialect \"java\"\n" +
+                "	when\n" +
+                "		$accumulateResult : AccumulateResult( resultAccumulated == false ) \n" +
+                "		\n" +
+                "		$maxOfAllShort : Number() from accumulate (\n" +
+                "		$accumulateTest_short_max : Person( $age : ageAsShort);max($age))\n" +
+                "		\n" +
+                "then\n" +
+                "		$accumulateResult.setResultAccumulated(true);\n" +
+                "		$accumulateResult.setMaxShortValue($maxOfAllShort.shortValue()\n);\n" +
+                "		update($accumulateResult);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        AccumulateResult result = new AccumulateResult(false);
+
+        ksession.insert(result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals(true, result.isResultAccumulated());
+        assertEquals(40, result.getMaxShortValue());
+    }
+
+    public static class AccumulateResult {
+
+        private boolean resultAccumulated;
+        private short maxShortValue;
+        private BigDecimal bigDecimalValue;
+
+        public AccumulateResult(boolean resultAccumulated) {
+            this.resultAccumulated = resultAccumulated;
+        }
+
+        public boolean isResultAccumulated() {
+            return resultAccumulated;
+        }
+
+        public void setResultAccumulated(boolean resultAccumulated) {
+            this.resultAccumulated = resultAccumulated;
+        }
+
+        public short getMaxShortValue() {
+            return maxShortValue;
+        }
+
+        public void setMaxShortValue(short maxShortValue) {
+            this.maxShortValue = maxShortValue;
+        }
+
+        public BigDecimal getBigDecimalValue() {
+            return bigDecimalValue;
+        }
+
+        public void setBigDecimalValue(BigDecimal bigDecimalValue) {
+            this.bigDecimalValue = bigDecimalValue;
+        }
+    }
+
+
+    @Test
+    public void testAccumulateOverField() {
+        String str =
+                "import java.lang.Number;\n" +
+                        "import java.math.BigDecimal;\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + AccumulateResult.class.getCanonicalName() + ";" +
+                        "global java.util.List list;\n" +
+                        "rule \"rule\"\n" +
+                        "  dialect \"mvel\"\n" +
+                        "  when\n" +
+                        "    $r : AccumulateResult()\n" +
+                        "    $sumMoney : BigDecimal( ) from accumulate ( $p : Person( money != null ),\n" +
+                        "      sum($p.money)) \n" +
+                        "  then\n" +
+                        "    modify( $r ) {\n" +
+                        "        setBigDecimalValue( $sumMoney )\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario", BigDecimal.valueOf(1000)));
+        ksession.insert(new Person("Luca", BigDecimal.valueOf(2000)));
+
+        AccumulateResult result = new AccumulateResult(false);
+        ksession.insert(result);
+
+        int rulesFired = ksession.fireAllRules();
+
+        assertEquals(1, rulesFired);
+        assertEquals(BigDecimal.valueOf(3000), result.getBigDecimalValue());
+    }
+
+    @Test
+    public void testFromAccumulateBigDecimalMvel() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list;\n" +
+                     "dialect \"mvel\"\n" +
+                     "rule R when\n" +
+                     "  $b : BigDecimal() from accumulate (\n" +
+                     "            Person( $money : money ),\n" +
+                     "                init( BigDecimal sum = 0; ),\n" +
+                     "                action( sum += $money; ),\n" +
+                     "                reverse( sum -= $money; ),\n" +
+                     "                result( sum )\n" +
+                     "         )\n" +
+                     "then\n" +
+                     "  list.add($b);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person john = new Person("John");
+        john.setMoney(new BigDecimal(100));
+        ksession.insert(john);
+        Person paul = new Person("Paul");
+        paul.setMoney(new BigDecimal(200));
+        ksession.insert(paul);
+
+        ksession.fireAllRules();
+
+        assertEquals(new BigDecimal(300), list.get(0));
+
+    }
+
+    @Test
+    public void testSemicolonMissingInInit() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0),\n" +
+                "                action( sum += $age; ),\n" +
+                "                reverse( sum -= $age; ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person john = new Person("John", 23);
+        ksession.insert(john);
+
+        Person paul = new Person("Paul", 40);
+        ksession.insert(paul);
+
+        Person jones = new Person("Jones", 16);
+        ksession.insert(jones);
+
+        ksession.fireAllRules();
+
+        assertEquals(63, list.get(0));
+    }
+
+
+    @Test(expected = AssertionError.class)
+    public void testSemicolonMissingInAction() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0; ),\n" +
+                "                action( sum += $age ),\n" +
+                "                reverse( sum -= $age; ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+       getKieSession(str);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testSemicolonMissingInReverse() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ),\n" +
+                "                init( int sum = 0; ),\n" +
+                "                action( sum += $age; ),\n" +
+                "                reverse( sum -= $age ),\n" +
+                "                result( sum )\n" +
+                "         )\n" +
+                "then\n" +
+                "  list.add($sum);\n" +
+                "end";
+
+        getKieSession(str);
     }
 
 }

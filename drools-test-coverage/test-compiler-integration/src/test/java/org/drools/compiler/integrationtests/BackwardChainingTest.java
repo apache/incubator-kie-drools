@@ -1388,7 +1388,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
     public static InternalFactHandle getFactHandle(final FactHandle factHandle,
                                             final KieSession ksession) {
-        final Map<Integer, FactHandle> handles = new HashMap<>();
+        final Map<Long, FactHandle> handles = new HashMap<>();
         ksession.getFactHandles().forEach(fh -> handles.put(((InternalFactHandle) fh).getId(), fh));
         return (InternalFactHandle) handles.get(((InternalFactHandle) factHandle).getId());
     }

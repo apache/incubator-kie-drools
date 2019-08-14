@@ -17,6 +17,7 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -192,7 +193,7 @@ public class DTAnalysis {
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
                                                                        masked.maskedRule,
                                                                        masked.maskedBy),
-                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType(), Collections.singletonList(masked.maskedRule)));
         }
         for (MisleadingRule misleading : misleadingRules) {
             results.add(new DMNDTAnalysisMessage(this,
@@ -200,7 +201,7 @@ public class DTAnalysis {
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
                                                                        misleading.misleadingRule,
                                                                        misleading.misleadRule),
-                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType(), Collections.singletonList(misleading.misleadingRule)));
         }
         return results;
     }
@@ -215,7 +216,7 @@ public class DTAnalysis {
                                                                        s.includedRule,
                                                                        s.rule,
                                                                        s.includedRule),
-                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType()));
+                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType(), Collections.singletonList(s.rule)));
         }
         return results;
     }
@@ -226,10 +227,9 @@ public class DTAnalysis {
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_CONTRACTION_RULE,
-                                                                       x.rule,
-                                                                       x.pairedRule,
+                                                                       x.impactedRules(),
                                                                        x.adjacentDimension),
-                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType()));
+                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType(), x.impactedRules()));
         }
         return results;
     }
@@ -256,7 +256,7 @@ public class DTAnalysis {
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
                                                                        duplicateRulesTuple),
-                                                 Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType()));
+                                                 Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType(), duplicateRulesTuple));
         }
         return results;
     }
@@ -271,9 +271,8 @@ public class DTAnalysis {
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_2NDNFVIOLATION,
                                                                        c.adjacentDimension,
-                                                                       c.rule,
-                                                                       c.pairedRule),
-                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType()));
+                                                                       c.impactedRules()),
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), c.impactedRules()));
         }
         return results;
     }
@@ -301,7 +300,7 @@ public class DTAnalysis {
                                                          Severity.ERROR,
                                                          MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE,
                                                                                overlap.asHumanFriendly(ddtaTable)),
-                                                         Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
+                                                         Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType(), overlap.getRules()));
                     break;
                 case ANY:
                     List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
@@ -313,7 +312,7 @@ public class DTAnalysis {
                                                                  Severity.ERROR,
                                                                  MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY,
                                                                                        overlap.asHumanFriendly(ddtaTable)),
-                                                                 Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY.getType()));
+                                                                 Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY.getType(), overlap.getRules()));
                             break;
                         } else {
                             prevValue = curValue;
@@ -333,7 +332,7 @@ public class DTAnalysis {
                                         Severity.WARN,
                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
                                                               overlap.asHumanFriendly(ddtaTable)),
-                                        Msg.DTANALYSIS_OVERLAP.getType());
+                                        Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
     }
 
     private Collection gapsAsMessages() {
@@ -383,7 +382,7 @@ public class DTAnalysis {
                                                                               MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED,
                                                                                                     sourceDT.getOutputLabel(),
                                                                                                     ruleId, otherRuleID),
-                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType()));
+                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType(), Collections.singletonList(ruleId)));
                             }
                         }
                     }
@@ -510,7 +509,7 @@ public class DTAnalysis {
     }
 
     private boolean areRulesContraction(Integer a, Integer b) {
-        return contractions.stream().filter(s -> (s.rule == b && s.pairedRule == a) || (s.rule == a && s.pairedRule == b)).findAny().isPresent();
+        return contractions.stream().filter(s -> (s.rule == b && s.pairedRules.contains(a)) || (s.rule == a && s.pairedRules.contains(b))).findAny().isPresent();
     }
 
     private boolean areRulesInNonContractionCache(Integer a, Integer b) {
@@ -551,7 +550,13 @@ public class DTAnalysis {
                         allIntervals.addAll(curInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
                         allIntervals.addAll(otherInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
                         List<Interval> flatten = Interval.flatten(allIntervals);
-                        contractions.add(new Contraction(ruleId, otherRuleId, detectedAdjacentOrOverlap, flatten));
+                        DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(detectedAdjacentOrOverlap - 1);
+                        if (ddtaInputClause.isDiscreteDomain()) {
+                            flatten = Interval.normalizeDiscrete(flatten, ddtaInputClause.getDiscreteValues());
+                        }
+                        Contraction contraction = new Contraction(ruleId, Arrays.asList(otherRuleId), detectedAdjacentOrOverlap, flatten);
+                        LOG.debug("NEW CONTRACTION: {}", contraction);
+                        contractions.add(contraction);
                     } else {
                         cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new HashSet<>()).add(ruleId);
                         cacheNonContractingRules.computeIfAbsent(ruleId, x -> new HashSet<>()).add(otherRuleId);
@@ -559,6 +564,67 @@ public class DTAnalysis {
                 }
             }
         }
+        if (!this.contractions.isEmpty()) {
+            normalizeContractions(); // early normalization call to suite for consistent 2NF computations.
+        }
+    }
+
+    private void normalizeContractions() {
+        int prevSize = this.overlaps.size();
+        internalNormalizeContractions();
+        int curSize = this.overlaps.size();
+        if (curSize != prevSize) {
+            normalizeContractions();
+        }
+    }
+
+    private void internalNormalizeContractions() {
+        List<Contraction> newCollection = new ArrayList<>();
+        List<Contraction> collectionProcessing = new ArrayList<>();
+        collectionProcessing.addAll(this.contractions);
+        while (!collectionProcessing.isEmpty()) {
+            List<Contraction> toBeRemoved = new ArrayList<>();
+            List<Contraction> toBeAdded = new ArrayList<>();
+            Contraction cur = collectionProcessing.remove(0);
+            for (Contraction other : collectionProcessing) {
+                if (cur == null) {
+                    break;
+                }
+                if (cur.adjacentDimension == other.adjacentDimension && Interval.adjOrOverlap(cur.dimensionAsContracted, other.dimensionAsContracted)) {
+                    List<Interval> intervals = new ArrayList<>();
+                    intervals.addAll(cur.dimensionAsContracted);
+                    intervals.addAll(other.dimensionAsContracted);
+                    List<Interval> flatten = Interval.flatten(intervals);
+                    DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(cur.adjacentDimension - 1);
+                    if (ddtaInputClause.isDiscreteDomain()) {
+                        flatten = Interval.normalizeDiscrete(flatten, ddtaInputClause.getDiscreteValues());
+                    }
+                    Set<Integer> allRules = new HashSet<>();
+                    allRules.add(cur.rule);
+                    allRules.add(other.rule);
+                    allRules.addAll(cur.pairedRules);
+                    allRules.addAll(other.pairedRules);
+                    Integer mainRuleId = Collections.min(allRules);
+                    allRules.remove(mainRuleId);
+                    Contraction merged = new Contraction(mainRuleId, allRules, cur.adjacentDimension, flatten);
+                    LOG.debug("MERGED CONTRACTION: {}", merged);
+                    cur = null;
+                    toBeRemoved.add(other);
+                    toBeAdded.add(merged);
+                }
+            }
+            for (Contraction x : toBeRemoved) {
+                collectionProcessing.remove(x);
+            }
+            for (Contraction x : toBeAdded) {
+                collectionProcessing.add(0, x);
+            }
+            if (cur != null) {
+                newCollection.add(cur);
+            }
+        }
+        this.contractions.clear();
+        this.contractions.addAll(newCollection);
     }
 
     public List<Contraction> getContractions() {

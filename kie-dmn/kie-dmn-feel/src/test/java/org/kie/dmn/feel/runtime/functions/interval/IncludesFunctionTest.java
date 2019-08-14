@@ -56,7 +56,7 @@ public class IncludesFunctionTest {
         FunctionTestUtil.assertResult( includesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 "a"),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( includesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN ),
                 "f" ),
@@ -72,7 +72,7 @@ public class IncludesFunctionTest {
         FunctionTestUtil.assertResult( includesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( includesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "c", "d", Range.RangeBoundary.CLOSED ) ),

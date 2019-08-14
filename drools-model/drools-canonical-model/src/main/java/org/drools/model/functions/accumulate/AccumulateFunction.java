@@ -1,5 +1,7 @@
 package org.drools.model.functions.accumulate;
 
+import java.util.function.Supplier;
+
 import org.drools.model.Argument;
 import org.drools.model.Value;
 import org.drools.model.Variable;
@@ -9,19 +11,19 @@ public class AccumulateFunction {
     private Variable[] externalVars;
 
     protected final Argument source;
-    protected final Class<?> functionClass;
+    protected final Supplier<?> functionSupplier;
 
-    public AccumulateFunction(Argument source, Class<?> functionClass) {
+    public AccumulateFunction(Argument source, Supplier<?> functionSupplier) {
         this.source = source;
-        this.functionClass = functionClass;
+        this.functionSupplier = functionSupplier;
     }
 
     public Argument getSource() {
         return source;
     }
 
-    public Class<?> getFunctionClass() {
-        return functionClass;
+    public Object createFunctionObject() {
+        return functionSupplier.get();
     }
 
     public Variable getResult() {

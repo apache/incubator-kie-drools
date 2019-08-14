@@ -111,6 +111,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
                 }
             }
         }
+        pmmlCompiler.getResults().forEach(result -> {
+            kbuilder.addBuilderResult(result);
+        });
     }
 
     /**

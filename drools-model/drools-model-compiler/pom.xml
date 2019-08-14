@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>7.24.0-SNAPSHOT</version>
+    <version>7.26.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-model-compiler</artifactId>
@@ -122,6 +122,13 @@
               org.drools.modelcompiler.*
             </Export-Package>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

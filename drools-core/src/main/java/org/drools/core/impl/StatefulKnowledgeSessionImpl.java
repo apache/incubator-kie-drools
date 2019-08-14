@@ -1109,7 +1109,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.initialFactHandle = initInitialFact(kBase, null);
     }
 
-    public void reset(int handleId,
+    public void reset(long handleId,
                       long handleCounter,
                       long propagationCounter) {
         if (nodeMemories != null) {
@@ -1650,7 +1650,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         private Tuple                    tuple;
 
         public WorkingMemoryReteAssertAction(MarshallerReaderContext context) throws IOException {
-            this.factHandle = context.handles.get( context.readInt() );
+            this.factHandle = context.handles.get( context.readLong() );
             this.removeLogical = context.readBoolean();
             this.updateEqualsMap = context.readBoolean();
 
@@ -1751,7 +1751,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         public WorkingMemoryReteExpireAction(MarshallerReaderContext context) throws IOException {
-            this.factHandle = (EventFactHandle)context.handles.get(context.readInt());
+            this.factHandle = (EventFactHandle)context.handles.get(context.readLong());
             final int nodeId = context.readInt();
             this.node = (ObjectTypeNode) context.sinks.get(nodeId);
         }
@@ -1784,7 +1784,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
             factHandle.forEachRightTuple( rt -> {
-                rt.setExpired( true );
+                rt.setExpired(workingMemory, context);
                 ObjectTypeNode.expireRightTuple(rt);
             } );
 
@@ -1842,7 +1842,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
             linkedTuples.forEachLeftTuple( partition, ObjectTypeNode::expireLeftTuple );
             linkedTuples.forEachRightTuple( partition, rt -> {
-                rt.setExpired( true );
+                rt.setExpired(wm, context);
                 ObjectTypeNode.expireRightTuple(rt);
             });
 

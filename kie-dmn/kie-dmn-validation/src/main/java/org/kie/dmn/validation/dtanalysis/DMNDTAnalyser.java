@@ -305,7 +305,7 @@ public class DMNDTAnalyser {
             Bound<?> lastBound = bounds.get(0);
             for (Bound<?> currentBound : bounds) {
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
-                if (activeIntervals.size() > 1 && canBeNewCurrIntervalForOverlaps(lastBound, currentBound)) {
+                if (activeIntervals.size() > 1 && canBeNewCurrInterval(lastBound, currentBound)) {
                     Interval analysisInterval = new Interval(lastBound.isUpperBound() ? Interval.invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                              lastBound.getValue(),
                                                              currentBound.getValue(),
@@ -332,19 +332,6 @@ public class DMNDTAnalyser {
             throw new IllegalStateException();
         }
         LOG.debug(".");
-    }
-
-    private static boolean canBeNewCurrIntervalForOverlaps(Bound<?> lastBound, Bound<?> currentBound) {
-        int vCompare = BoundValueComparator.compareValueDispatchingToInf(lastBound, currentBound);
-        if (vCompare != 0) {
-            return true;
-        } else {
-            if (lastBound.getBoundaryType() == RangeBoundary.CLOSED && currentBound.getBoundaryType() == RangeBoundary.CLOSED) {
-                return true; // by Bound order, if they have same value x, interested in only the case [x x]
-            } else {
-                return false;
-            }
-        }
     }
 
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {

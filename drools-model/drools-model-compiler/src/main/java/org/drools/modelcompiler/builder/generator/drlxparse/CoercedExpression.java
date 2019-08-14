@@ -54,20 +54,18 @@ public class CoercedExpression {
 
     public CoercedExpressionResult coerce() {
         final TypedExpression coercedRight;
-        final Expression rightExpression = right.getExpression();
 
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
 
+        if (cannotCoerce()) {
+            throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
+        }
+
+        final Expression rightExpression = right.getExpression();
+
         final boolean leftIsPrimitive = leftClass.isPrimitive();
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
-
-        if (leftIsPrimitive && canCoerceLiteralNumberExpr) {
-            if (!rightClass.isPrimitive() && !Number.class.isAssignableFrom(rightClass) &&
-                    !Boolean.class.isAssignableFrom(rightClass) && !String.class.isAssignableFrom(rightClass)) {
-                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
-            }
-        }
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
@@ -76,12 +74,12 @@ public class CoercedExpression {
             coercedRight = coerceToString(right);
         } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass) && right.isNumberLiteral()) {
             coercedRight = castToClass(leftClass);
-        } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
-            coercedRight = castToClass(Object.class);
         } else if (leftClass == long.class && rightClass == int.class) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
+        } else if(shouldCoerceBToMap()) {
+            coercedRight = castToClass(toNonPrimitiveType(leftClass));
         } else {
             coercedRight = right;
         }
@@ -94,6 +92,27 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private boolean shouldCoerceBToMap() {
+        return isNotBinaryExpression(right) && Map.class.isAssignableFrom(right.getRawClass());
+    }
+
+    private boolean cannotCoerce() {
+        final Class<?> leftClass = left.getRawClass();
+        final Class<?> rightClass = right.getRawClass();
+
+        final boolean leftIsPrimitive = leftClass.isPrimitive();
+        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
+
+        return leftIsPrimitive
+                && canCoerceLiteralNumberExpr
+                && !rightClass.isPrimitive()
+                && !Number.class.isAssignableFrom(rightClass)
+                && !Boolean.class.isAssignableFrom(rightClass)
+                && !String.class.isAssignableFrom(rightClass)
+                && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
+
     }
 
     private TypedExpression castToClass(Class<?> clazz) {
@@ -121,7 +140,7 @@ public class CoercedExpression {
         return new TypedExpression( methodCallExpr, Date.class );
     }
 
-    public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
+    private static boolean canCoerceLiteralNumberExpr(Class<?> type) {
         return LITERAL_NUMBER_CLASSES.contains(type);
     }
 
@@ -129,7 +148,7 @@ public class CoercedExpression {
         boolean aIsString = a.getType() == String.class;
         boolean bIsNotString = b.getType() != String.class;
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
-        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
+        boolean bIsNotSerializable = b.getType() != Serializable.class;
         boolean bExpressionExists = b.getExpression() != null;
         return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
     }
@@ -148,7 +167,7 @@ public class CoercedExpression {
         if (type == double.class) {
             return new DoubleLiteralExpr(expr.getValue().endsWith("d") ? expr.getValue() : expr.getValue() + "d");
         }
-        throw new RuntimeException("Unknown literal: " + expr);
+        throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));
     }
 
     private boolean canBeNarrowed(Class<?> leftType, Class<?> rightType) {
@@ -165,7 +184,7 @@ public class CoercedExpression {
             this.coercedRight = coercedRight;
         }
 
-        public TypedExpression getCoercedLeft() {
+        TypedExpression getCoercedLeft() {
             return coercedLeft;
         }
 
@@ -174,15 +193,15 @@ public class CoercedExpression {
         }
     }
 
-    public static class CoercedExpressionException extends RuntimeException {
+    static class CoercedExpressionException extends RuntimeException {
 
-        private final InvalidExpressionErrorResult invalidExpressionErrorResult;
+        private final transient InvalidExpressionErrorResult invalidExpressionErrorResult;
 
-        public CoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
+        CoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
             this.invalidExpressionErrorResult = invalidExpressionErrorResult;
         }
 
-        public InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
+        InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
             return invalidExpressionErrorResult;
         }
     }

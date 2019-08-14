@@ -198,8 +198,7 @@ public abstract class BaseTuple implements Tuple {
         return expired;
     }
 
-    @Override
-    public void setExpired( boolean expired ) {
-        this.expired = expired;
+    public void setExpired() {
+        this.expired = true;
     }
 }

@@ -43,7 +43,7 @@ public class DMNScenarioRunner extends AbstractScenarioRunner {
     }
 
     @Override
-    protected AbstractRunnerHelper newRunnerHelper(SimulationDescriptor simulationDescriptor) {
+    protected AbstractRunnerHelper newRunnerHelper() {
         return new DMNScenarioRunnerHelper();
     }
 }

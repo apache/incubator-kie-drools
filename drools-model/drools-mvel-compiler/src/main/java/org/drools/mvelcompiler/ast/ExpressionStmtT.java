@@ -17,7 +17,7 @@ public class ExpressionStmtT implements TypedExpression {
 
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return child.getType();
     }
 
     @Override

@@ -23,22 +23,27 @@ import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.model.api.Import;
 
 public class DMNPMMLModelInfo extends PMMLModelInfo {
 
     private final Map<String, DMNType> inputFields;
 
-    public DMNPMMLModelInfo(String name, Map<String, DMNType> inputFields, Collection<String> targetFields, Collection<String> outputFields) {
-        super(name, inputFields.keySet(), targetFields, outputFields);
+    public DMNPMMLModelInfo(String name, String className, Map<String, DMNType> inputFields, Collection<String> targetFields, Collection<String> outputFields) {
+        super(name, className, inputFields.keySet(), targetFields, outputFields);
         this.inputFields = Collections.unmodifiableMap(new HashMap<>(inputFields));
     }
 
-    public static DMNPMMLModelInfo from(PMMLModelInfo info, DMNModelImpl model) {
+    public static DMNPMMLModelInfo from(PMMLModelInfo info, DMNModelImpl model, Import i) {
         Map<String, DMNType> inputFields = new HashMap<>();
         for (String name : info.inputFieldNames) {
-            inputFields.put(name, model.getTypeRegistry().unknown());
+            DMNType lookupType = model.getTypeRegistry().resolveType(i.getNamespace(), name);
+            if (lookupType == null) {
+                lookupType = model.getTypeRegistry().unknown();
+            }
+            inputFields.put(name, lookupType);
         }
-        return new DMNPMMLModelInfo(info.name, inputFields, info.targetFieldNames, info.outputFieldNames);
+        return new DMNPMMLModelInfo(info.name, info.className, inputFields, info.targetFieldNames, info.outputFieldNames);
     }
 
     public Map<String, DMNType> getInputFields() {

@@ -181,9 +181,11 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
         Collection<Object> result = new ArrayList<>();
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, null, it); rightTuple != null; ) {
             RightTuple nextRight = (RightTuple) it.next(rightTuple);
-            InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();
-            if (constraints.isAllowedCachedLeft(contextEntry, fh)) {
-                result.add(fh.getObject());
+            if ( !(rightTuple instanceof SubnetworkTuple) ) {
+                InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();
+                if ( constraints.isAllowedCachedLeft( contextEntry, fh ) ) {
+                    result.add( fh.getObject() );
+                }
             }
             rightTuple = nextRight;
         }

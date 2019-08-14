@@ -39,7 +39,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.conf.SequentialOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.utils.KieHelper;

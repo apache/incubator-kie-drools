@@ -72,7 +72,7 @@ public class StartedByFunctionTest {
         FunctionTestUtil.assertResult( startedByFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
-                Boolean.FALSE );
+                Boolean.TRUE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),

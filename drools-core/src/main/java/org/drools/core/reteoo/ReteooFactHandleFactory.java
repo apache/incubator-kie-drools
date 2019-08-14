@@ -35,7 +35,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         super();
     }
 
-    public ReteooFactHandleFactory(int id,
+    public ReteooFactHandleFactory(long id,
                                    long counter) {
         super( id,
                counter );
@@ -44,7 +44,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public InternalFactHandle newFactHandle( final int id,
+    public InternalFactHandle newFactHandle( final long id,
                                              final Object object,
                                              final long recency,
                                              final ObjectTypeConf conf,
@@ -87,7 +87,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         return new ReteooFactHandleFactory();
     }
 
-    public FactHandleFactory newInstance(int id,
+    public FactHandleFactory newInstance(long id,
                                          long counter) {
         return new ReteooFactHandleFactory( id,
                                             counter );

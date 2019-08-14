@@ -583,7 +583,7 @@ public class DMNEvaluatorCompiler {
                     inputExpressionText,
                     dtName,
                     index );
-            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput ) );
+            inputs.add(new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput, inputType.isCollection()));
             inputTypes.add(inputType);
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();

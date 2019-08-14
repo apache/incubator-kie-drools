@@ -51,6 +51,7 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
@@ -81,9 +82,10 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -91,7 +93,13 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
+    public static final String THIS_PLACEHOLDER = "_this";
+
     private static final Map<String, Method> accessorsCache = new HashMap<>();
+
+    public static boolean isThisExpression( Node expr ) {
+        return expr instanceof ThisExpr || (expr instanceof NameExpr && ((NameExpr)expr).getName().getIdentifier().equals(THIS_PLACEHOLDER));
+    }
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -109,23 +117,6 @@ public class DrlxParseUtil {
                 return ConstraintType.LESS_OR_EQUAL;
             default:
                 return ConstraintType.UNKNOWN;
-        }
-    }
-
-    public static Expression findLeftLeafOfMethodCall(Expression expression) {
-        if (expression instanceof BinaryExpr) {
-            BinaryExpr be = (BinaryExpr) expression;
-            return findLeftLeafOfMethodCall(be.getLeft());
-        }
-        if (expression instanceof CastExpr) {
-            CastExpr ce = (CastExpr) expression;
-            return findLeftLeafOfMethodCall(ce.getExpression());
-        } else if (expression instanceof MethodCallExpr) {
-            return expression;
-        } else if (expression instanceof FieldAccessExpr) {
-            return expression;
-        } else {
-            throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
     }
 
@@ -153,13 +144,13 @@ public class DrlxParseUtil {
             }
         }
         if (clazz.isArray() && name.equals( "length" )) {
-            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
+            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( THIS_PLACEHOLDER ), name );
             return new TypedExpression( expr, int.class );
         }
         try {
             Field field = clazz.getField( name );
             if (scope == null) {
-                scope = new NameExpr(Modifier.isStatic( field.getModifiers() ) ? clazz.getCanonicalName() : "_this");
+                scope = new NameExpr(Modifier.isStatic( field.getModifiers() ) ? clazz.getCanonicalName() : THIS_PLACEHOLDER);
             }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
@@ -383,7 +374,7 @@ public class DrlxParseUtil {
                 Expression sanitizedExpr = DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
                 acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
-            }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
+            }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr, acc.isEmpty() ? expr : acc.getLast()));
         } else if (expr instanceof NameExpr || expr instanceof DrlNameExpr) {
             if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
                 ((NodeWithOptionalScope) acc.getLast()).setScope(null);
@@ -396,23 +387,25 @@ public class DrlxParseUtil {
                     }
                 }
 
-                return new RemoveRootNodeResult(Optional.of(expr), acc.getFirst());
+                return new RemoveRootNodeResult(Optional.of(expr), acc.getFirst(), acc.getLast());
             } else {
-                return new RemoveRootNodeResult(Optional.of(expr), expr);
+                return new RemoveRootNodeResult(Optional.of(expr), expr, expr);
             }
 
         }
 
-        return new RemoveRootNodeResult(Optional.empty(), expr);
+        return new RemoveRootNodeResult(Optional.empty(), expr, expr);
     }
 
     public static class RemoveRootNodeResult {
         private Optional<Expression> rootNode;
         private Expression withoutRootNode;
+        private Expression firstChild;
 
-        public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode) {
+        public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode, Expression firstChild) {
             this.rootNode = rootNode;
             this.withoutRootNode = withoutRootNode;
+            this.firstChild = firstChild;
         }
 
         public Optional<Expression> getRootNode() {
@@ -423,11 +416,16 @@ public class DrlxParseUtil {
             return withoutRootNode;
         }
 
+        public Expression getFirstChild() {
+            return firstChild;
+        }
+
         @Override
         public String toString() {
             return "RemoveRootNodeResult{" +
                     "rootNode=" + rootNode.map(PrintUtil::printConstraint) +
                     ", withoutRootNode=" + PrintUtil.printConstraint(withoutRootNode) +
+                    ", firstChild=" + PrintUtil.printConstraint(firstChild) +
                     '}';
         }
 
@@ -441,12 +439,13 @@ public class DrlxParseUtil {
             }
             RemoveRootNodeResult that = (RemoveRootNodeResult) o;
             return Objects.equals(rootNode.map(PrintUtil::printConstraint), that.rootNode.map(PrintUtil::printConstraint)) &&
-                    Objects.equals(PrintUtil.printConstraint(withoutRootNode), PrintUtil.printConstraint(that.withoutRootNode));
+                    Objects.equals(PrintUtil.printConstraint(withoutRootNode), PrintUtil.printConstraint(that.withoutRootNode)) &&
+                    Objects.equals(PrintUtil.printConstraint(firstChild), PrintUtil.printConstraint(that.firstChild));
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(rootNode, withoutRootNode);
+            return Objects.hash(rootNode, withoutRootNode, firstChild);
         }
     }
 
@@ -475,7 +474,7 @@ public class DrlxParseUtil {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {
-            lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
+            lambdaExpr.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
         lambdaExpr.setBody( new ExpressionStmt(expr) );
@@ -743,12 +742,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static boolean hasScopeWithName(MethodCallExpr expression, String name ) {
-        return findRootNodeViaScope(expression)
-                .filter(s -> isNameExprWithName(s, name))
-                .isPresent();
-    }
-
     public static boolean isNameExprWithName(Node expression, String name) {
         return expression instanceof NameExpr && (( NameExpr ) expression).getNameAsString().equals(name );
     }
@@ -831,5 +824,9 @@ public class DrlxParseUtil {
 
     public static String addCurlyBracesToBlock(String blockString) {
         return String.format("{%s}", blockString);
+    }
+
+    public static String addSemicolon(String block) {
+        return block.endsWith(";") ? block : block + ";";
     }
 }

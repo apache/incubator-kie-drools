@@ -16,6 +16,8 @@
 
 package org.drools.core.spi;
 
+import java.util.Collection;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -35,7 +37,7 @@ public interface FactHandleFactory {
                                      InternalWorkingMemory workingMemory,
                                      WorkingMemoryEntryPoint wmEntryPoint );
     
-    InternalFactHandle newFactHandle(int id,
+    InternalFactHandle newFactHandle(long id,
                                      Object object,
                                      long recency,
                                      ObjectTypeConf conf,
@@ -57,17 +59,20 @@ public interface FactHandleFactory {
      */
     FactHandleFactory newInstance();
     
-    FactHandleFactory newInstance(int id, long counter);
+    FactHandleFactory newInstance(long id, long counter);
 
     Class<?> getFactHandleType();
 
-    int getId();
+    long getId();
 
     long getRecency();
 
-    int getNextId();
+    long getNextId();
 
     long getNextRecency();
     
-    void clear(int id, long counter);
+    void clear(long id, long counter);
+
+    void doRecycleIds( Collection<Long> usedIds );
+    void stopRecycleIds();
 }

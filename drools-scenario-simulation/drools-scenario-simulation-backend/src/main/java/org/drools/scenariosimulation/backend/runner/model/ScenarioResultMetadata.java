@@ -16,17 +16,21 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 public class ScenarioResultMetadata {
 
     protected final Set<String> available = new HashSet<>();
 
-    protected final Set<String> executed = new HashSet<>();
+    protected final Map<String, Integer> executed = new HashMap<>();
 
     protected final ScenarioWithIndex scenarioWithIndex;
 
@@ -38,16 +42,28 @@ public class ScenarioResultMetadata {
         available.add(element);
     }
 
+    public void addAllAvailable(Set<String> elements) {
+        available.addAll(elements);
+    }
+
     public void addExecuted(String element) {
-        executed.add(element);
+        executed.compute(element, (key, value) -> value == null ? 1 : value + 1);
+    }
+
+    public void addAllExecuted(Map<String, Integer> elements) {
+        executed.putAll(elements);
     }
 
     public Set<String> getAvailable() {
-        return Collections.unmodifiableSet(available);
+        return unmodifiableSet(available);
     }
 
     public Set<String> getExecuted() {
-        return Collections.unmodifiableSet(executed);
+        return unmodifiableSet(executed.keySet());
+    }
+
+    public Map<String, Integer> getExecutedWithCounter() {
+        return unmodifiableMap(executed);
     }
 
     public ScenarioWithIndex getScenarioWithIndex() {

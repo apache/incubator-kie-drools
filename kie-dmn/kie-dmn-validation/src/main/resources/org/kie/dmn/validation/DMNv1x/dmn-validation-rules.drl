@@ -24,6 +24,7 @@ import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 
 import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 import function org.kie.dmn.validation.ValidatorUtil.getRootItemDef;
@@ -34,7 +35,9 @@ declare entry-point "DMNImports" end
 
 rule MISSING_IMPORT_p1
 when
-  $elemRef : Import( $importedNS : namespace, getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TImport.MODELNAME_QNAME) == null )
+  $elemRef : Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN,
+                     $importedNS : namespace,
+                     getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TImport.MODELNAME_QNAME) == null )
   not( Definitions( namespace == $importedNS ) from entry-point "DMNImports" )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.IMPORT_NOT_FOUND_FOR_NODE, $importedNS, $elemRef.getIdentifierString());
@@ -42,7 +45,10 @@ end
 
 rule MISSING_IMPORT_p2
 when
-  $elemRef : Import( $importedNS : namespace, $importedName : getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TImport.MODELNAME_QNAME) )
+  $elemRef : Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN,
+                     $importedNS : namespace,
+                     getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TImport.MODELNAME_QNAME) != null,
+                     $importedName : getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TImport.MODELNAME_QNAME) )
   not( Definitions( namespace == $importedNS, name == $importedName ) from entry-point "DMNImports" )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.IMPORT_NOT_FOUND_FOR_NODE, $importedNS + $importedName, $elemRef.getIdentifierString());
