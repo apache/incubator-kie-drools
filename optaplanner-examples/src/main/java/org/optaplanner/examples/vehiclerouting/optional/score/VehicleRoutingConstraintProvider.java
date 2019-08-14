@@ -27,6 +27,10 @@ import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.
 
 public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
+    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+    // It is stable but it has many API gaps.
+    // Therefore, it is not rich enough yet to handle complex constraints.
+
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
         vehicleCapacity(constraintFactory);

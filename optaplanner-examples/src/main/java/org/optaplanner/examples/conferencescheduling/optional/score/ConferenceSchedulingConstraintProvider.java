@@ -29,8 +29,14 @@ import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
 public class ConferenceSchedulingConstraintProvider implements ConstraintProvider {
 
+    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+    // It is stable but it has many API gaps.
+    // Therefore, it is not rich enough yet to handle complex constraints.
+
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
+        // TODO  Many of these constraints don't run yet
+
         // Hard constraints
         roomUnavailableTimeslot(constraintFactory);
         roomConflict(constraintFactory);
@@ -38,7 +44,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         speakerConflict(constraintFactory);
         talkPrerequisiteTalks(constraintFactory);
         talkMutuallyExclusiveTalksTags(constraintFactory);
-//        consecutiveTalksPause(constraintFactory); // TODO
+        consecutiveTalksPause(constraintFactory);// TODO Implement it
         crowdControl(constraintFactory);
 
         speakerRequiredTimeslotTags(constraintFactory);
@@ -130,12 +136,13 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
                         * talk1.overlappingDurationInMinutes(talk2));
     }
 
-//    protected void consecutiveTalksPause(ConstraintFactory constraintFactory) {
+    protected void consecutiveTalksPause(ConstraintFactory constraintFactory) {
+        throw new UnsupportedOperationException();
 //        Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.CONSECUTIVE_TALKS_PAUSE);
 //        c.fromUniquePair((Talk.class, intersecting(Talk::getSpeakerList))
 //                .filter((talk1, talk2) -> !talk1.getTimeslot().pauseExists(talk2.getTimeslot(), $minimumPause))
 //                .penalize(Talk::combinedDurationInMinutes);
-//    }
+    }
 
     protected void crowdControl(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.CROWD_CONTROL);

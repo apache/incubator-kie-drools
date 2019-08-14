@@ -30,6 +30,10 @@ import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
+    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+    // It is stable but it has many API gaps.
+    // Therefore, it is not rich enough yet to handle complex constraints.
+
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
         // TODO replace the 2 conflictingLectures constraints with these
@@ -41,7 +45,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         unavailablePeriodPenalty(constraintFactory);
         roomCapacity(constraintFactory);
         minimumWorkingDays(constraintFactory);
-        curriculumCompactness(constraintFactory); // TODO Fix it
+        curriculumCompactness(constraintFactory); // TODO Implement it
         roomStability(constraintFactory);
     }
 
