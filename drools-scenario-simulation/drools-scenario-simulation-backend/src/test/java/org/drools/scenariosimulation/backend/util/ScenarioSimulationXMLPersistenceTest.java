@@ -172,6 +172,16 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
+    public void migrateIfNecessary_1_6_to_1_7() throws Exception {
+        String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_6to1_7().accept(document);
+
+        commonCheck(toMigrate, document, "1.7");
+        System.out.println(document.toString());
+    }
+
+    @Test
     public void migrateIfNecessary() throws Exception {
         Assertions.assertThatThrownBy(() -> instance.migrateIfNecessary("<ScenarioSimulationModel version=\"9999999999.99999999999\" />"))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -24,6 +24,8 @@ import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
+
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
@@ -156,26 +158,14 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     @Override
     public ThrowingConsumer<Document> from1_6to1_7() {
         return document -> {
-            /*List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+            List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
             Node factMappingsNode = factMappingsNodes.get(0);
-
-            final List<Node> factIdentifierNodeList = DOMParserUtil.getNestedChildrenNodesList(factMappingsNode, "FactMapping", "factIdentifier");
-            factIdentifierNodeList.forEach(factIdentifierNode -> {
-                List<Node> factIdentifierNameList = DOMParserUtil.getChildrenNodesList(factIdentifierNode, "name");
-                if (!factIdentifierNameList.isEmpty()) {
-                    String factIdentifierName = factIdentifierNameList.get(0).getTextContent();
-                    Node factMappingNode = factIdentifierNode.getParentNode();
-                    List<Node> expressionElementsNodeList = DOMParserUtil.getChildrenNodesList(factMappingNode, "expressionElements");
-                    Node expressionElementsNode;
-                    if (expressionElementsNodeList.isEmpty()) {
-                        expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, "expressionElements", null, 0);
-                    } else {
-                        expressionElementsNode = expressionElementsNodeList.get(0);
-                    }
-                    Node expressionElementNode = DOMParserUtil.createNodeAtPosition(expressionElementsNode, "ExpressionElement", null, 0);
-                    DOMParserUtil.createNodeAtPosition(expressionElementNode, "step", factIdentifierName, 0);
-                }
-            });*/
+            final List<Node> factMappingNodeList = DOMParserUtil.getChildrenNodesList(factMappingsNode, "FactMapping");
+            factMappingNodeList.forEach(factMappingNode -> {
+                List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
+                String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
+                DOMParserUtil.createNodeAtPosition(factMappingNode, "columnWidth", Double.toString(getColumnWidth(expressionIdentifierName)), null);
+            });
             updateVersion(document, "1.7");
         };
     }
