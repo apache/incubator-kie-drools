@@ -18,6 +18,8 @@ package org.drools.workbench.models.datamodel.rule;
 
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.util.FieldConstraintArrayUtil;
+
 /**
  * A fact pattern is a declaration of a fact type, and its constraint, and
  * perhaps a variable that is it bound to It is the equivalent of a "pattern" in
@@ -140,8 +142,20 @@ public class FactPattern
         return this.constraintList.getConstraint( index );
     }
 
+    @Override
+    public void moveUp(int index) {
+
+        FieldConstraintArrayUtil.moveUp(index, getFieldConstraints());
+    }
+
+    @Override
+    public void moveDown(int index) {
+
+        FieldConstraintArrayUtil.moveDown(index, getFieldConstraints());
+    }
+
     public int getNumberOfConstraints() {
-        if ( this.constraintList == null ) {
+        if (this.constraintList == null) {
             return 0;
         }
         return this.constraintList.getNumberOfConstraints();
