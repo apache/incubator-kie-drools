@@ -167,9 +167,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     @Override
     public ThrowingConsumer<Document> from1_6to1_7() {
         return document -> {
-            List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
-            Node factMappingsNode = factMappingsNodes.get(0);
-            final List<Node> factMappingNodeList = DOMParserUtil.getChildrenNodesList(factMappingsNode, FACT_MAPPING_NODE);
+            final List<Node> factMappingNodeList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
             factMappingNodeList.forEach(factMappingNode -> {
                 List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, EXPRESSION_IDENTIFIER_NODE, "name");
                 String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
