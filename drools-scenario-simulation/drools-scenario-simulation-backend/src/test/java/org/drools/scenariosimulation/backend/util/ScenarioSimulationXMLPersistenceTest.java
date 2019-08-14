@@ -219,7 +219,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalRULE() throws Exception {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.RULE);
+        assertEquals(ScenarioSimulationModel.Type.RULE, retrieved.getSimulation().getSimulationDescriptor().getType());
         commonCheckScenarioSimulationModel(retrieved);
     }
 
@@ -227,7 +227,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalDMN() throws Exception {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
+        assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getSimulation().getSimulationDescriptor().getType());
         commonCheckScenarioSimulationModel(retrieved);
     }
 

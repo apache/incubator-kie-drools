@@ -96,7 +96,7 @@ public class FactMapping {
     }
 
     public List<ExpressionElement> getExpressionElementsWithoutClass() {
-        if (expressionElements.size() == 0) {
+        if (expressionElements.isEmpty()) {
             throw new IllegalStateException("ExpressionElements malformed");
         }
         return expressionElements.subList(1, expressionElements.size());

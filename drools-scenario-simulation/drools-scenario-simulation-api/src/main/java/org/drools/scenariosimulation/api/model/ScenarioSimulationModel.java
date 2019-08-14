@@ -35,9 +35,6 @@ public class ScenarioSimulationModel
 
     private Imports imports = new Imports();
 
-    public ScenarioSimulationModel() {
-    }
-
     public Simulation getSimulation() {
         return simulation;
     }

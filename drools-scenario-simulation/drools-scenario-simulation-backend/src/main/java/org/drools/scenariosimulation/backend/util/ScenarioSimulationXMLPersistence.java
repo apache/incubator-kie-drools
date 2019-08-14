@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 public class ScenarioSimulationXMLPersistence {
 
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
-    private static final String currentVersion = new ScenarioSimulationModel().getVersion();
+    private static final String CURRENT_VERSION = new ScenarioSimulationModel().getVersion();
     private static final Pattern p = Pattern.compile("version=\"([0-9]+\\.[0-9]+)");
 
     private XStream xt;
@@ -76,7 +76,7 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String getCurrentVersion() {
-        return currentVersion;
+        return CURRENT_VERSION;
     }
 
     public static String cleanUpUnusedNodes(String input) throws Exception {
@@ -143,13 +143,13 @@ public class ScenarioSimulationXMLPersistence {
                 supported = true;
                 break;
             default:
-                supported = currentVersion.equals(fileVersion);
+                supported = CURRENT_VERSION.equals(fileVersion);
                 break;
         }
         if (!supported) {
             throw new IllegalArgumentException(new StringBuilder().append("Version ").append(fileVersion)
                                                        .append(" of the file is not supported. Current version is ")
-                                                       .append(currentVersion).toString());
+                                                       .append(CURRENT_VERSION).toString());
         }
         migrator = migrator.andThen(getMigrationStrategy().end());
         Document document = DOMParserUtil.getDocument(rawXml);
