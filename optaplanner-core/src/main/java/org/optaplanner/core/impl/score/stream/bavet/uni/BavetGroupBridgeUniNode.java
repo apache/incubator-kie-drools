@@ -100,15 +100,4 @@ public final class BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Resul
     // Getters/setters
     // ************************************************************************
 
-    private class GroupKeyData {
-
-        public int elementCount;
-        public ResultContainer_ resultContainer;
-
-        public GroupKeyData(ResultContainer_ resultContainer) {
-            this.elementCount = 0;
-            this.resultContainer = resultContainer;
-        }
-    }
-
 }

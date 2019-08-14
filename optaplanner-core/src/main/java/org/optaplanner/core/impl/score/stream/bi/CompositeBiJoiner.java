@@ -26,10 +26,10 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     private final List<SingleBiJoiner<A, B>> joinerList;
 
     public CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
-        this.joinerList = joinerList;
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
+        this.joinerList = joinerList;
     }
 
     public List<SingleBiJoiner<A, B>> getJoinerList() {

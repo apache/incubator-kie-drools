@@ -71,7 +71,9 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
                     if (constraintMatchEnabled) {
                         matchScoreConsumer.accept(BendableScore.ofSoft(hardScores.length, softScores.length, level, softImpact));
                     }
-                    return () -> this.softScores[level] -= softImpact;
+                    return () -> {
+                        this.softScores[level] -= softImpact;
+                    };
                 };
             }
         } else {

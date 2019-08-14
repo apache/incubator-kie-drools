@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public interface BavetTuple {
 
@@ -25,9 +26,9 @@ public interface BavetTuple {
     Object[] getFacts();
 
     default String getFactsString() {
-        return String.join(", ", Arrays.stream(getFacts())
+        return Arrays.stream(getFacts())
                 .map(o -> (o == null) ? null : o.toString())
-                .toArray(CharSequence[]::new));
+                .collect(Collectors.joining(", "));
     }
 
 }
