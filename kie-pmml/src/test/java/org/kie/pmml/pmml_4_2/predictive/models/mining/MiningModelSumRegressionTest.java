@@ -42,7 +42,8 @@ public class MiningModelSumRegressionTest {
     private static final String INPUT1_FIELD_NAME = "input1";
     private static final String INPUT2_FIELD_NAME = "input2";
     private static final String INPUT3_FIELD_NAME = "input3";
-    private static final String OUTPUT_FIELD_NAME = "Sum_Result";
+    private static final String SUM_OUTPUT_FIELD_NAME = "Sum_Result";
+    private static final String BASE_OUTPUT_FIELD_NAME = "Result";
 
     private static final double COMPARISON_DELTA = 0.001;
 
@@ -55,8 +56,8 @@ public class MiningModelSumRegressionTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { Optional.of(10.0), Optional.of(10.0), Optional.of(10.0), 2070 },
-                { Optional.of(200.0), Optional.of(-1.0), Optional.of(2.0), -299 },
-                { Optional.of(90.0), Optional.of(2.0), Optional.of(4.0), 17040 },
+		{ Optional.of(200.0), Optional.of(-1.0), Optional.of(2.0), -299},
+		{ Optional.of(90.0), Optional.of(2.0), Optional.of(4.0), 17040},
         });
     }
 
@@ -83,7 +84,12 @@ public class MiningModelSumRegressionTest {
             assertEquals(request.getCorrelationId(), rd.getCorrelationId());
             if (rd.getSegmentationId() == null) {
                 assertEquals("OK",rd.getResultCode());
-                double value = rd.getResultValue(OUTPUT_FIELD_NAME, "value", Double.class).orElse(null);
+                double value = rd.getResultValue(SUM_OUTPUT_FIELD_NAME, "value", Double.class).orElse(null);
+                assertNotNull(value);
+                assertEquals(result, value, COMPARISON_DELTA);
+                // Note that the base output field is not a complex type and so
+                // does not require a field name to retrieve its value
+                value = rd.getResultValue(BASE_OUTPUT_FIELD_NAME, null, Double.class).orElse(null);
                 assertNotNull(value);
                 assertEquals(result, value, COMPARISON_DELTA);
             }
