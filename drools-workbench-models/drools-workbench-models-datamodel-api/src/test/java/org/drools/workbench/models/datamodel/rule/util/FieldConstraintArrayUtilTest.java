@@ -155,4 +155,28 @@ public class FieldConstraintArrayUtilTest {
         assertEquals(bottom, fieldConstraints[1]);
         assertEquals(middle, fieldConstraints[2]);
     }
+
+    @Test
+    public void testMove_DifferentBindings() {
+
+        final FieldConstraint[] fieldConstraints = new FieldConstraint[3];
+        final SingleFieldConstraint top = new SingleFieldConstraint();
+        top.setFieldBinding("a");
+        fieldConstraints[0] = top;
+        final SingleFieldConstraint middle = new SingleFieldConstraint();
+        middle.setFieldBinding("b");
+        fieldConstraints[1] = middle;
+        final SingleFieldConstraint bottom = new SingleFieldConstraint();
+        bottom.setFieldBinding("c");
+        fieldConstraints[2] = bottom;
+
+        // a, b, c -> b, a, c
+        FieldConstraintArrayUtil.moveDown(0, fieldConstraints);
+        // b, a, c -> b, c, a
+        FieldConstraintArrayUtil.moveUp(2, fieldConstraints);
+
+        assertEquals(middle, fieldConstraints[0]);
+        assertEquals(bottom, fieldConstraints[1]);
+        assertEquals(top, fieldConstraints[2]);
+    }
 }
