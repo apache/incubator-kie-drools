@@ -89,7 +89,7 @@ public class FieldConstraintArrayUtilTest {
 
         assertEquals(bottom, fieldConstraints[1]);
     }
-    
+
     @Test
     public void shouldNotMoveLowerThanUsedVariables() {
         final FieldConstraint[] fieldConstraints = new FieldConstraint[2];
@@ -105,5 +105,54 @@ public class FieldConstraintArrayUtilTest {
 
         assertEquals(top, fieldConstraints[0]);
         assertEquals(bottom, fieldConstraints[1]);
+    }
+
+    @Test
+
+    public void shouldNotMoveUpperThanUsedVariables_MoveToMiddle() {
+
+        final FieldConstraint[] fieldConstraints = new FieldConstraint[3];
+        final SingleFieldConstraint top = new SingleFieldConstraint();
+        top.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        top.setValue("b");
+        fieldConstraints[0] = top;
+        final SingleFieldConstraint middle = new SingleFieldConstraint();
+        middle.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        middle.setValue("a");
+        fieldConstraints[1] = middle;
+        final SingleFieldConstraint bottom = new SingleFieldConstraint();
+        bottom.setFieldBinding("a");
+        fieldConstraints[2] = bottom;
+
+        FieldConstraintArrayUtil.moveUp(2, fieldConstraints);
+        FieldConstraintArrayUtil.moveUp(1, fieldConstraints);
+
+        assertEquals(bottom, fieldConstraints[0]);
+        assertEquals(top, fieldConstraints[1]);
+        assertEquals(middle, fieldConstraints[2]);
+    }
+
+    @Test
+    public void shouldNotMoveLowerThanUsedVariables_MoveToMiddle() {
+
+        final FieldConstraint[] fieldConstraints = new FieldConstraint[3];
+        final SingleFieldConstraint top = new SingleFieldConstraint();
+        top.setFieldBinding("a");
+        fieldConstraints[0] = top;
+        final SingleFieldConstraint middle = new SingleFieldConstraint();
+        middle.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        middle.setValue("a");
+        fieldConstraints[1] = middle;
+        final SingleFieldConstraint bottom = new SingleFieldConstraint();
+        bottom.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        bottom.setValue("b");
+        fieldConstraints[2] = bottom;
+
+        FieldConstraintArrayUtil.moveDown(0, fieldConstraints);
+        FieldConstraintArrayUtil.moveDown(1, fieldConstraints);
+
+        assertEquals(top, fieldConstraints[0]);
+        assertEquals(bottom, fieldConstraints[1]);
+        assertEquals(middle, fieldConstraints[2]);
     }
 }
