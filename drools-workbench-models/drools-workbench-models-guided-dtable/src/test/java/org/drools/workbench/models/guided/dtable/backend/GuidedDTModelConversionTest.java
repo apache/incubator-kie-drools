@@ -20,6 +20,7 @@ import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionInsertFactCol;
@@ -143,7 +144,7 @@ public class GuidedDTModelConversionTest {
 
         assertEquals(1,
                      tsdt.getAttributeCols().size());
-        assertEquals("salience",
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      tsdt.getAttributeCols().get(0).getAttribute());
         assertEquals("66",
                      tsdt.getAttributeCols().get(0).getDefaultValue().getStringValue());
@@ -350,7 +351,7 @@ public class GuidedDTModelConversionTest {
 
         assertEquals(1,
                      tsdt.getAttributeCols().size());
-        assertEquals("salience",
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      tsdt.getAttributeCols().get(0).getAttribute());
         assertEquals("66",
                      tsdt.getAttributeCols().get(0).getDefaultValue().getStringValue());

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -23,7 +24,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.workbench.models.guided.dtable.backend.TestUtil.*;
+import static org.drools.workbench.models.guided.dtable.backend.TestUtil.assertContainsLinesInOrder;
 
 public class GuidedDTDRLPersistenceFirstHitPolicyTest {
 
@@ -51,7 +52,7 @@ public class GuidedDTDRLPersistenceFirstHitPolicyTest {
     public void blockUseOfSalience() {
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( "salience" );
+        attributeCol52.setAttribute(Attribute.SALIENCE.getAttributeName());
         attributeCol52.setDefaultValue( new DTCellValue52( "123" ) );
 
         dtable.getAttributeCols()
@@ -65,7 +66,7 @@ public class GuidedDTDRLPersistenceFirstHitPolicyTest {
     public void blockUseOfActivationGroup() {
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( "activation-group" );
+        attributeCol52.setAttribute(Attribute.ACTIVATION_GROUP.getAttributeName());
         attributeCol52.setDefaultValue( new DTCellValue52( "test" ) );
 
         dtable.getAttributeCols()

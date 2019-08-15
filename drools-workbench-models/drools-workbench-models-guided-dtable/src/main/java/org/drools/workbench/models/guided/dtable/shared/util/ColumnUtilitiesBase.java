@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.util;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -88,34 +89,7 @@ public abstract class ColumnUtilitiesBase {
     }
 
     private String getType(final AttributeCol52 col) {
-        String type = DataType.TYPE_STRING;
-        final String attrName = col.getAttribute();
-        if (attrName.equals(GuidedDecisionTable52.SALIENCE_ATTR)) {
-            type = DataType.TYPE_NUMERIC_INTEGER;
-        } else if (attrName.equals(GuidedDecisionTable52.ENABLED_ATTR)) {
-            type = DataType.TYPE_BOOLEAN;
-        } else if (attrName.equals(GuidedDecisionTable52.NO_LOOP_ATTR)) {
-            type = DataType.TYPE_BOOLEAN;
-        } else if (attrName.equals(GuidedDecisionTable52.DURATION_ATTR)) {
-            type = DataType.TYPE_NUMERIC_LONG;
-        } else if (attrName.equals(GuidedDecisionTable52.TIMER_ATTR)) {
-            type = DataType.TYPE_STRING;
-        } else if (attrName.equals(GuidedDecisionTable52.CALENDARS_ATTR)) {
-            type = DataType.TYPE_STRING;
-        } else if (attrName.equals(GuidedDecisionTable52.AUTO_FOCUS_ATTR)) {
-            type = DataType.TYPE_BOOLEAN;
-        } else if (attrName.equals(GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR)) {
-            type = DataType.TYPE_BOOLEAN;
-        } else if (attrName.equals(GuidedDecisionTable52.DATE_EFFECTIVE_ATTR)) {
-            type = DataType.TYPE_DATE;
-        } else if (attrName.equals(GuidedDecisionTable52.DATE_EXPIRES_ATTR)) {
-            type = DataType.TYPE_DATE;
-        } else if (attrName.equals(GuidedDecisionTable52.DIALECT_ATTR)) {
-            type = DataType.TYPE_STRING;
-        } else if (attrName.equals(GuidedDecisionTable52.NEGATE_RULE_ATTR)) {
-            type = DataType.TYPE_BOOLEAN;
-        }
-        return type;
+        return Attribute.getAttributeDataType(col.getAttribute());
     }
 
     private String getType(final ConditionCol52 col) {
