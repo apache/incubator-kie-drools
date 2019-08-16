@@ -74,7 +74,7 @@ public class ReleaseIdImpl extends org.appformer.maven.support.AFReleaseIdImpl i
         return adapt( org.appformer.maven.support.AFReleaseIdImpl.fromPropertiesStream(stream, path) );
     }
 
-    private static String resolveVersion(String versionString, PomModel projectPomModel) {
+    public static String resolveVersion(String versionString, PomModel projectPomModel) {
         if (projectPomModel != null) {
             if (PROJECT_VERSION_MAVEN_PROPERTY.equals(versionString)) {
                 return projectPomModel.getReleaseId().getVersion();
