@@ -9112,4 +9112,31 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(2, fired);
     }
+
+    @Test
+    public void testModifyAddToList() {
+        // DROOLS-4447
+        String str =
+                "import org.drools.compiler.Address\n" +
+                "import org.drools.compiler.Person\n" +
+                "rule addAddress\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "  not(Address(street==\"Main Street\") from $p.addresses)" +
+                "then\n" +
+                "    Address address = new Address(\"Main Street\");\n" +
+                "    modify($p) { addresses.add(address) }\n" +
+                "end\n";
+
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = kbase.newKieSession();
+
+        Person martin = new Person( "Martin" );
+
+        ksession.insert( martin );
+        ksession.fireAllRules();
+
+        assertEquals( 1, martin.getAddresses().size() );
+    }
 }
