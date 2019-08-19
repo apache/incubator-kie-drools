@@ -36,6 +36,7 @@ public class IncrementalRuleCodegenTest {
                         Collections.singleton(
                                 new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1/file1.drl")),
                         ResourceType.DRL);
+        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(2, 1, generatedFiles.size());
@@ -47,6 +48,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofFiles(
                         Arrays.asList(new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1").listFiles()),
                         ResourceType.DRL);
+        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(4, 1, generatedFiles.size());
@@ -58,6 +60,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofPath(
                         Paths.get("src/test/resources/org/kie/kogito/codegen/rules"),
                         ResourceType.DRL);
+        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(7, 3, 1, generatedFiles.size());
@@ -69,6 +72,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofFiles(
                         Collections.singleton(
                                 new File("src/test/resources/org/drools/simple/candrink/CanDrink.xls")));
+        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(2, 1, generatedFiles.size());
@@ -80,6 +84,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofPath(
                         Paths.get("src/test/resources/org/kie/kogito/codegen/rules/myunit"),
                         ResourceType.DRL);
+        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(1, 1, 1, generatedFiles.size());
