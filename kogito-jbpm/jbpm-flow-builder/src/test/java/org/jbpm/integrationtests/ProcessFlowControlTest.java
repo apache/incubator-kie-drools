@@ -16,6 +16,8 @@
 
 package org.jbpm.integrationtests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +39,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ProcessFlowControlTest extends AbstractBaseTest {
     
@@ -124,11 +123,10 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         inList.remove( new Integer( 25 ) );
         session.update( handle,
                         inList );
-        try {
-            session.startProcess( "ConstraintDialects" );
-            fail( "This should have thrown an exception" );
-        } catch ( Exception e ) {
-        }
+        ProcessInstance processInstance = session.startProcess( "ConstraintDialects" );
+        
+        assertEquals( ProcessInstance.STATE_ERROR,
+                      processInstance.getState() );
     }
 
     @Test

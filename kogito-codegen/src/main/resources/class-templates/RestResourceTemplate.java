@@ -18,6 +18,7 @@ import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceExecutionExteption;
 import org.kie.kogito.process.WorkItem;
 
 @Path("/$name$")
@@ -39,7 +40,7 @@ public class $Type$Resource {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.createInstance(value);
             pi.start();
-            return pi.variables();
+            return getModel(pi);
         });
     }
 
@@ -73,6 +74,24 @@ public class $Type$Resource {
                 return null;
             } else {
                 pi.abort();
+                return getModel(pi);
+            }
+        });
+    }
+    
+    @POST()
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public $Type$ updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<$Type$> pi = process.instances()
+                    .findById(id)
+                    .orElse(null);
+            if (pi == null) {
+                return null;
+            } else {
+                pi.updateVariables(resource);
                 return pi.variables();
             }
         });
@@ -87,5 +106,13 @@ public class $Type$Resource {
                 .map(ProcessInstance::workItems)
                 .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                 .orElse(null);
+    }
+    
+    protected $Type$ getModel(ProcessInstance<$Type$> pi) {
+        if (pi.status() == ProcessInstance.STATE_ERROR && pi.error().isPresent()) {
+            throw new ProcessInstanceExecutionExteption(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
+        }
+        
+        return pi.variables();
     }
 }

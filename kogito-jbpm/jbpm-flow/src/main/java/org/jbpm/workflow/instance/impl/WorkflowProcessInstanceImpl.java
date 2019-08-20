@@ -95,7 +95,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private List<String> activatingNodeIds;
 	private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
 	private int currentLevel;
-	private boolean persisted = false;
+	
 	private Object faultData;
 
 	private boolean signalCompletion = true;
@@ -105,6 +105,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private Date startDate;
 	private Date endDate;
+	
+	private String nodeIdInError;
+	private String errorMessage;
 	
 	private int slaCompliance = SLA_NA;
 	private Date slaDueDate;
@@ -236,6 +239,26 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			}
 		}
 		return result;
+	}
+	
+	public NodeInstance getNodeInstanceByNodeDefinitionId(final String nodeDefinitionId, NodeContainer nodeContainer) {
+	    
+	    for (Node node : nodeContainer.getNodes()) {
+	        
+	        if (nodeDefinitionId.equals(node.getMetaData().get("UniqueId"))) {
+	            return getNodeInstance(node);
+	        }
+	        
+	        if (node instanceof NodeContainer) {
+	            NodeInstance ni = getNodeInstanceByNodeDefinitionId(nodeDefinitionId, ((NodeContainer) node));
+	            
+	            if (ni != null) {
+	                return ni;
+	            }
+	        }
+	    }
+	    
+	    throw new IllegalArgumentException("Node with definition id " + nodeDefinitionId + " was not found");
 	}
 	
 	public NodeInstance getNodeInstance(final Node node) {
@@ -793,14 +816,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         return iterationLevels;
     }
 
-	public boolean isPersisted() {
-		return persisted;
-	}
-
-	public void setPersisted(boolean persisted) {
-		this.persisted = persisted;
-	}
-
 	public void addActivatingNodeId(String uniqueId) {
 		if (this.activatingNodeIds == null) {
 			return;
@@ -916,6 +931,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void internalSetSlaTimerId(Long slaTimerId) {
         this.slaTimerId = slaTimerId;
     }
+    
+    public String getNodeIdInError() {
+        return nodeIdInError;
+    }
+    
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
     private boolean isVariableExpression(String eventType) {
         if (eventType == null ){
@@ -928,5 +951,33 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
         return false;
     }
+
+    @Override
+    public void setErrorState(NodeInstance nodeInstanceInError, Exception e) {
+        String errorId = UUID.randomUUID().toString();
+        this.nodeIdInError = nodeInstanceInError.getNodeDefinitionId();
+        Throwable rootException = getRootException(e);
+        this.errorMessage = errorId + " - " + rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
+        setState(STATE_ERROR);
+        logger.error("Unexpected error (id {}) while executing node {} in process instance {}", errorId, nodeInstanceInError.getNode().getName(), this.getId(), e);
+        // remove node instance that caused an error
+        ((org.jbpm.workflow.instance.NodeInstanceContainer)nodeInstanceInError.getNodeInstanceContainer()).removeNodeInstance(nodeInstanceInError);
+    }
+
+    public void internalSetErrorNodeId(String errorNodeId) {
+        this.nodeIdInError = errorNodeId;
+    }
+
+    public void internalSetErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+        
+    }
     
+    protected Throwable getRootException(Throwable exception) {
+        Throwable rootException = exception;
+        while (rootException.getCause() != null) {
+            rootException = rootException.getCause();
+        }
+        return rootException;
+    }
 }

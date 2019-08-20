@@ -16,6 +16,13 @@
 
 package org.jbpm.bpmn2.canonical;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
+
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -24,13 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.event.DebugProcessEventListener;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -44,6 +51,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -53,12 +61,6 @@ import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
@@ -200,6 +202,44 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         assertEquals(STATE_COMPLETED, processInstance.status());
 
+    }
+    
+    @Test
+    public void testExclusiveSplitRetriggerAfterError() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ExclusiveSplit.bpmn2")).get(0);
+
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+
+        SystemOutWorkItemHandler workItemHandler = new SystemOutWorkItemHandler();
+
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Email", workItemHandler));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "First1");
+        params.put("y", "Second1");
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(BpmnVariables.create(params));
+
+        processInstance.start();
+
+        assertEquals(STATE_ERROR, processInstance.status());
+
+        Optional<ProcessError> errorOptional = processInstance.error();
+        assertThat(errorOptional).isPresent();
+        
+        ProcessError error = errorOptional.get();
+        assertThat(error.failedNodeId()).isEqualTo("_2");
+        assertThat(error.errorMessage()).contains("XOR split could not find at least one valid outgoing connection for split Split");
+        
+        params.put("x", "First");
+        processInstance.updateVariables(BpmnVariables.create(params));
+        
+        error.retrigger();
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
     @Test
@@ -429,7 +469,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             wiConfig.register(entry.getKey(), entry.getValue());
         }
 
-        ProcessConfig config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(new DebugProcessEventListener()), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+        ProcessConfig config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
         Map<String, BpmnProcess> processes = new HashMap<>();

@@ -18,8 +18,6 @@ package org.jbpm.bpmn2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +34,6 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -402,13 +399,9 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
-		try {
-			ProcessInstance processInstance = ksession
-					.startProcess("com.sample.bpmn.hello");
-			fail("This is not a default handler. So WorkflowRuntimeException must be thrown");
-		} catch (WorkflowRuntimeException e) {
-			assertTrue(true);
-		}
+		
+		ProcessInstance processInstance = ksession .startProcess("com.sample.bpmn.hello");
+		assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
     }
 
     @Test
@@ -418,13 +411,10 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
-		try {
-			ProcessInstance processInstance = ksession
-					.startProcess("com.sample.bpmn.hello");
-			fail("This is not a default handler. So WorkflowRuntimeException must be thrown");
-		} catch (WorkflowRuntimeException e) {
-			// all is fine
-		}
+		
+		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+		assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+		
     }
 
     @Test

@@ -33,6 +33,7 @@ import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
@@ -298,6 +299,75 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
     }
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Test
+    public void testServiceTaskProcessWithError() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/ServiceProcessDifferentOperations.bpmn2");        
+        assertThat(app).isNotNull();
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
+        uow.start();
+                
+        Process<? extends Model> p = app.processes().processById("ServiceProcessDifferentOperations");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        ProcessInstance processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        uow.end();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ERROR); 
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+        
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
+        assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "WorkItemNode");
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
+        
+        assertThat(body.getError()).isNotNull();
+        assertThat(body.getError().getErrorMessage()).contains("java.lang.NullPointerException - null");
+        assertThat(body.getError().getNodeDefinitionId()).isEqualTo("_38E04E27-3CCA-47F9-927B-E37DC4B8CE25");
+        
+        parameters.put("s", "john");
+        m.fromMap(parameters);
+        uow = app.unitOfWorkManager().newUnitOfWork();                        
+        uow.start();
+        processInstance.updateVariables(m);
+        uow.end();
+        
+        events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+        body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
+        assertThat(body.getError()).isNotNull();
+        assertThat(body.getError().getErrorMessage()).contains("java.lang.NullPointerException - null");
+        assertThat(body.getError().getNodeDefinitionId()).isEqualTo("_38E04E27-3CCA-47F9-927B-E37DC4B8CE25");
+        
+        uow = app.unitOfWorkManager().newUnitOfWork();                        
+        uow.start();
+        if (processInstance.error().isPresent()) {
+            ((ProcessError)processInstance.error().get()).retrigger();
+        }
+        uow.end();
+        
+        events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+        
+        body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 2);
+        assertThat(body.getError()).isNull();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("s");
+        assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Goodbye Hello john!!");
+    }
+    
     /*
      * Helper methods
      */
@@ -309,7 +379,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body).isNotNull();
         assertThat(body.getId()).isNotNull();
         assertThat(body.getStartDate()).isNotNull();
-        if (state == ProcessInstance.STATE_ACTIVE) {
+        if (state == ProcessInstance.STATE_ACTIVE || state == ProcessInstance.STATE_ERROR) {
             assertThat(body.getEndDate()).isNull();
         } else {
             assertThat(body.getEndDate()).isNotNull();

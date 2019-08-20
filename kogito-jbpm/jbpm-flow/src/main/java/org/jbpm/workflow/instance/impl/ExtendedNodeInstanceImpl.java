@@ -41,7 +41,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
     }
     
-	protected void triggerCompleted(String type, boolean remove) {
+	public void triggerCompleted(String type, boolean remove) {
 		triggerEvent(ExtendedNodeImpl.EVENT_NODE_EXIT);
 		super.triggerCompleted(type, remove);
 	}

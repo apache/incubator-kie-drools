@@ -16,8 +16,7 @@
 
 package org.jbpm.process;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -26,10 +25,9 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
 
 public class SubProcessTest extends AbstractBaseTest  {
@@ -37,15 +35,6 @@ public class SubProcessTest extends AbstractBaseTest  {
     public void addLogger() { 
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    
-	private boolean executed = false;
-	private WorkItem workItem;
-	
-	@BeforeEach
-	public void setUp() {
-		executed = false;
-		workItem = null;
-	}
   
 	@Test
     public void testNonExistentSubProcess() {
@@ -73,12 +62,8 @@ public class SubProcessTest extends AbstractBaseTest  {
 
         KieSession ksession = createKieSession(process);
         
-        try{
-            ksession.startProcess("org.drools.core.process.process");
-            fail("should throw exception");
-        } catch (RuntimeException re){
-            assertTrue(re.getMessage().contains( nonExistentSubProcessName ));
-        }
+        ProcessInstance pi = ksession.startProcess("org.drools.core.process.process");
+        assertEquals(ProcessInstance.STATE_ERROR, pi.getState());
     }
     
 	private void connect(Node sourceNode, Node targetNode) {

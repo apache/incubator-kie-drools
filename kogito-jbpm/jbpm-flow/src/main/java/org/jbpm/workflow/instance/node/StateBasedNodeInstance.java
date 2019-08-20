@@ -378,7 +378,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getId(), this, true);
     }
 
-	protected void triggerCompleted(String type, boolean remove) {
+	public void triggerCompleted(String type, boolean remove) {
 	    if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
 	        if (System.currentTimeMillis() > slaDueDate.getTime()) {
                 // completion of the node instance is after expected SLA due date, mark it accordingly

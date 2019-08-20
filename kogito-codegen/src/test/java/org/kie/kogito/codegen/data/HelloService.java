@@ -20,11 +20,11 @@ public class HelloService {
 	
     public String hello(String name) {
         System.out.println("Service invoked with " + name + " on service " + this.toString());
-        return "Hello " + name + "!";
+        return "Hello " + name.toString() + "!";
     }
     
     public String goodbye(String name) {
         System.out.println("Service invoked with " + name + " on service " + this.toString());
-        return "Goodbye " + name + "!";
+        return "Goodbye " + name.toString() + "!";
     }
 }

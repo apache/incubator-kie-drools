@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.api.definition.process.Process;
 
 /**
@@ -41,6 +42,8 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void setState(int state, String outcome);
     
     void setState(int state, String outcome, Object faultData);
+    
+    void setErrorState(NodeInstance nodeInstanceInError, Exception e);
     
     void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
     

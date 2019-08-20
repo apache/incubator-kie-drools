@@ -118,6 +118,12 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getRootProcessId() != null) {
             _instance.setRootProcessId(workFlow.getRootProcessId());
         }
+        if (workFlow.getNodeIdInError() != null) {
+            _instance.setErrorNodeId(workFlow.getNodeIdInError());
+        }
+        if (workFlow.getErrorMessage() != null) {
+            _instance.setErrorMessage(workFlow.getErrorMessage());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -620,6 +626,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.internalSetSlaTimerId(_instance.getSlaTimerId());
         
         processInstance.setKnowledgeRuntime( context.wm != null ? context.wm.getKnowledgeRuntime() : null);
+        
+        processInstance.internalSetErrorNodeId(_instance.getErrorNodeId());
+        processInstance.internalSetErrorMessage(_instance.getErrorMessage());
         
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
             processInstance.addCompletedNodeId(completedNodeId);

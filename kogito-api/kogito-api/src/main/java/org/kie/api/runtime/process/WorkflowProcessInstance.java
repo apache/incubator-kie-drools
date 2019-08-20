@@ -60,5 +60,24 @@ public interface WorkflowProcessInstance
      * @return actual end date
      */
     Date getEndDate();
+    
+    /**
+     * Returns node definition id associated with node instance
+     * that failed in case this process instance is in an error 
+     * @return node definition id of the failed node instance
+     */
+    String getNodeIdInError();
+    
+    /**
+     * Returns error message associated with this process instance in case it is in an error
+     * state. It will consists of
+     * <ul>
+     *  <li>unique error id (uuid)</li>
+     *  <li>fully qualified class name of the root cause</li>
+     *  <li>error message of the root cause</li>
+     * </ul>
+     * @return error message
+     */
+    String getErrorMessage();
 
 }

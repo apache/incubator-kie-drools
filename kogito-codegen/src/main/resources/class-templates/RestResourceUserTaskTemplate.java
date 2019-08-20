@@ -18,7 +18,7 @@ public class $Type$Resource {
                 } else {
                     pi.completeWorkItem(workItemId, model.toMap());
                     
-                    return pi.variables();
+                    return getModel(pi);
                 }
             });
         } catch (WorkItemNotFoundException e) {
@@ -61,7 +61,7 @@ public class $Type$Resource {
                 } else {
                     pi.abortWorkItem(workItemId);
                     
-                    return pi.variables();
+                    return getModel(pi);
                 }
             });
         } catch (WorkItemNotFoundException e) {

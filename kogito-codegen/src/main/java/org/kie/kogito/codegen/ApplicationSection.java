@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -37,4 +38,8 @@ public interface ApplicationSection {
     MethodDeclaration factoryMethod();
 
     ClassOrInterfaceDeclaration classDeclaration();
+    
+    default CompilationUnit injectableClass() {
+        return null;
+    }
 }

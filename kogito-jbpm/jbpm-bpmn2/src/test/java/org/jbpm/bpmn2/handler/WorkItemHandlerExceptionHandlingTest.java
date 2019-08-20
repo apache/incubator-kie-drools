@@ -16,13 +16,14 @@
 
 package org.jbpm.bpmn2.handler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,11 +33,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrategy;
 import org.kie.api.runtime.process.WorkItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
 
@@ -151,14 +147,11 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         ErrornousWorkItemHandler workItemHandler = new ErrornousWorkItemHandler("ScriptTask", HandlingStrategy.RETHROW);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("isChecked", false);
-            ksession.startProcess("com.sample.boolean", params);
-            fail("Should fail since strategy is rethrow");
-        } catch (WorkflowRuntimeException e) {
-            assertEquals("On purpose", e.getCause().getMessage());
-        }        
+    
+        Map<String, Object> params = new HashMap<>();
+        params.put("isChecked", false);
+        ProcessInstance processInstance = ksession.startProcess("com.sample.boolean", params);
+        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());  
     }
     
     @Test

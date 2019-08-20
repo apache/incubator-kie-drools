@@ -199,16 +199,19 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         try {
             internalTrigger(from, type);
         }
-        catch (WorkflowRuntimeException e) {
-            throw e;
-        }
         catch (Exception e) {
-            throw new WorkflowRuntimeException(this, getProcessInstance(), e);
+            captureError(e);
+            // stop after capturing error
+            return;
         }
         if (!hidden) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
         		.getProcessEventSupport().fireAfterNodeTriggered(this, kruntime);
         }
+    }
+    
+    protected void captureError(Exception e) {        
+        getProcessInstance().setErrorState(this, e);        
     }
     
     public abstract void internalTrigger(NodeInstance from, String type);
@@ -238,7 +241,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
     
-    protected void triggerCompleted(String type, boolean remove) {  
+    public void triggerCompleted(String type, boolean remove) {  
         leaveTime = new Date();
         Node node = getNode();
         if (node != null) {

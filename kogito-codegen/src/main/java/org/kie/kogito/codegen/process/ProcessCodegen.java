@@ -147,13 +147,13 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new ProcessesContainerGenerator(packageName)
-                .withDependencyInjection(annotator);
+        this.moduleGenerator = new ProcessesContainerGenerator(packageName);                
         this.applicationCanonicalName = packageName + ".Application";
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        this.moduleGenerator.withDependencyInjection(annotator);
     }
 
     public ProcessesContainerGenerator moduleGenerator() {

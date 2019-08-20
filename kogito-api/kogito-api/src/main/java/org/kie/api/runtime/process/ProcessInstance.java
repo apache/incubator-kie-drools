@@ -50,6 +50,7 @@ public interface ProcessInstance
     int STATE_COMPLETED = 2;
     int STATE_ABORTED   = 3;
     int STATE_SUSPENDED = 4;
+    int STATE_ERROR = 5;
     
     int SLA_NA = 0;
     int SLA_PENDING   = 1;

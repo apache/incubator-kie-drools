@@ -45,6 +45,8 @@ public class ProcessInstanceEventBody {
 
     private Map<String, Object> variables;
     
+    private ProcessErrorEventBody error;
+    
     private ProcessInstanceEventBody() {
     }
 
@@ -82,6 +84,10 @@ public class ProcessInstanceEventBody {
     
     public Integer getState() {
         return state;
+    }
+    
+    public ProcessErrorEventBody getError() {
+        return error;
     }
 
     public Set<NodeInstanceEventBody> getNodeInstances() {
@@ -201,6 +207,11 @@ public class ProcessInstanceEventBody {
         
         public Builder variables(Map<String, Object> variables) {
             instance.variables = variables;
+            return this;
+        }
+        
+        public Builder error(ProcessErrorEventBody error) {
+            instance.error = error;
             return this;
         }
         

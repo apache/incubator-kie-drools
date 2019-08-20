@@ -17,6 +17,7 @@ package org.kie.kogito.process;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 
@@ -29,7 +30,7 @@ public interface ProcessInstance<T> {
     int STATE_COMPLETED = 2;
     int STATE_ABORTED   = 3;
     int STATE_SUSPENDED = 4;
-    int STATE_ERROR = 4;
+    int STATE_ERROR = 5;
     
     /**
      * Returns process definition associated with this process instance
@@ -58,6 +59,12 @@ public interface ProcessInstance<T> {
      * @return variables of the process instance
      */
     T variables();
+    
+    /**
+     * Returns process variables of this process instance
+     * @return variables of the process instance
+     */
+    void updateVariables(T updates);
     
     /**
      * Returns current status of this process instance
@@ -99,5 +106,11 @@ public interface ProcessInstance<T> {
      * @return id of the process instance
      */
     String id();
+    
+    /**
+     * Returns process error in case process instance is in error state.
+     * @return returns process error
+     */
+    Optional<ProcessError> error();
 
 }

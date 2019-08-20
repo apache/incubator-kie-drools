@@ -16,6 +16,14 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +47,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -65,16 +74,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ActivityTest extends JbpmBpmn2TestCase {
 
@@ -323,14 +324,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
 
         params = new HashMap<String, Object>();
-
-        try {
-            processInstance = ksession.startProcess("RuleTask", params);
-
-            fail("Should fail");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
+        processInstance = ksession.startProcess("RuleTask", params);
+        
+        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());           
 
         params = new HashMap<String, Object>();
         params.put("x", "SomeString");
@@ -1788,10 +1785,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
         ksession = createKnowledgeSession(kbase);
         ksession.insert(new Person());
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
-            ksession.startProcess("BPMN2-BusinessRuleTask");
-        })
-        .withMessageContaining("Fire rule limit reached 10000");        
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask");
+        
+        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 10000");
     }
     
     @Test
@@ -1803,10 +1800,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         
         Map<String, Object> parameters = Collections.singletonMap("limit", 5);
         
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
-            ksession.startProcess("BPMN2-BusinessRuleTask", parameters);
-        })
-        .withMessageContaining("Fire rule limit reached 5");        
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", parameters);
+        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 5");        
     }
 
     @Disabled
@@ -1839,16 +1835,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-BusinessRuleTaskWithException.drl");
         ksession = createKnowledgeSession(kbase);
         ksession.insert(new Person());
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
-            ksession.startProcess("BPMN2-BusinessRuleTask");
-        })
-        .withMessageContaining("On purpose")
-        .satisfies((RuntimeException re) -> {
-            assertNotNull(re.getCause());
-            assertTrue(re.getCause() instanceof ConsequenceException);
-            assertNotNull(re.getCause().getCause());
-            assertTrue(re.getCause().getCause() instanceof RuntimeException);
-        });        
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask");
+               
+        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("On purpose");
     }
 
     

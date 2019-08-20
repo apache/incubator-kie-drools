@@ -28,6 +28,7 @@ import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
@@ -81,7 +82,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     protected ProcessInstanceEventBody create(ProcessEvent event) {
         WorkflowProcessInstance pi = (WorkflowProcessInstance) event.getProcessInstance();
-        return ProcessInstanceEventBody.create()
+        ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
                 .id(pi.getId())
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootInstanceId(pi.getRootProcessInstanceId())
@@ -91,8 +92,16 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .startDate(pi.getStartDate())
                 .endDate(pi.getEndDate())
                 .state(pi.getState())
-                .variables(pi.getVariables())
-                .build();
+                .variables(pi.getVariables());
+        
+        if (pi.getState() == ProcessInstance.STATE_ERROR) {
+            eventBuilder.error(ProcessErrorEventBody.create()
+                               .nodeDefinitionId(pi.getNodeIdInError())
+                               .errorMessage(pi.getErrorMessage())
+                               .build());
+        }
+        
+        return eventBuilder.build();
     }
     
     protected NodeInstanceEventBody create(ProcessNodeEvent event) {

@@ -172,7 +172,7 @@ public class ApplicationGenerator {
         for (Generator generator : generators) {
             ApplicationSection section = generator.section();
             cls.addMember(section.fieldDeclaration());
-            cls.addMember(section.factoryMethod());
+            cls.addMember(section.factoryMethod());  
             cls.addMember(section.classDeclaration());
         }
         cls.getMembers().sort(new BodyDeclarationComparator());
@@ -201,6 +201,9 @@ public class ApplicationGenerator {
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.add(generateApplicationConfigDescriptor());
+        if (useInjection()) {
+            generators.forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
+        }
         return generatedFiles;
     }
 
@@ -220,6 +223,17 @@ public class ApplicationGenerator {
         return new GeneratedFile(GeneratedFile.Type.CLASS,
                                  configGenerator.generatedFilePath(),
                                  log( configGenerator.compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
+    }
+    public void generateSectionClass(ApplicationSection section, List<GeneratedFile> generatedFiles) {
+        CompilationUnit cp = section.injectableClass();
+        
+        if (cp != null) {
+            String packageName = cp.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
+            String clazzName = packageName + "." + cp.findFirst(ClassOrInterfaceDeclaration.class).map(c -> c.getName().toString()).get();
+            generatedFiles.add(new GeneratedFile(GeneratedFile.Type.CLASS,
+                                                 clazzName.replace('.', '/') + ".java",
+                                 log( cp.toString() ).getBytes(StandardCharsets.UTF_8)));
+        }
     }
 
     public <G extends Generator> G withGenerator(G generator) {

@@ -316,5 +316,15 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             return null;
         }
 
+        @Override
+        public String getNodeIdInError() {
+            return null;
+        }
+
+        @Override
+        public String getErrorMessage() {
+            return null;
+        }
+
     }
 }

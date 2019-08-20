@@ -16,6 +16,10 @@
 
 package org.jbpm.process;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,11 +52,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 public class WorkItemTest extends AbstractBaseTest {
 
     public void addLogger() { 
@@ -81,7 +80,8 @@ public class WorkItemTest extends AbstractBaseTest {
         } catch ( Throwable e ) {
 
         }
-        assertNull( processInstance );
+        assertEquals( ProcessInstance.STATE_ERROR,
+                      processInstance.getState() );
     }
 
 	@Test

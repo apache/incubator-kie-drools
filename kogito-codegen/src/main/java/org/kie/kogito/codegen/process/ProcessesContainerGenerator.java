@@ -15,39 +15,49 @@
 
 package org.kie.kogito.codegen.process;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.naming.Reference;
+
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.Processes;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.WildcardType;
 
 public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
-    //    private static final String RESOURCE = "/class-templates/ModuleTemplate.java";
+    private static final String RESOURCE = "/class-templates/ProcessesTemplate.java";
+    private final String packageName;
     private final List<ProcessGenerator> processes;
     private final List<ProcessInstanceGenerator> processInstances;
     private final List<BodyDeclaration<?>> factoryMethods;
@@ -60,7 +70,7 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
     public ProcessesContainerGenerator(String packageName) {
         super("Processes", "processes", Processes.class);
-
+        this.packageName = packageName;
         this.processes = new ArrayList<>();
         this.processInstances = new ArrayList<>();
         this.factoryMethods = new ArrayList<>();
@@ -136,5 +146,21 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
         cls.getMembers().sort(new BodyDeclarationComparator());
         
         return cls;
+    }
+
+    @Override
+    public CompilationUnit injectableClass() {
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream(RESOURCE)).setPackageDeclaration(packageName);                        
+        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+        
+        cls.findAll(FieldDeclaration.class, (fd) -> fd.getVariable(0).getNameAsString().equals("processes")).forEach(fd -> {
+            annotator.withInjection(fd);
+            fd.getVariable(0).setType(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), 
+                                                               NodeList.nodeList(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new WildcardType(new ClassOrInterfaceType(null, Model.class.getCanonicalName())))))));
+        });
+        
+        annotator.withApplicationComponent(cls);
+        
+        return compilationUnit;
     }
 }

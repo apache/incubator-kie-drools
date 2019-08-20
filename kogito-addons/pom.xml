@@ -15,6 +15,7 @@
     <module>monitoring-prometheus-addon</module>
     <module>persistence</module>
     <module>events</module>
+    <module>process-management-addon</module>
   </modules>
 
   <dependencyManagement>
