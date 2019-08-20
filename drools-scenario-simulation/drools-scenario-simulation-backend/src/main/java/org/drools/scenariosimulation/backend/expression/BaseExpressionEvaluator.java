@@ -18,8 +18,10 @@ package org.drools.scenariosimulation.backend.expression;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,19 @@ import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revert
 public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final ClassLoader classLoader;
+    /*
+     * Note: This list is similar to the SIMPLE_CLASSES_MAP found in the DataManagementStrategy interface
+     *
+    */
+    private static List<String> SIMPLE_TYPES_LIST = Arrays.asList(Boolean.class.getCanonicalName(),
+                                                                Integer.class.getCanonicalName(),
+                                                                Long.class.getCanonicalName(),
+                                                                Double.class.getCanonicalName(),
+                                                                Float.class.getCanonicalName(),
+                                                                Short.class.getCanonicalName(),
+                                                                Byte.class.getCanonicalName(),
+                                                                Character.class.getCanonicalName(),
+                                                                LocalDate.class.getCanonicalName());
 
     public BaseExpressionEvaluator(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -96,6 +111,9 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
             return new HashMap();
         } else {
             try {
+                if (SIMPLE_TYPES_LIST.contains(className)) {
+                    return null;
+                }
                 return classLoader.loadClass(className).newInstance();
             } catch (Exception e) {
                 throw new IllegalArgumentException("Impossible to instantiate " + className, e);
