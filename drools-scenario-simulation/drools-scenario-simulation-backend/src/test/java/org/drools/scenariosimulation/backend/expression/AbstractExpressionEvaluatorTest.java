@@ -23,11 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AbstractExpressionEvaluatorTest {
@@ -103,6 +108,35 @@ public class AbstractExpressionEvaluatorTest {
         List<Map<String, Object>> nestedList = (List<Map<String, Object>>) resultMap.get("listField");
         assertEquals(1, nestedList.size());
         assertEquals("fieldValue", nestedList.get(0).get("field"));
+    }
+
+    @Test
+    public void isSimpleTypeNode() {
+        assertFalse(expressionEvaluatorMock.isSimpleTypeNode(new ArrayNode(factory)));
+
+        ObjectNode jsonNode = new ObjectNode(factory);
+
+        jsonNode.set("value", new TextNode("test"));
+        assertTrue(expressionEvaluatorMock.isSimpleTypeNode(jsonNode));
+
+        jsonNode.set("otherField", new TextNode("testValue"));
+
+        assertFalse(expressionEvaluatorMock.isSimpleTypeNode(jsonNode));
+    }
+
+    @Test
+    public void getSimpleTypeNodeTextValue() {
+        Assertions.assertThatThrownBy(() -> expressionEvaluatorMock.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter does not contains a simple type");
+
+        ObjectNode jsonNode = new ObjectNode(factory);
+
+        jsonNode.set("value", new TextNode("testValue"));
+        assertEquals("testValue", expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
+
+        jsonNode.set("value", new IntNode(10));
+        assertNull(expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
     }
 
     AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
