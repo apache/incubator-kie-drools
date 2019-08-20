@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.api.score.stream.tri;
 
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.common.Joiners;
+
+/**
+ * Created with {@link Joiners}.
+ * Used by {@link BiConstraintStream#join(Class, TriJoiner)}, ...
+ * @see Joiners
+ */
 public interface TriJoiner<A, B, C> {
 
 }
