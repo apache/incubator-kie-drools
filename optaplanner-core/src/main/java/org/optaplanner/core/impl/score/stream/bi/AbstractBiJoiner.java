@@ -39,7 +39,7 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
         }
-        if (joinerList.size() == 0) {
+        if (joinerList.isEmpty()) {
             return new NoneBiJoiner<>();
         } else if (joinerList.size() == 1) {
             return joinerList.get(0);

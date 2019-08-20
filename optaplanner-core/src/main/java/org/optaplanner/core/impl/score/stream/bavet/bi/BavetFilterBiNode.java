@@ -72,6 +72,7 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
     @Override
     public BavetFilterBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
+        // TODO Use childNodeList.size() to improve the tuple's childTupleList's capacity
         return new BavetFilterBiTuple<>(this, parentTuple);
     }
 

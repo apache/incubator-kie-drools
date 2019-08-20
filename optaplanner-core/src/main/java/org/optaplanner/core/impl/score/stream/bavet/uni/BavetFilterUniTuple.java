@@ -26,8 +26,7 @@ public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     protected List<BavetAbstractUniTuple<A>> childTupleList;
 
-    public BavetFilterUniTuple(BavetFilterUniNode<A> node, BavetAbstractUniTuple<A> parentTuple,
-            int childTupleListSize) {
+    public BavetFilterUniTuple(BavetFilterUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
         childTupleList = new ArrayList<>();

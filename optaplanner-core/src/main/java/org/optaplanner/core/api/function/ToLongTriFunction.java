@@ -15,12 +15,9 @@
  */
 package org.optaplanner.core.api.function;
 
-import java.util.function.BiFunction;
-
 /**
- * Represents a function that accepts three arguments and produces a long-valued
- * result.  This is the {@code long}-producing primitive specialization for
- * {@link TriFunction}.
+ * Represents a function that accepts three arguments and produces a long-valued result.
+ * This is the {@code long}-producing primitive specialization for {@link TriFunction}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsLong(Object, Object, Object)}.

@@ -27,10 +27,10 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     private final List<SingleTriJoiner<A, B, C>> joinerList;
 
     public CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
-        this.joinerList = joinerList;
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
+        this.joinerList = joinerList;
     }
 
     public List<SingleTriJoiner<A, B, C>> getJoinerList() {

@@ -72,7 +72,8 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public BavetFilterUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
-        return new BavetFilterUniTuple<>(this, parentTuple, childNodeList.size());
+        // TODO Use childNodeList.size() to improve the tuple's childTupleList's capacity
+        return new BavetFilterUniTuple<>(this, parentTuple);
     }
 
     public void refresh(BavetFilterUniTuple<A> tuple) {

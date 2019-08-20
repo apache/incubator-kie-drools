@@ -40,7 +40,7 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
         }
-        if (joinerList.size() == 0) {
+        if (joinerList.isEmpty()) {
             return new NoneTriJoiner<>();
         } else if (joinerList.size() == 1) {
             return joinerList.get(0);

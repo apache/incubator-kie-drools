@@ -72,6 +72,7 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
 
     @Override
     public BavetFilterTriTuple<A, B, C> createTuple(BavetAbstractTriTuple<A, B, C> parentTuple) {
+        // TODO Use childNodeList.size() to improve the tuple's childTupleList's capacity
         return new BavetFilterTriTuple<>(this, parentTuple);
     }
 
