@@ -87,7 +87,7 @@ public class BaseExpressionEvaluatorTest {
 
         String likeWorkbenchMapString = "{ \"Home\": { \"value\": \"123 Any Street\" } }";
         List<String> genericClasses = new ArrayList<>();
-        genericClasses.add(String.class.getCanonicalName());
+//        genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(String.class.getCanonicalName());
         Map<String, String> parsedWorkbench = ((Map<String, String>) expressionEvaluator.convertResult(likeWorkbenchMapString, Map.class.getCanonicalName(), genericClasses));
         System.out.println(parsedWorkbench);
@@ -98,7 +98,7 @@ public class BaseExpressionEvaluatorTest {
 
         String likeWorkbenchMapInteger = "{ \"Home\": { \"value\": \"100\" } }";
         genericClasses.clear();
-        genericClasses.add(String.class.getCanonicalName());
+//        genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(Integer.class.getCanonicalName());
         Map<String, Integer> parsedIntegerFromMap = ((Map<String, Integer>) expressionEvaluator.convertResult(likeWorkbenchMapInteger, Map.class.getCanonicalName(), genericClasses));
 
