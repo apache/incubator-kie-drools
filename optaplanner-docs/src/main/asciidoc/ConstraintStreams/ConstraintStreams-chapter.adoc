@@ -10,6 +10,14 @@
 
 Constraint streams are an Functional Programming form of incremental score calculation in plain Java 8+
 that is fast, scalable and debuggable.
+The API should feel familiar if you've worked with Java 8 Streams or SQL.
+
+[WARNING]
+====
+The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+It works but it has many API gaps.
+Therefore, it is not rich enough yet to handle complex constraints.
+====
 
 [[constraintStreamsIntroduction]]
 == Introduction
@@ -19,18 +27,33 @@ that uses a functional approach:
 
 [source,java,options="nowrap"]
 ----
-List<Talk> talkList = schedule.getTalkList();
-talkList.stream()
-        .filter(talk -> talk.hasAnyUnavailableSpeaker())
-        .forEach(talk -> penalize(talk.getDurationInMinutes()));
+    private int speakerUnavailableTimeslot() {
+        int softScore = 0;
+        schedule.getTalkList().stream()
+                .filter(Talk::hasAnyUnavailableSpeaker)
+                .forEach(talk -> {
+                    softScore -= talk.getDurationInMinutes();
+                });
+        return softScore;
+    }
 ----
 
-However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>.
+However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
 When the planning variable of a single `Talk` changes, to recalculate the score,
 the normal Streams API has to execute the entire stream from scratch.
 So it doesn't do <<incrementalScoreCalculation,deltas>>.
 Nor does it support <<explainingTheScore,justifications>>.
 
-The ConstraintStreams API does do <<incrementalScoreCalculation,deltas>> and support <<explainingTheScore,justifications>>.
+On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>
+and supports <<explainingTheScore,justifications>>:
 
-*Constraints stream will be implemented soon.*
+[source,java,options="nowrap"]
+----
+    private Constraint speakerUnavailableTimeslot(ConstraintFactory factory) {
+        return factory.from(Talk.class)
+                .filter(Talk::hasAnyUnavailableSpeaker)
+                .penalizeConfigurable("Speaker unavailable timeslot",
+                        HardSoftScore.ONE_SOFT,
+                        Talk::getDurationInMinutes);
+    }
+----
