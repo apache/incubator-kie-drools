@@ -69,10 +69,16 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected List<Object> createAndFillList(ArrayNode json, List<Object> toReturn, String className, List<String> genericClasses) {
         for (JsonNode node : json) {
-            String genericClassName = ScenarioSimulationSharedUtils.isMap(className) ? className : genericClasses.get(genericClasses.size() - 1);
-            Object listElement = createObject(genericClassName, genericClasses);
-            Object returnedObject = createAndFillObject((ObjectNode) node, listElement, genericClassName, genericClasses);
-            toReturn.add(returnedObject);
+            if (isSimpleTypeNode(node)) {
+                String generic = genericClasses.get(genericClasses.size() - 1);
+                Object value = internalLiteralEvaluation(getSimpleTypeNodeTextValue(node), generic);
+                toReturn.add(value);
+            } else {
+                String genericClassName = ScenarioSimulationSharedUtils.isMap(className) ? className : genericClasses.get(genericClasses.size() - 1);
+                Object listElement = createObject(genericClassName, genericClasses);
+                Object returnedObject = createAndFillObject((ObjectNode) node, listElement, genericClassName, genericClasses);
+                toReturn.add(returnedObject);
+            }
         }
         return toReturn;
     }
@@ -84,12 +90,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
             // if is a simple value just return the parsed result
-            if (isSimpleType(jsonNode)) {
-//                Map<String, Object> rawSimpleTypeMap = createRawSimpleTypeMap(key, jsonNode);
-                Map rawSimpleTypeMap = (Map) createObject(Map.class.getCanonicalName(), null);
-                Object value = internalLiteralEvaluation(getSimpleTypeTextValue(jsonNode), genericClasses.get(0));
-                rawSimpleTypeMap.put(key, value);
-                return rawSimpleTypeMap;
+            if (isSimpleTypeNode(jsonNode)) {
+                Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
+                Object value = internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey());
+                setField(toReturn, key, value);
+                return toReturn;
             }
 
             if (jsonNode.isArray()) {
@@ -112,14 +117,17 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawValue, Object resultRaw, Class<?> resultClass) {
+    protected boolean verifyResult(Object rawExpression, Object resultRaw, Class<?> resultClass) {
+        if (resultRaw == null) {
+            return false;
+        }
         if (!(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list was expected");
         }
-        if (!(rawValue instanceof String)) {
+        if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Malformed raw data");
         }
-        String raw = (String) rawValue;
+        String raw = (String) rawExpression;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -140,7 +148,10 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         for (JsonNode node : json) {
             boolean success = false;
             for (Object result : resultRaw) {
-                if (verifyObject((ObjectNode) node, result, resultClass)) {
+                boolean simpleTypeNode = isSimpleTypeNode(node);
+                if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
+                    success = true;
+                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result, resultClass)) {
                     success = true;
                 }
             }
@@ -157,12 +168,15 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             Map.Entry<String, JsonNode> element = fields.next();
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
+            Object fieldValue = extractFieldValue(result, key);
+            if (fieldValue == null) {
+                return false;
+            }
             // if is a simple value just return the parsed result
-            if (isSimpleType(jsonNode)) {
-                return internalUnaryEvaluation(getSimpleTypeTextValue(jsonNode), result, result.getClass(), true);
+            if (isSimpleTypeNode(jsonNode)) {
+                return internalUnaryEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldValue, fieldValue.getClass(), true);
             }
 
-            Object fieldValue = extractFieldValue(result, key);
             if (jsonNode.isArray()) {
                 if (!verifyList((ArrayNode) jsonNode, (List) fieldValue, fieldValue.getClass())) {
                     return false;
@@ -180,8 +194,12 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return true;
     }
 
-    // FIXME to test
-    protected boolean isSimpleType(JsonNode jsonNode) {
+    /**
+     * A node represent a simple type if it is an object with only one field named "value"
+     * @param jsonNode
+     * @return
+     */
+    protected boolean isSimpleTypeNode(JsonNode jsonNode) {
         if (!jsonNode.isObject()) {
             return false;
         }
@@ -190,9 +208,13 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return numberOfFields == 1 && objectNode.has(VALUE);
     }
 
-    // FIXME to test
-    protected String getSimpleTypeTextValue(JsonNode jsonNode) {
-        if(!isSimpleType(jsonNode)) {
+    /**
+     * Return text value of a simple type node
+     * @param jsonNode
+     * @return
+     */
+    protected String getSimpleTypeNodeTextValue(JsonNode jsonNode) {
+        if (!isSimpleTypeNode(jsonNode)) {
             throw new IllegalArgumentException("Parameter does not contains a simple type");
         }
         return jsonNode.get(VALUE).textValue();
@@ -208,5 +230,13 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     abstract protected void setField(Object toReturn, String fieldName, Object fieldValue);
 
+    /**
+     * Return a pair with field className as key and list of generics as value
+     * @param element : instance to be populated
+     * @param fieldName : field to analyze
+     * @param className : canonical class name of instance
+     * @param genericClasses : list of generics related to this field
+     * @return
+     */
     abstract protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses);
 }

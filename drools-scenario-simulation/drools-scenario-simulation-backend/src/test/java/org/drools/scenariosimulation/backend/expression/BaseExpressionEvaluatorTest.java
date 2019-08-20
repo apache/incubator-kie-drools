@@ -17,105 +17,93 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class BaseExpressionEvaluatorTest {
 
     private final static ClassLoader classLoader = BaseExpressionEvaluatorTest.class.getClassLoader();
+    private final static AbstractExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
 
     @Test
     public void evaluateLiteralExpression() {
-        BaseExpressionEvaluator baseExpressionEvaluator = new BaseExpressionEvaluator(classLoader);
-
         Object raw = new Object();
-        assertEquals(raw, baseExpressionEvaluator.evaluateLiteralExpression(Object.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(Object.class.getCanonicalName(), Collections.emptyList(), raw));
 
         raw = "SimpleString";
-        assertEquals(raw, baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
 
         raw = "= SimpleString";
-        assertEquals("SimpleString", baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals("SimpleString", expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
 
-        assertNull(baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), null));
+        assertNull(expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), null));
     }
 
     @Test
-    public void createSimpleTypeObject() {
-        // Integer has no default constructor
-        BaseExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
-        Object obj = expressionEvaluator.createObject(Integer.class.getCanonicalName(), Collections.emptyList());
+    public void createObjectTest() {
+        assertNotNull(expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList()));
+        assertTrue(expressionEvaluator.createObject(Map.class.getCanonicalName(), Arrays.asList(String.class.getCanonicalName(), String.class.getCanonicalName())) instanceof Map);
 
-        assertNull(obj);
+        Assertions.assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Impossible to instantiate com.invalid.class.Name");
     }
 
     @Test
-    public void createNonSimpleTypeObject() {
-        // String has a default constructor
-        BaseExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
-        Object obj = expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList());
-
-        assertNotNull(obj);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createObjectWithInvalidClass() {
-        String invalidClassName = "com.invalid.class.Name";
-
-        BaseExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
-        Object obj = expressionEvaluator.createObject(invalidClassName, Collections.emptyList());
-
-        // This should never be reached since the invalid class name will cause the 
-        // expected exception
-        fail();
+    public void verifyNullTest() {
+        assertFalse(expressionEvaluator.verifyResult("[]", null, List.class));
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void expressionTest() {
-        BaseExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(classLoader);
+    public void mapOfSimpleTypeTest() {
 
-        String likeWorkbenchMapString = "{ \"Home\": { \"value\": \"123 Any Street\" } }";
+        String givenWorkbenchMapString = "{ \"Home\": { \"value\": \"123 Any Street\" } }";
         List<String> genericClasses = new ArrayList<>();
-//        genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(String.class.getCanonicalName());
-        Map<String, String> parsedWorkbench = ((Map<String, String>) expressionEvaluator.convertResult(likeWorkbenchMapString, Map.class.getCanonicalName(), genericClasses));
-        System.out.println(parsedWorkbench);
+        genericClasses.add(String.class.getCanonicalName());
+        Map<String, String> parsedWorkbench = ((Map<String, String>) expressionEvaluator.convertResult(givenWorkbenchMapString, Map.class.getCanonicalName(), genericClasses));
 
         assertEquals(1, parsedWorkbench.size());
         assertNotNull(parsedWorkbench.get("Home"));
-        assertTrue(parsedWorkbench.get("Home").equals("123 Any Street"));
+        assertEquals("123 Any Street", parsedWorkbench.get("Home"));
 
-        String likeWorkbenchMapInteger = "{ \"Home\": { \"value\": \"100\" } }";
+        String givenWorkbenchMapInteger = "{ \"Home\": { \"value\": \"100\" } }";
         genericClasses.clear();
-//        genericClasses.add(String.class.getCanonicalName());
+        genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(Integer.class.getCanonicalName());
-        Map<String, Integer> parsedIntegerFromMap = ((Map<String, Integer>) expressionEvaluator.convertResult(likeWorkbenchMapInteger, Map.class.getCanonicalName(), genericClasses));
+        Map<String, Integer> parsedIntegerFromMap = ((Map<String, Integer>) expressionEvaluator.convertResult(givenWorkbenchMapInteger, Map.class.getCanonicalName(), genericClasses));
 
         assertEquals(1, parsedIntegerFromMap.size());
         assertNotNull(parsedIntegerFromMap.get("Home"));
         assertEquals(100, parsedIntegerFromMap.get("Home").intValue());
 
-        String listJsonString = "[{\"name\": \"John\"}, " +
-                "{\"name\": \"John\", \"names\" : [{\"value\": \"Anna\"}, {\"value\": \"Mario\"}]}]";
+        String expectWorkbenchMapInteger = "{ \"Home\": { \"value\": \"> 100\" } }";
+        genericClasses.clear();
+        genericClasses.add(String.class.getCanonicalName());
+        genericClasses.add(Integer.class.getCanonicalName());
+        Map<String, Integer> resultToTest = new HashMap<>();
+        resultToTest.put("Home", 120);
+        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, Map.class));
+        resultToTest.put("Home", 20);
+        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, Map.class));
+    }
 
-        List<ListMapClass> parsedValue = (List<ListMapClass>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(),
-                                                                                                Collections.singletonList(ListMapClass.class.getCanonicalName()));
-
-        assertEquals(2, parsedValue.size());
-        assertEquals(2, parsedValue.get(1).getNames().size());
-        assertTrue(parsedValue.get(1).getNames().contains("Anna"));
-
+    @SuppressWarnings("unchecked")
+    @Test
+    public void mapOfComplexTypeTest() {
         String mapJsonString = "{\"first\": {\"name\": \"John\"}}";
         Map<String, ListMapClass> parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
                                                                                                             Collections.singletonList(ListMapClass.class.getCanonicalName()));
@@ -135,5 +123,57 @@ public class BaseExpressionEvaluatorTest {
 
         assertEquals(1, parsedMap.size());
         assertEquals((Integer) 1, parsedMap.get("first").getPhones().get("number"));
+
+        mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"> 1\"}}}";
+
+        Map<String, ListMapClass> toCheck = new HashMap<>();
+        ListMapClass element = new ListMapClass();
+        Map<String, Integer> phones = new HashMap<>();
+        phones.put("number", 10);
+        element.setPhones(phones);
+        toCheck.put("first", element);
+
+        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck, Map.class));
+        phones.put("number", -1);
+        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck, Map.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void listOfComplexTypeTest() {
+
+        String listJsonString = "[{\"name\": \"John\"}, " +
+                "{\"name\": \"John\", \"names\" : [{\"value\": \"Anna\"}, {\"value\": \"Mario\"}]}]";
+
+        List<ListMapClass> parsedValue = (List<ListMapClass>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(),
+                                                                                                Collections.singletonList(ListMapClass.class.getCanonicalName()));
+
+        assertEquals(2, parsedValue.size());
+        assertEquals(2, parsedValue.get(1).getNames().size());
+        assertTrue(parsedValue.get(1).getNames().contains("Anna"));
+
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue, List.class));
+
+        parsedValue.get(1).setNames(new ArrayList<>());
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue, List.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void listOfSimpleTypeTest() {
+        String listJsonString = "[{\"value\" : \"10\"}, {\"value\" : \"12\"}]";
+
+        List<Integer> result = (List<Integer>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(), Collections.singletonList(Integer.class.getCanonicalName()));
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(10));
+
+        listJsonString = "[{\"value\" : \"> 10\"}]";
+        List<Integer> toCheck = Collections.singletonList(13);
+
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, List.class));
+
+        listJsonString = "[{\"value\" : \"> 100\"}]";
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck, List.class));
     }
 }
