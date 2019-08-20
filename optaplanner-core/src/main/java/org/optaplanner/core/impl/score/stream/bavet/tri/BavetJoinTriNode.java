@@ -71,9 +71,6 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
     }
 
     public void refresh(BavetJoinTriTuple<A, B, C> tuple) {
-        A a = tuple.getFactA();
-        B b = tuple.getFactB();
-        C c = tuple.getFactC();
         List<BavetAbstractTriTuple<A, B, C>> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractTriTuple<A, B, C> childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);

@@ -69,8 +69,6 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
     }
 
     public void refresh(BavetJoinBiTuple<A, B> tuple) {
-        A a = tuple.getFactA();
-        B b = tuple.getFactB();
         List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);

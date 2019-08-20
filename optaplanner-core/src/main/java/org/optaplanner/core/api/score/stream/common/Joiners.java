@@ -22,10 +22,15 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
+/**
+ * Creates an {@link BiJoiner}, {@link TriJoiner}, ... instance
+ * for use in {@link UniConstraintStream#join(Class, BiJoiner)}, ...
+ */
 public final class Joiners {
 
     // ************************************************************************

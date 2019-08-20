@@ -26,9 +26,11 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
- *
+ * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance
+ * for use in {@link UniConstraintStream#groupBy(Function, UniConstraintCollector)}, ...
  */
 public final class ConstraintCollectors {
 

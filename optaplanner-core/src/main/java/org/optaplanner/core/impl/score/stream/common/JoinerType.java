@@ -37,7 +37,7 @@ public enum JoinerType {
             case GREATER_THAN_OR_EQUAL:
                 return LESS_THAN_OR_EQUAL;
             default:
-                throw new IllegalStateException("The joinerType (" + this + ") is not supported.");
+                throw new IllegalStateException("The joinerType (" + this + ") cannot be flipped.");
         }
     }
 
