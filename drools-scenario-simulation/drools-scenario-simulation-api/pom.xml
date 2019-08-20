@@ -30,4 +30,14 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding AuditLog/AuditLogLine from coverage statistics. Those classes contains only getter/setter. -->
+        <sonar.coverage.exclusions>**/model/Audit*.java</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>

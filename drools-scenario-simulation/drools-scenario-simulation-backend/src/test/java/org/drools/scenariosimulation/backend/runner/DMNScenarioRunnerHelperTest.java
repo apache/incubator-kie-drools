@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -48,6 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -57,8 +59,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
+import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.mockito.Matchers.any;
@@ -69,18 +74,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DMNScenarioRunnerHelperTest {
 
-    @Mock
-    protected Map<String, Object> requestContextMock;
-
-    @Mock
-    protected DMNResult dmnResultMock;
-
-    @Mock
-    protected DMNDecisionResult dmnDecisionResultMock;
-
-    @Mock
-    protected DMNModel dmnModelMock;
-
     private static final String NAME = "NAME";
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
@@ -88,7 +81,14 @@ public class DMNScenarioRunnerHelperTest {
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
     private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper();
-
+    @Mock
+    protected Map<String, Object> requestContextMock;
+    @Mock
+    protected DMNResult dmnResultMock;
+    @Mock
+    protected DMNDecisionResult dmnDecisionResultMock;
+    @Mock
+    protected DMNModel dmnModelMock;
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
     private ExpressionIdentifier firstNameGivenExpressionIdentifier;
@@ -201,7 +201,7 @@ public class DMNScenarioRunnerHelperTest {
                                       scenarioRunnerData3,
                                       mock(ExpressionEvaluator.class),
                                       requestContextMock);
-        assertEquals(scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus(), FactMappingValueStatus.FAILED_WITH_ERROR);
+        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
     }
 
     @SuppressWarnings("unchecked")
@@ -225,30 +225,19 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void extractResultMetadata() {
-        Set<DecisionNode> decisions = new HashSet<>();
-        IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
-        when(dmnModelMock.getDecisions()).thenReturn(decisions);
+    public void extractResultMetadataNoDecisionResultMessages() {
+        commonExtractResultMetadata(null);
+    }
 
-        List<DMNDecisionResult> decisionResults = new ArrayList<>();
-        decisionResults.add(createDecisionResultMock("decision2", true));
-        decisionResults.add(createDecisionResultMock("decision3", false));
-        when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
-
-        ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
-        ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
-
-        assertEquals(scenarioWithIndex, scenarioResultMetadata.getScenarioWithIndex());
-        assertEquals(5, scenarioResultMetadata.getAvailable().size());
-        assertTrue(scenarioResultMetadata.getAvailable().contains("decision1"));
-        assertEquals(1, scenarioResultMetadata.getExecuted().size());
-        assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
-        assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
+    @Test
+    public void extractResultMetadataDecisionResultMessages() {
+        List<DMNMessage> messages = getRandomlyGeneratedDMNMessageList();
+        commonExtractResultMetadata(messages);
     }
 
     @Test
     public void getSingleFactValueResultFailDecision() {
-        DMNDecisionResult failedDecision = createDecisionResultMock("Test", false);
+        DMNDecisionResult failedDecision = createDecisionResultMock("Test", false, new ArrayList<>());
         ResultWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
                                                                               null,
                                                                               failedDecision,
@@ -299,18 +288,59 @@ public class DMNScenarioRunnerHelperTest {
         assertEquals(genericErrorMessage, expectedResult5.getExceptionMessage());
     }
 
+    public void commonExtractResultMetadata(List<DMNMessage> messages) {
+        Set<DecisionNode> decisions = new HashSet<>();
+        IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
+        when(dmnModelMock.getDecisions()).thenReturn(decisions);
+
+        List<DMNDecisionResult> decisionResults = new ArrayList<>();
+        decisionResults.add(createDecisionResultMock("decision2", true, messages));
+        decisionResults.add(createDecisionResultMock("decision3", false, messages));
+
+        when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
+
+        ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
+        ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
+
+        assertEquals(scenarioWithIndex, scenarioResultMetadata.getScenarioWithIndex());
+        assertEquals(5, scenarioResultMetadata.getAvailable().size());
+        assertTrue(scenarioResultMetadata.getAvailable().contains("decision1"));
+        assertEquals(1, scenarioResultMetadata.getExecuted().size());
+        assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
+        assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
+        final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
+        assertNotNull(auditLogLines);
+        if (messages == null) {
+            assertEquals(decisionResults.size(), auditLogLines.size());
+            for (int i = 0; i < decisionResults.size(); i++) {
+                commonCheckAuditLogLine(auditLogLines.get(i), decisionResults.get(i).getDecisionName(), decisionResults.get(i).getEvaluationStatus().name());
+            }
+        } else {
+            int scenarios = 2;
+            int expectedLines = messages.size() * scenarios;
+            assertEquals(expectedLines, auditLogLines.size());
+            for (int i = 0; i < auditLogLines.size(); i++) {
+                int messagesIndex =  i < messages.size() ? i : i - messages.size();
+                commonCheckAuditLogLine(auditLogLines.get(i), messages.get(messagesIndex).getText(), messages.get(messagesIndex).getLevel().name());
+            }
+        }
+    }
+
     private DecisionNode createDecisionMock(String decisionName) {
         DecisionNode decisionMock = mock(DecisionNode.class);
         when(decisionMock.getName()).thenReturn(decisionName);
         return decisionMock;
     }
 
-    private DMNDecisionResult createDecisionResultMock(String decisionName, boolean success) {
+    private DMNDecisionResult createDecisionResultMock(String decisionName, boolean success, List<DMNMessage> messages) {
         DMNDecisionResult decisionResultMock = mock(DMNDecisionResult.class);
         when(decisionResultMock.getDecisionName()).thenReturn(decisionName);
         when(decisionResultMock.getEvaluationStatus())
                 .thenReturn(success ? DecisionEvaluationStatus.SUCCEEDED :
                                     DecisionEvaluationStatus.FAILED);
+        if (messages != null) {
+            when(decisionResultMock.getMessages()).thenReturn(messages);
+        }
         return decisionResultMock;
     }
 }
