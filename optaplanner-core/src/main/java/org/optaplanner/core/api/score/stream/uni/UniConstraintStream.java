@@ -127,14 +127,25 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * @see #join(Class, BiJoiner)
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
         return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2));
     }
 
     /**
-     * @see #join(Class, BiJoiner)
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3) {
@@ -142,7 +153,14 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * @see #join(Class, BiJoiner)
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
@@ -150,10 +168,15 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * @see #join(Class, BiJoiner)
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         return join(otherClass, AbstractBiJoiner.merge(joiners));

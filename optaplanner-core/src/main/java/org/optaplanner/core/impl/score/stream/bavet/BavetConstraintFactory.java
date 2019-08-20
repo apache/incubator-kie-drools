@@ -56,7 +56,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
     }
 
     // ************************************************************************
-    // From
+    // from
     // ************************************************************************
 
     @Override
@@ -74,6 +74,10 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         return new BavetFromUniConstraintStream<>(this, fromClass);
     }
+
+    // ************************************************************************
+    // fromUniquePair
+    // ************************************************************************
 
     @Override
     public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {

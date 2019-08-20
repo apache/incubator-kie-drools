@@ -51,7 +51,7 @@ public interface ConstraintFactory {
     String getDefaultConstraintPackage();
 
     // ************************************************************************
-    // From
+    // from
     // ************************************************************************
 
     /**
@@ -61,8 +61,8 @@ public interface ConstraintFactory {
      * If the fromClass is a {@link PlanningEntity}, then it will be automatically
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
      * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized
-     * (so not null unless {@link PlanningVariable#nullable()} is modified).
-     * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of fromClass.
+     * (so when the value is not null - unless {@link PlanningVariable#nullable()} is modified).
+     * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of the fromClass.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
@@ -71,12 +71,16 @@ public interface ConstraintFactory {
 
     /**
      * Like {@link #from(Class)},
-     * but without any filtering of initialized {@link PlanningEntity planning entities}.
+     * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
      */
     <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass);
+
+    // ************************************************************************
+    // fromUniquePair
+    // ************************************************************************
 
     /**
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
@@ -88,6 +92,8 @@ public interface ConstraintFactory {
      * <p>
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
+     * @param fromClass never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass) {
@@ -107,20 +113,33 @@ public interface ConstraintFactory {
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * @param fromClass never null
      * @param joiner never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
      */
     <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner);
 
     /**
-     * @see #fromUniquePair(Class, BiJoiner)
+     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * @param fromClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
         return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiner1, joiner2));
     }
 
     /**
-     * @see #fromUniquePair(Class, BiJoiner)
+     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * @param fromClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3) {
@@ -128,7 +147,14 @@ public interface ConstraintFactory {
     }
 
     /**
-     * @see #fromUniquePair(Class, BiJoiner)
+     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * @param fromClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
@@ -136,10 +162,15 @@ public interface ConstraintFactory {
     }
 
     /**
+     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * @see #fromUniquePair(Class, BiJoiner)
+     * @param fromClass never null
+     * @param joiners never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A>... joiners) {
         return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
