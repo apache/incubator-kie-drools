@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
 

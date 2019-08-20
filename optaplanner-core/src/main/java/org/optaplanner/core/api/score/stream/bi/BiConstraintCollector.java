@@ -23,9 +23,7 @@ import java.util.stream.Collector;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
-import org.optaplanner.core.api.score.stream.common.ConstraintCollectors;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 
 /**
  * Usually created with {@link ConstraintCollectors}.

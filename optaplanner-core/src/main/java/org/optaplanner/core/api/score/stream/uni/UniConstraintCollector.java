@@ -21,9 +21,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
-import org.optaplanner.core.api.score.stream.common.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 
 /**
  * Usually created with {@link ConstraintCollectors}.

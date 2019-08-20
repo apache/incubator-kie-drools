@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.common;
+package org.optaplanner.core.api.score.stream;
 
 import java.util.HashMap;
 import java.util.Map;

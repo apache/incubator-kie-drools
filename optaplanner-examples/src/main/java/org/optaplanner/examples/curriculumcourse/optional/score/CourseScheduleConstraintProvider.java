@@ -24,8 +24,8 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 

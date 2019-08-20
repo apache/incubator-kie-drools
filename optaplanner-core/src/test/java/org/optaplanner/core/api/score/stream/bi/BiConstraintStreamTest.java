@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 
 import static org.junit.Assert.*;
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 

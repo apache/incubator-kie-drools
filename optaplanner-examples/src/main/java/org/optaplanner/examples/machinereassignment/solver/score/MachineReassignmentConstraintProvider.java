@@ -20,13 +20,13 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.common.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 

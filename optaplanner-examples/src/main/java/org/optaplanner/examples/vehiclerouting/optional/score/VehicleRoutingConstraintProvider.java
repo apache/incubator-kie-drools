@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 
 public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 

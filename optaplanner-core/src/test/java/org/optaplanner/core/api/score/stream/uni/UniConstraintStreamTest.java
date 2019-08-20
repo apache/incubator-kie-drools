@@ -42,8 +42,8 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
 import static org.junit.Assert.*;
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 

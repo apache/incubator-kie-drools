@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 
 public class CloudBalancingConstraintProvider implements ConstraintProvider {
 

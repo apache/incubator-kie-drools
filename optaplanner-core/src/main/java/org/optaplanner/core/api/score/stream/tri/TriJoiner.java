@@ -17,7 +17,7 @@
 package org.optaplanner.core.api.score.stream.tri;
 
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.core.api.score.stream.Joiners;
 
 /**
  * Created with {@link Joiners}.

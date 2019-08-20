@@ -23,8 +23,8 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.common.Joiners.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.*;
 
 public class ConferenceSchedulingConstraintProvider implements ConstraintProvider {

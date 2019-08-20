@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
