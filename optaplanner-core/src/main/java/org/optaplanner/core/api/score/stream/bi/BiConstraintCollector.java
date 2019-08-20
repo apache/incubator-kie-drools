@@ -21,30 +21,11 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.TriFunction;
 
-public final class BiConstraintCollector<A, B, ResultContainer_, Result_> {
+public interface BiConstraintCollector<A, B, ResultContainer_, Result_> {
 
-    private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
-    private final Function<ResultContainer_, Result_> finisher;
+    Supplier<ResultContainer_> supplier();
 
-    public BiConstraintCollector(Supplier<ResultContainer_> supplier,
-            TriFunction<ResultContainer_, A, B, Runnable> accumulator,
-            Function<ResultContainer_, Result_> finisher) {
-        this.supplier = supplier;
-        this.accumulator = accumulator;
-        this.finisher = finisher;
-    }
+    TriFunction<ResultContainer_, A, B, Runnable> accumulator();
 
-    public Supplier<ResultContainer_> supplier() {
-        return supplier;
-    }
-
-    public TriFunction<ResultContainer_, A, B, Runnable> accumulator() {
-        return accumulator;
-    }
-
-    public Function<ResultContainer_, Result_> finisher() {
-        return finisher;
-    }
-
+    Function<ResultContainer_, Result_> finisher();
 }

@@ -27,6 +27,8 @@ import java.util.function.ToLongFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 
 /**
  * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance
@@ -39,7 +41,7 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> count() {
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a) -> {
                     resultContainer[0]++;
@@ -49,7 +51,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A> UniConstraintCollector<A, ?, Long> countLong() {
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
                     resultContainer[0]++;
@@ -59,7 +61,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countBi() {
-        return new BiConstraintCollector<>(
+        return new DefaultBiConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a, b) -> {
                     resultContainer[0]++;
@@ -69,7 +71,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countLongBi() {
-        return new BiConstraintCollector<>(
+        return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a, b) -> {
                     resultContainer[0]++;
@@ -87,7 +89,7 @@ public final class ConstraintCollectors {
             int count = 0;
             Map<Object, int[]> objectCountMap = new HashMap<>();
         }
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 CountDistinctResultContainer::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
@@ -117,7 +119,7 @@ public final class ConstraintCollectors {
             long count = 0L;
             Map<Object, long[]> objectCountMap = new HashMap<>();
         }
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 CountDistinctResultContainer::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
@@ -147,7 +149,7 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a) -> {
                     int value = groupValueMapping.applyAsInt(a);
@@ -158,7 +160,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
-        return new UniConstraintCollector<>(
+        return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
                     long value = groupValueMapping.applyAsLong(a);
@@ -169,7 +171,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
-        return new BiConstraintCollector<>(
+        return new DefaultBiConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a, b) -> {
                     int value = groupValueMapping.applyAsInt(a, b);
@@ -180,7 +182,7 @@ public final class ConstraintCollectors {
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Long> sumLong(ToLongBiFunction<? super A, ? super B> groupValueMapping) {
-        return new BiConstraintCollector<>(
+        return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a, b) -> {
                     long value = groupValueMapping.applyAsLong(a, b);

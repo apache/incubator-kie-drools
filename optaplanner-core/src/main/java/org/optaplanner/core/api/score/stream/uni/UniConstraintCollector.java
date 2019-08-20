@@ -19,31 +19,14 @@ package org.optaplanner.core.api.score.stream.uni;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
-public final class UniConstraintCollector<A, ResultContainer_, Result_> {
+public interface UniConstraintCollector<A, ResultContainer_, Result_> {
 
-    private final Supplier<ResultContainer_> supplier;
-    private final BiFunction<ResultContainer_, A, Runnable> accumulator;
-    private final Function<ResultContainer_, Result_> finisher;
+    Supplier<ResultContainer_> supplier();
 
-    public UniConstraintCollector(Supplier<ResultContainer_> supplier,
-            BiFunction<ResultContainer_, A, Runnable> accumulator,
-            Function<ResultContainer_, Result_> finisher) {
-        this.supplier = supplier;
-        this.accumulator = accumulator;
-        this.finisher = finisher;
-    }
+    BiFunction<ResultContainer_, A, Runnable> accumulator();
 
-    public Supplier<ResultContainer_> supplier() {
-        return supplier;
-    }
-
-    public BiFunction<ResultContainer_, A, Runnable> accumulator() {
-        return accumulator;
-    }
-
-    public Function<ResultContainer_, Result_> finisher() {
-        return finisher;
-    }
+    Function<ResultContainer_, Result_> finisher();
 
 }
