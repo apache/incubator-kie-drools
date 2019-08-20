@@ -20,10 +20,12 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
+ * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link ConstraintMatchTotal}.
  * Retrievable from {@link ScoreDirector#getIndictmentMap()}.
  */
 public final class Indictment implements Serializable, Comparable<Indictment> {

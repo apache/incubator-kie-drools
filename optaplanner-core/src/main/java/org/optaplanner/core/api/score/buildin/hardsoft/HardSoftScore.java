@@ -31,6 +31,8 @@ import org.optaplanner.core.api.score.Score;
 public final class HardSoftScore extends AbstractScore<HardSoftScore> implements FeasibilityScore<HardSoftScore> {
 
     public static final HardSoftScore ZERO = new HardSoftScore(0, 0, 0);
+    public static final HardSoftScore ONE_HARD = new HardSoftScore(0, 1, 0);
+    public static final HardSoftScore ONE_SOFT = new HardSoftScore(0, 0, 1);
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 

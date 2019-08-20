@@ -16,22 +16,32 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
+    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
     private final Predicate<A> predicate;
 
-    public BavetFilterUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, Predicate<A> predicate) {
-        super(bavetConstraint);
+    public BavetFilterUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            Predicate<A> predicate) {
+        super(constraintFactory);
+        this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {
             throw new IllegalArgumentException("The predicate (null) cannot be null.");
         }
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************

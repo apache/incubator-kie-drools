@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -31,66 +32,78 @@ import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final boolean positive;
+    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
+    private final BavetConstraint<Solution_> constraint;
     private final boolean noMatchWeigher;
     private final ToIntFunction<A> intMatchWeigher;
     private final ToLongFunction<A> longMatchWeigher;
     private final Function<A, BigDecimal> bigDecimalMatchWeigher;
 
-    public BavetScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, boolean positive) {
-        this(bavetConstraint, positive, true, null, null, null);
+    public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            BavetConstraint<Solution_> constraint) {
+        this(constraintFactory, parent, constraint, true, null, null, null);
     }
 
-    public BavetScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, boolean positive,
-            ToIntFunction<A> intMatchWeigher) {
-        this(bavetConstraint, positive, false, intMatchWeigher, null, null);
+    public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            BavetConstraint<Solution_> constraint, ToIntFunction<A> intMatchWeigher) {
+        this(constraintFactory, parent, constraint, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    public BavetScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, boolean positive,
-            ToLongFunction<A> longMatchWeigher) {
-        this(bavetConstraint, positive, false, null, longMatchWeigher, null);
+    public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            BavetConstraint<Solution_> constraint, ToLongFunction<A> longMatchWeigher) {
+        this(constraintFactory, parent, constraint, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    public BavetScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, boolean positive,
-            Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        this(bavetConstraint, positive, false, null, null, bigDecimalMatchWeigher);
+    public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            BavetConstraint<Solution_> constraint, Function<A, BigDecimal> bigDecimalMatchWeigher) {
+        this(constraintFactory, parent, constraint, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    private BavetScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint,
-            boolean positive, boolean noMatchWeigher,
+    private BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
             ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher, Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(bavetConstraint);
-        this.positive = positive;
+        super(constraintFactory);
+        this.parent = parent;
+        this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
+    }
+
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
+
     @Override
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        if (!positive) {
-            constraintWeight = constraintWeight.negate();
-        }
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
         BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;

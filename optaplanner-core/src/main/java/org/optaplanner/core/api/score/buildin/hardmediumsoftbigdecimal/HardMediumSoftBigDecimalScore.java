@@ -37,6 +37,9 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         implements FeasibilityScore<HardMediumSoftBigDecimalScore> {
 
     public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_HARD = new HardMediumSoftBigDecimalScore(0, BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_MEDIUM = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_SOFT = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";

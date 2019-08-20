@@ -16,20 +16,28 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
 
-    public BavetFromUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, Class<A> fromClass) {
-        super(bavetConstraint);
+    public BavetFromUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
+        super(constraintFactory);
         this.fromClass = fromClass;
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return Collections.singletonList((BavetFromUniConstraintStream<Solution_, Object>) this);
     }
 
     // ************************************************************************

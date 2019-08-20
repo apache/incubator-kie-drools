@@ -17,11 +17,13 @@
 package org.optaplanner.core.impl.score.director.stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
+import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 
@@ -33,13 +35,14 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
  */
 public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
-    private final InnerConstraintFactory<Solution_> constraintFactory;
+    private final ConstraintSessionFactory<Solution_> constraintSessionFactory;
 
     public ConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider) {
         super(solutionDescriptor);
-        constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
-        constraintProvider.defineConstraints(constraintFactory);
+        InnerConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
+        Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
+        constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
     // ************************************************************************
@@ -53,7 +56,7 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
     }
 
     public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        return constraintFactory.buildSession(constraintMatchEnabled, workingSolution);
+        return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
     }
 
 }

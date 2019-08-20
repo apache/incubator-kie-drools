@@ -16,10 +16,15 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
 
 /**
+ * WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+ * It works but it has many API gaps.
+ * Therefore, it is not rich enough yet to handle complex constraints.
+ * <p>
  * Used by constraint stream {@link Score} calculation.
  * <p>
  * An implementation must be stateless.
@@ -28,9 +33,13 @@ import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDire
 public interface ConstraintProvider {
 
     /**
-     * This method is called once to define the constraint.
+     * This method is called once to create the constraints.
+     * To create a {@link Constraint}, start with {@link ConstraintFactory#from(Class)}.
      * @param constraintFactory never null
+     * @return an array of all {@link Constraint constraints} that could apply.
+     * The constraints with a zero {@link ConstraintWeight} for a particular problem
+     * will be automatically disabled when scoring that problem, to improve performance.
      */
-    void defineConstraints(ConstraintFactory constraintFactory);
+    Constraint[] defineConstraints(ConstraintFactory constraintFactory);
 
 }

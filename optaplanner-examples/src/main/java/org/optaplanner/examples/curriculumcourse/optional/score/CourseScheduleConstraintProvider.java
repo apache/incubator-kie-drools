@@ -20,7 +20,6 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
@@ -31,128 +30,135 @@ import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
     // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It is stable but it has many API gaps.
+    // It works but it has many API gaps.
     // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
-    public void defineConstraints(ConstraintFactory constraintFactory) {
-        // TODO replace the 2 conflictingLectures constraints with these
-//        teacherConflict(constraintFactory);
-//        curriculumConflict(constraintFactory);
-        conflictingLecturesDifferentCourseInSamePeriod(constraintFactory);
-        conflictingLecturesSameCourseInSamePeriod(constraintFactory);
-        roomOccupancy(constraintFactory); // TODO Doesn't work
-        unavailablePeriodPenalty(constraintFactory);
-        roomCapacity(constraintFactory);
-        minimumWorkingDays(constraintFactory);
-        curriculumCompactness(constraintFactory); // TODO Implement it
-        roomStability(constraintFactory);
+    public Constraint[] defineConstraints(ConstraintFactory factory) {
+        return new Constraint[]{
+                // TODO replace the 2 conflictingLectures constraints with these
+                // teacherConflict(factory),
+                // curriculumConflict(factory),
+                conflictingLecturesDifferentCourseInSamePeriod(factory),
+                conflictingLecturesSameCourseInSamePeriod(factory),
+                roomOccupancy(factory), // TODO Doesn't work
+                unavailablePeriodPenalty(factory),
+                roomCapacity(factory),
+                minimumWorkingDays(factory),
+                curriculumCompactness(factory), // TODO Implement it
+                roomStability(factory)
+        };
     }
 
-    private void teacherConflict(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "teacherConflict", HardSoftScore.ofHard(1));
-        c.from(Lecture.class)
+    // ************************************************************************
+    // Hard constraints
+    // ************************************************************************
+
+    private Constraint teacherConflict(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .join(Lecture.class,
                         equal(Lecture::getTeacher),
                         equal(Lecture::getPeriod),
                         lessThan(Lecture::getId))
-                .penalize();
+                .penalize("teacherConflict",
+                        HardSoftScore.ofHard(1));
     }
 
-    private void curriculumConflict(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "curriculumConflict", HardSoftScore.ofHard(1));
-        c.from(Lecture.class)
+    private Constraint curriculumConflict(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .join(Lecture.class,
                         equal(Lecture::getPeriod),
                         lessThan(Lecture::getId))
                 .filter((lecture1, lecture2) -> lecture1.getCurriculumList().stream()
                         .anyMatch(lecture -> lecture2.getCurriculumList().contains(lecture)))
-                .penalize((lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
+                .penalize("curriculumConflict",
+                        HardSoftScore.ofHard(1),
+                        (lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
                         .filter(lecture -> lecture2.getCurriculumList().contains(lecture))
                         .count());
     }
 
-    protected void conflictingLecturesDifferentCourseInSamePeriod(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "conflictingLecturesDifferentCourseInSamePeriod", HardSoftScore.ofHard(1));
-        c.from(CourseConflict.class)
+    private Constraint conflictingLecturesDifferentCourseInSamePeriod(ConstraintFactory factory) {
+        return factory.from(CourseConflict.class)
                 .join(Lecture.class,
                         equal(CourseConflict::getLeftCourse, Lecture::getCourse))
                 .join(Lecture.class,
                         equal((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
                         equal((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
-                .penalize((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
+                .penalize("conflictingLecturesDifferentCourseInSamePeriod",
+                        HardSoftScore.ofHard(1),
+                        (courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
 
-    protected void conflictingLecturesSameCourseInSamePeriod(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "conflictingLecturesSameCourseInSamePeriod", HardSoftScore.ofHard(1));
-        c.from(Lecture.class)
+    private Constraint conflictingLecturesSameCourseInSamePeriod(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .join(Lecture.class,
                         equal(Lecture::getCourse, Lecture::getCourse),
                         equal(Lecture::getPeriod, Lecture::getPeriod),
                         lessThan(Lecture::getId, Lecture::getId))
-                .penalize((lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
+                .penalize("conflictingLecturesSameCourseInSamePeriod",
+                        HardSoftScore.ofHard(1),
+                        (lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
     }
 
-    protected void roomOccupancy(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "roomOccupancy", HardSoftScore.ofHard(1));
-        c.from(Lecture.class)
+    private Constraint roomOccupancy(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
                 .filter((period, room, count) -> count > 1)
-                .penalize((period, room, count) -> count - 1);
+                .penalize("roomOccupancy",
+                        HardSoftScore.ofHard(1),
+                        (period, room, count) -> count - 1);
     }
 
-    protected void unavailablePeriodPenalty(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "unavailablePeriodPenalty", HardSoftScore.ofHard(10));
-        c.from(UnavailablePeriodPenalty.class)
+    private Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
+        return factory.from(UnavailablePeriodPenalty.class)
                 .join(Lecture.class,
                         equal(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
                         equal(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
-                .penalize();
+                .penalize("unavailablePeriodPenalty",
+                        HardSoftScore.ofHard(10));
     }
 
-    protected void roomCapacity(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "roomCapacity", HardSoftScore.ofSoft(1));
-        c.from(Lecture.class)
+    // ************************************************************************
+    // Soft constraints
+    // ************************************************************************
+
+    private Constraint roomCapacity(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
-                .penalize(lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
+                .penalize("roomCapacity",
+                        HardSoftScore.ofSoft(1),
+                        lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
     }
 
-    protected void minimumWorkingDays(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "minimumWorkingDays", HardSoftScore.ofSoft(5));
-        c.from(Lecture.class)
+    private Constraint minimumWorkingDays(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
-                .penalize((course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
+                .penalize("minimumWorkingDays",
+                        HardSoftScore.ofSoft(5),
+                        (course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
     }
 
-    protected void curriculumCompactness(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "curriculumCompactness", HardSoftScore.ofSoft(2));
-        c.from(Curriculum.class)
-                .join(Lecture.class)
-                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
-        // TODO .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
-        //      .flatten()
-        //      .penalize();
+    private Constraint curriculumCompactness(ConstraintFactory factory) {
+//        return factory.from(Curriculum.class)
+//                .join(Lecture.class)
+//                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
+//                .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
+//                .flatten()
+//                .penalize("curriculumCompactness",
+//                        HardSoftScore.ofSoft(2));
         throw new UnsupportedOperationException();
     }
 
-    protected void roomStability(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "roomStability", HardSoftScore.ofSoft(1));
-        c.from(Lecture.class)
+    private Constraint roomStability(ConstraintFactory factory) {
+        return factory.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
                 .filter((course, roomCount) -> roomCount > 1)
-                .penalize((course, roomCount) -> roomCount - 1);
+                .penalize("roomStability",
+                        HardSoftScore.ofSoft(1),
+                        (course, roomCount) -> roomCount - 1);
     }
 
 }

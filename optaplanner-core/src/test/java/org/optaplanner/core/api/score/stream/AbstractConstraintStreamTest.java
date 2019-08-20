@@ -18,7 +18,7 @@ package org.optaplanner.core.api.score.stream;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,6 +33,8 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractConstraintStreamTest {
+
+    protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
 
     @Parameterized.Parameters(name = "constraintMatchEnabled={0}")
     public static Object[] data() {
@@ -51,14 +53,11 @@ public abstract class AbstractConstraintStreamTest {
     // SimpleScore creation and assertion methods
     // ************************************************************************
 
-    protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Consumer<Constraint> constraintConsumer) {
+    protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Function<ConstraintFactory, Constraint> function) {
         ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataLavishSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            Constraint constraint = constraintFactory.newConstraintWithWeight(
-                    "testConstraintPackage", "testConstraintName", SimpleScore.of(1));
-            constraintConsumer.accept(constraint);
-        });
+                TestdataLavishSolution.buildSolutionDescriptor(),
+                (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)});
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
@@ -70,8 +69,9 @@ public abstract class AbstractConstraintStreamTest {
                 .mapToInt(assertableMatch -> assertableMatch.score)
                 .sum();
         if (constraintMatchEnabled) {
+            String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
-                    .get(ConstraintMatchTotal.composeConstraintId("testConstraintPackage", "testConstraintName"));
+                    .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, TEST_CONSTRAINT_NAME));
             for (AssertableMatch assertableMatch : assertableMatches) {
                 if (constraintMatchTotal.getConstraintMatchSet().stream()
                         .noneMatch(constraintMatch

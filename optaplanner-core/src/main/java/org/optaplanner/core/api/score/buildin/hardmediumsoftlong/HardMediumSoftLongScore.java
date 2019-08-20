@@ -34,6 +34,9 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
         implements FeasibilityScore<HardMediumSoftLongScore> {
 
     public static final HardMediumSoftLongScore ZERO = new HardMediumSoftLongScore(0, 0L, 0L, 0L);
+    public static final HardMediumSoftLongScore ONE_HARD = new HardMediumSoftLongScore(0, 1L, 0L, 0L);
+    public static final HardMediumSoftLongScore ONE_MEDIUM = new HardMediumSoftLongScore(0, 0L, 1L, 0L);
+    public static final HardMediumSoftLongScore ONE_SOFT = new HardMediumSoftLongScore(0, 0L, 0L, 1L);
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";

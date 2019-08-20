@@ -16,21 +16,33 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
+import java.util.List;
+
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
 public final class BavetFilterTriConstraintStream<Solution_, A, B, C> extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
 
+    private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private final TriPredicate<A, B, C> predicate;
 
-    public BavetFilterTriConstraintStream(BavetConstraint<Solution_> bavetConstraint, TriPredicate<A, B, C> predicate) {
-        super(bavetConstraint);
+    public BavetFilterTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriPredicate<A, B, C> predicate) {
+        super(constraintFactory);
+        this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {
             throw new IllegalArgumentException("The predicate (null) cannot be null.");
         }
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************

@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.Score;
 public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     public static final SimpleLongScore ZERO = new SimpleLongScore(0, 0L);
+    public static final SimpleLongScore ONE = new SimpleLongScore(0, 1L);
 
     public static SimpleLongScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleLongScore.class, scoreString, "");

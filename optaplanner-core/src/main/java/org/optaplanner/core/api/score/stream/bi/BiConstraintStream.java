@@ -27,6 +27,8 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
@@ -128,7 +130,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return a stream that matches every combination of [A, B] and C for which the {@link BiJoiner} is true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
-        return join(getConstraint().from(otherClass), joiner);
+        return join(getConstraintFactory().from(otherClass), joiner);
     }
 
     /**
@@ -190,53 +192,262 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     // ************************************************************************
 
     /**
-     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.
-     */
-    void penalize();
-
-    /**
-     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #penalize(String, Score)}.
      * <p>
-     * For non-int {@link Score} types use {@link #penalizeLong(ToLongBiFunction)} or {@link #penalizeBigDecimal(BiFunction)}.
+     * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongBiFunction)} or {@link #penalizeBigDecimal(String, Score, BiFunction)} instead.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
      */
-    void penalize(ToIntBiFunction<A, B> matchWeigher);
+    default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #penalize(String, Score, ToIntBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #penalize(String, Score)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint penalizeLong(String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #penalizeLong(String, Score, ToLongBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #penalize(String, Score)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #penalizeBigDecimal(String, Score, BiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-     */
-    void penalizeLong(ToLongBiFunction<A, B> matchWeigher);
-
-    /**
-     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-     */
-    void penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
-
-    /**
-     * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
-     */
-    void reward();
-
-    /**
-     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      * <p>
-     * For non-int {@link Score} types use {@link #rewardLong(ToLongBiFunction)} or {@link #rewardBigDecimal(BiFunction)}.
+     * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongBiFunction)} or {@link #penalizeConfigurableBigDecimal(String, BiFunction)} instead.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
      */
-    void reward(ToIntBiFunction<A, B> matchWeigher);
+    default Constraint penalizeConfigurable(String constraintName, ToIntBiFunction<A, B> matchWeigher) {
+        return penalizeConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
 
     /**
-     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * As defined by {@link #penalizeConfigurable(String, ToIntBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
      */
-    void rewardLong(ToLongBiFunction<A, B> matchWeigher);
+    Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher);
 
     /**
-     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
      */
-    void rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+    default Constraint penalizeConfigurableLong(String constraintName, ToLongBiFunction<A, B> matchWeigher) {
+        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #penalizeConfigurableLong(String, ToLongBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint penalizeConfigurableBigDecimal(String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #penalizeConfigurableBigDecimal(String, BiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher);
+
+
+    /**
+     * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #reward(String, Score)}.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongBiFunction)} or {@link #rewardBigDecimal(String, Score, BiFunction)} instead.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint reward(String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #reward(String, Score, ToIntBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #reward(String, Score)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #rewardLong(String, Score, ToLongBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #reward(String, Score)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #rewardBigDecimal(String, Score, BiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongBiFunction)} or {@link #rewardConfigurableBigDecimal(String, BiFunction)} instead.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint rewardConfigurable(String constraintName, ToIntBiFunction<A, B> matchWeigher) {
+        return rewardConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #rewardConfigurable(String, ToIntBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint rewardConfigurableLong(String constraintName, ToLongBiFunction<A, B> matchWeigher) {
+        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #rewardConfigurableLong(String, ToLongBiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
+     * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint rewardConfigurableBigDecimal(String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #rewardConfigurableBigDecimal(String, BiFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher);
 
 }
+

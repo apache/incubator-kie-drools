@@ -35,6 +35,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         implements FeasibilityScore<HardSoftBigDecimalScore> {
 
     public static final HardSoftBigDecimalScore ZERO = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO);
+    public static final HardSoftBigDecimalScore ONE_HARD = new HardSoftBigDecimalScore(0, BigDecimal.ONE, BigDecimal.ZERO);
+    public static final HardSoftBigDecimalScore ONE_SOFT = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ONE);
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 

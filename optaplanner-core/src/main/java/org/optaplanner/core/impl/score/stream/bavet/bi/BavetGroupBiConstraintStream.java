@@ -16,21 +16,32 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
 public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
         extends BavetAbstractBiConstraintStream<Solution_, GroupKey_, Result_> {
 
+    private final BavetAbstractConstraintStream<Solution_> parent;
     private final Function<ResultContainer_, Result_> finisher;
 
-    public BavetGroupBiConstraintStream(BavetConstraint<Solution_> bavetConstraint,
+    public BavetGroupBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractConstraintStream<Solution_> parent,
             Function<ResultContainer_, Result_> finisher) {
-        super(bavetConstraint);
+        super(constraintFactory);
+        this.parent = parent;
         this.finisher = finisher;
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************

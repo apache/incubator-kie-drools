@@ -27,44 +27,43 @@ import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 public class NQueensConstraintProvider implements ConstraintProvider {
 
     // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It is stable but it has many API gaps.
+    // It works but it has many API gaps.
     // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
-    public void defineConstraints(ConstraintFactory constraintFactory) {
-        horizontalConflict(constraintFactory);
-        ascendingDiagonalConflict(constraintFactory);
-        descendingDiagonalConflict(constraintFactory);
+    public Constraint[] defineConstraints(ConstraintFactory factory) {
+        return new Constraint[]{
+                horizontalConflict(factory),
+                ascendingDiagonalConflict(factory),
+                descendingDiagonalConflict(factory),
+        };
     }
 
-    protected void horizontalConflict(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "Horizontal conflict", SimpleScore.of(1));
-        c.fromUniquePair(Queen.class,
-                equal(Queen::getRowIndex)
-        ).penalize();
+    // ************************************************************************
+    // Hard constraints
+    // ************************************************************************
+
+    private Constraint horizontalConflict(ConstraintFactory factory) {
+        return factory
+                .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
+                .penalize("Horizontal conflict", SimpleScore.ONE);
         // fromUniquePair() is syntactic sugar for from().join(..., lessThan(getId())
-//        c.from(Queen.class)
+//        return factory.from(Queen.class)
 //                .join(Queen.class,
 //                        equal(Queen::getRowIndex),
 //                        lessThan(Queen::getId))
-//                .penalize();
+//                .penalize("Horizontal conflict", SimpleScore.ONE);
     }
 
-    protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "Ascending diagonal conflict", SimpleScore.of(1));
-        c.fromUniquePair(Queen.class,
-                equal(Queen::getAscendingDiagonalIndex)
-        ).penalize();
+    private Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
+        return factory
+                .fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
+                .penalize("Ascending diagonal conflict", SimpleScore.ONE);
     }
 
-    protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "Descending diagonal conflict", SimpleScore.of(1));
-        c.fromUniquePair(Queen.class,
-                equal(Queen::getDescendingDiagonalIndex)
-        ).penalize();
+    private Constraint descendingDiagonalConflict(ConstraintFactory factory) {
+        return factory.fromUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
+                .penalize("Descending diagonal conflict", SimpleScore.ONE);
     }
 
 }

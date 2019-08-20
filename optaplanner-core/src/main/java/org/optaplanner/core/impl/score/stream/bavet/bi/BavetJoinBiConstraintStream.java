@@ -16,18 +16,38 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniNode;
 
 public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B>
         implements BavetJoinConstraintStream<Solution_> {
 
-    public BavetJoinBiConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
-        super(bavetConstraint);
+    private final BavetAbstractConstraintStream<Solution_> leftParent;
+    private final BavetAbstractConstraintStream<Solution_> rightParent;
+
+    public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractConstraintStream<Solution_> leftParent,
+            BavetAbstractConstraintStream<Solution_> rightParent) {
+        super(constraintFactory);
+        this.leftParent = leftParent;
+        this.rightParent = rightParent;
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return Stream.concat(leftParent.getFromStreamList().stream(),
+                rightParent.getFromStreamList().stream())
+                .collect(Collectors.toList());
     }
 
     // ************************************************************************

@@ -16,10 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintStream;
@@ -30,19 +31,30 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
         extends BavetAbstractUniConstraintStream<Solution_, A>
         implements BavetJoinBridgeConstraintStream<Solution_> {
 
-    private final BavetJoinConstraintStream<Solution_> joinStream;
+    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
+    private BavetJoinConstraintStream<Solution_> joinStream;
     private final boolean isLeftBridge;
     private final Function<A, Object[]> mapping;
     private final BavetIndexFactory indexFactory;
 
-    public BavetJoinBridgeUniConstraintStream(BavetConstraint<Solution_> bavetConstraint,
-            BavetJoinConstraintStream<Solution_> joinStream, boolean isLeftBridge,
+    public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            boolean isLeftBridge,
             Function<A, Object[]> mapping, BavetIndexFactory indexFactory) {
-        super(bavetConstraint);
-        this.joinStream = joinStream;
+        super(constraintFactory);
+        this.parent = parent;
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;
         this.indexFactory = indexFactory;
+    }
+
+    public void setJoinStream(BavetJoinConstraintStream<Solution_> joinStream) {
+        this.joinStream = joinStream;
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************

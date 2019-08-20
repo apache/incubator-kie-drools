@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream;
 
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
+public interface ConstraintSessionFactory<Solution_>  {
 
     /**
      * This method is thread-safe.
-     * @param constraints never null
+     * @param constraintMatchEnabled  true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
+     * @param workingSolution never null
      * @return never null
      */
-    ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints);
+    ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
 
 }

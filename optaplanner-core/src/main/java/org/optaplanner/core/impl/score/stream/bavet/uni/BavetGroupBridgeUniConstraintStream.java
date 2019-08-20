@@ -16,11 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -28,17 +29,27 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 public final class BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_>
         extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream;
+    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
+    private BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream;
     private final Function<A, GroupKey_> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
 
-    public BavetGroupBridgeUniConstraintStream(BavetConstraint<Solution_> bavetConstraint,
-            BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream,
+    public BavetGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        super(bavetConstraint);
-        this.biStream = biStream;
+        super(constraintFactory);
+        this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
+    }
+
+    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream) {
+        this.groupStream = groupStream;
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -49,9 +60,9 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, 
     protected BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         // TODO create bridge first. Move this to createChildNodeChains
-        BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, null);
+        BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> groupNode = groupStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, null);
         BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node = new BavetGroupBridgeUniNode<>(
-                buildPolicy.getSession(), nodeOrder, parentNode, groupKeyMapping, collector, biNode);
+                buildPolicy.getSession(), nodeOrder, parentNode, groupKeyMapping, collector, groupNode);
         return node;
     }
 

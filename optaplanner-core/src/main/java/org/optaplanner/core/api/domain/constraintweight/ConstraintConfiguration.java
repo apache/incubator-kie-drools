@@ -25,10 +25,12 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that the class holds a number of {@link ConstraintWeight} annotated members.
- * It holds a {@link ConstraintWeight weight} for each of the constraints.
- * This is usually the type of a field or property of the {@link PlanningSolution}
- * annotated with {@link ConstraintConfigurationProvider}.
+ * Allows end users to change the constraint weights, by not hard coding them.
+ * This annotation specifies that the class holds a number of {@link ConstraintWeight} annotated members.
+ * That class must also have a {@link ConstraintWeight weight} for each of the constraints.
+ * <p>
+ * A {@link PlanningSolution} has at most one field or property annotated with {@link ConstraintConfigurationProvider}
+ * with returns a type of the {@link ConstraintConfiguration} annotated class.
  */
 @Target({TYPE})
 @Retention(RUNTIME)
@@ -36,7 +38,8 @@ public @interface ConstraintConfiguration {
 
     /**
      * The namespace of the constraints.
-     *
+     * <p>
+     * This is the default for every {@link ConstraintWeight#constraintPackage()} in the annotated class.
      * @return defaults to the annotated class's package.
      */
     String constraintPackage() default "";

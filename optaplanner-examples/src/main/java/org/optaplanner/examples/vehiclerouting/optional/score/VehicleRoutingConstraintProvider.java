@@ -28,43 +28,61 @@ import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.
 public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It is stable but it has many API gaps.
+    // It works but it has many API gaps.
     // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
-    public void defineConstraints(ConstraintFactory constraintFactory) {
-        vehicleCapacity(constraintFactory);
-        distanceToPreviousStandstill(constraintFactory);
-        distanceFromLastCustomerToDepot(constraintFactory);
-        arrivalAfterDueTime(constraintFactory);
+    public Constraint[] defineConstraints(ConstraintFactory factory) {
+        return new Constraint[]{
+                vehicleCapacity(factory),
+                distanceToPreviousStandstill(factory),
+                distanceFromLastCustomerToDepot(factory),
+                arrivalAfterDueTime(factory)
+        };
     }
 
-    protected void vehicleCapacity(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("vehicleCapacity", HardSoftLongScore.ofHard(1L));
-        c.from(Customer.class)
+    // ************************************************************************
+    // Hard constraints
+    // ************************************************************************
+
+    private Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.from(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
-                .penalizeLong((vehicle, demand) -> demand - vehicle.getCapacity());
+                .penalizeLong("vehicleCapacity",
+                        HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity());
     }
 
-    protected void distanceToPreviousStandstill(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("distanceToPreviousStandstill", HardSoftLongScore.ofSoft(1L));
-        c.from(Customer.class)
-                .penalizeLong(Customer::getDistanceFromPreviousStandstill);
+    // ************************************************************************
+    // Soft constraints
+    // ************************************************************************
+
+    private Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
+        return factory.from(Customer.class)
+                .penalizeLong("distanceToPreviousStandstill",
+                        HardSoftLongScore.ONE_SOFT,
+                        Customer::getDistanceFromPreviousStandstill);
     }
 
-    protected void distanceFromLastCustomerToDepot(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("distanceFromLastCustomerToDepot", HardSoftLongScore.ofSoft(1L));
-        c.from(Customer.class)
+    private Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
+        return factory.from(Customer.class)
                 .filter(customer -> customer.getNextCustomer() == null)
-                .penalizeLong(customer -> customer.getDistanceTo(customer.getVehicle()));
+                .penalizeLong("distanceFromLastCustomerToDepot",
+                        HardSoftLongScore.ONE_SOFT,
+                        customer -> customer.getDistanceTo(customer.getVehicle()));
     }
 
-    protected void arrivalAfterDueTime(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight("arrivalAfterDueTime", HardSoftLongScore.ofHard(1L));
-        c.from(TimeWindowedCustomer.class)
+    // ************************************************************************
+    // TimeWindowed: additional hard constraints
+    // ************************************************************************
+
+    private Constraint arrivalAfterDueTime(ConstraintFactory factory) {
+        return factory.from(TimeWindowedCustomer.class)
                 .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
-                .penalizeLong(customer -> customer.getArrivalTime() - customer.getDueTime());
+                .penalizeLong("arrivalAfterDueTime",
+                        HardSoftLongScore.ONE_HARD,
+                        customer -> customer.getArrivalTime() - customer.getDueTime());
     }
 
 }

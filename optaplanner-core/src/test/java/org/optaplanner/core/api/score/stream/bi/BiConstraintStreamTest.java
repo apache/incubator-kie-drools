@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -65,11 +66,11 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(), value1);
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
                     .filter((entity, value) -> value.getCode().equals("MyValue 1"))
-                    .penalize();
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
@@ -116,11 +117,11 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishExtra extra3 = new TestdataLavishExtra("MyExtra 3");
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
                     .join(TestdataLavishExtra.class)
-                    .penalize();
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
@@ -172,11 +173,11 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         extra3.setStringProperty("MyString");
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
                     .join(TestdataLavishExtra.class, equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
-                    .penalize();
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
@@ -229,13 +230,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         extra3.setIntegerProperty(7);
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
                     .join(TestdataLavishExtra.class,
                             equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty),
                             equal((entity, value) -> entity.getIntegerProperty(), TestdataLavishExtra::getIntegerProperty))
-                    .penalize();
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
@@ -278,15 +279,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
-                    .from(TestdataEntity.class)
+                TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalize();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
-                    .from(TestdataEntity.class)
+                    .penalize("myConstraint1", SimpleScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalize((entity, value) -> 20);
+                    .penalize("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
         });
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -305,15 +304,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
-                    .from(TestdataEntity.class)
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalize();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
-                    .from(TestdataEntity.class)
+                    .penalize("myConstraint1", SimpleLongScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalizeLong((entity, value) -> 20L);
+                    .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
         });
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -332,15 +329,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
-                    .from(TestdataEntity.class)
+                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalize();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
-                    .from(TestdataEntity.class)
+                    .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .penalizeBigDecimal((entity, value) -> new BigDecimal("0.2"));
+                    .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value) -> new BigDecimal("0.2"))
         });
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -359,15 +354,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
-                    .from(TestdataEntity.class)
+                TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .reward();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
-                    .from(TestdataEntity.class)
+                    .reward("myConstraint1", SimpleScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .reward((entity, value) -> 20);
+                    .reward("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
         });
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -386,15 +379,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
-                    .from(TestdataEntity.class)
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .reward();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
-                    .from(TestdataEntity.class)
+                    .reward("myConstraint1", SimpleLongScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .rewardLong((entity, value) -> 20L);
+                    .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
         });
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -413,15 +404,13 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
-                    .from(TestdataEntity.class)
+                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .reward();
-            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
-                    .from(TestdataEntity.class)
+                    .reward("myConstraint1", SimpleBigDecimalScore.ONE),
+            factory.from(TestdataEntity.class)
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                    .rewardBigDecimal((entity, value) -> new BigDecimal("0.2"));
+                    .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value) -> new BigDecimal("0.2"))
         });
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -433,44 +422,10 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Combinations
     // ************************************************************************
 
-//    @Test
-//    public void globalNodeOrder() {
-//        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
-//        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
-//        solution.getEntityGroupList().add(entityGroup);
-//        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
-//        entity1.setStringProperty("MyString1");
-//        solution.getEntityList().add(entity1);
-//
-//        InnerScoreDirector<TestdataLavishSolution> scoreDirector1 = buildScoreDirector((constraint) -> {
-//            constraint.from(TestdataLavishEntity.class)
-//                    .filter(entity -> entity.getEntityGroup() == entityGroup)
-//                    .filter(entity -> entity.getStringProperty().equals("MyString1"))
-//                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
-//                    .penalize();
-//        });
-//
-//        // From scratch
-//        scoreDirector1.setWorkingSolution(solution);
-//        assertScore(scoreDirector1,
-//                assertMatch(entity1, solution.getFirstEntity()),
-//                assertMatch(entity1, entity1));
-//
-//        InnerScoreDirector<TestdataLavishSolution> scoreDirector2 = buildScoreDirector((constraint) -> {
-//            constraint.from(TestdataLavishEntity.class)
-//                    .join(constraint.from(TestdataLavishEntity.class)
-//                            .filter(entity -> entity.getEntityGroup() == entityGroup)
-//                            .filter(entity -> entity.getStringProperty().equals("MyString1")),
-//                            equal(TestdataLavishEntity::getIntegerProperty))
-//                    .penalize();
-//        });
-//
-//        // From scratch
-//        scoreDirector2.setWorkingSolution(solution);
-//        assertScore(scoreDirector2,
-//                assertMatch(solution.getFirstEntity(), entity1),
-//                assertMatch(entity1, entity1));
-//    }
+    @Test @Ignore("Not yet implemented") // TODO
+    public void globalNodeOrder() {
+
+    }
 
     @Test @Ignore("Not yet supported") // TODO
     public void nodeSharing() {

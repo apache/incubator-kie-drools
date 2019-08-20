@@ -31,18 +31,18 @@ public final class BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Resul
     private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, GroupKey_> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
-    private final BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> biNode;
+    private final BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> groupNode;
 
     private final Map<GroupKey_, BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_>> tupleMap;
 
     public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector,
-            BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> biNode) {
+            BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> groupNode) {
         super(session, nodeOrder);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
-        this.biNode = biNode;
+        this.groupNode = groupNode;
         tupleMap = new HashMap<>();
     }
 
@@ -72,7 +72,7 @@ public final class BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Resul
             A a = tuple.getFactA();
             GroupKey_ groupKey = groupKeyMapping.apply(a);
             BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple = tupleMap.computeIfAbsent(groupKey,
-                    k -> biNode.createTuple(groupKey, collector.supplier().get()));
+                    k -> groupNode.createTuple(groupKey, collector.supplier().get()));
             int parentCount = childTuple.increaseParentCount();
 
             Runnable undoAccumulator = collector.accumulator().apply(childTuple.getResultContainer(), a);

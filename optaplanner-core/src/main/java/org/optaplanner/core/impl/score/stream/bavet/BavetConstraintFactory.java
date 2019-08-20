@@ -17,102 +17,100 @@
 package org.optaplanner.core.impl.score.stream.bavet;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
-import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
+import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
 public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final List<BavetConstraint<Solution_>> constraintList = new ArrayList<>(20);
+    private final String defaultConstraintPackage;
 
     public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-    }
-
-    @Override
-    public Constraint newConstraint(String constraintName) {
-        return newConstraint(null, constraintName);
-    }
-
-    @Override
-    public Constraint newConstraint(String constraintPackage, String constraintName) {
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
                 = solutionDescriptor.getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
-            throw new IllegalStateException("The constraint with package (" + constraintPackage
-                    + ") and name (" + constraintName + ") does not hard-code a constraint weight"
-                    +" and there is no @" + ConstraintConfigurationProvider.class.getSimpleName()
-                    + " on the solution class (" + solutionDescriptor.getSolutionClass() + ").\n"
-                    + "Maybe add a @" + ConstraintConfiguration.class.getSimpleName() + " class"
-                    + " or replace the use of" + ConstraintFactory.class.getSimpleName() + ".newConstraint() with newConstraintWithWeight() instead.");
+            defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
+        } else {
+            defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }
-        if (constraintPackage == null) {
-            constraintPackage = configurationDescriptor.getConstraintPackage();
+    }
+
+    // ************************************************************************
+    // From
+    // ************************************************************************
+
+    @Override
+    public <A> BavetAbstractUniConstraintStream<Solution_, A> from(Class<A> fromClass) {
+        BavetAbstractUniConstraintStream<Solution_, A> stream = fromUnfiltered(fromClass);
+        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptor(fromClass);
+        if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
+            Predicate<A> predicate = (Predicate<A>) entityDescriptor.getIsInitializedPredicate();
+            stream = stream.filter(predicate);
         }
-        ConstraintWeightDescriptor<Solution_> weightDescriptor = configurationDescriptor.findConstraintWeightDescriptor(constraintPackage, constraintName);
-        if (weightDescriptor == null) {
-            throw new IllegalStateException("The constraint with package (" + constraintPackage
-                    + ") and name (" + constraintName + ") does not hard-code a constraint weight"
-                    +" and there is no such @" + ConstraintWeight.class.getSimpleName()
-                    + " on the constraintConfigurationClass (" + configurationDescriptor.getConstraintConfigurationClass() + ").\n"
-                    + "Maybe there is a typo in the constraintPackage or constraintName of one of the @" + ConstraintWeight.class.getSimpleName() + " members.\n"
-                    + "Maybe add a @" + ConstraintWeight.class.getSimpleName() + " member for it.");
-        }
-        Function<Solution_, Score<?>> constraintWeightExtractor = weightDescriptor.createExtractor();
-        return newConstraint(constraintPackage, constraintName, constraintWeightExtractor);
+        return stream;
     }
 
     @Override
-    public Constraint newConstraintWithWeight(String constraintName, Score<?> constraintWeight) {
-        String constraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
-        return newConstraintWithWeight(constraintPackage, constraintName, constraintWeight);
+    public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
+        return new BavetFromUniConstraintStream<>(this, fromClass);
     }
 
     @Override
-    public Constraint newConstraintWithWeight(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        if (constraintPackage == null) {
-            throw new IllegalStateException("The constraint with package (" + constraintPackage
-                    + ") and name (" + constraintName + ") must have a non-null package.");
+    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
+        if (planningIdMemberAccessor == null) {
+            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
+                    + PlanningId.class.getSimpleName() + " annotation,"
+                    + " so the pairs can be made unique ([A,B] vs [B,A]).");
         }
-        // Duplicates validation when the session is build, but this fail-faster when weights are hard coded
-        solutionDescriptor.validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
-        Function<Solution_, Score<?>> constraintWeightExtractor = solution -> constraintWeight;
-        return newConstraint(constraintPackage, constraintName, constraintWeightExtractor);
+        // TODO Breaks node sharing + involves unneeded indirection
+        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
     }
 
-    private Constraint newConstraint(String constraintPackage, String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor) {
-        BavetConstraint<Solution_> constraint = new BavetConstraint<>(this, constraintPackage, constraintName, constraintWeightExtractor);
-        // TODO adding the same constraintId twice should throw an error
-        constraintList.add(constraint);
-        return constraint;
-    }
+    // ************************************************************************
+    // SessionFactory creation
+    // ************************************************************************
 
     @Override
-    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        Score<?> zeroScore = solutionDescriptor.getScoreDefinition().getZeroScore();
-        Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
-        for (BavetConstraint<Solution_> constraint : constraintList) {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
-            if (!constraintWeight.equals(zeroScore)) {
-                constraintToWeightMap.put(constraint, constraintWeight);
+    public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
+        List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
+        Set<String> constraintIdSet = new HashSet<>(constraints.length);
+        for (Constraint constraint : constraints) {
+            if (constraint.getConstraintFactory() != this) {
+                throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
+                        + ") must be created from the same constraintFactory.");
             }
+            boolean added = constraintIdSet.add(constraint.getConstraintId());
+            if (!added) {
+                throw new IllegalStateException(
+                        "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
+                        + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
+            }
+            BavetConstraint<Solution_> bavetConstraint = (BavetConstraint) constraint;
+            bavetConstraintList.add(bavetConstraint);
         }
-        return new BavetConstraintSession<>(constraintMatchEnabled, solutionDescriptor.getScoreDefinition(),
-                constraintToWeightMap);
+        return new BavetConstraintSessionFactory<>(solutionDescriptor, bavetConstraintList);
     }
 
     // ************************************************************************
@@ -121,6 +119,11 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
+    }
+
+    @Override
+    public String getDefaultConstraintPackage() {
+        return defaultConstraintPackage;
     }
 
 }

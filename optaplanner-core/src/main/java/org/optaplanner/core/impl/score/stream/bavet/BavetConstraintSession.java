@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;

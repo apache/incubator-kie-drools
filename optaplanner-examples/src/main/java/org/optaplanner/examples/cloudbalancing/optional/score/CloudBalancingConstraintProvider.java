@@ -27,53 +27,63 @@ import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.
 public class CloudBalancingConstraintProvider implements ConstraintProvider {
 
     // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It is stable but it has many API gaps.
+    // It works but it has many API gaps.
     // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
-    public void defineConstraints(ConstraintFactory constraintFactory) {
-        requiredCpuPowerTotal(constraintFactory);
-        requiredMemoryTotal(constraintFactory);
-        requiredNetworkBandwidthTotal(constraintFactory);
-        computerCost(constraintFactory);
+    public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+        return new Constraint[]{
+                requiredCpuPowerTotal(constraintFactory),
+                requiredMemoryTotal(constraintFactory),
+                requiredNetworkBandwidthTotal(constraintFactory),
+                computerCost(constraintFactory)
+        };
     }
 
-    protected void requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "requiredCpuPowerTotal", HardSoftScore.ofHard(1));
-        c.from(CloudProcess.class)
+    // ************************************************************************
+    // Hard constraints
+    // ************************************************************************
+
+    private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
-                .penalize((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+                .penalize("requiredCpuPowerTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
 
-    protected void requiredMemoryTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "requiredMemoryTotal", HardSoftScore.ofHard(1));
-        c.from(CloudProcess.class)
+    private Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
-                .penalize((computer, requiredMemory) -> requiredMemory - computer.getMemory());
+                .penalize("requiredMemoryTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredMemory) -> requiredMemory - computer.getMemory());
     }
 
-    protected void requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "requiredNetworkBandwidthTotal", HardSoftScore.ofHard(1));
-        c.from(CloudProcess.class)
+    private Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
-                .penalize((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+                .penalize("requiredNetworkBandwidthTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
     }
 
-    protected void computerCost(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory.newConstraintWithWeight(
-                "computerCost", HardSoftScore.ofSoft(1));
-        c.from(CloudProcess.class)
+    // ************************************************************************
+    // Soft constraints
+    // ************************************************************************
+
+    private Constraint computerCost(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
                 // TODO Simplify by using:
                 // .groupBy(CloudProcess::getComputer)
                 // .penalize(CloudComputer::getCost);
                 .groupBy(CloudProcess::getComputer, count())
-                .penalize((computer, count) -> computer.getCost());
+                .penalize("computerCost",
+                        HardSoftScore.ONE_SOFT,
+                        (computer, count) -> computer.getCost());
     }
 
 }

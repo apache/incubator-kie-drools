@@ -16,33 +16,46 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
 public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         extends BavetAbstractBiConstraintStream<Solution_, A, B>
         implements BavetJoinBridgeConstraintStream<Solution_> {
 
-    private final BavetJoinConstraintStream<Solution_> joinStream;
+    private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
+    private BavetJoinConstraintStream<Solution_> joinStream;
     private final boolean isLeftBridge;
     private final BiFunction<A, B, Object[]> mapping;
     private final BavetIndexFactory indexFactory;
 
-    public BavetJoinBridgeBiConstraintStream(BavetConstraint<Solution_> bavetConstraint,
-            BavetJoinConstraintStream<Solution_> joinStream, boolean isLeftBridge,
+    public BavetJoinBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            boolean isLeftBridge,
             BiFunction<A, B, Object[]> mapping, BavetIndexFactory indexFactory) {
-        super(bavetConstraint);
-        this.joinStream = joinStream;
+        super(constraintFactory);
+        this.parent = parent;
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;
         this.indexFactory = indexFactory;
+    }
+
+    public void setJoinStream(BavetJoinConstraintStream<Solution_> joinStream) {
+        this.joinStream = joinStream;
+    }
+
+    @Override
+    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************
