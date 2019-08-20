@@ -19,6 +19,7 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
@@ -71,17 +72,20 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
-
         for (DecisionNode decision : dmnModel.getDecisions()) {
             scenarioResultMetadata.addAvailable(decision.getName());
         }
-
+        final AtomicInteger counter = new AtomicInteger(0);
         for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
             if (SUCCEEDED.equals(decisionResult.getEvaluationStatus())) {
                 scenarioResultMetadata.addExecuted(decisionResult.getDecisionName());
             }
+            if (decisionResult.getMessages().isEmpty()) {
+                scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), decisionResult.getDecisionName(), decisionResult.getEvaluationStatus().name());
+            } else {
+                decisionResult.getMessages().forEach(dmnMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), dmnMessage.getText(), dmnMessage.getLevel().name()));
+            }
         }
-
         return scenarioResultMetadata;
     }
 

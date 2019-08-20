@@ -17,12 +17,16 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -48,6 +52,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
 import static org.junit.Assert.assertEquals;
@@ -56,6 +61,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
@@ -198,7 +204,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenario1Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario1Outputs, input1, expressionEvaluator);
 
         assertEquals(1, scenario1Results.size());
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.SUCCESS);
+        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         List<ScenarioGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getSimulationDescriptor(),
                                                                               scenario2.getUnmodifiableFactMappingValues(),
@@ -214,7 +220,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenario2Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario2Outputs, input2, expressionEvaluator);
 
         assertEquals(1, scenario2Results.size());
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.SUCCESS);
+        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         List<ScenarioExpect> newFact = Collections.singletonList(new ScenarioExpect(personFactIdentifier, Collections.emptyList(), true));
         List<ScenarioResult> scenario2NoResults = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), newFact, input2, expressionEvaluator);
@@ -226,7 +232,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ScenarioGiven newInput = new ScenarioGiven(personFactIdentifier, person);
 
         List<ScenarioResult> scenario3Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario1Outputs, newInput, expressionEvaluator);
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.FAILED_WITH_ERROR);
+        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         assertEquals(1, scenario3Results.size());
         assertEquals(person.getFirstName(), scenario3Results.get(0).getResultValue().get());
@@ -315,7 +321,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         } catch (ScenarioException ignored) {
 
         }
-        assertEquals(factMappingValue.getStatus(), FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue.getStatus());
     }
 
     @Test
@@ -344,14 +350,17 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void extractResultMetadata() {
-        Map<String, Integer> coverageData = new HashMap<>();
+        Map<String, Integer> coverageData = new LinkedHashMap<>();
         coverageData.put("rule1", 2);
         coverageData.put("rule2", 2);
         CoverageAgendaListener coverageAgendaListenerMock = createCoverageAgendaListenerWithData(coverageData);
 
         ScenarioWithIndex scenarioWithIndexMock = mock(ScenarioWithIndex.class);
+        Scenario scenarioMock = mock(Scenario.class);
+        when(scenarioMock.getDescription()).thenReturn("DESCRIPTION");
+        when(scenarioWithIndexMock.getScenario()).thenReturn(scenarioMock);
 
-        Map<String, Object> requestContext = new HashMap<>();
+        Map<String, Object> requestContext = new LinkedHashMap<>();
         requestContext.put(COVERAGE_LISTENER, coverageAgendaListenerMock);
         requestContext.put(RULES_AVAILABLE, coverageData.keySet());
 
@@ -362,5 +371,18 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(2, scenarioResultMetadata.getExecuted().size());
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
+        List<String> expectedMessages = new ArrayList<>();
+        commonAddMessageString(Arrays.asList("rule1", "rule2"), expectedMessages);
+
+        final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
+        assertEquals(expectedMessages.size(), auditLogLines.size());
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), "INFO");
+        }
+    }
+
+    private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
+        ruleNames.forEach(ruleName ->
+                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(CoverageAgendaListener.generateAuditMessage(ruleName))));
     }
 }

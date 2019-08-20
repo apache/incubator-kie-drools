@@ -23,6 +23,10 @@ public interface HasConstraints {
 
     public FieldConstraint getConstraint( int index );
 
+    public void moveUp( int index );
+
+    public void moveDown( int index );
+
     public int getNumberOfConstraints();
 
 }

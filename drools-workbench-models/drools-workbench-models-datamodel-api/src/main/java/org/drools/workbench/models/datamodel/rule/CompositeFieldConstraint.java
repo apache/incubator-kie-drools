@@ -18,6 +18,8 @@ package org.drools.workbench.models.datamodel.rule;
 
 import java.util.Arrays;
 
+import org.drools.workbench.models.datamodel.rule.util.FieldConstraintArrayUtil;
+
 /**
  * This is a field constraint that may span multiple fields.
  */
@@ -109,6 +111,18 @@ public class CompositeFieldConstraint
             return null;
         }
         return this.constraints[ index ];
+    }
+
+    @Override
+    public void moveUp(int index) {
+
+        FieldConstraintArrayUtil.moveUp(index, constraints);
+    }
+
+    @Override
+    public void moveDown(int index) {
+
+        FieldConstraintArrayUtil.moveDown(index, constraints);
     }
 
     public int getNumberOfConstraints() {

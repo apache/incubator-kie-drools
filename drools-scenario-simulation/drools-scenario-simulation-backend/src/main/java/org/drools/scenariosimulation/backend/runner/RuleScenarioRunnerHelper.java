@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -90,14 +91,13 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     protected ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext, ScenarioWithIndex scenarioWithIndex) {
         CoverageAgendaListener coverageAgendaListener = (CoverageAgendaListener) requestContext.get(COVERAGE_LISTENER);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
-
         Set<String> availableRules = (Set<String>) requestContext.get(RULES_AVAILABLE);
-
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
-
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
-
+        final AtomicInteger counter = new AtomicInteger(0);
+        coverageAgendaListener
+                .getAuditsMessages().forEach(auditMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), auditMessage, "INFO"));
         return scenarioResultMetadata;
     }
 
@@ -114,7 +114,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                     .filter(elem -> Objects.equals(elem.getFactIdentifier(), factIdentifier)).collect(toList());
 
             // check if this fact has something to check
-            if (assertionOnFact.size() < 1) {
+            if (assertionOnFact.isEmpty()) {
                 continue;
             }
 
