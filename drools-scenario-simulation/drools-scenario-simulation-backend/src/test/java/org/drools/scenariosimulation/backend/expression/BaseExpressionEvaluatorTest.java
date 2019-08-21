@@ -121,6 +121,11 @@ public class BaseExpressionEvaluatorTest {
         assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
         mapStringStringToCheck.put("key2", "value2");
         assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
+
+        String mapOfStringJson1 = "{\"key1\" : {\"value\" : \"\"}}";
+        Map<String, String> mapStringStringToCheck1 = new HashMap<>();
+        mapStringStringToCheck1.put("key1", "value1");
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -197,5 +202,8 @@ public class BaseExpressionEvaluatorTest {
 
         listJsonString = "[{\"value\" : \"> 100\"}]";
         assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck));
+
+        listJsonString = "[{\"value\" : \"\"}]";
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
     }
 }
