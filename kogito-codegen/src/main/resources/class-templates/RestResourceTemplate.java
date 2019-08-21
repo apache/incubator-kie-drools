@@ -18,7 +18,7 @@ import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceExecutionExteption;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
 
 @Path("/$name$")
@@ -110,7 +110,7 @@ public class $Type$Resource {
     
     protected $Type$ getModel(ProcessInstance<$Type$> pi) {
         if (pi.status() == ProcessInstance.STATE_ERROR && pi.error().isPresent()) {
-            throw new ProcessInstanceExecutionExteption(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
+            throw new ProcessInstanceExecutionException(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
         }
         
         return pi.variables();

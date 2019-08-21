@@ -39,7 +39,7 @@ import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceNotFoundExteption;
+import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
@@ -190,7 +190,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (this.legacyProcessInstance == null) {
             this.legacyProcessInstance = reloadSupplier.get();
             if (this.legacyProcessInstance == null) {
-                throw new ProcessInstanceNotFoundExteption(id);
+                throw new ProcessInstanceNotFoundException(id);
             }
         }
         

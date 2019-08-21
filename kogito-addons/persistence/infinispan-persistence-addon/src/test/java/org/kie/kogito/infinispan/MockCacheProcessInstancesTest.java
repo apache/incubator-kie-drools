@@ -44,7 +44,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceNotFoundExteption;
+import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -124,7 +124,7 @@ public class MockCacheProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         mockCache.clear();
 
-        assertThatThrownBy(() -> processInstance.workItems().get(0)).isInstanceOf(ProcessInstanceNotFoundExteption.class);
+        assertThatThrownBy(() -> processInstance.workItems().get(0)).isInstanceOf(ProcessInstanceNotFoundException.class);
         
         Optional<? extends ProcessInstance<BpmnVariables>> loaded = process.instances().findById(processInstance.id());        
         assertThat(loaded).isNotPresent();

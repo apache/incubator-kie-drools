@@ -25,13 +25,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.process.ProcessInstanceExecutionExteption;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 
 @Provider
-public class ProcessInstanceExecutionExteptionMapper implements ExceptionMapper<ProcessInstanceExecutionExteption> {
+public class ProcessInstanceExecutionExceptionMapper implements ExceptionMapper<ProcessInstanceExecutionException> {
 
     @Override
-    public Response toResponse(ProcessInstanceExecutionExteption exception) {
+    public Response toResponse(ProcessInstanceExecutionException exception) {
         Map<String, String> data = new HashMap<>();
         data.put("id", exception.getProcessInstanceId());
         data.put("failedNodeId", exception.getFailedNodeId());

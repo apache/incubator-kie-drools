@@ -20,7 +20,7 @@ package org.kie.kogito.process;
  * Usually caused by one of the node instances not able to perform desired action. 
  * 
  */
-public class ProcessInstanceExecutionExteption extends RuntimeException {
+public class ProcessInstanceExecutionException extends RuntimeException {
 
     private static final long serialVersionUID = 8031225233775014572L;
 
@@ -28,7 +28,7 @@ public class ProcessInstanceExecutionExteption extends RuntimeException {
     private String failedNodeId;
     private String errorMessage;
 
-    public ProcessInstanceExecutionExteption(String processInstanceId, String failedNodeId, String errorMessage) {
+    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage) {
         super("Process instance with id " + processInstanceId + " not found");
         this.processInstanceId = processInstanceId;
         this.failedNodeId = failedNodeId;

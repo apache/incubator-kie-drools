@@ -30,7 +30,7 @@ public class ClassTypeResolver
 
     private String defaultPackagName;
 
-    private Set<String> imports = Collections.emptySet();
+    private Set<String> imports;
 
     private Set<String> implicitImports = Collections.emptySet();
 

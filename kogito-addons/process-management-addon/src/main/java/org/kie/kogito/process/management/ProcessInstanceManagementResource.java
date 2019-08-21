@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response.Status;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceExecutionExteption;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.Processes;
 
 @Path("/management/process")
@@ -73,7 +73,7 @@ public class ProcessInstanceManagementResource {
                 processInstance.error().get().retrigger();
                 
                 if (processInstance.status() == ProcessInstance.STATE_ERROR) {
-                    throw new ProcessInstanceExecutionExteption(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+                    throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
                 } else {
                     return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
                 }
@@ -89,7 +89,7 @@ public class ProcessInstanceManagementResource {
                 processInstance.error().get().skip();
                 
                 if (processInstance.status() == ProcessInstance.STATE_ERROR) {
-                    throw new ProcessInstanceExecutionExteption(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+                    throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
                 } else {
                     return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
                 }
