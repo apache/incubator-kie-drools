@@ -68,6 +68,27 @@ public class ScenarioRunner4JUnitTest {
     }
 
     @Test
+    public void testPMMLRunner() throws Exception {
+
+        HashMap<String, KieSession> ksessions = new HashMap<>();
+        ksessions.put( "someId", ksession );
+        Scenario scenario = new Scenario();
+        scenario.setModelName("myModel");
+        scenario.getKSessions().add( "someId" );
+        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit( scenario, ksessions );
+
+        RunNotifier notifier = new RunNotifier();
+        RunListener runListener = spy( new RunListener() );
+        notifier.addListener( runListener );
+
+        runner4JUnit.run( notifier );
+
+        verify( runListener, never() ).testFailure( any( Failure.class ) );
+        verify( runListener ).testFinished( any( Description.class ) );
+        verify( ksession ).reset();
+    }
+
+    @Test
     public void testIDNotSet() throws Exception {
 
         HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
