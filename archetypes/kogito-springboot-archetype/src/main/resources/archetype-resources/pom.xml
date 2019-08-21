@@ -82,7 +82,7 @@
         <artifactId>swagger-maven-plugin</artifactId>
         <configuration>
           <resourcePackages>
-            <resourcePackage>org.kie.kogito.examples</resourcePackage>
+            <resourcePackage>\${groupId}</resourcePackage>
           </resourcePackages>
           <outputDirectory>\${basedir}/target/classes/static/</outputDirectory>
           <outputFilename>swagger</outputFilename>
