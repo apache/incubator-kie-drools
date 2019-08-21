@@ -1,0 +1,24 @@
+syntax = "proto2"; 
+package org.acme.travels.visaApplications; 
+import "kogito-index.proto";
+import "kogito-types.proto";
+option kogito_model = "VisaApplications";
+option kogito_id = "visas";
+
+message VisaApplication { 
+	option java_package = "org.acme.travels.visaApplications";
+	optional bool approved = 1; 
+	optional string city = 2; 
+	optional string country = 3; 
+	optional int32 duration = 4; 
+	optional string firstName = 5; 
+	optional string lastName = 6; 
+	optional string nationality = 7; 
+	optional string passportNumber = 8; 
+}
+message VisaApplications { 
+	option java_package = "org.acme.travels.visaApplications";
+	optional string id = 1; 
+	optional VisaApplication visaApplication = 2; 
+	repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 3; 
+}

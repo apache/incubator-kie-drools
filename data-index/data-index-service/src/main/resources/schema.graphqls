@@ -1,0 +1,58 @@
+#scalar DateTime
+
+schema {
+  query: Query
+}
+
+type ProcessInstance {
+  id: String!
+  processId: String!
+  parentProcessInstanceId: String
+  rootProcessInstanceId: String
+  rootProcessId: String
+  roles: [String!]
+  state: ProcessInstanceState!
+  endpoint: String!
+  nodes: [NodeInstance!]!,
+  variables: String
+}
+
+type ProcessInstanceMeta {
+  id: String!
+  processId: String!
+  parentProcessInstanceId: String
+  rootProcessInstanceId: String
+  rootProcessId: String
+  roles: [String!]
+  state: ProcessInstanceState!
+  endpoint: String!
+}
+
+enum ProcessInstanceState {
+  PENDING,
+  ACTIVE,
+  COMPLETED,
+  ABORTED,
+  SUSPENDED,
+  ERROR
+}
+
+type NodeInstance {
+  id: String!
+  name: String!
+  type: String!
+  enter: String!
+  exit: String
+}
+
+type Query {
+  ProcessInstances(filter: ProcessInstanceFilter): [ProcessInstance],
+}
+
+input ProcessInstanceFilter {
+  state: [ProcessInstanceState!]
+  id: [String!]
+  processId: [String!]
+  limit: Int
+  offset: Int
+}

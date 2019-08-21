@@ -57,7 +57,20 @@
     <module>kogito-maven-plugin</module>
     <module>kogito-codegen</module>
     <module>archetypes</module>
+    <module>data-index</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-bom</artifactId>
+          <version>${version.org.kie.kogito}</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <profiles>
     <profile>

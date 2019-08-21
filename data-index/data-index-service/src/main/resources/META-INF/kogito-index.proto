@@ -1,0 +1,61 @@
+package org.kie.kogito.index.model;
+
+option indexed_by_default = true;
+
+/* @Indexed */
+message ProcessInstanceMeta {
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string id = 1;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string processId = 2;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    repeated string roles = 3;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string endpoint = 4;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional int32 state = 5;
+    optional int64 start = 6;
+    optional int64 end = 7;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string rootProcessInstanceId = 8;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string rootProcessId = 9;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string parentProcessInstanceId = 10;
+}
+
+/* @Indexed */
+message ProcessInstance {
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string id = 1;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string processId = 2;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    repeated string roles = 3;
+    optional string variables = 4;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string endpoint = 5;
+    repeated NodeInstance nodes = 6;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional int32 state = 7;
+    optional int64 start = 8;
+    optional int64 end = 9;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string rootProcessInstanceId = 10;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string rootProcessId = 11;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string parentProcessInstanceId = 12;
+}
+
+/* @Indexed */
+message NodeInstance {
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string id = 1;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string name = 2;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string type = 3;
+    optional int64 enter = 4;
+    optional int64 exit = 5;
+}
