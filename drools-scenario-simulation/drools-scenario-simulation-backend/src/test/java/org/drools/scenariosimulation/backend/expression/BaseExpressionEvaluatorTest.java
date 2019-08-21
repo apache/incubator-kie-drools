@@ -124,6 +124,7 @@ public class BaseExpressionEvaluatorTest {
 
         String mapOfStringJson1 = "{\"key1\" : {\"value\" : \"\"}}";
         Map<String, String> mapStringStringToCheck1 = new HashMap<>();
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
         mapStringStringToCheck1.put("key1", "value1");
         assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
     }
