@@ -42,7 +42,7 @@ public class ProcessMetaData {
     private CompilationUnit generatedClassModel;
 
     private Set<String> workItems = new HashSet<>();
-    private Set<String> subProcesses = new HashSet<>();
+    private Map<String, String> subProcesses = new HashMap<>();
     
     private Map<String, String> signals = new HashMap<>();
     
@@ -130,11 +130,11 @@ public class ProcessMetaData {
         this.workItems = workItems;
     }    
     
-    public Set<String> getSubProcesses() {
+    public Map<String, String> getSubProcesses() {
         return subProcesses;
     }
     
-    public void setSubProcesses(Set<String> subProcesses) {
+    public void setSubProcesses(Map<String, String> subProcesses) {
         this.subProcesses = subProcesses;
     }
 

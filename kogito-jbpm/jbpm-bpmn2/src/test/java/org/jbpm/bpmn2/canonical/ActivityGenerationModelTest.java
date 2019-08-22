@@ -438,6 +438,21 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.completeWorkItem(workItem.getId(), null);
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
+    
+    @Test
+    public void testCallActivityProcess() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("PrefixesProcessIdCallActivity.bpmn2")).get(0);
+
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+
+        assertThat(metaData.getSubProcesses())
+        .hasSize(1)
+        .containsKey("SubProcess")
+        .containsValue("test.SubProcess");
+    }
 
     /*
      * Helper methods

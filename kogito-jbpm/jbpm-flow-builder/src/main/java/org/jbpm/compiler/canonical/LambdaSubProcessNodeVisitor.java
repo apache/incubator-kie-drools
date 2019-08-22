@@ -114,7 +114,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
 
         MethodCallExpr processInstanceSupplier = new MethodCallExpr(new NameExpr(processFielName), "createInstance").addArgument("model");
 
-        metadata.getSubProcesses().add(processId);
+        metadata.getSubProcesses().put(processId, subProcessNode.getProcessId());
         
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
     }

@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
@@ -279,9 +280,9 @@ public class ProcessGenerator {
                 
         if (!processMetaData.getSubProcesses().isEmpty()) {
             
-            for (String subProcessId : processMetaData.getSubProcesses()) {
+            for (Entry<String, String> subProcess : processMetaData.getSubProcesses().entrySet()) {
                 MethodCallExpr signalManager = new MethodCallExpr(new NameExpr("services"), "getSignalManager");
-                MethodCallExpr registerListener = new MethodCallExpr(signalManager, "addEventListener").addArgument(new StringLiteralExpr(subProcessId)).addArgument(new NameExpr("completionEventListener"));
+                MethodCallExpr registerListener = new MethodCallExpr(signalManager, "addEventListener").addArgument(new StringLiteralExpr(subProcess.getValue())).addArgument(new NameExpr("completionEventListener"));
                 
                 body.addStatement(registerListener);
             }
@@ -409,22 +410,22 @@ public class ProcessGenerator {
         
         if (!processMetaData.getSubProcesses().isEmpty()) {
             
-            for (String subProcessId : processMetaData.getSubProcesses()) {
+            for (Entry<String, String> subProcess : processMetaData.getSubProcesses().entrySet()) {
                 FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();                    
 
-                String fieldName = "process" + subProcessId;
+                String fieldName = "process" + subProcess.getKey();
                 if (useInjection()) {
                     subprocessFieldDeclaration
-                        .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName));
+                        .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcess.getKey()+"Model")))), fieldName));
                     annotator.withInjection(subprocessFieldDeclaration);
                 } else {
                     // app.processes().create$Subprocess()
                     MethodCallExpr initSubProcessField = new MethodCallExpr(
                             new MethodCallExpr(new NameExpr("app"), "processes"),
-                            "create" + StringUtils.capitalize(subProcessId) + "Process");
+                            "create" + StringUtils.capitalize(subProcess.getKey()) + "Process");
                     
                     subprocessFieldDeclaration
-                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName));
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcess.getKey()+"Model")))), fieldName));
                 
                     constructorDeclaration.getBody().addStatement(new AssignExpr(new FieldAccessExpr(new ThisExpr(), fieldName), initSubProcessField, Operator.ASSIGN));
                     
