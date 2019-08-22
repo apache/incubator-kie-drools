@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Ignore("RHDM-1049")
 public class DMNMiningModelPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNMiningModelPMMLTest.class);
