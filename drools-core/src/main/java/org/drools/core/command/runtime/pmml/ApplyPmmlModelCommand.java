@@ -214,6 +214,9 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
 
     @Override
     public PMML4Result execute(Context context) {
+        if (isjPMMLAvailableToClassLoader(getClass().getClassLoader())) {
+            throw new IllegalStateException("Availability of jPMML module disables ApplyPmmlModelCommand execution. ApplyPmmlModelCommand requires removal of JPMML libs from classpath");
+        }
         if (requestData == null) {
             throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
         }
@@ -288,6 +291,15 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         });
 
         return resultHolder;
+    }
+
+    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     
