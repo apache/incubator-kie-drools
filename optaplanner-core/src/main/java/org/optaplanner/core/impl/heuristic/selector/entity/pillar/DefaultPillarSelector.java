@@ -24,8 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -271,12 +269,16 @@ public class DefaultPillarSelector extends AbstractSelector
                 final Object randomElement = basePillar.get(randomIndex);
                 return Collections.singletonList(randomElement);
             } else {
-                /// subpillar will be a reasonably sized subset of the base pillar, so we construct it iteratively
-                return IntStream.generate(() -> workingRandom.nextInt(basePillarSize))
-                        .distinct()
-                        .limit(subPillarSize)
-                        .mapToObj(basePillar::get)
-                        .collect(Collectors.toCollection(() -> new ArrayList<>(subPillarSize)));
+                // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
+                // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
+                Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
+                List<Object> subPillar = new ArrayList<>(subPillarSize);
+                for (int i = 0; i < subPillarSize; i++) {
+                    int index = i + workingRandom.nextInt(basePillarSize - i);
+                    subPillar.add(sandboxPillar[index]);
+                    sandboxPillar[index] = sandboxPillar[i];
+                }
+                return subPillar;
             }
         }
 

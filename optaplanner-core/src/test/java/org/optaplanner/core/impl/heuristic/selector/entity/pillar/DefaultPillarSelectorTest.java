@@ -93,7 +93,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                a, b, c, d, e, f);
+                                                                             a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
@@ -205,7 +205,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                a, b, c, d, e, f);
+                                                                             a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true, true, 1, Integer.MAX_VALUE);
@@ -227,10 +227,10 @@ public class DefaultPillarSelectorTest {
         // Expected pillar cache: [a], [b, d], [c, e, f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
                 0, // [a]
-                2, 1, 0, 1, // [c, e, f]
-                1, 1, // [b, d]
+                2, 1, 0, 0, // [c, e, f]
+                1, 0, 0, // [b, d]
                 1, 0, 1); // [b, d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]", "[d]");
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeA1);
 
         b.setValue(val3);
@@ -245,7 +245,7 @@ public class DefaultPillarSelectorTest {
                 3, // [f]
                 1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
-                2); // [d]
+                2, 0, 0); // [d]
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[b, c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeA2);
 
@@ -264,7 +264,7 @@ public class DefaultPillarSelectorTest {
                 3, // [f]
                 1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
-                2); // [d]
+                2, 0, 0); // [d]
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[b, c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeB1);
 
@@ -291,7 +291,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                a, b, c, d, e, f);
+                                                                             a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true, true, 2, 2);
@@ -312,9 +312,9 @@ public class DefaultPillarSelectorTest {
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, d], [c, e, f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                0, // [a]
-                2, 0, 0, 1, // [c, e, f]
-                1, 0); // [b, d]
+                0,// [a]
+                2, 0, 0, 0, // [c, e, f]
+                1, 0, 0); // [b, d]
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]");
         pillarSelector.stepEnded(stepScopeA1);
 
