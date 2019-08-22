@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
@@ -80,6 +81,8 @@ public class CoercedExpression {
             coercedRight = coerceToDate(right);
         } else if(shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
+        } else if (Boolean.class.isAssignableFrom(leftClass) && !Boolean.class.isAssignableFrom(rightClass)) {
+             coercedRight = coerceBoolean(right);
         } else {
             coercedRight = right;
         }
@@ -138,6 +141,23 @@ public class CoercedExpression {
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, STRING_TO_DATE_METHOD );
         methodCallExpr.addArgument( typedExpression.getExpression() );
         return new TypedExpression( methodCallExpr, Date.class );
+    }
+
+    private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
+        final Expression expression = typedExpression.getExpression();
+        if (expression instanceof BooleanLiteralExpr) {
+            return typedExpression;
+        } else if (expression instanceof StringLiteralExpr) {
+            final String expressionValue = ((StringLiteralExpr) expression).getValue();
+            if (Boolean.TRUE.toString().equals(expressionValue) || Boolean.FALSE.toString().equals(expressionValue)) {
+                final TypedExpression coercedExpression = typedExpression.cloneWithNewExpression(new BooleanLiteralExpr(Boolean.parseBoolean(expressionValue)));
+                return coercedExpression.setType(Boolean.class);
+            } else {
+                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Cannot coerce String " + expressionValue + " to boolean!"));
+            }
+        } else {
+            throw new CoercedExpressionException(new InvalidExpressionErrorResult("Cannot coerce " + typedExpression.getType() + " to boolean!"));
+        }
     }
 
     private static boolean canCoerceLiteralNumberExpr(Class<?> type) {

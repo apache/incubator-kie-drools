@@ -206,7 +206,7 @@ public abstract class AbstractExpressionBuilder {
             }
 
         } else if (expression instanceof LiteralExpr) {
-            if(expression instanceof BigDecimalLiteralExpr) {
+            if (expression instanceof BigDecimalLiteralExpr) {
                 expression = toNewExpr(BigDecimal.class, new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
             } else if (expression instanceof BigIntegerLiteralExpr) {
                 expression = toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
