@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 package org.kie.kogito.index.graphql;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -43,7 +44,9 @@ import org.kie.kogito.index.query.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 
 @ApplicationScoped
@@ -65,16 +68,27 @@ public class GraphQLProtoSchemaMapper {
         LOGGER.debug("Received new domain event: {}", event);
         GraphQLSchema schema = schemaManager.getGraphQLSchema();
         schemaManager.transform(builder -> {
-
+            builder.clearAdditionalTypes();
             Map<String, DomainDescriptor> map = event.getAdditionalTypes().stream().collect(toMap(desc -> getTypeName(desc.getTypeName()), desc -> desc));
             Map<String, GraphQLType> additionalTypes = new HashMap<>();
             GraphQLObjectType rootType = new GraphQLObjectTypeMapper(schema, additionalTypes, map).apply(event.getDomainDescriptor());
             additionalTypes.put(rootType.getName(), rootType);
-            builder.additionalTypes(new HashSet<>(additionalTypes.values()));
-            GraphQLArgument argument = GraphQLArgument.newArgument().name("query").type(Scalars.GraphQLString).build();
+            Set<GraphQLType> newTypes = additionalTypes.entrySet().stream().map(entry -> entry.getValue()).collect(toSet());
+            newTypes.addAll(schema.getAdditionalTypes().stream().filter(type -> additionalTypes.containsKey(type.getName()) == false).collect(toSet()));
+            LOGGER.debug("New GraphQL types: {}", newTypes);
+            builder.additionalTypes(newTypes);
+
             GraphQLObjectType query = schema.getQueryType();
+
             //Should use extend instead?
-            query = query.transform(qBuilder -> qBuilder.field(GraphQLFieldDefinition.newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).argument(argument)));
+            query = query.transform(qBuilder -> {
+                if (qBuilder.hasField(rootType.getName())) {
+                    qBuilder.clearFields();
+                    qBuilder.fields(schema.getQueryType().getFieldDefinitions().stream().filter(field -> rootType.getName().equals(field.getName()) == false).collect(toList()));
+                }
+                GraphQLArgument argument = GraphQLArgument.newArgument().name("query").type(Scalars.GraphQLString).build();
+                qBuilder.field(GraphQLFieldDefinition.newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).argument(argument));
+            });
             builder.query(query);
             GraphQLCodeRegistry registry = schema.getCodeRegistry().transform(codeBuilder -> {
                 codeBuilder.dataFetcher(FieldCoordinates.coordinates("Query", rootType.getName()), new DomainModelDataFetcher(queryService, event.getProcessId()));
@@ -112,35 +126,48 @@ public class GraphQLProtoSchemaMapper {
         public GraphQLObjectType apply(DomainDescriptor domain) {
             LOGGER.debug("GraphQL mapping domain: {}", domain);
             String typeName = getTypeName(domain.getTypeName());
-            GraphQLObjectType.Builder builder = GraphQLObjectType.newObject().name(typeName);
+            GraphQLObjectType existingType = (GraphQLObjectType) schema.getType(typeName);
+            if (existingType == null) {
+                GraphQLObjectType.Builder builder = GraphQLObjectType.newObject().name(typeName);
+                build(domain).accept(builder);
+                return builder.build();
+            } else {
+                return existingType.transform(builder -> {
+                    builder.clearFields();
+                    build(domain).accept(builder);
+                });
+            }
+        }
 
-            domain.getAttributes().forEach(field -> {
-                LOGGER.debug("GraphQL mapping field: {}", field);
-                if (ProcessInstanceMeta.class.getName().equals(field.getTypeName())) {
-                    builder.field(GraphQLFieldDefinition.newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
-                } else {
-                    GraphQLOutputType type;
-                    switch (field.getTypeName()) {
-                        case "java.lang.Integer":
-                            type = Scalars.GraphQLInt;
-                            break;
-                        case "java.lang.Long":
-                            type = Scalars.GraphQLLong;
-                            break;
-                        case "java.lang.String":
-                        case "java.util.Date":
-                            type = Scalars.GraphQLString;
-                            break;
-                        case "java.lang.Boolean":
-                            type = Scalars.GraphQLBoolean;
-                            break;
-                        default:
-                            type = getGraphQLType(field, schema, additionalTypes, allTypes);
+        private Consumer<GraphQLObjectType.Builder> build(DomainDescriptor domain) {
+            return builder -> {
+                domain.getAttributes().forEach(field -> {
+                    LOGGER.debug("GraphQL mapping field: {}", field);
+                    if (ProcessInstanceMeta.class.getName().equals(field.getTypeName())) {
+                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
+                    } else {
+                        GraphQLOutputType type;
+                        switch (field.getTypeName()) {
+                            case "java.lang.Integer":
+                                type = Scalars.GraphQLInt;
+                                break;
+                            case "java.lang.Long":
+                                type = Scalars.GraphQLLong;
+                                break;
+                            case "java.lang.String":
+                            case "java.util.Date":
+                                type = Scalars.GraphQLString;
+                                break;
+                            case "java.lang.Boolean":
+                                type = Scalars.GraphQLBoolean;
+                                break;
+                            default:
+                                type = getGraphQLType(field, schema, additionalTypes, allTypes);
+                        }
+                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(field.getName()).type(type));
                     }
-                    builder.field(GraphQLFieldDefinition.newFieldDefinition().name(field.getName()).type(type));
-                }
-            });
-            return builder.build();
+                });
+            };
         }
     }
 }

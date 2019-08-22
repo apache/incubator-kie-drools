@@ -97,6 +97,25 @@ public class IndexingServiceTest {
         }
     }
 
+    @Test //Reproducer for KOGITO-172
+    public void testAddProtoFileTwice() throws Exception {
+        protobufService.registerProtoBufferType(getProtoBufferFileV1());
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Game{ player, id, name, processInstances { id } } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Game", isA(Collection.class));
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+
+        protobufService.registerProtoBufferType(getProtoBufferFileV2());
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Game{ id, name, company, processInstances { id } } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Game", isA(Collection.class));
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+    }
+
     @Test
     public void testAddProtoFile() throws Exception {
         String processId = "travels";
@@ -213,6 +232,32 @@ public class IndexingServiceTest {
                 "   optional stringa traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
+                "}\n" +
+                "\n";
+    }
+
+    private String getProtoBufferFileV1() {
+        return "import \"kogito-index.proto\";\n" +
+                "option kogito_model=\"Game\";\n" +
+                "option kogito_id=\"game\";\n" +
+                "message Game {\n" +
+                "   optional string player = 1;\n" +
+                "   optional string id = 2;\n" +
+                "   optional string name = 3;\n" +
+                "   repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 4;\n" +
+                "}\n" +
+                "\n";
+    }
+
+    private String getProtoBufferFileV2() {
+        return "import \"kogito-index.proto\";\n" +
+                "option kogito_model=\"Game\";\n" +
+                "option kogito_id=\"game\";\n" +
+                "message Game {\n" +
+                "   optional string id = 1;\n" +
+                "   optional string name = 2;\n" +
+                "   optional string company = 3;\n" +
+                "   repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 4;\n" +
                 "}\n" +
                 "\n";
     }
