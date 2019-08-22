@@ -143,6 +143,8 @@ public class AbstractExpressionEvaluatorTest {
     public void isNodeEmpty() {
         ObjectNode objectNode = new ObjectNode(factory);
         assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
+        objectNode.set("empty array", new ArrayNode(factory));
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
         objectNode.set("key", new TextNode("value"));
         assertFalse(expressionEvaluatorMock.isNodeEmpty(objectNode));
 
@@ -162,6 +164,8 @@ public class AbstractExpressionEvaluatorTest {
         assertTrue(expressionEvaluatorMock.isListEmpty(json));
         ObjectNode nestedNode = new ObjectNode(factory);
         json.add(nestedNode);
+        assertTrue(expressionEvaluatorMock.isListEmpty(json));
+        nestedNode.set("emptyField", new TextNode(""));
         assertTrue(expressionEvaluatorMock.isListEmpty(json));
         nestedNode.set("notEmptyField", new TextNode("text"));
         assertFalse(expressionEvaluatorMock.isListEmpty(json));

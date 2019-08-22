@@ -119,7 +119,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected boolean verifyResult(Object rawExpression, Object resultRaw) {
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
-            throw new IllegalArgumentException("A list was expected");
+            throw new IllegalArgumentException("A list or map was expected");
         }
         if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Malformed raw data");
@@ -161,8 +161,8 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return true;
     }
 
-    protected boolean verifyObject(ObjectNode json, Object result) {
-        if (result == null) {
+    protected boolean verifyObject(ObjectNode json, Object resultRaw) {
+        if (resultRaw == null) {
             return isObjectEmpty(json);
         }
         Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
@@ -170,7 +170,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             Map.Entry<String, JsonNode> element = fields.next();
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
-            Object fieldValue = extractFieldValue(result, key);
+            Object fieldValue = extractFieldValue(resultRaw, key);
             Class<?> fieldClass = fieldValue != null ? fieldValue.getClass() : null;
 
             if (isSimpleTypeNode(jsonNode)) {
