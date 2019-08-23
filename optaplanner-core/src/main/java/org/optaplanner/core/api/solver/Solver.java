@@ -55,7 +55,8 @@ public interface Solver<Solution_> {
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
-     * @return never null, but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
+     * @return never null (unless {@link #solve(Object)} hasn't been called yet),
+     * but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
      */
     Solution_ getBestSolution();
 
