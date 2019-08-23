@@ -63,7 +63,22 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void verifyNullTest() {
-        assertFalse(expressionEvaluator.verifyResult("[]", null, List.class));
+        assertTrue(expressionEvaluator.verifyResult("[]", null));
+        assertFalse(expressionEvaluator.verifyResult("[{\"value\" : \"result\"}]", null));
+    }
+
+    @Test
+    public void nullResultTest() {
+        assertFalse(expressionEvaluator.evaluateUnaryExpression("> 1", null, null));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("", null, null));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(null, null, null));
+
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("{}", null, Map.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("[]", null, List.class));
+
+        String mapOfListJson = "{\"key1\" : [{\"value\" : \"value1\"}, {\"value\" : \"value2\"}]}";
+        Map<String, List<String>> mapOfListToCheck = new HashMap<>();
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfListJson, mapOfListToCheck, Map.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -96,9 +111,22 @@ public class BaseExpressionEvaluatorTest {
         genericClasses.add(Integer.class.getCanonicalName());
         Map<String, Integer> resultToTest = new HashMap<>();
         resultToTest.put("Home", 120);
-        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, Map.class));
+        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest));
         resultToTest.put("Home", 20);
-        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, Map.class));
+        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest));
+
+        String mapOfStringJson = "{\"key1\" : {\"value\" : \"value1\"}, \"key2\" : {\"value\" : \"value2\"}}";
+        Map<String, String> mapStringStringToCheck = new HashMap<>();
+        mapStringStringToCheck.put("key1", "value1");
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
+        mapStringStringToCheck.put("key2", "value2");
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
+
+        String mapOfStringJson1 = "{\"key1\" : {\"value\" : \"\"}}";
+        Map<String, String> mapStringStringToCheck1 = new HashMap<>();
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
+        mapStringStringToCheck1.put("key1", "value1");
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -133,9 +161,9 @@ public class BaseExpressionEvaluatorTest {
         element.setPhones(phones);
         toCheck.put("first", element);
 
-        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck, Map.class));
+        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck));
         phones.put("number", -1);
-        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck, Map.class));
+        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck));
     }
 
     @SuppressWarnings("unchecked")
@@ -152,10 +180,10 @@ public class BaseExpressionEvaluatorTest {
         assertEquals(2, parsedValue.get(1).getNames().size());
         assertTrue(parsedValue.get(1).getNames().contains("Anna"));
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue, List.class));
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue));
 
         parsedValue.get(1).setNames(new ArrayList<>());
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue, List.class));
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue));
     }
 
     @SuppressWarnings("unchecked")
@@ -171,9 +199,12 @@ public class BaseExpressionEvaluatorTest {
         listJsonString = "[{\"value\" : \"> 10\"}]";
         List<Integer> toCheck = Collections.singletonList(13);
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, List.class));
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
 
         listJsonString = "[{\"value\" : \"> 100\"}]";
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck, List.class));
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck));
+
+        listJsonString = "[{\"value\" : \"\"}]";
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
     }
 }

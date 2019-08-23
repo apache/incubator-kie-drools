@@ -34,7 +34,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName())) {
-            return verifyResult(rawExpression, resultValue, resultClass);
+            return verifyResult(rawExpression, resultValue);
         } else {
             return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
         }
@@ -107,7 +107,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
                 Object nestedObject = createObject(fieldDescriptor.getKey(), fieldDescriptor.getValue());
                 Object returnedObject = createAndFillObject((ObjectNode) jsonNode, nestedObject, fieldDescriptor.getKey(), fieldDescriptor.getValue());
                 setField(toReturn, key, returnedObject);
-            } else if (jsonNode.textValue() != null && !jsonNode.textValue().isEmpty()) {
+            } else if (!isEmptyText(jsonNode)) {
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
                 setField(toReturn, key, internalLiteralEvaluation(jsonNode.textValue(), fieldDescriptor.getKey()));
             } else {
@@ -117,12 +117,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawExpression, Object resultRaw, Class<?> resultClass) {
-        if (resultRaw == null) {
-            return false;
-        }
-        if (!(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
-            throw new IllegalArgumentException("A list was expected");
+    protected boolean verifyResult(Object rawExpression, Object resultRaw) {
+        if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
+            throw new IllegalArgumentException("A list or map was expected");
         }
         if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Malformed raw data");
@@ -133,9 +130,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         try {
             JsonNode jsonNode = objectMapper.readTree(raw);
             if (jsonNode.isArray()) {
-                return verifyList((ArrayNode) jsonNode, (List) resultRaw, resultClass);
+                return verifyList((ArrayNode) jsonNode, (List) resultRaw);
             } else if (jsonNode.isObject()) {
-                return verifyObject((ObjectNode) jsonNode, resultRaw, resultClass);
+                return verifyObject((ObjectNode) jsonNode, resultRaw);
             }
             throw new IllegalArgumentException("Malformed raw data");
         } catch (IOException e) {
@@ -143,15 +140,17 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         }
     }
 
-    protected boolean verifyList(ArrayNode json, List resultRaw, Class<?> resultClass) {
-
+    protected boolean verifyList(ArrayNode json, List resultRaw) {
+        if (resultRaw == null) {
+            return isListEmpty(json);
+        }
         for (JsonNode node : json) {
             boolean success = false;
             for (Object result : resultRaw) {
                 boolean simpleTypeNode = isSimpleTypeNode(node);
                 if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
                     success = true;
-                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result, resultClass)) {
+                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result)) {
                     success = true;
                 }
             }
@@ -162,36 +161,91 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return true;
     }
 
-    protected boolean verifyObject(ObjectNode json, Object result, Class<?> resultClass) {
+    protected boolean verifyObject(ObjectNode json, Object resultRaw) {
+        if (resultRaw == null) {
+            return isObjectEmpty(json);
+        }
         Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> element = fields.next();
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
-            Object fieldValue = extractFieldValue(result, key);
-            if (fieldValue == null) {
-                return false;
-            }
-            // if is a simple value just return the parsed result
-            if (isSimpleTypeNode(jsonNode)) {
-                return internalUnaryEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldValue, fieldValue.getClass(), true);
-            }
+            Object fieldValue = extractFieldValue(resultRaw, key);
+            Class<?> fieldClass = fieldValue != null ? fieldValue.getClass() : null;
 
-            if (jsonNode.isArray()) {
-                if (!verifyList((ArrayNode) jsonNode, (List) fieldValue, fieldValue.getClass())) {
+            if (isSimpleTypeNode(jsonNode)) {
+                if (!internalUnaryEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldValue, fieldClass, true)) {
+                    return false;
+                }
+            } else if (jsonNode.isArray()) {
+                if (!verifyList((ArrayNode) jsonNode, (List) fieldValue)) {
                     return false;
                 }
             } else if (jsonNode.isObject()) {
-                if (!verifyObject((ObjectNode) jsonNode, fieldValue, fieldValue.getClass())) {
+                if (!verifyObject((ObjectNode) jsonNode, fieldValue)) {
                     return false;
                 }
             } else {
-                if (!internalUnaryEvaluation(jsonNode.textValue(), fieldValue, fieldValue.getClass(), true)) {
+                if (!internalUnaryEvaluation(jsonNode.textValue(), fieldValue, fieldClass, true)) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * Verify if given json node has all final values as empty strings
+     * @param json
+     * @return
+     */
+    protected boolean isNodeEmpty(JsonNode json) {
+        if (json.isArray()) {
+            return isListEmpty((ArrayNode) json);
+        } else if (json.isObject()) {
+            return isObjectEmpty((ObjectNode) json);
+        } else {
+            return isEmptyText(json);
+        }
+    }
+
+    /**
+     * Verify if all elements of given json array are empty
+     * @param json
+     * @return
+     */
+    protected boolean isListEmpty(ArrayNode json) {
+        for (JsonNode node : json) {
+            if (!isNodeEmpty(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify if all fields of given json object are empty
+     * @param json
+     * @return
+     */
+    protected boolean isObjectEmpty(ObjectNode json) {
+        Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
+        while (fields.hasNext()) {
+            JsonNode element = fields.next().getValue();
+            if (!isNodeEmpty(element)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify if given json node text is empty
+     * @param jsonNode
+     * @return
+     */
+    protected boolean isEmptyText(JsonNode jsonNode) {
+        return jsonNode.textValue() == null || jsonNode.textValue().isEmpty();
     }
 
     /**

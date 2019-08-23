@@ -139,6 +139,56 @@ public class AbstractExpressionEvaluatorTest {
         assertNull(expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
     }
 
+    @Test
+    public void isNodeEmpty() {
+        ObjectNode objectNode = new ObjectNode(factory);
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
+        objectNode.set("empty array", new ArrayNode(factory));
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
+        objectNode.set("key", new TextNode("value"));
+        assertFalse(expressionEvaluatorMock.isNodeEmpty(objectNode));
+
+        ArrayNode arrayNode = new ArrayNode(factory);
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(arrayNode));
+        arrayNode.add(new TextNode("value"));
+        assertFalse(expressionEvaluatorMock.isNodeEmpty(arrayNode));
+
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode("")));
+        assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode(null)));
+        assertFalse(expressionEvaluatorMock.isNodeEmpty(new TextNode("value")));
+    }
+
+    @Test
+    public void isListEmpty() {
+        ArrayNode json = new ArrayNode(factory);
+        assertTrue(expressionEvaluatorMock.isListEmpty(json));
+        ObjectNode nestedNode = new ObjectNode(factory);
+        json.add(nestedNode);
+        assertTrue(expressionEvaluatorMock.isListEmpty(json));
+        nestedNode.set("emptyField", new TextNode(""));
+        assertTrue(expressionEvaluatorMock.isListEmpty(json));
+        nestedNode.set("notEmptyField", new TextNode("text"));
+        assertFalse(expressionEvaluatorMock.isListEmpty(json));
+    }
+
+    @Test
+    public void isObjectEmpty() {
+        ObjectNode json = new ObjectNode(factory);
+        assertTrue(expressionEvaluatorMock.isObjectEmpty(json));
+        ObjectNode nestedNode = new ObjectNode(factory);
+        json.set("emptyField", nestedNode);
+        assertTrue(expressionEvaluatorMock.isObjectEmpty(json));
+        nestedNode.set("notEmptyField", new TextNode("text"));
+        assertFalse(expressionEvaluatorMock.isObjectEmpty(json));
+    }
+
+    @Test
+    public void isEmptyText() {
+        assertTrue(expressionEvaluatorMock.isEmptyText(new TextNode("")));
+        assertFalse(expressionEvaluatorMock.isEmptyText(new TextNode("value")));
+        assertTrue(expressionEvaluatorMock.isEmptyText(new ObjectNode(factory)));
+    }
+
     AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
 
         @Override

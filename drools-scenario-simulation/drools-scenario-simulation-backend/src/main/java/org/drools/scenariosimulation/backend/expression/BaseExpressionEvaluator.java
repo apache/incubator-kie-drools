@@ -67,6 +67,9 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
         if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
             return true;
         }
+        if (resultClass == null) {
+            return rawExpression == null || rawExpression.isEmpty();
+        }
         return BaseExpressionOperator.findOperator(rawExpression).eval(rawExpression, resultValue, resultClass, classLoader);
     }
 
