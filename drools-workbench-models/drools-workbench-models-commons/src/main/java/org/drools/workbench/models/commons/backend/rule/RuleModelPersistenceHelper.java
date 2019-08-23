@@ -111,7 +111,7 @@ class RuleModelPersistenceHelper {
             } else {
                 return FieldNatureType.TYPE_LITERAL;
             }
-        } else if (DataType.TYPE_DATE.equals(dataType)) {
+        } else if (DataType.isDate(dataType)) {
             try {
                 new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                      Locale.ENGLISH).parse(adjustParam(dataType,
@@ -485,7 +485,7 @@ class RuleModelPersistenceHelper {
                               final String param,
                               final Map<String, String> boundParams,
                               final boolean isJavaDialect) {
-        if (DataType.TYPE_DATE.equals(dataType)) {
+        if (DataType.isDate(dataType)) {
             if (param.contains("sdf.parse(\"")) {
                 return param.substring("sdf.parse(\"".length(),
                                        param.length() - 2);
