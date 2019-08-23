@@ -398,7 +398,7 @@ public class RuleModelDRLPersistenceImpl
                 if (isDSLEnhanced) {
                     buf.append(">");
                 }
-                buf.append("java.time.format.DateTimeFormatter dtf = DateTimeFormatter.ofPattern(\"" + DateUtils.getDateFormatMask() + "\");\n");
+                buf.append("java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(\"" + DateUtils.getDateFormatMask() + "\");\n");
             }
 
             //Add boiler-plate for actions operating on WorkItems
