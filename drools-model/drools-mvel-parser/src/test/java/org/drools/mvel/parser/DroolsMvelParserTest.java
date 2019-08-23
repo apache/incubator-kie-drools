@@ -86,7 +86,7 @@ public class DroolsMvelParserTest {
                 "                   addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
-        Expression and = parseExpression(parser, "(addresses == 2 &&" + System.lineSeparator() + "addresses == 3  )").getExpr();
+        Expression and = parseExpression(parser, "(addresses == 2 &&\n addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 

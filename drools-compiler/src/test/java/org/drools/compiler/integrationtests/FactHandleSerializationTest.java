@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -37,7 +38,6 @@ import static org.drools.compiler.integrationtests.SerializationHelper.serialize
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class FactHandleSerializationTest {
 
@@ -87,7 +87,7 @@ public class FactHandleSerializationTest {
     }
 
     @Test
-    public void deserializeOldSession() throws IOException, ClassNotFoundException {
+    public void deserializeOldSession() throws IOException, ClassNotFoundException, URISyntaxException {
         String drl =
                 "import " + Result.class.getCanonicalName() + ";" +
                         "import " + Person.class.getCanonicalName() + ";" +
@@ -105,7 +105,7 @@ public class FactHandleSerializationTest {
 
         // This is using an old serialized session
         final byte[] serializedEdson = Files.readAllBytes(
-                Paths.get(this.getClass().getResource("/org/drools/compiler/integrationtests/serializedEdsonSession").getPath()));
+                Paths.get(this.getClass().getResource("/org/drools/compiler/integrationtests/serializedEdsonSession").toURI()));
         try (final ByteArrayInputStream bais = new ByteArrayInputStream(serializedEdson)) {
             final KieSession unmarshalledSession = marshaller.unmarshall(bais);
             final Collection<FactHandle> factHandles = unmarshalledSession.getFactHandles();
