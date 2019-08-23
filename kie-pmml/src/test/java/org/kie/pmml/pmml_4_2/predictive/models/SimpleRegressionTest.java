@@ -16,25 +16,24 @@
 
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
-import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
@@ -67,26 +66,16 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testRegression() throws Exception {
-    	RuleUnitExecutor executor = createExecutor(source1);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("LinReg",
+                                                                                     ResourceFactory.newClassPathResource(source1),
+                                                                                     null);
     	
         PMMLRequestData request = new PMMLRequestData("123","LinReg");
         request.addRequestParam("fld1",fld1);
         request.addRequestParam("fld2", fld2);
         request.addRequestParam("fld3", fld3);
         
-        PMML4Result resultHolder = new PMML4Result();
-        
-        List<String> possiblePackages = calculatePossiblePackageNames("LinReg");
-        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
-        assertNotNull(unitClass);
-        
-        int x = executor.run(unitClass);
-        
-        data.insert(request);
-        resultData.insert(resultHolder);
-        
-        executor.run(unitClass);
-        
+        PMML4Result resultHolder = helper.submitRequest(request);
         assertEquals("OK",resultHolder.getResultCode());
         assertNotNull(resultHolder.getResultValue("Fld4", null));
         Double value = resultHolder.getResultValue("Fld4", "value", Double.class).orElse(null);
@@ -105,25 +94,16 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testClassification() throws Exception {
-    	RuleUnitExecutor executor = createExecutor(source2);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("LinReg",
+                                                                                     ResourceFactory.newClassPathResource(source2),
+                                                                                     null);
 
         PMMLRequestData request = new PMMLRequestData("123","LinReg");
         request.addRequestParam("fld1", fld1);
         request.addRequestParam("fld2", fld2);
         request.addRequestParam("fld3", fld3);
 
-        PMML4Result resultHolder = new PMML4Result();
-        
-        List<String> possiblePackages = calculatePossiblePackageNames("LinReg");
-        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
-        assertNotNull(unitClass);
-        
-        
-        data.insert(request);
-        resultData.insert(resultHolder);
-        
-        executor.run(unitClass);
-
+        PMML4Result resultHolder = helper.submitRequest(request);
         Map<String, Double> probabilities = categoryProbabilities(fld1, fld2, fld3);
         String maxCategory = null;
         double maxValue = Double.MIN_VALUE;
