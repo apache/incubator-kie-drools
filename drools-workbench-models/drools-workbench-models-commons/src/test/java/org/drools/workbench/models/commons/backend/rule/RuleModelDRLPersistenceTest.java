@@ -2071,7 +2071,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
             assertTrue(result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");") != -1);
             assertTrue(result.indexOf("fact0.setDob( sdf.parse(\"31-Jan-2000\"") != -1);
-            assertTrue(result.indexOf("java.time.format.DateTimeFormatter dtf = DateTimeFormatter.ofPattern(\"dd-MMM-yyyy\");") != -1);
+            assertTrue(result.indexOf("java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(\"dd-MMM-yyyy\");") != -1);
             assertTrue(result.indexOf("fact1.setDobPrecise( java.time.LocalDate.parse(\"31-Jan-2000\", dtf") != -1);
 
             checkMarshalling(null,

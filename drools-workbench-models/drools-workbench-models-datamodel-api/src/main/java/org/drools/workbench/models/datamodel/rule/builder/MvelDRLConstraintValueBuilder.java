@@ -59,7 +59,7 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
 
         if (fieldType.equals(DataType.TYPE_BOOLEAN)) {
             buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+        } else if (DataType.isDate(fieldType)) {
             buf.append("\"");
             buf.append(fieldValue);
             buf.append("\"");
