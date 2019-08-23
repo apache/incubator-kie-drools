@@ -82,7 +82,7 @@ public class DroolsMvelParserTest {
 
     @Test
     public void testBinaryWithNewLine() {
-        Expression or = parseExpression(parser, "(addresses == 2 ||" + System.lineSeparator() +
+        Expression or = parseExpression(parser, "(addresses == 2 ||\n" +
                 "                   addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
