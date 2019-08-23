@@ -15,17 +15,22 @@
  */
 package org.drools.compiler.kproject;
 
-import static org.junit.Assert.assertSame;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.appformer.maven.support.AFReleaseIdImpl;
+import org.appformer.maven.support.PomModel;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
+
+import static org.junit.Assert.assertSame;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ReleaseIdTest {
 
@@ -110,4 +115,48 @@ public class ReleaseIdTest {
         assertSame(gav7, ReleaseIdComparator.getLatest(list));
     }
 
+    @Test
+    public void testResolveVersionPomModelNull() {
+        final org.appformer.maven.support.AFReleaseIdImpl releaseId = new ReleaseIdImpl("groupId", "artifactId", "${project.version}");
+        ReleaseId resultReleaseId = ReleaseIdImpl.adapt(releaseId, null);
+        Assertions.assertThat(resultReleaseId.getVersion()).isEqualTo("${project.version}");
+    }
+
+    @Test
+    public void testResolveVersionNoProperty() {
+        final org.appformer.maven.support.AFReleaseIdImpl releaseId = new ReleaseIdImpl("groupId", "artifactId", "1.0.0");
+        final PomModel pomModel = mock(PomModel.class);
+        ReleaseId resultReleaseId = ReleaseIdImpl.adapt(releaseId, pomModel);
+        Assertions.assertThat(resultReleaseId.getVersion()).isEqualTo("1.0.0");
+    }
+
+    @Test
+    public void testResolveVersionProjectVersion() {
+        testResolveVersion(false);
+    }
+
+    @Test
+    public void testResolveVersionParentVersion() {
+        testResolveVersion(true);
+    }
+
+    private void testResolveVersion(final boolean parentVersion) {
+        final org.appformer.maven.support.AFReleaseIdImpl dependencyReleaseId;
+        if (parentVersion) {
+            dependencyReleaseId = new AFReleaseIdImpl("groupId", "artifactId", "${project.parent.version}");
+        } else {
+            dependencyReleaseId = new AFReleaseIdImpl("groupId", "artifactId", "${project.version}");
+        }
+        final org.appformer.maven.support.AFReleaseIdImpl projectReleaseId = new ReleaseIdImpl("groupId", "projectArtifactId", "1.0.1");
+
+        final PomModel pomModel = mock(PomModel.class);
+        if (parentVersion) {
+            when(pomModel.getParentReleaseId()).thenReturn(projectReleaseId);
+        } else {
+            when(pomModel.getReleaseId()).thenReturn(projectReleaseId);
+        }
+
+        ReleaseId resultReleaseId = ReleaseIdImpl.adapt(dependencyReleaseId, pomModel);
+        Assertions.assertThat(resultReleaseId.getVersion()).isEqualTo("1.0.1");
+    }
 }
