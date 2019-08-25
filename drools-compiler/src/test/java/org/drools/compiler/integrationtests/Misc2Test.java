@@ -9112,4 +9112,66 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(2, fired);
     }
+
+    @Test
+    public void testCollectWithEagerActivation() {
+        // DROOLS-4468
+        String drl = "import java.util.ArrayList\n" +
+                     "import org.drools.compiler.integrationtests.facts.FactWithList\n" +
+                     "import org.drools.compiler.integrationtests.facts.FactWithString\n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     " rule \"Init\"\n" +
+                     " dialect \"mvel\"\n" +
+                     " when\n" +
+                     "     $fl: FactWithList(items.size()==0)\n" +
+                     " then\n" +
+                     "     $fl.getItems().add(\"A\");\n" +
+                     "     $fl.getItems().add(\"B\");\n" +
+                     "     update($fl);\n" +
+                     "     list.add(\"Init\"); \n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"R1\"\n" +
+                     " dialect \"mvel\"\n" +
+                     " when\n" +
+                     "     $fl: FactWithList($itemList : items != null)\n" +
+                     "     $l: java.util.ArrayList(size > 0) from collect(FactWithString($itemList contains stringValue));\n" +
+                     " then\n" +
+                     "      list.add(\"R1\"); \n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"R2\"\n" +
+                     " dialect \"mvel\"\n" +
+                     " when\n" +
+                     "     $fl: FactWithList($itemList : items != null)\n" +
+                     "     $l: java.util.ArrayList(size == 0) from collect(FactWithString($itemList contains stringValue));\n" +
+                     " then\n" +
+                     "      list.add(\"R2\"); \n" +
+                     " end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration(null);
+        config.setOption( ForceEagerActivationOption.YES );
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                                   .build()
+                                                   .newKieSession( config, null );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        org.drools.compiler.integrationtests.facts.FactWithString f1 = new org.drools.compiler.integrationtests.facts.FactWithString("A");
+        ksession.insert(f1);
+        
+        org.drools.compiler.integrationtests.facts.FactWithList fl = new org.drools.compiler.integrationtests.facts.FactWithList("foo");
+        fl.getItems().clear();
+        ksession.insert(fl);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue(list.contains("R1"));
+
+    }
 }
