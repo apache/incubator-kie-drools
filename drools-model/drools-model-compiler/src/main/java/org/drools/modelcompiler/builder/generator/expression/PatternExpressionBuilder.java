@@ -173,9 +173,9 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
         indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
-        indexedByDSL.addArgument(indexedBy_constraintType);
-        indexedByDSL.addArgument("" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName()));
-        indexedByDSL.addArgument(indexedBy_leftOperandExtractor);
+        indexedByDSL.addArgument( indexedBy_constraintType );
+        indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
+        indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
@@ -186,4 +186,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         }
         return Optional.of(indexedByDSL);
     }
+
+
 }

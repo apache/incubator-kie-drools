@@ -65,9 +65,10 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -184,7 +185,7 @@ public class ExpressionTyper {
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
         } else if (drlxExpr instanceof NameExpr) {
-            return nameExpr(printConstraint(drlxExpr), typeCursor);
+            return nameExpr(((NameExpr)drlxExpr).getNameAsString(), typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
                 || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
@@ -444,7 +445,17 @@ public class ExpressionTyper {
             }
         }
 
-        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, printConstraint(drlxExpr))), context);
+        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, accessorToFieldName(drlxExpr))), context);
+    }
+
+    private String accessorToFieldName(Expression drlxExpr) {
+        if (drlxExpr instanceof MethodCallExpr) {
+            MethodCallExpr methodCall = ( MethodCallExpr ) drlxExpr;
+            if (methodCall.getArguments().isEmpty()) {
+                return getter2property( methodCall.getNameAsString() );
+            }
+        }
+        return printConstraint(drlxExpr);
     }
 
     private void addReactOnProperty(String methodName, NodeList<Expression> methodArguments) {
