@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.junit.Ignore;
@@ -178,5 +179,37 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("0.0d", Double.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("java.math.BigDecimal.valueOf(0.0)", double.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void testStringToBooleanTrue() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
+        final TypedExpression right = expr("\"true\"", String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("true", Boolean.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void testStringToBooleanFalse() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
+        final TypedExpression right = expr("\"false\"", String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("false", Boolean.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void testStringToBooleanRandomStringError() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
+        final TypedExpression right = expr("\"randomString\"", String.class);
+        Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right).coerce())
+                .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
+    }
+
+    @Test
+    public void testIntegerToBooleanError() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
+        final TypedExpression right = expr("1", Integer.class);
+        Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right).coerce())
+                .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
     }
 }
