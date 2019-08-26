@@ -93,6 +93,7 @@ import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
+import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,7 +153,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
             Definitions dmndefs = getMarshaller().unmarshal(source);
-            DMNModel model = compile(dmndefs, dmnModels, resource);
+            DMNModel model = compile(dmndefs, dmnModels, resource, null);
             return model;
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
@@ -170,10 +171,10 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
-        return compile(dmndefs, dmnModels, null);
+        return compile(dmndefs, dmnModels, null, null);
     }
 
-    public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource) {
+    public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
             return null;
         }
@@ -183,6 +184,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
+        ctx.setRelativeResolver(relativeResolver);
 
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
@@ -206,7 +208,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         importFromModel(model, located, iAlias);
                     }
                 } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
-                    processPMMLImport(model, i);
+                    processPMMLImport(model, i, relativeResolver);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                 } else {
                     MsgUtil.reportMessage(logger,
@@ -226,12 +228,10 @@ public class DMNCompilerImpl implements DMNCompiler {
         return model;
     }
 
-    private void processPMMLImport(DMNModelImpl model, Import i) {
-        URL pmmlURL = pmmlImportURL(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader(), model, i, i);
-        if (pmmlURL == null) {
-            return;
-        }
-        try (InputStream pmmlIS = pmmlURL.openStream();) {
+    private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
+        ClassLoader rootClassLoader = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader();
+        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
+        try (InputStream pmmlIS = relativeResource.getInputStream()) {
             DMNImportPMMLInfo.from(pmmlIS, (DMNCompilerConfigurationImpl) dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
                                                                                                                model::addPMMLImportInfo);
         } catch (IOException e) {
@@ -270,6 +270,17 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     }
 
+    protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
+        if (model.getResource() != null) {
+            URL pmmlURL = pmmlImportURL(classLoader, model, i, node);
+            return ResourceFactory.newUrlResource(pmmlURL);
+        } else if (relativeResolver != null) {
+            Reader reader = relativeResolver.apply(i.getLocationURI());
+            return ResourceFactory.newReaderResource(reader);
+        }
+        throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
+    }
+
     protected static URL pmmlImportURL(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
         String locationURI = i.getLocationURI();
         logger.trace("locationURI: {}", locationURI);
@@ -288,10 +299,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         URI relativeAsURI = new URI(null, null, relative, null);
         if (model.getResource() instanceof FileSystemResource) {
             FileSystemResource fsr = (FileSystemResource) model.getResource();
+            logger.trace("fsr: {}", fsr.getURL());
             URI resolve = fsr.getURL().toURI().resolve(relativeAsURI);
             return resolve;
         } else {
             URI dmnModelURI = new URI(null, null, model.getResource().getSourcePath(), null);
+            logger.trace("dmnModelURI: {}", dmnModelURI);
             URI relativeURI = dmnModelURI.resolve(relativeAsURI);
             return relativeURI;
         }

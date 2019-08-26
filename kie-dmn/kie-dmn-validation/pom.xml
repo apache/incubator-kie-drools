@@ -95,6 +95,11 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
   

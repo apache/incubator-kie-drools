@@ -17,12 +17,12 @@
 package org.kie.dmn.core.pmml;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -47,13 +47,13 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     protected final String dmnNS;
     protected final DMNElement node;
     protected final List<FormalParameter> parameters = new ArrayList<>();
-    protected final URL document;
+    protected final Resource documentResource;
     protected final String model;
 
-    public AbstractPMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) {
+    public AbstractPMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource resource, String model) {
         this.dmnNS = dmnNS;
         this.node = node;
-        this.document = url;
+        this.documentResource = resource;
         this.model = model;
     }
 
@@ -88,7 +88,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     public static class DummyPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator {
 
-        public DummyPMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) {
+        public DummyPMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource url, String model) {
             super(dmnNS, node, url, model);
         }
 
@@ -109,17 +109,17 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     public static class PMMLInvocationEvaluatorFactory {
 
-        public static AbstractPMMLInvocationEvaluator newInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, URL pmmlURL, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+        public static AbstractPMMLInvocationEvaluator newInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
             try {
                 @SuppressWarnings("unchecked")
                 Class<AbstractPMMLInvocationEvaluator> cl = (Class<AbstractPMMLInvocationEvaluator>) classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
                 return cl.getDeclaredConstructor(String.class,
                                                  DMNElement.class,
-                                                 URL.class,
+                                                 Resource.class,
                                                  String.class)
                          .newInstance(model.getNamespace(),
                                       funcDef,
-                                      pmmlURL,
+                                      pmmlResource,
                                       pmmlModel);
             } catch (NoClassDefFoundError | ClassNotFoundException e) {
                 LOG.warn("Tried binding org.kie:kie-dmn-jpmml, failed.");
@@ -127,7 +127,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
                 LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed, with:", e);
             }
             try {
-                return new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel, pmmlInfo);
+                return new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo);
             } catch (NoClassDefFoundError e) {
                 LOG.warn("Tried binding org.drools:kie-pmml, failed.");
             } catch (Throwable e) {
@@ -141,7 +141,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
                                   null,
                                   Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
                                   funcDef.getIdentifierString());
-            return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
+            return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel);
         }
 
         private PMMLInvocationEvaluatorFactory() {

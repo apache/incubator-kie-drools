@@ -83,6 +83,14 @@ public abstract class AbstractValidatorTest {
         return definitions;
     }
 
+    protected Definitions getDefinitions(final Reader resourceReader, final String namespace, final String modelName) {
+        final Definitions definitions = marshaller.unmarshal(resourceReader);
+        assertThat(definitions, notNullValue());
+        assertThat(definitions.getNamespace(), is(namespace));
+        assertThat(definitions.getName(), is(modelName));
+        return definitions;
+    }
+
     protected Definitions getDefinitions(final List<String> resourcesName, final String namespace, final String modelName) {
         if (resourcesName.size() < 2) {
             throw new RuntimeException("use proper method");

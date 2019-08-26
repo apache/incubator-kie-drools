@@ -17,13 +17,13 @@
 package org.kie.dmn.core.pmml;
 
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNMessage;
@@ -38,7 +38,6 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
@@ -51,13 +50,15 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
     private final PMML4ExecutionHelper helper;
     private final PMMLInfo<?> pmmlInfo;
 
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model, PMMLInfo<?> pmmlInfo) {
-        super(dmnNS, node, url, model);
+    public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
+        super(dmnNS, node, pmmlResource, model);
         this.pmmlInfo = pmmlInfo;
         helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
-                                                                ResourceFactory.newUrlResource(document),
+                                                                pmmlResource,
                                                                 null,
-                                                                pmmlInfo.getModels().stream().anyMatch(m -> m.name.equals(model) && m.className.equals("MiningModel")));
+                                                                pmmlInfo.getModels().stream().anyMatch(m -> "MiningModel".equals(m.className) &&
+                                                                                                            ((model != null && model.equals(m.name)) ||
+                                                                                                             (model == null && m.name == null))));
         helper.addPossiblePackageName(pmmlInfo.getHeader().getHeaderExtensions().get("modelPackage"));
         helper.initModel();
     }
