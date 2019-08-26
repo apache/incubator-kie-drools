@@ -30,8 +30,8 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.pmml.DMNRuntimePMMLTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Definitions;
@@ -207,13 +207,13 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     @Test
     public void testImportPMML2() throws IOException {
         // DROOLS-4395 [DMN Designer] Validation fails for included PMML model
-        try (Reader defsReader = getReader("pmml/KiePMMLTree.dmn", DMNRuntimeTest.class);) {
+        try (Reader defsReader = getReader("KiePMMLScoreCard_wInputType.dmn", DMNRuntimePMMLTest.class);) {
             final Definitions defs = getDefinitions(defsReader,
-                                                    "https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE1",
-                                                    "TestTreeDMN");
+                                                    "http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f",
+                                                    "KiePMMLScoreCard");
             ValidatorImportReaderResolver resolver = (ns, name, i) -> {
                 if (ns.equals(defs.getNamespace()) && name.equals(defs.getName()) && i.equals(defs.getImport().get(0).getLocationURI())) {
-                    return getReader("pmml/test_tree.pmml", DMNRuntimeTest.class);
+                    return getReader("test_scorecard.pmml", DMNRuntimePMMLTest.class);
                 } else {
                     return null;
                 }
