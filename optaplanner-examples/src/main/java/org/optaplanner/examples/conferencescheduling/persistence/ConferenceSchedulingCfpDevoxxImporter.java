@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -336,21 +335,21 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     + ") has a talkType (" + talkTypeId + ") that doesn't exist in the talkType list.");
         }
         talk.setTalkType(talkTypeIdToTalkTypeMap.get(talkTypeId));
-        talk.withThemeTrackTagSet(themeTrackSet)
-                .withLanguage(languageg)
-                .withSpeakerList(speakerList)
-                .withAudienceLevel(audienceLevel)
-                .withAudienceTypeSet(new HashSet<>())
-                .withContentTagSet(contentTagSet)
-                .withPreferredRoomTagSet(new HashSet<>())
-                .withPreferredTimeslotTagSet(new HashSet<>())
-                .withProhibitedRoomTagSet(new HashSet<>())
-                .withProhibitedTimeslotTagSet(new HashSet<>())
-                .withRequiredRoomTagSet(new HashSet<>())
-                .withRequiredTimeslotTagSet(new HashSet<>())
+        talk.withSpeakerList(speakerList)
+                .withThemeTrackTagSet(themeTrackSet)
                 .withSectorTagSet(new HashSet<>())
-                .withUndesiredRoomTagSet(new HashSet<>())
+                .withLanguage(languageg)
+                .withAudienceTypeSet(new HashSet<>())
+                .withAudienceLevel(audienceLevel)
+                .withContentTagSet(contentTagSet)
+                .withRequiredTimeslotTagSet(new HashSet<>())
+                .withPreferredTimeslotTagSet(new HashSet<>())
+                .withProhibitedTimeslotTagSet(new HashSet<>())
                 .withUndesiredTimeslotTagSet(new HashSet<>())
+                .withRequiredRoomTagSet(new HashSet<>())
+                .withPreferredRoomTagSet(new HashSet<>())
+                .withProhibitedRoomTagSet(new HashSet<>())
+                .withUndesiredRoomTagSet(new HashSet<>())
                 .withMutuallyExclusiveTalksTagSet(new HashSet<>())
                 .withPrerequisiteTalksCodesSet(new HashSet<>());
 
