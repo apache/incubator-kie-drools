@@ -49,7 +49,7 @@ public class ProcessInstanceFilterMapper implements Function<Map<String, Object>
             });
 
             params.computeIfPresent("offset", (key, value) -> {
-                filter.setLimit((Integer) value);
+                filter.setOffset((Integer) value);
                 return value;
             });
         }

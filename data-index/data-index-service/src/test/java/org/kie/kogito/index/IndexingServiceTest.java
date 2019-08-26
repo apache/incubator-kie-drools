@@ -132,7 +132,7 @@ public class IndexingServiceTest {
         KogitoCloudEvent startEvent = getTravelsCloudEvent(processId, processInstanceId, "ProcessInstanceEvent", ProcessInstanceState.ACTIVE, null, null);
         consumer.onProcessInstanceEvent(startEvent);
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: ACTIVE }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: ACTIVE, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessInstances[0].id", is(processInstanceId))
@@ -158,7 +158,7 @@ public class IndexingServiceTest {
         KogitoCloudEvent subProcessStartEvent = getTravelsCloudEvent(subProcessId, subProcessInstanceId, "ProcessInstanceEvent", ProcessInstanceState.ACTIVE, processInstanceId, processId);
         consumer.onProcessInstanceEvent(subProcessStartEvent);
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + subProcessInstanceId + "\\\", state: ACTIVE }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + subProcessInstanceId + "\\\", state: ACTIVE, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessInstances[0].id", is(subProcessInstanceId))
@@ -170,7 +170,7 @@ public class IndexingServiceTest {
         KogitoCloudEvent endEvent = getTravelsCloudEvent(processId, processInstanceId, "ProcessInstanceEvent", ProcessInstanceState.COMPLETED, null, null);
         consumer.onProcessInstanceEvent(endEvent);
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: COMPLETED }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: COMPLETED, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessInstances[0].id", is(processInstanceId))
