@@ -61,6 +61,10 @@ public class JavaDRLConstraintValueBuilder extends MvelDRLConstraintValueBuilder
             buf.append("sdf.parse(\"");
             buf.append(fieldValue);
             buf.append("\")");
+        } else if (fieldType.equals(DataType.TYPE_LOCAL_DATE)) {
+            buf.append("java.time.LocalDate.parse(\"");
+            buf.append(fieldValue);
+            buf.append("\", dtf)");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
             buf.append("new java.math.BigDecimal(\"" + fieldValue + "\")");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {

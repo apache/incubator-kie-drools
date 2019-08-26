@@ -59,7 +59,7 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
 
         if (fieldType.equals(DataType.TYPE_BOOLEAN)) {
             buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+        } else if (DataType.isDate(fieldType)) {
             buf.append("\"");
             buf.append(fieldValue);
             buf.append("\"");
@@ -141,6 +141,10 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
             buf.append("sdf.parse(\"");
             buf.append(fieldValue);
             buf.append("\")");
+        } else if (fieldType.equals(DataType.TYPE_LOCAL_DATE)) {
+            buf.append("java.time.LocalDate.parse(\"");
+            buf.append(fieldValue);
+            buf.append("\", dtf)");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
             buf.append(fieldValue + "B");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
