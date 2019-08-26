@@ -90,6 +90,16 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
+    @Test
+    public void testBinaryWithWindowsNewLine() {
+        Expression or = parseExpression(parser, "(addresses == 2 ||\r\n" +
+                "                   addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+
+        Expression and = parseExpression(parser, "(addresses == 2 &&\r\n addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+    }
+
     @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + System.lineSeparator() + "addresses == 2 || addresses == 3  )").getExpr();
