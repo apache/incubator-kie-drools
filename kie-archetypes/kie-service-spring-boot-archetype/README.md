@@ -13,13 +13,13 @@ Archetype used to build new KIE Service Spring Boot Applications.
 mvn archetype:generate
    -DarchetypeGroupId=org.kie
    -DarchetypeArtifactId=kie-service-spring-boot-archetype
-   -DarchetypeVersion=7.26.0-SNAPSHOT
+   -DarchetypeVersion=7.27.0-SNAPSHOT
 ```
 
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-service-spring-boot-archetype -DarchetypeVersion=7.26.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-service-spring-boot-archetype -DarchetypeVersion=7.27.0-SNAPSHOT
 ```
 
 4. Change the prompted values during the generation as needed (or leave the defaults)
@@ -139,7 +139,7 @@ So to build an "planner" service app you would use the command:
 mvn archetype:generate
    -DarchetypeGroupId=org.kie
    -DarchetypeArtifactId=kie-service-spring-boot-archetype
-   -DarchetypeVersion=7.26.0-SNAPSHOT
+   -DarchetypeVersion=7.27.0-SNAPSHOT
    -DappType=planner
 ```
 
