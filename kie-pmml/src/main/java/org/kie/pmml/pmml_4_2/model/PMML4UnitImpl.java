@@ -15,12 +15,11 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,8 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public class PMML4UnitImpl implements PMML4Unit {
 
@@ -293,6 +294,18 @@ public class PMML4UnitImpl implements PMML4Unit {
 
     @Override
     public PMMLDataField findDataDictionaryEntry(String fieldName) {
-        return this.dataDictionaryMap.get(fieldName);
+        PMMLDataField field = this.dataDictionaryMap.get(fieldName);
+        // If the field is not found using the name as a key in the map
+        // then iterate through the map's values looking at the raw PMML
+        // field info, to find it.
+        if (field == null) {
+            for (Iterator<PMMLDataField> iter = this.dataDictionaryMap.values().iterator(); iter.hasNext() && field == null;) {
+                PMMLDataField fld = iter.next();
+                if (fld != null && fld.getRawDataField() != null && fld.getRawDataField().getName().equals(fieldName)) {
+                    field = fld;
+                }
+            }
+        }
+        return field;
     }
 }
