@@ -32,6 +32,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
@@ -79,6 +80,9 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "kogito.codegen.processes", defaultValue = "")
     private String generateProcesses; // defaults to true iff there exist BPMN files
 
+    @Parameter(property = "kogito.codegen.decisions", defaultValue = "")
+    private String generateDecisions; // defaults to true iff there exist DMN files
+
     /**
      * Partial generation can be used when reprocessing a pre-compiled project
      * for faster code-generation. It only generates code for rules and processes,
@@ -114,13 +118,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
         // if not null, the property has been overridden, and we should use the specified value
         boolean genRules = generateRules == null ? rulesExist() : Boolean.parseBoolean(generateRules);
         boolean genProcesses = generateProcesses == null ? processesExist() : Boolean.parseBoolean(generateProcesses);
+        boolean genDecisions = generateDecisions == null ? decisionsExist() : Boolean.parseBoolean(generateDecisions);
 
         project.addCompileSourceRoot(generatedSources.getPath());
 
         setSystemProperties(properties);
 
-        ApplicationGenerator appGen = createApplicationGenerator(
-                genRules, genProcesses);
+        ApplicationGenerator appGen = createApplicationGenerator(genRules, genProcesses, genDecisions);
 
         Collection<GeneratedFile> generatedFiles;
         if (generatePartial) {
@@ -135,6 +139,12 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         if (!keepSources) {
             deleteDrlFiles();
+        }
+    }
+
+    private boolean decisionsExist() throws IOException {
+        try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
+            return paths.map(p -> p.toString().toLowerCase()).anyMatch(p -> p.endsWith(".dmn"));
         }
     }
 
@@ -156,7 +166,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
-    private ApplicationGenerator createApplicationGenerator(boolean generateRuleUnits, boolean generateProcesses) throws IOException, MojoExecutionException {
+    private ApplicationGenerator createApplicationGenerator(boolean generateRuleUnits, boolean generateProcesses, boolean generateDecisions) throws IOException, MojoExecutionException {
         String appPackageName = project.getGroupId();
         
         // safe guard to not generate application classes that would clash with interfaces
@@ -183,6 +193,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
             
             appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))                    
                     .withPersistence(usePersistence);            
+        }
+
+        if (generateDecisions) {
+            appGen.withGenerator(DecisionCodegen.ofPath(kieSourcesDirectory.toPath()));
         }
 
         return appGen;

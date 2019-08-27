@@ -67,6 +67,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-dmn-rest-utils</artifactId> <!-- depend on the utility wrapper module to avoid repeating dependency exclusions -->
+    </dependency>
 
     <!-- image metadata handling -->
     <dependency>
