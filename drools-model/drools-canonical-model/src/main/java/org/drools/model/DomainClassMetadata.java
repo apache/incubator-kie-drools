@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator;
+package org.drools.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class IndexIdGenerator {
-
-    private final Map<Class<?>, Map<String, Integer>> idMap = new HashMap<>();
-
-    public int getFieldId(Class<?> type, String fieldName) {
-        Map<String, Integer> typeMap = idMap.computeIfAbsent( type, t -> new HashMap<>() );
-        return typeMap.computeIfAbsent( fieldName, f -> typeMap.size() );
-    }
+public interface DomainClassMetadata {
+    Class<?> getDomainClass();
+    int getPropertiesSize();
+    int getPropertyIndex(String name);
 }
