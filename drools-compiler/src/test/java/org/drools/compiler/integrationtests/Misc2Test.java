@@ -53,6 +53,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.integrationtests.facts.FactWithList;
+import org.drools.compiler.integrationtests.facts.FactWithString;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -130,7 +132,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
@@ -9111,5 +9112,60 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(2, fired);
+    }
+
+    @Test
+    public void testCollectWithEagerActivation() {
+        // DROOLS-4468
+        String drl =
+                "import java.util.ArrayList\n" +
+                "import " +  FactWithList.class.getCanonicalName() + "\n" +
+                "import " +  FactWithString.class.getCanonicalName() + "\n" +
+                "\n" +
+                "dialect \"mvel\"\n" +
+                "global java.util.List list; \n" +
+                "\n" +
+                " rule \"Init\"\n" +
+                " when\n" +
+                "     $fl: FactWithList(items.size()==0)\n" +
+                " then\n" +
+                "     $fl.getItems().add(\"A\");\n" +
+                "     $fl.getItems().add(\"B\");\n" +
+                "     update($fl);\n" +
+                " end\n" +
+                "\n" +
+                " rule \"R1\"\n" +
+                " when\n" +
+                "     $fl: FactWithList($itemList : items)\n" +
+                "     $l: java.util.List(size > 0) from collect(FactWithString($itemList contains stringValue));\n" +
+                " then\n" +
+                "      list.add(\"R1\"); \n" +
+                " end\n" +
+                "\n" +
+                " rule \"R2\"\n" +
+                " when\n" +
+                "     $fl: FactWithList($itemList : items)\n" +
+                "     not( FactWithString($itemList contains stringValue) )\n" +
+                " then\n" +
+                "      list.add(\"R2\"); \n" +
+                " end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration(null);
+        config.setOption( ForceEagerActivationOption.YES );
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession( config, null );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new FactWithString("A"));
+        ksession.insert(new FactWithList());
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertTrue(list.contains("R1"));
     }
 }
