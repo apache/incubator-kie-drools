@@ -25,6 +25,13 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 
+/**
+ * Base implementation for an {@link ApplicationSection}.
+ *
+ * It provides a skeleton for a "section" in the Application generated class.
+ * Subclasses may extend this base class and decorate the provided
+ * simple implementations of the interface methods with custom logic.
+ */
 public class AbstractApplicationSection implements ApplicationSection {
 
     private final String innerClassName;

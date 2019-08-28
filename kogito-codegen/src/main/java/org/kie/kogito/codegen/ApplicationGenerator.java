@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
@@ -212,6 +214,7 @@ public class ApplicationGenerator {
                 .flatMap(gen -> gen.generate().stream())
                 .collect(Collectors.toList());
     }
+
 
     public GeneratedFile generateApplicationDescriptor() {
         return new GeneratedFile(GeneratedFile.Type.APPLICATION,

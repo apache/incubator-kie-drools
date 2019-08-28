@@ -101,31 +101,17 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
     public void addProcess(ProcessGenerator p) {
         processes.add(p);
-        addProcessFactoryMethod(p);
         addProcessToApplication(p);
     }
 
-    public MethodDeclaration addProcessFactoryMethod(ProcessGenerator r) {
+    public void addProcessToApplication(ProcessGenerator r) {
         ObjectCreationExpr newProcess = new ObjectCreationExpr()
                 .setType(r.targetCanonicalName())
                 .addArgument(new ThisExpr(new NameExpr("Application")));
-        MethodDeclaration methodDeclaration = new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PUBLIC)
-                .setName("create" + r.targetTypeName())
-                .setType(r.targetCanonicalName())
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(new MethodCallExpr(
-                        newProcess,
-                        "configure"))));
-
-        this.factoryMethods.add(methodDeclaration);
-        applicationDeclarations.add(methodDeclaration);
-
-        return methodDeclaration;
-    }
-
-    public void addProcessToApplication(ProcessGenerator r) {
         IfStmt byProcessId = new IfStmt(new MethodCallExpr(new StringLiteralExpr(r.processId()), "equals", NodeList.nodeList(new NameExpr("processId"))),
-                                        new ReturnStmt(new MethodCallExpr(null, "create" + r.targetTypeName())),
+                                        new ReturnStmt(new MethodCallExpr(
+                                                newProcess,
+                                                "configure")),
                                         null);
 
         byProcessIdMethodDeclaration.getBody().get().addStatement(byProcessId);

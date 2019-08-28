@@ -17,4 +17,8 @@ package org.kie.kogito.rules;
 
 public interface RuleUnits {
     KieRuntimeBuilder ruleRuntimeBuilder();
+    default <T extends RuleUnitMemory> RuleUnit<T> create(Class<T> clazz) {
+        return (RuleUnit<T>) findById(clazz.getCanonicalName());
+    }
+    RuleUnit<?> findById(String fqcn);
 }
