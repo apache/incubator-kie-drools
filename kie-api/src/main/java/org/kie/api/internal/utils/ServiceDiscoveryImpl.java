@@ -136,7 +136,7 @@ public class ServiceDiscoveryImpl {
                     throw e;
                 }
             }
-            log.info( "Adding Service {}\n", value );
+            log.debug( "Adding Service {}\n", value );
         }
     }
 
