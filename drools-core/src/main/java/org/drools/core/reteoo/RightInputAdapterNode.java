@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -119,7 +118,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     @Override
     public void resetPathMemSpec(TerminalNode removingTN) {
-        pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
+        pathMemSpec = removingTN == null ? null : calculatePathMemSpec( null, removingTN );
     }
 
     @Override

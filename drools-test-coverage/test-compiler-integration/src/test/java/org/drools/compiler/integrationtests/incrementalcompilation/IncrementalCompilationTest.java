@@ -4112,4 +4112,238 @@ public class IncrementalCompilationTest {
         assertEquals(2, kieSession.getObjects().size());
         assertTrue(kieSession.getObjects(new ClassObjectFilter( Integer.class )).isEmpty());
     }
+
+    @Test
+    public void testRemoveRulesWithSubnetworkAndOR() throws Exception {
+        checkRemoveRulesWithSubnetworkAndOR(false);
+    }
+
+    @Test
+    public void testRemoveRulesWithSubnetworkAndORWithDispose() throws Exception {
+        checkRemoveRulesWithSubnetworkAndOR(true);
+    }
+
+    public void checkRemoveRulesWithSubnetworkAndOR(boolean dispose) throws Exception {
+        // DROOLS-4454
+        String DRL1 =
+                " package org.drools.compiler;\n" +
+                        " declare  B  \n" +
+                        "     day : int  \n" +
+                        " end  \n" +
+                        " declare  D \n" +
+                        " end \n" +
+                        " declare  O  \n" +
+                        "     hash : int  \n" +
+                        " end \n" +
+                        " declare  F  \n" +
+                        "     id : int \n" +
+                        " end \n" +
+                        " rule R1 \n" +
+                        " when \n" +
+                        "    D() \n" +
+                        "    O( $hash: hash != 0 ) \n" +
+                        "    forall( \n" +
+                        "    $f : F( )  \n" +
+                        "    ) \n" +
+                        "    ( \n" +
+                        "        B( day in (1)  ) \n" +
+                        "        or \n" +
+                        "        B( day == 5 ) \n" +
+                        "    ) \n" +
+                        " then\n" +
+                        " end\n" +
+                        " rule R2 \n" +
+                        " when \n" +
+                        "    D() \n" +
+                        "    O() \n" +
+                        " then\n" +
+                        " end";
+        String DRL2 =
+                " package org.drools.compiler;\n" +
+                        " declare  B  \n" +
+                        "     day : int  \n" +
+                        " end  \n" +
+                        " declare  D \n" +
+                        " end \n" +
+                        " declare  O  \n" +
+                        "     hash : int  \n" +
+                        " end \n" +
+                        " declare  F  \n" +
+                        "     id : int \n" +
+                        " end \n" +
+                        " rule R2 \n" +
+                        " when \n" +
+                        "    D() \n" +
+                        "    O() \n" +
+                        " then\n" +
+                        " end";
+
+        // setup 1st container version
+        KieServices kieService = KieServices.Factory.get();
+        KieFileSystem kfs = kieService.newKieFileSystem();
+
+        ReleaseId rid = kieService.newReleaseId("org.drools.test", "npe-reproducer", "1.0.0");
+        kfs.generateAndWritePomXML(rid);
+
+        kfs.write(kieService.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kb = kieService.newKieBuilder(kfs);
+        kb.buildAll();
+        if (!kb.getResults().getMessages().isEmpty()) {
+            throw new RuntimeException("KieBase build failed:\n" + kb.getResults().toString());
+        }
+
+        KieModule kModule = kb.getKieModule();
+        KieContainer kc = kieService.newKieContainer(kModule.getReleaseId());
+
+        // execute rules
+        KieBase kbase = kc.getKieBase();
+        KieSession ks = kbase.newKieSession();
+
+        FactType D = kbase.getFactType("org.drools.compiler","D");
+        Object d = D.newInstance();
+        FactType O = kbase.getFactType("org.drools.compiler","O");
+        Object o = O.newInstance();
+        O.set(o, "hash", 1);
+        ks.insert(d);
+        ks.insert(o);
+        assertEquals(1, ks.fireAllRules());
+        if (dispose) {
+            ks.dispose();
+        }
+
+        // upgrade to new version
+        KieFileSystem kfs2 = kieService.newKieFileSystem();
+
+        ReleaseId rid2 = kieService.newReleaseId("org.drools.test", "npe-reproducer", "2.0.0");
+        kfs2.generateAndWritePomXML(rid2);
+
+        kfs2.write(kieService.getResources()
+                .newReaderResource(new StringReader(DRL2))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kb2 = kieService.newKieBuilder(kfs2);
+        kb2.buildAll();
+        if (!kb2.getResults().getMessages().isEmpty()) {
+            throw new RuntimeException("KieBase build failed:\n" + kb2.getResults().toString());
+        }
+
+        KieModule kModule2 = kb2.getKieModule();
+        kc.updateToVersion(kModule2.getReleaseId());
+
+        // execute rules
+        KieBase kbase2 = kc.getKieBase();
+        KieSession ks2 = kbase2.newKieSession();
+
+        FactType D2 = kbase2.getFactType("org.drools.compiler","D");
+        Object d2 = D2.newInstance();
+        FactType O2 = kbase2.getFactType("org.drools.compiler","O");
+        Object o2 = O2.newInstance();
+        O2.set(o2, "hash", 1);
+        ks2.insert(d2);
+        ks2.insert(o2);
+        assertEquals(1, ks2.fireAllRules());
+        ks2.dispose();
+    }
+
+    @Test
+    public void testRemoveAndAddRules() throws Exception {
+        checkRemoveAndAddRules(false);
+    }
+
+    @Test
+    public void testRemoveAndAddRulesWithDispose() throws Exception {
+        checkRemoveAndAddRules(true);
+    }
+
+    public void checkRemoveAndAddRules(boolean dispose) throws Exception {
+        String DRL1 =
+                "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule R1 when then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                "rule R2 when then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n";
+
+        String DRL2 =
+                "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule R2 when then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                "rule R3 when then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n";
+
+        // setup 1st container version
+        KieServices kieService = KieServices.Factory.get();
+        KieFileSystem kfs = kieService.newKieFileSystem();
+
+        ReleaseId rid = kieService.newReleaseId("org.drools.test", "empty-rules", "1.0.0");
+        kfs.generateAndWritePomXML(rid);
+
+        kfs.write(kieService.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kb = kieService.newKieBuilder(kfs);
+        kb.buildAll();
+        if (!kb.getResults().getMessages().isEmpty()) {
+            throw new RuntimeException("KieBase build failed:\n" + kb.getResults().toString());
+        }
+
+        KieModule kModule = kb.getKieModule();
+        KieContainer kc = kieService.newKieContainer(kModule.getReleaseId());
+
+        // execute rules
+        KieBase kbase = kc.getKieBase();
+        KieSession ks = kbase.newKieSession();
+
+        List<String> list = new ArrayList<>();
+        ks.setGlobal( "list", list );
+        assertEquals(2, ks.fireAllRules());
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll( Arrays.asList( "R1", "R2" ) ));
+
+        if (dispose) {
+            ks.dispose();
+        }
+
+        // upgrade to new version
+        KieFileSystem kfs2 = kieService.newKieFileSystem();
+
+        ReleaseId rid2 = kieService.newReleaseId("org.drools.test", "empty-rules", "2.0.0");
+        kfs2.generateAndWritePomXML(rid2);
+
+        kfs2.write(kieService.getResources()
+                .newReaderResource(new StringReader(DRL2))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kb2 = kieService.newKieBuilder(kfs2);
+        kb2.buildAll();
+        if (!kb2.getResults().getMessages().isEmpty()) {
+            throw new RuntimeException("KieBase build failed:\n" + kb2.getResults().toString());
+        }
+
+        KieModule kModule2 = kb2.getKieModule();
+        kc.updateToVersion(kModule2.getReleaseId());
+
+        // execute rules
+        KieBase kbase2 = kc.getKieBase();
+        KieSession ks2 = kbase2.newKieSession();
+
+        List<String> list2 = new ArrayList<>();
+        ks2.setGlobal( "list", list2 );
+        assertEquals(2, ks2.fireAllRules());
+        assertEquals(2, list2.size());
+        assertTrue(list2.containsAll( Arrays.asList( "R2", "R3" ) ));
+    }
 }
