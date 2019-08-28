@@ -108,7 +108,7 @@ public class KieRepositoryImpl
 
     public void addKieModule(KieModule kieModule) {
         kieModuleRepo.store(kieModule);
-        log.info("KieModule was added: " + kieModule);
+        log.debug("KieModule was added: " + kieModule);
     }
 
     public KieModule getKieModule(ReleaseId releaseId) {
