@@ -81,6 +81,7 @@ import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -151,6 +152,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		}
 		if (version != null) {
 			process.setVersion(version);
+		}
+		if (visibility == null || "".equals(visibility)) {
+			visibility = WorkflowProcess.NONE_VISIBILITY;
 		}
 		process.setVisibility(visibility);
 
