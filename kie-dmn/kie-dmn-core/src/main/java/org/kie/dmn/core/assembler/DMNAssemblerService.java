@@ -67,6 +67,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
     public static final String ORG_KIE_DMN_PREFIX = "org.kie.dmn";
     public static final String DMN_PROFILE_PREFIX = ORG_KIE_DMN_PREFIX + ".profiles.";
+    public static final String DMN_RUNTIME_LISTENER_PREFIX = ORG_KIE_DMN_PREFIX + ".runtime.listeners.";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
