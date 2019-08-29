@@ -158,6 +158,11 @@ public class TimeFunctionTest {
     }
 
     @Test
+    public void invokeTimeUnitsParamsWithNoOffset() {
+        FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15), LocalTime.of(10, 43, 15));
+    }
+
+    @Test
     public void invokeTimeUnitsParamsWithOffsetWithNanoseconds() {
         FunctionTestUtil.assertResult(
                 timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), Duration.ofHours(1)),

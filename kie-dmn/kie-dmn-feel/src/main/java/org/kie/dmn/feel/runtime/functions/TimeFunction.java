@@ -82,6 +82,12 @@ public class TimeFunction
 
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
+            @ParameterName("second") Number seconds) {
+        return invoke( hour, minute, seconds, null );
+    }
+
+    public FEELFnResult<TemporalAccessor> invoke(
+            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
         if ( hour == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "hour", "cannot be null"));
