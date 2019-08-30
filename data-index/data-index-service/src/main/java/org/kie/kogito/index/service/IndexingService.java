@@ -72,6 +72,7 @@ public class IndexingService {
         if (event.getRootProcessInstanceId() == null) {
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("_type", type);
+            builder.add("id", event.getProcessInstanceId());
             builder.addAll(Json.createObjectBuilder(readProcessInstanceVariables(event.getData().getVariables())));
             JsonObject value = cache.get(event.getProcessInstanceId());
             updateProcessInstances(builder, event, value);
@@ -82,6 +83,7 @@ public class IndexingService {
                 LOGGER.warn("Received event for sub-process with id {}, but cache is missing entry for root process instance with id: {}", event.getProcessInstanceId(), event.getRootProcessInstanceId());
             } else {
                 JsonObjectBuilder builder = Json.createObjectBuilder(value);
+                builder.add("id", event.getRootProcessInstanceId());
                 updateProcessInstances(builder, event, value);
                 cache.put(event.getRootProcessInstanceId(), builder.build());
             }

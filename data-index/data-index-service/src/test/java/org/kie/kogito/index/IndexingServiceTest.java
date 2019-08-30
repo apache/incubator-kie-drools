@@ -142,9 +142,10 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].parentProcessInstanceId", isEmptyOrNullString());
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + processInstanceId + "'\\\"){ flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
+                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
+                .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
@@ -180,9 +181,10 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].parentProcessInstanceId", isEmptyOrNullString());
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
+                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
+                .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances.size()", is(2))
                 .body("data.Travels[0].processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].processInstances[1].processId", is(subProcessId))
