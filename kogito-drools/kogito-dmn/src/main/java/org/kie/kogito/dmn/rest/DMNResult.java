@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.kogito.rest.quarkus;
+package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 import java.util.ArrayList;

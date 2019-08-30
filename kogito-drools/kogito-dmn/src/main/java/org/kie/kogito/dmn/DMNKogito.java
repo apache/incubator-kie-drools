@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.kogito.rest.quarkus;
+package org.kie.kogito.dmn;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,14 +39,15 @@ import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils.DMNEvaluationResult;
+import org.kie.kogito.dmn.rest.DMNResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNKogitoQuarkus {
+public class DMNKogito {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DMNKogitoQuarkus.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNKogito.class);
 
-    private DMNKogitoQuarkus() {
+    private DMNKogito() {
         // intentionally private.
     }
 

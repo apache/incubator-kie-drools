@@ -16,8 +16,8 @@ public class DMNRestResourceTemplate {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public org.kie.dmn.kogito.rest.quarkus.DMNResult dmn(java.util.Map<String, Object> variables) {
+    public org.kie.kogito.dmn.rest.DMNResult dmn(java.util.Map<String, Object> variables) {
         org.kie.kogito.decision.DecisionModel decision = application.decisionModels().getDecisionModel("$modelNamespace$", "$modelName$");
-        return new org.kie.dmn.kogito.rest.quarkus.DMNResult(decision.evaluateAll(decision.newContext(variables)));
+        return new org.kie.kogito.dmn.rest.DMNResult(decision.evaluateAll(decision.newContext(variables)));
     }
 }
