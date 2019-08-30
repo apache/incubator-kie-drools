@@ -270,6 +270,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
                 // add the label id of the rule unit with value set to `rules` as resource type
                 labels.put(ruleUnit.label(), "rules");
+                ruleUnit.setApplicationPackageName(packageName);
 
                 generatedFiles.add( ruleUnit.generateFile(GeneratedFile.Type.RULE) );
 

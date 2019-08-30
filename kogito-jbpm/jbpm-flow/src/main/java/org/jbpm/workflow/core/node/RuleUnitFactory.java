@@ -12,18 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jbpm.workflow.core.node;
 
-package org.kie.kogito.rules.impl;
-
-import org.kie.kogito.Application;
+import org.kie.api.runtime.process.ProcessContext;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitMemory;
 
-public abstract class AbstractRuleUnit<T extends RuleUnitMemory> implements RuleUnit<T> {
+public interface RuleUnitFactory<T extends RuleUnitMemory> {
 
-    protected final Application app;
+    T bind(ProcessContext ctx);
 
-    public AbstractRuleUnit(Application app) {
-        this.app = app;
-    }
+    RuleUnit<T> unit();
+
+    void unbind(ProcessContext ctx, T model);
 }

@@ -134,15 +134,4 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         return stmts;
     }
     
-    protected String extractVariableFromExpression(String variableExpression) {
-
-        if (variableExpression.startsWith("#{")) {
-            
-            return variableExpression.substring(2, variableExpression.indexOf("."));
-        }
-        
-        return variableExpression;
-    }
-    
-    
 }

@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.spi.ProcessContext;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -46,6 +48,7 @@ import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.RuleUnitFactory;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
@@ -61,6 +64,9 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitInstance;
+import org.kie.kogito.rules.RuleUnitMemory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,10 +111,12 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             KieRuntime kruntime = Optional.ofNullable(getRuleSetNode().getKieRuntime()).orElse(() -> getProcessInstance().getKnowledgeRuntime()).get();
             Map<String, Object> inputs = evaluateParameters(ruleSetNode);
 
-            if (ruleSetNode.isDMN()) {
-                String namespace = resolveVariable(ruleSetNode.getNamespace());
-                String model = resolveVariable(ruleSetNode.getModel());
-                String decision = resolveVariable(ruleSetNode.getDecision());
+            RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
+            if (ruleType.isDecision()) {
+                RuleSetNode.RuleType.Decision decisionModel = (RuleSetNode.RuleType.Decision) ruleType;
+                String namespace = resolveVariable(decisionModel.getNamespace());
+                String model = resolveVariable(decisionModel.getModel());
+                String decision = resolveVariable(decisionModel.getDecision());
                 
                 DMNRuntime runtime = Optional.ofNullable(getRuleSetNode().getDmnRuntime()).orElse(() -> ((KieSession) kruntime).getKieRuntime(DMNRuntime.class)).get();
                 DMNModel dmnModel = runtime.getModel(namespace, model);
@@ -142,10 +150,9 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 }
                 processOutputs(dmnResult.getContext().getAll());
                 triggerCompleted();
-            } else {
-
+            } else if (ruleType.isRuleFlowGroup()) {
                 // first set rule flow group
-                setRuleFlowGroup(resolveRuleFlowGroup(ruleSetNode.getRuleFlowGroup()));
+                setRuleFlowGroup(resolveRuleFlowGroup(ruleType.getName()));
 
                 //proceed
                 for (Entry<String, Object> entry : inputs.entrySet()) {
@@ -183,6 +190,17 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     retractFacts(kruntime);
                     triggerCompleted();
                 }
+            } else if (ruleType.isRuleUnit()) {
+                RuleUnitFactory<RuleUnitMemory> factory = ruleSetNode.getRuleUnitFactory();
+                ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+                context.setNodeInstance(this);
+                RuleUnitMemory model = factory.bind(context);
+                RuleUnitInstance<RuleUnitMemory> instance = factory.unit().createInstance(model);
+                instance.fire();
+                factory.unbind(context, model);
+                triggerCompleted();
+            } else {
+                throw new UnsupportedOperationException("Unsupported Rule Type: " + ruleType);
             }
         } catch (Exception e) {
             handleException(e);
@@ -452,7 +470,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     public String getRuleFlowGroup() {
         if (ruleFlowGroup == null || ruleFlowGroup.trim().length() == 0) {
-            ruleFlowGroup = getRuleSetNode().getRuleFlowGroup();
+            RuleSetNode.RuleType ruleType = getRuleSetNode().getRuleType();
+            ruleFlowGroup = ruleType.isRuleFlowGroup() ? ruleType.getName() : null;
         }
         return ruleFlowGroup;
     }

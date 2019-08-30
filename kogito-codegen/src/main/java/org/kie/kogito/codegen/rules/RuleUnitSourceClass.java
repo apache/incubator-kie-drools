@@ -21,6 +21,7 @@ import java.util.List;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -29,16 +30,17 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.impl.AbstractRuleUnit;
 
-import static java.util.stream.Collectors.toList;
-
+import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitSourceClass implements FileGenerator {
@@ -53,6 +55,7 @@ public class RuleUnitSourceClass implements FileGenerator {
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private Collection<QueryModel> queries;
+    private String applicationPackageName;
 
     public RuleUnitSourceClass(Class<?> ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
@@ -63,6 +66,7 @@ public class RuleUnitSourceClass implements FileGenerator {
         this.targetTypeName = typeName + "RuleUnit";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
+        this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
     }
 
     public RuleUnitInstanceSourceClass instance(ClassLoader classLoader) {
@@ -71,9 +75,9 @@ public class RuleUnitSourceClass implements FileGenerator {
 
     public List<QueryEndpointSourceClass> queries() {
         return queries.stream()
-                .filter( query -> !query.hasParameters() )
-                .map( query -> new QueryEndpointSourceClass( ruleUnit, query, annotator ) )
-                .collect( toList() );
+                .filter(query -> !query.hasParameters())
+                .map(query -> new QueryEndpointSourceClass(ruleUnit, query, annotator))
+                .collect(toList());
     }
 
     @Override
@@ -103,8 +107,10 @@ public class RuleUnitSourceClass implements FileGenerator {
     }
 
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        compilationUnit.getTypes().add(classDeclaration());
+        CompilationUnit compilationUnit = parse(getClass().getResourceAsStream("/class-templates/rules/RuleUnitTemplate.java"));
+        compilationUnit.setPackageDeclaration(packageName);
+
+        classDeclaration(compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get());
         return compilationUnit;
     }
 
@@ -138,7 +144,7 @@ public class RuleUnitSourceClass implements FileGenerator {
         return new MethodCallExpr(
                 new NameExpr("org.drools.modelcompiler.builder.KieBaseBuilder"),
                 "createKieBaseFromModel").addArgument(
-                new ObjectCreationExpr().setType(packageName + "." + generatedSourceFile + "_" + typeName) );
+                new ObjectCreationExpr().setType(packageName + "." + generatedSourceFile + "_" + typeName));
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
@@ -151,22 +157,37 @@ public class RuleUnitSourceClass implements FileGenerator {
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
     }
 
-    public ClassOrInterfaceDeclaration classDeclaration() {
-        ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
-                .setName(targetTypeName)
-                .setModifiers(Modifier.Keyword.PUBLIC);
+    public void classDeclaration(ClassOrInterfaceDeclaration cls) {
+        cls.setName(targetTypeName)
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .getExtendedTypes().get(0).setTypeArguments(nodeList(new ClassOrInterfaceType(null, typeName)));
 
         if (annotator != null) {
             annotator.withSingletonComponent(cls);
+            cls.findFirst(ConstructorDeclaration.class, c -> !c.getParameters().isEmpty()) // non-empty constructor
+                    .ifPresent(annotator::withInjection);
         }
 
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
+        cls.findAll(ConstructorDeclaration.class).forEach(this::setClassName);
+        cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$InstanceName$"))
+                .forEach(o -> o.setType(ruleUnitInstanceFQCN));
+        cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$Application$"))
+                .forEach(o -> o.setType(applicationPackageName + ".Application"));
+        cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$RuleModelName$"))
+                .forEach(o -> o.setType(packageName + "." + generatedSourceFile + "_" + typeName));
+        cls.findAll(MethodDeclaration.class, m -> m.getType().asString().equals("$InstanceName$"))
+                .stream()
+                .map(m -> m.setType(ruleUnitInstanceFQCN))
+                .flatMap(m -> m.getParameters().stream())
+                .filter(p -> p.getType().asString().equals("$ModelName$"))
+                .forEach(o -> o.setType(typeName));
+        cls.findAll(TypeParameter.class)
+                .forEach(tp -> tp.setName(typeName));
+    }
 
-        MethodDeclaration methodDeclaration = createInstanceMethod(ruleUnitInstanceFQCN);
-        cls.addExtendedType(abstractRuleUnitType(canonicalName))
-                .addMember(methodDeclaration);
-        cls.getMembers().sort(new BodyDeclarationComparator());
-        return cls;
+    private void setClassName(ConstructorDeclaration constructorDeclaration) {
+        constructorDeclaration.setName(targetTypeName);
     }
 
     public RuleUnitSourceClass withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -174,12 +195,16 @@ public class RuleUnitSourceClass implements FileGenerator {
         return this;
     }
 
-    public RuleUnitSourceClass withQueries( Collection<QueryModel> queries ) {
+    public RuleUnitSourceClass withQueries(Collection<QueryModel> queries) {
         this.queries = queries;
         return this;
     }
 
     public Class<?> getRuleUnitClass() {
         return ruleUnit;
+    }
+
+    public void setApplicationPackageName(String packageName) {
+        this.applicationPackageName = packageName;
     }
 }

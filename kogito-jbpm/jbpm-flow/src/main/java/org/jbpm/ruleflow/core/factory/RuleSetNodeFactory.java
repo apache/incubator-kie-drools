@@ -24,8 +24,10 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.RuleUnitFactory;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.rules.RuleUnit;
 
 /**
  *
@@ -49,17 +51,22 @@ public class RuleSetNodeFactory extends NodeFactory {
         return this;
     }
 
+    public RuleSetNodeFactory ruleUnit(String unit, RuleUnitFactory<?> ruleUnit) {
+        getRuleSetNode().setRuleType(RuleSetNode.RuleType.ruleUnit(unit));
+        getRuleSetNode().setLanguage(RuleSetNode.RULE_UNIT_LANG);
+        getRuleSetNode().setRuleUnitFactory(ruleUnit);
+        return this;
+    }
+
     public RuleSetNodeFactory ruleFlowGroup(String ruleFlowGroup, Supplier<KieRuntime> supplier) {
-        getRuleSetNode().setRuleFlowGroup(ruleFlowGroup);
+        getRuleSetNode().setRuleType(RuleSetNode.RuleType.ruleFlowGroup(ruleFlowGroup));
         getRuleSetNode().setLanguage(RuleSetNode.DRL_LANG);
         getRuleSetNode().setKieRuntime(supplier);
         return this;
     }
     
     public RuleSetNodeFactory dmnGroup(String namespace, String model, String decision, Supplier<DMNRuntime> supplier) {
-        getRuleSetNode().setNamespace(namespace);
-        getRuleSetNode().setModel(model);
-        getRuleSetNode().setDecision(decision);
+        getRuleSetNode().setRuleType(RuleSetNode.RuleType.decision(namespace, model, decision));
         getRuleSetNode().setLanguage(RuleSetNode.DMN_LANG);
         getRuleSetNode().setDmnRuntime(supplier);
         return this;

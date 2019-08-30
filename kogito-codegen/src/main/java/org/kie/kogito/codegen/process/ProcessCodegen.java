@@ -71,6 +71,8 @@ public class ProcessCodegen extends AbstractGenerator {
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());
     }
 
+    private ClassLoader contextClassLoader;
+
     public static ProcessCodegen ofPath(Path path) throws IOException {
         Path srcPath = Paths.get(path.toString());
         try (Stream<Path> filesStream = Files.walk(srcPath)) {
@@ -134,7 +136,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-
+        contextClassLoader = this.getClass().getClassLoader();
     }
 
     public static String defaultWorkItemHandlerConfigClass(String packageName) {
@@ -165,6 +167,10 @@ public class ProcessCodegen extends AbstractGenerator {
         return this;
     }
 
+    public ProcessCodegen withClassLoader(ClassLoader projectClassLoader) {
+        this.contextClassLoader = projectClassLoader;
+        return this;
+    }
 
     public List<GeneratedFile> generate() {
         if (processes.isEmpty()) {
@@ -202,7 +208,7 @@ public class ProcessCodegen extends AbstractGenerator {
         // then we can instantiate the exec model generator
         // with the data classes that we have already resolved
         ProcessToExecModelGenerator execModelGenerator =
-                new ProcessToExecModelGenerator(processIdToModel);
+                new ProcessToExecModelGenerator(processIdToModel, contextClassLoader);
 
         // collect all process descriptors (exec model)
         for (WorkflowProcess workFlowProcess : processes.values()) {

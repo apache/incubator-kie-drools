@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.core.node;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,16 +31,119 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.rules.RuleUnitMemory;
 
 /**
  * Default implementation of a RuleSet node.
- * 
  */
 public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
+
+    public static abstract class RuleType implements Serializable {
+
+        public static RuleType of(String name, String language) {
+            if (language.equals(DRL_LANG)) {
+                return ruleFlowGroup(name);
+            } else if (language.equals(RULE_UNIT_LANG)){
+                return ruleUnit(name);
+            } else {
+                throw new IllegalArgumentException("Unsupported language " + language);
+            }
+        }
+
+        public static RuleFlowGroup ruleFlowGroup(String name) {
+            return new RuleFlowGroup(name);
+        }
+
+        public static RuleUnit ruleUnit(String name) {
+            return new RuleUnit(name);
+        }
+
+        public static Decision decision(String namespace, String model, String decision) {
+            return new Decision(namespace, model, decision);
+        }
+
+
+        private String name;
+
+        private RuleType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isRuleFlowGroup() {
+            return false;
+        }
+
+        public boolean isRuleUnit() {
+            return false;
+        }
+
+        public boolean isDecision() {
+            return false;
+        }
+
+        public static class RuleFlowGroup extends RuleType {
+
+            private RuleFlowGroup(String name) {
+                super(name);
+            }
+
+            @Override
+            public boolean isRuleFlowGroup() {
+                return true;
+            }
+        }
+
+        public static class RuleUnit extends RuleType {
+
+            private RuleUnit(String name) {
+                super(name);
+            }
+
+            @Override
+            public boolean isRuleUnit() {
+                return true;
+            }
+        }
+
+        public static class Decision extends RuleType {
+
+            private String namespace;
+            private String decision;
+
+            private Decision(String namespace, String model, String decision) {
+                super(model);
+                this.namespace = namespace;
+                this.decision = decision;
+            }
+
+            @Override
+            public boolean isDecision() {
+                return true;
+            }
+
+            public String getNamespace() {
+                return namespace;
+            }
+
+            public String getModel() {
+                return getName();
+            }
+
+            public String getDecision() {
+                return decision;
+            }
+        }
+    }
+
     private static final long serialVersionUID = 510l;
-    
+
     public static final String DRL_LANG = "http://www.jboss.org/drools/rule";
+    public static final String RULE_UNIT_LANG = "http://www.jboss.org/drools/rule-unit";
     public static final String DMN_LANG = "http://www.jboss.org/drools/dmn";
 
     private String language = DRL_LANG;
@@ -47,14 +151,8 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private ContextContainer contextContainer = new ContextContainerImpl();
     
-    // drl related properties
-    private String ruleFlowGroup;
-    
-    // dmn related properties
-    private String namespace;
-    private String model;
-    private String decision;
-    
+    private RuleType ruleType;
+
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
     
@@ -62,13 +160,14 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     
     private Supplier<DMNRuntime> dmnRuntime;
     private Supplier<KieRuntime> kieRuntime;
+    private RuleUnitFactory<RuleUnitMemory> ruleUnitFactory;
 
-    public void setRuleFlowGroup(final String ruleFlowGroup) {
-        this.ruleFlowGroup = ruleFlowGroup;
+    public void setRuleType(RuleType ruleType) {
+        this.ruleType = ruleType;
     }
 
-    public String getRuleFlowGroup() {
-        return this.ruleFlowGroup;
+    public RuleType getRuleType() {
+        return ruleType;
     }
     
     public String getLanguage() {
@@ -78,31 +177,7 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     public void setLanguage(String language) {
         this.language = language;
     }
-    
-    public String getNamespace() {
-        return namespace;
-    }
-    
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-    
-    public String getModel() {
-        return model;
-    }
-    
-    public void setModel(String model) {
-        this.model = model;
-    }
-    
-    public String getDecision() {
-        return decision;
-    }
-    
-    public void setDecision(String decision) {
-        this.decision = decision;
-    }
-    
+
     public Supplier<DMNRuntime> getDmnRuntime() {
         return dmnRuntime;
     }
@@ -114,7 +189,15 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     public Supplier<KieRuntime> getKieRuntime() {
         return kieRuntime;
     }
-    
+
+    public RuleUnitFactory<RuleUnitMemory> getRuleUnitFactory() {
+        return ruleUnitFactory;
+    }
+
+    public void setRuleUnitFactory(RuleUnitFactory<?> ruleUnitFactory) {
+        this.ruleUnitFactory = (RuleUnitFactory<RuleUnitMemory>) ruleUnitFactory;
+    }
+
     public void setKieRuntime(Supplier<KieRuntime> kieRuntime) {
         this.kieRuntime = kieRuntime;
     }

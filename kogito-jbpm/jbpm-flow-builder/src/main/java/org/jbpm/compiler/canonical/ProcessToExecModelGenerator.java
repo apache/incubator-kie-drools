@@ -72,17 +72,19 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class ProcessToExecModelGenerator extends AbstractVisitor {
 
-	public static final ProcessToExecModelGenerator INSTANCE = new ProcessToExecModelGenerator(Collections.emptyMap());
+	public static final ProcessToExecModelGenerator INSTANCE = new ProcessToExecModelGenerator(Collections.emptyMap(), ProcessToExecModelGenerator.class.getClassLoader());
 
 
 	private static final String PROCESS_CLASS_SUFFIX = "Process";
 	private static final String MODEL_CLASS_SUFFIX = "Model";
+    private final ClassLoader contextClassLoader;
 
-	private Map<Class<?>, AbstractVisitor> nodesVisitors = new HashMap<>();
+    private Map<Class<?>, AbstractVisitor> nodesVisitors = new HashMap<>();
 
-	public ProcessToExecModelGenerator(Map<String, ModelMetaData> processToModel) {
+	public ProcessToExecModelGenerator(Map<String, ModelMetaData> processToModel, ClassLoader contextClassLoader) {
+        this.contextClassLoader = contextClassLoader;
 
-	    this.nodesVisitors.put(StartNode.class, new StartNodeVisitor());
+        this.nodesVisitors.put(StartNode.class, new StartNodeVisitor());
 	    this.nodesVisitors.put(ActionNode.class, new ActionNodeVisitor());
 	    this.nodesVisitors.put(EndNode.class, new EndNodeVisitor());
 	    this.nodesVisitors.put(HumanTaskNode.class, new HumanTaskNodeVisitor());
@@ -91,7 +93,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 	    this.nodesVisitors.put(Split.class, new SplitNodeVisitor());
 	    this.nodesVisitors.put(Join.class, new JoinNodeVisitor());
 	    this.nodesVisitors.put(FaultNode.class, new FaultNodeVisitor());
-	    this.nodesVisitors.put(RuleSetNode.class, new RuleSetNodeVisitor());
+	    this.nodesVisitors.put(RuleSetNode.class, new RuleSetNodeVisitor(contextClassLoader));
 	    this.nodesVisitors.put(BoundaryEventNode.class, new BoundaryEventNodeVisitor());
 	    this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
 	    this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));

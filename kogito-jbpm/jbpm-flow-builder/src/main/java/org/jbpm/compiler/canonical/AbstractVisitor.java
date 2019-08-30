@@ -46,14 +46,14 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 public abstract class AbstractVisitor {
 
     protected static final String FACTORY_FIELD_NAME = "factory";
-    
-    
+
+
     public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
     }
-    
+
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        
+
     }
 
     protected MethodCallExpr addFactoryMethodWithArgs(String factoryField, BlockStmt body, String methodName, Expression... args) {
@@ -107,15 +107,15 @@ public abstract class AbstractVisitor {
 
         return new ExpressionStmt(assignExpr);
     }
-    
+
     protected Statement makeAssignmentFromModel(Variable v) {
 
         return makeAssignmentFromModel(v, v.getName());
     }
-    
+
     protected Statement makeAssignmentFromModel(Variable v, String name) {
         ClassOrInterfaceType type = parseClassOrInterfaceType(v.getType().getStringType());
-        
+
 
         // `type` `name` = (`type`) `model.get<Name>
         AssignExpr assignExpr = new AssignExpr(
@@ -153,9 +153,9 @@ public abstract class AbstractVisitor {
             addFactoryMethodWithArgs(body, variableName, "workParameterDefinition", new StringLiteralExpr(parameter.getName()), new StringLiteralExpr(parameter.getType().getStringType()));
         }
     }
-    
+
     protected void addWorkItemMappings(WorkItemNode workItemNode, BlockStmt body, String variableName) {
-        
+
         for (Entry<String, String> entry : workItemNode.getInMappings().entrySet()) {
             addFactoryMethodWithArgs(body, variableName, "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
@@ -181,5 +181,12 @@ public abstract class AbstractVisitor {
                 addFactoryMethodWithArgs(body, variableName, "metaData", new StringLiteralExpr(entry.getKey()), value);
             }
         }
+    }
+
+    protected String extractVariableFromExpression(String variableExpression) {
+        if (variableExpression.startsWith("#{")) {
+            return variableExpression.substring(2, variableExpression.indexOf("."));
+        }
+        return variableExpression;
     }
 }

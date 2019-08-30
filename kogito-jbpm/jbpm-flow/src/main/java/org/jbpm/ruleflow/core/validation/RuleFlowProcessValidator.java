@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.kie.services.time.impl.CronExpression;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
@@ -70,6 +69,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.services.time.impl.CronExpression;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -187,23 +187,33 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
                 final String language = ruleSetNode.getLanguage();
 
+                RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
                 if (RuleSetNode.DRL_LANG.equals(language)) {
-                    final String ruleFlowGroup = ruleSetNode.getRuleFlowGroup();
+                    final String ruleFlowGroup = ruleType.getName();
                     if (ruleFlowGroup == null || "".equals(ruleFlowGroup)) {
                         addErrorMessage(process,
                                         node,
                                         errors,
                                         "RuleSet (DRL) has no ruleflow-group.");
                     }
+                } else if (RuleSetNode.RULE_UNIT_LANG.equals(language)) {
+                    final String unit = ruleType.getName();
+                    if (unit == null || "".equals(unit)) {
+                        addErrorMessage(process,
+                                        node,
+                                        errors,
+                                        "RuleSet (Rule Unit) has no ruleflow-group.");
+                    }
                 } else if (RuleSetNode.DMN_LANG.equals(language)) {
-                    final String namespace = ruleSetNode.getNamespace();
+                    RuleSetNode.RuleType.Decision decision = (RuleSetNode.RuleType.Decision) ruleType;
+                    final String namespace = decision.getNamespace();
                     if (namespace == null || "".equals(namespace)) {
                         addErrorMessage(process,
                                         node,
                                         errors,
                                         "RuleSet (DMN) has no namespace.");
                     }
-                    final String model = ruleSetNode.getModel();
+                    final String model = decision.getModel();
                     if (model == null || "".equals(model)) {
                         addErrorMessage(process,
                                         node,

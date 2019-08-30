@@ -180,19 +180,21 @@ public class GenerateModelMojo extends AbstractKieMojo {
                         .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
                         .withPersistence(usePersistence);
 
+        ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
+                                                                           project,
+                                                                           outputDirectory,
+                                                                           null);
         if (generateRuleUnits) {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withKModule(getKModuleModel())
-                    .withClassLoader(MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
-                                                                       project,
-                                                                       outputDirectory,
-                                                                       null));
+                    .withClassLoader(projectClassLoader);
         }
 
         if (generateProcesses) {
-            
             appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))                    
-                    .withPersistence(usePersistence);            
+                    .withPersistence(usePersistence)
+                    .withClassLoader(projectClassLoader)
+            ;
         }
 
         if (generateDecisions) {

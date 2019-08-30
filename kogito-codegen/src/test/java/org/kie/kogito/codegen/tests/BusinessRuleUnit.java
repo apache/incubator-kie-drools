@@ -12,18 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.codegen.tests;
 
-package org.kie.kogito.rules.impl;
-
-import org.kie.kogito.Application;
-import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitMemory;
 
-public abstract class AbstractRuleUnit<T extends RuleUnitMemory> implements RuleUnit<T> {
+public class BusinessRuleUnit implements RuleUnitMemory {
+    DataStore<Person> persons = DataSource.createStore();
 
-    protected final Application app;
-
-    public AbstractRuleUnit(Application app) {
-        this.app = app;
+    public DataStore<Person> getPersons() {
+        return persons;
     }
 }

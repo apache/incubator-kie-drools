@@ -86,8 +86,10 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         for (RuleUnitSourceClass ruleUnit : ruleUnits) {
             SwitchEntry switchEntry = new SwitchEntry();
             switchEntry.getLabels().add(new StringLiteralExpr(ruleUnit.getRuleUnitClass().getCanonicalName()));
-            switchEntry.getStatements().add(new ReturnStmt(new ObjectCreationExpr()
-                                                                   .setType(ruleUnit.targetCanonicalName())));
+            ObjectCreationExpr ruleUnitConstructor = new ObjectCreationExpr()
+                    .setType(ruleUnit.targetCanonicalName())
+                    .addArgument("Application.this");
+            switchEntry.getStatements().add(new ReturnStmt(ruleUnitConstructor));
             switchStmt.getEntries().add(switchEntry);
         }
 
