@@ -104,7 +104,7 @@ public class ServiceDiscoveryImpl {
     }
 
     public void registerConfs( ClassLoader classLoader, URL url ) {
-        log.info("Loading kie.conf from  " + url + " in classloader " + classLoader);
+        log.debug("Loading kie.conf from  " + url + " in classloader " + classLoader);
 
         try ( BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream())) ) {
             for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -138,7 +138,7 @@ public class ServiceDiscoveryImpl {
                     throw e;
                 }
             }
-            log.info( "Adding Service {}\n", value );
+            log.debug( "Adding Service {}\n", value );
         }
     }
 

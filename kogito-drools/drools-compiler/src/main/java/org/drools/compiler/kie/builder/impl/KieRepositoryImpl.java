@@ -15,9 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,6 +38,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
 
 public class KieRepositoryImpl
         implements
@@ -78,7 +78,7 @@ public class KieRepositoryImpl
 
     public void addKieModule(KieModule kieModule) {
         kieModuleRepo.store(kieModule);
-        log.info("KieModule was added: " + kieModule);
+        log.debug("KieModule was added: " + kieModule);
     }
 
     public KieModule getKieModule(ReleaseId releaseId) {
@@ -151,7 +151,7 @@ public class KieRepositoryImpl
                 return null;
             }
 
-            log.info( "Adding KieModule from classpath: " + pathToJar );
+            log.debug( "Adding KieModule from classpath: " + pathToJar );
             return ClasspathKieProject.fetchKModule( pathToKmodule );
         }
 
@@ -164,13 +164,13 @@ public class KieRepositoryImpl
     
 
     public KieModule addKieModule(Resource resource, Resource... dependencies) {
-        log.info("Adding KieModule from resource: " + resource);
+        log.debug("Adding KieModule from resource: " + resource);
         KieModule kModule = getKieModule(resource);
         if (dependencies != null && dependencies.length > 0) {
             for (Resource depRes : dependencies) {
                 InternalKieModule depKModule = (InternalKieModule) getKieModule(depRes);
                 ((InternalKieModule) kModule).addKieDependency(depKModule);
-                log.info("Adding KieModule dependency from resource: " + resource);
+                log.debug("Adding KieModule dependency from resource: " + resource);
             }
         }
 
