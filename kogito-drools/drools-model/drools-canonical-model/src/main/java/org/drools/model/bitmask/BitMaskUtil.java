@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -32,6 +34,8 @@ public class BitMaskUtil {
     public static final int TRAITABLE_BIT = 0;
     public static final int CUSTOM_BITS_OFFSET = 1;
     public static final String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
+
+    private static final Map<Class<?>, List<String>> accessiblePropertiesCache = new HashMap<>();
 
     public static BitMask calculatePatternMask(DomainClassMetadata metadata, boolean isPositive, String... listenedProperties) {
         if (listenedProperties == null) {
@@ -58,7 +62,6 @@ public class BitMaskUtil {
         }
         return mask;
     }
-
 
     public static BitMask calculatePatternMask( Class<?> clazz, Collection<String> listenedProperties ) {
         List<String> accessibleProperties = getAccessibleProperties( clazz );
@@ -95,7 +98,15 @@ public class BitMaskUtil {
         return mask.set(index + CUSTOM_BITS_OFFSET);
     }
 
+    public static boolean isAccessibleProperties( Class<?> clazz, String prop ) {
+        return getAccessibleProperties( clazz ).contains( prop );
+    }
+
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
+        return accessiblePropertiesCache.computeIfAbsent( clazz, BitMaskUtil::findAccessibleProperties );
+    }
+
+    private static List<String> findAccessibleProperties( Class<?> clazz ) {
         Set<PropertyInClass> props = new TreeSet<PropertyInClass>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
@@ -107,7 +118,7 @@ public class BitMaskUtil {
         }
 
         for (Field f : clazz.getFields()) {
-            if ( !Modifier.isFinal( f.getModifiers() ) && !Modifier.isStatic( f.getModifiers() ) ) {
+            if ( Modifier.isPublic( f.getModifiers() ) && !Modifier.isStatic( f.getModifiers() ) ) {
                 props.add( new PropertyInClass( f.getName(), f.getDeclaringClass() ) );
             }
         }

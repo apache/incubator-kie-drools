@@ -156,6 +156,10 @@ public class PackageModel {
         return pkgUUID;
     }
 
+    public String getDomainClassName( Class<?> clazz ) {
+        return DOMAIN_CLASSESS_METADATA_FILE_NAME + getPackageUUID() + "." + asJavaSourceName( clazz ) + DOMAIN_CLASS_METADATA_INSTANCE;
+    }
+
     public String getRulesFileName() {
         return rulesFileName;
     }
@@ -788,6 +792,9 @@ public class PackageModel {
             );
         }
         sb.append( "}" );
-        return sb.toString();
+
+        String domainModelSource = sb.toString();
+        log(domainModelSource);
+        return domainModelSource;
     }
 }

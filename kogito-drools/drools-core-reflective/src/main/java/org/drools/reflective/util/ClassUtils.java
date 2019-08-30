@@ -436,7 +436,7 @@ public abstract class ClassUtils {
         }
 
         for (Field f : clazz.getFields()) {
-            if ( !Modifier.isFinal(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()) ) {
+            if ( Modifier.isPublic( f.getModifiers() ) && !Modifier.isStatic( f.getModifiers() ) ) {
                 props.add( new PropertyInClass( f.getName(), f.getDeclaringClass() ) );
             }
         }
