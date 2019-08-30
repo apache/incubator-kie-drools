@@ -142,4 +142,9 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
         trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes() );
     }
+
+    @Override
+    protected boolean compileIncludedKieBases() {
+        return false;
+    }
 }
