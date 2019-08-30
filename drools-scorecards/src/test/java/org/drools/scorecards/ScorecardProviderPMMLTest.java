@@ -16,29 +16,23 @@
 package org.drools.scorecards;
 
 import java.io.InputStream;
-import java.util.List;
 
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.utils.KieHelper;
+import org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
 
 public class ScorecardProviderPMMLTest {
 
@@ -66,13 +60,8 @@ public class ScorecardProviderPMMLTest {
 
     @Test
     public void testKnowledgeBaseWithExecution() {
-        KieBase kbase = new KieHelper().addFromClassPath("/SimpleScorecard.pmml").build();
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-        assertNotNull(executor);
-
-        DataSource<PMMLRequestData> data = executor.newDataSource("request");
-        DataSource<PMML4Result> resultData = executor.newDataSource("results");
-        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("Sample Score", "/SimpleScorecard.pmml", null);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
 
         PMMLRequestData request = new PMMLRequestData("123", "SampleScore");
         request.addRequestParam("age", 33.0);
@@ -80,16 +69,8 @@ public class ScorecardProviderPMMLTest {
         request.addRequestParam("residenceState", "KN");
         request.addRequestParam("validLicense", true);
 
-        data.insert(request);
 
-        PMML4Result resultHolder = new PMML4Result("123");
-        resultData.insert(resultHolder);
-
-        List<String> possiblePackages = TestUtil.calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
-        Class<? extends RuleUnit> ruleUnitClass = TestUtil.getStartingRuleUnit("RuleUnitIndicator", (InternalKnowledgeBase) kbase, possiblePackages);
-        int executions = executor.run(ruleUnitClass);
-        assertTrue(executions > 0);
-
+        PMML4Result resultHolder = helper.submitRequest(request);
         Double calculatedScore = resultHolder.getResultValue("Scorecard_calculatedScore", "value", Double.class).orElse(null);
         assertEquals(56.0, calculatedScore, 1e-6);
     }
