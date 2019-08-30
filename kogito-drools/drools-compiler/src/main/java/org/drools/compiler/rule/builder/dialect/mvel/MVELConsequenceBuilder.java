@@ -44,6 +44,7 @@ import org.mvel2.MacroProcessor;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
 import static org.drools.core.util.StringUtils.splitStatements;
 
 public class MVELConsequenceBuilder
@@ -248,8 +249,17 @@ public class MVELConsequenceBuilder
                     int fieldEnd = identifier.length()+1;
                     while (Character.isJavaIdentifierPart( expr.charAt( fieldEnd ) )) fieldEnd++;
                     String propertyName = expr.substring( identifier.length()+1, fieldEnd );
-                    if (propertyName.startsWith("set") && propertyName.length() > 3) {
-                        propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
+                    if (propertyName.length() > 3) {
+                        if (propertyName.startsWith("set")) {
+                            propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
+                        } else if (propertyName.startsWith("get")) {
+                            int endMethodName = expr.indexOf('(');
+                            int endMethodArgs = findEndOfMethodArgsIndex(expr, endMethodName);
+                            String methodParams = expr.substring(endMethodName+1, endMethodArgs).trim();
+                            if (expr.length() > endMethodArgs+1 && expr.substring(endMethodArgs+1).trim().startsWith(".")) {
+                                propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
+                            }
+                        }
                     }
 
                     int index = settableProperties.indexOf(propertyName);

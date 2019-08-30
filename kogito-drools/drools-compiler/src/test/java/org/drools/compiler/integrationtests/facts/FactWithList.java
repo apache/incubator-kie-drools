@@ -23,6 +23,8 @@ public class FactWithList {
 
     private List<String> items = new ArrayList<>();
 
+    public FactWithList() { }
+
     public FactWithList(final String factString) {
         this.items.add(factString);
     }
