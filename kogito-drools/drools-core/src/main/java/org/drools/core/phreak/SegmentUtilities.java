@@ -512,7 +512,7 @@ public class SegmentUtilities {
     }
 
     private static boolean sinkNotExclusivelyAssociatedWithTerminal( TerminalNode removingTN, LeftTupleSinkNode sink ) {
-        return sink.getAssociatedRuleSize() > 1 || !sink.isAssociatedWith( removingTN.getRule() ) ||
+        return sink.getAssociationsSize() > 1 || !sink.isAssociatedWith( removingTN.getRule() ) ||
                !removingTN.isTerminalNodeOf( sink ) || hasTerminalNodesDifferentThan( sink, removingTN );
     }
 

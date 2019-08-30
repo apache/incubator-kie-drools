@@ -118,7 +118,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     @Override
     public void resetPathMemSpec(TerminalNode removingTN) {
-        pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
+        pathMemSpec = removingTN == null ? null : calculatePathMemSpec( null, removingTN );
     }
 
     @Override

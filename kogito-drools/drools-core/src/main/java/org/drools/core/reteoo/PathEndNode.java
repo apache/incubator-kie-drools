@@ -59,7 +59,7 @@ public interface PathEndNode extends LeftTupleNode {
         while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
             if ( !subnetworkBoundaryCrossed && tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 // start recording now we are after the BranchCE, but only if we are not outside the target subnetwork
-                updateAllLinkedTest = !subnetworkBoundaryCrossed && tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode;
+                updateAllLinkedTest = tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode;
             }
 
             if ( updateAllLinkedTest && updateBitInNewSegment &&

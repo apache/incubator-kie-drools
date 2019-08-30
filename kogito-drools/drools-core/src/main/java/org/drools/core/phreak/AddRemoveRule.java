@@ -133,7 +133,7 @@ public class AddRemoveRule {
             insertFacts( pathEndNodes, wms );
         } else {
             for (PathEndNode node : pathEndNodes.otherEndNodes) {
-                node.resetPathMemSpec( null );
+                node.resetPathMemSpec(null);
             }
         }
     }
@@ -191,6 +191,12 @@ public class AddRemoveRule {
             if (tnms.subjectPmem != null && tnms.subjectPmem.isInitialized() && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
                 // SubjectPmem can be null, if it was never initialized
                 tnms.subjectPmem.getRuleAgendaItem().dequeue();
+            }
+        }
+
+        if (!hasWms) {
+            for (PathEndNode node : pathEndNodes.otherEndNodes) {
+                node.resetPathMemSpec(null);
             }
         }
     }

@@ -191,7 +191,7 @@ public class ReteooBuilder
         AddRemoveRule.removeRule( tn, workingMemories, kBase );
 
         BaseNode node = (BaseNode) tn;
-        removeNodeAssociation(node, context.getRule());
+        removeNodeAssociation(node, context.getRule(), new HashSet<>());
 
         resetMasks(removeNodes((AbstractTerminalNode)tn, workingMemories, context));
     }
@@ -287,19 +287,19 @@ public class ReteooBuilder
         }
     }
 
-    private void removeNodeAssociation(BaseNode node, Rule rule) {
-        if (node == null || !node.removeAssociation( rule )) {
+    private void removeNodeAssociation(BaseNode node, Rule rule, Set<Integer> removedNodes) {
+        if (node == null || !removedNodes.add( node.getId() ) || !node.removeAssociation( rule )) {
             return;
         }
         if (node instanceof LeftTupleNode) {
-            removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule );
+            removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule, removedNodes );
         }
         if ( NodeTypeEnums.isBetaNode( node ) ) {
-            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule );
+            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule, removedNodes );
         } else if ( node.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule );
+            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule, removedNodes );
         } else if ( node.getType() == NodeTypeEnums.AlphaNode ) {
-            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule );
+            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule, removedNodes );
         }
     }
 
