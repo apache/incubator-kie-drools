@@ -25,13 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.github.javaparser.StaticJavaParser;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -41,6 +34,13 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +63,16 @@ public class CompilerBytecodeLoader {
         }
 
         public Class<?> load(String name, byte[] b) {
+            if (!ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
+                throw new UnsupportedOperationException("Cannot jit classload on this platform.");
+            }
             return defineClass(name, b, 0, b.length);
         }
 
         public Class<?> load(MemoryFileSystem pStore, String string) {
+            if (!ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
+                throw new UnsupportedOperationException("Cannot jit classload on this platform.");
+            }
             Class<?> loadedClass = null;
             for (Entry<String, byte[]> kv : pStore.getMap().entrySet() ) {
                 final String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
