@@ -16,12 +16,8 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,31 +26,19 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.ruleunit.RuleUnitDescription;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
@@ -71,15 +55,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class DroolsAbstractPMMLTest {
@@ -402,67 +381,4 @@ public abstract class DroolsAbstractPMMLTest {
         return value;
     }
 
-    protected RuleUnitExecutor createExecutor(String sourceName) {
-        KieServices ks = KieServices.Factory.get();
-        KieRepository kr = ks.getRepository();
-        ReleaseId releaseId = new ReleaseIdImpl("org.kie:pmmlTest:1.0-SNAPSHOT");
-        ((KieRepositoryImpl) kr).setDefaultGAV(releaseId);
-        Resource res = ResourceFactory.newClassPathResource(sourceName);
-
-        kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-
-        assertNotNull(kbase);
-
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-        KieContainer kc = ((KnowledgeBaseImpl) ((InternalRuleUnitExecutor) executor).getKieSession().getKieBase()).getKieContainer();
-        InternalKieModule ikm = (InternalKieModule) kr.getKieModule(releaseId);
-        try (FileOutputStream fos = new FileOutputStream("/tmp/outputModule.jar")) {
-            fos.write(ikm.getBytes());
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        kc.getKieBaseNames().forEach(n -> {
-            System.out.println(n);
-        });
-        data = executor.newDataSource("request");
-        resultData = executor.newDataSource("results");
-        pmmlData = executor.newDataSource("pmmlData");
-
-        return executor;
-    }
-
-    protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
-        Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
-        RuleImpl ruleImpl = null;
-        for (String pkgName : possiblePackages) {
-            if (pkgs.containsKey(pkgName)) {
-                InternalKnowledgePackage pkg = pkgs.get(pkgName);
-                ruleImpl = pkg.getRule(startingRule);
-                if (ruleImpl != null) {
-                    RuleUnitDescription descr = ikb.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
-                    if (descr != null) {
-                        return descr.getRuleUnitClass();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
-        List<String> packageNames = new ArrayList<>();
-        String javaModelId = modelId.replaceAll("\\s", "");
-        if (knownPackageNames != null && knownPackageNames.length > 0) {
-            for (String knownPkgName : knownPackageNames) {
-                packageNames.add(knownPkgName + "." + javaModelId);
-            }
-        }
-        String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
-        packageNames.add(basePkgName);
-        return packageNames;
-    }
 }
