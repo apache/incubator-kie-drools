@@ -809,4 +809,142 @@ public class CepTest extends BaseModelTest {
         public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
     }
 
+    public static class Quote {
+
+        private String symbol;
+        private Double price;
+
+        public Quote() {
+        }
+
+        public Quote( String symbol, Double price ) {
+            this.symbol = symbol;
+            this.price = price;
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public void setSymbol( String symbol ) {
+            this.symbol = symbol;
+        }
+
+        public Double getPrice() {
+            return price;
+        }
+
+        public void setPrice( Double price ) {
+            this.price = price;
+        }
+    }
+
+    public enum OrderType {
+        SELL,
+        BUY
+    }
+
+    public static class Order {
+        private String username;
+        private OrderType orderType;
+
+        private Long timestamp;
+        private String quote;
+        private Double price;
+        private Integer number;
+
+        public Order() {
+        }
+
+        public Order( String quote, OrderType orderType ) {
+            this.quote = quote;
+            this.orderType = orderType;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername( String username ) {
+            this.username = username;
+        }
+
+        public OrderType getOrderType() {
+            return orderType;
+        }
+
+        public void setOrderType( OrderType ordertype ) {
+            this.orderType = ordertype;
+        }
+
+        public Long getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp( Long timestamp ) {
+            this.timestamp = timestamp;
+        }
+
+        public String getQuote() {
+            return quote;
+        }
+
+        public void setQuote( String quote ) {
+            this.quote = quote;
+        }
+
+        public Double getPrice() {
+            return price;
+        }
+
+        public void setPrice( Double price ) {
+            this.price = price;
+        }
+    }
+
+    @Test
+    public void testCollectWithDeclaredWindow() {
+        // DROOLS-4492
+        final String drl =
+                "import " + Quote.class.getCanonicalName() + "\n" +
+                "import " + Order.class.getCanonicalName() + "\n" +
+                "import " + OrderType.class.getCanonicalName() + "\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "declare Order\n" +
+                "  @role(event)\n" +
+                "  @expires( 2m )\n" +
+                "end\n" +
+                "\n" +
+                "declare window LastThreeOrders\n" +
+                "    Order() over window:length(3)\n" +
+                "end\n" +
+                "\n" +
+                "rule \"3 BUY Orders of same Quote\"\n" +
+                "when\n" +
+                "    $q : Quote()\n" +
+                "    $list : List( size == 3 ) from collect ( Order( orderType == OrderType.BUY , quote == $q.symbol ) from window LastThreeOrders )\n" +
+                "then\n" +
+                "    System.out.println(drools.getRule().getName());\n" +
+                "    $q.setPrice($q.getPrice()+0.01);\n" +
+                "    for ( Object $o : $list){\n" +
+                "        System.out.println(\"Retracting \"+$o);\n" +
+                "        delete($o);\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( getCepKieModuleModel(), drl );
+
+        try {
+            ksession.insert( new Quote("RHT", 10.0) );
+            ksession.insert( new Order("RHT", OrderType.BUY) );
+            ksession.insert( new Order("RHT", OrderType.BUY) );
+            ksession.insert( new Order("RHT", OrderType.BUY) );
+
+            assertEquals( 1, ksession.fireAllRules() );
+
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

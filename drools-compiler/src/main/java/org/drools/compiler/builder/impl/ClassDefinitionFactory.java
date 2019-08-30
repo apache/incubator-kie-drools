@@ -47,6 +47,7 @@ import org.drools.core.factmodel.EnumClassDefinition;
 import org.drools.core.factmodel.EnumLiteralDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.TypeDeclaration;
@@ -315,6 +316,12 @@ public class ClassDefinitionFactory {
 
         Collections.sort(fieldDefs);
         return fieldDefs;
+    }
+
+    public static ClassDefinition createClassDefinition(Class<?> typeClass, Resource resource) {
+        ClassDefinition clsDef = new ClassDefinition();
+        ClassDefinitionFactory.populateDefinitionFromClass( clsDef, resource, typeClass, typeClass.getAnnotation( Trait.class ) != null );
+        return clsDef;
     }
 
     public static void populateDefinitionFromClass(ClassDefinition def, Resource resource, Class<?> concrete, boolean asTrait) {
