@@ -15,8 +15,14 @@
 
 package org.kie.kogito.rules;
 
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 public interface RuleConfig {
 
     RuleEventListenerConfig ruleEventListeners();
+
+    EventProcessingOption eventProcessingMode();
+
+    ClockTypeOption clockType();
 }

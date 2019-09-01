@@ -22,6 +22,9 @@ package org.kie.api.runtime.conf;
  */
 public class ClockTypeOption implements SingleValueKieSessionOption {
 
+    public static final ClockTypeOption PSEUDO = ClockTypeOption.get("pseudo");
+    public static final ClockTypeOption REALTIME = ClockTypeOption.get("realtime");
+
     private static final long serialVersionUID = 510l;
 
     /**
