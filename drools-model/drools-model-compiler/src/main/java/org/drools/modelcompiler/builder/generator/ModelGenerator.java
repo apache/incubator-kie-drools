@@ -416,6 +416,7 @@ public class ModelGenerator {
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
+            packageModel.registerDomainClass( decl.getDeclarationClass() );
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
                 addVariable(kbuilder, block, decl, context);
             }

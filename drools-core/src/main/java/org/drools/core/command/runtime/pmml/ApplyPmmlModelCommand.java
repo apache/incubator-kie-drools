@@ -36,6 +36,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.OutputFieldFactory;
@@ -158,13 +159,20 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     private List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
         String javaModelId = modelId.replaceAll("\\s","");
+        String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
             for (String knownPkgName: knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
+                if (!javaModelId.equals(capJavaModelId)) {
+                    packageNames.add(knownPkgName + "." + capJavaModelId);
+                }
             }
         }
         String basePkgName = PmmlConstants.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
         packageNames.add(basePkgName);
+        if (!javaModelId.equals(capJavaModelId)) {
+            packageNames.add(PmmlConstants.DEFAULT_ROOT_PACKAGE + "." + capJavaModelId);
+        }
         return packageNames;
     }
 
@@ -214,6 +222,9 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
 
     @Override
     public PMML4Result execute(Context context) {
+        if (isjPMMLAvailableToClassLoader(getClass().getClassLoader())) {
+            throw new IllegalStateException("Availability of jPMML module disables ApplyPmmlModelCommand execution. ApplyPmmlModelCommand requires removal of JPMML libs from classpath");
+        }
         if (requestData == null) {
             throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
         }
@@ -288,6 +299,15 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         });
 
         return resultHolder;
+    }
+
+    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     

@@ -41,12 +41,14 @@ import org.mvel2.compiler.CompiledAccExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.integration.Interceptor;
 import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.optimizers.impl.refl.nodes.GetterAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.SetterAccessor;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 
 public class ModifyInterceptor
@@ -129,6 +131,10 @@ public class ModifyInterceptor
             }
 
             String propertyName = setter2property(method.getName());
+            if (propertyName == null) {
+                propertyName = getter2property(method.getName());
+            }
+
             if (propertyName != null) {
                 int index = settableProperties.indexOf(propertyName);
                 if (index >= 0) {
@@ -155,9 +161,13 @@ public class ModifyInterceptor
             return setterAccessor.getMethod();
         } else {
             ExecutableAccessor accessor = (ExecutableAccessor)parmValuePair.getStatement();
-            AccessorNode accessorNode = (AccessorNode)accessor.getNode().getAccessor();
-            MethodAccessor methodAccessor = (MethodAccessor)accessorNode.getNextNode();
-            return methodAccessor.getMethod();
+            AccessorNode accessorNode = ((AccessorNode)accessor.getNode().getAccessor()).getNextNode();
+            if (accessorNode instanceof MethodAccessor) {
+                return (( MethodAccessor ) accessorNode).getMethod();
+            } else if (accessorNode instanceof GetterAccessor ) {
+                return (( GetterAccessor ) accessorNode).getMethod();
+            }
+            return null;
         }
     }
 
@@ -166,9 +176,7 @@ public class ModifyInterceptor
             Field f = clazz.getDeclaredField(fieldName);
             f.setAccessible(true);
             return (V)f.get(object);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

@@ -12,6 +12,7 @@ import org.kie.api.builder.ReleaseId;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 
 public class ModelWriter {
 
@@ -30,6 +31,9 @@ public class ModelWriter {
         List<String> modelFiles = new ArrayList<>();
 
         for (PackageModel pkgModel : packageModels) {
+            String pkgName = pkgModel.getName();
+            String folderName = pkgName.replace( '.', '/' );
+
             PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
             for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
                 generatedFiles.add(new GeneratedFile(declaredType.getName(), declaredType.getSource()));
@@ -46,6 +50,9 @@ public class ModelWriter {
             for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
                 generatedFiles.add(new GeneratedFile(ruleSource.getName(), ruleSource.getSource()));
             }
+
+            String sourceName = "src/main/java/" + folderName + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID() + ".java";
+            generatedFiles.add( new GeneratedFile( sourceName, pkgModel.getDomainClassesMetadataSource() ) );
         }
 
         List<String> sourceFiles = new ArrayList<>();

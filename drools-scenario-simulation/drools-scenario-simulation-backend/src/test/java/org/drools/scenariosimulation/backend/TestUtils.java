@@ -18,11 +18,21 @@ package org.drools.scenariosimulation.backend;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
+import org.kie.api.builder.Message;
+import org.kie.dmn.api.core.DMNMessage;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Class used to provide commonly used method for test classes
@@ -40,4 +50,26 @@ public class TestUtils {
         assertTrue(sourceFile.exists());
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
+
+    public static List<DMNMessage> getRandomlyGeneratedDMNMessageList() {
+        return IntStream.range(0, 5).mapToObj(index -> {
+            Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
+            return createDMNMessageMock("dmnMessage-" + index, level);
+        }).collect(Collectors.toList());
+    }
+
+    public static void commonCheckAuditLogLine(AuditLogLine toCheck,  String expectedMessage, String expectedLevel) {
+        assertNotNull(toCheck);
+        assertEquals(expectedMessage, toCheck.getMessage());
+        assertEquals(expectedLevel, toCheck.getLevel());
+    }
+
+    private static DMNMessage createDMNMessageMock(String text, Message.Level level) {
+        DMNMessage dmnMessageMock = mock(DMNMessage.class);
+        when(dmnMessageMock.getText()).thenReturn(text);
+        when(dmnMessageMock.getLevel()).thenReturn(level);
+        return dmnMessageMock;
+    }
+
+
 }

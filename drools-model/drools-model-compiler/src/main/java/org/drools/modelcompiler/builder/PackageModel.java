@@ -53,6 +53,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
@@ -66,15 +67,18 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.joining;
+
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
-import static java.util.stream.Collectors.joining;
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.model.bitmask.BitMaskUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class PackageModel {
@@ -85,6 +89,9 @@ public class PackageModel {
     public static final String STRING_TO_DATE_METHOD = "string_2_date";
 
     private static final String RULES_FILE_NAME = "Rules";
+
+    public static final String DOMAIN_CLASSESS_METADATA_FILE_NAME = "DomainClassesMetadata";
+    public static final String DOMAIN_CLASS_METADATA_INSTANCE = "_Metadata_INSTANCE";
 
     private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
@@ -116,6 +123,8 @@ public class PackageModel {
     private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
     private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
+    private Set<Class<?>> domainClasses = new HashSet<>();
+
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
     private DRLIdGenerator exprIdGenerator;
@@ -142,6 +151,10 @@ public class PackageModel {
 
     public String getPackageUUID() {
         return pkgUUID;
+    }
+
+    public String getDomainClassName( Class<?> clazz ) {
+        return DOMAIN_CLASSESS_METADATA_FILE_NAME + getPackageUUID() + "." + asJavaSourceName( clazz ) + DOMAIN_CLASS_METADATA_INSTANCE;
     }
 
     public String getRulesFileName() {
@@ -629,5 +642,52 @@ public class PackageModel {
 
     public boolean hasDeclaration(String id) {
         return globals.get(id) != null;
+    }
+
+    public void registerDomainClass(Class<?> domainClass) {
+        if (!domainClass.isPrimitive() && !domainClass.isArray()) {
+            domainClasses.add( domainClass );
+        }
+    }
+
+    public String getDomainClassesMetadataSource() {
+        StringBuilder sb = new StringBuilder(
+                "package " + name + ";\n" +
+                "public class " + DOMAIN_CLASSESS_METADATA_FILE_NAME  + pkgUUID + " {\n\n"
+        );
+        for (Class<?> domainClass : domainClasses) {
+            String domainClassSourceName = asJavaSourceName( domainClass );
+            List<String> accessibleProperties = getAccessibleProperties( domainClass );
+            sb.append( "    public static final " + DomainClassMetadata.class.getCanonicalName() + " " + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE + " = new " + domainClassSourceName+ "_Metadata();\n" );
+            sb.append( "    private static class " + domainClassSourceName + "_Metadata implements " + DomainClassMetadata.class.getCanonicalName() + " {\n\n" );
+            sb.append(
+                    "        @Override\n" +
+                    "        public Class<?> getDomainClass() {\n" +
+                    "            return " + domainClass.getCanonicalName() + ".class;\n" +
+                    "        }\n" +
+                    "\n" +
+                    "        @Override\n" +
+                    "        public int getPropertiesSize() {\n" +
+                    "            return " + accessibleProperties.size() + ";\n" +
+                    "        }\n\n" +
+                    "        @Override\n" +
+                    "        public int getPropertyIndex( String name ) {\n" +
+                    "            switch(name) {\n"
+            );
+            for (int i = 0; i < accessibleProperties.size(); i++) {
+                sb.append( "                case \"" + accessibleProperties.get(i) + "\": return " + i + ";\n" );
+            }
+            sb.append(
+                    "             }\n" +
+                    "             throw new RuntimeException(\"Unknown property '\" + name + \"' for class class " + domainClass + "\");\n" +
+                    "        }\n" +
+                    "    }\n\n"
+            );
+        }
+        sb.append( "}" );
+
+        String domainModelSource = sb.toString();
+        logRule(domainModelSource);
+        return domainModelSource;
     }
 }

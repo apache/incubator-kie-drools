@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
@@ -29,15 +30,25 @@ import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutabl
 public class CoverageAgendaListener extends DefaultAgendaEventListener {
 
     protected Map<String, Integer> ruleExecuted = new HashMap<>();
+    protected List<String> auditsMessages = new ArrayList<>();
+
+    public static String generateAuditMessage(String ruleName) {
+        return "Executed rule: " + ruleName;
+    }
 
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent beforeMatchFiredEvent) {
         InternalRule rule = (InternalRule) beforeMatchFiredEvent.getMatch().getRule();
         String ruleKey = prettyFullyQualifiedName(rule);
         ruleExecuted.compute(ruleKey, (r, counter) -> counter == null ? 1 : counter + 1);
+        auditsMessages.add(generateAuditMessage(ruleKey));
     }
 
     public Map<String, Integer> getRuleExecuted() {
         return Collections.unmodifiableMap(ruleExecuted);
+    }
+
+    public List<String> getAuditsMessages() {
+        return Collections.unmodifiableList(auditsMessages);
     }
 }

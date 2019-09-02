@@ -122,6 +122,14 @@ public interface DMNValidator {
     public static interface ValidatorBuilder {
 
         /**
+         * A DMN Import Reader resolver, when using the Validator to {@link DMNValidator.Validation#VALIDATE_COMPILATION}
+         * and the compilation requires to resolve non-DMN models by means of the Import's locationURI.
+         * 
+         * @return a reference to this, so the API can be used fluently
+         */
+        public ValidatorBuilder usingImports(ValidatorImportReaderResolver r);
+
+        /**
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)
@@ -157,6 +165,14 @@ public interface DMNValidator {
          */
         List<DMNMessage> theseModels(Definitions... models);
 
+        @FunctionalInterface
+        public static interface ValidatorImportReaderResolver {
+
+            /**
+             * @see DMNValidator.ValidatorBuilder#usingImports(ValidatorImportReaderResolver)
+             */
+            Reader newReader(String modelNamespace, String modelName, String locationURI);
+        }
     }
 
     /**

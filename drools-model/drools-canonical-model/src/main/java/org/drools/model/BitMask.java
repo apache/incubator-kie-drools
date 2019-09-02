@@ -50,6 +50,12 @@ public interface BitMask extends Serializable, Cloneable {
         return bitMask;
     }
 
+    static BitMask getPatternMask( DomainClassMetadata metadata, String... listenedProperties ) {
+        BitMask bitMask = BitMaskUtil.calculatePatternMask( metadata, listenedProperties );
+        bitMask.setPatternClass( metadata.getDomainClass() );
+        return bitMask;
+    }
+
     static BitMask getEmpty(int numBits) {
         return numBits <= 64 ? new LongBitMask() : new OpenBitSet( numBits);
     }

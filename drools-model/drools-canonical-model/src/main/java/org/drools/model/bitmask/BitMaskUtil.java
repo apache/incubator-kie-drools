@@ -21,16 +21,36 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.model.BitMask;
+import org.drools.model.DomainClassMetadata;
 
 public class BitMaskUtil {
     public static final int TRAITABLE_BIT = 0;
     public static final int CUSTOM_BITS_OFFSET = 1;
     public static final String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
+
+    private static final Map<Class<?>, List<String>> accessiblePropertiesCache = new HashMap<>();
+
+    public static BitMask calculatePatternMask( DomainClassMetadata metadata, String... listenedProperties ) {
+        BitMask mask = getEmptyPropertyReactiveMask(metadata.getPropertiesSize());
+        for (String propertyName : listenedProperties) {
+            if (propertyName.equals("*")) {
+                return AllSetBitMask.get();
+            }
+            if (propertyName.equals( TRAITSET_FIELD_NAME )) {
+                mask = mask.set(TRAITABLE_BIT);
+            } else {
+                mask = setPropertyOnMask( mask, metadata.getPropertyIndex( propertyName ) );
+            }
+        }
+        return mask;
+    }
 
     public static BitMask calculatePatternMask( Class<?> clazz, Collection<String> listenedProperties ) {
         List<String> accessibleProperties = getAccessibleProperties( clazz );
@@ -67,7 +87,15 @@ public class BitMaskUtil {
         return mask.set(index + CUSTOM_BITS_OFFSET);
     }
 
-    private static List<String> getAccessibleProperties( Class<?> clazz ) {
+    public static boolean isAccessibleProperties( Class<?> clazz, String prop ) {
+        return getAccessibleProperties( clazz ).contains( prop );
+    }
+
+    public static List<String> getAccessibleProperties( Class<?> clazz ) {
+        return accessiblePropertiesCache.computeIfAbsent( clazz, BitMaskUtil::findAccessibleProperties );
+    }
+
+    private static List<String> findAccessibleProperties( Class<?> clazz ) {
         Set<PropertyInClass> props = new TreeSet<PropertyInClass>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
@@ -79,7 +107,7 @@ public class BitMaskUtil {
         }
 
         for (Field f : clazz.getFields()) {
-            if ( !Modifier.isFinal( f.getModifiers() ) && !Modifier.isStatic( f.getModifiers() ) ) {
+            if ( Modifier.isPublic( f.getModifiers() ) && !Modifier.isStatic( f.getModifiers() ) ) {
                 props.add( new PropertyInClass( f.getName(), f.getDeclaringClass() ) );
             }
         }

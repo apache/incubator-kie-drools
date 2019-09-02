@@ -393,6 +393,14 @@ public class RuleModelDRLPersistenceImpl
                 buf.append("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"" + DateUtils.getDateFormatMask() + "\");\n");
             }
 
+            if (classes.containsKey(DataType.TYPE_LOCAL_DATE)) {
+                buf.append(indentation);
+                if (isDSLEnhanced) {
+                    buf.append(">");
+                }
+                buf.append("java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(\"" + DateUtils.getDateFormatMask() + "\");\n");
+            }
+
             //Add boiler-plate for actions operating on WorkItems
             if (!getRHSWorkItemDependencies(model).isEmpty()) {
                 buf.append(indentation);

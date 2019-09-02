@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.pmml_4_2;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
-
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +26,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
@@ -41,8 +40,9 @@ import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public class PMML4ExecutionHelper {
 
@@ -352,12 +352,19 @@ public class PMML4ExecutionHelper {
     protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
         String javaModelId = modelId.replaceAll("\\s", "");
+        String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
             for (String knownPkgName : knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
+                if (!javaModelId.equals(capJavaModelId)) {
+                    packageNames.add(knownPkgName + "." + capJavaModelId);
+                }
             }
         }
         packageNames.add(DEFAULT_ROOT_PACKAGE + "." + javaModelId);
+        if (!javaModelId.equals(capJavaModelId)) {
+            packageNames.add(DEFAULT_ROOT_PACKAGE + "." + capJavaModelId);
+        }
         return packageNames;
     }
 

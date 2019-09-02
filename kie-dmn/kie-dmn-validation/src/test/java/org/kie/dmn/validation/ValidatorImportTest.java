@@ -31,9 +31,12 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.pmml.DMNRuntimePMMLTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.validation.DMNValidator.Validation;
+import org.kie.dmn.validation.DMNValidator.ValidatorBuilder.ValidatorImportReaderResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,5 +202,27 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                    .theseModels(getFile("import/Invoke_Iris.dmn"));
         assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
 
+    }
+
+    @Test
+    public void testImportPMML2() throws IOException {
+        // DROOLS-4395 [DMN Designer] Validation fails for included PMML model
+        try (Reader defsReader = getReader("KiePMMLScoreCard_wInputType.dmn", DMNRuntimePMMLTest.class);) {
+            final Definitions defs = getDefinitions(defsReader,
+                                                    "http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f",
+                                                    "KiePMMLScoreCard");
+            ValidatorImportReaderResolver resolver = (ns, name, i) -> {
+                if (ns.equals(defs.getNamespace()) && name.equals(defs.getName()) && i.equals(defs.getImport().get(0).getLocationURI())) {
+                    return getReader("test_scorecard.pmml", DMNRuntimePMMLTest.class);
+                } else {
+                    return null;
+                }
+            };
+            final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL,
+                                                                      Validation.VALIDATE_COMPILATION)
+                                                       .usingImports(resolver)
+                                                       .theseModels(defs);
+            assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+        }
     }
 }

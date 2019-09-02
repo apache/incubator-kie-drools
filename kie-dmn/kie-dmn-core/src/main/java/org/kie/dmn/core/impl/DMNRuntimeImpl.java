@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -28,9 +29,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -49,6 +53,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
@@ -62,6 +67,7 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +87,30 @@ public class DMNRuntimeImpl
     public DMNRuntimeImpl(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
         this.eventManager = new DMNRuntimeEventManagerImpl();
+        if (knowledgeBase != null) {
+            if (knowledgeBase instanceof KnowledgeBaseImpl) {
+                KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
+                KieContainerImpl kieContainer = (KieContainerImpl) knowledgeBaseImpl.getKieContainer();
+                KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kieContainer.getKieProject().getKieBaseModel(knowledgeBase.getId());
+                for (Entry<String, String> kv : kieBaseModel.getKModule().getConfigurationProperties().entrySet()) {
+                    String k = kv.getKey();
+                    if (k != null && k.startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX)) {
+                        if (ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
+                            try {
+                                DMNRuntimeEventListener runtimeListenerInstance = (DMNRuntimeEventListener) knowledgeBase.getRootClassLoader().loadClass(kv.getValue()).newInstance();
+                                this.addListener(runtimeListenerInstance);
+                            } catch (Exception e) {
+                                logger.error("Cannot perform classloading of runtime listener: {}", kv, e);
+                            }
+                        } else {
+                            logger.error("This platform does not support classloading of runtime listener: {}", kv);
+                        }
+                    }
+                }
+            }
+        } else {
+            logger.warn("DMNRuntime created without a reference to KnowledgeBase");
+        }
     }
 
     @Override

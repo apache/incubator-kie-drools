@@ -130,7 +130,7 @@ public abstract class AbstractKieModule
         }
         Collection<ReleaseId> deps = null;
         if( pomModel != null ) {
-            deps = adaptAll( pomModel.getDependencies(filter) );
+            deps = adaptAll( pomModel.getDependencies(filter), pomModel );
         }
         return deps == null ? Collections.<ReleaseId> emptyList() : deps;
     }

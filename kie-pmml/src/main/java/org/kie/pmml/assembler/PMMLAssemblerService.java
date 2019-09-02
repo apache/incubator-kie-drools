@@ -53,6 +53,8 @@ import org.kie.internal.jci.CompilationProblem;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMMLResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -61,6 +63,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private KnowledgeBuilderImpl kbuilder;
     private static final String JAVA_ROOT = "src/main/java/";
     private static final PMML4Compiler pmmlCompiler = new PMML4Compiler();
+    private static final Logger log = LoggerFactory.getLogger( PMMLAssemblerService.class );
 
     @Override
     public ResourceType getResourceType() {
@@ -98,6 +101,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws IOException
      */
     private void addPackage(Resource resource) throws DroolsParserException, IOException {
+        if (isjPMMLAvailableToClassLoader(rootClassLoader)) {
+            log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
+            return;
+        }
         if (pmmlCompiler != null) {
             if (pmmlCompiler.getResults().isEmpty()) {
                 addPMMLPojos(pmmlCompiler, resource);
@@ -291,4 +298,12 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return javaCompiler;
     }
 
+    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

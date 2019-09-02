@@ -16,11 +16,15 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
 import static java.util.Collections.unmodifiableMap;
@@ -31,6 +35,11 @@ public class ScenarioResultMetadata {
     protected final Set<String> available = new HashSet<>();
 
     protected final Map<String, Integer> executed = new HashMap<>();
+
+    /**
+     * The <code>List</code> of audit log lines
+     */
+    protected final List<AuditLogLine> auditLogLines = new ArrayList<>();
 
     protected final ScenarioWithIndex scenarioWithIndex;
 
@@ -54,6 +63,24 @@ public class ScenarioResultMetadata {
         executed.putAll(elements);
     }
 
+    /**
+     * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
+     * @param messageIndex
+     * @param message
+     * @param severity
+     */
+    public void addAuditMessage(int messageIndex, String message, String severity) {
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScenario().getDescription(), messageIndex, message, severity));
+    }
+
+    /**
+     * Add a <code>List&lt;AuditLogLine&gt;</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
+     * @param toAdd
+     */
+    public void addAuditLogLines(List<AuditLogLine> toAdd) {
+        auditLogLines.addAll(toAdd);
+    }
+
     public Set<String> getAvailable() {
         return unmodifiableSet(available);
     }
@@ -64,6 +91,13 @@ public class ScenarioResultMetadata {
 
     public Map<String, Integer> getExecutedWithCounter() {
         return unmodifiableMap(executed);
+    }
+
+    /**
+     * @return an <b>unmodifiable</b> version of {@link ScenarioResultMetadata#auditLogLines}
+     */
+    public List<AuditLogLine> getAuditLogLines() {
+        return Collections.unmodifiableList(auditLogLines);
     }
 
     public ScenarioWithIndex getScenarioWithIndex() {

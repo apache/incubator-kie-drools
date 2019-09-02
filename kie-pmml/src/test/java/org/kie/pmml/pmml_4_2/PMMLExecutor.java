@@ -16,8 +16,6 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.pmml.PMML4Data;
@@ -36,7 +35,8 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public class PMMLExecutor {
     private KieBase kieBase;
@@ -116,13 +116,20 @@ public class PMMLExecutor {
     private List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
         String javaModelId = modelId.replaceAll("\\s","");
+        String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
             for (String knownPkgName: knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
+                if (!javaModelId.equals(capJavaModelId)) {
+                    packageNames.add(knownPkgName + "." + capJavaModelId);
+                }
             }
         }
         String basePkgName = DEFAULT_ROOT_PACKAGE+"."+javaModelId;
         packageNames.add(basePkgName);
+        if (!javaModelId.equals(capJavaModelId)) {
+            packageNames.add(DEFAULT_ROOT_PACKAGE+"."+capJavaModelId);
+        }
         return packageNames;
     }
 

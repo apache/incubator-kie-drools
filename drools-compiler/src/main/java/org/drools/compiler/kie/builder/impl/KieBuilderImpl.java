@@ -163,7 +163,7 @@ public class KieBuilderImpl
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
             for ( AFReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( adapt( dep ), pomModel );
+                KieModule depModule = repository.getKieModule( adapt( dep, pomModel ), pomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }

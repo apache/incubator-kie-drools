@@ -313,11 +313,11 @@ public abstract class AbstractModel<T> implements PMML4Model {
 
     @Override
     public List<PMMLMiningField> getMiningFields() {
+        PMML4Unit rootOwner = getOwner();
         List<PMMLMiningField> fields = new ArrayList<>();
         Map<String, MiningField> excludesTargetMap = miningFieldMap;
-        Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
         for (String key : excludesTargetMap.keySet()) {
-            PMMLDataField df = dataDictionary.get(key);
+            PMMLDataField df = rootOwner.findDataDictionaryEntry(key);
             MiningField mf = miningFieldMap.get(key);
             if (df != null) {
                 fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId(), true));
