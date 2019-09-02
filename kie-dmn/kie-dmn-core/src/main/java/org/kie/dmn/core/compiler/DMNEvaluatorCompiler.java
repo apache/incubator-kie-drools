@@ -1,6 +1,5 @@
 package org.kie.dmn.core.compiler;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
@@ -483,8 +483,8 @@ public class DMNEvaluatorCompiler {
             if (lookupImport.isPresent()) {
                 Import theImport = lookupImport.get();
                 logger.trace("theImport: {}", theImport);
-                URL pmmlURL = DMNCompilerImpl.pmmlImportURL(getRootClassLoader(), model, theImport, funcDef);
-                logger.trace("pmmlURL: {}", pmmlURL);
+                Resource pmmlResource = DMNCompilerImpl.resolveRelativeResource(getRootClassLoader(), model, theImport, funcDef, ctx.getRelativeResolver());
+                logger.trace("pmmlResource: {}", pmmlResource);
                 DMNImportPMMLInfo pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
                 logger.trace("pmmlInfo: {}", pmmlInfo);
                 if (pmmlModel == null || pmmlModel.isEmpty()) {
@@ -507,7 +507,7 @@ public class DMNEvaluatorCompiler {
                 AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
                                                                                                      getRootClassLoader(),
                                                                                                      funcDef,
-                                                                                                     pmmlURL,
+                                                                                                     pmmlResource,
                                                                                                      pmmlModel,
                                                                                                      pmmlInfo);
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);

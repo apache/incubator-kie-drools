@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -183,10 +184,17 @@ public class DMNValidatorImpl implements DMNValidator {
 
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
+        private ValidatorImportReaderResolver importResolver;
 
         public ValidatorBuilderImpl(DMNValidatorImpl dmnValidatorImpl, Validation[] options) {
             this.validator = dmnValidatorImpl;
             this.flags = EnumSet.copyOf(Arrays.asList(options));
+        }
+
+        @Override
+        public ValidatorBuilder usingImports(ValidatorImportReaderResolver r) {
+            this.importResolver = r;
+            return this;
         }
 
         @Override
@@ -284,8 +292,17 @@ public class DMNValidatorImpl implements DMNValidator {
                         otherModel_Definitions.add(dmnModel);
                     }
                     if (flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
-                        DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
-                        DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
+                        DMNCompilerImpl compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
+                        Function<String, Reader> relativeResolver = null;
+                        if (importResolver != null) {
+                            relativeResolver = locationURI -> importResolver.newReader(dmnModel.getNamespace(),
+                                                                                       dmnModel.getName(),
+                                                                                       locationURI);
+                        }
+                        DMNModel model = compiler.compile(dmnModel,
+                                                          otherModel_DMNModels,
+                                                          null,
+                                                          relativeResolver);
                         if (model != null) {
                             results.addAll(model.getMessages());
                             otherModel_DMNModels.add(model);
