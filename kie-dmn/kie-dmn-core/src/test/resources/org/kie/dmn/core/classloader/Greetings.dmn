@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns="http://www.trisotech.com/definitions/_2027051c-0030-40f1-8b96-1b1422f8b257" id="_2027051c-0030-40f1-8b96-1b1422f8b257" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_2027051c-0030-40f1-8b96-1b1422f8b257" exporter="DMN Modeler" exporterVersion="6.2.7" triso:logoChoice="Default">
+    <semantic:inputData id="_a4b518e9-55eb-463f-a0f4-24d457ea77f3" name="Name">
+        <semantic:variable name="Name" id="_da269623-3fda-413f-9f2c-26ca98a203e8" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:decision id="_15d02f7b-5fad-4390-b8b5-e7e036f9a0e0" name="Greeting the Name">
+        <semantic:variable name="Greeting the Name" id="_b461021d-9468-4272-8fcf-c111c51cacf9" typeRef="string"/>
+        <semantic:informationRequirement id="_c110c7c2-173a-4941-8a97-0e649d8095ac">
+            <semantic:requiredInput href="#_a4b518e9-55eb-463f-a0f4-24d457ea77f3"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_56f5e696-56c7-4191-9b3b-5fa79556a175" typeRef="string" triso:expressionId="_328bc8aa-bef5-459a-b677-1609cff4a7a4">
+            <semantic:text>"Hello "+Name</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>
