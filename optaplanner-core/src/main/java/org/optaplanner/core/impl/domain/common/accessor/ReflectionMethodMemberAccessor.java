@@ -73,7 +73,8 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
             return readMethod.invoke(bean);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot call property (" + methodName
-                    + ") getterMethod (" + readMethod + ") on bean of class (" + bean.getClass() + ").", e);
+                    + ") getterMethod (" + readMethod + ") on bean of class (" + bean.getClass() + "). You may consider"
+                    + " supplying a ClassLoader parameter to your SolverFactory.create...() method call.", e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("The property (" + methodName
                     + ") getterMethod (" + readMethod + ") on bean of class (" + bean.getClass()

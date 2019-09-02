@@ -76,7 +76,10 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
                     MethodType.methodType(Object.class, Object.class),
                     lookup.findVirtual(declaringClass, getterMethod.getName(), MethodType.methodType(propertyType)),
                     MethodType.methodType(propertyType, declaringClass));
-        } catch (LambdaConversionException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Lambda creation failed for getterMethod (" + getterMethod + "). You may " +
+                    " consider supplying a ClassLoader parameter to your SolverFactory.create...() method call.", e);
+        } catch (LambdaConversionException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
         }
         try {
@@ -99,7 +102,10 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
                     MethodType.methodType(void.class, Object.class, Object.class),
                     lookup.findVirtual(declaringClass, setterMethod.getName(), MethodType.methodType(void.class, propertyType)),
                     MethodType.methodType(void.class, declaringClass, propertyType));
-        } catch (LambdaConversionException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Lambda creation failed for setterMethod (" + setterMethod + "). You may " +
+                    "consider supplying a ClassLoader parameter to your SolverFactory.create...() method call.", e);
+        } catch (LambdaConversionException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Lambda creation failed for setterMethod (" + setterMethod + ").", e);
         }
         try {
@@ -177,5 +183,4 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
     public String toString() {
         return "bean property " + propertyName + " on " + getterMethod.getDeclaringClass();
     }
-
 }
