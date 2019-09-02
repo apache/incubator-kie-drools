@@ -1,8 +1,10 @@
 package org.kie.dmn.core.compiler;
 
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Function;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -14,6 +16,7 @@ public class DMNCompilerContext {
 
     private final DMNFEELHelper feelHelper;
     private Stack<DMNScope> stack = new Stack();
+    private Function<String, Reader> relativeResolver;
 
     public DMNCompilerContext(DMNFEELHelper feelHelper) {
         this.feelHelper = feelHelper;
@@ -63,6 +66,14 @@ public class DMNCompilerContext {
 
     public DMNFEELHelper getFeelHelper() {
         return feelHelper;
+    }
+
+    public void setRelativeResolver(Function<String, Reader> relativeResolver) {
+        this.relativeResolver = relativeResolver;
+    }
+
+    public Function<String, Reader> getRelativeResolver() {
+        return relativeResolver;
     }
 
 }

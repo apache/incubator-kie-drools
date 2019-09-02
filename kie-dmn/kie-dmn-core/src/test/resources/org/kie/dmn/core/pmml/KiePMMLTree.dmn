@@ -26,7 +26,7 @@
   </dmn:businessKnowledgeModel>
   <dmn:decision id="_D27A288D-9F1B-4F1D-9DDA-3D51E23C234D" name="Decision">
     <dmn:extensionElements/>
-    <dmn:variable id="_071B7A01-9E56-4D49-A529-5DB63D1D9639" name="Decision"/>
+    <dmn:variable id="_071B7A01-9E56-4D49-A529-5DB63D1D9639" name="Decision" typeRef="Any"/>
     <dmn:informationRequirement id="_737A930E-DE03-4C44-8A61-D25BB5B18507">
       <dmn:requiredInput href="#_261133E4-E4BD-4581-BF06-04114712471D"/>
     </dmn:informationRequirement>
@@ -56,11 +56,11 @@
   </dmn:decision>
   <dmn:inputData id="_38768C91-68B3-46E3-8F0A-0A34B293EF34" name="humidity">
     <dmn:extensionElements/>
-    <dmn:variable id="_9C968222-DB01-4CF8-82B9-56ECD745CFA8" name="humidity"/>
+    <dmn:variable id="_9C968222-DB01-4CF8-82B9-56ECD745CFA8" name="humidity" typeRef="Any"/>
   </dmn:inputData>
   <dmn:inputData id="_261133E4-E4BD-4581-BF06-04114712471D" name="temperature">
     <dmn:extensionElements/>
-    <dmn:variable id="_34B5F3C0-1073-48CE-B36D-9BD81AAE8063" name="temperature"/>
+    <dmn:variable id="_34B5F3C0-1073-48CE-B36D-9BD81AAE8063" name="temperature" typeRef="Any"/>
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
