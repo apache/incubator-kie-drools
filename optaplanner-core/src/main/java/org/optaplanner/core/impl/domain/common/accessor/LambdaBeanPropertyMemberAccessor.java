@@ -77,8 +77,8 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
                     lookup.findVirtual(declaringClass, getterMethod.getName(), MethodType.methodType(propertyType)),
                     MethodType.methodType(propertyType, declaringClass));
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Lambda creation failed for getterMethod (" + getterMethod + "). You may " +
-                    " consider supplying a ClassLoader parameter to your SolverFactory.create...() method call.", e);
+            throw new IllegalStateException("Lambda creation failed for getterMethod (" + getterMethod + ").\n" +
+                    MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         } catch (LambdaConversionException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
         }

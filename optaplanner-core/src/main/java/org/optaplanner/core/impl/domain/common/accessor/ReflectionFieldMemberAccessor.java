@@ -59,8 +59,8 @@ public final class ReflectionFieldMemberAccessor implements MemberAccessor {
             return field.get(bean);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot get the field (" + field.getName()
-                    + ") on bean of class (" + bean.getClass() + "). You may consider supplying a ClassLoader parameter"
-                    + " to your SolverFactory.create...() method call.", e);
+                    + ") on bean of class (" + bean.getClass() + ").\n" +
+                    MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
     }
 

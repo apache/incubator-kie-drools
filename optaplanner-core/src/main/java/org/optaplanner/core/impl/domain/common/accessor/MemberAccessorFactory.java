@@ -22,9 +22,14 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 public class MemberAccessorFactory {
+
+    // exists only so that the various member accessors can share the same text in their exception messages
+    static final String CLASSLOADER_NUDGE_MESSAGE = "Maybe add getClass().getClassLoader() as a parameter to the " +
+            SolverFactory.class.getSimpleName() + ".create...() method call.";
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass) {
