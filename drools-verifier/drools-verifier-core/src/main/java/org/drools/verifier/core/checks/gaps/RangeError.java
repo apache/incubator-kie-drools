@@ -48,7 +48,7 @@ public class RangeError {
                                      checkType,
                                      partitionKey.getConditions(),
                                      uncoveredRanges,
-                                     new HashSet<>(ruleInspectors.stream().map(r -> r.getRowIndex()).collect(toSet()))
+                                     new HashSet<>(ruleInspectors.stream().map(r -> 1 + r.getRowIndex()).collect(toSet()))
         ).setDebugMessage(getMessage());
     }
 
@@ -64,8 +64,12 @@ public class RangeError {
     }
 
     private String uncoveredRangesToString() {
-        return uncoveredRanges.stream()
-                .map(r -> r.toString())
-                .collect(Collectors.joining(", "));
+        if (uncoveredRanges == null) {
+            return "";
+        } else {
+            return uncoveredRanges.stream()
+                    .map(r -> r.toString())
+                    .collect(Collectors.joining(", "));
+        }
     }
 }
