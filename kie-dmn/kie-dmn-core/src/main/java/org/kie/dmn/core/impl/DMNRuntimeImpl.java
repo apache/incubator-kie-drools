@@ -91,19 +91,21 @@ public class DMNRuntimeImpl
             if (knowledgeBase instanceof KnowledgeBaseImpl) {
                 KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
                 KieContainerImpl kieContainer = (KieContainerImpl) knowledgeBaseImpl.getKieContainer();
-                KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kieContainer.getKieProject().getKieBaseModel(knowledgeBase.getId());
-                for (Entry<String, String> kv : kieBaseModel.getKModule().getConfigurationProperties().entrySet()) {
-                    String k = kv.getKey();
-                    if (k != null && k.startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX)) {
-                        if (ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
-                            try {
-                                DMNRuntimeEventListener runtimeListenerInstance = (DMNRuntimeEventListener) knowledgeBase.getRootClassLoader().loadClass(kv.getValue()).newInstance();
-                                this.addListener(runtimeListenerInstance);
-                            } catch (Exception e) {
-                                logger.error("Cannot perform classloading of runtime listener: {}", kv, e);
+                if (kieContainer != null) {
+                    KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kieContainer.getKieProject().getKieBaseModel(knowledgeBase.getId());
+                    for (Entry<String, String> kv : kieBaseModel.getKModule().getConfigurationProperties().entrySet()) {
+                        String k = kv.getKey();
+                        if (k != null && k.startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX)) {
+                            if (ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
+                                try {
+                                    DMNRuntimeEventListener runtimeListenerInstance = (DMNRuntimeEventListener) knowledgeBase.getRootClassLoader().loadClass(kv.getValue()).newInstance();
+                                    this.addListener(runtimeListenerInstance);
+                                } catch (Exception e) {
+                                    logger.error("Cannot perform classloading of runtime listener: {}", kv, e);
+                                }
+                            } else {
+                                logger.error("This platform does not support classloading of runtime listener: {}", kv);
                             }
-                        } else {
-                            logger.error("This platform does not support classloading of runtime listener: {}", kv);
                         }
                     }
                 }
