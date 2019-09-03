@@ -87,10 +87,10 @@ public class DMNRuntimeImpl
     public DMNRuntimeImpl(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
         this.eventManager = new DMNRuntimeEventManagerImpl();
-        if (knowledgeBase != null) {
-            if (knowledgeBase instanceof KnowledgeBaseImpl) {
-                KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
-                KieContainerImpl kieContainer = (KieContainerImpl) knowledgeBaseImpl.getKieContainer();
+        if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl) {
+            KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
+            KieContainerImpl kieContainer = (KieContainerImpl) knowledgeBaseImpl.getKieContainer();
+            if (kieContainer != null) {
                 KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kieContainer.getKieProject().getKieBaseModel(knowledgeBase.getId());
                 for (Entry<String, String> kv : kieBaseModel.getKModule().getConfigurationProperties().entrySet()) {
                     String k = kv.getKey();
