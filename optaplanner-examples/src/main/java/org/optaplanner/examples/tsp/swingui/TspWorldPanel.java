@@ -31,8 +31,10 @@ import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -77,20 +79,22 @@ public class TspWorldPanel extends JPanel {
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (translator != null) {
-                    double longitude = translator.translateXToLongitude(e.getX());
-                    double latitude = translator.translateYToLatitude(e.getY());
-                    if (e.getButton() == MouseEvent.BUTTON1) {
-                        dragSourceStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
-                                new AirLocation(-1L, latitude, longitude));
-                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
-                        dragTargetStandstill = tspSolution.getDomicile();
-                        resetPanel(tspSolution);
-                    } else if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                        TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
-                    }
+                if (translator == null) {
+                    return;
+                }
+                double longitude = translator.translateXToLongitude(e.getX());
+                double latitude = translator.translateYToLatitude(e.getY());
+                if (isLeftClick(e)) {
+                    dragSourceStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
+                            new AirLocation(-1L, latitude, longitude));
+                    TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
+                    dragTargetStandstill = tspSolution.getDomicile();
+                    resetPanel(tspSolution);
+                } else if (isRightClick(e)) {
+                    TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
                 }
             }
+
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (translator != null) {
@@ -110,29 +114,38 @@ public class TspWorldPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (translator != null) {
-                    if (e.getButton() == MouseEvent.BUTTON1) {
-                        double longitude = translator.translateXToLongitude(e.getX());
-                        double latitude = translator.translateYToLatitude(e.getY());
-                        dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
-                                new AirLocation(-1L, latitude, longitude));
-                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
-                        if (dragSourceStandstill == dragTargetStandstill) {
-                            dragTargetStandstill = tspSolution.getDomicile();
-                        }
-                        Standstill sourceStandstill = TspWorldPanel.this.dragSourceStandstill;
-                        Standstill targetStandstill = TspWorldPanel.this.dragTargetStandstill;
-                        TspWorldPanel.this.dragSourceStandstill = null;
-                        TspWorldPanel.this.dragTargetStandstill = null;
-                        // connectStandstills() will call resetPanel()
-                        TspWorldPanel.this.tspPanel.connectStandstills(sourceStandstill, targetStandstill);
-                    }
+                if (translator == null || !isLeftClick(e)) {
+                    return;
                 }
+                double longitude = translator.translateXToLongitude(e.getX());
+                double latitude = translator.translateYToLatitude(e.getY());
+                dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
+                        new AirLocation(-1L, latitude, longitude));
+                TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
+                if (dragSourceStandstill == dragTargetStandstill) {
+                    dragTargetStandstill = tspSolution.getDomicile();
+                }
+                Standstill sourceStandstill = TspWorldPanel.this.dragSourceStandstill;
+                Standstill targetStandstill = TspWorldPanel.this.dragTargetStandstill;
+                TspWorldPanel.this.dragSourceStandstill = null;
+                TspWorldPanel.this.dragTargetStandstill = null;
+                // connectStandstills() will call resetPanel()
+                TspWorldPanel.this.tspPanel.connectStandstills(sourceStandstill, targetStandstill);
             }
         };
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
         europaBackground = new ImageIcon(getClass().getResource("europaBackground.png"));
+    }
+
+    private static boolean isLeftClick(MouseEvent e) {
+        // Mac OS X users may be using Ctrl+LeftClick to emulate right button
+        return SwingUtilities.isLeftMouseButton(e) && !e.isControlDown();
+    }
+
+    private static boolean isRightClick(MouseEvent e) {
+        // Mac OS X users may be using Ctrl+LeftClick to emulate right button
+        return SwingUtilities.isRightMouseButton(e) || e.isControlDown();
     }
 
     public void resetPanel(TspSolution tspSolution) {
@@ -252,5 +265,4 @@ public class TspWorldPanel extends JPanel {
             g.drawImage(canvas, 0, 0, this);
         }
     }
-
 }
