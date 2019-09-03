@@ -109,6 +109,14 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-canonical-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -122,6 +130,12 @@
             <Export-Package>*</Export-Package>
           </instructions>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

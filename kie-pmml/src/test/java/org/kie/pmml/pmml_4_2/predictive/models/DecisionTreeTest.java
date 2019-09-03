@@ -110,6 +110,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
                                                                                      ResourceFactory.newClassPathResource(source1),
                                                                                      null);
 
+        helper.turnOnFileLogger("/home/lleveric/tmp/testSimpleTree");
         PMMLRequestData request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 30.0);
         request.addRequestParam("fld2", 60.0);
@@ -117,6 +118,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         request.addRequestParam("fld4", "optA");
 
         PMML4Result resultHolder = helper.submitRequest(request);
+        helper.turnOffFileLogger();
         assertEquals("OK",resultHolder.getResultCode());
         Object obj = resultHolder.getResultValue("Fld5", null);
         assertNotNull(obj);

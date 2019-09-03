@@ -17,6 +17,7 @@
 package @{pmmlPackageName};
 
 import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
+import org.kie.api.pmml.PMMLRuleUnit;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -30,11 +31,15 @@ import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import @{modelInitializationClass};
+import @{modelApplierClass};
+import @{pmmlRuleExecutorClass};
+
 @if{externMiningBeans != null}
 @foreach{externBean: externMiningBeans}import @{externBean.qualifiedBeanName};@end{}
 @end{}
 
-public class @{className} implements RuleUnit {
+public class @{className} implements RuleUnit, PMMLRuleUnit {
    private DataSource<PMMLRequestData> request;
    private DataSource<PMML4Data> pmmlData;
    private DataSource<PMML4Result> results;
@@ -99,6 +104,18 @@ public class @{className} implements RuleUnit {
    
    public DataSource<Object> getMiningModelPojo() {
       return miningModelPojo;
+   }
+   
+   public @{modelInitializationClass} getModelInitializer() {
+      return new @{modelInitializationClass}();
+   }
+   
+   public @{modelApplierClass} getModelApplier() {
+      return new @{modelApplierClass}();
+   }
+   
+   public @{pmmlRuleExecutorClass} getRuleExecutor() {
+      return new @{pmmlRuleExecutorClass}();
    }
    
    @if{externMiningBeans != null}

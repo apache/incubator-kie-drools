@@ -15,17 +15,18 @@
  */
 package org.kie.pmml.pmml_4_2.model.mining;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kie.api.definition.type.PropertyReactive;
 import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
 import org.dmg.pmml.pmml_4_2.descr.Segment;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.model.PMML4ModelFactory;
 import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 @PropertyReactive
 public class MiningSegment implements Comparable<MiningSegment> {
@@ -105,6 +106,10 @@ public class MiningSegment implements Comparable<MiningSegment> {
         return this.predicateRuleProducer.getPredicateRule();
     }
     
+    public String getJavaPredicateText(String prefix) {
+        return this.predicateRuleProducer.getJavaPredicateRule(prefix, true);
+    }
+
     public String getSegmentPackageName() {
         StringBuilder builder = new StringBuilder(DEFAULT_ROOT_PACKAGE);
         builder.append(".mining.segment_").append(this.getSegmentId());

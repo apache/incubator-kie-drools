@@ -95,9 +95,17 @@ public class SimpleSetSegmentPredicate implements PredicateRuleProducer {
 		return "m".concat(getCapitalizedFieldName());
 	}
 	
+    public String getCapitalizedMissingFieldName() {
+        return "M".concat(getCapitalizedFieldName());
+    }
+
 	public String getValueFieldName() {
 		return "v".concat(getCapitalizedFieldName());
 	}
+
+    public String getCapitalizedValueFieldName() {
+        return "V".concat(getCapitalizedFieldName());
+    }
 
 	public void setFieldName(String fieldName) {
 		this.baseFieldName = fieldName;
@@ -170,18 +178,29 @@ public class SimpleSetSegmentPredicate implements PredicateRuleProducer {
 
 	@Override
 	public String getPredicateRule() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		CompiledTemplate ct = getTemplate();
-		if (ct != null) {
-			Map<String,Object>vars = new HashMap<>();
-			vars.put("missingFieldName", this.getMissingFieldName());
-			vars.put("fieldName", this.getValueFieldName());
-			vars.put("operator", getOperatorText());
-			vars.put("setType", setType);
-			vars.put("values", getValueObjects());
-			TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(vars),baos);
-		}
-		return new String(baos.toByteArray());
+        return calculatePredicateRule(this.getMissingFieldName(), this.getValueFieldName());
+    }
+
+    @Override
+    public String getJavaPredicateRule(String fieldPrefix, boolean addSeparator) {
+        String missingFieldName = fieldPrefix + (addSeparator ? ".get" : "get") + this.getCapitalizedMissingFieldName() + "()";
+        String valueFieldName = fieldPrefix + (addSeparator ? ".get" : "get") + this.getCapitalizedValueFieldName() + "()";
+        return calculatePredicateRule(missingFieldName, valueFieldName);
+    }
+
+    private String calculatePredicateRule(String missingFieldName, String valueFieldName) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        CompiledTemplate ct = getTemplate();
+        if (ct != null) {
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("missingFieldName", missingFieldName);
+            vars.put("fieldName", valueFieldName);
+            vars.put("operator", getOperatorText());
+            vars.put("setType", setType);
+            vars.put("values", getValueObjects());
+            TemplateRuntime.execute(ct, null, new MapVariableResolverFactory(vars), baos);
+        }
+        return new String(baos.toByteArray());
 	}
 	
 	@Override

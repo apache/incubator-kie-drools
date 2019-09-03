@@ -1,0 +1,61 @@
+@declare{'initializeScorecardRows'}
+package @{packageName};
+
+import org.kie.api.pmml.ModelInitializer;
+import org.kie.pmml.pmml_4_2.model.scorecard.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+
+public class @{className} implements ModelInitializer {
+    private static final String MODEL_NAME = "@{modelName}";
+    private static final BaselineScore baselineScores[] = {
+       @foreach{ ch: characteristics }
+       new BaselineScore("@{modelName}",
+           @if{ch.baselineScore != null}@{ch.baselineScore}@else{}@{modelBaseline}@end{},
+           "@{ch.name}")@end{","} 
+    };
+    private static final ScoreRow scoreRows[] = {
+       @foreach{ ch: characteristics }
+          @foreach{ attr: ch.attributes }
+       new ScoreRow("@{modelName}",@{attr.partialScore},"@{ch.name}","@if{attr.reasonCode != null}@{attr.reasonCode}@else{}@{ch.reasonCode}@end{}","@{ch.name + ch.attributes.indexOf( attr )}" )@end{","}@end{","}
+    };
+    
+    
+    public @{className}() {
+    }
+    
+    public void initializeModelSession(KieSession ksession) {
+       if (ksession != null) {
+          for (int c = 0; c < baselineScores.length; c++) {
+             ksession.insert(baselineScores[c]);
+          }
+          for (int c = 0; c < scoreRows.length; c++) {
+             ksession.insert(scoreRows[c]);
+          }
+       } else {
+          throw new IllegalArgumentException("Invalid (null) KieSession used while initializing a scorecard");
+       }
+    }
+    
+    public void initializeModelRuleUnitExecutor(RuleUnitExecutor executor, String datasourceName) {
+       if (executor != null) {
+          String dsName = datasourceName != null ? datasourceName : "scorecardScoringData";
+          DataSource ds = executor.newDataSource(dsName);
+          if (ds != null) {
+             for (int c = 0; c < baselineScores.length; c++) {
+                ds.insert(baselineScores[c]);
+             }
+             for (int c = 0; c < scoreRows.length; c++) {
+                ds.insert(scoreRows[c]);
+             }
+          } else {
+             throw new RuntimeException("Unable to create datasource ["+dsName+"] using the provided RuleUnitExecutor");
+          }
+       }
+    } 
+}
+@end{}
+@includeNamed{'initializeScorecardRows'}

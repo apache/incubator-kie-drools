@@ -32,9 +32,11 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.pmml.ModelApplier;
 import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMMLRuleUnit;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
@@ -269,8 +271,7 @@ public class PMML4ExecutionHelper {
         executor.run(ruleUnitClass);
     }
 
-    public synchronized PMML4Result submitRequest(PMMLRequestData request, Map<String,List<Object>> externalData) 
-           throws InvalidParameterException, IllegalStateException {
+    public synchronized PMML4Result submitRequest(PMMLRequestData request, Map<String, List<Object>> externalData) throws InvalidParameterException, IllegalStateException {
         if (request == null) {
             throw new InvalidParameterException("PMML model cannot be applied to a null request");
         }
@@ -285,8 +286,29 @@ public class PMML4ExecutionHelper {
             initRuleUnitExecutor();
         }
 
-        KieRuntimeLogger logger = loggerFileName != null ?
-                ((InternalRuleUnitExecutor)executor).addFileLogger(loggerFileName) : null;
+        KieRuntimeLogger logger = loggerFileName != null ? ((InternalRuleUnitExecutor) executor).addFileLogger(loggerFileName) : null;
+
+        /**
+         * If the ruleUnitClass is castable to a PMMLRuleUnit then 
+         * the model's initialization should be called
+         */
+        if (PMMLRuleUnit.class.isAssignableFrom(ruleUnitClass)) {
+            try {
+                PMMLRuleUnit ru = (PMMLRuleUnit) ruleUnitClass.newInstance();
+                ModelApplier ma = ru.getModelApplier();
+                this.baseResultHolder = ma.applyModel(request, executor.getKieSession().getKieBase(), ru);
+                return baseResultHolder;
+                //                ModelInitializer mi = ru.getModelInitializer();
+                //                if (mi != null) {
+                //                    mi.initializeModelSession(executor.getKieSession());
+                //                }
+            } catch (InstantiationException e) {
+                throw new RuntimeException("InstantiationException while attempting to create PMMLRuleUnit instance - " + modelName, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("IllegalAccessException while attempting to create a PMMLRuleUnit instance - " + modelName, e);
+            }
+        }
+
         try {
             requestData.insert(request);
             baseResultHolder = new PMML4Result(request.getCorrelationId());
@@ -299,7 +321,8 @@ public class PMML4ExecutionHelper {
                     }
                 });
             }
-            executor.run(ruleUnitClass);
+            int rulesRunCount = executor.run(ruleUnitClass);
+            System.out.printf("Number of rules: %d%n", rulesRunCount);
         } finally {
             if (logger != null) {
                 logger.close();

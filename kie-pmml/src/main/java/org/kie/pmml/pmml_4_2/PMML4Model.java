@@ -56,4 +56,16 @@ public interface PMML4Model {
     public String getModelPackageName();
     public String getModelRuleUnitName();
     public String getExternalBeansMiningRules();
+
+    public String getModelInitializationClassName();
+
+    public String getModelApplierClassName();
+
+    public String getPMMLRuleExecutorClassName();
+
+    public Map<String, String> getExecutableModelRules();
+
+    public Map.Entry<String, String> getModelInitializerClass();
+
+    public Map.Entry<String, String> getModelApplierClass();
 }

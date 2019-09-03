@@ -19,6 +19,8 @@ import java.util.List;
 
 public interface PredicateRuleProducer {
 	public String getPredicateRule();
+
+    public String getJavaPredicateRule(String fieldPrefix, boolean addSeparator);
 	public List<String> getPredicateFieldNames();
 	public List<String> getFieldMissingFieldNames();
 	public boolean isAlwaysTrue();

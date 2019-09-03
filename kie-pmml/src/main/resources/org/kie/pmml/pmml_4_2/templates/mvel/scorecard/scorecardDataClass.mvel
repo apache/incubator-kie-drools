@@ -16,9 +16,13 @@
 }
 package @{pmmlPackageName};
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.dmg.pmml.pmml_4_2.descr.*;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
@@ -34,7 +38,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 }
 public class @{className} extends AbstractPMMLData {
     @foreach{dataField: dataFields}
-    private boolean m@{dataField.compactUpperCaseName} = true;
     private @{dataField.type} v@{dataField.compactUpperCaseName};
     @end{}
 
@@ -54,13 +57,7 @@ public class @{className} extends AbstractPMMLData {
        Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
        @foreach{dataField: dataFields}
        @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.name}" );
-       if ( val@{dataField.compactUpperCaseName} != null ) {
-          this.m@{dataField.compactUpperCaseName} = false;
-          this.v@{dataField.compactUpperCaseName} = val@{dataField.compactUpperCaseName};
-       } else {
-          this.m@{dataField.compactUpperCaseName} = true;
-          this.v@{dataField.compactUpperCaseName} = null;
-       }
+       setV@{dataField.compactUpperCaseName}(val@{dataField.compactUpperCaseName});
        @end{}
     }
 
@@ -82,17 +79,42 @@ public class @{className} extends AbstractPMMLData {
 
     public void setV@{dataField.compactUpperCaseName}( @{dataField.type} @{dataField.name} ) {
        this.v@{dataField.compactUpperCaseName} = @{dataField.name};
+       if (@{dataField.name} != null) {
+          fieldsInUse.add("@{dataField.compactUpperCaseName}");
+          @code{valid = validations[dataField.name]; valu = (valid != null) ? valid.missingValue : null; } 
+          @if{valid != null}
+          if (@{dataField.name}IsValid(this.v@{dataField.compactUpperCaseName}) ) {
+             fieldsAreValid.add("@{dataField.compactUpperCaseName}");
+          } else {
+             fieldsAreValid.remove("@{dataField.compactUpperCaseName}");
+             @if{dataField.invalidValueTreatment.toString() == "AS_MISSING"} 
+            @if{valu != null} this.v@{dataField.compactUpperCaseName} = @{valu.value};
+            @else{} this.v@{dataField.compactUpperCaseName} = null;
+            @end{}
+            fieldsInUse.remove("@{dataField.compactUpperCaseName}");
+             @end{}
+          }
+          @end{}
+       } else {
+          fieldsInUse.remove("@{dataField.compactUpperCaseName}");
+       }
     }
-
+    
     public boolean getM@{dataField.compactUpperCaseName}() {
-       return this.m@{dataField.compactUpperCaseName};
+       return !fieldsInUse.contains("@{dataField.compactUpperCaseName}");
     }
-
-    public void setM@{dataField.compactUpperCaseName}( boolean m@{dataField.compactUpperCaseName} ) {
-       this.m@{dataField.compactUpperCaseName} = m@{dataField.compactUpperCaseName};
+    
+    public boolean isValid@{dataField.compactUpperCaseName}() {
+       return fieldsAreValid.contains("@{dataField.compactUpperCaseName}");
     }
+    
     @end{}
-
+    
+    @foreach{validation: validations.entrySet}
+    // Validation for @{validation.key}
+    @{validation.value.validationString}
+    @end{}
+    
     public boolean equals(Object o) {
         return super.equals(o);
     }
@@ -106,7 +128,7 @@ public class @{className} extends AbstractPMMLData {
        StringBuilder builder = new StringBuilder();
        builder.append("@{className}ScoreCardData( correlationId=").append(this.getCorrelationId()).append(", modelName=@{modelName}, ");
        @foreach{dataField: dataFields}
-       builder.append(" m@{dataField.compactUpperCaseName}=").append(m@{dataField.compactUpperCaseName}).append(", ");
+       builder.append(" m@{dataField.compactUpperCaseName}=").append(getM@{dataField.compactUpperCaseName}()).append(", ");
        builder.append(" v@{dataField.compactUpperCaseName}=").append(v@{dataField.compactUpperCaseName}).append(", ");
        @end{}
        int last = builder.lastIndexOf(",");

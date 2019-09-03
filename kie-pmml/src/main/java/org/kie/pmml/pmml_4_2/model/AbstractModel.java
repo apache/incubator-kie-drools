@@ -20,16 +20,20 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
 import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.INVALIDVALUETREATMENTMETHOD;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
@@ -37,6 +41,7 @@ import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.DefaultRuleExecutor;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
@@ -190,6 +195,43 @@ public abstract class AbstractModel<T> implements PMML4Model {
         return pkgName.concat("." + this.getModelId());
     }
 
+    protected List<DataField> getInvalidAsMissingFields() {
+        return this.getRawMiningFields().stream()
+                   .filter(mf -> mf.getUsageType() == FIELDUSAGETYPE.ACTIVE &&
+                                 mf.getInvalidValueTreatment() == INVALIDVALUETREATMENTMETHOD.AS_MISSING)
+                   .map(dataFieldFromMiningField)
+                   .collect(Collectors.toList());
+    }
+
+    private Function<MiningField, ValidationField> validationFieldFromMiningField = (MiningField mf) -> {
+        DataField df = this.getOwner().findDataDictionaryEntry(mf.getName()).getRawDataField();
+        return new ValidationField(df, mf.getInvalidValueTreatment());
+    };
+
+    private Function<MiningField, DataField> dataFieldFromMiningField = (MiningField mf) -> {
+        return this.getOwner().findDataDictionaryEntry(mf.getName()).getRawDataField();
+    };
+
+    private Function<String, DataField> dataFieldFromString = (String str) -> {
+        return this.getOwner().findDataDictionaryEntry(str).getRawDataField();
+    };
+
+    private Function<DataField, String> dataFieldName = (df) -> {
+        return df.getName();
+    };
+
+    private Function<DataField, ValidationField> dataFieldToValidationField = (df) -> {
+        return new ValidationField(df, INVALIDVALUETREATMENTMETHOD.AS_MISSING);
+    };
+
+    private Function<PMMLMiningField, String> toName = (pf) -> {
+        return pf.getName();
+    };
+
+    private Function<PMMLMiningField, ValidationField> toValidationField = (pf) -> {
+        return new ValidationField(pf);
+    };
+
     public Map.Entry<String, String> getMappedMiningPojo() {
         Map<String, String> result = new HashMap<>();
         if (!templateRegistry.contains(getMiningPojoTemplateName())) {
@@ -203,6 +245,10 @@ public abstract class AbstractModel<T> implements PMML4Model {
         vars.put("imports", new ArrayList<>());
         vars.put("dataFields", dataFields);
         vars.put("modelName", this.getModelId());
+        Map<String, ValidationField> validations = dataFields.stream()
+                                                             .filter(df -> df.getFieldUsageType() == FIELDUSAGETYPE.ACTIVE)
+                                                             .collect(Collectors.toMap(toName, toValidationField));
+        vars.put("validations", validations);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             TemplateRuntime.execute(templateRegistry.getNamedTemplate(this.getMiningPojoTemplateName()),
@@ -296,9 +342,14 @@ public abstract class AbstractModel<T> implements PMML4Model {
         }
         Map<String, Object> vars = new HashMap<>();
         String className = this.getRuleUnitClassName();
+        String initializerClassName = this.getModelPackageName() + "." + this.getModelInitializationClassName();
+        String modelApplierClassName = this.getModelPackageName() + "." + this.getModelApplierClassName();
         vars.put("pmmlPackageName", this.getModelPackageName());
         vars.put("className", className);
         vars.put("pojoInputClassName", PMMLRequestData.class.getName());
+        vars.put("modelInitializationClass", initializerClassName);
+        vars.put("modelApplierClass", modelApplierClassName);
+        vars.put("pmmlRuleExecutorClass", DefaultRuleExecutor.class.getCanonicalName());
         List<ExternalBeanDefinition> beanDefs = getExternalMiningClasses();
         if (beanDefs != null) {
             vars.put("externMiningBeans", getExternalMiningClasses());
@@ -592,4 +643,24 @@ public abstract class AbstractModel<T> implements PMML4Model {
 		}
 		return registry;
 	}
+
+    @Override
+    public Map<String, String> getExecutableModelRules() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map.Entry<String, String> getModelInitializerClass() {
+        return null;
+    }
+
+    @Override
+    public Map.Entry<String, String> getModelApplierClass() {
+        return null;
+    }
+
+    @Override
+    public String getPMMLRuleExecutorClassName() {
+        return DefaultRuleExecutor.class.getCanonicalName();
+    }
 }

@@ -15,10 +15,14 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
+import java.util.List;
+
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.Interval;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.Value;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 
 public class PMMLDataField {
@@ -79,6 +83,16 @@ public class PMMLDataField {
 
     public DataField getRawDataField() {
         return dataDictionaryField;
+    }
+
+    public DATATYPE getDataType() {
+        return dataDictionaryField.getDataType();
+    }
+
+    public boolean hasValidation() {
+        List<Value> values = this.dataDictionaryField != null ? this.dataDictionaryField.getValues() : null;
+        List<Interval> intervals = this.dataDictionaryField != null ? this.dataDictionaryField.getIntervals() : null;
+        return ((values != null && !values.isEmpty()) || (intervals != null && !intervals.isEmpty()));
     }
 
     @Override

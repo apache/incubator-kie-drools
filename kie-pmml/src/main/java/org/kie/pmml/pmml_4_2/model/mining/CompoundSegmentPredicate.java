@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.dmg.pmml.pmml_4_2.descr.CompoundPredicate;
 import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
@@ -57,6 +56,21 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
         }
     }
 
+    private String buildJavaAndPredicate(String fieldPrefix, boolean addSeparator) {
+        StringBuilder bldr = new StringBuilder("(");
+        boolean firstPredicate = true;
+        for (PredicateRuleProducer ruleProducer : subpredicates) {
+            if (!firstPredicate) {
+                bldr.append(" && ");
+            } else {
+                firstPredicate = false;
+            }
+            bldr.append("(").append(ruleProducer.getJavaPredicateRule(fieldPrefix, addSeparator)).append(")");
+        }
+        bldr.append(")");
+        return bldr.toString();
+    }
+
     private String buildAndPredicate() {
         StringBuilder bldr = new StringBuilder("(");
         boolean firstPredicate = true;
@@ -72,6 +86,21 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
         return bldr.toString();
     }
 
+    private String buildJavaXorPredicate(String fieldPrefix, boolean addSeparator) {
+        StringBuilder bldr = new StringBuilder("(");
+        boolean firstPredicate = true;
+        for (PredicateRuleProducer ruleProducer : subpredicates) {
+            if (!firstPredicate) {
+                bldr.append(" ^ ");
+            } else {
+                firstPredicate = false;
+            }
+            bldr.append("(").append(ruleProducer.getJavaPredicateRule(fieldPrefix, addSeparator)).append(")");
+        }
+        bldr.append(")");
+        return bldr.toString();
+    }
+
     private String buildXorPredicate() {
         StringBuilder bldr = new StringBuilder("(");
         boolean firstPredicate = true;
@@ -82,6 +111,21 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
                 firstPredicate = false;
             }
             bldr.append("(").append(ruleProducer.getPredicateRule()).append(")");
+        }
+        bldr.append(")");
+        return bldr.toString();
+    }
+
+    private String buildJavaOrPredicate(String fieldPrefix, boolean addSeparator) {
+        StringBuilder bldr = new StringBuilder("(");
+        boolean firstPredicate = true;
+        for (PredicateRuleProducer ruleProducer : subpredicates) {
+            if (!firstPredicate) {
+                bldr.append(" || ");
+            } else {
+                firstPredicate = false;
+            }
+            bldr.append("(").append(ruleProducer.getJavaPredicateRule(fieldPrefix, addSeparator)).append(")");
         }
         bldr.append(")");
         return bldr.toString();
@@ -118,6 +162,18 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
         return fieldNames;
     }
 
+    public String getJavaPrimaryPredicateRule(String fieldPrefix, boolean addSeparator) {
+        if (this.booleanOperator.equalsIgnoreCase("surrogate")) {
+            PredicateRuleProducer ruleProducer = subpredicates.get(0);
+            if (ruleProducer != null) {
+                return ruleProducer.getJavaPredicateRule(fieldPrefix, addSeparator);
+            }
+        } else {
+            throw new IllegalStateException("PMML-CompoundPredicate: Primary predicate is only available when operator is \"surrogate\"");
+        }
+        return null;
+    }
+
     public String getPrimaryPredicateRule() {
         if (this.booleanOperator.equalsIgnoreCase("surrogate")) {
             PredicateRuleProducer ruleProducer = subpredicates.get(0);
@@ -149,6 +205,73 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
         bldr.append(" )");
         return bldr.toString();
     }
+
+    private String calcJavaMissingFields(CompoundSegmentPredicate csp, List<String> fields, String fieldPrefix, boolean addSeparator) {
+        StringBuilder bldr = new StringBuilder("( ");
+        boolean firstFieldName = true;
+        String compoundType = csp.booleanOperator;
+        for (String fieldName : fields) {
+            fieldName = fieldName.substring(0, 1).toUpperCase().concat(fieldName.substring(1));
+            String fldName = fieldPrefix + (addSeparator ? ".get" : "get") + fieldName + "()";
+            if (!firstFieldName) {
+                if ("and".equalsIgnoreCase(compoundType)) {
+                    bldr.append(" || ");
+                } else if ("or".equalsIgnoreCase(compoundType)) {
+                    bldr.append(" && ");
+                }
+            } else {
+                firstFieldName = false;
+            }
+            bldr.append(fldName).append("==true");
+        }
+        bldr.append(" )");
+        return bldr.toString();
+    }
+
+    public String getNextJavaPredicateRule(int lastPredicate, String fieldPrefix, boolean addSeparator) {
+        if (booleanOperator.equalsIgnoreCase("surrogate")) {
+            int index = lastPredicate + 1;
+            Map<PredicateRuleProducer, List<String>> missingFieldsMap = new HashMap<>();
+            for (int counter = 0; counter < index; counter++) {
+                PredicateRuleProducer prp = subpredicates.get(counter);
+                List<String> missingFields = prp.getFieldMissingFieldNames();
+                if (missingFields != null && !missingFields.isEmpty()) {
+                    missingFieldsMap.put(prp, missingFields);
+                }
+            }
+            if (!missingFieldsMap.isEmpty()) {
+                StringBuilder bldr = new StringBuilder("( (");
+                boolean firstField = true;
+                for (PredicateRuleProducer prp : missingFieldsMap.keySet()) {
+                    List<String> mfs = missingFieldsMap.get(prp);
+                    if (!firstField) {
+                        bldr.append(" && ");
+                    } else {
+                        firstField = false;
+                    }
+                    if (prp instanceof CompoundSegmentPredicate) {
+                        bldr.append(calcJavaMissingFields((CompoundSegmentPredicate) prp, mfs, fieldPrefix, addSeparator));
+                    } else {
+                        String fieldName = mfs.get(0);
+                        fieldName = fieldName.substring(0, 1).toUpperCase().concat(fieldName.substring(1));
+                        String fldName = fieldPrefix + (addSeparator ? ".get" : "get") + fieldName + "()";
+                        bldr.append(fldName).append(" == true");
+                    }
+                }
+                bldr.append(") && ");
+                PredicateRuleProducer ruleProducer = subpredicates.get(index);
+                if (ruleProducer != null) {
+                    bldr.append("( ").append(ruleProducer.getJavaPredicateRule(fieldPrefix, addSeparator)).append(" )");
+                }
+                bldr.append(" )");
+                return bldr.toString();
+            }
+        } else {
+            throw new IllegalStateException("PMML-CompoundPredicate: Sub-predicates are only available when operator is \"surrogate\"");
+        }
+        return null;
+    }
+
 
     public String getNextPredicateRule(int lastPredicate) {
         if (booleanOperator.equalsIgnoreCase("surrogate")) {
@@ -213,6 +336,20 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
         return builder.toString();
     }
 
+    private String buildJavaSurrogationPredicate(String fieldPrefix, boolean addSeparator) {
+        StringBuilder builder = new StringBuilder();
+        String predicate = this.getJavaPrimaryPredicateRule(fieldPrefix, addSeparator);
+        builder.append("( ").append(predicate).append(" )");
+        for (int lastPred = 0; lastPred < getSubpredicateCount(); lastPred++) {
+            predicate = this.getNextJavaPredicateRule(lastPred, fieldPrefix, addSeparator);
+            if (predicate != null) {
+                builder.append(" || ( ").append(predicate).append(" )");
+            }
+        }
+
+        return builder.toString();
+    }
+
     @Override
     public String getPredicateRule() {
         if (booleanOperator.equalsIgnoreCase("and")) {
@@ -223,6 +360,20 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
             return buildXorPredicate();
         } else if (hasSurrogation()) {
             return buildSurrogationPredicate();
+        }
+        return null;
+    }
+
+    @Override
+    public String getJavaPredicateRule(String fieldPrefix, boolean addSeparator) {
+        if (booleanOperator.equalsIgnoreCase("and")) {
+            return buildJavaAndPredicate(fieldPrefix, addSeparator);
+        } else if (booleanOperator.equalsIgnoreCase("or")) {
+            return buildJavaOrPredicate(fieldPrefix, addSeparator);
+        } else if (booleanOperator.equalsIgnoreCase("xor")) {
+            return buildJavaXorPredicate(fieldPrefix, addSeparator);
+        } else if (hasSurrogation()) {
+            return buildJavaSurrogationPredicate(fieldPrefix, addSeparator);
         }
         return null;
     }

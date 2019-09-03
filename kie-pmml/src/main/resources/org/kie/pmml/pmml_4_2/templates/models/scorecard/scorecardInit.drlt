@@ -26,7 +26,7 @@
 
 
 
-
+/*
 rule "Init ScoreCard @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
@@ -41,6 +41,7 @@ then
 
     @if{ zero != null } insertLogical( new InitialScore( "@{context}", @{ zero } ) ); @end{}
 end
+*/
 
 rule "Scoring Complete"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }

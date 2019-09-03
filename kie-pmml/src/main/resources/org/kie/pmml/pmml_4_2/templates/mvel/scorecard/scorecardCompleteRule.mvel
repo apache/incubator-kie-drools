@@ -1,0 +1,11 @@
+@declare{'scorecardComplete'}
+
+package @{packageName};
+
+import org.kie.pmml.pmml_4_2.DefaultRuleExecutor;
+
+public class @{className} extends DefaultRuleExecutor {
+   private static String MODEL_NAME = "@{modelName}";
+   private static Model rulesModel;
+   private static KieBase kbase;
+   private 

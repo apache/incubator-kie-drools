@@ -13,6 +13,7 @@
       <Value value="PROGRAMMER" />
       <Value value="TEACHER" />
       <Value value="INSTRUCTOR" />
+      <Value value="STUDENT" />
     </DataField>
     <DataField name="residenceState" optype="categorical" dataType="string">
       <Value value="AP" />

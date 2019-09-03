@@ -52,6 +52,16 @@ public class Regression extends AbstractModel<RegressionModel> {
 		return helper.compactAsJavaId(this.getModelId().concat("RegressionRuleUnit"),true);
 	}
 
+    @Override
+    public String getModelInitializationClassName() {
+        return helper.compactAsJavaId(this.getModelId().concat("RegressionInitializer"), true);
+    }
+
+    @Override
+    public String getModelApplierClassName() {
+        return helper.compactAsJavaId(this.getModelId().concat("RegressionApplier"), true);
+    }
+
 	@Override
 	public MiningSchema getMiningSchema() {
 		for (Serializable ser: rawModel.getExtensionsAndRegressionTablesAndMiningSchemas()) {

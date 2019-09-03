@@ -70,7 +70,7 @@ then
         map.put( "aggregator", utils.mapWeightStrategy( $agg ) );
         map.put( "weighted", utils.isWeighted( $agg ) );
 
-    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+//    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
     utils.applyTemplate( "scorecardScoring.drlt", utils, registry, map, theory );
 end
 
@@ -194,7 +194,7 @@ then
         map.put( "zero", $zero );
         map.put( "useRC", $useRC );
         map.put( "pointsBelow", $rcAlgo == null || "pointsBelow".equals( $rcAlgo ) );
-    utils.applyTemplate( "scorecardDataDeclare.drlt", utils, registry, map, theory );
+//    utils.applyTemplate( "scorecardDataDeclare.drlt", utils, registry, map, theory );
 
     utils.applyTemplate( "scorecardInit.drlt", utils, registry, map, theory );
 end

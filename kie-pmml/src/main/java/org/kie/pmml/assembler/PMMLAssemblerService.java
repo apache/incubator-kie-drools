@@ -18,11 +18,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.errors.SrcError;
@@ -52,7 +54,13 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.jci.CompilationProblem;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
+import org.kie.pmml.pmml_4_2.PMML4Model;
+import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.PMMLResource;
+import org.kie.pmml.pmml_4_2.model.Miningmodel;
+import org.kie.pmml.pmml_4_2.model.PMML4ModelType;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.model.Treemodel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +115,21 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
         if (pmmlCompiler != null) {
             if (pmmlCompiler.getResults().isEmpty()) {
-                addPMMLPojos(pmmlCompiler, resource);
+                PMML pmml = pmmlCompiler.loadModel("org.dmg.pmml.pmml_4_2.descr", resource.getInputStream());
+                PMML4Unit pmmlUnit = new PMML4UnitImpl(pmml);
+                Miningmodel mm = pmmlUnit.getRootMiningModel();
+                if (mm != null) {
+                    Map<String, PMML4Model> children = mm.getChildModels();
+                    addPMMLPojos(children.values());
+                    List<PMML4Model> root = Arrays.asList(mm);
+                    addPMMLPojos(root);
+                } else {
+                    addPMMLPojos(pmmlUnit.getModels());
+                }
+                pmmlUnit.getModels().forEach(m -> {
+                    m.getExecutableModelRules();
+                });
+                //                addPMMLPojos(pmmlCompiler, resource);
                 if (pmmlCompiler.getResults().isEmpty()) {
                     List<PackageDescr> packages = getPackageDescrs(resource);
                     if (packages != null && !packages.isEmpty()) {
@@ -184,6 +206,78 @@ public class PMMLAssemblerService implements KieAssemblerService {
             } catch (IOException e) {
                 kbuilder.addBuilderResult(
                         new DescrBuildWarning(null, descr, descr.getResource(), "Unable to access the dump directory"));
+            }
+        }
+    }
+
+    private void writePojoToSource(KieFileSystem src, Map.Entry<String, String> srcCodeEntry) {
+        if (src == null) {
+            throw new IllegalArgumentException("Invalid KieFileSystem when attempting to write PMML POJO");
+        }
+        if (srcCodeEntry != null) {
+            String key = srcCodeEntry.getKey();
+            String code = srcCodeEntry.getValue();
+            if (code != null && !code.trim().isEmpty()) {
+                Resource res = ResourceFactory.newByteArrayResource(code.getBytes());
+                String sourcePath = key.replaceAll("\\.", "/") + ".java";
+                res.setResourceType(ResourceType.JAVA);
+                res.setSourcePath(sourcePath);
+                src.write(res);
+            }
+        } /*else {
+            throw new IllegalArgumentException("Unable to write POJO to source directory. POJO source is null.");
+          }*/
+    }
+
+    private void addPMMLPojos(Collection<PMML4Model> models) {
+        KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
+        models.forEach(m -> {
+            try {
+                writePojoToSource(javaSource, m.getModelInitializerClass());
+                writePojoToSource(javaSource, m.getMappedMiningPojo());
+                writePojoToSource(javaSource, m.getMappedRuleUnit());
+                writePojoToSource(javaSource, m.getModelApplierClass());
+                Map<String, String> outputTargets = m.getOutputTargetPojos();
+                if (outputTargets != null && !outputTargets.isEmpty()) {
+                    outputTargets.entrySet().forEach(entry -> {
+                        writePojoToSource(javaSource, entry);
+                    });
+                }
+                if (m.getModelType() == PMML4ModelType.TREE) {
+                    writePojoToSource(javaSource, ((Treemodel) m).getTreeNodeJava());
+                }
+                //                Map<String, String> executableModelRules = m.getExecutableModelRules();
+                //                if (executableModelRules != null && !executableModelRules.isEmpty()) {
+                //                    executableModelRules.entrySet().forEach(entry -> {
+                //                        System.out.println(entry.getKey() + " ---> ");
+                //                        System.out.println(entry.getValue());
+                //                        writePojoToSource(javaSource, entry);
+                //                    });
+                //                }
+            } catch (PMML4Exception ex) {
+                kbuilder.addBuilderResult(new SrcError(m, ex.getMessage()));
+            }
+        });
+
+        ResourceReader src = ((KieFileSystemImpl) javaSource).asMemoryFileSystem();
+        List<String> javaFileNames = getJavaFileNames(src);
+        if (javaFileNames != null && !javaFileNames.isEmpty()) {
+            ClassLoader classLoader = rootClassLoader;
+            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl(classLoader);
+            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration("java");
+            MemoryFileSystem trgMfs = new MemoryFileSystem();
+            compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
+            Map<String, byte[]> classesMap = new HashMap<>();
+
+            for (String name : trgMfs.getFileNames()) {
+                classesMap.put(name, trgMfs.getBytes(name));
+            }
+            if (!classesMap.isEmpty()) {
+                ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
+                if (ClassUtils.isCaseSenstiveOS()) {
+                    projectClassLoader.reinitTypes();
+                }
+                projectClassLoader.storeClasses(classesMap);
             }
         }
     }

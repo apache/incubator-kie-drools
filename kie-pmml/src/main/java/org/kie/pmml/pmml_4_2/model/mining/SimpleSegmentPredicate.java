@@ -64,42 +64,63 @@ public class SimpleSegmentPredicate implements PredicateRuleProducer {
 		return "v".concat(getCapitalizedFieldName());
 	}
 	
+    public String getCapitalizedValueFieldName() {
+        return "V".concat(getCapitalizedFieldName());
+    }
+
 	public String getMissingFieldName() {
 		return "m".concat(getCapitalizedFieldName());
 	}
 
+    public String getCapitalizedMissingFieldName() {
+        return "M".concat(getCapitalizedFieldName());
+    }
+
 	@Override
 	public String getPredicateRule() {
-		StringBuilder bldr = new StringBuilder();
-		bldr.append("( ").append(this.getMissingFieldName()).append(" == false )")
-		    .append(" && ( ").append(this.getValueFieldName());
-		if (operator.equalsIgnoreCase(GREATER)) {
-			bldr.append(" > ").append(getValue()).append(" )");
-			return bldr.toString();
-		} else if (operator.equalsIgnoreCase(LESSER)) {
-			bldr.append(" < ").append(getValue()).append(" )");
-			return bldr.toString();
-		} else if (operator.equalsIgnoreCase(EQUAL)) {
-			bldr.append(" == ").append(getValue()).append(" )");
-			return bldr.toString();
-		} else if (operator.equalsIgnoreCase(NOT_EQUAL)) {
-			bldr.append(" != ").append(getValue()).append(" )");
-			return bldr.toString();
-		} else if (operator.equalsIgnoreCase(MISSING)) {
-			return this.getMissingFieldName()+" == true";
-		} else if (operator.equalsIgnoreCase(NOT_MISSING)) {
-			return this.getMissingFieldName()+" == false";
-		} else if (operator.equalsIgnoreCase(GREATER_EQUAL)) {
-			bldr.append(" >= ").append(getValue()).append(" )");
-			return bldr.toString();
-		} else if (operator.equalsIgnoreCase(LESSER_EQUAL)) {
-			bldr.append(" <= ").append(getValue()).append(" )");
-			return bldr.toString();
-		}
-		throw new IllegalStateException("PMML - SimplePredicate: Unknown operator ("+operator+")");
+        return calculatePredicateRule(this.getMissingFieldName(), this.getValueFieldName());
+    }
+
+    @Override
+    public String getJavaPredicateRule(String fieldPrefix, boolean addSeparator) {
+        String missingFieldName = fieldPrefix + (addSeparator ? ".get" : "get") + this.getCapitalizedMissingFieldName() + "()";
+        String valueFieldName = fieldPrefix + (addSeparator ? ".get" : "get") + this.getCapitalizedValueFieldName() + "()";
+        return calculatePredicateRule(missingFieldName, valueFieldName);
+    }
+
+    private String calculatePredicateRule(String missingFieldName, String valueFieldName) {
+        StringBuilder bldr = new StringBuilder();
+        bldr.append("( ").append(missingFieldName).append(" == false )")
+            .append(" && ( ").append(valueFieldName);
+        if (operator.equalsIgnoreCase(GREATER)) {
+            bldr.append(" > ").append(getValue()).append(" )");
+            return bldr.toString();
+        } else if (operator.equalsIgnoreCase(LESSER)) {
+            bldr.append(" < ").append(getValue()).append(" )");
+            return bldr.toString();
+        } else if (operator.equalsIgnoreCase(EQUAL)) {
+            bldr.append(" == ").append(getValue()).append(" )");
+            return bldr.toString();
+        } else if (operator.equalsIgnoreCase(NOT_EQUAL)) {
+            bldr.append(" != ").append(getValue()).append(" )");
+            return bldr.toString();
+        } else if (operator.equalsIgnoreCase(MISSING)) {
+            return missingFieldName + " == true";
+        } else if (operator.equalsIgnoreCase(NOT_MISSING)) {
+            return missingFieldName + " == false";
+        } else if (operator.equalsIgnoreCase(GREATER_EQUAL)) {
+            bldr.append(" >= ").append(getValue()).append(" )");
+            return bldr.toString();
+        } else if (operator.equalsIgnoreCase(LESSER_EQUAL)) {
+            bldr.append(" <= ").append(getValue()).append(" )");
+            return bldr.toString();
+        }
+        throw new IllegalStateException("PMML - SimplePredicate: Unknown operator (" + operator + ")");
 	}
 	
 	private boolean checkValueForStringLiteral(String value) {
+        if (value == null)
+            return false;
 		Pattern p = Pattern.compile("[0-9]*\\.?+[0-9]*");
 		Matcher m = p.matcher(value.trim());
 		return !m.matches();

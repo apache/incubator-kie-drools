@@ -94,10 +94,10 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData[1] = createRequest("124","Sample Score", 50.0, "TEACHER", "AP", true);
         requestData[2] = createRequest("125","Sample Score", 10.0, "STUDENT", "TN", false);
 
-        for (int x = 0; x < 3; x++) {
+        for (int x = 2; x < 3; x++) {
             resultHolder[x] = helpers[x].submitRequest(requestData[x]);
         }
-        for (int p = 0; p < 3; p++) {
+        for (int p = 2; p < 3; p++) {
             checkResult(resultHolder[p],expectedScores[p],expectedResults[p]);
         }
 
@@ -140,7 +140,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
                 .build();
         helper.addPossiblePackageName("org.drools.scorecards.example");
         PMML4Result resultHolder = helper.submitRequest(request);
-
         assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);
@@ -242,12 +241,15 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("ScorecardCompoundPredicate",
                 ResourceFactory.newClassPathResource(SOURCE_COMPOUND_PREDICATE_SCORECARD),
                 null);
+        helper.turnOnFileLogger("/home/lleveric/tmp/scorecard.log");
 
         PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
                 .addParameter("param1", 41.0, Double.class)
                 .addParameter("param2", 21.0, Double.class)
                 .build();
         PMML4Result resultHolder = helper.submitRequest(requestData);
+
+        helper.turnOffFileLogger();
 
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(120.8);

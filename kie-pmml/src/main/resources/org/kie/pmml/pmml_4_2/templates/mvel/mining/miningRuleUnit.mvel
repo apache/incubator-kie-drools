@@ -21,6 +21,7 @@ import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMMLRuleUnit;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMML4Data;
@@ -31,7 +32,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-public class @{className} implements RuleUnit {
+public class @{className} implements RuleUnit, PMMLRuleUnit {
    private DataSource<PMMLRequestData> request;
    private DataSource<PMML4Data> pmmlData;
    private DataSource<PMML4Result> results;
@@ -86,5 +87,18 @@ public class @{className} implements RuleUnit {
    public DataSource<@{miningPojoClassName}> getMiningModelPojo() {
       return miningModelPojo;
    }
+   
+   public @{modelInitializationClass} getModelInitializer() {
+      return new @{modelInitializationClass}();
+   }
+   
+   public @{modelApplierClass} getModelApplier() {
+      return new @{modelApplierClass}();
+   }
+   
+   public @{pmmlRuleExecutorClass} getRuleExecutor() {
+      return new @{pmmlRuleExecutorClass}();
+   }
+   
    
 }

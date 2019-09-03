@@ -23,7 +23,7 @@
 }
 
 @declare{'scorecardInit'}
-
+/*
 rule "Init ScoreCard Params @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
@@ -40,7 +40,7 @@ then
         @end{}
     @end{}
 end
-
+*/
 @end{}
 
 

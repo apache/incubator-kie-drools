@@ -16,6 +16,8 @@
 package org.kie.pmml.pmml_4_2.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.kie.pmml.pmml_4_2.PMMLDataType;
 
@@ -23,16 +25,25 @@ public  class AbstractPMMLData implements PMMLDataType, Serializable {
     private static final long serialVersionUID = 19630331;
     private String modelName;
     private String correlationId;
+    protected Set<String> fieldsInUse;
+    protected Set<String> fieldsAreValid;
+
+    private void initUseAndValidSets() {
+        fieldsInUse = new HashSet<>();
+        fieldsAreValid = new HashSet<>();
+    }
     
     public AbstractPMMLData() {
-    	// Necessary for JAXB
+        initUseAndValidSets();
     }
 
     protected AbstractPMMLData( String correlationId ) {
+        initUseAndValidSets();
         this.correlationId = correlationId;
     }
     
     protected AbstractPMMLData(String correlationId, String modelName) {
+        initUseAndValidSets();
     	this.correlationId = correlationId;
     	this.modelName = modelName;
     }

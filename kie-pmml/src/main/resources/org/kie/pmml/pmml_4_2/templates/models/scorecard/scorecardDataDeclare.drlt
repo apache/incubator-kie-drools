@@ -37,7 +37,7 @@ when
                                || v@{ compactUpperCase( fieldName ) } != $v )
 then
    modify( $sc ) {
-      setM@{ compactUpperCase( fieldName ) }( $m ),
+//      setM@{ compactUpperCase( fieldName ) }( $m ),
       setV@{ compactUpperCase( fieldName ) }( (@{ mapDatatype(fields[fieldName], true) })$v);
    }
 end

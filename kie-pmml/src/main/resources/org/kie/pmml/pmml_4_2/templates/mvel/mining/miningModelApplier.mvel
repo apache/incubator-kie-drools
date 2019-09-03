@@ -1,0 +1,264 @@
+@declare{'miningModelApplier'}
+package @{packageName};
+
+import java.util.List;
+import java.util.ArrayList;
+
+import org.kie.api.KieBase;
+import org.kie.api.pmml.*;
+import org.kie.pmml.pmml_4_2.model.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.drools.core.impl.InternalRuleUnitExecutor;
+import org.drools.core.common.DefaultFactHandle;
+import @{miningPojoClass};
+
+public class @{className} implements ModelApplier {
+   private static final String MODEL_NAME = "@{modelName}";
+   private static final String[] modelIds = {
+      @foreach{seg: segments}"@{seg.segmentId}"
+      @end{","} };
+   private @{miningPojoClass} miningObject;
+   private PMMLRuleUnit ruleUnit;
+   private KieBase kbase;
+   
+   public @{className}() {
+      // Empty constructor
+   }
+   
+   public PMML4Result applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
+      PMML4Result result = new PMML4Result(request.getCorrelationId());
+      this.ruleUnit = ruleUnit;
+      this.kbase = kbase;
+      miningObject = new @{miningPojoClass}(request);
+      
+      @if{ modelMethod == "SELECT_FIRST" }
+      result = processSelectFirst(result, request);
+      @elseif{ modelMethod == "SELECT_ALL" }
+      List<PMML4Result> results = processSelectAll(request);
+      if (results != null) {
+         results.forEach(res -> { System.out.println(res); } );
+         result = results.get(0);
+      }
+      @elseif{ modelMethod == "MODEL_CHAIN" }
+      result = processModelChain(request);
+      @end{}
+
+
+
+      return result;
+   }
+   
+   private PMML4Result processSelectFirst(PMML4Result result, PMMLRequestData requestData) {
+      boolean selected = false;
+      @foreach{seg: segments}
+      if (!selected && canFireSegment@{seg.segmentId}()) {
+         try {
+            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
+            result = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
+            selected = true;
+         } catch (ClassNotFoundException cnf) {
+            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processSelectFirst for mining model [@{modelName}]");
+         }
+      }
+      @end{}
+      return result;
+   }
+   
+   private List<PMML4Result> processSelectAll(PMMLRequestData requestData) {
+      List<PMML4Result> results = new ArrayList<>();
+      @foreach{seg: segments}
+      if (canFireSegment@{seg.segmentId}()) {
+         try {
+            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
+            PMML4Result result = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
+            if (result != null) {
+               results.add(result);
+            }
+         } catch (ClassNotFoundException cnf) {
+            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processSelectAll for mining model [@{modelName}]");
+         }
+      }
+      @end{}
+      return results;
+   }
+   
+   private PMML4Result processModelChain(PMMLRequestData requestData) {
+      PMML4Result result = new PMML4Result(requestData.getCorrelationId());
+      PMML4Result segResult = null;
+      @foreach{seg: segments}
+      if (canFireSegment@{seg.segmentId}()) {
+         try {
+            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
+            if (segResult != null) {
+               @foreach{fld: seg.model.miningFields}@if{ !fld.inDictionary }
+               requestData.addRequestParam("@{fld.name}",segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
+               miningObject.setV@{fld.compactUpperCaseName}( (@{fld.type})segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
+               @end{}@end{}
+            }
+            segResult = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
+            segResult.getResultVariables().entrySet().forEach( e -> {
+               result.addResultVariable(e.getKey(),e.getValue());
+            });
+         } catch (ClassNotFoundException cnf) {
+            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processModelChain for mining model [@{modelName}]");
+         }
+      }
+      @end{}
+      result.setResultCode("OK");
+      return result;
+   }
+   
+   @foreach{ seg: segments }
+   private PMML4Result submitSegment@{seg.segmentId}(Class<?> ruleUnitClass, PMMLRequestData requestData) {
+      PMML4Result baseResult = null;
+      try {
+         if (PMMLRuleUnit.class.isAssignableFrom(ruleUnitClass)) {
+            PMMLRuleUnit ru = (PMMLRuleUnit) ruleUnitClass.newInstance();
+            ModelApplier ma = (ru != null) ? ru.getModelApplier() : null;
+            if (ma != null) {
+               baseResult = ma.applyModel(requestData, kbase, ru);
+            }
+         } else if (RuleUnit.class.isAssignableFrom(ruleUnitClass)) {
+            PMMLRequestData rdata = new PMMLRequestData(requestData.getCorrelationId(), "@{seg.model.modelId}");
+            @foreach{ fld: seg.model.miningFields}
+            rdata.addRequestParam("@{fld.name}",miningObject.getV@{fld.compactUpperCaseName}());
+            @end{}
+            Class<? extends RuleUnit> ruc = (Class<? extends RuleUnit>)ruleUnitClass.newInstance().getClass();
+            @{seg.model.miningPojoClassName} modelObject = new @{seg.model.miningPojoClassName}(rdata);
+            baseResult = new PMML4Result(requestData.getCorrelationId());
+            RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+            executor.getKieSession().insert(modelObject);
+            turnOnLogging(executor);
+            DataSource rqstData = executor.newDataSource("request");
+            DataSource results = executor.newDataSource("results");
+            DataSource pmmlData = executor.newDataSource("pmmlData");
+            rqstData.insert(rdata);
+            results.insert(baseResult);
+            int count = executor.run(ruc);
+         }
+      } catch (InstantiationException e) {
+         throw new RuntimeException("InstantiationException while attempting to create PMMLRuleUnit instance - @{modelName}", e);
+      } catch (IllegalAccessException e) {
+         throw new RuntimeException("IllegalAccessException while attempting to create a PMMLRuleUnit instance - @{modelName}", e);
+      }
+      return baseResult;
+   } 
+   
+   
+   private boolean canFireSegment@{seg.segmentId}() {
+      @if{ seg.alwaysTrue }return true;@elseif{ seg.alwaysFalse }return false;@else{}
+      return @{seg.getJavaPredicateText("miningObject")};
+      @end{}
+   }
+   @end{}
+
+
+   private void turnOnLogging(RuleUnitExecutor executor) {
+      executor.getKieSession().addEventListener(new AgendaEventListener() {
+    
+        @Override
+        public void matchCreated(MatchCreatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void matchCancelled(MatchCancelledEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeMatchFired(BeforeMatchFiredEvent event) {
+            // TODO Auto-generated method stub
+            System.out.println("Firing " + event.getMatch().getRule().getName());
+        }
+        
+        @Override
+        public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterMatchFired(AfterMatchFiredEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+      });
+      executor.getKieSession().addEventListener(new RuleRuntimeEventListener() {
+            
+            @Override
+            public void objectUpdated(ObjectUpdatedEvent event) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void objectInserted(ObjectInsertedEvent event) {
+                // TODO Auto-generated method stub
+                DefaultFactHandle handle = (DefaultFactHandle)event.getFactHandle();
+                System.out.println("Inserting fact: "+handle.getObjectClassName());
+            }
+            
+            @Override
+            public void objectDeleted(ObjectDeletedEvent event) {
+                // TODO Auto-generated method stub
+                DefaultFactHandle handle = (DefaultFactHandle)event.getFactHandle();
+                System.out.println("Deleting fact: "+handle.getObjectClassName());
+            }
+        });
+   }
+
+
+   
+}
+@end{}
+@includeNamed{'miningModelApplier'}

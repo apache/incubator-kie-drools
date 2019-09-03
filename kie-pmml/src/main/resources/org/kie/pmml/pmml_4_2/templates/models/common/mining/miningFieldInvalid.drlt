@@ -23,7 +23,7 @@
     */
 }
 
-
+/*
 
 @declare{'miningFieldInvalidRule'}
 rule "miningFieldInvalid_PMML4Data_@{model}_@{name}"
@@ -40,7 +40,7 @@ then
    pmmlData.insert( $x );
 end
 
-
+*/
 
 @end{}
 

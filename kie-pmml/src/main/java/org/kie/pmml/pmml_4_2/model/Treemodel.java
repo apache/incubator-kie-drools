@@ -101,6 +101,16 @@ public class Treemodel extends AbstractModel<TreeModel> {
 		return helper.compactAsJavaId(this.getModelId().concat("TreeRuleUnit"),true);
 	}
 
+    @Override
+    public String getModelInitializationClassName() {
+        return helper.compactAsJavaId(this.getModelId().concat("TreeInitialization"), true);
+    }
+
+    @Override
+    public String getModelApplierClassName() {
+        return helper.compactAsJavaId(this.getModelId().concat("TreeApplier"), true);
+    }
+
 	@Override
 	public MiningSchema getMiningSchema() {
 		for (Serializable ser: rawModel.getExtensionsAndNodesAndMiningSchemas()) {

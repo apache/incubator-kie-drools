@@ -17,15 +17,18 @@ package org.kie.pmml.pmml_4_2.model;
 
 import org.dmg.pmml.pmml_4_2.descr.DataField;
 import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.INVALIDVALUETREATMENTMETHOD;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 
 public class PMMLMiningField extends PMMLDataField {
 	private boolean inDictionary;
 	private String modelId;
 	private FIELDUSAGETYPE fieldUsageType;
+    private INVALIDVALUETREATMENTMETHOD invalidValueTreatment;
 
 	public PMMLMiningField(MiningField miningField, DataField field, String modelId, boolean inDictionary) {
 		super(miningField,field);
+        this.invalidValueTreatment = miningField.getInvalidValueTreatment();
 		this.modelId = modelId;
 		this.fieldUsageType = miningField.getUsageType();
 		this.inDictionary = inDictionary;
@@ -33,6 +36,7 @@ public class PMMLMiningField extends PMMLDataField {
 	
 	public PMMLMiningField(MiningField miningField, String modelId) {
 		super(miningField, null);
+        this.invalidValueTreatment = miningField.getInvalidValueTreatment();
 		this.fieldUsageType = miningField.getUsageType();
 		this.modelId = modelId;
 		this.inDictionary = false;
@@ -49,6 +53,10 @@ public class PMMLMiningField extends PMMLDataField {
 	public FIELDUSAGETYPE getFieldUsageType() {
 		return fieldUsageType;
 	}
+
+    public INVALIDVALUETREATMENTMETHOD getInvalidValueTreatment() {
+        return invalidValueTreatment;
+    }
 
 	public void setFieldUsageType(FIELDUSAGETYPE fieldUsageType) {
 		this.fieldUsageType = fieldUsageType;

@@ -1,0 +1,134 @@
+@declare{'scorecardApplierClass'}
+package @{packageName};
+
+import org.kie.api.KieBase;
+import org.kie.api.pmml.*;
+import org.kie.pmml.pmml_4_2.model.ScoreCard;
+import org.kie.pmml.pmml_4_2.model.scorecard.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+
+import @{miningPojoClass};
+
+public class @{className} implements ModelApplier {
+   private static final String MODEL_NAME = "@{modelName}";
+   
+   public @{className}() {
+      // empty constructor
+   }
+   
+   
+   
+   public PMML4Result applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
+      PMML4Result result = new PMML4Result(request.getCorrelationId());
+      RuleUnitExecutor executor = null;
+      if (kbase != null) {
+         executor = RuleUnitExecutor.create().bind(kbase);
+         if (executor != null) {
+            @{miningPojoClass} miningObject = new @{miningPojoClass}(request);
+            ScoreCard card = new ScoreCard(MODEL_NAME, 0.0, miningObject, @{enableRC}, @{pointsBelow}, new java.util.LinkedHashMap() );
+            InitialScore initScore = new InitialScore(MODEL_NAME,@{initialScore});
+            System.out.println("Mining Object - "+miningObject.toString());
+            DataSource requestData = executor.newDataSource("request");
+            DataSource results = executor.newDataSource("results");
+            DataSource pmmlData = executor.newDataSource("pmmlData");
+            requestData.insert(request);
+            results.insert(result);
+            executor.getKieSession().insert(miningObject);
+            executor.getKieSession().insert(card);
+            executor.getKieSession().insert(initScore);
+            ModelInitializer mi = ruleUnit.getModelInitializer();
+            if (mi != null) {
+               mi.initializeModelSession(executor.getKieSession());
+            }
+            PMMLRuleExecutor ruleExec = ruleUnit.getRuleExecutor();
+            if (ruleExec != null) {
+               int runCount = ruleExec.executeRules(executor,ruleUnit);
+               System.out.println("Count of rules = "+runCount);
+               System.out.println("Results - "+result);
+            }
+         }
+      }
+      return result;
+   }
+   
+   private void turnOnLogging(RuleUnitExecutor executor) {
+      executor.getKieSession().addEventListener(new AgendaEventListener() {
+    
+        @Override
+        public void matchCreated(MatchCreatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void matchCancelled(MatchCancelledEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void beforeMatchFired(BeforeMatchFiredEvent event) {
+            // TODO Auto-generated method stub
+            System.out.println("Firing " + event.getMatch().getRule().getName());
+        }
+        
+        @Override
+        public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+        
+        @Override
+        public void afterMatchFired(AfterMatchFiredEvent event) {
+            // TODO Auto-generated method stub
+        
+        }
+      });
+   }
+
+}
+@end{}
+@includeNamed{'scorecardApplierClass'}

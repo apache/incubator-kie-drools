@@ -39,10 +39,12 @@ import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.command.ExecutableCommand;
+import org.kie.api.pmml.ModelApplier;
 import org.kie.api.pmml.OutputFieldFactory;
 import org.kie.api.pmml.PMML4Output;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMMLRuleUnit;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -220,6 +222,16 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         return kbase;
     }
 
+    private Class<? extends RuleUnit> getRuleUnitClass(KieBase kbase) {
+        Class<? extends RuleUnit> ruleUnitClass = null;
+
+        String startingRule = isMining() ? "Start Mining - " + requestData.getModelName() : "RuleUnitIndicator";
+        List<String> possibleStartingPackages = calculatePossiblePackageNames(requestData.getModelName(), packageName);
+        ruleUnitClass = getStartingRuleUnit(startingRule, (InternalKnowledgeBase) kbase, possibleStartingPackages);
+
+        return ruleUnitClass;
+    }
+
     @Override
     public PMML4Result execute(Context context) {
         if (isjPMMLAvailableToClassLoader(getClass().getClassLoader())) {
@@ -242,61 +254,71 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
             if (!hasUnits) {
                 resultHolder.setResultCode("ERROR-2");
             } else {
-                RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-                DataSource<PMMLRequestData> data = executor.newDataSource("request", this.requestData);
-                DataSource<PMML4Result> resultData = executor.newDataSource("results", resultHolder);
-                if (complexInputObjects != null && !complexInputObjects.isEmpty()) {
-                    Map<String, DataSource<?>> datasources = new HashMap<>();
-                    for (Object obj : complexInputObjects) {
-                        String dsName = "externalBean" + obj.getClass().getSimpleName();
-                        if (datasources.containsKey(dsName)) {
-                            insertDataObject(datasources.get(dsName), obj);
-                        } else {
-                            datasources.put(dsName, createDataSource(executor, dsName, obj));
+                Class<? extends RuleUnit> ruleUnitClass = getRuleUnitClass(kbase);
+                if (ruleUnitClass != null && PMMLRuleUnit.class.isAssignableFrom(ruleUnitClass)) {
+                    PMMLRuleUnit ru = null;
+                    try {
+                        ru = (PMMLRuleUnit) ruleUnitClass.newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        resultHolder.setResultCode("ERROR-4");
+                    }
+                    if (ru != null) {
+                        ModelApplier ma = ru.getModelApplier();
+                        resultHolder = ma.applyModel(requestData, kbase, ru);
+                    }
+                } else {
+                    RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+                    DataSource<PMMLRequestData> data = executor.newDataSource("request", this.requestData);
+                    DataSource<PMML4Result> resultData = executor.newDataSource("results", resultHolder);
+                    if (complexInputObjects != null && !complexInputObjects.isEmpty()) {
+                        Map<String, DataSource<?>> datasources = new HashMap<>();
+                        for (Object obj : complexInputObjects) {
+                            String dsName = "externalBean" + obj.getClass().getSimpleName();
+                            if (datasources.containsKey(dsName)) {
+                                insertDataObject(datasources.get(dsName), obj);
+                            } else {
+                                datasources.put(dsName, createDataSource(executor, dsName, obj));
+                            }
                         }
                     }
-                }
-                executor.newDataSource("pmmlData");
-                if (isMining()) {
-                    executor.newDataSource("childModelSegments");
-                    executor.newDataSource("miningModelPojo");
-                }
-                // Attempt to fix type issues when the unmarshaller
-                // doesn't set the parameter's
-                // value to an object of the correct type
-                Collection<ParameterInfo> parms = requestData.getRequestParams();
-                for (ParameterInfo pi : parms) {
-                    Class<?> clazz = pi.getType();
-                    if (!clazz.isAssignableFrom(pi.getValue().getClass())) {
-                        try {
-                            Object o = clazz.getDeclaredConstructor(pi.getValue().getClass()).newInstance(pi.getValue());
-                            pi.setValue(o);
-                        } catch (Throwable t) {
-                            resultHolder.setResultCode("ERROR-3");
-                            return resultHolder;
+                    executor.newDataSource("pmmlData");
+                    if (isMining()) {
+                        executor.newDataSource("childModelSegments");
+                        executor.newDataSource("miningModelPojo");
+                    }
+                    // Attempt to fix type issues when the unmarshaller
+                    // doesn't set the parameter's
+                    // value to an object of the correct type
+                    Collection<ParameterInfo> parms = requestData.getRequestParams();
+                    for (ParameterInfo pi : parms) {
+                        Class<?> clazz = pi.getType();
+                        if (!clazz.isAssignableFrom(pi.getValue().getClass())) {
+                            try {
+                                Object o = clazz.getDeclaredConstructor(pi.getValue().getClass()).newInstance(pi.getValue());
+                                pi.setValue(o);
+                            } catch (Throwable t) {
+                                resultHolder.setResultCode("ERROR-3");
+                                return resultHolder;
+                            }
                         }
                     }
+                    data.insert(requestData);
+                    resultData.insert(resultHolder);
+                    executor.run(ruleUnitClass);
                 }
-                data.insert(requestData);
-                resultData.insert(resultHolder);
-                String startingRule = isMining() ? "Start Mining - "+requestData.getModelName():"RuleUnitIndicator";
-                List<String> possibleStartingPackages = calculatePossiblePackageNames(requestData.getModelName(), packageName);
-                Class<? extends RuleUnit> ruleUnitClass= getStartingRuleUnit(startingRule, (InternalKnowledgeBase)kbase, possibleStartingPackages);
-                executor.run(ruleUnitClass);
             }
         }
         List<PMML4Output<?>> outputs = OutputFieldFactory.createOutputsFromResults(resultHolder);
         Optional<ExecutionResultImpl> execRes = Optional.ofNullable(ctx.lookup(ExecutionResultImpl.class));
         ctx.register(PMML4Result.class, resultHolder);
-        execRes.ifPresent(result -> {
+        if (execRes.isPresent()) {
+            ExecutionResultImpl result = execRes.get();
             result.setResult("results", resultHolder);
-        });
-        outputs.forEach(out -> {
-            execRes.ifPresent(result -> {
+            outputs.forEach(out -> {
                 result.setResult(out.getName(), out);
+                //                resultHolder.updateResultVariable(out.getName(), out);
             });
-            resultHolder.updateResultVariable(out.getName(), out);
-        });
+        }
 
         return resultHolder;
     }

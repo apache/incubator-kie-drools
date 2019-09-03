@@ -40,6 +40,11 @@ public class BooleanSegmentPredicate implements PredicateRuleProducer {
 		return alwaysTrue ? "(1 == 1)" : "(1 == 0)";
 	}
 
+    @Override
+    public String getJavaPredicateRule(String fieldPrefix, boolean addSeparator) {
+        return this.getPredicateRule();
+    }
+
 	@Override
 	public List<String> getPredicateFieldNames() {
 		return new ArrayList<>();
