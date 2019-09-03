@@ -115,6 +115,7 @@ public abstract class BaseFEELFunction
 
                     return result;
                 } else {
+                    // CandidateMethod cm could be null also if reflection failed on Platforms not supporting getClass().getDeclaredMethods()
                     String ps = getClass().toString();
                     logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'" );
                     ctx.notifyEvt(() -> {
