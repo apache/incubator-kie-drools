@@ -165,7 +165,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "minute", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
-                        this.currentScope.define(new VariableSymbol( "time offset", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
                         break;
                     case DATE_TIME:
@@ -179,7 +179,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "minute", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
-                        this.currentScope.define(new VariableSymbol( "time offset", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
                         break;
                     case DURATION:
