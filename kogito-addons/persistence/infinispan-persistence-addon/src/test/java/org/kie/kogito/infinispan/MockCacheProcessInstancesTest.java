@@ -66,15 +66,14 @@ public class MockCacheProcessInstancesTest {
         RemoteCache<Object, Object> cache = mock(RemoteCache.class);
         
         when(cacheManager.administration()).thenReturn(admin);
-        when(admin.getOrCreateCache(any(), anyString())).thenReturn(cache);
+        when(admin.getOrCreateCache(any(), (String)any())).thenReturn(cache);
         
         when(cache.put(any(), any())).then(new Answer<Object>() {
 
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object key = invocation.getArgumentAt(0, Object.class);
-                Object value = invocation.getArgumentAt(1, Object.class);
-                
+                Object key = invocation.getArgument(0, Object.class);
+                Object value = invocation.getArgument(1, Object.class);
                 return mockCache.put(key, value);
             }
         });
@@ -83,7 +82,7 @@ public class MockCacheProcessInstancesTest {
 
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object key = invocation.getArgumentAt(0, Object.class);               
+                Object key = invocation.getArgument(0, Object.class);               
                 
                 return mockCache.get(key);
             }

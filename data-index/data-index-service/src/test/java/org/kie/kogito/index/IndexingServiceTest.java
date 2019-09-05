@@ -130,7 +130,7 @@ public class IndexingServiceTest {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoCloudEvent startEvent = getTravelsCloudEvent(processId, processInstanceId, "ProcessInstanceEvent", ProcessInstanceState.ACTIVE, null, null);
-        consumer.onProcessInstanceEvent(startEvent);
+        indexCloudEvent(startEvent);
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: ACTIVE, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
@@ -157,7 +157,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
         KogitoCloudEvent subProcessStartEvent = getTravelsCloudEvent(subProcessId, subProcessInstanceId, "ProcessInstanceEvent", ProcessInstanceState.ACTIVE, processInstanceId, processId);
-        consumer.onProcessInstanceEvent(subProcessStartEvent);
+        indexCloudEvent(subProcessStartEvent);
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + subProcessInstanceId + "\\\", state: ACTIVE, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
@@ -169,7 +169,7 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].parentProcessInstanceId", is(processInstanceId));
 
         KogitoCloudEvent endEvent = getTravelsCloudEvent(processId, processInstanceId, "ProcessInstanceEvent", ProcessInstanceState.COMPLETED, null, null);
-        consumer.onProcessInstanceEvent(endEvent);
+        indexCloudEvent(endEvent);
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: COMPLETED, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
                 .when().post("/graphql")
@@ -196,6 +196,11 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
+    }
+    
+    private void indexCloudEvent(KogitoCloudEvent event){
+        consumer.onProcessInstanceEvent(event);
+        consumer.onProcessInstanceDomainEvent(event);
     }
 
     private String getProtoBufferFileWithoutModelType() {

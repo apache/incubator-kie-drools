@@ -29,19 +29,29 @@ import org.slf4j.LoggerFactory;
 public class ReactiveMessagingEventConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveMessagingEventConsumer.class);
-    private static final String TOPIC = "kogito-processinstances-events";
-    
+    private static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
+    private static final String KOGITO_PROCESSDOMAIN_EVENTS = "kogito-processdomain-events";
+
     @Inject
     IndexingService indexingService;
 
-    @Incoming(TOPIC)
+    @Incoming(KOGITO_PROCESSINSTANCES_EVENTS)
     public void onProcessInstanceEvent(KogitoCloudEvent event) {
         try {
-            LOGGER.debug("Received KogitoCloudEvent \n{}", event);
+            LOGGER.debug("Process instance consumer received KogitoCloudEvent: \n{}", event);
             indexingService.indexProcessInstance(event);
-            indexingService.indexProcessInstanceModel(event);    
-        } catch (Throwable t){
-            LOGGER.error("Error processing KogitoCloudEvent: {}", t.getMessage(), t);   
+        } catch (Exception ex){
+            LOGGER.error("Error processing KogitoCloudEvent: {}", ex.getMessage(), ex);   
+        }
+    }
+
+    @Incoming(KOGITO_PROCESSDOMAIN_EVENTS)
+    public void onProcessInstanceDomainEvent(KogitoCloudEvent event) {
+        try {
+            LOGGER.debug("Process domain consumer received KogitoCloudEvent: \n{}", event);
+            indexingService.indexProcessInstanceModel(event);
+        } catch (Exception ex){
+            LOGGER.error("Error processing KogitoCloudEvent: {}", ex.getMessage(), ex);
         }
     }
 }
