@@ -21,10 +21,14 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -68,6 +72,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
+    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
+            variableListenerClass = DummyVariableListener.class)
     public List<String> getShadowVariableList() {
         return shadowVariableList;
     }
@@ -77,6 +83,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
+    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
+            variableListenerClass = DummyVariableListener.class)
     public Map<String, String> getShadowVariableMap() {
         return shadowVariableMap;
     }
@@ -88,5 +96,39 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public static class DummyVariableListener implements VariableListener<TestdataDeepCloningEntity> {
+
+        @Override
+        public void beforeEntityAdded(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+        @Override
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+        @Override
+        public void beforeVariableChanged(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+        @Override
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+        @Override
+        public void beforeEntityRemoved(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+        @Override
+        public void afterEntityRemoved(ScoreDirector scoreDirector, TestdataDeepCloningEntity testdataDeepCloningEntity) {
+            // Do nothing
+        }
+
+    }
 
 }
