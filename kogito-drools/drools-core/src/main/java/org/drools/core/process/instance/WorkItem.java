@@ -16,6 +16,7 @@
 
 package org.drools.core.process.instance;
 
+import java.util.Date;
 import java.util.Map;
 
 public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
@@ -43,4 +44,12 @@ public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
     String getNodeInstanceId();
 
     long getNodeId();
+    
+    void setPhaseId(String phaseId);
+    
+    void setPhaseStatus(String phaseStatus);
+
+    void setStartDate(Date date);
+    
+    void setCompleteDate(Date date);
 }

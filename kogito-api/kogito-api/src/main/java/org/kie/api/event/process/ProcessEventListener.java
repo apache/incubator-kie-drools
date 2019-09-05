@@ -102,5 +102,17 @@ public interface ProcessEventListener
      * @param event
      */
     default void afterSLAViolated(SLAViolatedEvent event){};
+    
+    /**
+     * This listener method is invoked right before a work item transition.
+     * @param event
+     */
+    default void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {};
+    
+    /**
+     * This listener method is invoked right after a work item transition.
+     * @param event
+     */
+    default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {};
 
 }

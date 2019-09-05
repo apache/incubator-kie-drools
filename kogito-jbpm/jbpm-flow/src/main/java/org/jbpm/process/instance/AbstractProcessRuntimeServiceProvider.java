@@ -50,16 +50,16 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                 id -> Optional.ofNullable(
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
-        
+        this.eventSupport = new ProcessEventSupport(this.unitOfWorkManager);
         this.timerService = timerService;
-        this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager);
+        this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 
         for (String workItem : workItemHandlerProvider.names()) {
             workItemManager.registerWorkItemHandler(
                     workItem, workItemHandlerProvider.forName(workItem));
         }
         
-        this.eventSupport = new ProcessEventSupport(this.unitOfWorkManager);
+        
         
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
             this.eventSupport.addEventListener(listener);

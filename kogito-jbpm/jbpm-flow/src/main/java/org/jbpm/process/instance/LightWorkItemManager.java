@@ -15,21 +15,32 @@
 
 package org.jbpm.process.instance;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.process.instance.impl.workitem.Abort;
+import org.jbpm.process.instance.impl.workitem.Active;
+import org.jbpm.process.instance.impl.workitem.Complete;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.internal.runtime.Closeable;
+import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.signal.SignalManager;
 
 public class LightWorkItemManager implements WorkItemManager {
@@ -39,10 +50,15 @@ public class LightWorkItemManager implements WorkItemManager {
 
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
+    private final ProcessEventSupport eventSupport;
+    
+    private Complete completePhase = new Complete();
+    private Abort abortPhase = new Abort();
 
-    public LightWorkItemManager(ProcessInstanceManager processInstanceManager, SignalManager signalManager) {
+    public LightWorkItemManager(ProcessInstanceManager processInstanceManager, SignalManager signalManager, ProcessEventSupport eventSupport) {
         this.processInstanceManager = processInstanceManager;
         this.signalManager = signalManager;
+        this.eventSupport = eventSupport;
     }
 
     public void internalExecuteWorkItem(WorkItem workItem) {
@@ -50,7 +66,13 @@ public class LightWorkItemManager implements WorkItemManager {
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
+            ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
+            Transition<?> transition = new TransitionToActive();
+            eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
+            
             handler.executeWorkItem(workItem, this);
+            
+            eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
         } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
                                                     workItem.getName() );
     }    
@@ -63,9 +85,18 @@ public class LightWorkItemManager implements WorkItemManager {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
+            workItem.setCompleteDate(new Date());
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
+                
+                ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
+                Transition<?> transition = new TransitionToAbort(Collections.emptyList());
+                eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
+                
                 handler.abortWorkItem(workItem, this);
+                workItem.setPhaseId(Abort.ID);
+                workItem.setPhaseStatus(Abort.STATUS);
+                eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {
                 workItems.remove( workItem.getId() );
                 throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
@@ -112,33 +143,84 @@ public class LightWorkItemManager implements WorkItemManager {
         return workItems.get(id);
     }
 
-    public void completeWorkItem(String id, Map<String, Object> results) {
+    public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
         WorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
-            (workItem).setResults(results);
-            ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
-            (workItem).setState(WorkItem.COMPLETED);
-            // process instance may have finished already
-            if (processInstance != null) {
-                processInstance.signalEvent("workItemCompleted", workItem);
+            if (!workItem.enforce(policies)) {
+                throw new NotAuthorizedException("Work item can be completed as it does not fulfil policies (e.g. security)");
             }
-            workItems.remove(id);
+            ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
+            Transition<?> transition = new TransitionToComplete(results, Arrays.asList(policies));
+            eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
+            workItem.setResults(results); 
+            workItem.setPhaseId(Complete.ID);
+            workItem.setPhaseStatus(Complete.STATUS);
+            completePhase.apply(workItem, transition);
+            internalCompleteWorkItem(workItem);
+            
+            eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
+        } else {
+            throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
+        }
+    }
+    
+    public void internalCompleteWorkItem(WorkItem workItem) {
+        ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());                    
+        workItem.setState(WorkItem.COMPLETED);
+        workItem.setCompleteDate(new Date());
+                
+        // process instance may have finished already
+        if (processInstance != null) {
+            processInstance.signalEvent("workItemCompleted", workItem);
+        }
+        workItems.remove(workItem.getId());
+ 
+    }
+    
+    public void transitionWorkItem(String id, Transition<?> transition) {
+        WorkItem workItem = workItems.get(id);
+        // work item may have been aborted
+        if (workItem != null) {
+                        
+            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
+                eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
+                
+                handler.transitionToPhase(workItem, this, transition);
+                
+                eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
+            } else {
+                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                            workItem.getName() );
+            }
+                
         } else {
             throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
         }
     }
 
-    public void abortWorkItem(String id) {
+    public void abortWorkItem(String id, Policy<?>... policies) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
+            if (!workItem.enforce(policies)) {
+                throw new NotAuthorizedException("Work item can be aborted as it does not fulfil policies (e.g. security)");
+            }
             ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
+            Transition<?> transition = new TransitionToAbort(Arrays.asList(policies));
+            eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
             workItem.setState(WorkItem.ABORTED);
+            abortPhase.apply(workItem, transition);
+            
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
+            workItem.setPhaseId(Abort.ID);
+            workItem.setPhaseStatus(Abort.STATUS);
+            eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             workItems.remove(id);
         }
     }
@@ -178,5 +260,71 @@ public class LightWorkItemManager implements WorkItemManager {
            this.retryWorkItemWithParams( workItemID, params );
        }
         
+    }
+    
+    private class TransitionToActive implements Transition<Void> {
+
+        @Override
+        public String phase() {
+            return Active.ID;
+        }
+
+        @Override
+        public Void data() {
+            return null;
+        }
+
+        @Override
+        public List<Policy<?>> policies() {
+            return null;
+        }       
+    }
+    
+    private class TransitionToAbort implements Transition<Void> {
+
+        private List<Policy<?>> policies;
+        
+        TransitionToAbort(List<Policy<?>> policies) {
+            this.policies = policies;
+        }
+        
+        @Override
+        public String phase() {
+            return Abort.ID;
+        }
+
+        @Override
+        public Void data() {
+            return null;
+        }
+
+        @Override
+        public List<Policy<?>> policies() {
+            return policies;
+        }       
+    }
+    
+    private class TransitionToComplete implements Transition<Map<String, Object>> {
+        private Map<String, Object> data;
+        private List<Policy<?>> policies;
+        
+        TransitionToComplete(Map<String, Object> data, List<Policy<?>> policies) {
+            this.data = data;
+            this.policies = policies;
+        }
+        @Override
+        public String phase() {
+            return Complete.ID;
+        }
+
+        @Override
+        public Map<String, Object> data() {
+            return data;
+        }
+
+        @Override
+        public List<Policy<?>> policies() {
+            return policies;
+        }       
     }
 }

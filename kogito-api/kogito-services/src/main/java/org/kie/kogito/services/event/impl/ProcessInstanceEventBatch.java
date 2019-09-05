@@ -17,22 +17,25 @@ package org.kie.kogito.services.event.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessWorkItemTransitionEvent;
+import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
+import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 
 
 public class ProcessInstanceEventBatch implements EventBatch {
@@ -48,7 +51,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     @Override
     public Collection<DataEvent<?>> events() {
-        Map<String, ProcessInstanceEventBody> processInstances = new HashMap<>();
+        Map<String, ProcessInstanceEventBody> processInstances = new LinkedHashMap<>();
+        Map<String, UserTaskInstanceEventBody> userTaskInstances = new LinkedHashMap<>();
         
         for (ProcessEvent event : rawEvents) {
             ProcessInstanceEventBody body = processInstances.computeIfAbsent(event.getProcessInstance().getId(), key -> create(event));
@@ -72,12 +76,49 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 body.update()
                 .endDate(((WorkflowProcessInstance)event.getProcessInstance()).getEndDate())
                 .state(event.getProcessInstance().getState());
+            } else if (event instanceof ProcessWorkItemTransitionEvent) {
+                ProcessWorkItemTransitionEvent workItemTransitionEvent = (ProcessWorkItemTransitionEvent) event;
+                WorkItem workItem = workItemTransitionEvent.getWorkItem();
+                if (workItem instanceof HumanTaskWorkItem && workItemTransitionEvent.isTransitioned()) {
+                    userTaskInstances.putIfAbsent(workItem.getId(), createUserTask(workItemTransitionEvent));                    
+                }
             }
             
         }
         
+        Collection<DataEvent<?>> processedEvents = new ArrayList<>();
+                
+        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(null, pi.metaData(), pi)).forEach(processedEvents::add);
+        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(null, pi.metaData(), pi)).forEach(processedEvents::add);
         
-        return processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(null, pi.metaData(), pi)).collect(Collectors.toList());
+        return processedEvents;
+    }
+
+    private UserTaskInstanceEventBody createUserTask(ProcessWorkItemTransitionEvent workItemTransitionEvent) {
+        WorkflowProcessInstance pi = (WorkflowProcessInstance) workItemTransitionEvent.getProcessInstance();
+        HumanTaskWorkItem workItem = (HumanTaskWorkItem) workItemTransitionEvent.getWorkItem();
+        return UserTaskInstanceEventBody.create()
+                .id(workItem.getId())
+                .state(workItem.getPhaseStatus())
+                .taskName(workItem.getTaskName())
+                .taskDescription(workItem.getTaskDescription())
+                .taskPriority(workItem.getTaskPriority())
+                .actualOwner(workItem.getActualOwner())
+                .startDate(workItem.getStartDate())
+                .completeDate(workItem.getCompleteDate())
+                .adminGroups(workItem.getAdminGroups())
+                .adminUsers(workItem.getAdminUsers())
+                .excludedUsers(workItem.getExcludedUsers())
+                .potentialGroups(workItem.getPotentialGroups())
+                .potentialUsers(workItem.getPotentialUsers())
+                .processInstanceId(pi.getId())
+                .rootProcessInstanceId(pi.getRootProcessInstanceId())
+                .processId(pi.getProcessId())
+                .rootProcessId(pi.getRootProcessId())
+                .inputs(workItem.getParameters())
+                .outputs(workItem.getResults())
+                .build();
+  
     }
 
     protected ProcessInstanceEventBody create(ProcessEvent event) {

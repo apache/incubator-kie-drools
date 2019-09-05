@@ -42,6 +42,8 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
@@ -198,37 +200,55 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public WorkItem workItem(String workItemId) {
+    public WorkItem workItem(String workItemId, Policy<?>... policies) {
         WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
-                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId))
+                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId) && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
                 .findFirst()
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
-        return new BaseWorkItem(workItemInstance.getWorkItem().getId(), (String)workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()), workItemInstance.getWorkItem().getParameters());
+        return new BaseWorkItem(workItemInstance.getWorkItem().getId(), 
+                                (String)workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()), 
+                                workItemInstance.getWorkItem().getState(),
+                                workItemInstance.getWorkItem().getPhaseId(),
+                                workItemInstance.getWorkItem().getPhaseStatus(),
+                                workItemInstance.getWorkItem().getParameters(),
+                                workItemInstance.getWorkItem().getResults());
     }
 
     @Override
-    public List<WorkItem> workItems() {
+    public List<WorkItem> workItems(Policy<?>... policies) {
         return ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
-                .filter(ni -> ni instanceof WorkItemNodeInstance)
-                .map(ni -> new BaseWorkItem(((WorkItemNodeInstance)ni).getWorkItemId(), (String)((WorkItemNodeInstance)ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()), ((WorkItemNodeInstance)ni).getWorkItem().getParameters()))
+                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
+                .map(ni -> new BaseWorkItem(((WorkItemNodeInstance)ni).getWorkItemId(), 
+                                            (String)((WorkItemNodeInstance)ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()), 
+                                            ((WorkItemNodeInstance)ni).getWorkItem().getState(),
+                                            ((WorkItemNodeInstance)ni).getWorkItem().getPhaseId(),
+                                            ((WorkItemNodeInstance)ni).getWorkItem().getPhaseStatus(),
+                                            ((WorkItemNodeInstance)ni).getWorkItem().getParameters(),
+                                            ((WorkItemNodeInstance)ni).getWorkItem().getResults()))
                 .collect(Collectors.toList());
         
     }
 
     @Override
-    public void completeWorkItem(String id, Map<String, Object> variables) {
-        this.rt.getWorkItemManager().completeWorkItem(id, variables);
+    public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
+        this.rt.getWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
     
     @Override
-    public void abortWorkItem(String id) {
-        this.rt.getWorkItemManager().abortWorkItem(id);
+    public void abortWorkItem(String id, Policy<?>... policies) {
+        this.rt.getWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
     
+    @Override
+    public void transitionWorkItem(String id, Transition<?> transition) {
+        this.rt.getWorkItemManager().transitionWorkItem(id, transition);
+        removeOnFinish();
+    }
+
     protected void removeOnFinish() {
 
         if (legacyProcessInstance.getState() != ProcessInstance.STATE_ACTIVE && legacyProcessInstance.getState() != ProcessInstance.STATE_ERROR) {            

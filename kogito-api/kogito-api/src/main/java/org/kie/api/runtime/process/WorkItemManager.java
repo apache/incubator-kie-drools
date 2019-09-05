@@ -18,6 +18,9 @@ package org.kie.api.runtime.process;
 
 import java.util.Map;
 
+import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Transition;
+
 /**
  * A work item manager is responsible for finding the right
  * work item handler when a work item should be executed and
@@ -35,7 +38,8 @@ public interface WorkItemManager {
      * @param results the results related to this work item, or <code>null</code> if there are no results
      */
     void completeWorkItem(String id,
-                          Map<String, Object> results);
+                          Map<String, Object> results, 
+                          Policy<?>... policies);
 
     /**
      * Notifies the work item manager that the work item with the given
@@ -43,7 +47,8 @@ public interface WorkItemManager {
      *
      * @param id the id of the work item that should be aborted
      */
-    void abortWorkItem(String id);
+    void abortWorkItem(String id, 
+                       Policy<?>... policies);
 
     /**
      * Register the given handler for all work items of the given
@@ -54,5 +59,14 @@ public interface WorkItemManager {
      */
     void registerWorkItemHandler(String workItemName,
                                  WorkItemHandler handler);
+    
+    /**
+     * Transition work item with given id into the next life cycle phase.
+     * @param id work item id to be transitioned
+     * @param transition actual transition to apply to work item
+     */
+    default void transitionWorkItem(String id, Transition<?> transition) {
+        
+    }
 
 }

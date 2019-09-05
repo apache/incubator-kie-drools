@@ -23,5 +23,13 @@ public interface WorkItem {
 
     String getName();
     
+    int getState();
+    
+    String getPhase();
+    
+    String getPhaseStatus();
+    
     Map<String, Object> getParameters();
+    
+    Map<String, Object> getResults();
 }

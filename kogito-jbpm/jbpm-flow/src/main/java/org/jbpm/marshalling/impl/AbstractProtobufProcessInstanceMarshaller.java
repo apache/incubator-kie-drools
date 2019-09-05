@@ -43,6 +43,7 @@ import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -60,6 +61,7 @@ import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -256,7 +258,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder _task = JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
                     .setWorkItemId( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() )
-                    .setWorkitem(writeWorkItem(context, ((HumanTaskNodeInstance) nodeInstance).getWorkItem()));
+                    .setWorkitem(writeHumanTaskWorkItem(context, (HumanTaskWorkItem)((HumanTaskNodeInstance) nodeInstance).getWorkItem()));
             List<Long> timerInstances =
                     ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
@@ -509,14 +511,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         return _content.build();
     }
 
-
     public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
                                                       WorkItem workItem) throws IOException {
-        return writeWorkItem( context, workItem, true );
-    }
-    public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
-                                                      WorkItem workItem,
-                                                      boolean includeVariables) throws IOException {
         JBPMMessages.WorkItem.Builder _workItem = JBPMMessages.WorkItem.newBuilder()
                 .setId( workItem.getId() )
                 .setProcessInstancesId( workItem.getProcessInstanceId() )
@@ -529,27 +525,33 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             }
             _workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
             .setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
-        }
-
-        if ( includeVariables ) {
-            Map<String, Object> parameters = workItem.getParameters();
-            for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-                _workItem.addVariable( ProtobufProcessMarshaller.marshallVariable( context, entry.getKey(), entry.getValue() ) );
+            
+            if (workItem.getPhaseId() != null) {
+                _workItem.setPhaseId(workItem.getPhaseId());
+            }
+            if (workItem.getPhaseStatus() != null) {
+                _workItem.setPhaseStatus(workItem.getPhaseStatus());
+            }
+            if (workItem.getStartDate() != null) {
+                _workItem.setStartDate(workItem.getStartDate().getTime());
+            }
+            if (workItem.getCompleteDate() != null) {
+                _workItem.setCompleteDate(workItem.getCompleteDate().getTime());
             }
         }
+
+        
+        Map<String, Object> parameters = workItem.getParameters();
+        for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+            _workItem.addVariable( ProtobufProcessMarshaller.marshallVariable( context, entry.getKey(), entry.getValue() ) );
+        }
+        
         return _workItem.build();
     }
 
-    public static WorkItem readWorkItem(MarshallerReaderContext context,
-                                        JBPMMessages.WorkItem _workItem ) throws IOException {
-        return readWorkItem( context,
-                             _workItem,
-                             true );
-    }
 
     public static WorkItem readWorkItem(MarshallerReaderContext context,
-                                        JBPMMessages.WorkItem _workItem,
-                                        boolean includeVariables) throws IOException {
+                                        JBPMMessages.WorkItem _workItem) throws IOException {
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setId( _workItem.getId() );
         workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
@@ -558,22 +560,140 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         workItem.setDeploymentId(_workItem.getDeploymentId());
         workItem.setNodeId(_workItem.getNodeId());
         workItem.setNodeInstanceId(_workItem.getNodeInstanceId());
-
-        if ( includeVariables ) {
-            for ( JBPMMessages.Variable _variable : _workItem.getVariableList() ) {
-                try {
-                    Object value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
-                    workItem.setParameter( _variable.getName(),
-                                           value );
-                } catch ( ClassNotFoundException e ) {
-                    throw new IllegalArgumentException(e);
-                }
+        workItem.setPhaseId(_workItem.getPhaseId());
+        workItem.setPhaseStatus(_workItem.getPhaseStatus());
+        workItem.setStartDate(new Date(_workItem.getStartDate()));
+        if (_workItem.getCompleteDate() > 0) {
+            workItem.setCompleteDate(new Date(_workItem.getCompleteDate()));
+        }
+        
+        for ( JBPMMessages.Variable _variable : _workItem.getVariableList() ) {
+            try {
+                Object value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
+                workItem.setParameter( _variable.getName(),
+                                       value );
+            } catch ( ClassNotFoundException e ) {
+                throw new IllegalArgumentException(e);
             }
         }
         
-
         return workItem;
     }
+    
+    
+    public static JBPMMessages.HumanTaskWorkItem writeHumanTaskWorkItem(MarshallerWriteContext context,
+                                                      HumanTaskWorkItem workItem) throws IOException {
+        JBPMMessages.HumanTaskWorkItem.Builder _workItem = JBPMMessages.HumanTaskWorkItem.newBuilder()
+                .setId( workItem.getId() )
+                .setProcessInstancesId( workItem.getProcessInstanceId() )
+                .setName( workItem.getName() )
+                .setState( workItem.getState() );
+
+        
+        if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
+        _workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+        }
+        _workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
+        .setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+        
+        if (workItem.getPhaseId() != null) {
+            _workItem.setPhaseId(workItem.getPhaseId());
+        }
+        if (workItem.getPhaseStatus() != null) {
+            _workItem.setPhaseStatus(workItem.getPhaseStatus());
+        }
+        if (workItem.getStartDate() != null) {
+            _workItem.setStartDate(workItem.getStartDate().getTime());
+        }
+        if (workItem.getCompleteDate() != null) {
+            _workItem.setCompleteDate(workItem.getCompleteDate().getTime());
+        }
+        if (workItem.getTaskName() != null) {
+            _workItem.setTaskName(workItem.getTaskName());
+        }
+        if (workItem.getTaskDescription() != null) {
+            _workItem.setTaskDescription(workItem.getTaskDescription());
+        }
+        if (workItem.getTaskPriority() != null) {
+            _workItem.setTaskPriority(workItem.getTaskPriority());
+        }
+        if (workItem.getActualOwner() != null) {
+            _workItem.setActualOwner(workItem.getActualOwner());
+        }
+        
+        _workItem.addAllAdminUsers(workItem.getAdminUsers());
+        _workItem.addAllAdminGroups(workItem.getAdminGroups());
+        _workItem.addAllPotUsers(workItem.getPotentialUsers());
+        _workItem.addAllPotGroups(workItem.getPotentialGroups());
+        _workItem.addAllExcludedUsers(workItem.getExcludedUsers());
+        
+        Map<String, Object> parameters = workItem.getParameters();
+        for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+            _workItem.addVariable( ProtobufProcessMarshaller.marshallVariable( context, entry.getKey(), entry.getValue() ) );
+        }
+        
+        return _workItem.build();
+    }
+    
+    public static HumanTaskWorkItem readHumanTaskWorkItem(MarshallerReaderContext context,
+                                        JBPMMessages.HumanTaskWorkItem _workItem) throws IOException {
+        HumanTaskWorkItemImpl workItem = new HumanTaskWorkItemImpl();
+        workItem.setId( _workItem.getId() );
+        workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
+        workItem.setName( _workItem.getName() );
+        workItem.setState( _workItem.getState() );
+        workItem.setDeploymentId(_workItem.getDeploymentId());
+        workItem.setNodeId(_workItem.getNodeId());
+        workItem.setNodeInstanceId(_workItem.getNodeInstanceId());
+        workItem.setPhaseId(_workItem.getPhaseId());
+        workItem.setPhaseStatus(_workItem.getPhaseStatus());
+        workItem.setStartDate(new Date(_workItem.getStartDate()));
+        if (_workItem.getCompleteDate() > 0) {
+            workItem.setCompleteDate(new Date(_workItem.getCompleteDate()));
+        }
+        if (_workItem.getTaskName() != null) {
+            workItem.setTaskName(_workItem.getTaskName());
+        }
+        if (_workItem.getTaskDescription() != null) {
+            workItem.setTaskDescription(_workItem.getTaskDescription());
+        }
+        if (_workItem.getTaskPriority() != null) {
+            workItem.setTaskPriority(_workItem.getTaskPriority());
+        }
+        if (_workItem.getActualOwner() != null) {
+            workItem.setActualOwner(_workItem.getActualOwner());
+        }
+        
+        for( String item : _workItem.getAdminGroupsList() ) { 
+            workItem.getAdminGroups().add(item);
+        }
+        for( String item : _workItem.getAdminUsersList() ) { 
+            workItem.getAdminUsers().add(item);
+        }
+        for( String item : _workItem.getPotGroupsList() ) { 
+            workItem.getPotentialGroups().add(item);
+        }
+        for( String item : _workItem.getPotUsersList() ) { 
+            workItem.getPotentialUsers().add(item);
+        }
+        for( String item : _workItem.getExcludedUsersList() ) { 
+            workItem.getExcludedUsers().add(item);
+        }
+        
+        for ( JBPMMessages.Variable _variable : _workItem.getVariableList() ) {
+            try {
+                Object value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
+                workItem.setParameter( _variable.getName(),
+                                       value );
+            } catch ( ClassNotFoundException e ) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        
+        return workItem;
+    }
+    
+    
     // Input methods
     public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
         
@@ -828,7 +948,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case HUMAN_TASK_NODE :
                 nodeInstance = new HumanTaskNodeInstance();
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId( _content.getHumanTask().getWorkItemId() );
-                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getHumanTask().getWorkitem()) );
+                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readHumanTaskWorkItem(context, _content.getHumanTask().getWorkitem()) );
                 if ( _content.getHumanTask().getTimerInstanceIdCount() > 0 ) {
                     List<Long> timerInstances = new ArrayList<Long>();
                     for ( Long _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
@@ -841,7 +961,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case WORK_ITEM_NODE :
                 nodeInstance = new WorkItemNodeInstance();
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId( _content.getWorkItem().getWorkItemId() );
-                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getHumanTask().getWorkitem()) );
+                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getWorkItem().getWorkitem()) );
                 if ( _content.getWorkItem().getTimerInstanceIdCount() > 0 ) {
                     List<Long> timerInstances = new ArrayList<Long>();
                     for ( Long _timerId : _content.getWorkItem().getTimerInstanceIdList() ) {

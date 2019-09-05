@@ -9,17 +9,21 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitem.Policy;
 
 @Path("/$name$")
 public class $Type$Resource {
@@ -100,10 +104,11 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, String> getTasks_$name$(@PathParam("id") String id) {
+    public Map<String, String> getTasks_$name$(@PathParam("id") String id, @QueryParam("user") final String user, @QueryParam("group") final List<String> groups) {
+        
         return process.instances()
                 .findById(id)
-                .map(ProcessInstance::workItems)
+                .map(pi -> pi.workItems(policies(user, groups)))
                 .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                 .orElse(null);
     }
@@ -114,5 +119,16 @@ public class $Type$Resource {
         }
         
         return pi.variables();
+    }
+    
+    protected Policy[] policies(String user, List<String> groups) {
+        if (user == null) {
+            return new Policy[0];
+        } 
+        org.kie.kogito.auth.IdentityProvider identity = null;
+        if (user != null) {
+            identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
+        }
+        return new Policy[] {SecurityPolicy.of(identity)};
     }
 }

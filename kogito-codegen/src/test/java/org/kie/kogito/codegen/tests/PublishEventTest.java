@@ -37,7 +37,9 @@ import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
+import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
+import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 import org.kie.kogito.uow.UnitOfWork;
 
 
@@ -116,11 +118,14 @@ public class PublishEventTest extends AbstractCodegenTest {
         uow.end();     
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);        
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).isNotNull().hasSize(2);
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
+        
+        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready");
+        
         
         List<WorkItem> workItems = processInstance.workItems();
         assertEquals(1, workItems.size());
@@ -132,11 +137,14 @@ public class PublishEventTest extends AbstractCodegenTest {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).isNotNull().hasSize(3);
         body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("HumanTaskNode", "HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
+        
+        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Ready");
+        assertUserTaskInstanceEvent(events.get(2), "First Task", null, "1", "Completed");
         
         workItems = processInstance.workItems();
         assertEquals(1, workItems.size());
@@ -148,11 +156,13 @@ public class PublishEventTest extends AbstractCodegenTest {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).isNotNull().hasSize(2);
         body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 2);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("HumanTaskNode", "EndNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+        
+        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Completed");
     }
     
     @Test
@@ -389,6 +399,25 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getProcessId()).isEqualTo(processId);
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
+        
+        return body;
+    }
+    
+    protected UserTaskInstanceEventBody assertUserTaskInstanceEvent(DataEvent<?> event, String taskName, String taskDescription, String taskPriority, String taskState) {
+        assertThat(event).isInstanceOf(UserTaskInstanceDataEvent.class);
+        UserTaskInstanceEventBody body = ((UserTaskInstanceDataEvent)event).getData();
+        assertThat(body).isNotNull();
+        assertThat(body.getId()).isNotNull();
+        assertThat(body.getTaskName()).isEqualTo(taskName);
+        assertThat(body.getTaskDescription()).isEqualTo(taskDescription);
+        assertThat(body.getTaskPriority()).isEqualTo(taskPriority);
+        assertThat(body.getStartDate()).isNotNull();
+        assertThat(body.getState()).isEqualTo(taskState);
+        if (taskState.equals("Completed")) {
+            assertThat(body.getCompleteDate()).isNotNull();
+        } else {
+            assertThat(body.getCompleteDate()).isNull();
+        }
         
         return body;
     }

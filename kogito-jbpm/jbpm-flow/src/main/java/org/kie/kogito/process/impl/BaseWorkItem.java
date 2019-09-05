@@ -24,17 +24,30 @@ public class BaseWorkItem implements WorkItem {
     private final String id;
     private final String name;
     
+    private final int state;
+    private String phase;
+    private String phaseStatus;
+    
     private Map<String, Object> parameters;
+    private Map<String, Object> results;
 
-    public BaseWorkItem(String id, String name) {
+    public BaseWorkItem(String id, String name, int state, String phase, String phaseStatus, Map<String, Object> results) {
         this.id = id;
         this.name = name;
+        this.state = state;
+        this.phase = phase;
+        this.phaseStatus = phaseStatus;
+        this.results = results;
     }
 
-    public BaseWorkItem(String id, String name, Map<String, Object> parameters) {
+    public BaseWorkItem(String id, String name, int state, String phase, String phaseStatus, Map<String, Object> parameters, Map<String, Object> results) {
         this.id = id;
         this.name = name;
+        this.state = state;
+        this.phase = phase;
+        this.phaseStatus = phaseStatus;
         this.parameters = parameters;
+        this.results = results;
     }
 
     @Override
@@ -48,14 +61,32 @@ public class BaseWorkItem implements WorkItem {
     }    
 
     @Override
+    public int getState() {
+        return state;
+    }
+    
+    @Override
     public Map<String, Object> getParameters() {
         return parameters;
     }
 
     @Override
-    public String toString() {
-        return "WorkItem [id=" + id + ", name=" + name + "]";
+    public String getPhase() {
+        return phase;
     }
 
+    @Override
+    public String getPhaseStatus() {
+        return phaseStatus;
+    }
 
+    @Override
+    public Map<String, Object> getResults() {
+        return results;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkItem [id=" + id + ", name=" + name + ", state=" + state + ", phase=" + phase + ", phaseStatus=" + phaseStatus + "]";
+    }
 }

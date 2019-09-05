@@ -16,16 +16,31 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.process.instance.WorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.runtime.process.HumanTaskWorkItem;
 
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
     private static final long serialVersionUID = 510l;
     private String separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+    
+    private static final String ACTOR_ID = "ActorId";
+    private static final String GROUP_ID = "GroupId";
+    private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
+    private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
+    private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
+    
+    protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
+
     
     private transient SwimlaneContextInstance swimlaneContextInstance;
     
@@ -33,12 +48,22 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         return (HumanTaskNode) getNode();
     }
     
+    @Override
+    protected WorkItem newWorkItem() {
+        return new HumanTaskWorkItemImpl();
+    }
+
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
-        WorkItem workItem = super.createWorkItem(workItemNode);
+        HumanTaskWorkItemImpl workItem = (HumanTaskWorkItemImpl)super.createWorkItem(workItemNode);
         String actorId = assignWorkItem(workItem);
         if (actorId != null) {
             ((org.drools.core.process.instance.WorkItem) workItem).setParameter("ActorId", actorId);
         }
+        
+        workItem.setTaskName((String) workItem.getParameter("NodeName"));
+        workItem.setTaskDescription((String) workItem.getParameter("Description"));
+        workItem.setTaskPriority((String) workItem.getParameter("Priority"));
+        
         return workItem;
     }
     
@@ -61,6 +86,13 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         		workItem.setParameter("SwimlaneActorId", actorId);
         	}
         }
+        
+        processAssigment(ACTOR_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getPotentialUsers());
+        processAssigment(GROUP_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getPotentialGroups());
+        processAssigment(EXCLUDED_OWNER_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getExcludedUsers());
+        processAssigment(BUSINESSADMINISTRATOR_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getAdminUsers());
+        processAssigment(BUSINESSADMINISTRATOR_GROUP_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getAdminGroups());
+        
         // always return ActorId from workitem as SwimlaneActorId is kept as separate parameter
         return (String) workItem.getParameter("ActorId");
     }
@@ -83,14 +115,26 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     }
     
     public void triggerCompleted(WorkItem workItem) {
+        
         String swimlaneName = getHumanTaskNode().getSwimlane();
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
         if (swimlaneContextInstance != null) {
-            String newActorId = (String) workItem.getResult("ActorId");
+            String newActorId = (workItem instanceof HumanTaskWorkItem) ? ((HumanTaskWorkItem) workItem).getActualOwner() : (String)workItem.getParameter("ActorId");
             if (newActorId != null) {
                 swimlaneContextInstance.setActorId(swimlaneName, newActorId);
             }
         }
         super.triggerCompleted(workItem);
+    }
+    
+    protected void processAssigment(String type, WorkItem workItem, Set<String> store) {
+        
+        String value = (String) workItem.getParameter(type);
+        
+        if (value != null) {
+            for (String item : value.split(separator)) {
+                store.add(item);
+            }
+        }
     }
 }

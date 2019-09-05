@@ -241,6 +241,9 @@ public class UserTaskModelMetaData {
         toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         for (Entry<String, String> entry : humanTaskNode.getOutMappings().entrySet()) {
+            if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
+                continue;
+            }
             Variable variable = variableScope.findVariable(entry.getValue());
 
             if (variable == null) {

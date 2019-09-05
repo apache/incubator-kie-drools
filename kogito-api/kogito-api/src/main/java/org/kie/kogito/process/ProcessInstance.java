@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Transition;
 
 
 
@@ -76,30 +78,42 @@ public interface ProcessInstance<T> {
      * Completes work item belonging to this process instance with given variables
      * @param id id of the work item to complete
      * @param variables optional variables
+     * @param policies optional list of policies to be enforced
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    void completeWorkItem(String id, Map<String, Object> variables);
+    void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
     
     /**
      * Aborts work item belonging to this process instance
      * @param id id of the work item to complete
+     * @param policies optional list of policies to be enforced
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    void abortWorkItem(String id);
+    void abortWorkItem(String id, Policy<?>... policies);
+    
+    /**
+     * Transition work item belonging to this process instance not another life cycle phase
+     * @param id id of the work item to complete
+     * @param transition target transition including phase, identity and data
+     * @throws WorkItemNotFoundException in case work item with given id does not exist
+     */
+    void transitionWorkItem(String id, Transition<?> transition);
     
     /**
      * Returns work item identified by given id if found
      * @param workItemId id of the work item 
+     * @param policies optional list of policies to be enforced
      * @return work item with its parameters if found
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    WorkItem workItem(String workItemId);
+    WorkItem workItem(String workItemId, Policy<?>... policies);
     
     /**
      * Returns list of currently active work items.
+     * @param policies optional list of policies to be enforced
      * @return non empty list of identifiers of currently active tasks.
      */
-    List<WorkItem> workItems();
+    List<WorkItem> workItems(Policy<?>... policies);
     
     /**
      * Returns identifier of this process instance

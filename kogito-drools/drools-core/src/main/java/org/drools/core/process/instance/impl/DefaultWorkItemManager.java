@@ -34,6 +34,7 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
+import org.kie.kogito.process.workitem.Policy;
 
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
@@ -127,7 +128,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         return workItems.get(id);
     }
 
-    public void completeWorkItem(String id, Map<String, Object> results) {
+    public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
         WorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -142,7 +143,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
 
-    public void abortWorkItem(String id) {
+    public void abortWorkItem(String id, Policy<?>... policies) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -190,6 +191,11 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
        }else{
            this.retryWorkItemWithParams( workItemID, params );
        }
+        
+    }
+
+    @Override
+    public void internalCompleteWorkItem(WorkItem workItem) {
         
     }
 }

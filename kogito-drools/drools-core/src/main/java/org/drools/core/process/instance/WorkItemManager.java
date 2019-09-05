@@ -27,6 +27,8 @@ public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemMan
 
     void internalAbortWorkItem(String id);
     
+    void internalCompleteWorkItem(WorkItem workItem);
+    
     Set<WorkItem> getWorkItems();
 
     WorkItem getWorkItem(String id);

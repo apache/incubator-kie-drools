@@ -24,10 +24,13 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.ProcessWorkItemTransitionEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.WorkUnit;
 
@@ -230,6 +233,32 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
             
                 do {
                     iter.next().afterSLAViolated(e);
+                } while (iter.hasNext());            
+            }
+        }));
+    }
+    
+    public void fireBeforeWorkItemTransition(final ProcessInstance instance, WorkItem workitem, Transition<?> transition, KieRuntime kruntime ) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        final ProcessWorkItemTransitionEvent event = new ProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, false);
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+            if (iter.hasNext()) {
+                do{
+                    iter.next().beforeWorkItemTransition(e);
+                } while (iter.hasNext());        
+            }
+        }));
+    }
+
+    public void fireAfterWorkItemTransition(final ProcessInstance instance, WorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        final ProcessWorkItemTransitionEvent event = new ProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true);
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+            if (iter.hasNext()) {            
+                do {
+                    iter.next().afterWorkItemTransition(e);
                 } while (iter.hasNext());            
             }
         }));

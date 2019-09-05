@@ -123,7 +123,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
                 org.kie.api.runtime.process.ProcessInstance pi = (org.kie.api.runtime.process.ProcessInstance) event;
-                if (!id().equals(pi.getProcessId())) {
+                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceId() != null) {
                     instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
                 }
             }

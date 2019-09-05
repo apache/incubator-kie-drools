@@ -106,6 +106,7 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.process.workitem.Policy;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -161,14 +162,15 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         if ( workItemManager == null ) {
             workItemManager = new WorkItemManager() {
                 public void completeWorkItem(String id,
-                                             Map<String, Object> results) {
+                                             Map<String, Object> results, 
+                                             Policy<?>... policies) {
                     CompleteWorkItemCommand command = new CompleteWorkItemCommand();
                     command.setWorkItemId( id );
                     command.setResults( results );
                     runner.execute( command );
                 }
 
-                public void abortWorkItem(String id) {
+                public void abortWorkItem(String id, Policy<?>... policies) {
                     AbortWorkItemCommand command = new AbortWorkItemCommand();
                     command.setWorkItemId( id );
                     runner.execute( command );
@@ -229,6 +231,11 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                 public void retryWorkItem( String workItemID, Map<String, Object> params ) {
                    ReTryWorkItemCommand command = new ReTryWorkItemCommand(workItemID,params);
                     runner.execute( command );
+                }
+
+                @Override
+                public void internalCompleteWorkItem(WorkItem workItem) {
+                    
                 }
             };
         }

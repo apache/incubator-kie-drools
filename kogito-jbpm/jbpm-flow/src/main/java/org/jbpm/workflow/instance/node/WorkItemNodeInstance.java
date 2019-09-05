@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -172,13 +173,18 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
         this.workItemId = workItem.getId();
     }
+    
+    protected WorkItem newWorkItem() {
+        return new WorkItemImpl();
+    }
 
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
-        workItem = new WorkItemImpl();
+        workItem = newWorkItem();
         ((WorkItem) workItem).setName(work.getName());
         ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
         ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
+        ((WorkItem) workItem).setStartDate(new Date());
         // if there are any dynamic parameters add them
         if (dynamicParameters != null) {
             ((WorkItem) workItem).getParameters().putAll(dynamicParameters);

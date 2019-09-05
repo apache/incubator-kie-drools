@@ -30,6 +30,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -1424,7 +1425,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         Map<String, Object> results = new HashMap<String, Object>();
-        results.put("ActorId", "mary");
+        ((HumanTaskWorkItemImpl) workItem).setActualOwner("mary");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(),
                 results);
         ksession = restoreSession(ksession, true);

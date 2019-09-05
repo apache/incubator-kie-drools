@@ -23,9 +23,11 @@ import java.util.Map;
 
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.api.runtime.process.WorkItem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -169,7 +171,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         assertEquals("Do something", workItem.getParameter("TaskName"));
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         Map<String, Object> results = new HashMap<String, Object>();
-        results.put("ActorId", "Jane Doe");
+        ((HumanTaskWorkItemImpl)workItem).setActualOwner("Jane Doe");
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         workItem = handler.getWorkItem();
         assertNotNull(workItem);

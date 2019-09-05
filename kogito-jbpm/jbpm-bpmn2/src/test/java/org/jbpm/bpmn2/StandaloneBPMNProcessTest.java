@@ -37,6 +37,7 @@ import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -182,7 +183,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         Map<String, Object> results = new HashMap<String, Object>();
-        results.put("ActorId", "mary");
+        ((HumanTaskWorkItemImpl) workItem).setActualOwner("mary");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);

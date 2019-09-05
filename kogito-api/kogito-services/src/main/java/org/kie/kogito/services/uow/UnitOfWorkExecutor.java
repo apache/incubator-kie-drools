@@ -40,7 +40,11 @@ public class UnitOfWorkExecutor {
           throw e;
         } catch (Exception e) {
             uow.abort();
-            throw new RuntimeException(e);
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else {
+                throw new RuntimeException(e);
+            }
         }
         
     }

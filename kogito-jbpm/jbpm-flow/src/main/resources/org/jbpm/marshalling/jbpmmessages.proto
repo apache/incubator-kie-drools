@@ -112,7 +112,7 @@ message ProcessInstance {
             optional string work_item_id = 1;
             repeated int64 timer_instance_id = 2;
             optional string error_handling_process_instance_id = 3;
-            optional WorkItem workitem = 4;
+            optional HumanTaskWorkItem workitem = 4;
         }
         message WorkItemNode {
             optional string work_item_id = 1;
@@ -194,6 +194,43 @@ message WorkItem {
     optional string deployment_id = 6;
     optional string node_instance_id = 7;
     optional int64 node_id = 8;
+    
+    optional string phase_id = 9;
+    optional string phase_status = 10;
+    
+    optional int64 start_date = 11;
+    optional int64 complete_date = 12;
+        
+}
+
+message HumanTaskWorkItem {
+	optional string id = 1;
+    optional string process_instances_id = 2;
+    optional string name = 3;
+    optional int32 state = 4;
+
+    repeated Variable variable = 5;
+
+    optional string deployment_id = 6;
+    optional string node_instance_id = 7;
+    optional int64 node_id = 8;
+    
+    optional string phase_id = 9;
+    optional string phase_status = 10;
+    
+    optional int64 start_date = 11;
+    optional int64 complete_date = 12;
+    
+    optional string task_name = 13;
+    optional string task_description = 14;
+    optional string task_priority = 15;
+    optional string actual_owner = 16;
+    repeated string pot_users = 17;
+    repeated string pot_groups = 18;
+    repeated string excluded_users = 19;
+    repeated string admin_users = 20;
+    repeated string admin_groups = 21;
+    
 }
 
 message ProcessTimer {

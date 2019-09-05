@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.process;
 
+import org.kie.kogito.process.workitem.Transition;
+
 /**
  * A work item handler is responsible for executing work items
  * of a specific type.  They represent the glue code between an
@@ -66,5 +68,15 @@ public interface WorkItemHandler {
     default String getName() {
         return getClass().getSimpleName();
     };
+    
+    /**
+     * Allows to transition given work item into another life cycle phase as defined in
+     * the given transition object.
+     * @param workItem work item to be transitioned
+     * @param transition life cycle phase to be transition to
+     */
+    default void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
+        
+    }
 
 }

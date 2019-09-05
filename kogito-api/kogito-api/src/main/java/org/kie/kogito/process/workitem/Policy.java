@@ -1,9 +1,8 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,17 +13,20 @@
  * limitations under the License.
  */
 
-package org.kie.internal.identity;
+package org.kie.kogito.process.workitem;
 
-import java.util.List;
+/**
+ * Top level of a policy that should be applied to work items.
+ * Most of the cases it is used to restrict access or operations on
+ * top of the work item.
+ *
+ * @param <T> type of the policy object to be used to react to it.
+ */
+public interface Policy<T> {
 
-public interface IdentityProvider {
-
-    public static final String UNKNOWN_USER_IDENTITY = "unknown";
-
-    String getName();
-
-    List<String> getRoles();
-
-    boolean hasRole(String role);
+    /**
+     * Actual type of policy data used to enforce this policy
+     * @return policy data
+     */
+    T value();
 }
