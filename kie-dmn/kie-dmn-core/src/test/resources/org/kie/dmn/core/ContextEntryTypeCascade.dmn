@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_8a15bd3c-c732-42c8-a2e4-60f1a23a1c5a" id="_8a15bd3c-c732-42c8-a2e4-60f1a23a1c5a" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_8a15bd3c-c732-42c8-a2e4-60f1a23a1c5a" exporter="DMN Modeler" exporterVersion="6.2.8.201909041718" triso:logoChoice="Default">
+    <semantic:decision id="_94db3ece-dbd0-4898-b088-5fd0ddb87a41" name="Date and Time">
+        <semantic:variable name="Date and Time" id="_dcbaae35-1a6a-4327-92fa-4d06e4b4f8f9" typeRef="Any"/>
+        <semantic:context id="_6a02d2d1-2ea8-446e-8fd4-7c3af8939999" typeRef="Any" triso:expressionId="_0978ed42-8ef6-4bc5-943b-e2ab41c972c4">
+            <semantic:contextEntry id="_5c39acba-b62b-447d-8a61-becc0582ae60">
+                <semantic:variable name="Working DT hours" id="_99ef209b-27b0-4308-a530-dee17b26a345" typeRef="Any"/>
+                <semantic:literalExpression id="_ce3930aa-4fc1-4880-b283-d5b9f35cc472" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>date and time("2019-01-01T01:00-09:00").time offset.hours</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_06008e91-5015-4e54-bc92-269570adeddc">
+                <semantic:variable name="Date and Time Variable" id="_c2c102f0-79d4-4c81-951e-a4c2784d9dc1" typeRef="dateTime"/>
+                <semantic:literalExpression id="_5c7b1718-59a1-4af9-897b-084752067851">
+                    <semantic:text>date and time("2019-01-01T01:00-09:00")</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_bd19daf6-d46a-47db-87be-3e15b59c161c">
+                <semantic:variable name="Not working DT hours from Variable" id="_bf621166-6994-46d2-a637-ee4d3bb2e4ed" typeRef="Any"/>
+                <semantic:literalExpression id="_47084a37-2c99-45a5-b4b7-d36a399a2c10" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>Date and Time Variable.time offset.hours</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:decision id="_3cd376c5-1865-4832-9497-bd1cec0dd779" name="Time">
+        <semantic:variable name="Time" id="_2b9cc09d-d425-4614-9bd6-ce20e07f7cf2" typeRef="Any"/>
+        <semantic:context id="_cb8b001c-2054-4aa4-a92f-776e05dbfddc" typeRef="Any" triso:expressionId="_45e641b6-bb07-462b-9989-e5b7c1ef8325">
+            <semantic:contextEntry id="_ba935a35-003d-4742-befd-7514dedc131d">
+                <semantic:variable name="Working Time hours" id="_0031fffb-87c0-4749-8817-517612cdfb8f" typeRef="Any"/>
+                <semantic:literalExpression id="_e8afdfea-a2b1-467c-81f6-f03b540616a3" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>time("19:00:00-11:00").time offset.hours</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_738bd5cb-8f16-41bc-b361-3aadc6adddba">
+                <semantic:variable name="Time Variable" id="_d3615a26-cfcc-46ad-ab0d-ff98b08c81f7" typeRef="time"/>
+                <semantic:literalExpression id="_5b4cdcc9-43f5-4272-908f-5867218dd0c2">
+                    <semantic:text>time("19:00:00-11:00")</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_0244a8c5-20e9-43db-8c08-9f94ddf4b2ae">
+                <semantic:variable name="Not working Time hours from Variable" id="_830bbeea-b8b4-4da3-bc9e-98fc7bcb52b8" typeRef="Any"/>
+                <semantic:literalExpression id="_b2167f7c-1f81-4ad8-ace5-9ac6132dbb7a" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>Time Variable.time offset.hours</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>
