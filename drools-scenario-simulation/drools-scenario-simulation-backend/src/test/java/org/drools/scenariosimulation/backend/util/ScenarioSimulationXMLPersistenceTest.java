@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -172,6 +173,30 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
+    public void migrateIfNecessary_1_6_to_1_7() throws Exception {
+        String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_6to1_7().accept(document);
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+        assertNotNull(factMappingsNodes);
+        assertEquals(1, factMappingsNodes.size());
+        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
+        for (Node factMappingNode : factMappingNodes) {
+            List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
+            String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
+            assertNotNull(expressionIdentifierName);
+            List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
+            assertEquals(1, columnWidthNodes.size());
+            String columnWidth = columnWidthNodes.get(0).getTextContent();
+            assertNotNull(columnWidth);
+            assertFalse(columnWidth.isEmpty());
+            double columnWidthDouble = Double.parseDouble(columnWidth);
+            assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
+        }
+        commonCheck(toMigrate, document, "1.7");
+    }
+
+    @Test
     public void migrateIfNecessary() throws Exception {
         Assertions.assertThatThrownBy(() -> instance.migrateIfNecessary("<ScenarioSimulationModel version=\"9999999999.99999999999\" />"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -181,7 +206,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
         String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
         Document document = DOMParserUtil.getDocument(afterMigration);
-        commonCheckVersion(document, "1.6");
+        commonCheckVersion(document, "1.7");
     }
 
     @Test
@@ -194,7 +219,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalRULE() throws Exception {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.RULE);
+        assertEquals(ScenarioSimulationModel.Type.RULE, retrieved.getSimulation().getSimulationDescriptor().getType());
         commonCheckScenarioSimulationModel(retrieved);
     }
 
@@ -202,7 +227,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalDMN() throws Exception {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
+        assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getSimulation().getSimulationDescriptor().getType());
         commonCheckScenarioSimulationModel(retrieved);
     }
 

@@ -60,6 +60,8 @@ public class FactMapping {
      */
     private List<String> genericTypes;
 
+    private Double columnWidth;
+
     public FactMapping() {
     }
 
@@ -86,6 +88,7 @@ public class FactMapping {
         this.factAlias = original.factAlias;
         this.expressionAlias = original.expressionAlias;
         this.genericTypes = original.genericTypes;
+        this.columnWidth = original.columnWidth;
     }
 
     public String getFullExpression() {
@@ -93,7 +96,7 @@ public class FactMapping {
     }
 
     public List<ExpressionElement> getExpressionElementsWithoutClass() {
-        if (expressionElements.size() == 0) {
+        if (expressionElements.isEmpty()) {
             throw new IllegalStateException("ExpressionElements malformed");
         }
         return expressionElements.subList(1, expressionElements.size());
@@ -190,5 +193,13 @@ public class FactMapping {
         return Objects.hash(
                 getExpressionElements(),
                 getExpressionIdentifier(), getFactIdentifier(), getClassName(), getFactAlias(), getExpressionAlias(), getGenericTypes());
+    }
+
+    public Double getColumnWidth() {
+        return columnWidth;
+    }
+
+    public void setColumnWidth(Double columnWidth) {
+        this.columnWidth = columnWidth;
     }
 }

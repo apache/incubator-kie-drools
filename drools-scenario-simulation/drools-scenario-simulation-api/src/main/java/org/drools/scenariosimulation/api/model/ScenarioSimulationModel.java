@@ -29,14 +29,11 @@ public class ScenarioSimulationModel
     }
 
     @XStreamAsAttribute()
-    private String version = "1.6";
+    private String version = "1.7";
 
     private Simulation simulation;
 
     private Imports imports = new Imports();
-
-    public ScenarioSimulationModel() {
-    }
 
     public Simulation getSimulation() {
         return simulation;

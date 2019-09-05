@@ -69,6 +69,12 @@ public interface MigrationStrategy {
     ThrowingConsumer<Document>  from1_5to1_6();
 
     /**
+     * Method to obtain the migration function from 1.6 to 1.7
+     * @return
+     */
+    ThrowingConsumer<Document> from1_6to1_7();
+
+    /**
      * Method to complete the migration. For instance it can be used to store the new value
      * @return
      */
