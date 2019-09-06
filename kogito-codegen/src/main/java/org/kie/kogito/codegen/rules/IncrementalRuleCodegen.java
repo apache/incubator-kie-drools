@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,10 +181,15 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         ModelBuilderImpl modelBuilder = new ModelBuilderImpl(
                 configuration, dummyReleaseId, true);
 
-        resources.forEach(f -> modelBuilder.add(f, f.getResourceType()));
-
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
+        resources.forEach(f -> batch.add(f, f.getResourceType()));
         batch.build();
+
+        if (modelBuilder.hasErrors()) {
+            ApplicationGenerator.logger.error( modelBuilder.getErrors().toString() );
+            return Collections.emptyList();
+        }
+
         KnowledgeBuilderResults results = modelBuilder.getResults();
         boolean hasRuleUnits = false;
         Map<Class<?>, String> unitsMap = new HashMap<>();

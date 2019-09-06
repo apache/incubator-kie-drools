@@ -53,7 +53,9 @@ public class RuleWriter {
     }
 
     public String getMainSource() {
-        return prettyPrinter.print(generatedPojo);
+        String code = prettyPrinter.print(generatedPojo);
+        PackageModel.log(code);
+        return code;
     }
 
     public Collection<String> getModels() {

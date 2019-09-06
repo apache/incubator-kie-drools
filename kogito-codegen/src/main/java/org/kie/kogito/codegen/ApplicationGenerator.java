@@ -15,9 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,15 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import org.kie.kogito.Config;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.metadata.ImageMetaData;
-import org.kie.kogito.event.EventPublisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
@@ -57,10 +45,19 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.kogito.Config;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.metadata.ImageMetaData;
+import org.kie.kogito.event.EventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
 
 public class ApplicationGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationGenerator.class);
+    public static final Logger logger = LoggerFactory.getLogger(ApplicationGenerator.class);
 
     private static final String RESOURCE = "/class-templates/ApplicationTemplate.java";
     private final static String LABEL_PREFIX = "org.kie/";

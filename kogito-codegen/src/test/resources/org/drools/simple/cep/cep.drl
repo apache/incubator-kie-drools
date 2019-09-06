@@ -1,0 +1,10 @@
+package org.drools.simple.cep
+
+import org.kie.kogito.codegen.data.Person
+
+declare Person @role(event) end
+
+rule IsAdult when
+  Person( age >= 18 )
+then
+end

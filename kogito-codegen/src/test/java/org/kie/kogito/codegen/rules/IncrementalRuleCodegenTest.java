@@ -90,6 +90,18 @@ public class IncrementalRuleCodegenTest {
         assertRules(1, 1, 1, generatedFiles.size());
     }
 
+    @Test
+    public void generateCepRule() {
+        IncrementalRuleCodegen incrementalRuleCodegen =
+                IncrementalRuleCodegen.ofFiles(
+                        Collections.singleton(
+                                new File("src/test/resources/org/drools/simple/cep/cep.drl")));
+        incrementalRuleCodegen.setPackageName("com.acme");
+
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertRules(1, 1, generatedFiles.size());
+    }
+
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
         assertEquals(expectedRules +
                              expectedPackages * 2 + /* package descriptor for rules + package metadata */
