@@ -16,16 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -35,12 +36,22 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.index.TupleList;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
 
 public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     implements
@@ -152,7 +163,46 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     public BetaConstraints getBetaConstraints() {
         return betaConstraints;
     }
-    
+
+
+    @Override
+    protected void initDeclaredMask(BuildContext context,
+                                    LeftTupleSource leftInput) {
+        super.initDeclaredMask(context, leftInput);
+
+        if ( leftDeclaredMask.isAllSet() ) {
+            return;
+        }
+
+        if ( context == null || context.getLastBuiltPatterns() == null ) {
+            // only happens during unit tests
+            leftDeclaredMask = AllSetBitMask.get();
+            return;
+        }
+
+        Pattern pattern = context.getLastBuiltPatterns()[1];
+        if ( pattern == null ) {
+            return;
+        }
+
+        ObjectType objectType = pattern.getObjectType();
+
+        if ( objectType instanceof ClassObjectType ) {
+            Class objectClass = (( ClassWireable ) objectType).getClassType();
+            // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
+            if ( isPropertyReactive( context, objectClass ) ) {
+                Collection<String> leftListenedProperties = pattern.getListenedProperties();
+                List<String> accessibleProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
+                leftDeclaredMask = leftDeclaredMask.setAll( calculatePositiveMask( objectClass, leftListenedProperties, accessibleProperties ) );
+                leftNegativeMask = leftNegativeMask.setAll( calculateNegativeMask( objectClass, leftListenedProperties, accessibleProperties ) );
+            }
+        }
+    }
+
+    @Override
+    protected Pattern getLeftInputPattern( BuildContext context ) {
+        return context.getLastBuiltPatterns()[0];
+    }
 
     public Class< ? > getResultClass() {
         return resultClass;

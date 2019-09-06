@@ -51,9 +51,9 @@ public abstract class LeftTupleSource extends BaseNode
         LeftTupleNode,
         Externalizable {
 
-    private BitMask                   leftDeclaredMask = EmptyBitMask.get();
-    private BitMask                   leftInferredMask = EmptyBitMask.get();
-    private BitMask                   leftNegativeMask = EmptyBitMask.get();
+    protected BitMask                 leftDeclaredMask = EmptyBitMask.get();
+    protected BitMask                 leftInferredMask = EmptyBitMask.get();
+    protected BitMask                 leftNegativeMask = EmptyBitMask.get();
 
 
     /** The left input <code>TupleSource</code>. */
