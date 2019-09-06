@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -137,6 +138,79 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testWatchAll() {
+        // DROOLS-4509
+
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" ) @watch(*)\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(10);
+
+        assertEquals(50, p.getAge());
+    }
+
+    @Test
+    public void testWatchAllBeforeBeta() {
+        // DROOLS-4509
+
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" ) @watch(*)\n" +
+                "    Address() \n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.insert( new Address( "Milan" ) );
+        ksession.fireAllRules(10);
+
+        assertEquals(50, p.getAge());
+    }
+
+    @Test
+    public void testWatchAllBeforeFrom() {
+        // DROOLS-4509
+
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" ) @watch(*)\n" +
+                "    Address() from $p.addresses\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        p.addAddress( new Address( "Milan" ) );
+        p.addAddress( new Address( "Rome" ) );
+        ksession.insert( p );
+        ksession.fireAllRules(10);
+
+        assertEquals(50, p.getAge());
     }
 
     @Test

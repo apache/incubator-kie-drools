@@ -194,7 +194,7 @@ public abstract class PatternDSL implements DSLNode {
         Set<String> settableWatchedProps = new HashSet<>();
         for (String watchedProp : watchedProps) {
             String actualProp = watchedProp.startsWith( "!" ) ? watchedProp.substring( 1 ) : watchedProp;
-            if (settableProps.contains( actualProp )) {
+            if (actualProp.equals( "*" ) || settableProps.contains( actualProp )) {
                 settableWatchedProps.add( watchedProp );
             }
         }
