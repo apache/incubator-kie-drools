@@ -42,7 +42,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -1833,5 +1836,23 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals("Mario is very old", result.getValue());
 
+    }
+
+    @Test
+    public void testBooleanCoercion() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  $p : Person(employed == \"true\")\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person first = new Person("First", 40);
+        first.setEmployed(true);
+        ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 }
