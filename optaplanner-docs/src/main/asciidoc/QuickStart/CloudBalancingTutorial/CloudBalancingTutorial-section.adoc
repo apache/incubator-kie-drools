@@ -35,7 +35,7 @@ So let's see how Planner can be used in this scenario.
 
 Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
 
-image::shared/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 [[cloudBalancingProblemSize]]
 == Problem Size
