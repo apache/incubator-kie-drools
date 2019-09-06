@@ -1,11 +1,11 @@
 [id='dmn-support-con_{context}']
 = DMN support in {PRODUCT}
 
-{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
+{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3, and runtime-only support for DMN 1.1 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
 
-* Design your DMN models directly in {CENTRAL} using the DMN designer
-* Import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*)
-* Package DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}
+* Design your DMN models directly in {CENTRAL} using the DMN designer.
+* Import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*). Any DMN 1.1 models that you import into {CENTRAL}, open in the DMN designer, and save are converted to DMN 1.2 models.
+* Package DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}.
 
 In addition to all DMN conformance level 3 requirements, {PRODUCT} also includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. From a platform perspective, DMN models are like any other business asset in {PRODUCT}, such as DRL files or spreadsheet decision tables, that you can include in your {PRODUCT} project and deploy to {KIE_SERVER} in order to start your DMN decision services.
 
