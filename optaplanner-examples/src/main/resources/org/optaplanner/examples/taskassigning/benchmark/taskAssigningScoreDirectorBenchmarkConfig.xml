@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/taskassigning</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xStreamAnnotatedClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</xStreamAnnotatedClass>
+      <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+      <constructionHeuristic />
+      <localSearch />
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>ConstraintStreams (Bavet)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.taskassigning.solver.score.TaskAssigningConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>DRL (Drools)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

@@ -27,6 +27,7 @@
       <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
       <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
       <scoreDirectorFactory>
+        <!--<constraintProviderClass>org.optaplanner.examples.taskassigning.solver.score.TaskAssigningConstraintProvider</constraintProviderClass>-->
         <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
