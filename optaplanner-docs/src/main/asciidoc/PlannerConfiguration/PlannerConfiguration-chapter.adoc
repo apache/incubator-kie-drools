@@ -920,7 +920,7 @@ image::PlannerConfiguration/chainPrinciples.png[align="center"]
 *Every initialized planning entity is part of an open-ended chain that begins from an anchor.* A valid model means that:
 
 * A chain is never a loop. The tail is always open.
-* Every chain always has exactly one anchor. The anchor is a problem fact, never a planning entity.
+* Every chain always has exactly one anchor. The anchor is never an instance of the planning entity class that contains the chained planning variable.
 * A chain is never a tree, it is always a line. Every anchor or planning entity has at most one trailing planning entity.
 * Every initialized planning entity is part of a chain.
 * An anchor with no planning entities pointing to it, is also considered a chain.
