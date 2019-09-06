@@ -27,7 +27,9 @@ public class TaskAssigningBenchmarkApp extends CommonBenchmarkApp {
     public TaskAssigningBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/taskassigning/benchmark/taskAssigningBenchmarkConfig.xml")
+                        "org/optaplanner/examples/taskassigning/benchmark/taskAssigningBenchmarkConfig.xml"),
+                new ArgOption("scoreDirector",
+                        "org/optaplanner/examples/taskassigning/benchmark/taskAssigningScoreDirectorBenchmarkConfig.xml")
         );
     }
 
