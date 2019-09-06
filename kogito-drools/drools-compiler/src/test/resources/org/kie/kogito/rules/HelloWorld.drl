@@ -1,0 +1,9 @@
+package org.kie.kogito.rules;
+unit HelloWorld;
+
+rule HelloWorld
+when
+    /strings [ this == "Hello World" ]
+then
+    strings.add("it worked!");
+end
