@@ -883,10 +883,10 @@ Unaccepted moves will not be selected and will therefore never have their `doMov
 
 [source,java,options="nowrap"]
 ----
-public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {
+public class DifferentCourseSwapMoveFilter implements SelectionFilter<CourseSchedule, SwapMove> {
 
     @Override
-    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+    public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, SwapMove move) {
         Lecture leftLecture = (Lecture) move.getLeftEntity();
         Lecture rightLecture = (Lecture) move.getRightEntity();
         return !leftLecture.getCourse().equals(rightLecture.getCourse());
@@ -914,7 +914,7 @@ Unaccepted entities will not be selected and will therefore never be used to cre
 
 [source,java,options="nowrap"]
 ----
-public class LongLectureSelectionFilter implements SelectionFilter<Lecture> {
+public class LongLectureSelectionFilter implements SelectionFilter<CourseSchedule, Lecture> {
 
     @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Lecture lecture) {
@@ -947,7 +947,7 @@ Unaccepted values will not be selected and will therefore never be used to creat
 
 [source,java,options="nowrap"]
 ----
-public class LongPeriodSelectionFilter implements SelectionFilter<Period> {
+public class LongPeriodSelectionFilter implements SelectionFilter<CourseSchedule, Period> {
 
     @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Period period) {
