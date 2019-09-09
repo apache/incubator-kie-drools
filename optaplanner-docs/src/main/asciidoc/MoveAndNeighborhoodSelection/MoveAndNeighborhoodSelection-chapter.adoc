@@ -237,10 +237,15 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 
 This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on any <<chainedPlanningVariable,chained>> variables.
 
-[[pillarChangeMoveSelector]]
-=== PillarChangeMoveSelector
+[[pillarMoveSelectors]]
+=== Pillar-based move selectors
 
-A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects one entity pillar (or subset of those) and changes the value of one variable (which is the same for all entities) to another value.
+A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s).
+
+[[pillarChangeMoveSelector]]
+==== PillarChangeMoveSelector
+
+The `PillarChangeMove` selects one entity pillar (or subset of those) and changes the value of one variable (which is the same for all entities) to another value.
 
 image::MoveAndNeighborhoodSelection/pillarChangeMove.png[align="center"]
 
@@ -259,13 +264,14 @@ Advanced configuration:
 [source,xml,options="nowrap"]
 ----
     <pillarChangeMoveSelector>
+      <subPillarType>SEQUENCE</subPillarType>
+      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
       ... <!-- Normal selector properties -->
       <pillarSelector>
         <entitySelector>
           <entityClass>...Lecture</entityClass>
           ...
         </entitySelector>
-        <subPillarEnabled>true</subPillarEnabled>
         <minimumSubPillarSize>1</minimumSubPillarSize>
         <maximumSubPillarSize>1000</maximumSubPillarSize>
       </pillarSelector>
@@ -275,16 +281,7 @@ Advanced configuration:
     </pillarChangeMoveSelector>
 ----
 
-A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
-If `subPillarEnabled` (defaults to ``true``) is false, no sub pillars are selected.
-If sub pillars are enabled, the pillar itself is also included and the properties `minimumSubPillarSize` (defaults to ``1``) and `maximumSubPillarSize` (defaults to ``infinity``) limit the size of the selected (sub) pillar.
-
-[NOTE]
-====
-The number of sub pillars of a pillar is exponential to the size of the pillar.
-For example a pillar of size 32 has `(2^32 - 1)` subpillars.
-Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT random selection>> (which is the default).
-====
+For a description of `subPillarType` and related properties, please refer to <<subPillars,Subpillars>>.
 
 The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 This move selector does not support <<cacheType,phase or solver caching>>
@@ -292,9 +289,9 @@ and step caching scales badly memory wise.
 
 
 [[pillarSwapMoveSelector]]
-=== PillarSwapMoveSelector
+==== PillarSwapMoveSelector
 
-A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects two different entity pillars and swaps the values of all their variables for all their entities.
+The `PillarSwapMove` selects two different entity pillars and swaps the values of all their variables for all their entities.
 
 image::MoveAndNeighborhoodSelection/pillarSwapMove.png[align="center"]
 
@@ -310,13 +307,14 @@ Advanced configuration:
 [source,xml,options="nowrap"]
 ----
     <pillarSwapMoveSelector>
+      <subPillarType>SEQUENCE</subPillarType>
+      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
       ... <!-- Normal selector properties -->
       <pillarSelector>
         <entitySelector>
           <entityClass>...Lecture</entityClass>
           ...
         </entitySelector>
-        <subPillarEnabled>true</subPillarEnabled>
         <minimumSubPillarSize>1</minimumSubPillarSize>
         <maximumSubPillarSize>1000</maximumSubPillarSize>
       </pillarSelector>
@@ -331,15 +329,78 @@ Advanced configuration:
     </pillarSwapMoveSelector>
 ----
 
+For a description of `subPillarType` and related properties, please refer to <<subPillars,Subpillars>>.
+
 The `secondaryPillarSelector` is rarely needed: if it is not specified, entities from the same `pillarSelector` are swapped.
 
 The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and <<pillarChangeMoveSelector,pillarChangeMoveSelector>>.
 This move selector does not support <<cacheType,phase or solver caching>>
 and step caching scales badly memory wise.
 
+[[subPillars]]
+==== Sub pillars
+
+A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
+
+There are several ways how sub pillars can be selected, driven by `subPillarType` property:
+
+- `ANY` (default) will select all possible sub pillars.
+- `SEQUENCE` will limit selection of sub pillars to <<sequentialSubPillars,Sequential sub pillars>>.
+- `NONE` will never select sub pillars.
+
+If sub pillars are enabled, the pillar itself is also included and the properties `minimumSubPillarSize` (defaults to ``1``) and `maximumSubPillarSize` (defaults to ``infinity``) limit the size of the selected (sub) pillar.
+
+[NOTE]
+====
+The number of sub pillars of a pillar is exponential to the size of the pillar.
+For example a pillar of size 32 has `(2^32 - 1)` subpillars.
+Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT random selection>> (which is the default).
+====
+
+[[sequentialSubPillars]]
+===== Sequential sub pillars
+
+Sub pillars can be sorted with a `Comparator`. A sequential sub pillar is a continuous subset of its sorted base pillar.
+
+For example if a nurse has shifts on Monday (`M`), Tuesday (`T`), and Wednesday (`W`), they are a pillar and only the following are its sequential sub pillars: `[M], [T], [W], [M, T], [T, W], [M, T, W]`.
+But `[M, W]` is not a sub pillar in this case, as there is a gap on Tuesday.
+
+Sequential sub pillars apply to both <<pillarChangeMoveSelector,Pillar change move>> and
+<<pillarSwapMoveSelector,Pillar swap move>>. A minimal configuration looks like this:
+
+[source,xml,options="nowrap"]
+----
+    <pillar...MoveSelector>
+      <subPillarType>SEQUENCE</subPillarType>
+    </pillar...MoveSelector>
+----
+
+In this case, the entity being operated on must implement the `Comparable` interface. The size of sub pillars will not be limited in any way.
+
+An advanced configuration looks like this:
+
+[source,xml,options="nowrap"]
+----
+    <pillar...MoveSelector>
+      ...
+      <subPillarType>SEQUENCE</subPillarType>
+      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
+      <pillarSelector>
+        ...
+        <minimumSubPillarSize>1</minimumSubPillarSize>
+        <maximumSubPillarSize>1000</maximumSubPillarSize>
+      </pillarSelector>
+      ...
+    </pillar...MoveSelector>
+----
+
+In this case, the entity being operated on need not be `Comparable`. The given `subPillarSequenceComparatorClass` will be used to establish the sequence instead. Also, the size of the sub pillars will be limited in length of up to 1000 entities.
+
+[[chainMoveSelectors]]
+=== Move selectors for chained variables
 
 [[tailChainSwapMoveSelector]]
-=== TailChainSwapMoveSelector or 2-opt (chained variables only)
+==== TailChainSwapMoveSelector or 2-opt
 
 A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
 The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
@@ -382,7 +443,7 @@ Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include alm
 This move selector does not support <<cacheType,phase or solver caching>>.
 
 [[subChainChangeMoveSelector]]
-=== SubChainChangeMoveSelector (chained variables only)
+==== SubChainChangeMoveSelector
 
 A _subChain_ is a set of planning entities with a chained planning variable which form part of a chain.
 The `subChainChangeMoveSelector` selects a subChain and moves it to another place (in a different or the same anchor chain).
@@ -431,7 +492,7 @@ and step caching scales badly memory wise.
 
 
 [[subChainSwapMoveSelector]]
-=== SubChainSwapMoveSelector (chained variables only)
+==== SubChainSwapMoveSelector
 
 The `subChainSwapMoveSelector` selects two different subChains and moves them to another place in a different or the same anchor chain.
 
