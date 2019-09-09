@@ -142,7 +142,7 @@ class GeneratedClassDeclaration {
                     NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
                     annExpr.addPair(VALUE, quote(fieldName));
                 } else {
-                    processAnnotation(field, ann, null);
+                    processAnnotation(field, ann, new ArrayList<>()); // ignore soft annotations
                 }
             }
 
@@ -198,15 +198,11 @@ class GeneratedClassDeclaration {
                     annotationClass.getMethod(entry.getKey());
                     annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
                 } catch (NoSuchMethodException e) {
-                    if (softAnnotations == null) {
-                        builder.addBuilderResult(new AnnotationDeclarationError(ann, "Unknown annotation property " + entry.getKey()));
-                    }
+                    builder.addBuilderResult(new AnnotationDeclarationError(ann, "Unknown annotation property " + entry.getKey()));
                 }
             }
         } else {
-            if (softAnnotations != null) {
-                softAnnotations.add(ann);
-            }
+            softAnnotations.add(ann);
         }
     }
 
