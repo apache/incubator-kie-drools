@@ -79,6 +79,7 @@ public class SelectorTestUtils {
         final List<Object> entityList = Arrays.<Object>asList(entities);
         when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
         when(entitySelector.listIterator()).thenAnswer(invocation -> entityList.listIterator());
+        when(entitySelector.spliterator()).thenAnswer(invocation -> entityList.spliterator());
         for (int i = 0; i < entityList.size(); i++) {
             final int index = i;
             when(entitySelector.listIterator(index)).thenAnswer(invocation -> entityList.listIterator(index));

@@ -19,27 +19,22 @@ package org.optaplanner.core.config.heuristic.selector.move.generic;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.converters.extended.NamedCollectionConverter;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("pillarSwapMoveSelector")
-public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapMoveSelectorConfig> {
+public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
-    @XStreamAlias("pillarSelector")
-    private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
@@ -49,14 +44,6 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
 //    @XStreamConverter(value = NamedCollectionConverter.class,
 //            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
-
-    public PillarSelectorConfig getPillarSelectorConfig() {
-        return pillarSelectorConfig;
-    }
-
-    public void setPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
-        this.pillarSelectorConfig = pillarSelectorConfig;
-    }
 
     public PillarSelectorConfig getSecondaryPillarSelectorConfig() {
         return secondaryPillarSelectorConfig;
@@ -81,13 +68,14 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
-                : pillarSelectorConfig;
-        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+        PillarSelectorConfig pillarSelectorConfig_ = defaultIfNull(pillarSelectorConfig, new PillarSelectorConfig());
+        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         PillarSelectorConfig rightPillarSelectorConfig = defaultIfNull(secondaryPillarSelectorConfig, pillarSelectorConfig_);
-        PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+        PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         List<GenuineVariableDescriptor> variableDescriptorList = deduceVariableDescriptorList(
                 leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptorList,
@@ -97,7 +85,6 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
     @Override
     public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
         secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig, inheritedConfig.getSecondaryPillarSelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());

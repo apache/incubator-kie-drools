@@ -24,7 +24,6 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
@@ -32,21 +31,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-@XStreamAlias("pillarChangeMoveSelector")
-public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarChangeMoveSelectorConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    @XStreamAlias("pillarSelector")
-    private PillarSelectorConfig pillarSelectorConfig = null;
+@XStreamAlias("pillarChangeMoveSelector")
+public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
+
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
-
-    public PillarSelectorConfig getPillarSelectorConfig() {
-        return pillarSelectorConfig;
-    }
-
-    public void setPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
-        this.pillarSelectorConfig = pillarSelectorConfig;
-    }
 
     public ValueSelectorConfig getValueSelectorConfig() {
         return valueSelectorConfig;
@@ -63,15 +54,14 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
-                : pillarSelectorConfig;
+        PillarSelectorConfig pillarSelectorConfig_ = defaultIfNull(pillarSelectorConfig, new PillarSelectorConfig());
         List<String> variableNameIncludeList = valueSelectorConfig == null ? null
                 : valueSelectorConfig.getVariableName() == null ? null
                 : Collections.singletonList(valueSelectorConfig.getVariableName());
-        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
-                : valueSelectorConfig;
+        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+        ValueSelectorConfig valueSelectorConfig_ = defaultIfNull(valueSelectorConfig, new ValueSelectorConfig());
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
                 pillarSelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
@@ -81,7 +71,6 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
     @Override
     public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
     }
 
