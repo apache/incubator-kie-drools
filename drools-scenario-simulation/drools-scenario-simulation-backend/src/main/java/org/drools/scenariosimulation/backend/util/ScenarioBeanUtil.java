@@ -180,7 +180,7 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
             return Integer.toString((Integer) cleanValue);
         } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
-            return cleanValue + "L";
+            return Long.toString((Long) cleanValue);
         } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
             return cleanValue + "D";
         } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {

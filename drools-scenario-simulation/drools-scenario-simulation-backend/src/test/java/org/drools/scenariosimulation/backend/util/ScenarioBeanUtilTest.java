@@ -142,6 +142,10 @@ public class ScenarioBeanUtilTest {
         assertEquals(1.0D, convertValue(Double.class.getCanonicalName(), "1.0", classLoader));
         assertEquals(1.0F, convertValue(float.class.getCanonicalName(), "1.0", classLoader));
         assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0D, convertValue(double.class.getCanonicalName(), "1.0D", classLoader));
+        assertEquals(1.0D, convertValue(Double.class.getCanonicalName(), "1.0D", classLoader));
+        assertEquals(1.0F, convertValue(float.class.getCanonicalName(), "1.0F", classLoader));
+        assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0F", classLoader));
         assertEquals('a', convertValue(char.class.getCanonicalName(), "a", classLoader));
         assertEquals('a', convertValue(Character.class.getCanonicalName(), "a", classLoader));
         assertEquals((short) 1, convertValue(short.class.getCanonicalName(), "1", classLoader));
@@ -157,7 +161,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("Test", revertValue("Test"));
         assertEquals("false", revertValue(false));
         assertEquals("1", revertValue(1));
-        assertEquals("1L", revertValue(1L));
+        assertEquals("1", revertValue(1L));
         assertEquals("1.0D", revertValue(1.0D));
         assertEquals("1.0F", revertValue(1.0F));
         assertEquals("a", revertValue('a'));
