@@ -33,12 +33,20 @@ public class AccumulateUtil {
             }
         } else if (functionName.equals("max")) {
             final Class<?> exprClass = convertFromPrimitiveType( exprClassSupplier.get() );
-            if (Number.class.isAssignableFrom( exprClass )) {
+            if (exprClass == Integer.class) {
+                functionName = "maxI";
+            } else if (exprClass == Long.class) {
+                functionName = "maxL";
+            } else if (Number.class.isAssignableFrom( exprClass )) {
                 functionName = "maxN";
             }
         } else if (functionName.equals("min")) {
             final Class<?> exprClass = convertFromPrimitiveType( exprClassSupplier.get() );
-            if (Number.class.isAssignableFrom( exprClass )) {
+            if (exprClass == Integer.class) {
+                functionName = "minI";
+            } else if (exprClass == Long.class) {
+                functionName = "minL";
+            } else if (Number.class.isAssignableFrom( exprClass )) {
                 functionName = "minN";
             }
         }

@@ -461,6 +461,27 @@ public abstract class ClassUtils {
                 .map( f -> getMethod(clazz, f.get()) ).filter( Optional::isPresent ).findFirst().flatMap( Function.identity() ).orElse( null );
     }
 
+    public static Method getSetter(Class<?> clazz, String field, Class<?>... parameterTypes) {
+        return Stream.<Supplier<String>>of(
+                () -> "set" + ucFirst(field),
+                () -> field,
+                () -> "set" + field
+        )
+                .map( f -> getMethod(clazz, f.get(), parameterTypes) )
+                .filter( Optional::isPresent )
+                .findFirst()
+                .flatMap( Function.identity() )
+                .orElse( null );
+    }
+
+    private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
+        try {
+            return Optional.of( clazz.getMethod(name, parameterTypes) );
+        } catch (NoSuchMethodException e) {
+            return Optional.empty();
+        }
+    }
+
     public static String ucFirst(final String s) {
         return Character.isLowerCase(s.charAt( 0 )) ? Character.toUpperCase( s.charAt( 0 ) ) + s.substring( 1 ) : s;
     }

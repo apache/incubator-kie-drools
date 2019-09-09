@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -31,6 +32,7 @@ import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
 import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.core.base.extractors.ArrayElementReader;
@@ -115,7 +117,9 @@ public class MVELAccumulateBuilder
                                                        decls,
                                                        sourceOuterDeclr,
                                                        boundIds,
-                                                       readLocalsFromTuple );
+                                                       readLocalsFromTuple,
+                                                       source,
+                                                       declarationClasses);
             } else {
                 // it is a custom accumulate
                 accumulators = buildCustomAccumulate( context,
@@ -168,13 +172,15 @@ public class MVELAccumulateBuilder
         }
     }
 
-    private Accumulator[] buildExternalFunctions( final RuleBuildContext context,
-                                                  final AccumulateDescr accumDescr,
-                                                  MVELDialect dialect,
-                                                  Map<String, Declaration> decls,
-                                                  Map<String, Declaration> sourceOuterDeclr,
-                                                  BoundIdentifiers boundIds,
-                                                  boolean readLocalsFromTuple ) {
+    private Accumulator[] buildExternalFunctions(final RuleBuildContext context,
+                                                 final AccumulateDescr accumDescr,
+                                                 MVELDialect dialect,
+                                                 Map<String, Declaration> decls,
+                                                 Map<String, Declaration> sourceOuterDeclr,
+                                                 BoundIdentifiers boundIds,
+                                                 boolean readLocalsFromTuple,
+                                                 RuleConditionElement source,
+                                                 Map<String, Class<?>> declarationClasses) {
         Accumulator[] accumulators;
         List<AccumulateFunctionCallDescr> functions = accumDescr.getFunctions();
 
@@ -186,7 +192,12 @@ public class MVELAccumulateBuilder
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
         for ( AccumulateFunctionCallDescr func : functions ) {
             // build an external function executor
-            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
+            Supplier<Class<?>> classSupplier = () -> MVELExprAnalyzer.getExpressionType(context,
+                                                                                        declarationClasses,
+                                                                                        source,
+                                                                                        func.getParams()[0]);
+            String functionName = AccumulateUtil.getFunctionName(classSupplier, func.getFunction());
+            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
             if( function == null ) {
                 // might have been imported in the package
                 function = context.getPkg().getAccumulateFunctions().get(func.getFunction());

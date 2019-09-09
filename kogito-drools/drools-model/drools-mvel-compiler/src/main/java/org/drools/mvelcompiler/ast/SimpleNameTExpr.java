@@ -13,7 +13,6 @@ public class SimpleNameTExpr implements TypedExpression {
 
     public SimpleNameTExpr(String constraintName, Class<?> clazz) {
         this.constraintName = constraintName;
-
         this.clazz = clazz;
     }
 

@@ -42,14 +42,6 @@ import com.github.javaparser.printer.Printable;
 
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
-/**
- * An expression with an expression on the left, an expression on the right, and an operator in the middle.
- * It supports the operators that are found the the BinaryExpr.Operator enum.
- * <br/><code>a && b</code>
- * <br/><code>155 * 33</code>
- *
- * @author Julio Vilmar Gesser
- */
 public final class HalfBinaryExpr extends Expression {
 
     public enum Operator implements Printable {

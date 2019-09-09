@@ -33,8 +33,7 @@ public class VariableDeclaratorTExpr implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         Optional<Type> optInitType = initExpression.flatMap(TypedExpression::getType);
-        final Type ieType = optInitType.orElse(this.type);
-        com.github.javaparser.ast.type.Type jpType = StaticJavaParser.parseType(ieType.getTypeName());
+        com.github.javaparser.ast.type.Type jpType = StaticJavaParser.parseType(this.type.getTypeName());
 
         return initExpression.map(ie -> {
 
