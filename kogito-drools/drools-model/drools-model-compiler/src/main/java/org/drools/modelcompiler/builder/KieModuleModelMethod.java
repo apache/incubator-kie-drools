@@ -151,6 +151,7 @@ public class KieModuleModelMethod {
             kieBaseModelDefault();
             eventProcessingType();
             kieBaseModelPackages();
+            kieBaseModelIncludes();
             sessionModels();
         }
 
@@ -173,6 +174,12 @@ public class KieModuleModelMethod {
         void kieBaseModelPackages() {
             for (String p : kieBaseModel.getPackages()) {
                 stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addPackage", nodeList(new StringLiteralExpr(p))));
+            }
+        }
+
+        void kieBaseModelIncludes() {
+            for (String p : kieBaseModel.getIncludes()) {
+                stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addInclude", nodeList(new StringLiteralExpr(p))));
             }
         }
 

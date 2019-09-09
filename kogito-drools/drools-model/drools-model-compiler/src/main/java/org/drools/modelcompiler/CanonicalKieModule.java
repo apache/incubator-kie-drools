@@ -220,7 +220,8 @@ public class CanonicalKieModule implements InternalKieModule {
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = ( KieBaseModelImpl ) kieProject.getKieBaseModel( include );
-                models.addAll( (( CanonicalKieModule ) includeModule).getModelForKBase( includeKBaseModel ) );
+                CanonicalKieModule canonicalInclude = (CanonicalKieModule) includeModule;
+                models.addAll( canonicalInclude.getModelForKBase( includeKBaseModel ) );
                 processes.addAll( findProcesses( includeModule, includeKBaseModel ) );
             }
         }
@@ -280,7 +281,12 @@ public class CanonicalKieModule implements InternalKieModule {
     public ProjectClassLoader getModuleClassLoader() {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader( null );
-            moduleClassLoader.storeClasses( getClassesMap() );
+
+            Map<String, byte[]> classesMap = getClassesMap();
+            for (InternalKieModule dep : getKieDependencies().values()) {
+                dep.getClassesMap().forEach( classesMap::putIfAbsent );
+            }
+            moduleClassLoader.storeClasses( classesMap );
         }
         return moduleClassLoader;
     }

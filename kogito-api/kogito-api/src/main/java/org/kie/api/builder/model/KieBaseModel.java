@@ -16,6 +16,7 @@
 
 package org.kie.api.builder.model;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,11 @@ public interface KieBaseModel {
      * which will export all org.foo packages except org.foo.impl.
      */
     List<String> getPackages();
+
+    /**
+     * Returns all KieBases included by this one
+     */
+    Collection<String> getIncludes();
 
     /**
      * Adds a package (pattern) to the list of the packages defining the set of resources
