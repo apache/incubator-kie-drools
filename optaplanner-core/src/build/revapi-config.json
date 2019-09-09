@@ -23,7 +23,6 @@
       }
     }
   },
-
   "ignores": {
     "revapi": {
       "_comment": "Changes between 7.18.0.Final and the current branch. These changes are desired and thus ignored.",
@@ -69,6 +68,26 @@
           "methodName": "getConstraintMatchTotalMap",
           "elementKind": "method",
           "justification": "Users don't create their own ScoreHolder implementations."
+        },
+        {
+          "code": "java.class.nonFinalClassInheritsFromNewClass",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "superClass": "org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig>",
+          "package": "org.optaplanner.core.config.heuristic.selector.move.generic",
+          "classSimpleName": "PillarChangeMoveSelectorConfig",
+          "elementKind": "class",
+          "justification": "Pillar moves now share some properties."
+        },
+        {
+          "code": "java.class.nonFinalClassInheritsFromNewClass",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "superClass": "org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig>",
+          "package": "org.optaplanner.core.config.heuristic.selector.move.generic",
+          "classSimpleName": "PillarSwapMoveSelectorConfig",
+          "elementKind": "class",
+          "justification": "Pillar moves now share some properties."
         }
       ]
     }
