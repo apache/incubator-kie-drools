@@ -62,6 +62,10 @@ class GeneratedClassDeclaration {
     private final TypeDeclarationDescr typeDeclaration;
     private final PackageDescr packageDescr;
     private TypeResolver typeResolver;
+    private GeneratedHashcode generatedHashcode;
+    private GeneratedToString generatedToString;
+    private GeneratedEqualsMethod generatedEqualsMethod;
+    private ClassOrInterfaceDeclaration generatedClass;
 
     GeneratedClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
         this.builder = builder;
@@ -72,14 +76,14 @@ class GeneratedClassDeclaration {
 
     ClassOrInterfaceDeclaration toClassDeclaration() {
         String generatedClassName = typeDeclaration.getTypeName();
-        ClassOrInterfaceDeclaration generatedClass = createBasicDeclaredClass(generatedClassName);
+        generatedClass = createBasicDeclaredClass(generatedClassName);
 
         Collection<TypeFieldDescr> inheritedFields = findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDeclaration.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
             return generatedClass;
         } else {
-            return generateFullClass(generatedClassName, generatedClass, inheritedFields);
+            return generateFullClass(generatedClassName, inheritedFields);
         }
     }
 
@@ -97,7 +101,7 @@ class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, ClassOrInterfaceDeclaration generatedClass, Collection<TypeFieldDescr> inheritedFields) {
+    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDescr> inheritedFields) {
         boolean hasSuper = typeDeclaration.getSuperTypeName() != null;
         if (hasSuper) {
             generatedClass.addExtendedType(typeDeclaration.getSuperTypeName());
@@ -105,12 +109,26 @@ class GeneratedClassDeclaration {
 
         TypeFieldDescr[] typeFields = typeFieldsSortedByPosition();
 
-        GeneratedHashcode generatedHashcode = new GeneratedHashcode(hasSuper);
-        GeneratedToString generatedToString = new GeneratedToString(generatedClassName);
-        GeneratedEqualsMethod generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
+        generatedHashcode = new GeneratedHashcode(hasSuper);
+        generatedToString = new GeneratedToString(generatedClassName);
+        generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(typeDeclaration, generatedClass, typeFields);
 
+        List<TypeFieldDescr> keyFields = processTypeFields(inheritedFields, typeFields);
+
+        fullArgumentConstructor.generateConstructor(inheritedFields, typeFields, keyFields);
+
+        if (!keyFields.isEmpty()) {
+            generatedClass.addMember(generatedEqualsMethod.method());
+            generatedClass.addMember(generatedHashcode.method());
+        }
+
+        generatedClass.addMember(generatedToString.method());
+        return generatedClass;
+    }
+
+    private List<TypeFieldDescr> processTypeFields(Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields) {
         List<TypeFieldDescr> keyFields = new ArrayList<>();
         int position = inheritedFields.size();
         for (TypeFieldDescr typeFieldDescr : typeFields) {
@@ -150,16 +168,7 @@ class GeneratedClassDeclaration {
                 field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + position++);
             }
         }
-
-        fullArgumentConstructor.generateConstructor(inheritedFields, typeFields, keyFields);
-
-        if (!keyFields.isEmpty()) {
-            generatedClass.addMember(generatedEqualsMethod.method());
-            generatedClass.addMember(generatedHashcode.method());
-        }
-
-        generatedClass.addMember(generatedToString.method());
-        return generatedClass;
+        return keyFields;
     }
 
     private void processAnnotation(ClassOrInterfaceDeclaration generatedClass) {
