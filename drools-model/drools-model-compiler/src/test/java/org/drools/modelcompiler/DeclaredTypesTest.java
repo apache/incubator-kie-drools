@@ -446,7 +446,6 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testEnum() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
