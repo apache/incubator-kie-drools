@@ -66,7 +66,7 @@ public class ScenarioBeanUtil {
         String lastStep = steps.get(steps.size() - 1);
 
         Object currentObject = beanToFill;
-        if (pathToProperty.size() > 0) {
+        if (!pathToProperty.isEmpty()) {
             ScenarioBeanWrapper<?> scenarioBeanWrapper = navigateToObject(beanToFill, pathToProperty, true);
             currentObject = scenarioBeanWrapper.getBean();
         }
