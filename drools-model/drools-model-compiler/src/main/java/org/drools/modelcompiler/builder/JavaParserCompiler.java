@@ -25,6 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
@@ -32,10 +36,6 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.printer.PrettyPrinter;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
@@ -123,7 +123,7 @@ public class JavaParserCompiler {
         for (GeneratedClassWithPackage generatedPojo : classes) {
             final String pkgName = generatedPojo.getPackageName();
             final String folderName = pkgName.replace( '.', '/' );
-            final ClassOrInterfaceDeclaration generatedClass = generatedPojo.getGeneratedClass();
+            final TypeDeclaration generatedClass = generatedPojo.getGeneratedClass();
             final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
             srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes());
             sources.add( varsSourceName );
@@ -132,7 +132,7 @@ public class JavaParserCompiler {
         return sources.toArray( new String[sources.size()] );
     }
 
-    public static String toPojoSource(String pkgName, Collection<String> imports, Collection<String> staticImports, ClassOrInterfaceDeclaration pojo) {
+    public static String toPojoSource(String pkgName, Collection<String> imports, Collection<String> staticImports, TypeDeclaration pojo) {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
         for (String i : imports) {

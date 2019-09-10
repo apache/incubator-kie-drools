@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -107,17 +108,17 @@ class GeneratedClassDeclaration {
             generatedClass.addExtendedType(typeDeclaration.getSuperTypeName());
         }
 
-        TypeFieldDescr[] typeFields = typeFieldsSortedByPosition();
+        LinkedHashMap<String, TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         generatedHashcode = new GeneratedHashcode(hasSuper);
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(typeDeclaration, generatedClass, typeFields);
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, sortedTypeFields, true, true);
 
-        List<TypeFieldDescr> keyFields = processTypeFields(inheritedFields, typeFields);
+        List<TypeFieldDescr> keyFields = processTypeFields(inheritedFields, sortedTypeFields);
 
-        fullArgumentConstructor.generateConstructor(inheritedFields, typeFields, keyFields);
+        fullArgumentConstructor.generateConstructor(inheritedFields, keyFields);
 
         if (!keyFields.isEmpty()) {
             generatedClass.addMember(generatedEqualsMethod.method());
@@ -128,10 +129,10 @@ class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private List<TypeFieldDescr> processTypeFields(Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields) {
+    private List<TypeFieldDescr> processTypeFields(Collection<TypeFieldDescr> inheritedFields, Map<String, TypeFieldDescr> typeFields) {
         List<TypeFieldDescr> keyFields = new ArrayList<>();
         int position = inheritedFields.size();
-        for (TypeFieldDescr typeFieldDescr : typeFields) {
+        for (TypeFieldDescr typeFieldDescr : typeFields.values()) {
             String fieldName = typeFieldDescr.getFieldName();
             Type returnType = parseType(typeFieldDescr.getPattern().getObjectType());
 
@@ -215,7 +216,7 @@ class GeneratedClassDeclaration {
         }
     }
 
-    private TypeFieldDescr[] typeFieldsSortedByPosition() {
+    private LinkedHashMap<String, TypeFieldDescr> typeFieldsSortedByPosition() {
         Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
         TypeFieldDescr[] sortedTypes = new TypeFieldDescr[typeFields.size()];
 
@@ -238,7 +239,13 @@ class GeneratedClassDeclaration {
             sortedTypes[counter++] = descr;
         }
 
-        return sortedTypes;
+
+        LinkedHashMap<String, TypeFieldDescr> sortedTypeField = new LinkedHashMap<>();
+        for(TypeFieldDescr t : sortedTypes) {
+            sortedTypeField.put(t.getFieldName(), t);
+        }
+
+        return sortedTypeField;
     }
 
     private List<TypeFieldDescr> findInheritedDeclaredFields() {

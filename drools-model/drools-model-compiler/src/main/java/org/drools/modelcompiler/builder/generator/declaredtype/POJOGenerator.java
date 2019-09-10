@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -75,8 +76,8 @@ public class POJOGenerator {
                 Class<?> type = typeResolver.resolveType(enumDescr.getFullTypeName());
                 processTypeMetadata(type, enumDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
-                ClassOrInterfaceDeclaration generatedEnum = new EnumGenerator(builder, pkg, packageModel)
-                        .generate(packageDescr.getEnumDeclarations());
+                TypeDeclaration generatedEnum = new EnumGenerator()
+                        .generate(enumDescr);
                 packageModel.addGeneratedPOJO(generatedEnum);
                 addTypeMetadata(enumDescr.getTypeName());
             }
