@@ -23,11 +23,18 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedC
 interface GeneratedConstructor {
 
     static GeneratedConstructor factory(NodeWithConstructors generatedClass,
-                                        Map<String, TypeFieldDescr> typeDeclarationFields,
-                                        boolean publicConstructor,
-                                        boolean superCall) {
+                                        Map<String, TypeFieldDescr> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
-            return new FullArgumentConstructor(generatedClass, typeDeclarationFields, publicConstructor, superCall);
+            return new FullArgumentConstructor(generatedClass, typeDeclarationFields, true, true);
+        } else {
+            return new NoConstructor();
+        }
+    }
+
+    static GeneratedConstructor factoryEnum(NodeWithConstructors generatedClass,
+                                        Map<String, TypeFieldDescr> typeDeclarationFields) {
+        if (typeDeclarationFields.size() < 65) {
+            return new FullArgumentConstructor(generatedClass, typeDeclarationFields, false, false);
         } else {
             return new NoConstructor();
         }

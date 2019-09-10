@@ -114,7 +114,7 @@ class GeneratedClassDeclaration {
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, sortedTypeFields, true, true);
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, sortedTypeFields);
 
         List<TypeFieldDescr> keyFields = processTypeFields(inheritedFields, sortedTypeFields);
 

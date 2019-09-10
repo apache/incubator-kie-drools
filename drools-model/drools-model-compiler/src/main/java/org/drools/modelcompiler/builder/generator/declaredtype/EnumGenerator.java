@@ -53,7 +53,7 @@ public class EnumGenerator {
     }
 
     private void createConstructor(EnumDeclarationDescr enumDeclarationDescr) {
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(enumDeclaration, enumDeclarationDescr.getFields(), false, false);
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumDeclarationDescr.getFields());
         fullArgumentConstructor.generateConstructor(Collections.emptyList(), Collections.emptyList());
     }
 
