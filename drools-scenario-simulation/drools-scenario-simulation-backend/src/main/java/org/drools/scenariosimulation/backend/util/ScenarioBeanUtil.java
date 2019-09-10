@@ -182,9 +182,9 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
             return Long.toString((Long) cleanValue);
         } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
-            return cleanValue + "D";
+            return cleanValue + "d";
         } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
-            return cleanValue + "F";
+            return cleanValue + "f";
         } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
             return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
