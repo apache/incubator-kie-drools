@@ -265,11 +265,11 @@ Advanced configuration:
 ----
     <pillarChangeMoveSelector>
       <subPillarType>SEQUENCE</subPillarType>
-      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
+      <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
       ... <!-- Normal selector properties -->
       <pillarSelector>
         <entitySelector>
-          <entityClass>...Lecture</entityClass>
+          <entityClass>...ShiftAssignment</entityClass>
           ...
         </entitySelector>
         <minimumSubPillarSize>1</minimumSubPillarSize>
