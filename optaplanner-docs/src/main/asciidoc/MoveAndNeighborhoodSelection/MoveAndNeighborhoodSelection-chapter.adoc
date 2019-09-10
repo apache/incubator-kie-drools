@@ -308,11 +308,11 @@ Advanced configuration:
 ----
     <pillarSwapMoveSelector>
       <subPillarType>SEQUENCE</subPillarType>
-      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
+      <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
       ... <!-- Normal selector properties -->
       <pillarSelector>
         <entitySelector>
-          <entityClass>...Lecture</entityClass>
+          <entityClass>...ShiftAssignment</entityClass>
           ...
         </entitySelector>
         <minimumSubPillarSize>1</minimumSubPillarSize>
@@ -324,12 +324,12 @@ Advanced configuration:
         </entitySelector>
         ...
       </secondaryPillarSelector>
-      <variableNameInclude>room</variableNameInclude>
+      <variableNameInclude>employee</variableNameInclude>
       <variableNameInclude>...</variableNameInclude>
     </pillarSwapMoveSelector>
 ----
 
-For a description of `subPillarType` and related properties, please refer to <<subPillars,Subpillars>>.
+For a description of `subPillarType` and related properties, please refer to <<subPillars,sub pillars>>.
 
 The `secondaryPillarSelector` is rarely needed: if it is not specified, entities from the same `pillarSelector` are swapped.
 
@@ -342,11 +342,11 @@ and step caching scales badly memory wise.
 
 A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
 
-There are several ways how sub pillars can be selected, driven by `subPillarType` property:
+There are several ways how sub pillars can be selected by the `subPillarType` property:
 
-- `ANY` (default) will select all possible sub pillars.
-- `SEQUENCE` will limit selection of sub pillars to <<sequentialSubPillars,Sequential sub pillars>>.
-- `NONE` will never select sub pillars.
+- `ANY` (default) selects all possible sub pillars.
+- `SEQUENCE` limits selection of sub pillars to <<sequentialSubPillars,Sequential sub pillars>>.
+- `NONE` never selects any sub pillars.
 
 If sub pillars are enabled, the pillar itself is also included and the properties `minimumSubPillarSize` (defaults to ``1``) and `maximumSubPillarSize` (defaults to ``infinity``) limit the size of the selected (sub) pillar.
 
@@ -384,7 +384,7 @@ An advanced configuration looks like this:
     <pillar...MoveSelector>
       ...
       <subPillarType>SEQUENCE</subPillarType>
-      <subPillarSequenceComparatorClass>...</subPillarSequenceComparatorClass>
+      <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
       <pillarSelector>
         ...
         <minimumSubPillarSize>1</minimumSubPillarSize>
@@ -394,7 +394,7 @@ An advanced configuration looks like this:
     </pillar...MoveSelector>
 ----
 
-In this case, the entity being operated on need not be `Comparable`. The given `subPillarSequenceComparatorClass` will be used to establish the sequence instead. Also, the size of the sub pillars will be limited in length of up to 1000 entities.
+In this case, the entity being operated on need not be `Comparable`. The given `subPillarSequenceComparatorClass` is used to establish the sequence instead. Also, the size of the sub pillars is limited in length of up to 1000 entities.
 
 [[chainMoveSelectors]]
 === Move selectors for chained variables
