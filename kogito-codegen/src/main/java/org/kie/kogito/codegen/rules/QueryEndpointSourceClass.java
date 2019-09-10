@@ -46,6 +46,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
 public class QueryEndpointSourceClass implements FileGenerator {
 
@@ -169,7 +170,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
     }
 
     private void setGeneric(Type type, String typeArgument) {
-        type.asClassOrInterfaceType().setTypeArguments( parseClassOrInterfaceType( typeArgument ) );
+        type.asClassOrInterfaceType().setTypeArguments( parseClassOrInterfaceType( toNonPrimitiveType( typeArgument ) ) );
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {

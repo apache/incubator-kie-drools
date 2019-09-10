@@ -19,3 +19,7 @@ query FindAdults
     /persons[ adult, $name : name ]
 end
 
+query FindAdultsAge
+    /persons[ adult, $age : age ]
+end
+
