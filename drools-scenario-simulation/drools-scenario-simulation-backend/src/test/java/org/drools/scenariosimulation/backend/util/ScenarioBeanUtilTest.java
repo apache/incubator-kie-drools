@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.NotEmptyConstructor;
 import org.drools.scenariosimulation.backend.model.Person;
@@ -249,14 +248,6 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), revertValue("0".getBytes()[0]), classLoader));
         assertEquals(LocalDate.of(2018, 10, 20), convertValue(LocalDate.class.getCanonicalName(), revertValue(LocalDate.of(2018, 10, 20)), classLoader));
         assertNull(convertValue(String.class.getCanonicalName(), revertValue(null), classLoader));
-    }
-
-    @Test public void puppa ()  {
-
-        BaseExpressionEvaluator puppa2 = new BaseExpressionEvaluator(classLoader);
-        assertNull(puppa2.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "null"));
-
-
     }
 
     @Test(expected = IllegalArgumentException.class)
