@@ -108,6 +108,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
+    public <GroupKey_, ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
         throw new UnsupportedOperationException(); // TODO
     }
