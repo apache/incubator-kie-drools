@@ -38,6 +38,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -120,7 +121,7 @@ public class PackageModel {
 
     private List<MethodDeclaration> functions = new ArrayList<>();
 
-    private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
+    private List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
     private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private Set<Class<?>> domainClasses = new HashSet<>();
@@ -290,11 +291,11 @@ public class PackageModel {
         this.functions.addAll(functions);
     }
 
-    public void addGeneratedPOJO(ClassOrInterfaceDeclaration pojo) {
+    public void addGeneratedPOJO(TypeDeclaration pojo) {
         this.generatedPOJOs.add(pojo);
     }
 
-    public List<ClassOrInterfaceDeclaration> getGeneratedPOJOsSource() {
+    public List<TypeDeclaration> getGeneratedPOJOsSource() {
         return generatedPOJOs;
     }
 
