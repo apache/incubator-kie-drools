@@ -204,17 +204,37 @@
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
             <cacheType>STEP</cacheType>
             <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
+          <changeMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </swapMoveSelector>
+          <pillarChangeMoveSelector>
+            <subPillarType>SEQUENCE</subPillarType>
+            <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
+            <pillarSelector>
+              <entitySelector>
+                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+              </entitySelector>
+            </pillarSelector>
+          </pillarChangeMoveSelector>
+          <pillarSwapMoveSelector>
+            <subPillarType>SEQUENCE</subPillarType>
+            <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
+            <pillarSelector>
+              <entitySelector>
+                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+              </entitySelector>
+            </pillarSelector>
+          </pillarSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>7</entityTabuSize>

@@ -30,13 +30,19 @@
         </termination>
         <unionMoveSelector>
           <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <changeMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <moveTabuSize>7</moveTabuSize>
