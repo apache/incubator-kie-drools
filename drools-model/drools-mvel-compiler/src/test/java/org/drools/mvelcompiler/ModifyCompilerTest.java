@@ -2,6 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.util.function.Consumer;
 
+import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.junit.Test;
 
@@ -18,6 +19,22 @@ public class ModifyCompilerTest implements CompilerTest {
         test("{modify( (List)$toEdit.get(0) ){ setEnabled( true ) }}",
              "{ ((List) $toEdit.get(0)).setEnabled(true); }",
              result -> assertThat(allUsedBindings(result), is(empty())));
+    }
+
+    @Test
+    public void testModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{  modify($p) { setCanDrink(true); } }",
+             "{ ($p).setCanDrink(true); update($p); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testModifyWithLambda() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{  modify($p) {  setCanDrinkLambda(() -> true); } }",
+             "{ ($p).setCanDrinkLambda(() -> true); update($p); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
