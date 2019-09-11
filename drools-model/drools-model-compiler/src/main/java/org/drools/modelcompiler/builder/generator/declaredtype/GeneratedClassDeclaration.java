@@ -95,7 +95,7 @@ class GeneratedClassDeclaration {
                 , generatedClassName);
 
         basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
-        processAnnotation(basicDeclaredClass);
+        processAnnotations(basicDeclaredClass);
 
         basicDeclaredClass.addImplementedType(GeneratedFact.class.getName());
         basicDeclaredClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
@@ -161,7 +161,7 @@ class GeneratedClassDeclaration {
                     NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
                     annExpr.addPair(VALUE, quote(fieldName));
                 } else {
-                    processAnnotation(field, ann, new ArrayList<>()); // ignore soft annotations
+                    processAnnotations(field, ann, null);
                 }
             }
 
@@ -172,7 +172,7 @@ class GeneratedClassDeclaration {
         return keyFields;
     }
 
-    private void processAnnotation(ClassOrInterfaceDeclaration generatedClass) {
+    private void processAnnotations(ClassOrInterfaceDeclaration generatedClass) {
         List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
             if (ann.getName().equals("serialVersionUID")) {
@@ -180,7 +180,7 @@ class GeneratedClassDeclaration {
                 generatedClass.addFieldWithInitializer(PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
                         , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword());
             } else {
-                processAnnotation(generatedClass, ann, softAnnotations);
+                processAnnotations(generatedClass, ann, softAnnotations);
             }
         }
         if (!softAnnotations.isEmpty()) {
@@ -190,7 +190,7 @@ class GeneratedClassDeclaration {
         }
     }
 
-    private void processAnnotation(NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations) {
+    private void processAnnotations(NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations) {
         Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName());
         if (annotationClass == null) {
             try {
@@ -202,17 +202,25 @@ class GeneratedClassDeclaration {
 
         String annFqn = annotationClass.getCanonicalName();
         if (annFqn != null) {
-            NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
-            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-                try {
-                    annotationClass.getMethod(entry.getKey());
-                    annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
-                } catch (NoSuchMethodException e) {
+            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
+        } else {
+            if(softAnnotations != null) {
+                softAnnotations.add(ann);
+            }
+        }
+    }
+
+    private void processAnnotation(NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations, Class<?> annotationClass, String annFqn) {
+        NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
+        for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+            try {
+                annotationClass.getMethod(entry.getKey());
+                annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
+            } catch (NoSuchMethodException e) {
+                if(softAnnotations == null) {
                     builder.addBuilderResult(new AnnotationDeclarationError(ann, "Unknown annotation property " + entry.getKey()));
                 }
             }
-        } else {
-            softAnnotations.add(ann);
         }
     }
 
