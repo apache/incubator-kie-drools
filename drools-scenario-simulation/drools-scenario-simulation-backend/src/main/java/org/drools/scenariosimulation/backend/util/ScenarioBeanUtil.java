@@ -123,6 +123,9 @@ public class ScenarioBeanUtil {
     }
 
     public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
+        // "null" string is converted to null
+        cleanValue = "null".equals(cleanValue) ? null : cleanValue;
+
         if (!isPrimitive(className) && cleanValue == null) {
             return null;
         }
@@ -155,7 +158,7 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
             return parseChar(value);
         } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
-            return parseByte(value);
+            return Byte.parseByte(value);
         } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
             return Short.parseShort(cleanStringForNumberParsing(value));
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
@@ -250,16 +253,9 @@ public class ScenarioBeanUtil {
 
     private static char parseChar(String value) {
         if (value == null || value.length() != 1) {
-            throw new IllegalArgumentException("Impossible to transform " + value + "as char");
+            throw new IllegalArgumentException("Impossible to transform " + value + " as char");
         }
         return value.charAt(0);
-    }
-
-    private static byte parseByte(String value) {
-        if (value == null || value.length() != 1) {
-            throw new IllegalArgumentException("Impossible to transform " + value + "as byte");
-        }
-        return value.getBytes()[0];
     }
 
     private static String cleanStringForNumberParsing(String rawValue) {

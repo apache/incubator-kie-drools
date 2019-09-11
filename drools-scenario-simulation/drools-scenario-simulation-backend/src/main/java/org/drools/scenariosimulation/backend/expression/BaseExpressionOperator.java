@@ -82,10 +82,6 @@ public enum BaseExpressionOperator {
         @Override
         protected Object evaluateLiteralExpression(String className, String value, ClassLoader classLoader) {
             String returnValue = removeOperator(value);
-
-            // "null" string is converted to null
-            returnValue = "null".equals(returnValue) ? null : returnValue;
-
             return convertValue(className, returnValue, classLoader);
         }
 
