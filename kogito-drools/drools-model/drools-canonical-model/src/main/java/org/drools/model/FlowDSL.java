@@ -8,10 +8,16 @@ import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
+import org.drools.model.impl.Query10DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
 import org.drools.model.impl.Query3DefImpl;
 import org.drools.model.impl.Query4DefImpl;
+import org.drools.model.impl.Query5DefImpl;
+import org.drools.model.impl.Query6DefImpl;
+import org.drools.model.impl.Query7DefImpl;
+import org.drools.model.impl.Query8DefImpl;
+import org.drools.model.impl.Query9DefImpl;
 import org.drools.model.impl.RuleBuilder;
 import org.drools.model.impl.ViewBuilder;
 import org.drools.model.view.BindViewItem1;
@@ -210,67 +216,163 @@ public class FlowDSL extends DSL {
         return new Query0DefImpl( VIEW_BUILDER, pkg, name );
     }
 
-    public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, name, type1 );
+    public static <T1> Query1Def<T1> query(String name, Class<T1> type1) {
+        return new Query1DefImpl<>(VIEW_BUILDER, name, type1);
     }
 
-    public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, name, type1, arg1name);
+    public static <T1> Query1Def<T1> query(String name, Class<T1> type1, String arg1name) {
+        return new Query1DefImpl<>(VIEW_BUILDER, name, type1, arg1name);
     }
 
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1 );
+    public static <T1> Query1Def<T1> query(String pkg, String name, Class<T1> type1) {
+        return new Query1DefImpl<>(VIEW_BUILDER, pkg, name, type1);
     }
 
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, type2 );
+    public static <T1> Query1Def<T1> query(String pkg, String name, Class<T1> type1, String arg1name) {
+        return new Query1DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name);
     }
 
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2 );
+    public static <T1, T2> Query2Def<T1, T2> query(String name, Class<T1> type1, Class<T2> type2) {
+        return new Query2DefImpl<>(VIEW_BUILDER, name, type1, type2);
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, type2, type3 );
+    public static <T1, T2> Query2Def<T1, T2> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name) {
+        return new Query2DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name);
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3 );
+    public static <T1, T2> Query2Def<T1, T2> query(String pkg, String name, Class<T1> type1, Class<T2> type2) {
+        return new Query2DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2);
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+    public static <T1, T2> Query2Def<T1, T2> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name) {
+        return new Query2DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
+    public static <T1, T2, T3> Query3Def<T1, T2, T3> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3) {
+        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, type2, type3);
     }
 
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2 ,arg2name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+    public static <T1, T2, T3> Query3Def<T1, T2, T3> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name) {
         return new Query3DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name);
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    public static <T1, T2, T3> Query3Def<T1, T2, T3> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3) {
+        return new Query3DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3);
     }
 
-    public static <A,B,C,D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    public static <T1, T2, T3> Query3Def<T1, T2, T3> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name) {
+        return new Query3DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
     }
 
-    public static <A,B,C,D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    public static <T1, T2, T3, T4> Query4Def<T1, T2, T3, T4> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4) {
+        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4);
+    }
+
+    public static <T1, T2, T3, T4> Query4Def<T1, T2, T3, T4> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name) {
+        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name);
+    }
+
+    public static <T1, T2, T3, T4> Query4Def<T1, T2, T3, T4> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4) {
+        return new Query4DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4);
+    }
+
+    public static <T1, T2, T3, T4> Query4Def<T1, T2, T3, T4> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name) {
+        return new Query4DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name);
+    }
+
+    public static <T1, T2, T3, T4, T5> Query5Def<T1, T2, T3, T4, T5> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5) {
+        return new Query5DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5);
+    }
+
+    public static <T1, T2, T3, T4, T5> Query5Def<T1, T2, T3, T4, T5> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name) {
+        return new Query5DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name);
+    }
+
+    public static <T1, T2, T3, T4, T5> Query5Def<T1, T2, T3, T4, T5> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5) {
+        return new Query5DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5);
+    }
+
+    public static <T1, T2, T3, T4, T5> Query5Def<T1, T2, T3, T4, T5> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name) {
+        return new Query5DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6> Query6Def<T1, T2, T3, T4, T5, T6> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6) {
+        return new Query6DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5, type6);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6> Query6Def<T1, T2, T3, T4, T5, T6> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name) {
+        return new Query6DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6> Query6Def<T1, T2, T3, T4, T5, T6> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6) {
+        return new Query6DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5, type6);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6> Query6Def<T1, T2, T3, T4, T5, T6> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name) {
+        return new Query6DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7> Query7Def<T1, T2, T3, T4, T5, T6, T7> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7) {
+        return new Query7DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5, type6, type7);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7> Query7Def<T1, T2, T3, T4, T5, T6, T7> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name) {
+        return new Query7DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7> Query7Def<T1, T2, T3, T4, T5, T6, T7> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7) {
+        return new Query7DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5, type6, type7);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7> Query7Def<T1, T2, T3, T4, T5, T6, T7> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name) {
+        return new Query7DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8> Query8Def<T1, T2, T3, T4, T5, T6, T7, T8> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8) {
+        return new Query8DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5, type6, type7, type8);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8> Query8Def<T1, T2, T3, T4, T5, T6, T7, T8> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name) {
+        return new Query8DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8> Query8Def<T1, T2, T3, T4, T5, T6, T7, T8> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8) {
+        return new Query8DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5, type6, type7, type8);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8> Query8Def<T1, T2, T3, T4, T5, T6, T7, T8> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name) {
+        return new Query8DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Query9Def<T1, T2, T3, T4, T5, T6, T7, T8, T9> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9) {
+        return new Query9DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5, type6, type7, type8, type9);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Query9Def<T1, T2, T3, T4, T5, T6, T7, T8, T9> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name, Class<T9> type9, String arg9name) {
+        return new Query9DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name, type9, arg9name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Query9Def<T1, T2, T3, T4, T5, T6, T7, T8, T9> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9) {
+        return new Query9DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5, type6, type7, type8, type9);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Query9Def<T1, T2, T3, T4, T5, T6, T7, T8, T9> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name, Class<T9> type9, String arg9name) {
+        return new Query9DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name, type9, arg9name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Query10Def<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> query(String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9, Class<T10> type10) {
+        return new Query10DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Query10Def<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> query(String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name, Class<T9> type9, String arg9name, Class<T10> type10, String arg10name) {
+        return new Query10DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name, type9, arg9name, type10, arg10name);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Query10Def<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> query(String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9, Class<T10> type10) {
+        return new Query10DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Query10Def<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> query(String pkg, String name, Class<T1> type1, String arg1name, Class<T2> type2, String arg2name, Class<T3> type3, String arg3name, Class<T4> type4, String arg4name, Class<T5> type5, String arg5name, Class<T6> type6, String arg6name, Class<T7> type7, String arg7name, Class<T8> type8, String arg8name, Class<T9> type9, String arg9name, Class<T10> type10, String arg10name) {
+        return new Query10DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name, type6, arg6name, type7, arg7name, type8, arg8name, type9, arg9name, type10, arg10name);
     }
 }

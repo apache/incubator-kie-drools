@@ -23,7 +23,17 @@ import org.drools.model.view.ViewItemBuilder;
 public interface QueryDef {
 
     Class[] QUERIES_BY_ARITY = new Class[] {
-            Query0Def.class, Query1Def.class, Query2Def.class, Query3Def.class, Query4Def.class
+            Query0Def.class,
+            Query1Def.class,
+            Query2Def.class,
+            Query3Def.class,
+            Query4Def.class,
+            Query5Def.class,
+            Query6Def.class,
+            Query7Def.class,
+            Query8Def.class,
+            Query9Def.class,
+            Query10Def.class,
     };
 
     static Class getQueryClassByArity(int arity) {
