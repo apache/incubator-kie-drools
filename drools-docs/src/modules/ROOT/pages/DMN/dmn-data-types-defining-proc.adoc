@@ -9,7 +9,7 @@ Custom data types that you create for a boxed expression can be simple or struct
 * *Structured* data types contain multiple fields associated with a parent data type. Example: A single type `Person` containing the fields `Name (string)`, `Age (number)`, `Email (string)`.
 
 .Prerequisites
-* You have created or imported a DMN file in {CENTRAL}.
+* A DMN file is created or imported in {CENTRAL}.
 
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.

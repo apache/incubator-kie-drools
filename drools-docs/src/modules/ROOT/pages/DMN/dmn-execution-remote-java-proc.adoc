@@ -19,7 +19,7 @@ endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_installationandsetup>>.
 endif::[]
-* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model, ideally compiled as an executable model for more efficient execution:
+* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}. Ideally, you have built the DMN project as an executable model for more efficient execution:
 +
 --
 [source]
@@ -35,7 +35,7 @@ ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
 endif::[]
 --
-* You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
+* You have the ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
 
 .Procedure
 . In your client application, add the following dependency to the relevant classpath of your Java project:

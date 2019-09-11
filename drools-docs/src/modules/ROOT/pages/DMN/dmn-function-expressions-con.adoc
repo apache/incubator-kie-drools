@@ -17,3 +17,8 @@ The following boxed function expression determines a monthly mortgage installmen
 
 .Boxed function expression for installment calculation in business knowledge model
 image::dmn/dmn-function-expression-example3.png[]
+
+The following boxed function expression uses a PMML model included in the DMN file to define the minimum acceptable PITI calculation (principal, interest, taxes, and insurance) in a lending decision:
+
+.Boxed function expression with an included PMML model in business knowledge model
+image::dmn/dmn-function-expression-example5.png[]
