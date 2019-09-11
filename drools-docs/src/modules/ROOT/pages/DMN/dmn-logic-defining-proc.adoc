@@ -6,11 +6,11 @@ Boxed expressions in DMN are tables that you use to define the underlying logic 
 You can use the DMN designer in {CENTRAL} to define decision logic for your DRD components using built-in boxed expressions.
 
 .Prerequisites
-* You have created or imported a DMN file in {CENTRAL}.
+* A DMN file is created or imported in {CENTRAL}.
 
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
-. In the DMN designer canvas, select a decision node or business knowledge model that you want to define and click the *Edit* icon to open the DMN boxed expression designer:
+. In the DMN designer canvas, select a decision node or business knowledge model node that you want to define and click the *Edit* icon to open the DMN boxed expression designer:
 +
 --
 .Opening a new decision node boxed expression
@@ -26,7 +26,7 @@ For decision nodes, you click the undefined table to select the type of boxed ex
 .Selecting the logic type for a decision node
 image::dmn/dmn-decision-boxed-expression-options.png[]
 
-For business knowledge models, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
+For business knowledge model nodes, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
 
 .Selecting the function or other logic type for a business knowledge model
 image::dmn/dmn-bkm-define.png[]

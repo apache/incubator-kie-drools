@@ -1,0 +1,6 @@
+[id='dmn-included-models-con_{context}']
+= Included models in DMN files in {CENTRAL}
+
+In the DMN designer in {CENTRAL}, you can use the *Included Models* tab to include other DMN models and Predictive Model Markup Language (PMML) models from your project in a specified DMN file. When you include a DMN model within another DMN file, you can use all of the nodes and logic from both models in the same decision requirements diagram (DRD). When you include a PMML model within a DMN file, you can invoke that PMML model as a boxed function expression for a DMN decision node or business knowledge model node.
+
+You cannot include DMN or PMML models from other projects in {CENTRAL}.
