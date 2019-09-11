@@ -1982,4 +1982,25 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(first);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
+
+    @Test
+    public void testMatchesOnNullString() {
+        // DROOLS-4525
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person(name matches \"^[0-9]{3}.*$\")\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : Person(likes matches \"^[0-9]{3}.*$\")\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person first = new Person("686878");
+        ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
 }
