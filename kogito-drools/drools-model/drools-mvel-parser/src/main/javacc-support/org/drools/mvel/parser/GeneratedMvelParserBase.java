@@ -234,6 +234,49 @@ abstract class GeneratedMvelParserBase {
         return list;
     }
 
+    /**
+     * Propagate expansion of the range on the right to the parent. This is necessary when the right border of the child
+     * is determining the right border of the parent (i.e., the child is the last element of the parent). In this case
+     * when we "enlarge" the child we should enlarge also the parent.
+     */
+    private void propagateRangeGrowthOnRight(Node node, Node endNode) {
+        if (storeTokens) {
+            node.getParentNode().ifPresent(nodeParent -> {
+                boolean isChildOnTheRightBorderOfParent = node.getTokenRange().get().getEnd().equals(nodeParent.getTokenRange().get().getEnd());
+                if (isChildOnTheRightBorderOfParent) {
+                    propagateRangeGrowthOnRight(nodeParent, endNode);
+                }
+            });
+            node.setTokenRange(range(node, endNode));
+        }
+    }
+
+    /**
+     * Workaround for rather complex ambiguity that lambda's create
+     */
+    Expression generateLambda(Expression ret, Statement lambdaBody) {
+        if (ret instanceof EnclosedExpr) {
+            Expression inner = ((EnclosedExpr) ret).getInner();
+            SimpleName id = ((NameExpr) inner).getName();
+            NodeList<Parameter> params = add(new NodeList<>(), new Parameter(ret.getTokenRange().orElse(null), new NodeList<>(), new NodeList<>(), new UnknownType(), false, new NodeList<>(), id));
+            ret = new LambdaExpr(range(ret, lambdaBody), params, lambdaBody, true);
+        } else if (ret instanceof NameExpr) {
+            SimpleName id = ((NameExpr) ret).getName();
+            NodeList<Parameter> params = add(new NodeList<>(), new Parameter(ret.getTokenRange().orElse(null), new NodeList<>(), new NodeList<>(), new UnknownType(), false, new NodeList<>(), id));
+            ret = new LambdaExpr(range(ret, lambdaBody), params, lambdaBody, false);
+        } else if (ret instanceof LambdaExpr) {
+            ((LambdaExpr) ret).setBody(lambdaBody);
+            propagateRangeGrowthOnRight(ret, lambdaBody);
+        } else if (ret instanceof CastExpr) {
+            CastExpr castExpr = (CastExpr) ret;
+            Expression inner = generateLambda(castExpr.getExpression(), lambdaBody);
+            castExpr.setExpression(inner);
+        } else {
+            addProblem("Failed to parse lambda expression! Please create an issue at https://github.com/javaparser/javaparser/issues");
+        }
+        return ret;
+    }
+
 
     /**
      * Throws together an ArrayCreationExpr from a lot of pieces

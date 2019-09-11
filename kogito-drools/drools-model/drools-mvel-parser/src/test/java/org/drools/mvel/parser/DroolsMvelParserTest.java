@@ -50,7 +50,7 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -546,6 +546,21 @@ public class DroolsMvelParserTest {
         assertEquals("str[startsWith] \"E\"", printConstraint(expression2));
     }
 
+
+    @Test
+    void testLambda() {
+        String expr = "x -> y";
+        DrlxExpression expression = parseExpression(parser, expr);
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
+    void testLambdaParameter() {
+        String expr = "($p).setCanDrinkLambda(() -> true)";
+        DrlxExpression expression = parseExpression(parser, expr);
+        assertEquals(expr, printConstraint(expression));
+    }
+
     @Test
     public void testModifyStatement() {
         String expr = "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }";
@@ -583,6 +598,15 @@ public class DroolsMvelParserTest {
                              "    modify ($p) { setAge(1) };" + System.lineSeparator() +
                              "}", printConstraint(expression));
 
+    }
+
+    @Test
+    void testModifyLambda() {
+        String expr = "{  modify($p) {  setCanDrinkLambda(() -> true); } }";
+        BlockStmt expression = MvelParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { setCanDrinkLambda(() -> true) };\n" +
+                             "}", printConstraint(expression));
     }
 
 
