@@ -8,6 +8,7 @@
   <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.Employee</entityClass>
 
   <scoreDirectorFactory>
+    <!--<constraintProviderClass>org.optaplanner.examples.flightcrewscheduling.optional.score.FlightCrewSchedulingConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
