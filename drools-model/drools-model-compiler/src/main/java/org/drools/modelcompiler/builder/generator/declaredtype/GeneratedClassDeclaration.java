@@ -89,17 +89,17 @@ class GeneratedClassDeclaration {
     }
 
     private ClassOrInterfaceDeclaration createBasicDeclaredClass(String generatedClassName) {
-        ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(
+        ClassOrInterfaceDeclaration basicDeclaredClass = new ClassOrInterfaceDeclaration(
                 nodeList(Modifier.publicModifier())
                 , false
                 , generatedClassName);
 
-        generatedClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
-        processAnnotation(generatedClass);
+        basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
+        processAnnotation(basicDeclaredClass);
 
-        generatedClass.addImplementedType(GeneratedFact.class.getName());
-        generatedClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
-        return generatedClass;
+        basicDeclaredClass.addImplementedType(GeneratedFact.class.getName());
+        basicDeclaredClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
+        return basicDeclaredClass;
     }
 
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDescr> inheritedFields) {
