@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.drools.Gender;
 import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
@@ -28,6 +29,7 @@ interface CompilerTest {
         imports.add("java.math.BigDecimal");
         imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
+        imports.add(Gender.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);

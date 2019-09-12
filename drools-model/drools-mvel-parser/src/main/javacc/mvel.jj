@@ -1428,6 +1428,20 @@ Expression Expression():
         ( LOOKAHEAD(2)
             op = AssignmentOperator() value = Expression() { ret = new AssignExpr(range(ret, token()), ret, value, op); }
         |
+            "->" lambdaBody = LambdaBody()
+            {
+                if (ret instanceof CastExpr) {
+                    ret = generateLambda(ret, lambdaBody);
+                } else if (ret instanceof ConditionalExpr) {
+                    ConditionalExpr ce = (ConditionalExpr) ret;
+                    if(ce.getElseExpr() != null) {
+                        ce.setElseExpr(generateLambda(ce.getElseExpr(), lambdaBody));
+                    }
+                } else {
+                    ret = generateLambda(ret, lambdaBody);
+                }
+            }
+        |
             "::"  [typeArgs = TypeArguments() ] (Identifier() | "new") { ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image); }
         )
     ]

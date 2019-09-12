@@ -540,6 +540,21 @@ public class DroolsMvelParserTest {
         assertEquals("str[startsWith] \"E\"", printConstraint(expression2));
     }
 
+
+    @Test
+    public void testLambda() {
+        String expr = "x -> y";
+        DrlxExpression expression = parseExpression(parser, expr);
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
+    public void testLambdaParameter() {
+        String expr = "($p).setCanDrinkLambda(() -> true)";
+        DrlxExpression expression = parseExpression(parser, expr);
+        assertEquals(expr, printConstraint(expression));
+    }
+
     @Test
     public void testModifyStatement() {
         String expr = "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }";
@@ -853,6 +868,15 @@ public class DroolsMvelParserTest {
                              "    globalB.add(\"B\");" + System.lineSeparator() +
                              "}", printConstraint(expression));
 
+    }
+
+    @Test
+    public void testModifyLambda() {
+        String expr = "{  modify($p) {  setCanDrinkLambda(() -> true); } }";
+        BlockStmt expression = MvelParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { setCanDrinkLambda(() -> true) };\n" +
+                             "}", printConstraint(expression));
     }
 
     @Test

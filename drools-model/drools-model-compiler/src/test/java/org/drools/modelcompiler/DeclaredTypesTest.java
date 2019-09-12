@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -442,6 +443,36 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
+    }
+
+    @Test
+    public void testEnum() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "declare enum PersonAge\n" +
+                "    ELEVEN(11);\n" +
+                "\n" +
+                "    key: int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"0_SomeRule\"\n" +
+                "    when\n" +
+                "            $p : Person ()\n" +
+                "    then\n" +
+                "            $p.setAge(PersonAge.ELEVEN.getKey());\n" +
+                "            insert(new Result($p));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario"));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        Person p = (Person) results.iterator().next().getValue();
+        assertEquals(11, p.getAge());
     }
 
     @Test
