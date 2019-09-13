@@ -160,7 +160,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
             case SEQUENCE:
                 if (pillarOrderComparatorClass == null) {
                     Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
-                    boolean isComparable = entityClass.isAssignableFrom(Comparable.class);
+                    boolean isComparable = Comparable.class.isAssignableFrom(entityClass);
                     if (!isComparable) {
                         throw new IllegalArgumentException("Pillar type (" + pillarType + ") on pillarSelectorConfig (" +
                                 this + ") does not provide pillarOrderComparatorClass while the entity (" +
