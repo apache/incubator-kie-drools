@@ -220,19 +220,19 @@ public class CanonicalKieModule implements InternalKieModule {
                         ResourceType resourceType = determineResourceType(fileName);
                         return resourceType == ResourceType.DRF || resourceType == ResourceType.BPMN2;
                     } )
-                    .map( kieModule::getResource )
+                    .map( fileName -> {
+                        final Resource processResource = kieModule.getResource(fileName);
+                        processResource.setResourceType(determineResourceType(fileName));
+                        return processResource;
+                    } )
                     .collect( toList() );
             if (!processResources.isEmpty()) {
                 KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, moduleClassLoader ) );
-                ProcessBuilder processBuilder = kbuilder.getProcessBuilder();
-                if (processBuilder != null) {
-                    for (Resource processResource : processResources) {
-                        try {
-                            processes.addAll( processBuilder.addProcessFromXml( processResource ) );
-                        } catch (IOException e) {
-                            throw new RuntimeException( e );
-                        }
-                    }
+                for (Resource processResource : processResources) {
+                    kbuilder.add(processResource, processResource.getResourceType());
+                }
+                for (InternalKnowledgePackage knowledgePackage : kbuilder.getPackages()) {
+                    processes.addAll(knowledgePackage.getProcesses());
                 }
             }
         } else {
