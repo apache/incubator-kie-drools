@@ -52,6 +52,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -82,6 +83,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/BusinessRuleTask");
         
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
         
@@ -108,6 +110,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         m.fromMap(parameters);
         
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -124,7 +127,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
         
-        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready");
+        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready", "UserTasksProcess");
         
         
         List<WorkItem> workItems = processInstance.workItems();
@@ -143,8 +146,8 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
         
-        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Ready");
-        assertUserTaskInstanceEvent(events.get(2), "First Task", null, "1", "Completed");
+        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Ready", "UserTasksProcess");
+        assertUserTaskInstanceEvent(events.get(2), "First Task", null, "1", "Completed", "UserTasksProcess");
         
         workItems = processInstance.workItems();
         assertEquals(1, workItems.size());
@@ -162,7 +165,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
         
-        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Completed");
+        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Completed", "UserTasksProcess");
     }
     
     @Test
@@ -180,6 +183,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         m.fromMap(parameters);
         
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -239,6 +243,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -268,6 +273,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("gateway/ExclusiveSplit.bpmn2");        
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -316,6 +322,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("servicetask/ServiceProcessDifferentOperations.bpmn2");        
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
         app.unitOfWorkManager().eventManager().addPublisher(publisher);
 
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
@@ -400,10 +407,12 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
         
+        assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
+        
         return body;
     }
     
-    protected UserTaskInstanceEventBody assertUserTaskInstanceEvent(DataEvent<?> event, String taskName, String taskDescription, String taskPriority, String taskState) {
+    protected UserTaskInstanceEventBody assertUserTaskInstanceEvent(DataEvent<?> event, String taskName, String taskDescription, String taskPriority, String taskState, String processId) {
         assertThat(event).isInstanceOf(UserTaskInstanceDataEvent.class);
         UserTaskInstanceEventBody body = ((UserTaskInstanceDataEvent)event).getData();
         assertThat(body).isNotNull();
@@ -418,6 +427,8 @@ public class PublishEventTest extends AbstractCodegenTest {
         } else {
             assertThat(body.getCompleteDate()).isNull();
         }
+        
+        assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
         
         return body;
     }

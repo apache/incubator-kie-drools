@@ -227,7 +227,7 @@ public class ResourceGenerator {
         }
         
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
-        if (!startable) {
+        if (!startable || !isPublic()) {
             Optional<MethodDeclaration> createResourceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("createResource_" + processName));
             if (createResourceMethod.isPresent()) {
                 template.remove(createResourceMethod.get());
@@ -308,5 +308,9 @@ public class ResourceGenerator {
     
     protected boolean useInjection() {
         return this.annotator != null;
+    }
+    
+    protected boolean isPublic() {
+        return WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
     }
 }

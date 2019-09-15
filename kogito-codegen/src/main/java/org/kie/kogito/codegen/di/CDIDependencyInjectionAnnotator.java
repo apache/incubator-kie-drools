@@ -16,14 +16,17 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
@@ -126,6 +129,18 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     @Override
     public String emitterType(String dataType) {
         return "io.smallrye.reactive.messaging.annotations.Emitter<" + dataType + ">";
+    }
+
+    @Override
+    public void withConfigInjection(String configKey, NodeWithAnnotations<?> node) {
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.config.inject.ConfigProperty"), NodeList.nodeList(new MemberValuePair("name", new StringLiteralExpr(configKey)))));
+    }
+
+    @Override
+    public void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node) {
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.config.inject.ConfigProperty"), NodeList.nodeList(new MemberValuePair("name", new StringLiteralExpr(configKey)),
+                                                                                                                                         new MemberValuePair("defaultValue", new StringLiteralExpr(defaultValue)))));
+        
     }
 
 }

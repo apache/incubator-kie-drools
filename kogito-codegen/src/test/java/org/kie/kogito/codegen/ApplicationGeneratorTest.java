@@ -73,7 +73,7 @@ public class ApplicationGeneratorTest {
     @Test
     public void compilationUnit() {
         final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
-        assertCompilationUnit(appGenerator.compilationUnit(), false, 3);
+        assertCompilationUnit(appGenerator.compilationUnit(), false, 4);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ApplicationGeneratorTest {
         final ApplicationGenerator initialAppGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
         final ApplicationGenerator appGenerator = initialAppGenerator.withDependencyInjection(new CDIDependencyInjectionAnnotator());
         assertThat(appGenerator).isSameAs(initialAppGenerator);
-        assertCompilationUnit(appGenerator.compilationUnit(), true, 3);
+        assertCompilationUnit(appGenerator.compilationUnit(), true, 4);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ApplicationGeneratorTest {
         appGenerator.addFactoryMethods(Collections.singleton(methodDeclaration));
 
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
-        assertCompilationUnit(compilationUnit, false, 4);
+        assertCompilationUnit(compilationUnit, false, 5);
 
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers())
@@ -157,7 +157,7 @@ public class ApplicationGeneratorTest {
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
         assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 3);
 
-        assertCompilationUnit(compilationUnit, false, 6);
+        assertCompilationUnit(compilationUnit, false, 7);
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);

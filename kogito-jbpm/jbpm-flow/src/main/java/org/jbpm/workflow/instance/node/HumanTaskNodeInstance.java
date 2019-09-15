@@ -63,6 +63,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         workItem.setTaskName((String) workItem.getParameter("NodeName"));
         workItem.setTaskDescription((String) workItem.getParameter("Description"));
         workItem.setTaskPriority((String) workItem.getParameter("Priority"));
+        workItem.setReferenceName((String) workItem.getParameter("TaskName"));
         
         return workItem;
     }

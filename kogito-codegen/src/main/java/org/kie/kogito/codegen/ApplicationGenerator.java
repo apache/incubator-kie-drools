@@ -120,7 +120,13 @@ public class ApplicationGenerator {
         VariableDeclarator eventPublishersDeclarator;
         FieldDeclaration eventPublishersFieldDeclaration = new FieldDeclaration();
         
+        FieldDeclaration kogitoServiceField = new FieldDeclaration().addVariable(new VariableDeclarator()
+                                                                                .setType(new ClassOrInterfaceType(null, String.class.getCanonicalName()))
+                                                                                .setName("kogitoService"));
+       
+        
         cls.addMember(eventPublishersFieldDeclaration);
+        cls.addMember(kogitoServiceField);
         if (useInjection()) {  
             annotator.withSingletonComponent(cls);
             
@@ -130,6 +136,8 @@ public class ApplicationGenerator {
             
             annotator.withOptionalInjection(eventPublishersFieldDeclaration);
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
+            
+            annotator.withConfigInjection("kogito.service.url", "", kogitoServiceField);
         } else {
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(List.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
         }

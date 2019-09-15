@@ -42,6 +42,12 @@ public interface HumanTaskWorkItem extends WorkItem {
     String getTaskPriority();
     
     /**
+     * Returns reference name of the task
+     * @return task reference
+     */
+    String getReferenceName();
+    
+    /**
      * Returns actual owner assigned to the task
      * @return task actual owner
      */

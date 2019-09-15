@@ -617,6 +617,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workItem.getTaskPriority() != null) {
             _workItem.setTaskPriority(workItem.getTaskPriority());
         }
+        if (workItem.getReferenceName() != null) {
+            _workItem.setTaskReferenceName(workItem.getReferenceName());
+        }
         if (workItem.getActualOwner() != null) {
             _workItem.setActualOwner(workItem.getActualOwner());
         }
@@ -659,6 +662,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         }
         if (_workItem.getTaskPriority() != null) {
             workItem.setTaskPriority(_workItem.getTaskPriority());
+        }
+        if (_workItem.getTaskReferenceName() != null) {
+            workItem.setReferenceName(_workItem.getTaskReferenceName());
         }
         if (_workItem.getActualOwner() != null) {
             workItem.setActualOwner(_workItem.getActualOwner());

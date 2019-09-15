@@ -129,4 +129,16 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return new MethodCallExpr(new NameExpr(fieldName), "isPresent");
     }
 
+    @Override
+    public void withConfigInjection(String configKey, NodeWithAnnotations<?> node) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + "}")));
+        
+    }
+
+    @Override
+    public void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
+        
+    }
+
 }

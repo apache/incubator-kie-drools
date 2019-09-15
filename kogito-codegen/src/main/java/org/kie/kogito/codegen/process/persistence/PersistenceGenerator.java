@@ -24,6 +24,7 @@ import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
@@ -40,6 +41,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 
 public class PersistenceGenerator extends AbstractGenerator {
+    
+    private static final String TEMPLATE_NAME = "templateName";
 
     private final File targetDirectory;
     private final Collection<?> modelClasses;    
@@ -121,6 +124,23 @@ public class PersistenceGenerator extends AbstractGenerator {
             if (useInjection()) {
                 annotator.withApplicationComponent(persistenceProviderClazz);
                 annotator.withInjection(constructor);
+                
+                FieldDeclaration templateNameField = new FieldDeclaration().addVariable(new VariableDeclarator()
+                                                                                         .setType(new ClassOrInterfaceType(null, String.class.getCanonicalName()))
+                                                                                         .setName(TEMPLATE_NAME));
+                annotator.withConfigInjection("kogito.persistence.infinispan.template", "", templateNameField);
+                // allow to inject template name for the cache
+                BlockStmt templateMethodBody = new BlockStmt();                
+                templateMethodBody.addStatement(new ReturnStmt(new NameExpr(TEMPLATE_NAME)));
+                
+                MethodDeclaration templateNameMethod = new MethodDeclaration()
+                        .addModifier(Keyword.PUBLIC)
+                        .setName("template")
+                        .setType(String.class)                                
+                        .setBody(templateMethodBody);
+                
+                persistenceProviderClazz.addMember(templateNameField);
+                persistenceProviderClazz.addMember(templateNameMethod);
             }
             List<String> variableMarshallers = new ArrayList<>();  
             // handler process variable marshallers

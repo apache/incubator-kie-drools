@@ -244,22 +244,20 @@ public class ProcessCodegen extends AbstractGenerator {
                     modelClassGenerator.generate());
 
             ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
+                        
+            // create REST resource class for process
+            ResourceGenerator resourceGenerator = new ResourceGenerator(
+                    workFlowProcess,
+                    modelClassGenerator.className(),
+                    execModelGen.className(),
+                    applicationCanonicalName)
+                    .withDependencyInjection(annotator)
+                    .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
+                    .withSignals(metaData.getSignals())
+                    .withTriggers(metaData.getTriggers(), metaData.isStartable());
             
-            // do not generate REST endpoint if the process is not "public"
-            if (execModelGen.isPublic()) {
-                // create REST resource class for process
-                ResourceGenerator resourceGenerator = new ResourceGenerator(
-                        workFlowProcess,
-                        modelClassGenerator.className(),
-                        execModelGen.className(),
-                        applicationCanonicalName)
-                        .withDependencyInjection(annotator)
-                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
-                        .withSignals(metaData.getSignals())
-                        .withTriggers(metaData.getTriggers(), metaData.isStartable());
-                
-                rgs.add(resourceGenerator);
-            }
+            rgs.add(resourceGenerator);
+            
                         
             if (metaData.getTriggers() != null) {
                 

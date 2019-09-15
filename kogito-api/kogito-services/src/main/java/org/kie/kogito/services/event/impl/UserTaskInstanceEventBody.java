@@ -29,6 +29,7 @@ public class UserTaskInstanceEventBody {
     private String taskName;
     private String taskDescription;
     private String taskPriority;
+    private String referenceName;
     private Date startDate;
     private Date completeDate;
 
@@ -67,6 +68,10 @@ public class UserTaskInstanceEventBody {
     
     public String getTaskPriority() {
         return taskPriority;
+    }
+    
+    public String getReferenceName() {
+        return referenceName;
     }
 
     public Date getStartDate() {
@@ -200,6 +205,11 @@ public class UserTaskInstanceEventBody {
         
         public Builder taskPriority(String taskPriority) {
             instance.taskPriority = taskPriority;
+            return this;
+        }
+        
+        public Builder referenceName(String referenceName) {
+            instance.referenceName = referenceName;
             return this;
         }
 

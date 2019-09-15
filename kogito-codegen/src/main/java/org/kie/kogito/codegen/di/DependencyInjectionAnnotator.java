@@ -96,6 +96,10 @@ public interface DependencyInjectionAnnotator {
      */
     void withOutgoingMessage(NodeWithAnnotations<?> node, String channel);
     
+    void withConfigInjection(String configKey, NodeWithAnnotations<?> node);
+    
+    void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node);
+    
     void withMessageProducer(MethodCallExpr produceMethod, String channel, String event);
     
     MethodDeclaration withInitMethod(Expression... expression);

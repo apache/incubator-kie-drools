@@ -36,9 +36,9 @@ public class CacheProcessInstances implements MutableProcessInstances {
     
     private org.kie.kogito.process.Process<?> process;
     
-    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String proto, MessageMarshaller<?>...marshallers) {
+    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, String proto, MessageMarshaller<?>...marshallers) {
         this.process = process;    
-        this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", (String)null);
+        this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", ignoreNullOrEmpty(templateName));
         
         this.marshaller = new ProcessInstanceMarshaller(new ProtoStreamObjectMarshallingStrategy(proto, marshallers));
     }
@@ -87,4 +87,11 @@ public class CacheProcessInstances implements MutableProcessInstances {
         cache.remove(id);
     }
 
+    protected String ignoreNullOrEmpty(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        
+        return value;
+    }
 }

@@ -17,11 +17,13 @@ public class Application implements org.kie.kogito.Application {
     }
     
     public void setup() {
-        
-        if (eventPublishers != null) {
-            eventPublishers.forEach(publisher -> 
-            unitOfWorkManager().eventManager().addPublisher(publisher));
-            
+        if (config().process() != null) {
+            if (eventPublishers != null) {
+                eventPublishers.forEach(publisher -> 
+                unitOfWorkManager().eventManager().addPublisher(publisher));
+                
+            }
+            unitOfWorkManager().eventManager().setService(kogitoService);
         }
     }
 }

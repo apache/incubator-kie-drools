@@ -40,7 +40,12 @@ import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 
 public class ProcessInstanceEventBatch implements EventBatch {
     
+    private final String service;
     private List<ProcessEvent> rawEvents = new ArrayList<>();
+
+    public ProcessInstanceEventBatch(String service) {
+        this.service = service;
+    }
 
     @Override
     public void append(Object rawEvent) {
@@ -88,8 +93,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
         
         Collection<DataEvent<?>> processedEvents = new ArrayList<>();
                 
-        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(null, pi.metaData(), pi)).forEach(processedEvents::add);
-        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(null, pi.metaData(), pi)).forEach(processedEvents::add);
+        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractProcessId(pi.metaData()), pi.metaData(), pi)).forEach(processedEvents::add);
+        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractProcessId(pi.metaData()), pi.metaData(), pi)).forEach(processedEvents::add);
         
         return processedEvents;
     }
@@ -103,6 +108,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .taskName(workItem.getTaskName())
                 .taskDescription(workItem.getTaskDescription())
                 .taskPriority(workItem.getTaskPriority())
+                .referenceName(workItem.getReferenceName())
                 .actualOwner(workItem.getActualOwner())
                 .startDate(workItem.getStartDate())
                 .completeDate(workItem.getCompleteDate())
@@ -157,5 +163,14 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .triggerTime(ni.getTriggerTime())
                 .leaveTime(ni.getLeaveTime())
                 .build();
+    }
+    
+    protected String extractProcessId(Map<String, String> metadata) {
+        String processId = metadata.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA);
+        if (processId.contains(".")) {
+            return processId.substring(processId.lastIndexOf('.') + 1);
+        }
+
+        return service + "/" + processId;
     }
 }

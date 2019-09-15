@@ -42,4 +42,12 @@ public interface EventManager {
      * @param publisher publisher to be added
      */
     void addPublisher(EventPublisher publisher);
+    
+    /**
+     * Sets the service information that will be attached to events as source.
+     * This is expected to be URL like structure that will allow consumer of the
+     * events to navigate back.
+     * @param service endpoint of the service
+     */
+    void setService(String service);
 }

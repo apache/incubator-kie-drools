@@ -26793,6 +26793,20 @@ public final class JBPMMessages {
      */
     com.google.protobuf.ByteString
         getAdminGroupsBytes(int index);
+
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    boolean hasTaskReferenceName();
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    java.lang.String getTaskReferenceName();
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    com.google.protobuf.ByteString
+        getTaskReferenceNameBytes();
   }
   /**
    * Protobuf type {@code org.jbpm.marshalling.HumanTaskWorkItem}
@@ -26828,6 +26842,7 @@ public final class JBPMMessages {
       excludedUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       adminUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      taskReferenceName_ = "";
     }
 
     @java.lang.Override
@@ -26992,6 +27007,12 @@ public final class JBPMMessages {
                 mutable_bitField0_ |= 0x00100000;
               }
               adminGroups_.add(bs);
+              break;
+            }
+            case 178: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00008000;
+              taskReferenceName_ = bs;
               break;
             }
             default: {
@@ -27747,6 +27768,48 @@ public final class JBPMMessages {
       return adminGroups_.getByteString(index);
     }
 
+    public static final int TASK_REFERENCE_NAME_FIELD_NUMBER = 22;
+    private volatile java.lang.Object taskReferenceName_;
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    public boolean hasTaskReferenceName() {
+      return ((bitField0_ & 0x00008000) == 0x00008000);
+    }
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    public java.lang.String getTaskReferenceName() {
+      java.lang.Object ref = taskReferenceName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          taskReferenceName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string task_reference_name = 22;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTaskReferenceNameBytes() {
+      java.lang.Object ref = taskReferenceName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        taskReferenceName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -27823,6 +27886,9 @@ public final class JBPMMessages {
       }
       for (int i = 0; i < adminGroups_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 21, adminGroups_.getRaw(i));
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 22, taskReferenceName_);
       }
       unknownFields.writeTo(output);
     }
@@ -27925,6 +27991,9 @@ public final class JBPMMessages {
         }
         size += dataSize;
         size += 2 * getAdminGroupsList().size();
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, taskReferenceName_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -28029,6 +28098,11 @@ public final class JBPMMessages {
           .equals(other.getAdminUsersList());
       result = result && getAdminGroupsList()
           .equals(other.getAdminGroupsList());
+      result = result && (hasTaskReferenceName() == other.hasTaskReferenceName());
+      if (hasTaskReferenceName()) {
+        result = result && getTaskReferenceName()
+            .equals(other.getTaskReferenceName());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -28126,6 +28200,10 @@ public final class JBPMMessages {
       if (getAdminGroupsCount() > 0) {
         hash = (37 * hash) + ADMIN_GROUPS_FIELD_NUMBER;
         hash = (53 * hash) + getAdminGroupsList().hashCode();
+      }
+      if (hasTaskReferenceName()) {
+        hash = (37 * hash) + TASK_REFERENCE_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskReferenceName().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -28307,6 +28385,8 @@ public final class JBPMMessages {
         bitField0_ = (bitField0_ & ~0x00080000);
         adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00100000);
+        taskReferenceName_ = "";
+        bitField0_ = (bitField0_ & ~0x00200000);
         return this;
       }
 
@@ -28429,6 +28509,10 @@ public final class JBPMMessages {
           bitField0_ = (bitField0_ & ~0x00100000);
         }
         result.adminGroups_ = adminGroups_;
+        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
+          to_bitField0_ |= 0x00008000;
+        }
+        result.taskReferenceName_ = taskReferenceName_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -28619,6 +28703,11 @@ public final class JBPMMessages {
             ensureAdminGroupsIsMutable();
             adminGroups_.addAll(other.adminGroups_);
           }
+          onChanged();
+        }
+        if (other.hasTaskReferenceName()) {
+          bitField0_ |= 0x00200000;
+          taskReferenceName_ = other.taskReferenceName_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -30316,6 +30405,82 @@ public final class JBPMMessages {
   }
   ensureAdminGroupsIsMutable();
         adminGroups_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object taskReferenceName_ = "";
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public boolean hasTaskReferenceName() {
+        return ((bitField0_ & 0x00200000) == 0x00200000);
+      }
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public java.lang.String getTaskReferenceName() {
+        java.lang.Object ref = taskReferenceName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            taskReferenceName_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTaskReferenceNameBytes() {
+        java.lang.Object ref = taskReferenceName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          taskReferenceName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public Builder setTaskReferenceName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00200000;
+        taskReferenceName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public Builder clearTaskReferenceName() {
+        bitField0_ = (bitField0_ & ~0x00200000);
+        taskReferenceName_ = getDefaultInstance().getTaskReferenceName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string task_reference_name = 22;</code>
+       */
+      public Builder setTaskReferenceNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00200000;
+        taskReferenceName_ = value;
         onChanged();
         return this;
       }
@@ -34323,7 +34488,7 @@ public final class JBPMMessages {
       "t_id\030\006 \001(\t\022\030\n\020node_instance_id\030\007 \001(\t\022\017\n\007" +
       "node_id\030\010 \001(\003\022\020\n\010phase_id\030\t \001(\t\022\024\n\014phase" +
       "_status\030\n \001(\t\022\022\n\nstart_date\030\013 \001(\003\022\025\n\rcom" +
-      "plete_date\030\014 \001(\003\"\345\003\n\021HumanTaskWorkItem\022\n" +
+      "plete_date\030\014 \001(\003\"\202\004\n\021HumanTaskWorkItem\022\n" +
       "\n\002id\030\001 \001(\t\022\034\n\024process_instances_id\030\002 \001(\t" +
       "\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variabl" +
       "e\030\005 \003(\0132\036.org.jbpm.marshalling.Variable\022" +
@@ -34335,32 +34500,32 @@ public final class JBPMMessages {
       "k_priority\030\017 \001(\t\022\024\n\014actual_owner\030\020 \001(\t\022\021" +
       "\n\tpot_users\030\021 \003(\t\022\022\n\npot_groups\030\022 \003(\t\022\026\n" +
       "\016excluded_users\030\023 \003(\t\022\023\n\013admin_users\030\024 \003" +
-      "(\t\022\024\n\014admin_groups\030\025 \003(\t\"\350\002\n\014ProcessTime" +
-      "r\022?\n\005timer\030\001 \001(\01320.org.jbpm.marshalling." +
-      "ProcessTimer.TimerInstance\0225\n\007trigger\030\002 " +
-      "\001(\0132$.org.drools.core.marshalling.Trigge" +
-      "r\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer" +
-      "_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003" +
-      "\022\033\n\023process_instance_id\030\005 \001(\t\022\026\n\016activat" +
-      "ed_time\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022\034\n" +
-      "\024DEPRECATED_sessionId\030\010 \001(\005\022\021\n\tsessionId" +
-      "\030\t \001(\003\022\023\n\013repeatLimit\030\n \001(\005\"+\n\016Iteration" +
-      "Level\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021Vari" +
-      "ableContainer\0220\n\010variable\030\001 \003(\0132\036.org.jb" +
-      "pm.marshalling.Variable:i\n\020process_insta" +
-      "nce\022(.org.drools.core.marshalling.Proces" +
-      "sData\030\n \003(\0132%.org.jbpm.marshalling.Proce" +
-      "ssInstance:[\n\twork_item\022(.org.drools.cor" +
-      "e.marshalling.ProcessData\030\013 \003(\0132\036.org.jb" +
-      "pm.marshalling.WorkItem::\n\010timer_id\022(.or" +
-      "g.drools.core.marshalling.ProcessData\030\r " +
-      "\001(\003:c\n\rprocess_timer\022(.org.drools.core.m" +
-      "arshalling.ProcessData\030\014 \003(\0132\".org.jbpm." +
-      "marshalling.ProcessTimer:a\n\nproc_timer\022)" +
-      ".org.drools.core.marshalling.Timers.Time" +
-      "r\030d \001(\0132\".org.jbpm.marshalling.ProcessTi" +
-      "merB)\n\031org.jbpm.marshalling.implB\014JBPMMe" +
-      "ssages"
+      "(\t\022\024\n\014admin_groups\030\025 \003(\t\022\033\n\023task_referen" +
+      "ce_name\030\026 \001(\t\"\350\002\n\014ProcessTimer\022?\n\005timer\030" +
+      "\001 \001(\01320.org.jbpm.marshalling.ProcessTime" +
+      "r.TimerInstance\0225\n\007trigger\030\002 \001(\0132$.org.d" +
+      "rools.core.marshalling.Trigger\032\337\001\n\rTimer" +
+      "Instance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r" +
+      "\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process" +
+      "_instance_id\030\005 \001(\t\022\026\n\016activated_time\030\006 \001" +
+      "(\003\022\026\n\016last_triggered\030\007 \001(\003\022\034\n\024DEPRECATED" +
+      "_sessionId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\022\023\n\013r" +
+      "epeatLimit\030\n \001(\005\"+\n\016IterationLevel\022\n\n\002id" +
+      "\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021VariableContain" +
+      "er\0220\n\010variable\030\001 \003(\0132\036.org.jbpm.marshall" +
+      "ing.Variable:i\n\020process_instance\022(.org.d" +
+      "rools.core.marshalling.ProcessData\030\n \003(\013" +
+      "2%.org.jbpm.marshalling.ProcessInstance:" +
+      "[\n\twork_item\022(.org.drools.core.marshalli" +
+      "ng.ProcessData\030\013 \003(\0132\036.org.jbpm.marshall" +
+      "ing.WorkItem::\n\010timer_id\022(.org.drools.co" +
+      "re.marshalling.ProcessData\030\r \001(\003:c\n\rproc" +
+      "ess_timer\022(.org.drools.core.marshalling." +
+      "ProcessData\030\014 \003(\0132\".org.jbpm.marshalling" +
+      ".ProcessTimer:a\n\nproc_timer\022).org.drools" +
+      ".core.marshalling.Timers.Timer\030d \001(\0132\".o" +
+      "rg.jbpm.marshalling.ProcessTimerB)\n\031org." +
+      "jbpm.marshalling.implB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -34506,7 +34671,7 @@ public final class JBPMMessages {
     internal_static_org_jbpm_marshalling_HumanTaskWorkItem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_jbpm_marshalling_HumanTaskWorkItem_descriptor,
-        new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", "PhaseId", "PhaseStatus", "StartDate", "CompleteDate", "TaskName", "TaskDescription", "TaskPriority", "ActualOwner", "PotUsers", "PotGroups", "ExcludedUsers", "AdminUsers", "AdminGroups", });
+        new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", "PhaseId", "PhaseStatus", "StartDate", "CompleteDate", "TaskName", "TaskDescription", "TaskPriority", "ActualOwner", "PotUsers", "PotGroups", "ExcludedUsers", "AdminUsers", "AdminGroups", "TaskReferenceName", });
     internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new

@@ -35,6 +35,7 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
     private String taskName;
     private String taskDescription;
     private String taskPriority;
+    private String referenceName;
 
     private String actualOwner;
     private Set<String> potentialUsers = new HashSet<>();
@@ -65,6 +66,14 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
 
     public void setTaskPriority(String taskPriority) {
         this.taskPriority = taskPriority;
+    }
+
+    public String getReferenceName() {
+        return referenceName;
+    }
+
+    public void setReferenceName(String referenceName) {
+        this.referenceName = referenceName;
     }
 
     public String getActualOwner() {
@@ -114,7 +123,6 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
     public void setAdminGroups(Set<String> adminGroups) {
         this.adminGroups = adminGroups;
     }
-    
 
     @Override
     public boolean enforce(Policy<?>... policies) {
@@ -127,12 +135,12 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
                 }
             }
         }
-        
+
         return true;
     }
 
     protected void enforceAuthorization(IdentityProvider identity) {
-        
+
         if (identity != null) {
             logger.debug("Identity information provided, enforcing security restrictions, user '{}' with roles '{}'", identity.getName(), identity.getRoles());
             // in case identity/auth info is given enforce security restrictions
@@ -148,13 +156,13 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
                     logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getId());
                     throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
                 }
-                
+
                 // check if user is in potential users or groups 
-                if (!getPotentialUsers().contains(user) && 
+                if (!getPotentialUsers().contains(user) &&
                     !getPotentialGroups().stream().anyMatch(identity.getRoles()::contains)) {
                     throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
                 }
-                
+
             }
         }
     }

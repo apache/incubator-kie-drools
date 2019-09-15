@@ -38,7 +38,7 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
     
     public CacheProcessInstances createProcessInstances(Process<?> process) {
         List<?> marshallers = marshallers();
-        return new CacheProcessInstances(process, cacheManager, proto(), marshallers.toArray(new MessageMarshaller<?>[marshallers.size()]));
+        return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallers.toArray(new MessageMarshaller<?>[marshallers.size()]));
     }
     
     public String proto() {
@@ -47,5 +47,9 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
     
     public List<?> marshallers() {
         return Collections.emptyList();
+    }
+    
+    public String template() {
+        return null;
     }
 }

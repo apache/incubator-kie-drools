@@ -231,6 +231,8 @@ message HumanTaskWorkItem {
     repeated string admin_users = 20;
     repeated string admin_groups = 21;
     
+    optional string task_reference_name = 22;
+    
 }
 
 message ProcessTimer {

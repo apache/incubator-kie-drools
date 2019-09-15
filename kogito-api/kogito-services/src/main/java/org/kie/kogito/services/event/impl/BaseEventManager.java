@@ -26,11 +26,12 @@ import org.kie.kogito.event.EventPublisher;
 
 public class BaseEventManager implements EventManager {
 
+    private String service;
     private Set<EventPublisher> publishers = new LinkedHashSet<>();
     
     @Override
     public EventBatch newBatch() {
-        return new ProcessInstanceEventBatch();
+        return new ProcessInstanceEventBatch(service);
     }
 
     @Override
@@ -47,6 +48,11 @@ public class BaseEventManager implements EventManager {
     @Override
     public void addPublisher(EventPublisher publisher) {
         this.publishers.add(publisher);
+    }
+
+    @Override
+    public void setService(String service) {
+        this.service = service;
     }
 
 }
