@@ -1982,4 +1982,30 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(first);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
+
+    @Test
+    public void testEvalExprWithFunctionCall() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global " + GlobalFunctions.class.getCanonicalName() + " functions;" +
+                        "rule R1 when\n" +
+                        "  $p : Person($age : age)\n" +
+                        "  eval( functions.add($age, -1).compareTo(10) < 0)\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+        GlobalFunctions gf = new GlobalFunctions();
+        ksession.setGlobal("functions", gf);
+
+        Person first = new Person("First", 10);
+        ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
+    
+    public static class GlobalFunctions {
+        public Integer add(int a, int b) {
+            return Integer.sum(a, b);
+        }
+    }
 }
