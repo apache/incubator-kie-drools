@@ -51,6 +51,7 @@ public class InfinispanServerTestResource implements QuarkusTestResourceLifecycl
                 .build();
 
         GlobalConfiguration globalConfig = new GlobalConfigurationBuilder()
+                .defaultCacheName("default")
                 .nonClusteredDefault()
                 .build();
 
