@@ -481,7 +481,7 @@ To get decent <<logging,logging of the solver(s)>>, create a file `src/main/reso
 ==== Skinny war on WildFly and JBoss EAP
 
 To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
-(just like any other dependency) as shown in the ``optaplanner-webexamples-*.war``.
+(just like any other dependency).
 However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment,
 but too heavyweight for frequent redeployments (especially over a slow network connection).
 

@@ -40,48 +40,6 @@ OptaPlanner itself has no GUI dependencies.
 It runs just as well on a server or a mobile JVM as it does on the desktop.
 ====
 
-
-[[runTheWebexamples]]
-== Run the Webexamples
-
-Besides the GUI examples, there are also a set of webexamples to try out. The webexamples include:
-
-* Vehicle routing: calculating the shortest possible route to pick up all items required for a number of different customers using either http://leafletjs.com/[Leaflet] or http://google.com/maps[Google Maps] visualizations. 
-* Cloud balancing: Assigning processes across computers with different specifications and costs. 
-
-*Prerequisites*
-
-The webexamples require several JEE APIs to run, such as:
-
-* Servlet
-* JAX-RS
-* CDI
-
-These are not required for Planner itself.
-
-**Running the Webexamples on a JEE Application Server **
-
-. Download a JEE application server, such as JBoss EAP or http://www.wildfly.org/[WildFly] and unzip it.
-. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
-. Open the directory [path]_webexamples_ and deploy the `optaplanner-webexamples-*.war` file on the JEE application server. 
-+ 
-If using JBoss EAP in standalone mode, this can be done by adding the `optaplanner-webexamples-*.war` file to the `jboss-eap-*/standalone/deployments` folder. 
-. Open the following address in a web browser:  $$http://localhost:8080/optaplanner-webexamples-*/$$ (replace the $$*$$ with the actual version).
-
-**Deploying Webexamples on a Servlet Container**
-
-To successfully deploy the webexamples on a servlet container (such as Jetty or Tomcat) instead of on a real JEE application server (such as WildFly):
-
-. Add the missing implementation libraries (for example RestEasy and Weld) in the `optaplanner-webexamples-*.war` manually.
-
-. Deploy the `optaplanner-webexamples-*.war` on the servlet container.
-
-
-Pick an example to try it out, such as the Vehicle Routing example:
-
-image::PlannerIntroduction/DownloadAndRunTheExamples/plannerWebexamplesScreenshot.png[align="center"]
-
-
 [[runTheExamplesInAnIDE]]
 == Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)
 

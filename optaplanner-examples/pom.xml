@@ -17,7 +17,7 @@
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the non-web examples which demonstrate how to use it in a normal Java application.
+    This module contains the examples which demonstrate how to use it in a normal Java application.
   </description>
   <url>https://www.optaplanner.org</url>
 
