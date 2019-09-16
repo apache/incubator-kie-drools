@@ -62,20 +62,6 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../optaplanner-webexamples</directory>
-      <outputDirectory>webexamples/sources</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>local/**</exclude>
-        <exclude>.*/**</exclude>
-        <exclude>nbproject/**</exclude>
-        <exclude>*.ipr</exclude>
-        <exclude>*.iws</exclude>
-        <exclude>*.iml</exclude>
-        <exclude>.git/**</exclude>
-      </excludes>
-    </fileSet>
   </fileSets>
 
   <dependencySets>
@@ -85,7 +71,6 @@
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples</exclude>
-        <exclude>org.optaplanner:optaplanner-webexamples</exclude>
         <!--<exclude>org.optaplanner:optaplanner-asciidocs</exclude>-->
         <exclude>*:sources</exclude>
       </excludes>
@@ -100,7 +85,6 @@
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples:jar:sources</exclude>
-        <exclude>org.optaplanner:optaplanner-webexamples:jar:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>sources</outputDirectory>
@@ -122,14 +106,6 @@
       <outputDirectory>examples/binaries</outputDirectory>
       <useStrictFiltering>false</useStrictFiltering><!-- false to workaround bug with useTransitiveFiltering true -->
       <useTransitiveFiltering>true</useTransitiveFiltering>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.optaplanner:optaplanner-webexamples:war</include>
-      </includes>
-      <outputDirectory>webexamples/binaries</outputDirectory>
-      <useStrictFiltering>true</useStrictFiltering>
-      <useTransitiveFiltering>false</useTransitiveFiltering><!-- Only include war -->
     </dependencySet>
     <!-- Reference manual -->
     <dependencySet>
