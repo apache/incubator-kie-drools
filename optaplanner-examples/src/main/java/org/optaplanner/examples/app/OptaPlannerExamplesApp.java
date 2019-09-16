@@ -19,7 +19,6 @@ package org.optaplanner.examples.app;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,8 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -88,7 +85,6 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JTextArea descriptionTextArea;
-    private WebExamplesDialog webExamplesDialog;
 
     public OptaPlannerExamplesApp() {
         super("OptaPlanner examples " + determineOptaPlannerExamplesVersion());
@@ -178,12 +174,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         return button;
     }
 
-    private JButton createDisabledExampleButton(final CommonApp commonApp) {
-        JButton exampleButton = createExampleButton(commonApp);
-        exampleButton.setEnabled(false);
-        return exampleButton;
-    }
-
     private JPanel createDescriptionPanel() {
         JPanel descriptionPanel = new JPanel(new BorderLayout(2, 2));
         descriptionPanel.add(new JLabel("Description"), BorderLayout.NORTH);
@@ -199,17 +189,10 @@ public class OptaPlannerExamplesApp extends JFrame {
     private JPanel createExtraPanel() {
         JPanel extraPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         extraPanel.add(new JPanel());
-        webExamplesDialog = new WebExamplesDialog();
-        Action webExamplesAction = new AbstractAction("Show web examples") {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                webExamplesDialog.setLocationRelativeTo(OptaPlannerExamplesApp.this);
-                webExamplesDialog.setVisible(true);
-            }
-        };
-        extraPanel.add(new JButton(webExamplesAction));
         Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "https://www.optaplanner.org");
         extraPanel.add(new JButton(homepageAction));
+        Action optawebExamplesAction = new OpenBrowserAction("OptaWeb Examples", "https://www.optaplanner.org/learn/rhpds/");
+        extraPanel.add(new JButton(optawebExamplesAction));
         Action documentationAction = new OpenBrowserAction("Documentation", "https://www.optaplanner.org/learn/documentation.html");
         extraPanel.add(new JButton(documentationAction));
         return extraPanel;
@@ -230,34 +213,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             // Do nothing
-        }
-
-    }
-
-    private class WebExamplesDialog extends JDialog {
-
-        private WebExamplesDialog() {
-            super(OptaPlannerExamplesApp.this, "Web examples", true);
-            JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
-            contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            contentPanel.add(createMiddlePanel(), BorderLayout.CENTER);
-            JPanel buttonPanel = new JPanel(new FlowLayout());
-            Action okAction = new AbstractAction("OK") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setVisible(false);
-                }
-            };
-            buttonPanel.add(new JButton(okAction));
-            contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-            setContentPane(contentPanel);
-            pack();
-        }
-
-        public JComponent createMiddlePanel() {
-            JPanel middlePanel = new JPanel(new GridLayout(0, 1));
-            middlePanel.add(new JLabel("To see the webexamples, deploy the optaplanner-webexamples-*.war on an application server."));
-            return middlePanel;
         }
 
     }
