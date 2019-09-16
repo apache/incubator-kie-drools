@@ -40,6 +40,7 @@ OptaPlanner itself has no GUI dependencies.
 It runs just as well on a server or a mobile JVM as it does on the desktop.
 ====
 
+
 [[runTheExamplesInAnIDE]]
 == Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)
 

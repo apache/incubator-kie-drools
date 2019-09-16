@@ -191,8 +191,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         extraPanel.add(new JPanel());
         Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "https://www.optaplanner.org");
         extraPanel.add(new JButton(homepageAction));
-        Action optawebExamplesAction = new OpenBrowserAction("OptaWeb Examples", "https://www.optaplanner.org/learn/rhpds/");
-        extraPanel.add(new JButton(optawebExamplesAction));
         Action documentationAction = new OpenBrowserAction("Documentation", "https://www.optaplanner.org/learn/documentation.html");
         extraPanel.add(new JButton(documentationAction));
         return extraPanel;
