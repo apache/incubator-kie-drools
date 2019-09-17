@@ -9,7 +9,8 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 final class ConstraintJustificationComparator implements Comparator<Object> {
 
-    private static Comparator<Object> CLASS_NAME_COMPARATOR = Comparator.comparing(o -> o.getClass().getCanonicalName());
+    private static final Comparator<Object> CLASS_NAME_COMPARATOR =
+            Comparator.comparing(o -> o.getClass().getCanonicalName());
     private final Map<Class<?>, MemberAccessor> accessorCache = new HashMap<>(0);
 
     @Override
