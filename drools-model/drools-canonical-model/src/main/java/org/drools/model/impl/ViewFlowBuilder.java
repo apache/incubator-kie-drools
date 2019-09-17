@@ -218,7 +218,8 @@ public class ViewFlowBuilder implements ViewBuilder {
                 continue;
             }
 
-            if ( ruleItem instanceof ExprViewItem && ctx.boundVars.contains( patterVariable ) ) {
+//            ctx.boundVars.add(patterVariable);
+            if ( ruleItem instanceof ExprViewItem ) {
                 conditions.add( new EvalImpl( createConstraint( (ExprViewItem) ruleItem ) ) );
                 continue;
             }
