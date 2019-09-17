@@ -16,6 +16,7 @@
 package org.drools.workbench.models.testscenarios.backend.util;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 
 public class FieldTypeResolver {
 
@@ -31,7 +32,8 @@ public class FieldTypeResolver {
     public static boolean isDate(String fieldName, Object factObject) {
         for (Method method : factObject.getClass().getDeclaredMethods()) {
             if (hasMutator(fieldName, method)) {
-                if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])
+                        || LocalDate.class.isAssignableFrom(method.getParameterTypes()[0])) {
                     return true;
                 }
             }
