@@ -23,7 +23,7 @@ import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 
 public class DateFieldPopulator extends FieldPopulator {
 
-    private final Date value;
+    private final Object value;
 
     public DateFieldPopulator(Object factObject,
                               Class<?> fieldClass,
