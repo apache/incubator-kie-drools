@@ -192,7 +192,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                 continue;
             }
 
-            Variable<?> patternVariable = findPatterVariable( viewItem, scopedInputs.keySet() );
+            Variable<?> patternVariable = findPatternVariable(viewItem, scopedInputs.keySet() );
 
             if ( viewItem instanceof InputViewItemImpl ) {
                 scopedInputs.put( patternVariable, (InputViewItemImpl) viewItem );
@@ -269,7 +269,7 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
     }
 
-    private static Variable<?> findPatterVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
+    private static Variable<?> findPatternVariable(ViewItem viewItem, Set<Variable<?>> vars ) {
         Variable<?> patternVariable = viewItem.getFirstVariable();
         if (!vars.contains( patternVariable )) {
             return patternVariable;
