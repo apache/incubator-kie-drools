@@ -1983,6 +1983,7 @@ public class CompilerTest extends BaseModelTest {
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 
+    // Move this to evalTest
     @Test
     public void testEvalExprWithFunctionCall() {
         String str =
@@ -2005,6 +2006,7 @@ public class CompilerTest extends BaseModelTest {
     
     public static class GlobalFunctions {
         public Integer add(int a, int b) {
+            System.out.println("++++ eval");
             return Integer.sum(a, b);
         }
     }
