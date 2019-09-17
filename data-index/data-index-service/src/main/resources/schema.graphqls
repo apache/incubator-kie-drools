@@ -1,4 +1,4 @@
-#scalar DateTime
+scalar DateTime
 
 schema {
   query: Query
@@ -13,8 +13,10 @@ type ProcessInstance {
   roles: [String!]
   state: ProcessInstanceState!
   endpoint: String!
-  nodes: [NodeInstance!]!,
+  nodes: [NodeInstance!]!
   variables: String
+  start: DateTime!
+  end: DateTime
 }
 
 type ProcessInstanceMeta {
@@ -26,6 +28,8 @@ type ProcessInstanceMeta {
   roles: [String!]
   state: ProcessInstanceState!
   endpoint: String!
+  start: DateTime!
+  end: DateTime
 }
 
 enum ProcessInstanceState {
@@ -41,8 +45,8 @@ type NodeInstance {
   id: String!
   name: String!
   type: String!
-  enter: String!
-  exit: String
+  enter: DateTime!
+  exit: DateTime
 }
 
 type Query {

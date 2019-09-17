@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import javax.json.JsonObject;
 
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -41,6 +42,9 @@ public class GraphQLSchemaManager {
 
     @Inject
     QueryService queryService;
+
+    @Inject
+    GraphQLScalarType qlDateTimeScalarType;
 
     private GraphQLSchema schema;
 
@@ -64,6 +68,7 @@ public class GraphQLSchemaManager {
                     builder.enumValues(name -> ProcessInstanceState.valueOf(name).ordinal());
                     return builder;
                 })
+                .scalar(qlDateTimeScalarType)
                 .build();
 
         SchemaGenerator schemaGenerator = new SchemaGenerator();

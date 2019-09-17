@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.kie.kogito.index.model;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -29,9 +29,9 @@ public class NodeInstance {
     @JsonbProperty("nodeType")
     private String type;
     @JsonbProperty("triggerTime")
-    private Date enter;
+    private ZonedDateTime enter;
     @JsonbProperty("leaveTime")
-    private Date exit;
+    private ZonedDateTime exit;
 
     public String getId() {
         return id;
@@ -57,19 +57,19 @@ public class NodeInstance {
         this.type = type;
     }
 
-    public Date getEnter() {
+    public ZonedDateTime getEnter() {
         return enter;
     }
 
-    public void setEnter(Date enter) {
+    public void setEnter(ZonedDateTime enter) {
         this.enter = enter;
     }
 
-    public Date getExit() {
+    public ZonedDateTime getExit() {
         return exit;
     }
 
-    public void setExit(Date exit) {
+    public void setExit(ZonedDateTime exit) {
         this.exit = exit;
     }
 

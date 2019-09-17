@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ public class ProcessInstanceMarshaller implements MessageMarshaller<ProcessInsta
         pi.setEndpoint(reader.readString("endpoint"));
         pi.setNodes(reader.readCollection("nodes", new ArrayList<>(), NodeInstance.class));
         pi.setState(reader.readInt("state"));
-        pi.setStart(reader.readDate("start"));
-        pi.setEnd(reader.readDate("end"));
+        pi.setStartDate(reader.readDate("start"));
+        pi.setEndDate(reader.readDate("end"));
         pi.setRootProcessInstanceId(reader.readString("rootProcessInstanceId"));
         pi.setRootProcessId(reader.readString("rootProcessId"));
         pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
@@ -53,8 +53,8 @@ public class ProcessInstanceMarshaller implements MessageMarshaller<ProcessInsta
         writer.writeString("endpoint", pi.getEndpoint());
         writer.writeCollection("nodes", pi.getNodes(), NodeInstance.class);
         writer.writeInt("state", pi.getState());
-        writer.writeDate("start", pi.getStart());
-        writer.writeDate("end", pi.getEnd());
+        writer.writeDate("start", pi.getStartDate());
+        writer.writeDate("end", pi.getEndDate());
         writer.writeString("rootProcessInstanceId", pi.getRootProcessInstanceId());
         writer.writeString("rootProcessId", pi.getRootProcessId());
         writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());

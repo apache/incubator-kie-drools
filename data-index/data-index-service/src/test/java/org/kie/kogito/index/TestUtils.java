@@ -20,7 +20,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,13 +77,15 @@ public final class TestUtils {
         pi.setNodes(getNodeInstances());
         pi.setEndpoint("http://localhost:8080/");
         pi.setState(status);
+        pi.setStart(ZonedDateTime.now());
+        pi.setEnd(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);
         return pi;
     }
 
     private static List<NodeInstance> getNodeInstances() {
         final NodeInstance ni = new NodeInstance();
         ni.setId(UUID.randomUUID().toString());
-        ni.setEnter(new Date());
+        ni.setEnter(ZonedDateTime.now());
         ni.setName("Start");
         ni.setType("StartNode");
         return newArrayList(ni);

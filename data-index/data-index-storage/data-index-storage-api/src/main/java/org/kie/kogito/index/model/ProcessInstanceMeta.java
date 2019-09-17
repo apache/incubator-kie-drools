@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.model;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -29,9 +31,9 @@ public class ProcessInstanceMeta {
     private String endpoint;
     private Set<String> roles;
     @JsonbProperty("startDate")
-    private Date start;
+    private ZonedDateTime start;
     @JsonbProperty("endDate")
-    private Date end;
+    private ZonedDateTime end;
     @JsonbProperty("rootInstanceId")
     private String rootProcessInstanceId;
     private String rootProcessId;
@@ -86,20 +88,40 @@ public class ProcessInstanceMeta {
         this.roles = roles;
     }
 
-    public Date getStart() {
+    public ZonedDateTime getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(ZonedDateTime start) {
         this.start = start;
     }
 
-    public Date getEnd() {
+    public Date getStartDate() {
+        return start == null ? null : new Date(start.toInstant().toEpochMilli());
+    }
+
+    public void setStartDate(Date start) {
+        if (start != null) {
+            this.start = ZonedDateTime.ofInstant(start.toInstant(), ZoneOffset.UTC);
+        }
+    }
+
+    public ZonedDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(ZonedDateTime end) {
         this.end = end;
+    }
+
+    public Date getEndDate() {
+        return end == null ? null : new Date(end.toInstant().toEpochMilli());
+    }
+
+    public void setEndDate(Date end) {
+        if (end != null) {
+            this.end = ZonedDateTime.ofInstant(end.toInstant(), ZoneOffset.UTC);
+        }
     }
 
     public String getRootProcessInstanceId() {
@@ -118,12 +140,12 @@ public class ProcessInstanceMeta {
         this.rootProcessId = rootProcessId;
     }
 
-    public void setParentProcessInstanceId(String parentProcessInstanceId) {
-        this.parentProcessInstanceId = parentProcessInstanceId;
-    }
-
     public String getParentProcessInstanceId() {
         return parentProcessInstanceId;
+    }
+
+    public void setParentProcessInstanceId(String parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
     @Override

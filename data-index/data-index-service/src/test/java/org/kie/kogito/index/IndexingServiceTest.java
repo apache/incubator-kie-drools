@@ -16,6 +16,9 @@
 
 package org.kie.kogito.index;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -142,7 +145,7 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].parentProcessInstanceId", isEmptyOrNullString());
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
+                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -152,6 +155,8 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].processInstances[0].end", isEmptyOrNullString())
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
@@ -171,17 +176,19 @@ public class IndexingServiceTest {
         KogitoCloudEvent endEvent = getTravelsCloudEvent(processId, processInstanceId, "ProcessInstanceEvent", ProcessInstanceState.COMPLETED, null, null);
         indexCloudEvent(endEvent);
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: COMPLETED, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(filter: { id: \\\"" + processInstanceId + "\\\", state: COMPLETED, offset: 0, limit: 10 }){ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessInstances[0].id", is(processInstanceId))
                 .body("data.ProcessInstances[0].processId", is(processId))
                 .body("data.ProcessInstances[0].rootProcessId", isEmptyOrNullString())
                 .body("data.ProcessInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.ProcessInstances[0].parentProcessInstanceId", isEmptyOrNullString());
+                .body("data.ProcessInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.ProcessInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.ProcessInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))));
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } } }\"}")
+                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -191,11 +198,17 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].rootProcessId", is(processId))
                 .body("data.Travels[0].processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(processInstanceId))
+                .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].processInstances[1].end", isEmptyOrNullString())
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
+    }
+    
+    private static String formatZonedDateTime(ZonedDateTime time){
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(time);
     }
     
     private void indexCloudEvent(KogitoCloudEvent event){

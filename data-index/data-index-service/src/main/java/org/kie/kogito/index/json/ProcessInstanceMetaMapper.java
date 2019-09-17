@@ -50,10 +50,10 @@ public class ProcessInstanceMetaMapper implements Function<KogitoCloudEvent, Jso
                 builder.add("endpoint", event.getSource().toString());
             }
             if (pi.getStart() != null) {
-                builder.add("start", pi.getStart().getTime());
+                builder.add("start", pi.getStart().toInstant().toEpochMilli());
             }
             if (pi.getEnd() != null) {
-                builder.add("end", pi.getEnd().getTime());
+                builder.add("end", pi.getEnd().toInstant().toEpochMilli());
             }
             return builder.build();
         }

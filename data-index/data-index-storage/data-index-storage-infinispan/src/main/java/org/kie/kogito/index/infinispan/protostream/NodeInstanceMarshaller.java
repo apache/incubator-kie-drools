@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@
 package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
@@ -29,8 +32,10 @@ public class NodeInstanceMarshaller implements MessageMarshaller<NodeInstance> {
         node.setId(reader.readString("id"));
         node.setName(reader.readString("name"));
         node.setType(reader.readString("type"));
-        node.setEnter(reader.readDate("enter"));
-        node.setExit(reader.readDate("exit"));
+        Date enter = reader.readDate("enter");
+        node.setEnter(enter == null ? null : ZonedDateTime.ofInstant(enter.toInstant(), ZoneOffset.UTC));
+        Date exit = reader.readDate("exit");
+        node.setExit(exit == null ? null : ZonedDateTime.ofInstant(exit.toInstant(), ZoneOffset.UTC));
         return node;
     }
 
@@ -39,8 +44,8 @@ public class NodeInstanceMarshaller implements MessageMarshaller<NodeInstance> {
         writer.writeString("id", node.getId());
         writer.writeString("name", node.getName());
         writer.writeString("type", node.getType());
-        writer.writeDate("enter", node.getEnter());
-        writer.writeDate("exit", node.getExit());
+        writer.writeDate("enter", node.getEnter() == null ? null : new Date(node.getEnter().toInstant().toEpochMilli()));
+        writer.writeDate("exit", node.getExit() == null ? null : new Date(node.getExit().toInstant().toEpochMilli()));
     }
 
     @Override
