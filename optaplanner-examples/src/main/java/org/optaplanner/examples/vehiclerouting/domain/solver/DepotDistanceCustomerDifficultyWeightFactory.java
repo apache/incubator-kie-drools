@@ -16,11 +16,14 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+
+import static java.util.Comparator.*;
 
 /**
  * On large datasets, the constructed solution looks like a Matryoshka doll.
@@ -39,6 +42,14 @@ public class DepotDistanceCustomerDifficultyWeightFactory
     public static class DepotDistanceCustomerDifficultyWeight
             implements Comparable<DepotDistanceCustomerDifficultyWeight> {
 
+        private static final Comparator<DepotDistanceCustomerDifficultyWeight> COMPARATOR =
+                // Ascending (further from the depot are more difficult)
+                comparingLong((DepotDistanceCustomerDifficultyWeight weight) -> weight.depotRoundTripDistance)
+                        .thenComparingInt(weight -> weight.customer.getDemand())
+                        .thenComparingDouble(weight -> weight.customer.getLocation().getLatitude())
+                        .thenComparingDouble(weight -> weight.customer.getLocation().getLongitude())
+                        .thenComparing(weight -> weight.customer, comparingLong(Customer::getId));
+
         private final Customer customer;
         private final long depotRoundTripDistance;
 
@@ -50,15 +61,7 @@ public class DepotDistanceCustomerDifficultyWeightFactory
 
         @Override
         public int compareTo(DepotDistanceCustomerDifficultyWeight other) {
-            return new CompareToBuilder()
-                    .append(depotRoundTripDistance, other.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
-                    .append(customer.getDemand(), other.customer.getDemand())
-                    .append(customer.getLocation().getLatitude(), other.customer.getLocation().getLatitude())
-                    .append(customer.getLocation().getLongitude(), other.customer.getLocation().getLongitude())
-                    .append(customer.getId(), other.customer.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this,other);
         }
-
     }
-
 }

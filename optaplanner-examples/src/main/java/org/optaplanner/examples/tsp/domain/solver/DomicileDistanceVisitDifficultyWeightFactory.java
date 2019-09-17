@@ -16,11 +16,14 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
+
+import static java.util.Comparator.*;
 
 public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
@@ -33,6 +36,12 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
 
     public static class DomicileDistanceVisitDifficultyWeight implements Comparable<DomicileDistanceVisitDifficultyWeight> {
 
+        private static final Comparator<DomicileDistanceVisitDifficultyWeight> COMPARATOR =
+                // Decreasing: closer to depot is stronger
+                comparingLong((DomicileDistanceVisitDifficultyWeight weight) -> -weight.domicileRoundTripDistance)
+                        .thenComparingDouble(weight -> weight.visit.getLocation().getLatitude())
+                        .thenComparing(weight -> weight.visit, comparingLong(Visit::getId));
+
         private final Visit visit;
         private final long domicileRoundTripDistance;
 
@@ -43,11 +52,7 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
 
         @Override
         public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
-            return new CompareToBuilder()
-                    .append(domicileRoundTripDistance, other.domicileRoundTripDistance)
-                    .append(visit.getLocation().getLatitude(), other.visit.getLocation().getLatitude())
-                    .append(visit.getId(), other.visit.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this,other);
         }
 
     }

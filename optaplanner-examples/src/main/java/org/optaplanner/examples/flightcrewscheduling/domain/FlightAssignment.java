@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.flightcrewscheduling.domain;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -24,12 +23,12 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-public class FlightAssignment extends AbstractPersistable {
+public class FlightAssignment extends AbstractPersistable implements Comparable<FlightAssignment> {
 
-    public static final Comparator<FlightAssignment> DATE_TIME_COMPARATOR = Comparator
-            .<FlightAssignment, LocalDateTime>comparing(a -> a.getFlight().getDepartureUTCDateTime())
-            .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
-            .thenComparing(FlightAssignment::getId);
+    private static final Comparator<FlightAssignment> PILLAR_SEQUENCE_COMPARATOR =
+            Comparator.comparing((FlightAssignment a) -> a.getFlight().getDepartureUTCDateTime())
+                    .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
+                    .thenComparing(FlightAssignment::getIndexInFlight);
 
     private Flight flight;
     private int indexInFlight;
@@ -86,4 +85,8 @@ public class FlightAssignment extends AbstractPersistable {
         this.employee = employee;
     }
 
+    @Override
+    public int compareTo(FlightAssignment o) {
+        return PILLAR_SEQUENCE_COMPARATOR.compare(this, o);
+    }
 }

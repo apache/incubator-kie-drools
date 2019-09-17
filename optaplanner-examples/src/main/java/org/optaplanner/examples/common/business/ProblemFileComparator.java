@@ -19,25 +19,19 @@ package org.optaplanner.examples.common.business;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Locale;
-
-import org.apache.commons.lang3.builder.CompareToBuilder;
 
 public class ProblemFileComparator implements Comparator<File>, Serializable {
 
     private static final AlphaNumericStringComparator ALPHA_NUMERIC_STRING_COMPARATOR = new AlphaNumericStringComparator();
+    private static final Comparator<File> COMPARATOR =
+            Comparator.comparing(File::getParent, ALPHA_NUMERIC_STRING_COMPARATOR)
+                    .thenComparing(File::isDirectory)
+                    .thenComparing(f -> !f.getName().toLowerCase().startsWith("demo"))
+                    .thenComparing(f -> f.getName().toLowerCase(), ALPHA_NUMERIC_STRING_COMPARATOR)
+                    .thenComparing(File::getName);
 
     @Override
     public int compare(File a, File b) {
-        String aLowerCaseName = a.getName().toLowerCase(Locale.US);
-        String bLowerCaseName = b.getName().toLowerCase(Locale.US);
-        return new CompareToBuilder()
-                .append(a.getParent(), b.getParent(), ALPHA_NUMERIC_STRING_COMPARATOR)
-                .append(a.isDirectory(), b.isDirectory())
-                .append(!aLowerCaseName.startsWith("demo"), !bLowerCaseName.startsWith("demo"))
-                .append(aLowerCaseName, bLowerCaseName, ALPHA_NUMERIC_STRING_COMPARATOR)
-                .append(a.getName(), b.getName())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

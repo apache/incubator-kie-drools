@@ -19,17 +19,17 @@ package org.optaplanner.examples.scrabble.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 
-public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>, Serializable {
+public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>,
+        Serializable {
+
+    private static final Comparator<ScrabbleWordAssignment> COMPARATOR =
+            Comparator.comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
+                    .thenComparingLong(ScrabbleWordAssignment::getId);
 
     @Override
     public int compare(ScrabbleWordAssignment a, ScrabbleWordAssignment b) {
-        return new CompareToBuilder()
-                .append(a.getWord().length(), b.getWord().length())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

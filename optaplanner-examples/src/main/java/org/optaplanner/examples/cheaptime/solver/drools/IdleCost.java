@@ -16,12 +16,21 @@
 
 package org.optaplanner.examples.cheaptime.solver.drools;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 
-public class IdleCost {
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
+public class IdleCost implements Comparable<IdleCost> {
+
+    private static final Comparator<IdleCost> COMPARATOR =
+            comparing(IdleCost::getMachine, comparingLong(Machine::getId))
+                    .thenComparingInt(IdleCost::getActivePeriodAfterIdle)
+                    .thenComparingLong(IdleCost::getCost);
 
     private final Machine machine;
     private final int activePeriodAfterIdle;
@@ -70,17 +79,13 @@ public class IdleCost {
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(IdleCost other) {
-        return new CompareToBuilder()
-                .append(machine, other.machine)
-                .append(activePeriodAfterIdle, other.activePeriodAfterIdle)
-                .append(cost, other.cost)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override
     public String toString() {
         return "machine = " + machine + ", activePeriodAfterIdle = " + activePeriodAfterIdle + ", cost = " + cost;
     }
-
 }

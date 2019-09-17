@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class Airport extends AbstractPersistable {
+public class Airport extends AbstractPersistable implements Comparable<Airport> {
 
     private String code; // IATA 3-letter code
     private String name;
@@ -119,4 +119,8 @@ public class Airport extends AbstractPersistable {
         this.taxiTimeInMinutesMap = taxiTimeInMinutesMap;
     }
 
+    @Override
+    public int compareTo(Airport o) {
+        return code.compareTo(o.code);
+    }
 }

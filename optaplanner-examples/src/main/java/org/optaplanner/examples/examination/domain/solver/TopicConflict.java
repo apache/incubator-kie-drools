@@ -17,8 +17,8 @@
 package org.optaplanner.examples.examination.domain.solver;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.examination.domain.Topic;
@@ -26,8 +26,13 @@ import org.optaplanner.examples.examination.domain.Topic;
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class TopicConflict implements Serializable, Comparable<TopicConflict> {
+public class TopicConflict implements Serializable,
+        Comparable<TopicConflict> {
 
+    private static final Comparator<Topic> TOPIC_COMPARATOR = Comparator.comparingLong(Topic::getId);
+    private static final Comparator<TopicConflict> COMPARATOR =
+            Comparator.comparing(TopicConflict::getLeftTopic, TOPIC_COMPARATOR)
+                    .thenComparing(TopicConflict::getRightTopic, TOPIC_COMPARATOR);
     private Topic leftTopic;
     private Topic rightTopic;
     private int studentSize;
@@ -87,15 +92,11 @@ public class TopicConflict implements Serializable, Comparable<TopicConflict> {
 
     @Override
     public int compareTo(TopicConflict other) {
-        return new CompareToBuilder()
-                .append(leftTopic, other.leftTopic)
-                .append(rightTopic, other.rightTopic)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override
     public String toString() {
         return leftTopic + " & " + rightTopic + " = " + studentSize;
     }
-
 }

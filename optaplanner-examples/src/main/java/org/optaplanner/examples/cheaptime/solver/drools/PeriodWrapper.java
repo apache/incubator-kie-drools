@@ -16,11 +16,14 @@
 
 package org.optaplanner.examples.cheaptime.solver.drools;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class PeriodWrapper {
+
+    private static final Comparator<PeriodWrapper> COMPARATOR = Comparator.comparingInt(PeriodWrapper::getPeriod);
 
     private int period;
 
@@ -58,9 +61,7 @@ public class PeriodWrapper {
     }
 
     public int compareTo(PeriodWrapper other) {
-        return new CompareToBuilder()
-                .append(period, other.period)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override

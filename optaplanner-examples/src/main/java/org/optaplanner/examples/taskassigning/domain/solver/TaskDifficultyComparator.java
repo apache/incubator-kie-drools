@@ -19,19 +19,19 @@ package org.optaplanner.examples.taskassigning.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.taskassigning.domain.Task;
 
-public class TaskDifficultyComparator implements Comparator<Task>, Serializable {
+public class TaskDifficultyComparator implements Comparator<Task>,
+        Serializable {
+
+    private static final Comparator<Task> COMPARATOR =
+            Comparator.comparing(Task::getPriority)
+                    .thenComparingInt(task -> task.getTaskType().getRequiredSkillList().size())
+                    .thenComparingInt(task -> task.getTaskType().getBaseDuration())
+                    .thenComparingLong(Task::getId);
 
     @Override
     public int compare(Task a, Task b) {
-        return new CompareToBuilder()
-                .append(a.getPriority(), b.getPriority())
-                .append(a.getTaskType().getRequiredSkillList().size(), b.getTaskType().getRequiredSkillList().size())
-                .append(a.getTaskType().getBaseDuration(), b.getTaskType().getBaseDuration())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

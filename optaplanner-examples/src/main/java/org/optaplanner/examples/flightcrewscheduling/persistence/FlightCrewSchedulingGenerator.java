@@ -217,11 +217,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 }
             }
         }
-        flightList.sort(Comparator.comparing(Flight::getDepartureUTCDate)
-                .thenComparing(Flight::getDepartureAirport)
-                .thenComparing(Flight::getDepartureUTCDateTime)
-                .thenComparing(Flight::getArrivalAirport)
-                .thenComparing(Flight::getArrivalUTCDateTime));
+        flightList.sort(Flight::compareTo);
         solution.setFlightList(flightList);
     }
 
@@ -272,7 +268,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 }
             }
             employee.setUnavailableDaySet(generateUnavailableDaySet(unavailableDayCount, allDateList, unavailableDayPool));
-            employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
+            employee.setFlightAssignmentSet(new TreeSet<>());
             logger.trace("Created employee ({}).", employee);
             employeeList.add(employee);
         }

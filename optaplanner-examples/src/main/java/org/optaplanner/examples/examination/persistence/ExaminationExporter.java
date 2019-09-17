@@ -18,8 +18,8 @@ package org.optaplanner.examples.examination.persistence;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 
-import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.examination.app.ExaminationApp;
@@ -50,7 +50,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
         @Override
         public void writeSolution() throws IOException {
-            Collections.sort(solution.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
+            Collections.sort(solution.getExamList(), Comparator.comparingLong(Exam::getId)); // TODO remove me when obsolete
             for (Exam exam : solution.getExamList()) {
                 bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }

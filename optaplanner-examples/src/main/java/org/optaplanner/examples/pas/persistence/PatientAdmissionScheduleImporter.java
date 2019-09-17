@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -48,6 +46,9 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
@@ -62,6 +63,13 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
     }
 
     public static class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder<PatientAdmissionSchedule> {
+
+        private static final Comparator<Room> ROOM_COMPARATOR =
+                comparing(Room::getDepartment, comparingLong(Department::getId))
+                        .thenComparingLong(Room::getId);
+        private static final Comparator<Bed> BED_COMPARATOR = comparing(Bed::getRoom, ROOM_COMPARATOR)
+                .thenComparingInt(Bed::getIndexInRoom)
+                .thenComparingLong(Bed::getId);
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 
@@ -105,7 +113,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
             logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
-                    + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
+                            + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
                     getInputId(),
                     patientAdmissionSchedule.getSpecialismList().size(),
                     patientAdmissionSchedule.getEquipmentList().size(),
@@ -197,7 +205,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     }
                 }
             }
-            Collections.sort(departmentList, new PersistableIdComparator());
+            Collections.sort(departmentList, comparingLong(Department::getId));
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }
@@ -296,15 +304,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
-            Collections.sort(roomList, new Comparator<Room>() {
-                @Override
-                public int compare(Room a, Room b) {
-                    return new CompareToBuilder()
-                            .append(a.getDepartment().getId(), b.getDepartment().getId())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(roomList, ROOM_COMPARATOR);
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -332,17 +332,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 bedList.add(bed);
                 room.getBedList().add(bed);
             }
-            Collections.sort(bedList, new Comparator<Bed>() {
-                @Override
-                public int compare(Bed a, Bed b) {
-                    return new CompareToBuilder()
-                            .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())
-                            .append(a.getRoom().getId(), b.getRoom().getId())
-                            .append(a.getIndexInRoom(), b.getIndexInRoom())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(bedList, BED_COMPARATOR);
             patientAdmissionSchedule.setBedList(bedList);
         }
 
@@ -546,7 +536,5 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             }
             patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
         }
-
     }
-
 }

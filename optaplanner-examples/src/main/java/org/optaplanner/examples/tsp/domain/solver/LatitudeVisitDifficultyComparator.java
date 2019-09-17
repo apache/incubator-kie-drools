@@ -19,19 +19,19 @@ package org.optaplanner.examples.tsp.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class LatitudeVisitDifficultyComparator implements Comparator<Visit>, Serializable {
+public class LatitudeVisitDifficultyComparator implements Comparator<Visit>,
+        Serializable {
+
+    // TODO experiment with (aLatitude - bLatitude) % 10
+    private static final Comparator<Visit> COMPARATOR =
+            Comparator.comparingDouble((Visit visit) -> visit.getLocation().getLatitude())
+                    .thenComparingDouble(visit -> visit.getLocation().getLongitude())
+                    .thenComparingLong(Visit::getId);
 
     @Override
     public int compare(Visit a, Visit b) {
-        return new CompareToBuilder()
-                // TODO experiment with (aLatitude - bLatitude) % 10
-                .append(a.getLocation().getLatitude(), b.getLocation().getLatitude())
-                .append(a.getLocation().getLongitude(), b.getLocation().getLongitude())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

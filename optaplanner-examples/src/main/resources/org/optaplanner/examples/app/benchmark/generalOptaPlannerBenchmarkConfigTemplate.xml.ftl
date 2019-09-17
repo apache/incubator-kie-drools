@@ -219,7 +219,6 @@
           </swapMoveSelector>
           <pillarChangeMoveSelector>
             <subPillarType>SEQUENCE</subPillarType>
-            <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
             <pillarSelector>
               <entitySelector>
                 <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
@@ -228,7 +227,6 @@
           </pillarChangeMoveSelector>
           <pillarSwapMoveSelector>
             <subPillarType>SEQUENCE</subPillarType>
-            <subPillarSequenceComparatorClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignmentComparator</subPillarSequenceComparatorClass>
             <pillarSelector>
               <entitySelector>
                 <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>

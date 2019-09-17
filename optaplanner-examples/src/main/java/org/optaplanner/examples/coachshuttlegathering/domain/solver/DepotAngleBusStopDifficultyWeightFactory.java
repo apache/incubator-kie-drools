@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
@@ -37,8 +38,12 @@ public class DepotAngleBusStopDifficultyWeightFactory
                         + hub.getLocation().getMaximumDistanceTo(busOrStop.getLocation()));
     }
 
-    public static class DepotAngleBusStopDifficultyWeight
-            implements Comparable<DepotAngleBusStopDifficultyWeight> {
+    public static class DepotAngleBusStopDifficultyWeight implements Comparable<DepotAngleBusStopDifficultyWeight> {
+
+        private static final Comparator<DepotAngleBusStopDifficultyWeight> COMPARATOR =
+                Comparator.comparingDouble((DepotAngleBusStopDifficultyWeight w) -> w.hubAngle)
+                        .thenComparingInt(w -> w.hubRoundTripDistance) // Further from the depot are more difficult.
+                        .thenComparingLong(w -> w.busOrStop.getId());
 
         private final BusOrStop busOrStop;
         private final double hubAngle;
@@ -52,13 +57,7 @@ public class DepotAngleBusStopDifficultyWeightFactory
 
         @Override
         public int compareTo(DepotAngleBusStopDifficultyWeight other) {
-            return new CompareToBuilder()
-                    .append(hubAngle, other.hubAngle)
-                    .append(hubRoundTripDistance, other.hubRoundTripDistance) // Ascending (further from the depot are more difficult)
-                    .append(busOrStop.getId(), other.busOrStop.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
-
     }
-
 }

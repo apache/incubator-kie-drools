@@ -18,17 +18,16 @@ package org.optaplanner.examples.cheaptime.swingui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -54,12 +53,21 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
+import static java.util.Comparator.*;
+
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
-    private StableTaskAssignmentComparator stableTaskAssignmentComparator = new StableTaskAssignmentComparator();
-    private GroupByMachineTaskAssignmentComparator groupByMachineTaskAssignmentComparator = new GroupByMachineTaskAssignmentComparator();
-
     public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
+    private static final Comparator<TaskAssignment> STABLE_COMPARATOR =
+            comparing((TaskAssignment a) -> a.getTask().getStartPeriodRangeFrom())
+                    .thenComparingInt(a -> a.getTask().getStartPeriodRangeTo())
+                    .thenComparingInt(a -> a.getTask().getDuration())
+                    .thenComparingLong(TaskAssignment::getId);
+    private static final Comparator<TaskAssignment> GROUP_BY_MACHINE_COMPARATOR =
+            comparing(TaskAssignment::getMachine, comparingLong(Machine::getId))
+                    .thenComparingInt(TaskAssignment::getStartPeriod)
+                    .thenComparingInt(a -> a.getTask().getDuration())
+                    .thenComparingLong(TaskAssignment::getId);
 
     private JCheckBox groupByMachineCheckBox;
 
@@ -120,9 +128,8 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
             seriesIndex++;
         }
         List<TaskAssignment> taskAssignmentList = new ArrayList<>(solution.getTaskAssignmentList());
-        Collections.sort(taskAssignmentList,
-                groupByMachineCheckBox.isSelected() ? groupByMachineTaskAssignmentComparator
-                        : stableTaskAssignmentComparator);
+        Collections.sort(taskAssignmentList, groupByMachineCheckBox.isSelected() ?
+                GROUP_BY_MACHINE_COMPARATOR : STABLE_COMPARATOR);
         int pixelIndex = 0;
         for (TaskAssignment taskAssignment : taskAssignmentList) {
             Task task = taskAssignment.getTask();
@@ -208,35 +215,4 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
         NumberAxis domainAxis = new NumberAxis("Capacity");
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
-
-    private static class StableTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
-
-        @Override
-        public int compare(TaskAssignment a, TaskAssignment b) {
-            return new CompareToBuilder()
-                    .append(a.getTask().getStartPeriodRangeFrom(), b.getTask().getStartPeriodRangeFrom())
-                    .append(a.getTask().getStartPeriodRangeTo(), b.getTask().getStartPeriodRangeTo())
-                    .append(a.getTask().getDuration(), b.getTask().getDuration())
-                    .append(a.getId(), b.getId())
-                    .toComparison();
-        }
-
-    }
-
-    private static class GroupByMachineTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
-
-        @Override
-        public int compare(TaskAssignment a, TaskAssignment b) {
-            Machine aMachine = a.getMachine();
-            Machine bMachine = b.getMachine();
-            return new CompareToBuilder()
-                    .append(aMachine == null ? null : aMachine.getId(), bMachine == null ? null : bMachine.getId())
-                    .append(a.getStartPeriod(), b.getStartPeriod())
-                    .append(a.getTask().getDuration(), b.getTask().getDuration())
-                    .append(a.getId(), b.getId())
-                    .toComparison();
-        }
-
-    }
-
 }

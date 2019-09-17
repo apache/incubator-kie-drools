@@ -17,6 +17,7 @@
 package org.optaplanner.examples.nurserostering.domain;
 
 import java.time.DayOfWeek;
+import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -30,7 +31,11 @@ import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDiff
 @PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
-public class ShiftAssignment extends AbstractPersistable {
+public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
+
+    private static final Comparator<Shift> COMPARATOR = Comparator.comparing(Shift::getShiftDate)
+            .thenComparing(a -> a.getShiftType().getStartTimeString())
+            .thenComparing(a -> a.getShiftType().getEndTimeString());
 
     private Shift shift;
     private int indexInShift;
@@ -109,4 +114,8 @@ public class ShiftAssignment extends AbstractPersistable {
         return shift.toString();
     }
 
+    @Override
+    public int compareTo(ShiftAssignment o) {
+        return COMPARATOR.compare(shift, o.shift);
+    }
 }

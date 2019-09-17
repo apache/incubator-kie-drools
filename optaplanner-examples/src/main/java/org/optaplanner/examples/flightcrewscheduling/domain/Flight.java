@@ -20,10 +20,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class Flight extends AbstractPersistable {
+public class Flight extends AbstractPersistable implements Comparable<Flight> {
+
+    private static final Comparator<Flight> COMPARATOR = Comparator.comparing(Flight::getDepartureUTCDate)
+            .thenComparing(Flight::getDepartureAirport)
+            .thenComparing(Flight::getDepartureUTCDateTime)
+            .thenComparing(Flight::getArrivalAirport)
+            .thenComparing(Flight::getArrivalUTCDateTime);
 
     private String flightNumber;
     private Airport departureAirport;
@@ -107,4 +114,8 @@ public class Flight extends AbstractPersistable {
         this.arrivalUTCDateTime = arrivalUTCDateTime;
     }
 
+    @Override
+    public int compareTo(Flight o) {
+        return COMPARATOR.compare(this, o);
+    }
 }

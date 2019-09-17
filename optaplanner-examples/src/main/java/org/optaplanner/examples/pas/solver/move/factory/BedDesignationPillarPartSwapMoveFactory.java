@@ -26,16 +26,27 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
+import static java.util.Comparator.*;
+
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
+
+    private static Comparator<Night> NIGHT_COMPARATOR = comparingLong(Night::getId);
+    // This comparison is sameBedInSameNight safe.
+    private static final Comparator<BedDesignation> COMPARATOR =
+            comparing((BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
+                    NIGHT_COMPARATOR)
+                    .thenComparing(bedDesignation -> bedDesignation.getAdmissionPart().getLastNight(), NIGHT_COMPARATOR)
+                    .thenComparing(BedDesignation::getAdmissionPart, comparingLong(AdmissionPart::getId));
 
     @Override
     public List<Move<PatientAdmissionSchedule>> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
@@ -49,27 +60,17 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
             bedDesignationListPerBed.add(bedDesignation);
         }
         for (List<BedDesignation> bedDesignationListPerBed : bedToBedDesignationList.values()) {
-            Collections.sort(bedDesignationListPerBed, new Comparator<BedDesignation>() {
-                @Override
-                public int compare(BedDesignation a, BedDesignation b) {
-                    // This comparison is sameBedInSameNight safe.
-                    return new CompareToBuilder()
-                            .append(a.getAdmissionPart().getFirstNight(), b.getAdmissionPart().getFirstNight())
-                            .append(a.getAdmissionPart().getLastNight(), b.getAdmissionPart().getLastNight())
-                            .append(a.getAdmissionPart(), b.getAdmissionPart())
-                            .toComparison();
-                }
-            });
+            Collections.sort(bedDesignationListPerBed, COMPARATOR);
         }
 
         List<Bed> bedList = patientAdmissionSchedule.getBedList();
         List<Move<PatientAdmissionSchedule>> moveList = new ArrayList<>();
 
         // For every 2 distinct beds
-        for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext();) {
+        for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext(); ) {
             Bed leftBed = leftBedIt.next();
             for (ListIterator<Bed> rightBedIt = bedList.listIterator(leftBedIt.nextIndex());
-                    rightBedIt.hasNext();) {
+                    rightBedIt.hasNext(); ) {
                 Bed rightBed = rightBedIt.next();
                 List<BedDesignation> leftBedDesignationList = bedToBedDesignationList.get(leftBed);
                 if (leftBedDesignationList == null) {
@@ -228,7 +229,5 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         public boolean isLastNextWasLeft() {
             return lastNextWasLeft;
         }
-
     }
-
 }

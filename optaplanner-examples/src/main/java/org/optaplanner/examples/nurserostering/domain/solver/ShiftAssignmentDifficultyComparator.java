@@ -19,23 +19,25 @@ package org.optaplanner.examples.nurserostering.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
+import org.optaplanner.examples.nurserostering.domain.ShiftDate;
+import org.optaplanner.examples.nurserostering.domain.ShiftType;
 
-public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>, Serializable {
+public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>,
+        Serializable {
+
+    private static final Comparator<ShiftDate> SHIFT_DATE_DESCENDING_COMPARATOR =
+            Comparator.comparing(ShiftDate::getDate).reversed();
+    private static final Comparator<Shift> COMPARATOR =
+            Comparator.comparing(Shift::getShiftDate, SHIFT_DATE_DESCENDING_COMPARATOR)
+                    .thenComparing(Shift::getShiftType, Comparator.comparingLong(ShiftType::getId).reversed())
+                    .thenComparingInt(Shift::getRequiredEmployeeSize);
 
     @Override
     public int compare(ShiftAssignment a, ShiftAssignment b) {
         Shift aShift = a.getShift();
         Shift bShift = b.getShift();
-        return new CompareToBuilder()
-                // At least for Construction Heuristics, scheduling the shifts by starting time
-                // is better than by employee size
-                .append(bShift.getShiftDate(), aShift.getShiftDate()) // Descending
-                .append(bShift.getShiftType(), aShift.getShiftType()) // Descending
-                .append(aShift.getRequiredEmployeeSize(), bShift.getRequiredEmployeeSize())
-                .toComparison();
+        return COMPARATOR.compare(aShift, bShift);
     }
-
 }

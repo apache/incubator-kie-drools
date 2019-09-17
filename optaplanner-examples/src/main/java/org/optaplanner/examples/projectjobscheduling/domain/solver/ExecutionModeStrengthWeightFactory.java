@@ -16,15 +16,17 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain.solver;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
+
+import static java.util.Comparator.*;
 
 public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeightFactory<Schedule, ExecutionMode> {
 
@@ -51,12 +53,16 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
                 requirementDesirability += (double) (total - resource.getCapacity())
                         * (double) resourceRequirement.getRequirement()
                         * (resource.isRenewable() ? 1.0 : 100.0);
-             }
+            }
         }
         return new ExecutionModeStrengthWeight(executionMode, requirementDesirability);
     }
 
     public static class ExecutionModeStrengthWeight implements Comparable<ExecutionModeStrengthWeight> {
+
+        private static final Comparator<ExecutionModeStrengthWeight> COMPARATOR =
+                comparingDouble((ExecutionModeStrengthWeight weight) -> weight.requirementDesirability)
+                        .thenComparing(weight -> weight.executionMode, comparingLong(ExecutionMode::getId));
 
         private final ExecutionMode executionMode;
         private final double requirementDesirability;
@@ -68,13 +74,7 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
 
         @Override
         public int compareTo(ExecutionModeStrengthWeight other) {
-            return new CompareToBuilder()
-                    // The less requirementsWeight, the less desirable resources are used
-                    .append(requirementDesirability, other.requirementDesirability)
-                    .append(executionMode.getId(), other.executionMode.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
-
     }
-
 }

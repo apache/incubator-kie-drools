@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.examination.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
@@ -70,6 +71,12 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
 
     public static class ExamDifficultyWeight implements Comparable<ExamDifficultyWeight> {
 
+        private static final Comparator<ExamDifficultyWeight> COMPARATOR =
+                Comparator.comparingInt((ExamDifficultyWeight weight) -> weight.studentSizeTotal)
+                    .thenComparingInt(weight -> weight.maximumDuration)
+                    .thenComparing(weight -> weight.exam instanceof LeadingExam)
+                    .thenComparingLong(weight -> weight.exam.getId());
+
         private final Exam exam;
         private final int studentSizeTotal;
         private final int maximumDuration;
@@ -82,12 +89,7 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
 
         @Override
         public int compareTo(ExamDifficultyWeight other) {
-            return new CompareToBuilder()
-                    .append(studentSizeTotal, other.studentSizeTotal)
-                    .append(maximumDuration, other.maximumDuration)
-                    .append(exam instanceof LeadingExam, other.exam instanceof LeadingExam)
-                    .append(exam.getId(), other.exam.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
 
     }

@@ -16,11 +16,14 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+
+import static java.util.Comparator.*;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
@@ -40,6 +43,11 @@ public class DepotAngleCustomerDifficultyWeightFactory
     public static class DepotAngleCustomerDifficultyWeight
             implements Comparable<DepotAngleCustomerDifficultyWeight> {
 
+        private static final Comparator<DepotAngleCustomerDifficultyWeight> COMPARATOR =
+                comparingDouble((DepotAngleCustomerDifficultyWeight weight) -> weight.depotAngle)
+                        .thenComparingLong(weight -> weight.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
+                        .thenComparing(weight -> weight.customer, comparingLong(Customer::getId));
+
         private final Customer customer;
         private final double depotAngle;
         private final long depotRoundTripDistance;
@@ -53,13 +61,7 @@ public class DepotAngleCustomerDifficultyWeightFactory
 
         @Override
         public int compareTo(DepotAngleCustomerDifficultyWeight other) {
-            return new CompareToBuilder()
-                    .append(depotAngle, other.depotAngle)
-                    .append(depotRoundTripDistance, other.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
-                    .append(customer.getId(), other.customer.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
-
     }
-
 }

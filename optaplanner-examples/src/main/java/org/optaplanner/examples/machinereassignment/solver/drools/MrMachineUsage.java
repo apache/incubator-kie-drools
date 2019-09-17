@@ -17,17 +17,22 @@
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
+import static java.util.Comparator.*;
+
 public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> {
 
+    private static final Comparator<MrMachineUsage> COMPARATOR =
+            comparing((MrMachineUsage usage) -> usage.getClass().getName())
+                    .thenComparing(usage -> usage.machineCapacity, comparingLong(MrMachineCapacity::getId))
+                    .thenComparingLong(usage -> usage.usage);
     private MrMachineCapacity machineCapacity;
     private long usage;
 
@@ -67,20 +72,6 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
                 .toHashCode();
     }
 
-    /**
-     * Used by the GUI to sort the {@link ConstraintMatch} list
-     * by {@link ConstraintMatch#getJustificationList()}.
-     * @param other never null
-     * @return comparison
-     */
-    @Override
-    public int compareTo(MrMachineUsage other) {
-        return new CompareToBuilder()
-                .append(machineCapacity, other.machineCapacity)
-                .append(usage, other.usage)
-                .toComparison();
-    }
-
     public MrMachine getMachine() {
         return machineCapacity.getMachine();
     }
@@ -110,4 +101,8 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
         return getMachine() + "-" + getResource() + "=" + usage;
     }
 
+    @Override
+    public int compareTo(MrMachineUsage o) {
+        return COMPARATOR.compare(this, o);
+    }
 }

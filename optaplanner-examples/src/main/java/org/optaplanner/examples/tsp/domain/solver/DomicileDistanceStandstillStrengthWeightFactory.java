@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
@@ -33,6 +34,12 @@ public class DomicileDistanceStandstillStrengthWeightFactory implements Selectio
 
     public static class DomicileDistanceStandstillStrengthWeight implements Comparable<DomicileDistanceStandstillStrengthWeight> {
 
+        private static final Comparator<DomicileDistanceStandstillStrengthWeight> COMPARATOR =
+                // Decreasing: closer to depot is stronger
+                Comparator.comparingLong((DomicileDistanceStandstillStrengthWeight weight) -> -weight.domicileRoundTripDistance)
+                        .thenComparingDouble(weight -> weight.standstill.getLocation().getLatitude())
+                        .thenComparingDouble(weight -> weight.standstill.getLocation().getLongitude());
+
         private final Standstill standstill;
         private final long domicileRoundTripDistance;
 
@@ -43,11 +50,7 @@ public class DomicileDistanceStandstillStrengthWeightFactory implements Selectio
 
         @Override
         public int compareTo(DomicileDistanceStandstillStrengthWeight other) {
-            return new CompareToBuilder()
-                    .append(other.domicileRoundTripDistance, domicileRoundTripDistance) // Decreasing: closer to depot is stronger
-                    .append(standstill.getLocation().getLatitude(), other.standstill.getLocation().getLatitude())
-                    .append(standstill.getLocation().getLongitude(), other.standstill.getLocation().getLongitude())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
 
     }

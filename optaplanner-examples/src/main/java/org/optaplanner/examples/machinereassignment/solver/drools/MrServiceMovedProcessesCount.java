@@ -17,15 +17,19 @@
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
+
+import static java.util.Comparator.*;
 
 public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
 
+    private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR =
+            comparing((MrServiceMovedProcessesCount count) -> count.service, comparingLong(MrService::getId))
+                    .thenComparingInt(count -> count.movedProcessesCount);
     private MrService service;
     private int movedProcessesCount;
 
@@ -65,20 +69,6 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
                 .toHashCode();
     }
 
-    /**
-     * Used by the GUI to sort the {@link ConstraintMatch} list
-     * by {@link ConstraintMatch#getJustificationList()}.
-     * @param other never null
-     * @return comparison
-     */
-    @Override
-    public int compareTo(MrServiceMovedProcessesCount other) {
-        return new CompareToBuilder()
-                .append(service, other.service)
-                .append(movedProcessesCount, other.movedProcessesCount)
-                .toComparison();
-    }
-
     public Long getServiceId() {
         return service.getId();
     }
@@ -88,4 +78,8 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
         return service + "=" + movedProcessesCount;
     }
 
+    @Override
+    public int compareTo(MrServiceMovedProcessesCount o) {
+        return COMPARATOR.compare(this, o);
+    }
 }

@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.examination.app.ExaminationApp;
@@ -77,8 +76,9 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
     public static class ExaminationInputBuilder extends TxtInputBuilder<Examination> {
 
+        private static final Comparator<Topic> COMPARATOR = Comparator.comparing(Topic::getStudentSize)
+                .thenComparingLong(Topic::getId);
         private Examination examination;
-
         private Map<Topic, Set<Topic>> coincidenceMap;
         private Map<Topic, Set<Topic>> exclusionMap;
         private Map<Topic, Set<Topic>> afterMap;
@@ -104,7 +104,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
                     examination.getExamList().size());
             logger.info("Examination {} has {} students, {} exams, {} periods, {} rooms, {} period constraints"
-                    + " and {} room constraints with a search space of {}.",
+                            + " and {} room constraints with a search space of {}.",
                     getInputId(),
                     examination.getStudentList().size(),
                     examination.getExamList().size(),
@@ -306,7 +306,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 for (Topic middleTopic : new ArrayList<>(middleTopicSet)) {
                     for (Topic rightTopic : new ArrayList<>(coincidenceMap.get(middleTopic))) {
                         if (rightTopic != leftTopic
-                                 && !middleTopicSet.contains(rightTopic)) {
+                                && !middleTopicSet.contains(rightTopic)) {
                             PeriodPenalty indirectPeriodPenalty = new PeriodPenalty();
                             indirectPeriodPenalty.setId((long) id);
                             id++;
@@ -323,7 +323,6 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                             }
                         }
                     }
-
                 }
             }
             // createIndirectPeriodPenalties of type AFTER
@@ -424,15 +423,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void tagFrontLoadLargeTopics() {
             List<Topic> sortedTopicList = new ArrayList<>(examination.getTopicList());
-            Collections.sort(sortedTopicList, new Comparator<Topic>() {
-                @Override
-                public int compare(Topic a, Topic b) {
-                    return new CompareToBuilder()
-                            .append(a.getStudentSize(), b.getStudentSize()) // Ascending
-                            .append(b.getId(), a.getId()) // Descending (according to spec)
-                            .toComparison();
-                }
-            });
+            Collections.sort(sortedTopicList, COMPARATOR);
             int frontLoadLargeTopicSize = examination.getConstraintConfiguration().getFrontLoadLargeTopicSize();
             if (frontLoadLargeTopicSize == 0) {
                 return;
@@ -458,7 +449,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             int minimumPeriodId = periodList.size() - frontLoadLastPeriodSize;
             if (minimumPeriodId < 0) {
                 logger.warn("The frontLoadLastPeriodSize (" + frontLoadLastPeriodSize
-                        + ") is bigger than periodListSize ("  + periodList.size()
+                        + ") is bigger than periodListSize (" + periodList.size()
                         + "). Tagging all periods as frontLoadLast...");
                 minimumPeriodId = 0;
             }
@@ -502,7 +493,5 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             }
             examination.setExamList(examList);
         }
-
     }
-
 }

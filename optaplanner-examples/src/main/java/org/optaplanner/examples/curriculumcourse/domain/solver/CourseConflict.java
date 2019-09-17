@@ -17,8 +17,8 @@
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
@@ -26,7 +26,13 @@ import org.optaplanner.examples.curriculumcourse.domain.Course;
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class CourseConflict implements Serializable, Comparable<CourseConflict> {
+public class CourseConflict implements Serializable,
+        Comparable<CourseConflict> {
+
+    private static final Comparator<Course> COURSE_COMPARATOR = Comparator.comparingLong(Course::getId);
+    private static final Comparator<CourseConflict> COMPARATOR =
+            Comparator.comparing(CourseConflict::getLeftCourse, COURSE_COMPARATOR)
+                    .thenComparing(CourseConflict::getRightCourse, COURSE_COMPARATOR);
 
     private final Course leftCourse;
     private final Course rightCourse;
@@ -75,15 +81,11 @@ public class CourseConflict implements Serializable, Comparable<CourseConflict> 
 
     @Override
     public int compareTo(CourseConflict other) {
-        return new CompareToBuilder()
-                .append(leftCourse, other.leftCourse)
-                .append(rightCourse, other.rightCourse)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override
     public String toString() {
         return leftCourse + " & " + rightCourse;
     }
-
 }

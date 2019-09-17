@@ -33,9 +33,6 @@ public class Employee extends AbstractPersistable {
     private Set<Skill> skillSet;
     private Set<LocalDate> unavailableDaySet;
 
-    /**
-     * Sorted by {@link FlightAssignment#DATE_TIME_COMPARATOR}.
-     */
     @InverseRelationShadowVariable(sourceVariableName = "employee")
     private SortedSet<FlightAssignment> flightAssignmentSet;
 
