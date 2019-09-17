@@ -30,26 +30,6 @@
     <version.org.infinispan.protostream>4.3.0.Alpha8</version.org.infinispan.protostream>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>jbpm-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

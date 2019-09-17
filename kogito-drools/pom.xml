@@ -33,18 +33,6 @@
     <module>drools-decisiontables</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <build>
     <pluginManagement>
       <plugins>

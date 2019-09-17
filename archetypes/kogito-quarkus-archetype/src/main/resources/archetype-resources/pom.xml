@@ -32,20 +32,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${kogito.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>jbpm-bom</artifactId>
-        <version>${kogito.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <!-- make sure that kogito dependencies are taken from current version 
         instead of quarkus bom -->
       <dependency>
