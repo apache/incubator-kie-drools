@@ -1019,6 +1019,31 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testExtractorInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person( $a : age ); \n" +
+                        "                $max : max($a)  \n" +
+                        "              ) \n" +
+                        "then\n" +
+                        "  insert(new Result($max));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("a", 23));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(23, results.iterator().next().getValue());
+    }
+
+
+    @Test
     public void testExtractorInFunction() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
