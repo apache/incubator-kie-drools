@@ -1024,8 +1024,8 @@ public class AccumulateTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "rule X when\n" +
-                "  $max : Integer() from accumulate ( Person( $p : this ); \n" +
-                "                max($p.getAge())  \n" +
+                "  accumulate ( Person( $p : this ); \n" +
+                "                $max : max($p.getAge())  \n" +
                 "              ) \n" +
                 "then\n" +
                 "  insert(new Result($max));\n" +
@@ -1037,9 +1037,9 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Person> results = getObjectsIntoList(ksession, Person.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
-        assertEquals(23, results.iterator().next().getAge());
+        assertEquals(23, results.iterator().next().getValue());
     }
 
 
@@ -1061,7 +1061,7 @@ public class AccumulateTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
