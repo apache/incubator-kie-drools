@@ -74,7 +74,6 @@ public class BuiltInFunctions {
             SplitFunction.INSTANCE,
             StddevFunction.INSTANCE,
             ModeFunction.INSTANCE,
-            AbsFunction.INSTANCE,
             SqrtFunction.INSTANCE,
             LogFunction.INSTANCE,
             ExpFunction.INSTANCE,
