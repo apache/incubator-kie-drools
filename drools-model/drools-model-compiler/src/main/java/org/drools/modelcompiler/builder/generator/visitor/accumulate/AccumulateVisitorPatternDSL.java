@@ -37,11 +37,11 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     @Override
     protected void processNewBinding(Optional<NewBinding> optNewBinding) {
         optNewBinding.ifPresent(newBinding -> {
-            final Optional<String> patterBinding = newBinding.patternBinding;
+            final List<String> patterBinding = newBinding.patternBinding;
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
-            if (patterBinding.isPresent()) {
-                final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(context, patterBinding.get(), allExpressions);
+            if (!patterBinding.isEmpty()) {
+                final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(context, patterBinding, allExpressions);
                 optPattern.ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)

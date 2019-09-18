@@ -1,6 +1,9 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -105,7 +108,7 @@ public abstract class AccumulateVisitor {
             }
 
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern);
+                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
                 processNewBinding(optNewBinding);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
@@ -148,7 +151,7 @@ public abstract class AccumulateVisitor {
         postVisit();
     }
 
-    protected Optional<AccumulateVisitorPatternDSL.NewBinding> visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern) {
+    protected Optional<NewBinding> visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, BaseDescr descr) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
@@ -204,7 +207,7 @@ public abstract class AccumulateVisitor {
                         final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, singleResult.getUsedDeclarations(), singleResult.getExpr());
                         context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, exprRawClass));
                         functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
-                        return Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.empty(), newBindingFromBinary));
+                        return Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Collections.emptyList(), newBindingFromBinary));
                     }
 
                     @Override
@@ -265,7 +268,12 @@ public abstract class AccumulateVisitor {
                            functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
                            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-                           return Optional.of(new NewBinding(Optional.of(singleResult.getPatternBinding()), binding));
+                           List<String> ids = new ArrayList<>();
+                           ids.add(singleResult.getPatternBinding());
+                           if(descr instanceof  PatternDescr) {
+                               ids.add(((PatternDescr) descr).getIdentifier());
+                           }
+                           return Optional.of(new NewBinding(ids, binding));
                        }
 
                        @Override
@@ -436,10 +444,10 @@ public abstract class AccumulateVisitor {
 
     static class NewBinding {
 
-        Optional<String> patternBinding;
+        List<String> patternBinding;
         MethodCallExpr bindExpression;
 
-        NewBinding(Optional<String> patternBinding, MethodCallExpr bindExpression) {
+        NewBinding(List<String> patternBinding, MethodCallExpr bindExpression) {
             this.patternBinding = patternBinding;
             this.bindExpression = bindExpression;
         }

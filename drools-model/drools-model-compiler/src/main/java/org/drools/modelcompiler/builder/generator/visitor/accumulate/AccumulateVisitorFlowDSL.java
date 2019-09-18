@@ -41,7 +41,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     @Override
     protected void processNewBinding(Optional<NewBinding> optNewBinding) {
         optNewBinding.ifPresent(newBinding -> {
-            final Optional<String> patterBinding = newBinding.patternBinding;
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
             replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
