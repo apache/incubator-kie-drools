@@ -2032,12 +2032,3 @@ public class CompilerTest extends BaseModelTest {
                         "    max($time.getTime()))\n" +
                         "then\n" +
                         "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        StockTick st = new StockTick("RHT");
-        st.setTimeField(new Date().getTime());
-        ksession.insert(st);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
-    }
-}
