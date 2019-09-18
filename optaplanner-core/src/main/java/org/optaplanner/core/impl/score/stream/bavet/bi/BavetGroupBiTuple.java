@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_> {
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetGroupTuple;
+
+public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_>
+        implements BavetGroupTuple {
 
     private final BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> node;
 
