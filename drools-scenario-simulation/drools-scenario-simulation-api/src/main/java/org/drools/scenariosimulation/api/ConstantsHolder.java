@@ -21,7 +21,7 @@ package org.drools.scenariosimulation.api;
 public class ConstantsHolder {
 
     /* Constants for manage expressions type column */
-    public static final String EXPRESSION_CLASSNAME = "expression";
+    public static final String EXPRESSION_CLASSNAME = "scesim-exp";
     public static final String EXPRESSION_SUFFIX = "Expression";
 
     private ConstantsHolder() {
