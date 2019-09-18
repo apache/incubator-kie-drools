@@ -17,12 +17,28 @@ package org.kie.kogito.codegen.tests;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.RuleUnitMemory;
 
 public class BusinessRuleUnit implements RuleUnitMemory {
-    DataStore<Person> persons = DataSource.createStore();
+
+    private DataStore<Person> persons = DataSource.createStore();
+    private DataStream<String> strings = DataSource.createStream();
+    private String myGlobal;
 
     public DataStore<Person> getPersons() {
         return persons;
+    }
+
+    public DataStream<String> getStrings() {
+        return strings;
+    }
+
+    public void setMyGlobal(String myGlobal) {
+        this.myGlobal = myGlobal;
+    }
+
+    public String getMyGlobal() {
+        return myGlobal;
     }
 }

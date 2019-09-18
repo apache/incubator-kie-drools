@@ -136,7 +136,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-        contextClassLoader = this.getClass().getClassLoader();
+        contextClassLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public static String defaultWorkItemHandlerConfigClass(String packageName) {

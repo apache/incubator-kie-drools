@@ -54,6 +54,8 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.rules.DataObserver;
 import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.DataStream;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -80,13 +82,13 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
 
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
 
-        if (ruleSetNode.getLanguage().equals(RuleSetNode.DRL_LANG)) {
+        if (ruleType.isRuleFlowGroup()) {
             MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
                     new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "ruleRuntimeBuilder");
             MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
             actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
             addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleType.getName()), lambda);
-        } else if (ruleSetNode.getLanguage().equals(RuleSetNode.RULE_UNIT_LANG)) {
+        } else if (ruleType.isRuleUnit()) {
             InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/RuleUnitFactoryTemplate.java");
             Expression ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class).get();
 
@@ -106,7 +108,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
                     .ifPresent(m -> m.setBody(unbind(variableScope, ruleSetNode, unitClass)));
 
             addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory);
-        } else if (ruleSetNode.getLanguage().equals(RuleSetNode.DMN_LANG)) {
+        } else if (ruleType.isDecision()) {
             RuleSetNode.RuleType.Decision decisionModel = (RuleSetNode.RuleType.Decision) ruleType;
             MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(new NameExpr("app"), "dmnRuntimeBuilder");
             actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
@@ -175,11 +177,13 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         Method m;
         try {
             m = unitClass.getMethod(methodName);
-            if ( DataSource.class.isAssignableFrom( m.getReturnType() ) ) {
-                Expression fieldAccessor =
-                        new MethodCallExpr(new NameExpr("model"), methodName);
-
+            Expression fieldAccessor =
+                    new MethodCallExpr(new NameExpr("model"), methodName);
+            if ( DataStore.class.isAssignableFrom(m.getReturnType() ) ) {
                 return new MethodCallExpr(fieldAccessor, "add")
+                        .addArgument(value);
+            } else if ( DataStream.class.isAssignableFrom(m.getReturnType() ) ) {
+                return new MethodCallExpr(fieldAccessor, "append")
                         .addArgument(value);
             } // else fallback to the following
         } catch (NoSuchMethodException e) {

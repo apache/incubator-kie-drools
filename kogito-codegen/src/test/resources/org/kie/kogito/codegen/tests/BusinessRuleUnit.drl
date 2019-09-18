@@ -24,3 +24,15 @@ rule isAdult
         System.out.println("Person " + $person.getName() + " is adult");
 		$person.setAdult(true);
 end
+
+
+rule hasString
+    when
+        $string : /strings
+    then
+        System.out.println("Found String " + $string);
+        System.out.println("also there is a global " + myGlobal);
+
+end
+
+

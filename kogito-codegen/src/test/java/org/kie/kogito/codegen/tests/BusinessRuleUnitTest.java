@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -40,30 +42,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BusinessRuleUnitTest extends AbstractCodegenTest {
 
-    @Test
-    public void testBasicBusinessRuleUnit() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.bpmn2"), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));        
+    static Stream<String> processes() {
+        return Stream.of(
+                "org/kie/kogito/codegen/tests/BusinessRuleUnit.bpmn2",
+                "org/kie/kogito/codegen/tests/BusinessRuleUnitAlternateSyntax.bpmn2");
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("processes")
+    public void testBasicBusinessRuleUnit(String bpmnPath) throws Exception {
+
+        Application app = generateCode(Collections.singletonList(bpmnPath), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
         assertThat(app).isNotNull();
-                
+
         Process<? extends Model> p = app.processes().processById("BusinessRuleUnit");
-        
+
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
     }
-    
-    @Test
-    public void testBasicBusinessRuleUnitWithAgendaListener() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.bpmn2"), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));        
+
+    @ParameterizedTest
+    @MethodSource("processes")
+    public void testBasicBusinessRuleUnitWithAgendaListener(String bpmnPath) throws Exception {
+
+        Application app = generateCode(Collections.singletonList(bpmnPath), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
         assertThat(app).isNotNull();
         final AtomicInteger counter = new AtomicInteger();
         ((DefaultRuleEventListenerConfig)app.config().rule().ruleEventListeners()).register(new DefaultAgendaEventListener() {
@@ -72,28 +83,29 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
             public void afterMatchFired(AfterMatchFiredEvent event) {
                 counter.incrementAndGet();
             }
-            
-        });                
+
+        });
         Process<? extends Model> p = app.processes().processById("BusinessRuleUnit");
-        
+
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
-        
+
         assertThat(counter.get()).isEqualTo(1);
     }
-    
-    @Test
-    public void testBasicBusinessRuleUnitControlledByUnitOfWork() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.bpmn2"), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));        
+
+    @ParameterizedTest
+    @MethodSource("processes")
+    public void testBasicBusinessRuleUnitControlledByUnitOfWork(String bpmnPath) throws Exception {
+
+        Application app = generateCode(Collections.singletonList(bpmnPath), Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
@@ -103,24 +115,24 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 startedProcesses.add(event.getProcessInstance().getId());
             }
-            
+
         });
-        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
-        
+
         Process<? extends Model> p = app.processes().processById("BusinessRuleUnit");
-        
+
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
-        
+
         // since the unit of work has not been finished yet not listeners where invoked
         assertThat(startedProcesses).hasSize(0);
         uow.end();
