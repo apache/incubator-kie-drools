@@ -1019,7 +1019,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    public void testTypedResultOnAccumulate2() {
+    public void testExtractorInFunction() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
