@@ -28,11 +28,19 @@ public class FieldTypeResolverTest {
     public void isDate() {
         final Person person = new Person();
         assertTrue(FieldTypeResolver.isDate("bday", person));
-        assertTrue(FieldTypeResolver.isDate("bdayLocalDate", person));
+        assertFalse(FieldTypeResolver.isDate("bdayLocalDate", person));
         assertFalse(FieldTypeResolver.isDate("name", person));
     }
 
-    class Person {
+    @Test
+    public void isLocalDate() {
+        final Person person = new Person();
+        assertFalse(FieldTypeResolver.isLocalDate("bday", person));
+        assertTrue(FieldTypeResolver.isLocalDate("bdayLocalDate", person));
+        assertFalse(FieldTypeResolver.isLocalDate("name", person));
+    }
+
+    static class Person {
 
         String name;
         Date bday;
