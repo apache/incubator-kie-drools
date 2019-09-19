@@ -292,11 +292,21 @@ Terminates when an amount of time has been used.
 [source,xml,options="nowrap"]
 ----
   <termination>
-    <millisecondsSpentLimit>500</millisecondsSpentLimit>
+    <!-- 2 minutes and 30 seconds in ISO 8601 format P[n]Y[n]M[n]DT[n]H[n]M[n]S -->
+    <spentLimit>PT2M30S</spentLimit>
   </termination>
 ----
 
-Besides milliseconds you can also use:
+Alternatively to a `java.util.Duration` in ISO 8601 format, you can also use:
+
+* Milliseconds
++
+[source,xml,options="nowrap"]
+----
+  <termination>
+    <millisecondsSpentLimit>500</millisecondsSpentLimit>
+  </termination>
+----
 
 * Seconds
 +
@@ -368,7 +378,22 @@ which will send time gradient-based algorithms (such as Simulated Annealing) on 
 === Unimproved Time Spent Termination
 
 Terminates when the best score has not improved in a specified amount of time.
+Each time a new best solution is found, the timer basically resets.
 
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <termination>
+      <!-- 2 minutes and 30 seconds in ISO 8601 format P[n]Y[n]M[n]DT[n]H[n]M[n]S -->
+      <unimprovedSpentLimit>PT2M30S</unimprovedSpentLimit>
+    </termination>
+  </localSearch>
+----
+
+Alternatively to a `java.util.Duration` in ISO 8601 format, you can also use:
+
+* Milliseconds
++
 [source,xml,options="nowrap"]
 ----
   <localSearch>
@@ -377,9 +402,6 @@ Terminates when the best score has not improved in a specified amount of time.
     </termination>
   </localSearch>
 ----
-
-
-Besides milliseconds you can also use:
 
 * Seconds
 +
@@ -473,7 +495,7 @@ use a wildcard `*` for lower score levels that are allowed to deteriorate if a h
   </localSearch>
 ----
 
-This effectively implies a threshold of `1hard/-2147483648soft`.
+This effectively implies a threshold of `1hard/-2147483648soft`, because it relies on `Integer.MIN_VALUE`.
 
 
 [[bestScoreTermination]]

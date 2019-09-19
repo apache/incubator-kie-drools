@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.config.solver.termination;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -51,12 +53,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
+    private Duration spentLimit = null;
     private Long millisecondsSpentLimit = null;
     private Long secondsSpentLimit = null;
     private Long minutesSpentLimit = null;
     private Long hoursSpentLimit = null;
     private Long daysSpentLimit = null;
 
+    private Duration unimprovedSpentLimit = null;
     private Long unimprovedMillisecondsSpentLimit = null;
     private Long unimprovedSecondsSpentLimit = null;
     private Long unimprovedMinutesSpentLimit = null;
@@ -94,6 +98,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     public void setTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
         this.terminationCompositionStyle = terminationCompositionStyle;
+    }
+
+    public Duration getSpentLimit() {
+        return spentLimit;
+    }
+
+    public void setSpentLimit(Duration spentLimit) {
+        this.spentLimit = spentLimit;
     }
 
     public Long getMillisecondsSpentLimit() {
@@ -134,6 +146,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     public void setDaysSpentLimit(Long daysSpentLimit) {
         this.daysSpentLimit = daysSpentLimit;
+    }
+
+    public Duration getUnimprovedSpentLimit() {
+        return unimprovedSpentLimit;
+    }
+
+    public void setUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
+        this.unimprovedSpentLimit = unimprovedSpentLimit;
     }
 
     public Long getUnimprovedMillisecondsSpentLimit() {
@@ -262,6 +282,11 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         return this;
     }
 
+    public TerminationConfig withSpentLimit(Duration spentLimit) {
+        this.spentLimit = spentLimit;
+        return this;
+    }
+
     public TerminationConfig withMillisecondsSpentLimit(Long millisecondsSpentLimit) {
         this.millisecondsSpentLimit = millisecondsSpentLimit;
         return this;
@@ -284,6 +309,11 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     public TerminationConfig withDaysSpentLimit(Long daysSpentLimit) {
         this.daysSpentLimit = daysSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
+        this.unimprovedSpentLimit = unimprovedSpentLimit;
         return this;
     }
 
@@ -396,9 +426,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
             ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
             Score bestScoreLimit_ = scoreDefinition.parseScore(bestScoreLimit);
             double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelsSize() - 1];
-            for (int i = 0; i < timeGradientWeightNumbers.length; i++) {
-                timeGradientWeightNumbers[i] = 0.50; // Number pulled out of thin air
-            }
+            Arrays.fill(timeGradientWeightNumbers, 0.50); // Number pulled out of thin air
             terminationList.add(new BestScoreTermination(scoreDefinition, bestScoreLimit_, timeGradientWeightNumbers));
         }
         if (bestScoreFeasible != null) {
@@ -416,9 +444,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
             FeasibilityScoreDefinition feasibilityScoreDefinition = (FeasibilityScoreDefinition) scoreDefinition;
             double[] timeGradientWeightFeasibleNumbers
                     = new double[feasibilityScoreDefinition.getFeasibleLevelsSize() - 1];
-            for (int i = 0; i < timeGradientWeightFeasibleNumbers.length; i++) {
-                timeGradientWeightFeasibleNumbers[i] = 0.50; // Number pulled out of thin air
-            }
+            Arrays.fill(timeGradientWeightFeasibleNumbers, 0.50); // Number pulled out of thin air
             terminationList.add(new BestScoreFeasibleTermination(feasibilityScoreDefinition,
                     timeGradientWeightFeasibleNumbers));
         }
@@ -468,7 +494,22 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     public Long calculateTimeMillisSpentLimit() {
         if (millisecondsSpentLimit == null && secondsSpentLimit == null
                 && minutesSpentLimit == null && hoursSpentLimit == null && daysSpentLimit == null) {
+            if (spentLimit != null) {
+                if (spentLimit.getNano() % 1000 != 0) {
+                    throw new IllegalArgumentException("The termination spentLimit (" + spentLimit
+                            + ") cannot use nanoseconds.");
+                }
+                return spentLimit.toMillis();
+            }
             return null;
+        }
+        if (spentLimit != null) {
+            throw new IllegalArgumentException("The termination spentLimit (" + spentLimit
+                    + ") cannot be combined with millisecondsSpentLimit (" + millisecondsSpentLimit
+                    + "), secondsSpentLimit" + secondsSpentLimit
+                    + "), minutesSpentLimit" + minutesSpentLimit
+                    + "), hoursSpentLimit" + hoursSpentLimit
+                    + ") or daysSpentLimit" + daysSpentLimit + ").");
         }
         long timeMillisSpentLimit = 0L;
         if (millisecondsSpentLimit != null) {
@@ -512,6 +553,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     public void shortenTimeMillisSpentLimit(long timeMillisSpentLimit) {
         Long oldLimit = calculateTimeMillisSpentLimit();
         if (oldLimit == null || timeMillisSpentLimit < oldLimit) {
+            spentLimit = null;
             millisecondsSpentLimit = timeMillisSpentLimit;
             secondsSpentLimit = null;
             minutesSpentLimit = null;
@@ -523,7 +565,21 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     public Long calculateUnimprovedTimeMillisSpentLimit() {
         if (unimprovedMillisecondsSpentLimit == null && unimprovedSecondsSpentLimit == null
                 && unimprovedMinutesSpentLimit == null && unimprovedHoursSpentLimit == null) {
+            if (unimprovedSpentLimit != null) {
+                if (unimprovedSpentLimit.getNano() % 1000 != 0) {
+                    throw new IllegalArgumentException("The termination unimprovedSpentLimit (" + unimprovedSpentLimit
+                            + ") cannot use nanoseconds.");
+                }
+                return unimprovedSpentLimit.toMillis();
+            }
             return null;
+        }
+        if (unimprovedSpentLimit != null) {
+            throw new IllegalArgumentException("The termination unimprovedSpentLimit (" + unimprovedSpentLimit
+                    + ") cannot be combined with unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
+                    + "), unimprovedSecondsSpentLimit" + unimprovedSecondsSpentLimit
+                    + "), unimprovedMinutesSpentLimit" + unimprovedMinutesSpentLimit
+                    + "), unimprovedHoursSpentLimit" + unimprovedHoursSpentLimit + ").");
         }
         long unimprovedTimeMillisSpentLimit = 0L;
         if (unimprovedMillisecondsSpentLimit != null) {
@@ -570,6 +626,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getTerminationClass());
         terminationCompositionStyle = ConfigUtils.inheritOverwritableProperty(terminationCompositionStyle,
                 inheritedConfig.getTerminationCompositionStyle());
+        spentLimit = ConfigUtils.inheritOverwritableProperty(spentLimit,
+                inheritedConfig.getSpentLimit());
         millisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(millisecondsSpentLimit,
                 inheritedConfig.getMillisecondsSpentLimit());
         secondsSpentLimit = ConfigUtils.inheritOverwritableProperty(secondsSpentLimit,
@@ -580,6 +638,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getHoursSpentLimit());
         daysSpentLimit = ConfigUtils.inheritOverwritableProperty(daysSpentLimit,
                 inheritedConfig.getDaysSpentLimit());
+        unimprovedSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSpentLimit,
+                inheritedConfig.getUnimprovedSpentLimit());
         unimprovedMillisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMillisecondsSpentLimit,
                 inheritedConfig.getUnimprovedMillisecondsSpentLimit());
         unimprovedSecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSecondsSpentLimit,

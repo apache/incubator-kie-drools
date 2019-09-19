@@ -16,20 +16,35 @@
 
 package org.optaplanner.core.config.solver.termination;
 
+import java.time.Duration;
+
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TerminationConfigTest {
 
     @Test
-    public void spendLimit() {
+    public void spentLimit() {
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setSpentLimit(Duration.ofMillis(5L)
+                .plusSeconds(4L)
+                .plusMinutes(3L)
+                .plusHours(2L)
+                .plusDays(1L));
+        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
+        assertInstanceOf(TimeMillisSpentTermination.class, termination);
+        assertEquals(93784005L, ((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit());
+    }
+
+    @Test
+    public void spentLimitWithoutJavaTime() {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMillisecondsSpentLimit(5L);
         terminationConfig.setSecondsSpentLimit(4L);
@@ -42,7 +57,20 @@ public class TerminationConfigTest {
     }
 
     @Test
-    public void unimprovedSpendLimit() {
+    public void unimprovedSpentLimit() {
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setUnimprovedSpentLimit(Duration.ofMillis(5L)
+                .plusSeconds(4L)
+                .plusMinutes(3L)
+                .plusHours(2L)
+                .plusDays(1L));
+        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
+        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
+        assertEquals(93784005L, ((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit());
+    }
+
+    @Test
+    public void unimprovedSpentLimitWithoutJavaTime() {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setUnimprovedMillisecondsSpentLimit(5L);
         terminationConfig.setUnimprovedSecondsSpentLimit(4L);
