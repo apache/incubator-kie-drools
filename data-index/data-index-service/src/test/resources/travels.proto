@@ -78,6 +78,8 @@ message Travels {
     optional VisaApplication visaApplication = 6;
     /* @Field(store = Store.YES, analyze = Analyze.YES) */
     repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 7;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 8;
 }
 
 /* @Indexed */

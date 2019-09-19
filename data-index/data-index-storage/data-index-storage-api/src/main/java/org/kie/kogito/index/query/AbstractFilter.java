@@ -14,23 +14,34 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.query;
 
-import java.util.Map;
+public abstract class AbstractFilter {
 
-import javax.json.JsonObject;
+    private Integer limit;
+    private Integer offset;
 
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+    public Integer getLimit() {
+        return limit;
+    }
 
-public interface CacheService {
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
 
-    Map<String, ProcessInstance> getProcessInstancesCache();
+    public Integer getOffset() {
+        return offset;
+    }
 
-    Map<String, UserTaskInstance> getUserTaskInstancesCache();
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
 
-    Map<String, String> getProcessIdModelCache();
-
-    Map<String, JsonObject> getDomainModelCache(String processId);
-    
+    @Override
+    public String toString() {
+        return "AbstractFilter{" +
+                "limit=" + limit +
+                ", offset=" + offset +
+                '}';
+    }
 }

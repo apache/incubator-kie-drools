@@ -36,8 +36,8 @@ public class ProtostreamProducer {
     }
 
     @Produces
-    MessageMarshaller processInstanceMetaMarshaller() {
-        return new ProcessInstanceMetaMarshaller();
+    MessageMarshaller userTaskInstanceMarshaller() {
+        return new UserTaskInstanceMarshaller();
     }
 
     @Produces

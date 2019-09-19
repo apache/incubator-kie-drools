@@ -40,6 +40,7 @@ import org.kie.kogito.index.domain.AttributeDescriptor;
 import org.kie.kogito.index.domain.DomainDescriptor;
 import org.kie.kogito.index.event.DomainModelRegisteredEvent;
 import org.kie.kogito.index.model.ProcessInstanceMeta;
+import org.kie.kogito.index.model.UserTaskInstanceMeta;
 import org.kie.kogito.index.query.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 
 @ApplicationScoped
 public class GraphQLProtoSchemaMapper {
@@ -145,6 +147,8 @@ public class GraphQLProtoSchemaMapper {
                     LOGGER.debug("GraphQL mapping field: {}", field);
                     if (ProcessInstanceMeta.class.getName().equals(field.getTypeName())) {
                         builder.field(GraphQLFieldDefinition.newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
+                    } else if (UserTaskInstanceMeta.class.getName().equals(field.getTypeName())) {
+                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("UserTaskInstanceMeta")))).build();
                     } else {
                         GraphQLOutputType type;
                         switch (field.getTypeName()) {

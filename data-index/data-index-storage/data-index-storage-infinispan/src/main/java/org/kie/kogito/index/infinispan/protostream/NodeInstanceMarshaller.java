@@ -17,14 +17,11 @@
 package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
 
-public class NodeInstanceMarshaller implements MessageMarshaller<NodeInstance> {
+public class NodeInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<NodeInstance> {
 
     @Override
     public NodeInstance readFrom(ProtoStreamReader reader) throws IOException {
@@ -32,10 +29,10 @@ public class NodeInstanceMarshaller implements MessageMarshaller<NodeInstance> {
         node.setId(reader.readString("id"));
         node.setName(reader.readString("name"));
         node.setType(reader.readString("type"));
-        Date enter = reader.readDate("enter");
-        node.setEnter(enter == null ? null : ZonedDateTime.ofInstant(enter.toInstant(), ZoneOffset.UTC));
-        Date exit = reader.readDate("exit");
-        node.setExit(exit == null ? null : ZonedDateTime.ofInstant(exit.toInstant(), ZoneOffset.UTC));
+        node.setEnter(dateToZonedDateTime(reader.readDate("enter")));
+        node.setExit(dateToZonedDateTime(reader.readDate("exit")));
+        node.setDefinitionId(reader.readString("definitionId"));
+        node.setNodeId(reader.readString("nodeId"));
         return node;
     }
 
@@ -44,8 +41,10 @@ public class NodeInstanceMarshaller implements MessageMarshaller<NodeInstance> {
         writer.writeString("id", node.getId());
         writer.writeString("name", node.getName());
         writer.writeString("type", node.getType());
-        writer.writeDate("enter", node.getEnter() == null ? null : new Date(node.getEnter().toInstant().toEpochMilli()));
-        writer.writeDate("exit", node.getExit() == null ? null : new Date(node.getExit().toInstant().toEpochMilli()));
+        writer.writeDate("enter", zonedDateTimeToDate(node.getEnter()));
+        writer.writeDate("exit", zonedDateTimeToDate(node.getExit()));
+        writer.writeString("definitionId", node.getDefinitionId());
+        writer.writeString("nodeId", node.getNodeId());
     }
 
     @Override

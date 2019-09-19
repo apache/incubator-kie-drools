@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.json;
 
-import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
-import javax.json.JsonObject;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+public class JsonArrayMapper implements Function<Set<String>, JsonArrayBuilder> {
 
-public interface CacheService {
-
-    Map<String, ProcessInstance> getProcessInstancesCache();
-
-    Map<String, UserTaskInstance> getUserTaskInstancesCache();
-
-    Map<String, String> getProcessIdModelCache();
-
-    Map<String, JsonObject> getDomainModelCache(String processId);
-    
+    @Override
+    public JsonArrayBuilder apply(Set<String> strings) {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        if (strings != null) {
+            strings.forEach(builder::add);
+        }
+        return builder;
+    }
 }

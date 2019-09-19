@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.messaging;
+package org.kie.kogito.index.json;
 
-import io.quarkus.kafka.client.serialization.JsonbDeserializer;
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.junit.jupiter.api.Test;
 
-public class KogitoCloudEventDeserializer extends JsonbDeserializer<KogitoCloudEvent> {
+import static java.util.Collections.singleton;
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public KogitoCloudEventDeserializer() {
-        super(KogitoCloudEvent.class);
+public class JsonArrayMapperTest {
+
+    @Test
+    public void testArrayMapper() {
+        assertThat(new JsonArrayMapper().apply(null)).matches(array -> array.build().size() == 0);
+        assertThat(new JsonArrayMapper().apply(singleton("test"))).matches(array -> array.build().size() == 1);
     }
 }

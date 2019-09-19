@@ -1,0 +1,181 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.kogito.index.model;
+
+import java.time.ZonedDateTime;
+import java.util.Set;
+
+import javax.json.bind.annotation.JsonbProperty;
+
+public class UserTaskInstanceMeta {
+
+    private String id;
+    @JsonbProperty("taskDescription")
+    private String description;
+    @JsonbProperty("taskName")
+    private String name;
+    @JsonbProperty("taskPriority")
+    private String priority;
+    private String processInstanceId;
+    private String state;
+    private String actualOwner;
+    private Set<String> adminGroups;
+    private Set<String> adminUsers;
+    @JsonbProperty("completeDate")
+    private ZonedDateTime completed;
+    @JsonbProperty("startDate")
+    private ZonedDateTime started;
+    private Set<String> excludedUsers;
+    private Set<String> potentialGroups;
+    private Set<String> potentialUsers;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String id) {
+        if (id != null && !id.trim().isEmpty()) {
+            this.processInstanceId = id;
+        }
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getActualOwner() {
+        return actualOwner;
+    }
+
+    public void setActualOwner(String actualOwner) {
+        if (actualOwner != null && !actualOwner.trim().isEmpty()) {
+            this.actualOwner = actualOwner;
+        }
+    }
+
+    public Set<String> getAdminGroups() {
+        return adminGroups;
+    }
+
+    public void setAdminGroups(Set<String> adminGroups) {
+        this.adminGroups = adminGroups;
+    }
+
+    public Set<String> getAdminUsers() {
+        return adminUsers;
+    }
+
+    public void setAdminUsers(Set<String> adminUsers) {
+        this.adminUsers = adminUsers;
+    }
+
+    public ZonedDateTime getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(ZonedDateTime completed) {
+        this.completed = completed;
+    }
+
+    public ZonedDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(ZonedDateTime started) {
+        this.started = started;
+    }
+
+    public Set<String> getExcludedUsers() {
+        return excludedUsers;
+    }
+
+    public void setExcludedUsers(Set<String> excludedUsers) {
+        this.excludedUsers = excludedUsers;
+    }
+
+    public Set<String> getPotentialGroups() {
+        return potentialGroups;
+    }
+
+    public void setPotentialGroups(Set<String> potentialGroups) {
+        this.potentialGroups = potentialGroups;
+    }
+
+    public Set<String> getPotentialUsers() {
+        return potentialUsers;
+    }
+
+    public void setPotentialUsers(Set<String> potentialUsers) {
+        this.potentialUsers = potentialUsers;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTaskInstanceMeta{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                ", priority='" + priority + '\'' +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", state='" + state + '\'' +
+                ", actualOwner='" + actualOwner + '\'' +
+                ", adminGroups=" + adminGroups +
+                ", adminUsers=" + adminUsers +
+                ", completed=" + completed +
+                ", started=" + started +
+                ", excludedUsers=" + excludedUsers +
+                ", potentialGroups=" + potentialGroups +
+                ", potentialUsers=" + potentialUsers +
+                '}';
+    }
+}

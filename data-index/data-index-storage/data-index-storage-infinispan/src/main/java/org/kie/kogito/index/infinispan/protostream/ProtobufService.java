@@ -35,13 +35,13 @@ import org.infinispan.protostream.descriptors.FileDescriptor;
 import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.SerializationContextImpl;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
-import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.infinispan.cache.InfinispanCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.*;
 
 @ApplicationScoped
 public class ProtobufService {
@@ -49,7 +49,7 @@ public class ProtobufService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtobufService.class);
 
     @Inject
-    CacheService manager;
+    InfinispanCacheManager manager;
 
     @Inject
     FileDescriptorSource kogitoDescriptors;
@@ -81,13 +81,13 @@ public class ProtobufService {
         FileDescriptor desc = ctx.getFileDescriptors().get("");
         Option processIdOption = desc.getOption("kogito_id");
         if (processIdOption == null || processIdOption.getValue() == null) {
-            throw new Exception("Missing marker for process id in proto file, please add option kogito_id=\"processid\"");
+            throw new ProtobufValidationException("Missing marker for process id in proto file, please add option kogito_id=\"processid\"");
         }
         String processId = (String) processIdOption.getValue();
 
         Option model = desc.getOption("kogito_model");
         if (model == null || model.getValue() == null) {
-            throw new Exception("Missing marker for main message type in proto file, please add option kogito_model=\"messagename\"");
+            throw new ProtobufValidationException("Missing marker for main message type in proto file, please add option kogito_model=\"messagename\"");
         }
         String messageName = (String) model.getValue();
         String fullTypeName = desc.getPackage() == null ? messageName : desc.getPackage() + "." + messageName;
@@ -96,12 +96,12 @@ public class ProtobufService {
         try {
             descriptor = ctx.getMessageDescriptor(fullTypeName);
         } catch (IllegalArgumentException ex) {
-            throw new Exception(format("Could not find message with name: %s in proto file, e, please review option kogito_model", fullTypeName));
+            throw new ProtobufValidationException(format("Could not find message with name: %s in proto file, e, please review option kogito_model", fullTypeName));
         }
-        FieldDescriptor processInstances = descriptor.findFieldByName(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
-        if (processInstances == null) {
-            throw new Exception(format("Could not find processInstances attribute in proto message: %s", messageName));
-        }
+        
+        validateDescriptorField(messageName, descriptor, PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
+        validateDescriptorField(messageName, descriptor, USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+        
         Map<String, String> cache = manager.getProtobufCache();
         cache.put(processId + ".proto", content);
         manager.getProcessIdModelCache().put(processId, fullTypeName);
@@ -110,11 +110,18 @@ public class ProtobufService {
             event.fire(new FileDescriptorRegisteredEvent(desc));
         } else {
             String message = "Proto Schema contain errors:\n" + errors.stream().collect(Collectors.joining("\n"));
-            throw new Exception(message);
+            throw new ProtobufValidationException(message);
         }
 
         if (LOGGER.isDebugEnabled()) {
             listProtoCacheKeys();
+        }
+    }
+
+    private void validateDescriptorField(String messageName, Descriptor descriptor, String processInstancesDomainAttribute) throws Exception {
+        FieldDescriptor processInstances = descriptor.findFieldByName(processInstancesDomainAttribute);
+        if (processInstances == null) {
+            throw new ProtobufValidationException(format("Could not find %s attribute in proto message: %s", processInstancesDomainAttribute, messageName));
         }
     }
 

@@ -1,0 +1,68 @@
+{
+  "data": {
+    "actualOwner": "",
+    "adminGroups": [],
+    "adminUsers": [],
+    "completeDate": "2019-08-30T11:48:37.828Z[UTC]",
+    "excludedUsers": [],
+    "id": "228d5922-5e88-4bfa-8329-7116a5cbe58b",
+    "inputs": {
+      "Locale": "en-UK",
+      "trip": {
+        "begin": "2019-08-24T22:00:00Z[UTC]",
+        "city": "Sydney",
+        "country": "Australia",
+        "end": "2019-08-30T22:00:00Z[UTC]",
+        "visaRequired": true
+      },
+      "TaskName": "VisaApplication",
+      "NodeName": "Apply for visa",
+      "Priority": "1",
+      "Skippable": "true",
+      "traveller": {
+        "address": {
+          "city": "Krakow",
+          "country": "Poland",
+          "street": "Polna",
+          "zipCode": "12345"
+        },
+        "email": "bartek@email.com",
+        "firstName": "Bartek",
+        "lastName": "Swiderski",
+        "nationality": "Polish"
+      }
+    },
+    "outputs": {
+      "visaApplication": {
+        "city": "Sydney",
+        "country": "Australia",
+        "duration": 99,
+        "firstName": "Bartek",
+        "lastName": "Swiderski",
+        "nationality": "Polish",
+        "passportNumber": "0987654"
+      }
+    },
+    "potentialGroups": [],
+    "potentialUsers": [],
+    "processId": "travels",
+    "processInstanceId": "f78fb147-ec22-4478-a592-3063add9f956",
+    "rootProcessId": "",
+    "rootProcessInstanceId": "",
+    "startDate": "2019-08-30T11:47:42.886Z[UTC]",
+    "state": "Completed",
+    "taskDescription": "",
+    "taskName": "Apply for visa",
+    "taskPriority": "1"
+  },
+  "id": "ef315bd2-93a9-456f-b539-d73c0c83c1df",
+  "kogitoProcessId": "travels",
+  "kogitoProcessinstanceId": "f78fb147-ec22-4478-a592-3063add9f956",
+  "kogitoRootProcessId": "",
+  "kogitoRootProcessinstanceId": "",
+  "kogitoUserTaskinstanceId": "228d5922-5e88-4bfa-8329-7116a5cbe58b",
+  "kogitoUserTaskinstanceState": "Completed",
+  "specversion": "0.3",
+  "time": "2019-08-30T13:48:37.857915+02:00[Europe/Warsaw]",
+  "type": "UserTaskInstanceEvent"
+}

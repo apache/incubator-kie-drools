@@ -20,5 +20,6 @@ message VisaApplications {
 	option java_package = "org.acme.travels.visaApplications";
 	optional string id = 1; 
 	optional VisaApplication visaApplication = 2; 
-	repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 3; 
+	repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 3;
+	repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 4;
 }

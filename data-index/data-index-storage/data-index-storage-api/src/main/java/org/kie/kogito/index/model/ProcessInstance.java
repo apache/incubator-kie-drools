@@ -21,11 +21,11 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 
-import org.kie.kogito.index.json.ProcessInstanceTypeAdapter;
+import org.kie.kogito.index.json.JsonStringTypeAdapter;
 
 public class ProcessInstance extends ProcessInstanceMeta {
 
-    @JsonbTypeAdapter(ProcessInstanceTypeAdapter.class)
+    @JsonbTypeAdapter(JsonStringTypeAdapter.class)
     private String variables;
     @JsonbProperty("nodeInstances")
     private List<NodeInstance> nodes;

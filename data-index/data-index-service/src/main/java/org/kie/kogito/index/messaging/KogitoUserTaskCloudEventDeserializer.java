@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.messaging;
 
-import java.util.Map;
+import io.quarkus.kafka.client.serialization.JsonbDeserializer;
+import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
-import javax.json.JsonObject;
+public class KogitoUserTaskCloudEventDeserializer extends JsonbDeserializer<KogitoUserTaskCloudEvent> {
 
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
-
-public interface CacheService {
-
-    Map<String, ProcessInstance> getProcessInstancesCache();
-
-    Map<String, UserTaskInstance> getUserTaskInstancesCache();
-
-    Map<String, String> getProcessIdModelCache();
-
-    Map<String, JsonObject> getDomainModelCache(String processId);
-    
+    public KogitoUserTaskCloudEventDeserializer() {
+        super(KogitoUserTaskCloudEvent.class);
+    }
 }

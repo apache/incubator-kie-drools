@@ -18,7 +18,7 @@ package org.kie.kogito.index.messaging;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.service.IndexingService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,21 +39,21 @@ public class ReactiveMessagingEventConsumerTest {
 
     @Test
     public void testOnProcessInstanceDomainEvent() {
-        KogitoCloudEvent event = mock(KogitoCloudEvent.class);
+        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
         consumer.onProcessInstanceDomainEvent(event);
         verify(service).indexProcessInstanceModel(event);
     }
 
     @Test
     public void testOnProcessInstanceEvent() {
-        KogitoCloudEvent event = mock(KogitoCloudEvent.class);
+        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
         consumer.onProcessInstanceEvent(event);
         verify(service).indexProcessInstance(event);
     }
 
     @Test
     public void testOnProcessInstanceDomainEventException() {
-        KogitoCloudEvent event = mock(KogitoCloudEvent.class);
+        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
         doThrow(new RuntimeException()).when(service).indexProcessInstanceModel(event);
         consumer.onProcessInstanceDomainEvent(event);
         verify(service).indexProcessInstanceModel(event);
@@ -61,7 +61,7 @@ public class ReactiveMessagingEventConsumerTest {
 
     @Test
     public void testOnProcessInstanceEventException() {
-        KogitoCloudEvent event = mock(KogitoCloudEvent.class);
+        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
         doThrow(new RuntimeException()).when(service).indexProcessInstance(event);
         consumer.onProcessInstanceEvent(event);
         verify(service).indexProcessInstance(event);

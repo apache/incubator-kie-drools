@@ -16,13 +16,14 @@
 
 package org.kie.kogito.index;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,12 @@ import java.util.UUID;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.kie.kogito.index.event.KogitoProcessCloudEvent;
+import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
+import org.kie.kogito.index.model.UserTaskInstance;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singleton;
@@ -44,28 +47,37 @@ public final class TestUtils {
     private TestUtils() {
     }
 
+    public static String getDealsProtoBufferFile() throws Exception {
+        return getProtoFile("deals.proto");
+    }
+
     public static String getTravelsProtoBufferFile() throws Exception {
-        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource("travels.proto").toURI());
+        return getProtoFile("travels.proto");
+    }
+
+    private static String getProtoFile(String file) throws URISyntaxException, IOException {
+        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
         return new String(Files.readAllBytes(path));
     }
 
-    public static KogitoCloudEvent getTravelsCloudEvent(String processId, String processInstanceId, String type, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId) throws Exception {
-        return KogitoCloudEvent.builder()
+    public static KogitoProcessCloudEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId, String parentProcessInstanceId) {
+        return KogitoProcessCloudEvent.builder()
                 .id(UUID.randomUUID().toString())
                 .rootProcessInstanceId(rootProcessInstanceId)
                 .rootProcessId(rootProcessId)
+                .parentProcessInstanceId(parentProcessInstanceId)
                 .processId(processId)
                 .state(status.ordinal())
                 .contentType("application/json")
                 .processInstanceId(processInstanceId)
-                .type(type)
+                .type("ProcessInstanceEvent")
                 .source(URI.create("http://localhost:8080/"))
-                .time(new Date())
+                .time(ZonedDateTime.now())
                 .data(getProcessInstance(processId, processInstanceId, status.ordinal(), rootProcessInstanceId, rootProcessId))
                 .build();
     }
 
-    private static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) throws Exception {
+    private static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
@@ -88,6 +100,8 @@ public final class TestUtils {
         ni.setEnter(ZonedDateTime.now());
         ni.setName("Start");
         ni.setType("StartNode");
+        ni.setNodeId("1");
+        ni.setDefinitionId("StartEvent_1");
         return newArrayList(ni);
     }
 
@@ -105,5 +119,43 @@ public final class TestUtils {
         flight.put("departure", "2019-08-20T07:12:57.340Z");
         builder.add("flight", Json.createObjectBuilder(flight).build());
         return builder.build().toString();
+    }
+
+    public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+        return KogitoUserTaskCloudEvent.builder()
+                .id(UUID.randomUUID().toString())
+                .userTaskInstanceId(taskId)
+                .rootProcessInstanceId(rootProcessInstanceId)
+                .rootProcessId(rootProcessId)
+                .processId(processId)
+                .contentType("application/json")
+                .processInstanceId(processInstanceId)
+                .type("UserTaskInstanceEvent")
+                .source(URI.create("http://localhost:8080/"))
+                .time(ZonedDateTime.now())
+                .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId))
+                .build();
+    }
+
+    private static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+        UserTaskInstance task = new UserTaskInstance();
+        task.setId(taskId);
+        task.setProcessInstanceId(processInstanceId);
+        task.setProcessId(processId);
+        task.setRootProcessId(rootProcessId);
+        task.setRootProcessInstanceId(rootProcessInstanceId);
+        task.setName("TaskName");
+        task.setDescription("TaskDescription");
+        task.setState("InProgress");
+        task.setPriority("High");
+        task.setStarted(ZonedDateTime.now());
+        task.setCompleted(ZonedDateTime.now().plus(1, ChronoUnit.HOURS));
+        task.setActualOwner("kogito");
+        task.setAdminUsers(singleton("kogito"));
+        task.setAdminGroups(singleton("admin"));
+        task.setExcludedUsers(singleton("excluded"));
+        task.setPotentialUsers(singleton("potentialUser"));
+        task.setPotentialGroups(singleton("potentialGroup"));
+        return task;
     }
 }

@@ -21,5 +21,6 @@ public final class Constants {
     private Constants(){}
 
     public static final String PROCESS_INSTANCES_DOMAIN_ATTRIBUTE = "processInstances";
+    public static final String USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE = "userTasks";
 
 }

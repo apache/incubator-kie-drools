@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.infinispan.commons.dataconversion.MediaType;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
 import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.UserTaskInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +43,13 @@ public class InfinispanCacheManager implements CacheService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);
     private static final String PROCESS_INSTANCES_CACHE = "processinstances";
+    private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
 
     private DataFormat jsonDataFormat = DataFormat.builder().valueType(MediaType.APPLICATION_JSON).valueMarshaller(new JsonDataFormatMarshaller()).build();
 
     @Inject
     @ConfigProperty(name = "kogito.cache.domain.template", defaultValue = "kogito-template")
-    String domainCacheTemplate;
+    String cacheTemplateName;
 
     @Inject
     RemoteCacheManager manager;
@@ -97,15 +99,14 @@ public class InfinispanCacheManager implements CacheService {
 
     @Override
     public Map<String, ProcessInstance> getProcessInstancesCache() {
-        return this.getOrCreateCache(PROCESS_INSTANCES_CACHE, domainCacheTemplate);
+        return getOrCreateCache(PROCESS_INSTANCES_CACHE, cacheTemplateName);
     }
 
     @Override
-    public Map<String, JsonObject> getProcessInstancesCacheAsJson() {
-        return this.getOrCreateCache(PROCESS_INSTANCES_CACHE, domainCacheTemplate).withDataFormat(jsonDataFormat);
+    public Map<String, UserTaskInstance> getUserTaskInstancesCache() {
+        return getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName);
     }
 
-    @Override
     public Map<String, String> getProtobufCache() {
         return manager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME);
     }
@@ -117,7 +118,6 @@ public class InfinispanCacheManager implements CacheService {
 
     @Override
     public Map<String, JsonObject> getDomainModelCache(String processId) {
-        return this.getOrCreateCache(processId + "_domain", domainCacheTemplate).withDataFormat(jsonDataFormat);
+        return getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat);
     }
-
 }

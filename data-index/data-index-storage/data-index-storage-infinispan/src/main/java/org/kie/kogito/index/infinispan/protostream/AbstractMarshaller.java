@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.infinispan.protostream;
 
-import java.util.Map;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
-import javax.json.JsonObject;
+public abstract class AbstractMarshaller {
 
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+    public ZonedDateTime dateToZonedDateTime(Date date){
+        return date == null ? null : ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+    }
 
-public interface CacheService {
-
-    Map<String, ProcessInstance> getProcessInstancesCache();
-
-    Map<String, UserTaskInstance> getUserTaskInstancesCache();
-
-    Map<String, String> getProcessIdModelCache();
-
-    Map<String, JsonObject> getDomainModelCache(String processId);
+    public Date zonedDateTimeToDate(ZonedDateTime date){
+        return date == null ? null : new Date(date.toInstant().toEpochMilli());
+    }
     
 }

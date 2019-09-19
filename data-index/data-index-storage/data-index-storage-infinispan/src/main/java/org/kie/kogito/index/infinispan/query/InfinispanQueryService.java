@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.kie.kogito.index.infinispan.query;
 
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,11 +33,12 @@ import org.infinispan.query.dsl.QueryBuilder;
 import org.infinispan.query.dsl.QueryFactory;
 import org.kie.kogito.index.infinispan.cache.InfinispanCacheManager;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.query.ProcessInstanceFilter;
 import org.kie.kogito.index.query.QueryService;
+import org.kie.kogito.index.query.UserTaskInstanceFilter;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @ApplicationScoped
 public class InfinispanQueryService implements QueryService {
@@ -61,25 +62,9 @@ public class InfinispanQueryService implements QueryService {
         QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getProcessInstancesCache());
         QueryBuilder qb = qf.from(ProcessInstance.class);
         if (filter != null) {
-            FilterConditionContextQueryBuilder filterBuilder = null;
-            if (filter.getState() != null && filter.getState().isEmpty() == false) {
-                filterBuilder = qb.having("state").in(filter.getState());
-            }
-            if (filter.getProcessId() != null && filter.getProcessId().isEmpty() == false) {
-                Set<String> processIds = filter.getProcessId().stream().map(String::toLowerCase).collect(toSet());
-                if (filterBuilder == null) {
-                    filterBuilder = qb.having("processId").in(processIds);
-                } else {
-                    filterBuilder.and().having("processId").in(processIds);
-                }
-            }
-            if (filter.getId() != null && filter.getId().isEmpty() == false) {
-                if (filterBuilder == null) {
-                    qb.having("id").in(filter.getId());
-                } else {
-                    filterBuilder.and().having("id").in(filter.getId());
-                }
-            }
+            FilterConditionContextQueryBuilder filterBuilder = filterList("state", filter.getState(), null, qb);
+            filterBuilder = filterList("processId", filter.getProcessId(), filterBuilder, qb);
+            filterList("id", filter.getId(), filterBuilder, qb);
             if (filter.getLimit() != null) {
                 qb.maxResults(filter.getLimit());
             }
@@ -88,5 +73,37 @@ public class InfinispanQueryService implements QueryService {
             }
         }
         return qb.build().list();
+    }
+
+    @Override
+    public Collection<JsonObject> queryUserTaskInstances(UserTaskInstanceFilter filter) {
+        QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getUserTaskInstancesCache());
+        QueryBuilder qb = qf.from(UserTaskInstance.class);
+        if (filter != null) {
+            FilterConditionContextQueryBuilder filterBuilder = filterList("state", filter.getState(), null, qb);
+            filterBuilder = filterList("processInstanceId", filter.getProcessInstanceId(), filterBuilder, qb);
+            filterBuilder = filterList("id", filter.getId(), filterBuilder, qb);
+            filterBuilder = filterList("actualOwner", filter.getActualOwner(), filterBuilder, qb);
+            filterBuilder = filterList("potentialUsers", filter.getPotentialUsers(), filterBuilder, qb);
+            filterList("potentialGroups", filter.getPotentialGroups(), filterBuilder, qb);
+            if (filter.getLimit() != null) {
+                qb.maxResults(filter.getLimit());
+            }
+            if (filter.getOffset() != null) {
+                qb.startOffset(filter.getOffset());
+            }
+        }
+        return qb.build().list();
+    }
+
+    private FilterConditionContextQueryBuilder filterList(String attribute, List values, FilterConditionContextQueryBuilder filter, QueryBuilder qb) {
+        if (values == null || values.isEmpty()) {
+            return filter;
+        }
+        if (filter == null) {
+            return qb.having(attribute).in(values);
+        } else {
+            return filter.and().having(attribute).in(values);
+        }
     }
 }

@@ -18,13 +18,11 @@ package org.kie.kogito.index.query;
 
 import java.util.List;
 
-public class ProcessInstanceFilter {
+public class ProcessInstanceFilter extends AbstractFilter {
 
     private List<Integer> state;
     private List<String> id;
     private List<String> processId;
-    private Integer limit;
-    private Integer offset;
 
     public List<Integer> getState() {
         return state;
@@ -50,30 +48,54 @@ public class ProcessInstanceFilter {
         this.processId = processId;
     }
 
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
     @Override
     public String toString() {
         return "ProcessInstanceFilter{" +
                 "state=" + state +
                 ", id=" + id +
                 ", processId=" + processId +
-                ", limit=" + limit +
-                ", offset=" + offset +
-                '}';
+                "} " + super.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private ProcessInstanceFilter filter;
+
+        private Builder() {
+            filter = new ProcessInstanceFilter();
+        }
+
+        public Builder limit(Integer limit) {
+            filter.setLimit(limit);
+            return this;
+        }
+
+        public Builder offset(Integer offset) {
+            filter.setOffset(offset);
+            return this;
+        }
+
+        public Builder state(List<Integer> state) {
+            filter.setState(state);
+            return this;
+        }
+
+        public Builder id(List<String> id) {
+            filter.setId(id);
+            return this;
+        }
+
+        public Builder processId(List<String> processId) {
+            filter.setProcessId(processId);
+            return this;
+        }
+
+        public ProcessInstanceFilter build() {
+            return filter;
+        }
     }
 }

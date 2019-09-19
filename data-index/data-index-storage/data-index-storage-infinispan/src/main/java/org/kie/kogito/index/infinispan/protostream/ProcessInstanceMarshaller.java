@@ -24,7 +24,7 @@ import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 
-public class ProcessInstanceMarshaller implements MessageMarshaller<ProcessInstance> {
+public class ProcessInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<ProcessInstance> {
 
     @Override
     public ProcessInstance readFrom(ProtoStreamReader reader) throws IOException {
@@ -36,8 +36,8 @@ public class ProcessInstanceMarshaller implements MessageMarshaller<ProcessInsta
         pi.setEndpoint(reader.readString("endpoint"));
         pi.setNodes(reader.readCollection("nodes", new ArrayList<>(), NodeInstance.class));
         pi.setState(reader.readInt("state"));
-        pi.setStartDate(reader.readDate("start"));
-        pi.setEndDate(reader.readDate("end"));
+        pi.setStart(dateToZonedDateTime(reader.readDate("start")));
+        pi.setEnd(dateToZonedDateTime(reader.readDate("end")));
         pi.setRootProcessInstanceId(reader.readString("rootProcessInstanceId"));
         pi.setRootProcessId(reader.readString("rootProcessId"));
         pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
@@ -53,8 +53,8 @@ public class ProcessInstanceMarshaller implements MessageMarshaller<ProcessInsta
         writer.writeString("endpoint", pi.getEndpoint());
         writer.writeCollection("nodes", pi.getNodes(), NodeInstance.class);
         writer.writeInt("state", pi.getState());
-        writer.writeDate("start", pi.getStartDate());
-        writer.writeDate("end", pi.getEndDate());
+        writer.writeDate("start", zonedDateTimeToDate(pi.getStart()));
+        writer.writeDate("end", zonedDateTimeToDate(pi.getEnd()));
         writer.writeString("rootProcessInstanceId", pi.getRootProcessInstanceId());
         writer.writeString("rootProcessId", pi.getRootProcessId());
         writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());

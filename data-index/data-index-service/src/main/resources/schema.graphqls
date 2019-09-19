@@ -47,16 +47,69 @@ type NodeInstance {
   type: String!
   enter: DateTime!
   exit: DateTime
+  definitionId: String!
+  nodeId: String!
 }
 
 type Query {
-  ProcessInstances(filter: ProcessInstanceFilter): [ProcessInstance],
+  ProcessInstances(filter: ProcessInstanceFilter): [ProcessInstance]
+  UserTaskInstances(filter: UserTaskInstanceFilter):  [UserTaskInstance]
 }
 
 input ProcessInstanceFilter {
   state: [ProcessInstanceState!]
   id: [String!]
   processId: [String!]
+  limit: Int
+  offset: Int
+}
+
+type UserTaskInstance {
+  id: String!
+  description: String
+  name: String
+  priority: String
+  processInstanceId: String!
+  processId: String!
+  rootProcessInstanceId: String
+  rootProcessId: String
+  state: String!
+  actualOwner: String
+  adminGroups: [String!]
+  adminUsers: [String!]
+  completed: DateTime
+  started: DateTime!
+  excludedUsers: [String!]
+  potentialGroups: [String!]
+  potentialUsers: [String!]
+  inputs: String
+  outputs: String
+}
+
+type UserTaskInstanceMeta {
+  id: String!
+  description: String
+  name: String
+  priority: String
+  processInstanceId: String!
+  state: String!
+  actualOwner: String
+  adminGroups: [String!]
+  adminUsers: [String!]
+  completed: DateTime
+  started: DateTime!
+  excludedUsers: [String!]
+  potentialGroups: [String!]
+  potentialUsers: [String!]
+}
+
+input UserTaskInstanceFilter {
+  state: [String!]
+  id: [String!]
+  processInstanceId: [String!]
+  actualOwner: [String!]
+  potentialUsers: [String!]
+  potentialGroups: [String!]
   limit: Int
   offset: Int
 }

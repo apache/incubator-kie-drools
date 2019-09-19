@@ -16,9 +16,7 @@
 
 package org.kie.kogito.index.model;
 
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Set;
 
 import javax.json.bind.annotation.JsonbProperty;
@@ -96,32 +94,12 @@ public class ProcessInstanceMeta {
         this.start = start;
     }
 
-    public Date getStartDate() {
-        return start == null ? null : new Date(start.toInstant().toEpochMilli());
-    }
-
-    public void setStartDate(Date start) {
-        if (start != null) {
-            this.start = ZonedDateTime.ofInstant(start.toInstant(), ZoneOffset.UTC);
-        }
-    }
-
     public ZonedDateTime getEnd() {
         return end;
     }
 
     public void setEnd(ZonedDateTime end) {
         this.end = end;
-    }
-
-    public Date getEndDate() {
-        return end == null ? null : new Date(end.toInstant().toEpochMilli());
-    }
-
-    public void setEndDate(Date end) {
-        if (end != null) {
-            this.end = ZonedDateTime.ofInstant(end.toInstant(), ZoneOffset.UTC);
-        }
     }
 
     public String getRootProcessInstanceId() {

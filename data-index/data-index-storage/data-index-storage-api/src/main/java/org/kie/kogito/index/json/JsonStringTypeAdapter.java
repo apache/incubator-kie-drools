@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.query;
+package org.kie.kogito.index.json;
 
-import java.util.Collection;
+import java.io.StringReader;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.bind.adapter.JsonbAdapter;
 
-public interface QueryService {
+public class JsonStringTypeAdapter implements JsonbAdapter<String, JsonObject> {
 
-    Collection<JsonObject> queryDomain(String domain, String query);
+    @Override
+    public JsonObject adaptToJson(String json) throws Exception {
+        try (JsonReader reader = Json.createReader(new StringReader(json))) {
+            return reader.readObject();
+        }
+    }
 
-    Collection<JsonObject> queryProcessInstances(ProcessInstanceFilter filter);
-
-    Collection<JsonObject> queryUserTaskInstances(UserTaskInstanceFilter filter);
+    @Override
+    public String adaptFromJson(JsonObject json) throws Exception {
+        return json.toString();
+    }
 }

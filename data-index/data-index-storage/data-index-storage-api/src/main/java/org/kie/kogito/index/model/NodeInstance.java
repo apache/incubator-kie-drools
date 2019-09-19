@@ -32,6 +32,8 @@ public class NodeInstance {
     private ZonedDateTime enter;
     @JsonbProperty("leaveTime")
     private ZonedDateTime exit;
+    @JsonbProperty("nodeDefinitionId")
+    private String definitionId;
 
     public String getId() {
         return id;
@@ -81,6 +83,14 @@ public class NodeInstance {
         this.nodeId = nodeId;
     }
 
+    public void setDefinitionId(String definitionId) {
+        this.definitionId = definitionId;
+    }
+
+    public String getDefinitionId() {
+        return definitionId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -109,6 +119,7 @@ public class NodeInstance {
                 ", type='" + type + '\'' +
                 ", enter=" + enter +
                 ", exit=" + exit +
+                ", definitionId='" + definitionId + '\'' +
                 '}';
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstance;
 
-public class ProcessInstanceMetaMapper implements Function<KogitoCloudEvent, JsonObject> {
+public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEvent, JsonObject> {
 
     @Override
-    public JsonObject apply(KogitoCloudEvent event) {
+    public JsonObject apply(KogitoProcessCloudEvent event) {
         if (event == null) {
             return null;
         } else {

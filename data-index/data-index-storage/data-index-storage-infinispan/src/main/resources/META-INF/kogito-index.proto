@@ -58,4 +58,76 @@ message NodeInstance {
     optional string type = 3;
     optional int64 enter = 4;
     optional int64 exit = 5;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string definitionId = 6;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string nodeId = 7;
+}
+
+/* @Indexed */
+message UserTaskInstance {
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string id = 1;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string description = 2;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string name = 3;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string priority = 4;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string processInstanceId = 5;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string processId = 6;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string rootProcessInstanceId = 7;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string rootProcessId = 8;
+    /* @Field(store = Store.YES) */
+    optional string state = 9;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string actualOwner = 10;
+    /* @Field(store = Store.YES) */
+    repeated string adminGroups = 11;
+    /* @Field(store = Store.YES) */
+    repeated string adminUsers = 12;
+    optional int64 completed = 13;
+    optional int64 started = 14;
+    /* @Field(store = Store.YES) */
+    repeated string excludedUsers = 15;
+    /* @Field(store = Store.YES) */
+    repeated string potentialGroups = 16;
+    /* @Field(store = Store.YES) */
+    repeated string potentialUsers = 17;
+    optional string inputs = 18;
+    optional string outputs = 19;
+}
+
+/* @Indexed */
+message UserTaskInstanceMeta {
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string id = 1;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string description = 2;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string name = 3;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string priority = 4;
+    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
+    optional string processInstanceId = 5;
+    /* @Field(store = Store.YES) */
+    optional string state = 6;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string actualOwner = 7;
+    /* @Field(store = Store.YES) */
+    repeated string adminGroups = 8;
+    /* @Field(store = Store.YES) */
+    repeated string adminUsers = 9;
+    optional int64 completed = 10;
+    optional int64 started = 11;
+    /* @Field(store = Store.YES) */
+    repeated string excludedUsers = 12;
+    /* @Field(store = Store.YES) */
+    repeated string potentialGroups = 13;
+    /* @Field(store = Store.YES) */
+    repeated string potentialUsers = 14;
 }

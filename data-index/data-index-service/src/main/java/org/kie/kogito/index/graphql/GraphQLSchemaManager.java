@@ -61,7 +61,8 @@ public class GraphQLSchemaManager {
 
         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
                 .type("Query", builder -> {
-                    builder.dataFetcher("ProcessInstances", env -> getProcessInstancesValues(env));
+                    builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);
+                    builder.dataFetcher("UserTaskInstances", this::getUserTaskInstancesValues);
                     return builder;
                 })
                 .type("ProcessInstanceState", builder -> {
@@ -78,6 +79,11 @@ public class GraphQLSchemaManager {
     private Collection<JsonObject> getProcessInstancesValues(DataFetchingEnvironment env) {
         Map<String, Object> filter = env.getArgument("filter");
         return queryService.queryProcessInstances(new ProcessInstanceFilterMapper().apply(filter));
+    }
+
+    private Collection<JsonObject> getUserTaskInstancesValues(DataFetchingEnvironment env) {
+        Map<String, Object> filter = env.getArgument("filter");
+        return queryService.queryUserTaskInstances(new UserTaskInstanceFilterMapper().apply(filter));
     }
 
     public GraphQLSchema getGraphQLSchema() {
