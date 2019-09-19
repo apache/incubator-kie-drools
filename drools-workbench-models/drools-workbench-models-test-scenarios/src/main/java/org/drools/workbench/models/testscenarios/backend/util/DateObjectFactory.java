@@ -24,21 +24,20 @@ import org.drools.core.util.DateUtils;
 
 public class DateObjectFactory {
 
-    public static Object createTimeObject(final Class<?> fieldClass,
+    public static LocalDate createLocalDateObject(final String value) {
+        return LocalDate.parse(value, DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask()));
+    }
+
+    public static Object createDateObject(final Class<?> fieldClass,
                                           final String value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
 
-        if (fieldClass.getName().equals("java.time.LocalDate")) {
-            return LocalDate.parse(value, DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask()));
-        } else {
-
-            final Class<?> parameterTypes[] = new Class[1];
-            parameterTypes[0] = Long.TYPE;
-            final Constructor<?> constructor
-                    = fieldClass.getConstructor(parameterTypes);
-            final Object args[] = new Object[1];
-            args[0] = getTimeAsLong(value);
-            return constructor.newInstance(args);
-        }
+        final Class<?> parameterTypes[] = new Class[1];
+        parameterTypes[0] = Long.TYPE;
+        final Constructor<?> constructor
+                = fieldClass.getConstructor(parameterTypes);
+        final Object args[] = new Object[1];
+        args[0] = getTimeAsLong(value);
+        return constructor.newInstance(args);
     }
 
     private static long getTimeAsLong(final String value) {

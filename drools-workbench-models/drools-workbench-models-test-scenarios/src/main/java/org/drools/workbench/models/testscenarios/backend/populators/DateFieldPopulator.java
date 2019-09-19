@@ -16,7 +16,6 @@
 package org.drools.workbench.models.testscenarios.backend.populators;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.Map;
 
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
@@ -30,7 +29,7 @@ public class DateFieldPopulator extends FieldPopulator {
                               String fieldName,
                               String value) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         super(factObject, fieldName);
-        this.value = DateObjectFactory.createTimeObject(fieldClass, value);
+        this.value = DateObjectFactory.createDateObject(fieldClass, value);
     }
 
     @Override

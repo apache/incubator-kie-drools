@@ -17,6 +17,7 @@ package org.drools.workbench.models.testscenarios.backend.util;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 import org.drools.core.util.DateUtils;
@@ -29,20 +30,35 @@ public class DateObjectFactoryTest {
 
     @Test
     public void date() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        final Object timeObject = DateObjectFactory.createTimeObject(Date.class, "12-Sep-2011");
+        final Object timeObject = DateObjectFactory.createDateObject(Date.class, "12-Sep-2011");
 
         assertTrue(timeObject instanceof Date);
         assertEquals("12-Sep-2011", DateUtils.format((Date) timeObject));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void dateInvalidValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        DateObjectFactory.createDateObject(Date.class, "12345");
+    }
+
+    @Test(expected = NoSuchMethodException.class)
+    public void dateInvalidClass() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        DateObjectFactory.createDateObject(String.class, "12-Sep-2011");
+    }
+
     @Test
-    public void localDate() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        final Object timeObject = DateObjectFactory.createTimeObject(LocalDate.class, "12-Sep-2011");
+    public void localDate() {
+        final Object timeObject = DateObjectFactory.createLocalDateObject("12-Sep-2011");
 
         assertTrue(timeObject instanceof LocalDate);
         final LocalDate localDate = (LocalDate) timeObject;
         assertEquals(2011, localDate.getYear());
         assertEquals(Month.SEPTEMBER, localDate.getMonth());
         assertEquals(12, localDate.getDayOfMonth());
+    }
+
+    @Test(expected = DateTimeParseException.class)
+    public void localDateInvalidValue() {
+        DateObjectFactory.createLocalDateObject("1234");
     }
 }
