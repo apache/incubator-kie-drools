@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.Date;
 
 public interface ProtoGenerator<T> {
+    
+    static final String INDEX_COMMENT = "@Field(store = Store.YES, analyze = Analyze.YES)"; 
 
     Proto generate(String packageName, Collection<T> dataModel, String... headers);
     
