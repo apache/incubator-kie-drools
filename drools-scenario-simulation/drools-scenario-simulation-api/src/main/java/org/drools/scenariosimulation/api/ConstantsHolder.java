@@ -22,7 +22,7 @@ public class ConstantsHolder {
 
     /* Constants for manage expressions type column */
     public static final String EXPRESSION_CLASSNAME = "scesim-exp";
-    public static final String EXPRESSION_SUFFIX = "Expression";
+    public static final String EXPRESSION_SUFFIX = "ScesimExpression";
 
     private ConstantsHolder() {
         // Not instantiable
