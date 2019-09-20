@@ -17,6 +17,7 @@ package org.drools.core.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,9 +25,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,44 @@ public class IoUtils {
         return false;
     }
 
+    public static String readFileAsString(File file) {
+        StringBuffer sb = new StringBuffer();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET));
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) { }
+            }
+        }
+        return sb.toString();
+    }
+
+    public static void copyFile(File sourceFile, File destFile) {
+        if (!destFile.getParentFile().mkdirs()) {
+            throw new IllegalStateException("Cannot create directory structure for file " + destFile.getParentFile().getAbsolutePath() + "!");
+        }
+        try {
+            destFile.createNewFile();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
+        }
+
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
+             FileChannel destination = new FileOutputStream(destFile).getChannel()) {
+            destination.transferFrom(source, 0, source.size());
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
+        }
+    }
+
     public static long copy( InputStream input, OutputStream output ) throws IOException {
         byte[] buffer = createBytesBuffer( input );
         long count = 0;
@@ -84,6 +125,13 @@ public class IoUtils {
             count += n;
         }
         return count;
+    }
+
+    public static File copyInTempFile( InputStream input, String fileExtension ) throws IOException {
+        File tempFile = File.createTempFile( UUID.randomUUID().toString(), "." + fileExtension );
+        tempFile.deleteOnExit();
+        copy(input, new FileOutputStream(tempFile));
+        return tempFile;
     }
 
     public static List<String> recursiveListFile(File folder) {
