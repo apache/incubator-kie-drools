@@ -134,14 +134,37 @@ public class MvelCompilerTest implements CompilerTest {
                      "}");
     }
 
+
     @Test
     public void testMapGet() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "m[\"key\"];\n" +
+                     "}",
+             "{ " +
+                     "m.get(\"key\");\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetAsField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{" +
                      "$p.items[\"key3\"];" +
                      "}",
              "{ " +
                      "$p.items.get(\"key3\");" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetInMethodCall() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "System.out.println(m[\"key\"]);\n" +
+                     "}",
+             "{ " +
+                     "System.out.println(m.get(\"key\"));\n" +
                      "}");
     }
 
@@ -156,7 +179,6 @@ public class MvelCompilerTest implements CompilerTest {
                      "$p.items.put(\"key3\", \"value3\");" +
                      "}");
     }
-
 
     @Test
     public void testInitializerMap() {
