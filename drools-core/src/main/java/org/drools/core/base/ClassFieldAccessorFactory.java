@@ -17,6 +17,7 @@
 package org.drools.core.base;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -78,11 +79,7 @@ public class ClassFieldAccessorFactory {
     private static final ProtectionDomain              PROTECTION_DOMAIN;
 
     static {
-        PROTECTION_DOMAIN = AccessController.doPrivileged( new PrivilegedAction<ProtectionDomain>() {
-            public ProtectionDomain run() {
-                return ClassFieldAccessorFactory.class.getProtectionDomain();
-            }
-        } );
+        PROTECTION_DOMAIN = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) ClassFieldAccessorFactory.class::getProtectionDomain);
     }
     
     public static BaseClassFieldReader getClassFieldReader(Class< ? > clazz, String fieldName, CacheEntry cache) {
@@ -141,19 +138,19 @@ public class ClassFieldAccessorFactory {
     public static Class<?> getFieldType(Class<?> clazz, String fieldName, CacheEntry cache) {
         ClassFieldInspector inspector;
         try {
-            inspector = getClassFieldInspector( clazz, cache );
+            inspector = getClassFieldInspector(clazz, cache);
         } catch (IOException e) {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException(e);
         }
-        Class< ? > fieldType = inspector.getFieldType( fieldName );
-        if ( fieldType == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
-            String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-            fieldType = inspector.getFieldType( altFieldName );
+        Class<?> fieldType = inspector.getFieldType(fieldName);
+        if (fieldType == null && fieldName.length() > 1 && Character.isLowerCase(fieldName.charAt(0)) && Character.isUpperCase(fieldName.charAt(1))) {
+            String altFieldName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+            fieldType = inspector.getFieldType(altFieldName);
         }
         return fieldType;
     }
 
-    private static ClassFieldInspector getClassFieldInspector( Class<?> clazz, CacheEntry cache ) throws IOException {
+    private static ClassFieldInspector getClassFieldInspector( final Class<?> clazz, CacheEntry cache ) throws IOException {
         Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
         ClassFieldInspector inspector = inspectors.get( clazz );
         if ( inspector == null ) {
@@ -290,62 +287,62 @@ public class ClassFieldAccessorFactory {
                                              final String className,
                                              final ClassWriter cw) {
         MethodVisitor mv;
-        {
-            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "<init>",
-                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class ) ),
-                                 null,
-                                 null );
-            mv.visitCode();
-            final Label l0 = new Label();
-            mv.visitLabel( l0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            mv.visitVarInsn( Opcodes.ILOAD,
-                             1 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             2 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             3 );
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( superClazz ),
-                                "<init>",
-                                Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class ) ) );
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitInsn( Opcodes.RETURN );
-            final Label l2 = new Label();
-            mv.visitLabel( l2 );
-            mv.visitLocalVariable( "this",
-                                   "L" + className + ";",
-                                   null,
-                                   l0,
-                                   l2,
-                                   0 );
-            mv.visitLocalVariable( "index",
-                                   Type.getDescriptor( int.class ),
-                                   null,
-                                   l0,
-                                   l2,
-                                   1 );
-            mv.visitLocalVariable( "fieldType",
-                                   Type.getDescriptor( Class.class ),
-                                   null,
-                                   l0,
-                                   l2,
-                                   2 );
-            mv.visitLocalVariable( "valueType",
-                                   Type.getDescriptor( ValueType.class ),
-                                   null,
-                                   l0,
-                                   l2,
-                                   3 );
-            mv.visitMaxs( 0,
-                          0 );
-            mv.visitEnd();
-        }
+
+        mv = cw.visitMethod(Opcodes.ACC_PUBLIC,
+                            "<init>",
+                            Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                     Type.getType(int.class), Type.getType(Class.class), Type.getType(ValueType.class)),
+                            null,
+                            null);
+        mv.visitCode();
+        final Label l0 = new Label();
+        mv.visitLabel(l0);
+        mv.visitVarInsn(Opcodes.ALOAD,
+                        0);
+        mv.visitVarInsn(Opcodes.ILOAD,
+                        1);
+        mv.visitVarInsn(Opcodes.ALOAD,
+                        2);
+        mv.visitVarInsn(Opcodes.ALOAD,
+                        3);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
+                           Type.getInternalName(superClazz),
+                           "<init>",
+                           Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                    Type.getType(int.class), Type.getType(Class.class), Type.getType(ValueType.class)));
+        final Label l1 = new Label();
+        mv.visitLabel(l1);
+        mv.visitInsn(Opcodes.RETURN);
+        final Label l2 = new Label();
+        mv.visitLabel(l2);
+        mv.visitLocalVariable("this",
+                              "L" + className + ";",
+                              null,
+                              l0,
+                              l2,
+                              0);
+        mv.visitLocalVariable("index",
+                              Type.getDescriptor(int.class),
+                              null,
+                              l0,
+                              l2,
+                              1);
+        mv.visitLocalVariable("fieldType",
+                              Type.getDescriptor(Class.class),
+                              null,
+                              l0,
+                              l2,
+                              2);
+        mv.visitLocalVariable("valueType",
+                              Type.getDescriptor(ValueType.class),
+                              null,
+                              l0,
+                              l2,
+                              3);
+        mv.visitMaxs(0,
+                     0);
+        mv.visitEnd();
+
     }
 
     /**
@@ -385,12 +382,14 @@ public class ClassFieldAccessorFactory {
             mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                 Type.getInternalName( originalClass ),
                                 getterMethod.getName(),
-                                Type.getMethodDescriptor( getterMethod ) );
+                                Type.getMethodDescriptor( getterMethod ),
+                                true);
         } else {
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                 Type.getInternalName( originalClass ),
                                 getterMethod.getName(),
-                                Type.getMethodDescriptor( getterMethod ) );
+                                Type.getMethodDescriptor( getterMethod ),
+                                false);
         }
         mv.visitInsn( Type.getType( fieldType ).getOpcode( Opcodes.IRETURN ) );
         final Label l1 = new Label();
@@ -429,78 +428,77 @@ public class ClassFieldAccessorFactory {
                                          final ClassWriter cw) {
         MethodVisitor mv;
         // set method
-        {
-            Method overridingMethod;
-            try {
-                overridingMethod = superClass.getMethod( getOverridingSetMethodName( fieldType ),
-                                                         Object.class, fieldType.isPrimitive() ? fieldType : Object.class );
-            } catch ( final Exception e ) {
-                throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
-                                            e );
-            }
-
-            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 overridingMethod.getName(),
-                                 Type.getMethodDescriptor( overridingMethod ),
-                                 null,
-                                 null );
-
-            mv.visitCode();
-            final Label l0 = new Label();
-            mv.visitLabel( l0 );
-
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
-            mv.visitTypeInsn( Opcodes.CHECKCAST,
-                              Type.getInternalName( originalClass ) );
-
-            mv.visitVarInsn( Type.getType( fieldType ).getOpcode( Opcodes.ILOAD ),
-                             2 );
-
-            if ( !fieldType.isPrimitive() ) {
-                mv.visitTypeInsn( Opcodes.CHECKCAST,
-                                  Type.getInternalName( fieldType ) );
-            }
-
-            if ( originalClass.isInterface() ) {
-                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                    Type.getInternalName( originalClass ),
-                                    setterMethod.getName(),
-                                    Type.getMethodDescriptor( setterMethod ) );
-            } else {
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( originalClass ),
-                                    setterMethod.getName(),
-                                    Type.getMethodDescriptor( setterMethod ) );
-            }
-
-            mv.visitInsn( Opcodes.RETURN );
-
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitLocalVariable( "this",
-                                   "L" + className + ";",
-                                   null,
-                                   l0,
-                                   l1,
-                                   0 );
-            mv.visitLocalVariable( "bean",
-                                   Type.getDescriptor( Object.class ),
-                                   null,
-                                   l0,
-                                   l1,
-                                   1 );
-            mv.visitLocalVariable( "value",
-                                   Type.getDescriptor( fieldType ),
-                                   null,
-                                   l0,
-                                   l1,
-                                   2 );
-            mv.visitMaxs( 0,
-                          0 );
-            mv.visitEnd();
-
+        Method overridingMethod;
+        try {
+            overridingMethod = superClass.getMethod( getOverridingSetMethodName( fieldType ),
+                                                     Object.class, fieldType.isPrimitive() ? fieldType : Object.class );
+        } catch ( final Exception e ) {
+            throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
+                                        e );
         }
+
+        mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                             overridingMethod.getName(),
+                             Type.getMethodDescriptor( overridingMethod ),
+                             null,
+                             null );
+
+        mv.visitCode();
+        final Label l0 = new Label();
+        mv.visitLabel( l0 );
+
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         1 );
+        mv.visitTypeInsn( Opcodes.CHECKCAST,
+                          Type.getInternalName( originalClass ) );
+
+        mv.visitVarInsn( Type.getType( fieldType ).getOpcode( Opcodes.ILOAD ),
+                         2 );
+
+        if ( !fieldType.isPrimitive() ) {
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
+                              Type.getInternalName( fieldType ) );
+        }
+
+        if ( originalClass.isInterface() ) {
+            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                Type.getInternalName( originalClass ),
+                                setterMethod.getName(),
+                                Type.getMethodDescriptor( setterMethod ),
+                                true);
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                Type.getInternalName( originalClass ),
+                                setterMethod.getName(),
+                                Type.getMethodDescriptor( setterMethod ),
+                                false);
+        }
+
+        mv.visitInsn( Opcodes.RETURN );
+
+        final Label l1 = new Label();
+        mv.visitLabel( l1 );
+        mv.visitLocalVariable( "this",
+                               "L" + className + ";",
+                               null,
+                               l0,
+                               l1,
+                               0 );
+        mv.visitLocalVariable( "bean",
+                               Type.getDescriptor( Object.class ),
+                               null,
+                               l0,
+                               l1,
+                               1 );
+        mv.visitLocalVariable( "value",
+                               Type.getDescriptor( fieldType ),
+                               null,
+                               l0,
+                               l1,
+                               2 );
+        mv.visitMaxs( 0,
+                      0 );
+        mv.visitEnd();
     }
 
     private static String getOverridingGetMethodName(final Class< ? > fieldType) {
@@ -624,5 +622,4 @@ public class ClassFieldAccessorFactory {
         }
         return ret;
     }
-
 }

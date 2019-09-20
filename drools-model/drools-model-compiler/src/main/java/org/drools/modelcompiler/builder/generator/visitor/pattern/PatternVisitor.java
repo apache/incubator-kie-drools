@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
 
+import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
@@ -9,7 +10,6 @@ import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.XpathAnalysis;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -69,7 +69,7 @@ public class PatternVisitor {
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
         if (context.isPatternDSL()) {
-            return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
+            return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
         } else {
             return new FlowDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
         }

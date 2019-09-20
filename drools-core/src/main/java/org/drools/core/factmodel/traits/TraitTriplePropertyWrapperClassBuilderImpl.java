@@ -16,6 +16,16 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -28,16 +38,6 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -564,7 +564,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 		Label l0 = new Label();
 		mv.visitJumpInsn( IFEQ, l0 );
 
-		TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
+		TraitFactory.invokeExtractor(mv, wrapperName, core, field );
 
 		if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			TraitFactory.valueOf( mv, field.getTypeName() );

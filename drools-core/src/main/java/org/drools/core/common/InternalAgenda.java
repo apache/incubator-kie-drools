@@ -30,7 +30,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
@@ -137,7 +136,7 @@ public interface InternalAgenda
      */
     String getFocusName();
 
-    int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
+    int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit);
 
     AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                 int salience,

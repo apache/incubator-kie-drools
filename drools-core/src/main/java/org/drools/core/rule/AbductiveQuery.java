@@ -44,7 +44,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         super();
     }
 
-    public AbductiveQuery( String name, Object value ) {
+    public AbductiveQuery( String name ) {
         super( name );
     }
 
@@ -53,7 +53,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         return true;
     }
 
-    public void setReturnType( ObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException, IllegalArgumentException {
+    public void setReturnType( ObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException {
         this.returnType = objectType;
         this.params = params;
         if ( args != null ) {
@@ -65,9 +65,6 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
                     if ( abducibleArgs[ j ].equals( params[ k ] ) ) {
                         this.arg2param[ j ] = k;
                         matched = true;
-                        break;
-                    }
-                    if ( matched ) {
                         break;
                     }
                 }
@@ -87,11 +84,11 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     }
 
     protected void findConstructor( Declaration[] declarations ) throws NoSuchMethodException {
-        int N = this.abducibleArgs.length;
+        int argsLength = this.abducibleArgs.length;
 
         cachedConstructor = null;
-        List<Class> availableArgs = N > 0 ? new ArrayList<Class>( N ) : Collections.<Class>emptyList();
-        for ( int j = 0; j < N; j++ ) {
+        List<Class> availableArgs = argsLength > 0 ? new ArrayList<>(argsLength) : Collections.emptyList();
+        for ( int j = 0; j < argsLength; j++ ) {
             // during the initial build (KieBuilder), the declarations are provided on the fly and use for type checking
             // when building the KieBase, the internal declarations are set and can be used
             Declaration decl = declarations != null ? declarations[ mapArgToParam( j ) ] : getDeclaration( abducibleArgs[ j ] );

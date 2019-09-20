@@ -16,6 +16,10 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.Externalizable;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -27,10 +31,6 @@ import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.mvel2.asm.Opcodes;
-
-import java.io.Externalizable;
-import java.util.HashSet;
-import java.util.Set;
 
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable {
 
@@ -89,11 +89,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
     }
 
     protected ClassFieldAccessorStore getClassFieldAccessorStore() {
-        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
+        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get(PACKAGE);
         if ( traitPackage == null ) {
-            traitPackage = new KnowledgePackageImpl( pack );
+            traitPackage = new KnowledgePackageImpl(PACKAGE);
             traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
-            kBase.getPackagesMap().put( pack, traitPackage );
+            kBase.getPackagesMap().put(PACKAGE, traitPackage );
         }
         return traitPackage.getClassFieldAccessorStore();
     }

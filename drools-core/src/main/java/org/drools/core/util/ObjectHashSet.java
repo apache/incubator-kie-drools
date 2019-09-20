@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
-
 public class ObjectHashSet extends AbstractHashTable {
 
     private static final long serialVersionUID = 510l;
@@ -64,8 +62,8 @@ public class ObjectHashSet extends AbstractHashTable {
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
-                                                                            current.value ) ) {
+                if ( hashCode == current.cachedHashCode && this.comparator.areEqual(value,
+                                                                                    current.value ) ) {
                     final Object oldValue = current.value;
                     current.value = value;
                     return true;
@@ -93,8 +91,8 @@ public class ObjectHashSet extends AbstractHashTable {
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
-                                                                        current.value ) ) {
+            if ( hashCode == current.cachedHashCode && this.comparator.areEqual(value,
+                                                                                current.value ) ) {
                 return true;
             }
             current = (ObjectEntry) current.getNext();
@@ -111,8 +109,8 @@ public class ObjectHashSet extends AbstractHashTable {
         ObjectEntry current = previous;
         while ( current != null ) {
             final ObjectEntry next = (ObjectEntry) current.getNext();
-            if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
-                                                                        current.value ) ) {
+            if ( hashCode == current.cachedHashCode && this.comparator.areEqual(value,
+                                                                                current.value ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
                 } else {

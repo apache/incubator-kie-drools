@@ -1,15 +1,16 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collections;
+import java.util.Objects;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.Consequence;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -39,7 +40,8 @@ public class NamedConsequenceVisitor {
     }
 
     public void visit(ConditionalBranchDescr desc) {
-        PatternDescr patternRelated = (PatternDescr) getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
+        PatternDescr patternRelated = Objects.requireNonNull((PatternDescr) getReferringPatternDescr(desc, (AndDescr) context.parentDesc),
+                                                             "Related pattern cannot be found!");
         Class<?> patternRelatedClass = getClassFromContext(context.getTypeResolver(), patternRelated.getObjectType());
         MethodCallExpr whenBlock = whenThenDSL(desc, patternRelated, patternRelatedClass, WHEN_CALL, null);
         recurseAmongElseBranch(patternRelatedClass, patternRelated, whenBlock, desc.getElseBranch());

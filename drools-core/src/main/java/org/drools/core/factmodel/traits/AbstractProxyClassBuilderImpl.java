@@ -16,6 +16,15 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -26,15 +35,6 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.Map;
 
 public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
@@ -260,7 +260,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 			mv.visitMethodInsn( INVOKEVIRTUAL,
 			                    Type.getInternalName( core.getDefinedClass() ),
-			                    BuildUtils.setterName( coreField.getName(), coreField.getTypeName() ),
+			                    BuildUtils.setterName( coreField.getName()),
 			                    "(" + BuildUtils.getTypeDescriptor( coreField.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 			                    false );
 		} else {
@@ -370,7 +370,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 		mv.visitMethodInsn( INVOKEVIRTUAL,
 		                    BuildUtils.getInternalType( proxyName ),
-		                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+		                    BuildUtils.setterName( fld.getName()),
 		                    "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 		                    false );
 	}
@@ -416,7 +416,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		}
 		mv.visitMethodInsn( INVOKEVIRTUAL,
 		                    BuildUtils.getInternalType( proxyName ),
-		                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+		                    BuildUtils.setterName( fld.getName()),
 		                    "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 		                    false );
 		if ( ! BuildUtils.isPrimitive( fld.getTypeName() ) ) {

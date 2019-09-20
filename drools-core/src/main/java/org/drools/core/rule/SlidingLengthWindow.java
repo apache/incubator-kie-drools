@@ -164,6 +164,9 @@ public class SlidingLengthWindow
             this.handles = new EventFactHandle[size];
         }
 
+        /**
+         * Do not use this constructor! It should be used just by deserialization.
+         */
         public SlidingLengthWindowContext() {
         }
 

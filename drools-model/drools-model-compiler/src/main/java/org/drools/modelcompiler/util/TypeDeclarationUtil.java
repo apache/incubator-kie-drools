@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
@@ -39,7 +38,7 @@ import static org.drools.core.util.ClassUtils.getter2property;
 
 public class TypeDeclarationUtil {
 
-    public static TypeDeclaration createTypeDeclaration( KnowledgePackageImpl pkg, TypeMetaData metaType ) {
+    public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType) {
         Class<?> typeClass = metaType.getType();
 
         TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
@@ -144,6 +143,9 @@ public class TypeDeclarationUtil {
             processFields();
         }
 
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
         public ClassDefinitionForModel() {
         }
 
@@ -160,7 +162,7 @@ public class TypeDeclarationUtil {
 
         @Override
         public Object get(Object bean, String field) {
-            java.lang.reflect.Field f = ClassUtils.getField( getDefinedClass(), field );
+            java.lang.reflect.Field f = ClassUtils.getField(getDefinedClass(), field );
             if (f != null) {
                 f.setAccessible( true );
                 try {
@@ -184,5 +186,9 @@ public class TypeDeclarationUtil {
                 }
             }
         }
+    }
+
+    private TypeDeclarationUtil() {
+        // It si not allowed to create instances of util classes.
     }
 }

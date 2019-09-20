@@ -104,12 +104,11 @@ public class KnowledgePackageImpl
 
     private Map<String, FactTemplate> factTemplates;
 
-    // private JavaDialectData packageCompilationData;
     private DialectRuntimeRegistry dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration> typeDeclarations = new ConcurrentHashMap<>();
 
-    private Set<String> entryPointsIds = Collections.emptySet();
+    private Set<String> entryPointsIds;
 
     private Map<String, WindowDeclaration> windowDeclarations;
 
@@ -152,15 +151,15 @@ public class KnowledgePackageImpl
      */
     public KnowledgePackageImpl(final String name) {
         this.name = name;
-        this.accumulateFunctions = Collections.emptyMap();
-        this.staticImports = Collections.emptySet();
-        this.globals = Collections.emptyMap();
-        this.factTemplates = Collections.emptyMap();
-        this.functions = Collections.emptyMap();
+        this.accumulateFunctions = new HashMap<>();
+        this.staticImports = new HashSet<>();
+        this.globals = new HashMap<>();
+        this.factTemplates = new HashMap<>();
+        this.functions = new HashMap<>();
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
-        this.entryPointsIds = Collections.emptySet();
-        this.windowDeclarations = Collections.emptyMap();
+        this.entryPointsIds = new HashSet<>();
+        this.windowDeclarations = new HashMap<>();
         this.resourceTypePackages = new ResourceTypePackageRegistry();
     }
 
@@ -181,7 +180,7 @@ public class KnowledgePackageImpl
             return Collections.emptyList();
         }
         Collection<org.kie.api.definition.process.Process> processes = getRuleFlows().values();
-        List<Process> list = new ArrayList<Process>(processes.size());
+        List<Process> list = new ArrayList<>(processes.size());
         for (org.kie.api.definition.process.Process process : processes) {
             list.add(process);
         }
@@ -192,7 +191,7 @@ public class KnowledgePackageImpl
         if (typeDeclarations.isEmpty()) {
             return Collections.emptyList();
         }
-        List<FactType> list = new ArrayList<FactType>();
+        List<FactType> list = new ArrayList<>();
         for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
             list.add(typeDeclaration.getTypeClassDef());
         }
@@ -200,7 +199,7 @@ public class KnowledgePackageImpl
     }
 
     public Map<String, FactType> getFactTypesMap() {
-        Map<String, FactType> types = new HashMap<String, FactType>();
+        Map<String, FactType> types = new HashMap<>();
         for (Map.Entry<String, TypeDeclaration> entry : typeDeclarations.entrySet()) {
             types.put(entry.getKey(), entry.getValue().getTypeClassDef());
         }
@@ -208,7 +207,7 @@ public class KnowledgePackageImpl
     }
 
     public Collection<Query> getQueries() {
-        List<Query> list = new ArrayList<Query>(rules.size());
+        List<Query> list = new ArrayList<>(rules.size());
         for (RuleImpl rule : rules.values()) {
             if (rule.isQuery()) {
                 list.add(rule);
@@ -222,7 +221,7 @@ public class KnowledgePackageImpl
     }
 
     public Collection<Global> getGlobalVariables() {
-        List<Global> list = new ArrayList<Global>(getGlobals().size());
+        List<Global> list = new ArrayList<>(getGlobals().size());
         for (Map.Entry<String, String> global : getGlobals().entrySet()) {
             list.add(new GlobalImpl(global.getKey(), global.getValue()));
         }
@@ -240,18 +239,17 @@ public class KnowledgePackageImpl
      *               of DroolsObjectOutputStream or OutputStream
      */
     public void writeExternal(ObjectOutput stream) throws IOException {
-        boolean isDroolsStream = stream instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes = null;
+        ObjectOutput out;
+
+        if (stream instanceof DroolsObjectOutputStream) {
+            out = stream;
+        } else {
+            bytes = new ByteArrayOutputStream();
+            out = new DroolsObjectOutputStream(bytes);
+        }
+
         try {
-            ObjectOutput out;
-
-            if (isDroolsStream) {
-                out = stream;
-            } else {
-                bytes = new ByteArrayOutputStream();
-                out = new DroolsObjectOutputStream(bytes);
-            }
-
             out.writeObject(this.name);
             out.writeObject(this.classFieldAccessorStore);
             out.writeObject(this.dialectRuntimeRegistry);
@@ -398,17 +396,10 @@ public class KnowledgePackageImpl
     }
 
     public void addStaticImport(final String functionImport) {
-        if (this.staticImports == Collections.EMPTY_SET) {
-            this.staticImports = new HashSet<String>(2);
-        }
         this.staticImports.add(functionImport);
     }
 
     public void addFunction(final Function function) {
-        if (this.functions == Collections.EMPTY_MAP) {
-            this.functions = new HashMap<String, Function>(1);
-        }
-
         this.functions.put(function.getName(),
                            function);
         dialectRuntimeRegistry.getDialectData(function.getDialect()).setDirty(true);
@@ -419,10 +410,6 @@ public class KnowledgePackageImpl
     }
 
     public void addAccumulateFunction(final String name, final AccumulateFunction function) {
-        if (this.accumulateFunctions == Collections.EMPTY_MAP) {
-            this.accumulateFunctions = new HashMap<String, AccumulateFunction>(1);
-        }
-
         this.accumulateFunctions.put(name,
                                      function);
     }
@@ -441,9 +428,6 @@ public class KnowledgePackageImpl
 
     public void addGlobal(final String identifier,
                           final Class<?> clazz) {
-        if (this.globals == Collections.EMPTY_MAP) {
-            this.globals = new HashMap<String, String>(1);
-        }
         this.globals.put(identifier,
                          clazz.getName());
     }
@@ -469,9 +453,6 @@ public class KnowledgePackageImpl
     }
 
     public void addFactTemplate(final FactTemplate factTemplate) {
-        if (this.factTemplates == Collections.EMPTY_MAP) {
-            this.factTemplates = new HashMap<>(1);
-        }
         this.factTemplates.put(factTemplate.getName(),
                                factTemplate);
     }
@@ -535,10 +516,6 @@ public class KnowledgePackageImpl
         return this.rules.get(name);
     }
 
-    // public JavaDialectData getPackageCompilationData() {
-    // return this.packageCompilationData;
-    // }
-
     public String toString() {
         return "[Package name=" + this.name + "]";
     }
@@ -587,7 +564,7 @@ public class KnowledgePackageImpl
             return true;
         }
 
-        if (object == null || !(object instanceof KnowledgePackageImpl)) {
+        if (!(object instanceof KnowledgePackageImpl)) {
             return false;
         }
 
@@ -645,9 +622,6 @@ public class KnowledgePackageImpl
     }
 
     public void addEntryPointId(String id) {
-        if (entryPointsIds == Collections.EMPTY_SET) {
-            entryPointsIds = new HashSet<String>();
-        }
         entryPointsIds.add(id);
     }
 
@@ -672,9 +646,6 @@ public class KnowledgePackageImpl
     }
 
     public void addWindowDeclaration(WindowDeclaration window) {
-        if (windowDeclarations == Collections.EMPTY_MAP) {
-            windowDeclarations = new HashMap<String, WindowDeclaration>();
-        }
         this.windowDeclarations.put(window.getName(), window);
     }
 
@@ -739,7 +710,7 @@ public class KnowledgePackageImpl
     }
 
     public List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
-        List<RuleImpl> rulesFromResource = new ArrayList<RuleImpl>();
+        List<RuleImpl> rulesFromResource = new ArrayList<>();
         for (RuleImpl rule : rules.values()) {
             if (resource.equals(rule.getResource())) {
                 rulesFromResource.add(rule);
@@ -749,7 +720,7 @@ public class KnowledgePackageImpl
     }
 
     private List<TypeDeclaration> getTypesGeneratedFromResource(Resource resource) {
-        List<TypeDeclaration> typesFromResource = new ArrayList<TypeDeclaration>();
+        List<TypeDeclaration> typesFromResource = new ArrayList<>();
         for (TypeDeclaration type : typeDeclarations.values()) {
             if (resource.equals(type.getResource())) {
                 typesFromResource.add(type);
@@ -767,7 +738,7 @@ public class KnowledgePackageImpl
     }
 
     private List<Function> getFunctionsGeneratedFromResource(Resource resource) {
-        List<Function> functionsFromResource = new ArrayList<Function>();
+        List<Function> functionsFromResource = new ArrayList<>();
         for (Function function : functions.values()) {
             if (resource.equals(function.getResource())) {
                 functionsFromResource.add(function);
@@ -794,7 +765,7 @@ public class KnowledgePackageImpl
         if (rtp == null) {
             return Collections.emptyList();
         }
-        List<Process> processesFromResource = new ArrayList<Process>();
+        List<Process> processesFromResource = new ArrayList<>();
         for (Process process : rtp) {
             if (resource.equals(process.getResource())) {
                 processesFromResource.add(process);

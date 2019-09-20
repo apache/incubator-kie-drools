@@ -156,7 +156,13 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
             } while (iter.hasNext());
         }
     }
-    
+
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ProcessEventSupport() {
+    }
+
     public void fireBeforeSLAViolated(final ProcessInstance instance, KieRuntime kruntime ) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 

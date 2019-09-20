@@ -29,7 +29,11 @@ public class BeforeActivationFiredEventImpl extends ActivationEventImpl implemen
         super( activation, kruntime );
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
     public BeforeActivationFiredEventImpl() {
+        super();
     }
 
     public long getTimestamp() {

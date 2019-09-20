@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -23,7 +23,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CA
 
 class PatternDSLPattern extends PatternDSL {
 
-    protected PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
+    protected PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
         super(context, packageModel, pattern, constraintDescrs, patternType);
     }
 

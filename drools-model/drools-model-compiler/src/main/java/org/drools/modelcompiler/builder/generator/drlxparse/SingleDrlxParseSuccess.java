@@ -24,10 +24,10 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.core.util.index.IndexUtil;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
@@ -314,24 +314,24 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
         SingleDrlxParseSuccess otherDrlx = ( SingleDrlxParseSuccess ) other;
 
-        Collection<String> usedDeclarationsSet = new LinkedHashSet<>();
-        usedDeclarationsSet.addAll( this.usedDeclarations );
-        usedDeclarationsSet.addAll( otherDrlx.usedDeclarations );
+        Collection<String> newUsedDeclarations = new LinkedHashSet<>();
+        newUsedDeclarations.addAll( this.usedDeclarations );
+        newUsedDeclarations.addAll( otherDrlx.usedDeclarations );
 
-        Collection<String> usedDeclarationsOnLeftSet = null;
+        Collection<String> newUsedDeclarationsOnLeft = null;
         if (this.usedDeclarationsOnLeft != null && otherDrlx.usedDeclarationsOnLeft != null) {
-            usedDeclarationsOnLeftSet = new LinkedHashSet<>();
-            usedDeclarationsOnLeftSet.addAll( this.usedDeclarationsOnLeft );
-            usedDeclarationsOnLeftSet.addAll( otherDrlx.usedDeclarationsOnLeft );
+            newUsedDeclarationsOnLeft = new LinkedHashSet<>();
+            newUsedDeclarationsOnLeft.addAll( this.usedDeclarationsOnLeft );
+            newUsedDeclarationsOnLeft.addAll( otherDrlx.usedDeclarationsOnLeft );
         }
 
-        Set<String> reactOnPropertiesSet = new HashSet<>();
-        reactOnPropertiesSet.addAll( this.reactOnProperties );
-        reactOnPropertiesSet.addAll( otherDrlx.reactOnProperties );
+        Set<String> newReactOnProperties = new HashSet<>();
+        newReactOnProperties.addAll( this.reactOnProperties );
+        newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
         return new SingleDrlxParseSuccess(patternType, exprId, patternBinding, new BinaryExpr( expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( usedDeclarationsSet ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeftSet )
-                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( reactOnPropertiesSet ).setBetaNode(isBetaNode)
+                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( newUsedDeclarations ).setUsedDeclarationsOnLeft( newUsedDeclarationsOnLeft )
+                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( newReactOnProperties ).setBetaNode(isBetaNode)
                 .setLeft( new TypedExpression( this.expr, boolean.class ) )
                 .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
     }

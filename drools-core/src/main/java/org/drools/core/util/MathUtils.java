@@ -19,11 +19,12 @@ package org.drools.core.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
 /**
  * Utility methods for math classes
  */
 public class MathUtils {
-    
+
     public static BigDecimal getBigDecimal( Object value ) {
         BigDecimal ret = null;
         if( value != null ) {
@@ -58,5 +59,9 @@ public class MathUtils {
             }
         }
         return ret;
+    }
+
+    private MathUtils() {
+        // It is not allowed to create instances of util classes.
     }
 }

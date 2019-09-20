@@ -19,11 +19,8 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
 import org.drools.core.spi.PropagationContext;
-
-import java.util.List;
+import org.drools.core.util.LinkedList;
 
 public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> implements JTMSBeliefSet<M> {
 
@@ -44,7 +41,8 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
     public JTMSBeliefSetImpl() {
     }
 
-    public void add( M node ) {
+    @Override
+    public void add(M node ) {
         JTMSMode mode = node;
         String value = mode.getValue();
         boolean neg = MODE.NEGATIVE.getId().equals( value );
@@ -57,7 +55,8 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
         }
     }
     
-    public void remove( M node ) {
+    @Override
+    public void remove(M node ) {
         super.remove(node);
 
         JTMSMode mode = node;
@@ -113,6 +112,7 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
             return this.string;
         }
 
+        @Override
         public String toString() {
             return this.string;
         }
@@ -137,7 +137,8 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
     public void cancel(PropagationContext context) {        
         // get all but last, as that we'll do via the BeliefSystem, for cleanup
         // note we don't update negative, conflict counters. It's needed for the last cleanup operation
-        for ( JTMSMode<M> entry = getFirst(); entry != getLast();  ) {
+        JTMSMode<M> entry = getFirst();
+        while (entry != getLast()) {
             JTMSMode<M> temp = entry.getNext(); // get next, as we are about to remove it
             final LogicalDependency<M> node =  entry.getLogicalDependency();
             node.getJustifier().getLogicalDependencies().remove( node );
@@ -153,7 +154,8 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
     
     public void clear(PropagationContext context) { 
         // remove all, but don't allow the BeliefSystem to clean up, the FH is most likely going to be used else where
-        for ( JTMSMode<M> entry = getFirst(); entry != null;  ) {
+        JTMSMode<M> entry = getFirst();
+        while (entry != null) {
             JTMSMode<M> temp =  entry.getNext(); // get next, as we are about to remove it
             final LogicalDependency<M> node = entry.getLogicalDependency();
             node.getJustifier().getLogicalDependencies().remove( node );
@@ -169,5 +171,4 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
     public WorkingMemoryAction getWorkingMemoryAction() {
         return this.wmAction;
     }
-
 }
