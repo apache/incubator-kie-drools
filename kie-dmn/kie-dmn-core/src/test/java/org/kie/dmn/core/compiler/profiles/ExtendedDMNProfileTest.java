@@ -103,12 +103,6 @@ public class ExtendedDMNProfileTest {
     }
 
     @Test
-    public void testAbsFunction() {
-        assertResult(absFunction.invoke(valueOf(10)), valueOf(10));
-        assertResult(absFunction.invoke(valueOf(-10)), valueOf(10));
-    }
-
-    @Test
     public void testModuloFunction() {
         assertResult(moduloFunction.invoke(valueOf(12), valueOf(5)), valueOf(2));
     }
