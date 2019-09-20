@@ -2,6 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -234,7 +235,17 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     public boolean isCollection(Type t) {
-        return of(List.class, Map.class).anyMatch(cls -> (cls).isAssignableFrom((Class<?>)(t)));
+        return of(List.class, Map.class).anyMatch(cls -> {
+            Class<?> clazz;
+            if(t instanceof Class<?>) {
+                clazz = (Class<?>) t;
+            } else if(t instanceof ParameterizedType) {
+                clazz = ((ParameterizedType)t).getClass();
+            } else {
+                throw new MvelCompilerException("Unable to parse type");
+            }
+            return cls.isAssignableFrom(clazz);
+        });
     }
 
     @Override
