@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.kie.api.builder.ReleaseId;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 
 public class ModelWriter {
 
@@ -26,33 +24,17 @@ public class ModelWriter {
         this.basePath = basePath;
     }
 
-    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
+    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageSources> packageSources) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         List<String> modelFiles = new ArrayList<>();
 
-        for (PackageModel pkgModel : packageModels) {
-            String pkgName = pkgModel.getName();
-            String folderName = pkgName.replace( '.', '/' );
-
-            PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
-            for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-                generatedFiles.add(new GeneratedFile(declaredType.getName(), declaredType.getSource()));
-            }
-
-            for (AccumulateClassWriter accumulateClassWriter : packageModelWriter.getAccumulateClasses()) {
-                generatedFiles.add(new GeneratedFile(accumulateClassWriter.getName(), accumulateClassWriter.getSource()));
-            }
-
-            RuleWriter rules = packageModelWriter.getRules();
-            generatedFiles.add(new GeneratedFile(rules.getName(), rules.getMainSource()));
-            modelFiles.add( rules.getClassName() );
-
-            for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
-                generatedFiles.add(new GeneratedFile(ruleSource.getName(), ruleSource.getSource()));
-            }
-
-            String sourceName = "src/main/java/" + folderName + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID() + ".java";
-            generatedFiles.add( new GeneratedFile( sourceName, pkgModel.getDomainClassesMetadataSource() ) );
+        for (PackageSources pkgSources : packageSources) {
+            generatedFiles.addAll( pkgSources.getPojoSources() );
+            generatedFiles.addAll( pkgSources.getAccumulateSources() );
+            generatedFiles.add( pkgSources.getMainSource() );
+            generatedFiles.addAll( pkgSources.getRuleSources() );
+            generatedFiles.add( pkgSources.getDomainClassSource() );
+            modelFiles.add( pkgSources.getModelName() );
         }
 
         List<String> sourceFiles = new ArrayList<>();
@@ -75,37 +57,6 @@ public class ModelWriter {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
         }
         trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes());
-    }
-
-    private static class GeneratedFile {
-
-        final String path;
-        final byte[] data;
-
-        private GeneratedFile(String path, String data) {
-            this.path = path;
-            this.data = data.getBytes(StandardCharsets.UTF_8);
-        }
-
-        private GeneratedFile(String path, byte[] data) {
-            this.path = path;
-            this.data = data;
-        }
-
-        public byte[] getData() {
-            return data;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        @Override
-        public String toString() {
-            return "GeneratedFile{" +
-                    "path='" + path + '\'' +
-                    '}';
-        }
     }
 
     public static class Result {

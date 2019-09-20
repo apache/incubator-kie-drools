@@ -4291,10 +4291,15 @@ public class IncrementalCompilationTest {
         kfs.write(kieService.getResources()
                 .newReaderResource(new StringReader(DRL1))
                 .setResourceType(ResourceType.DRL)
-                .setSourcePath("rules.drl"));
+                .setSourcePath("org/kie/test/rules.drl"));
 
         KieBuilder kb = kieService.newKieBuilder(kfs);
-        kb.buildAll();
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
+            kb.buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
+        } else {
+            kb.buildAll();
+        }
+
         if (!kb.getResults().getMessages().isEmpty()) {
             throw new RuntimeException("KieBase build failed:\n" + kb.getResults().toString());
         }
@@ -4325,10 +4330,15 @@ public class IncrementalCompilationTest {
         kfs2.write(kieService.getResources()
                 .newReaderResource(new StringReader(DRL2))
                 .setResourceType(ResourceType.DRL)
-                .setSourcePath("rules.drl"));
+                .setSourcePath("org/kie/test/rules.drl"));
 
         KieBuilder kb2 = kieService.newKieBuilder(kfs2);
-        kb2.buildAll();
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
+            kb2.buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
+        } else {
+            kb2.buildAll();
+        }
+
         if (!kb2.getResults().getMessages().isEmpty()) {
             throw new RuntimeException("KieBase build failed:\n" + kb2.getResults().toString());
         }

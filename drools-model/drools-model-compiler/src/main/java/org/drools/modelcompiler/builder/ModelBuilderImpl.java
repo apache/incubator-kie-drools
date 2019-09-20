@@ -39,6 +39,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
+import org.kie.internal.builder.ResultSeverity;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
@@ -52,6 +53,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private final ReleaseId releaseId;
     private boolean isPattern = false;
+    private final Collection<PackageSources> packageSources = new ArrayList<>();
 
     public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern) {
         super(configuration);
@@ -118,6 +120,11 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
+
+            PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
+            if (getResults( ResultSeverity.ERROR ).isEmpty()) {
+                packageSources.add( PackageSources.dumpSources( pkgModel ) );
+            }
         }
     }
 
@@ -169,7 +176,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         generateModel(this, pkg, packageDescr, model, isPattern);
     }
 
-    public List<PackageModel> getPackageModels() {
-        return new ArrayList<>(packageModels.values());
+    public Collection<PackageSources> getPackageSources() {
+        return packageSources;
     }
 }
