@@ -269,7 +269,7 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
     }
 
-    private static Variable<?> findPatterVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
+    private static Variable<?> findPatternVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
         Variable<?> patternVariable;
 
         if(viewItem.getVariables().length > 0) {
