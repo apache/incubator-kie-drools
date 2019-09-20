@@ -75,9 +75,13 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration(kBaseModel, kModule), kModule.getReleaseId(), isPattern);
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration(kBaseModel, kModule), kModule.getReleaseId(), isPattern, isOneClassPerRule());
         modelBuilders.add(modelBuilder);
         return modelBuilder;
+    }
+
+    protected boolean isOneClassPerRule() {
+        return false;
     }
 
     @Override
@@ -88,7 +92,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         Collection<String> sourceFiles = new HashSet<>();
 
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
-            final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels(), false);
+            final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageSources());
             modelFiles.addAll(result.getModelFiles());
             sourceFiles.addAll(result.getSources());
         }

@@ -13,7 +13,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.impl.RuleUnitRegistry;
 

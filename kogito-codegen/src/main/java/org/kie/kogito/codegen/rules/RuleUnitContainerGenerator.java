@@ -42,7 +42,7 @@ import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.type.WildcardType;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
@@ -51,25 +51,15 @@ import org.kie.kogito.rules.RuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
-    private final String packageName;
-    private final String generatedFilePath;
-    private final String targetCanonicalName;
     private final List<RuleUnitSourceClass> ruleUnits;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
-    public RuleUnitContainerGenerator(String packageName) {
+    public RuleUnitContainerGenerator() {
         super("RuleUnits", "ruleUnits", RuleUnits.class);
-        this.packageName = packageName;
         this.targetTypeName = "Module";
-        this.targetCanonicalName = packageName + "." + targetTypeName;
-        this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.ruleUnits = new ArrayList<>();
-    }
-
-    public String generatedFilePath() {
-        return generatedFilePath;
     }
 
     void addRuleUnit(RuleUnitSourceClass rusc) {

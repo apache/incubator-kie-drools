@@ -45,6 +45,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
@@ -281,7 +282,15 @@ public class ApplicationGenerator {
         }
         return source;
     }
-    
+
+    public static void log(byte[] source) {
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "=====" );
+            logger.debug( new String(source) );
+            logger.debug( "=====" );
+        }
+    }
+
     protected boolean useInjection() {
         return this.annotator != null;
     }

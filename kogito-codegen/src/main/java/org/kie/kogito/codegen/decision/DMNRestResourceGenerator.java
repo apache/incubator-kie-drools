@@ -27,7 +27,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.core.util.StringUtils;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.Definitions;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;

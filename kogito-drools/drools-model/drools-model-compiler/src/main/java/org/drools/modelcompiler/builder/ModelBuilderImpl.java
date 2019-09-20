@@ -50,11 +50,14 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private final ReleaseId releaseId;
     private final boolean isPattern;
+    private final boolean oneClassPerRule;
+    private final Collection<PackageSources> packageSources = new ArrayList<>();
 
-    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern) {
+    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
         super(configuration);
         this.releaseId = releaseId;
         this.isPattern = isPattern;
+        this.oneClassPerRule = oneClassPerRule;
     }
 
     @Override
@@ -110,6 +113,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
+            packageSources.add( PackageSources.dumpSources( packageModels.remove( pkgRegistry.getPackage().getName() ), oneClassPerRule ) );
         }
     }
 
@@ -161,7 +165,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         generateModel(this, pkg, packageDescr, model, isPattern);
     }
 
-    public List<PackageModel> getPackageModels() {
-        return new ArrayList<>(packageModels.values());
+    public Collection<PackageSources> getPackageSources() {
+        return packageSources;
     }
 }

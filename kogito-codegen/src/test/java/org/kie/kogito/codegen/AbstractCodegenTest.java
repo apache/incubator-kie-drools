@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -39,6 +37,8 @@ import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCodegenTest {
     

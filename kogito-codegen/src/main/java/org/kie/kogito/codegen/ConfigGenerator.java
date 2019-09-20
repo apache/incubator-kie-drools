@@ -17,6 +17,7 @@ package org.kie.kogito.codegen;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;

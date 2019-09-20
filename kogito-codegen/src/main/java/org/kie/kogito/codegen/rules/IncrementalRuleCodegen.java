@@ -27,8 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,42 +35,37 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
-import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.kie.kogito.codegen.GeneratedFile;
 import org.drools.modelcompiler.builder.KieModuleModelMethod;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.ModelSourceClass;
-import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.ProjectSourceClass;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.ConfigGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
 
-    public static IncrementalRuleCodegen ofPath(Path basePath) {
+    private String packageName;
+
+    public static IncrementalRuleCodegen ofPath( Path basePath) {
         try {
             Stream<File> files = Files.walk(basePath).map(Path::toFile);
             Set<Resource> resources = toResources(files);
@@ -100,6 +93,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return new IncrementalRuleCodegen(toResources(files.stream()));
     }
 
+    public static IncrementalRuleCodegen ofResources(Collection<Resource> resources) {
+        return new IncrementalRuleCodegen(resources);
+    }
+
     private static Set<Resource> toResources(Stream<File> files, ResourceType resourceType) {
         return files.filter(f -> resourceType.matchesExtension(f.getName())).map(FileSystemResource::new).peek(r -> r.setResourceType(resourceType)).collect(Collectors.toSet());
     }
@@ -122,7 +119,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             ResourceType.DRL,
             ResourceType.DTABLE
     };
-    private String packageName;
     private final Collection<Resource> resources;
     private RuleUnitContainerGenerator moduleGenerator;
     private final Map<String, String> labels;
@@ -153,7 +149,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     @Override
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new RuleUnitContainerGenerator(packageName);
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -166,20 +161,15 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     public List<GeneratedFile> generate() {
-        Objects.requireNonNull(packageName);
-
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
 
+        moduleGenerator = new RuleUnitContainerGenerator();
         moduleGenerator.withDependencyInjection(annotator);
-
-        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
-        PrettyPrinter prettyPrinter = getPrettyPrinter();
 
         KnowledgeBuilderConfigurationImpl configuration =
                 new KnowledgeBuilderConfigurationImpl(contextClassLoader);
 
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(
-                configuration, dummyReleaseId, true);
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl( configuration, dummyReleaseId, true, hotReloadMode );
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         resources.forEach(f -> batch.add(f, f.getResourceType()));
@@ -190,80 +180,28 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             return Collections.emptyList();
         }
 
-        KnowledgeBuilderResults results = modelBuilder.getResults();
         boolean hasRuleUnits = false;
         Map<Class<?>, String> unitsMap = new HashMap<>();
 
+        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
         List<String> fqn = new ArrayList<>();
 
-        List<PackageModel> packageModels = modelBuilder.getPackageModels();
-        for (PackageModel pkgModel : packageModels) {
-            String pkgName = pkgModel.getName();
-            String folderName = pkgName.replace('.', '/');
+        for (PackageSources pkgSources : modelBuilder.getPackageSources()) {
+            fqn.addAll( pkgSources.getModelNames() );
 
-            for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
-                generatedPojo.getMembers().sort(new BodyDeclarationComparator());
-                final String source = JavaParserCompiler.toPojoSource(
-                        pkgModel.getName(),
-                        pkgModel.getImports(),
-                        pkgModel.getStaticImports(),
-                        generatedPojo);
+            addGeneratedFiles( generatedFiles, pkgSources.getPojoSources() );
+            addGeneratedFiles( generatedFiles, pkgSources.getAccumulateSources() );
+            addGeneratedFile( generatedFiles, pkgSources.getMainSource() );
+            addGeneratedFiles( generatedFiles, pkgSources.getRuleSources() );
+            addGeneratedFile( generatedFiles, pkgSources.getDomainClassSource() );
 
-                String nameAsString = generatedPojo.getNameAsString();
-
-                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, nameAsString, source));
-                ApplicationGenerator.log(source);
-            }
-
-            for (GeneratedClassWithPackage generatedPojo : pkgModel.getGeneratedAccumulateClasses()) {
-                final String source = JavaParserCompiler.toPojoSource(
-                        pkgModel.getName(),
-                        generatedPojo.getImports(),
-                        pkgModel.getStaticImports(),
-                        generatedPojo.getGeneratedClass());
-
-                String nameAsString = generatedPojo.getGeneratedClass().getNameAsString();
-                String pojoSourceName = pojoName(folderName, nameAsString);
-
-                ApplicationGenerator.log(source);
-                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, pojoSourceName, source));
-            }
-
-            PackageModel.RuleSourceResult rulesSourceResult = pkgModel.getRulesSource(hotReloadMode);
-            fqn.addAll(rulesSourceResult.getModels());
-
-            // main rules file:
-            String rulesSource = prettyPrinter.print(rulesSourceResult.getMainRuleClass());
-
-            String rulesFileName = pkgModel.getRulesFileName();
-            String rulesSourceName = pojoName(folderName, rulesFileName);
-
-            ApplicationGenerator.log(rulesSource);
-            generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, rulesSourceName, rulesSource));
-
-            for (CompilationUnit cu : rulesSourceResult.getModelClasses()) {
-                final Optional<ClassOrInterfaceDeclaration> classOptional = cu.findFirst(ClassOrInterfaceDeclaration.class);
-                if (classOptional.isPresent()) {
-                    String addSource = prettyPrinter.print(cu);
-
-                    String addFileName = classOptional.get().getNameAsString();
-                    String addSourceName = pojoName(folderName, addFileName);
-
-                    ApplicationGenerator.log(addSource);
-                    generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, addSourceName, addSource.getBytes()));
-                }
-            }
-
-            String sourceName = pojoName(folderName, DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID());
-            generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, sourceName, pkgModel.getDomainClassesMetadataSource()));
-
-            Collection<Class<?>> ruleUnits = pkgModel.getRuleUnits();
+            Collection<Class<?>> ruleUnits = pkgSources.getRuleUnits();
             if (!ruleUnits.isEmpty()) {
                 hasRuleUnits = true;
                 for (Class<?> ruleUnit : ruleUnits) {
-                    RuleUnitSourceClass ruSource = new RuleUnitSourceClass(ruleUnit, pkgModel.getRulesFileName())
+                    RuleUnitSourceClass ruSource = new RuleUnitSourceClass(ruleUnit, pkgSources.getRulesFileName())
                             .withDependencyInjection(annotator)
-                            .withQueries( pkgModel.getQueriesInRuleUnit( ruleUnit ) );
+                            .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit ) );
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
                 }
@@ -299,7 +237,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                     annotator.withNamedSingletonComponent(template, "$SessionName$");
                     template.setName( "SessionRuleUnit_" + sessionName );
 
-                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));;
+                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));
 
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
                     generatedFiles.add(new GeneratedFile(
@@ -336,8 +274,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return generatedFiles;
     }
 
-    private String pojoName(String folderName, String nameAsString) {
-        return folderName + "/" + nameAsString + ".java";
+    private void addGeneratedFiles( List<GeneratedFile> generatedFiles, List<org.drools.modelcompiler.builder.GeneratedFile> source ) {
+        source.forEach( s -> addGeneratedFile( generatedFiles, s ) );
+    }
+
+    private void addGeneratedFile( List<GeneratedFile> generatedFiles, org.drools.modelcompiler.builder.GeneratedFile source ) {
+        ApplicationGenerator.log( source.getData() );
+        generatedFiles.add( new GeneratedFile(GeneratedFile.Type.RULE, source.getPath(), source.getData()) );
     }
 
     @Override

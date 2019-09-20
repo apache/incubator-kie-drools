@@ -38,9 +38,10 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.impl.AbstractRuleUnit;
 
+import static java.util.stream.Collectors.toList;
+
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitSourceClass implements FileGenerator {
@@ -205,6 +206,8 @@ public class RuleUnitSourceClass implements FileGenerator {
     }
 
     public void setApplicationPackageName(String packageName) {
-        this.applicationPackageName = packageName;
+        if (packageName != null) {
+            this.applicationPackageName = packageName;
+        }
     }
 }

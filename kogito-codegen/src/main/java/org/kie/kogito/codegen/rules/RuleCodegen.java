@@ -92,7 +92,7 @@ public class RuleCodegen extends AbstractGenerator {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new RuleUnitContainerGenerator(packageName);
+        this.moduleGenerator = new RuleUnitContainerGenerator();
     }
 
     private MemoryFileSystem getMemoryFileSystem(InternalKieModule kieModule) {

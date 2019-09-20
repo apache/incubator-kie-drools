@@ -34,7 +34,7 @@ import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.runtime.KieSession;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.DataSource;
 

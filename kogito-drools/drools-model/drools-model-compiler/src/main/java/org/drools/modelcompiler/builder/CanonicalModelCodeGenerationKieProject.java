@@ -47,12 +47,17 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
     }
 
     @Override
+    protected boolean isOneClassPerRule() {
+        return oneClassPerRule;
+    }
+
+    @Override
     public void writeProjectOutput( MemoryFileSystem trgMfs, ResultsImpl messages ) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         List<String> generatedSourceFiles = new ArrayList<>();
         ModelWriter modelWriter = new ModelWriter();
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
-            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels(), oneClassPerRule);
+            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageSources());
             generatedSourceFiles.addAll(result.getModelFiles());
         }
 

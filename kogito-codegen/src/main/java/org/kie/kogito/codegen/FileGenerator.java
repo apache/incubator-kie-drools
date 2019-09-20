@@ -25,7 +25,7 @@ public interface FileGenerator {
 
     String generate();
 
-    default GeneratedFile generateFile(GeneratedFile.Type fileType) {
+    default GeneratedFile generateFile( GeneratedFile.Type fileType) {
         return new GeneratedFile(fileType,
                                  generatedFilePath(),
                                  log( generate() ).getBytes( StandardCharsets.UTF_8));
