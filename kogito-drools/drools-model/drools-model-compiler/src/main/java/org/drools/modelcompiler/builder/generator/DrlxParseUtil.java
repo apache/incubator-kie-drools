@@ -186,6 +186,10 @@ public class DrlxParseUtil {
             return getLiteralExpressionType( ( LiteralExpr ) expr );
         }
 
+        if (expr instanceof UnaryExpr) {
+            return getExpressionType(context, typeResolver, expr.asUnaryExpr().getExpression(), usedDeclarations);
+        }
+
         if (expr instanceof ArrayAccessExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
         }
