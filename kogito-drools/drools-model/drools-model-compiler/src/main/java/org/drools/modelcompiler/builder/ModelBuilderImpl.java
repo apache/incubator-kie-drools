@@ -36,6 +36,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.kie.api.builder.ReleaseId;
+import org.kie.internal.builder.ResultSeverity;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
@@ -113,7 +114,11 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
-            packageSources.add( PackageSources.dumpSources( packageModels.remove( pkgRegistry.getPackage().getName() ), oneClassPerRule ) );
+
+            PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
+            if (getResults( ResultSeverity.ERROR ).isEmpty()) {
+                packageSources.add( PackageSources.dumpSources( pkgModel, oneClassPerRule ) );
+            }
         }
     }
 
