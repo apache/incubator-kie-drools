@@ -240,7 +240,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             if(t instanceof Class<?>) {
                 clazz = (Class<?>) t;
             } else if(t instanceof ParameterizedType) {
-                clazz = ((ParameterizedType)t).getClass();
+                clazz = (Class<?>) ((ParameterizedType)t).getRawType();
             } else {
                 throw new MvelCompilerException("Unable to parse type");
             }

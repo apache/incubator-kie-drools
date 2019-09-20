@@ -150,10 +150,10 @@ public class MvelCompilerTest implements CompilerTest {
     public void testMapGetAsField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{" +
-                     "$p.items[\"key3\"];" +
+                     "$p.items[\"key3\"];\n" +
                      "}",
              "{ " +
-                     "$p.items.get(\"key3\");" +
+                     "$p.getItems().get(\"key3\");\n" +
                      "}");
     }
 
