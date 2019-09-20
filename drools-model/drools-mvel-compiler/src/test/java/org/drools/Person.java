@@ -1,5 +1,8 @@
 package org.drools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Person {
 
     private String name;
@@ -11,6 +14,8 @@ public class Person {
 
     public Person parentPublic;
     public String nicknamePublic;
+
+    private Map<String, String> items = new HashMap<>();
 
     public Person(String name) {
         this(name, null);
@@ -50,8 +55,17 @@ public class Person {
         return gender;
     }
 
+
     public Person setGender(Gender gender) {
         this.gender = gender;
         return this;
+    }
+
+    public Map<String, String> getItems() {
+        return items;
+    }
+
+    public void setItems(Map<String, String> items) {
+        this.items = items;
     }
 }
