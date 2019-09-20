@@ -45,6 +45,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.CollectionUtils;
 
 import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getAccessor;
@@ -228,24 +229,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(this::isCollection).isPresent()) {
+        if(type.filter(CollectionUtils::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
-    }
-
-    public boolean isCollection(Type t) {
-        return of(List.class, Map.class).anyMatch(cls -> {
-            Class<?> clazz;
-            if(t instanceof Class<?>) {
-                clazz = (Class<?>) t;
-            } else if(t instanceof ParameterizedType) {
-                clazz = (Class<?>) ((ParameterizedType)t).getRawType();
-            } else {
-                throw new MvelCompilerException("Unable to parse type");
-            }
-            return cls.isAssignableFrom(clazz);
-        });
     }
 
     @Override
