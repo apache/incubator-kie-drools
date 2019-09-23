@@ -22,7 +22,7 @@ final class ConstraintJustificationComparator implements Comparator<Object> {
         }
         // Same class, see if it's comparable.
         if (o1 instanceof Comparable) {
-            return ((Comparable)o1).compareTo(o2);
+            return ((Comparable) o1).compareTo(o2);
         }
         MemberAccessor memberAccessor = accessorCache.computeIfAbsent(o1.getClass(),
                 ConfigUtils::findPlanningIdMemberAccessor);
@@ -31,8 +31,8 @@ final class ConstraintJustificationComparator implements Comparator<Object> {
             return 0;
         }
         // Compare planning IDs; Comparable guaranteed by MemberAccessor.
-        Comparable id1 = (Comparable)memberAccessor.executeGetter(o1);
-        Comparable id2 = (Comparable)memberAccessor.executeGetter(o2);
+        Comparable id1 = (Comparable) memberAccessor.executeGetter(o1);
+        Comparable id2 = (Comparable) memberAccessor.executeGetter(o2);
         return id1.compareTo(id2);
     }
 }

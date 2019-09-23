@@ -16,18 +16,13 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
-import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CtTask")
-public class Task extends AbstractPersistable implements Comparable<Task> {
-
-    private static final Comparator<Task> COMPARATOR = Comparator.comparingInt(Task::getResourceUsageMultiplicand)
-            .thenComparingLong(Task::getPowerConsumptionMicros)
-            .thenComparingInt(Task::getDuration);
+public class Task extends AbstractPersistable {
 
     private long powerConsumptionMicros;
     private int duration;
@@ -97,8 +92,4 @@ public class Task extends AbstractPersistable implements Comparable<Task> {
         return "Task " + id;
     }
 
-    @Override
-    public int compareTo(Task o) {
-        return COMPARATOR.compare(this, o);
-    }
 }

@@ -17,23 +17,23 @@
 package org.optaplanner.examples.cloudbalancing.optional.domain;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudComputerStrengthComparator implements Comparator<CloudComputer>, Serializable {
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
 
-    private static final Comparator<CloudComputer> DESCENDING_COST_COMPARATOR =
-            Comparator.comparing(CloudComputer::getCost).reversed();
+public class CloudComputerStrengthComparator implements Comparator<CloudComputer>,
+        Serializable {
 
-    private static final Comparator<CloudComputer> COMPARATOR =
-            Comparator.comparingInt(CloudComputer::getMultiplicand)
-            .thenComparing(DESCENDING_COST_COMPARATOR) // Descending (but this is debatable)
+    private static final Comparator<CloudComputer> COMPARATOR = comparingInt(CloudComputer::getMultiplicand)
+            .thenComparing(Collections.reverseOrder(comparing(CloudComputer::getCost))) // Descending (but this is debatable)
             .thenComparingLong(CloudComputer::getId);
 
     @Override
     public int compare(CloudComputer a, CloudComputer b) {
         return COMPARATOR.compare(a, b);
     }
-
 }
