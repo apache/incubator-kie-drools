@@ -9,92 +9,74 @@
 
 
 [[designPatternsIntroduction]]
-== Design Patterns Introduction
+== Design patterns introduction
 
-These design patterns list and solve common design challenges.
-
+The design patterns in this section list and solve common design challenges.
+//Need to explain what design patterns are.
 
 [[domainModelingGuide]]
-== Domain Modeling Guide
+== Domain modeling guidelines
 
-A good model can greatly improve the success of your planning implementation.
-These guidelines help to design a good model:
+Follow the guidelines listed in this section to create a well thought-out model that can contribute significantly to the success of your planning.
 
-. *Draw a class diagram* of your domain model. _Normalize_ it get rid of duplicate data.
-** Write down some sample instances for each class.
-*** For example in employee rostering, the samples for the `Employee` class are _Ann_, _Bert_ and _Carl_.
 
-. *Determine which relationships (or fields) change during planning*. Color them orange.
-Often there is only one such relationship (or field).
-One side of these relationships will become a planning variable later on.
-** For example in employee rostering, the `Shift` to `Employee` relationship changes during planning,
-so it is orange.
-Other relationships, such as from `Employee` to `Skill`, are immutable during planning
-because Planner can't decide to give an employee an extra skill.
+. *Draw a class diagram of your domain model.*
+.. Normalize the diagram to remove duplicate data.
+// what does it mean to normalize a diagram?
+.. Create sample instances for each class. For example, in the Employee Rostering starter application, the samples for the `Employee` class are `Ann`, `Bert`, and `Carl`.
 
-. If there are multiple relationships (or fields): *check for <<shadowVariable,shadow variables>>*.
-A shadow variable does change during planning,
-but its value can be calculated based on one or more genuine planning variables, without dispute.
-Color those shadow relationships (or fields) purple.
-** Only one side of a bi-directional relationship can be a genuine planning variable,
-the other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on.
-Keep those relationships in orange.
+. *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in the Employee Rostering starter application, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
+because Optaplanner cannot assign an extra skill to an employee.
+
+. *If there are multiple relationships (or fields), check for <<shadowVariable,shadow variables>>*.
+A shadow variable changes during planning, but its value can be calculated based on one or more genuine planning variables, without dispute. Color shadow relationships (or fields) purple.
++
+[NOTE]
+====
+Only one side of a bidirectional relationship can be a genuine planning variable.The other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on. Keep bidirectional relationships orange.
+====
 
 . *Check for <<chainedPlanningVariable,chained planning variables>>*.
-In a chained variable design, the focus lies on deciding the order of a set planning entity instances,
-instead of assigning them to a date/time (although there can be an assigned date/time as a shadow variable).
+In a chained variable design, the focus is on deciding the order of a set of planning entity instances instead of assigning them to a date and time. However,  a shadow variable can assign the date and time.
 A typical use case is <<vehicleRouting,vehicle routing>>.
 
-. If there is an orange _many to many_ relationship, *replace that _many to many_ relationship*
-with a _one to many_ and a _many to one_ relationship to a new intermediate class.
-** Planner currently doesn't support a `@PlanningVariable` on a collection.
-Although a future version will support it for flexibility reasons,
-it probably has an inherit performance and complexity cost, so it might be better to avoid it anyway.
-** For example in employee rostering the `ShiftAssignment` class is
-the _many to many_ relationship between the `Shift` and `Employee`.
-It's effectively every spot that needs to be filled with an employee.
+. *If there is an orange many-to-many relationship, replace it
+with a one-to-many and a many-to-one relationship to a new intermediate class.*
++
+[NOTE]
+====
+Optaplanner does not currently support a `@PlanningVariable` annotation on a collection.
+====
+//I suggest removing this for now, the when you do implement `@PlanningVariable` add this note saying why you shouldn't use it: Although a future version will support it for flexibility reasons. it probably has an inherit performance and complexity cost, so it might be better to avoid it anyway.
++
+For example, in the Employee Rostering starter applicaion the `ShiftAssignment` class is the many-to-many relationship between `Shift` and `Employee`.
+`Shift` contains every shift time that needs to be filled with an employee.
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 
-. In a _many to one_ relationship, *usually the _many_ side is the planning entity class with the planning variable*.
-Annotate it with a `@PlanningEntity` annotation.
-** For example in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
-** If it's a bi-directional relationship, both sides are a planning entity class,
-but usually the _many_ side has the planning variable and the _one_ side the shadow variable.
+. *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bidirectional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in the Employee Rostering starter application, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
-. The planning entity class should have *at least one problem property*.
-So a planning entity class cannot consist out of only planning variables
-(or even an id and only planning variables).
-Remove a surplus `@PlanningVariable` so it becomes a problem property.
-This heavily decreases <<searchSpaceSize,the search space size>> and heavily increases solving efficiency.
-** For example in employee rostering, the `ShiftAssignment` class should not annotate
-both the shift and employee relationship with `@PlanningVariable`.
-** When all planning variables are `null` (which occurs when the planning solution is still uninitialized),
-a planning entity instance should still be describable to the business people.
-*** So a surrogate ID does not suffice as the required minimum of one problem property.
-** This way, there is no need to add a hard constraint to assure that two planning entities are different:
-they are already different due to their problem properties.
-** In some cases, multiple planning entity instances have the same set of problem properties.
-In such cases, it can be useful to create an extra problem property to distinguish them.
-*** For example in employee rostering, the `ShiftAssignment` class has besides the problem property `Shift`
-also the problem property `indexInShift` (which is an `int`).
+. *Make sure that the planning entity class has at least one problem property*. A planning entity class cannot consist of only planning variables or an ID and only planning variables.
+.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases <<searchSpaceSize,the search space size>> and significantly increases solving efficiency. For example, in the Employee Rostering starter application, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
+.. Make sure that when all planning variables have a value of `null`, the planning entity instance is describable to the business people. Planning variables have a value of `null` when the planning solution is uninitialized.
+** A surrogate ID does not suffice as the required minimum of one problem property.
+** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
+** In some cases, multiple planning entity instances have the same set of problem properties. In such cases, it can be useful to create an extra problem property to distinguish them. For example, in the Employee Rostering starter application, the `ShiftAssignment` class has the problem property `Shift` as well as the problem property `indexInShift` which is an `int` class.
 
-. Choose the model in which *the number of planning entities is fixed during planning*.
-** For example in employee rostering, it's impossible to know in advance how many shifts each employee will have
-before Planner solves it (and it can even differ per best solution found).
+. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the Employee Rostering starter application, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
 On the other hand, the number of employees per shift is known in advance,
-so it's better to make the `Shift` relationship a problem property
+so it is better to make the `Shift` relationship a problem property
 and the `Employee` relationship a planning variable.
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideB.png[align="center"]
 
-For inspiration, take a look at how the examples modeled their domain:
+// Not clear just what this diagram is showing:
 
 image::DesignPatterns/entityVariableAndValueExamples.png[align="center"]
 
 [NOTE]
 ====
-Vehicle routing is special, because it uses a <<chainedPlanningVariable,chained planning variable>>.
+Vehicle routing is an exception because it uses a <<chainedPlanningVariable,chained planning variable>>.
 ====
 
 
