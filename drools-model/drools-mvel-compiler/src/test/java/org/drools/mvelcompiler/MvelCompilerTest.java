@@ -181,6 +181,19 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testMapSetWithVariable() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "String key3 = \"key3\";\n" +
+                     "$p.items[key3] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "java.lang.String key3 = \"key3\";\n" +
+                     "$p.getItems().put(key3, \"value3\"); " +
+                     "}");
+    }
+
+    @Test
     public void testMapSetWithMapGetAsValue() {
         test(ctx -> {
                  ctx.addDeclaration("$p", Person.class);

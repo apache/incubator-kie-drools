@@ -59,10 +59,8 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testMvelMapSyntax() {
-        final String drl1 = "" +
-                "package com.sample.dtables;\n" +
-                "\n" +
+    public void testMVELMapSyntax() {
+        final String drl = "" +
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "\n" +
@@ -76,14 +74,13 @@ public class MvelDialectTest extends BaseModelTest {
                 "              $key2 : \"key2\" " +
                 ")\n" +
                 "  then\n" +
-                // All of these three should pass
-//                "    m.itemsString[$key1] = $status;\n" +
-//                "    m.itemsString[$key2] = \"value2\";\n" +
+                "    m.itemsString[$key1] = $status;\n" +
+                "    m.itemsString[$key2] = \"value2\";\n" +
                 "    m.itemsString[\"key3\"] = \"value3\";\n" +
                 "    update(m);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl1);
+        KieSession ksession = getKieSession(drl);
 
         Person p = new Person("Luca");
 
@@ -93,8 +90,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Map<String, String> itemsString = p.getItemsString();
 
-        System.out.println(itemsString);
-//        assertEquals(3, itemsString.keySet().size());
+        assertEquals(3, itemsString.keySet().size());
     }
 
     @Test

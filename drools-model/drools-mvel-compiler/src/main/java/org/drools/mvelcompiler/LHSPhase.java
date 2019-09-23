@@ -205,7 +205,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         Optional<Type> type = name.getType();
         if(type.filter(TypeUtils::isCollection).isPresent()) {
             Expression index = n.getIndex();
-            if(index.isStringLiteralExpr()) {
+            if(index.isStringLiteralExpr() || index.isNameExpr()) {
                 return new MapPutExprT(name, index, rhsOrNull());
             } else {
                 return new ListAccessExprT(name, index, type.get());
