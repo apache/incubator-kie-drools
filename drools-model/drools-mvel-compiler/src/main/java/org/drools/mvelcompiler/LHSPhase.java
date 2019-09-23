@@ -4,12 +4,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -22,6 +24,7 @@ import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
+import org.drools.mvelcompiler.ast.MapPutExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
@@ -35,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.core.util.ClassUtils.getSetter;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.mvelcompiler.bigdecimal.BigDecimalConversion.shouldConvertPlusEqualsOperatorBigDecimal;
@@ -102,10 +106,20 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression scope = n.getScope().accept(this, arg);
         n.getName().accept(this, arg);
 
-        Class<?> setterArgumentType = getRHSType();
-
-        return tryParseItAsSetter(n, scope, setterArgumentType)
+        return tryParseItAsMap(n, scope)
+                .map(Optional::of)
+                .orElseGet(() -> tryParseItAsSetter(n, scope, getRHSType()))
                 .orElse(new UnalteredTypedExpression(n));
+    }
+
+    private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
+        return scope.getType().flatMap(scopeType -> {
+            String getterName = printConstraint(n.getName());
+
+            return ofNullable(getAccessor((Class<?>) scopeType, getterName))
+                    .filter(t -> Map.class.isAssignableFrom(t.getReturnType()))
+                    .map(accessor -> new FieldToAccessorTExpr(scope, accessor, emptyList()));
+        });
     }
 
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
@@ -168,6 +182,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
             return target;
         } else if (target instanceof VariableDeclaratorTExpr) {
             return target;
+        } else if (target instanceof MapPutExprT) {
+            return target;
         } else {
             return new AssignExprT(n.getOperator(), target, rhsOrNull());
         }
@@ -183,7 +199,12 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         Optional<Type> type = name.getType();
         if(type.filter(TypeUtils::isCollection).isPresent()) {
-            return new ListAccessExprT(name, n.getIndex(), type.get());
+            Expression index = n.getIndex();
+            if(index.isStringLiteralExpr()) {
+                return new MapPutExprT(name, index, rhsOrNull());
+            } else {
+                return new ListAccessExprT(name, index, type.get());
+            }
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
     }
