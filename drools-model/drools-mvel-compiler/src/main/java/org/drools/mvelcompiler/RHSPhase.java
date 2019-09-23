@@ -2,11 +2,9 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
@@ -45,7 +43,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.CollectionUtils;
+import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getAccessor;
@@ -229,7 +227,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(CollectionUtils::isCollection).isPresent()) {
+        if(type.filter(TypeUtils::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));

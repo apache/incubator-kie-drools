@@ -29,7 +29,7 @@ import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.bigdecimal.BigDecimalConversion;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.CollectionUtils;
+import org.drools.mvelcompiler.util.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,7 +178,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(CollectionUtils::isCollection).isPresent()) {
+        if(type.filter(TypeUtils::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
@@ -206,7 +206,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     }
 
     private Class<?> getRHSType() {
-        return (Class<?>) rhs.flatMap(TypedExpression::getType).orElseThrow(() -> new MvelCompilerException("RHS doesn't have a type"));
+        return rhs
+                .flatMap(TypedExpression::getType)
+                .map(TypeUtils::classFromType)
+                .orElseThrow(() -> new MvelCompilerException("RHS doesn't have a type"));
     }
 
     private Class<?> getRHSorLHSType(VariableDeclarator n) {
