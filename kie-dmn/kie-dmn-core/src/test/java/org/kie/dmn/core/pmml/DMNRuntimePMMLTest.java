@@ -87,7 +87,7 @@ public class DMNRuntimePMMLTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat((Map<String, Object>) result.get("my decision"), hasEntry("calculatedScore", new BigDecimal("41.345")));
+        assertThat(result.get("my decision"), is(new BigDecimal("41.345")));
         
         // additional import info.
         Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();

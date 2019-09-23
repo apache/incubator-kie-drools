@@ -16,8 +16,6 @@
 
 package org.kie.dmn.core.pmml;
 
-import java.util.Map;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -63,9 +61,8 @@ public class DMNTreePMMLTest {
 
         final DMNContext resultContext = dmnResult.getContext();
         Assertions.assertThat(resultContext).isNotNull();
-        Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(Map.class);
-        final Map<String, Object> decisions = (Map<String, Object>) resultContext.get("Decision");
-        final String weatherDecision = (String) decisions.get("weatherdecision");
+        Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(String.class);
+        final String weatherDecision = (String) resultContext.get("Decision");
         Assertions.assertThat(weatherDecision).isNotNull();
 
         return weatherDecision;
