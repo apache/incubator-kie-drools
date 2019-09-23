@@ -106,10 +106,15 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression scope = n.getScope().accept(this, arg);
         n.getName().accept(this, arg);
 
-        return tryParseItAsMap(n, scope)
-                .map(Optional::of)
-                .orElseGet(() -> tryParseItAsSetter(n, scope, getRHSType()))
-                .orElse(new UnalteredTypedExpression(n));
+        if(parentIsArrayAccessExpr(n)) {
+            return tryParseItAsMap(n, scope)
+                    .map(Optional::of)
+                    .orElseGet(() -> tryParseItAsSetter(n, scope, getRHSType()))
+                    .orElse(new UnalteredTypedExpression(n));
+        } else {
+            return tryParseItAsSetter(n, scope, getRHSType())
+                    .orElse(new UnalteredTypedExpression(n));
+        }
     }
 
     private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
@@ -228,6 +233,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
      */
     private boolean parentIsExpressionStmt(Node n) {
         return n.getParentNode().filter(p -> p instanceof ExpressionStmt).isPresent();
+    }
+
+    private boolean parentIsArrayAccessExpr(Node n) {
+        return n.getParentNode().filter(p -> p instanceof ArrayAccessExpr).isPresent();
     }
 
     private Class<?> getRHSType() {

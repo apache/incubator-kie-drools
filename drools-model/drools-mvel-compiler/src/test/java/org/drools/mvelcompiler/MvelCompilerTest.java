@@ -3,7 +3,6 @@ package org.drools.mvelcompiler;
 import java.util.Map;
 
 import org.drools.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -196,14 +195,15 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    @Ignore
     public void testMapSetToNewMap() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{" +
+                     "Map newhashmap = new HashMap();\n" +
                      "$p.items = newhashmap;\n" +
                      "}",
              "{ " +
-                     "$p.setItems(newhashmap);" +
+                     "java.util.Map newhashmap = new HashMap(); \n" +
+                     "$p.setItems(newhashmap); " +
                      "}");
     }
 
