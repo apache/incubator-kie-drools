@@ -71,7 +71,8 @@ public class MvelDialectTest extends BaseModelTest {
                 "    m: Person($name: name , " +
                 "              $status : \"value1\", " +
                 "              $key1 : \"key1\", " +
-                "              $key2 : \"key2\" " +
+                "              $key2 : \"key2\", " +
+                "              $value4 : 2 " +
                 ")\n" +
                 "  then\n" +
                 "    m.itemsString[$key1] = $status;\n" +
@@ -80,6 +81,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    m.getItemsString().put( $key1, $status );\n" +
                 "    m.getItemsString().put( $key2, \"value2\" );\n" +
                 "    m.getItemsString().put( \"key3\", \"value2\" );\n" +
+                "    m.getItemsString().put( \"key4\", $value4 );\n" +
                 "    update(m);\n" +
                 "end";
 
@@ -93,7 +95,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Map<String, String> itemsString = p.getItemsString();
 
-        assertEquals(3, itemsString.keySet().size());
+        assertEquals(4, itemsString.keySet().size());
     }
 
     @Test
