@@ -11,6 +11,10 @@ import static java.util.stream.Stream.of;
 
 public class TypeUtils {
 
+    private TypeUtils() {
+
+    }
+
     public static boolean isCollection(Type t) {
         return of(List.class, Map.class).anyMatch(cls -> {
             Class<?> clazz = classFromType(t);
