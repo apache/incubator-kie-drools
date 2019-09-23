@@ -77,6 +77,9 @@ public class MvelDialectTest extends BaseModelTest {
                 "    m.itemsString[$key1] = $status;\n" +
                 "    m.itemsString[$key2] = \"value2\";\n" +
                 "    m.itemsString[\"key3\"] = \"value3\";\n" +
+                "    m.getItemsString().put( $key1, $status );\n" +
+                "    m.getItemsString().put( $key2, \"value2\" );\n" +
+                "    m.getItemsString().put( \"key3\", \"value2\" );\n" +
                 "    update(m);\n" +
                 "end";
 

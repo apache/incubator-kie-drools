@@ -45,8 +45,10 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
+import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
+import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
 
 /**
  * This phase processes the right hand side of a Java Expression and creates a new AST
@@ -68,7 +70,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         final Optional<TypedExpression> scope;
 
         Context(TypedExpression scope) {
-            this.scope = Optional.ofNullable(scope);
+            this.scope = ofNullable(scope);
         }
 
         Optional<Type> getScopeType() {
@@ -121,9 +123,9 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> scopeType = arg.getScopeType();
 
         Optional<Field> fieldType = scopeType.flatMap(te -> {
-            Class parentClass = (Class) te;
+            Class parentClass = TypeUtils.classFromType(te);
             Field field = ClassUtils.getField(parentClass, n.asString());
-            return Optional.ofNullable(field);
+            return ofNullable(field);
         });
 
         return map2(lastTypedExpression, fieldType, FieldAccessTExpr::new);
@@ -145,7 +147,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> scopeType = arg.getScopeType();
-        Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
+        Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
     }
