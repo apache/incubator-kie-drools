@@ -24,19 +24,22 @@ import org.drools.core.spi.PropagationContext;
 
 public class TraitProxyObjectTypeNode extends ObjectTypeNode {
 
-
-    public TraitProxyObjectTypeNode( int id, EntryPointNode source, ObjectType objectType, BuildContext context ) {
-        super( id, source, objectType, context );
+    public TraitProxyObjectTypeNode(int id, EntryPointNode source, ObjectType objectType, BuildContext context) {
+        super(id, source, objectType, context);
     }
 
+    /**
+     * Do not use this constructor! It should be used just by deserialization.
+     */
+    public TraitProxyObjectTypeNode() {
+    }
 
-    public void modifyObject( InternalFactHandle factHandle,
-                              ModifyPreviousTuples modifyPreviousTuples,
-                              PropagationContext context,
-                              InternalWorkingMemory workingMemory ) {
+    @Override
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
         checkDirty();
         // node can't have sinks. Avoid mask recalculations and other operations on updates
     }
-
-
 }

@@ -68,6 +68,9 @@ public class NamedObjectModel extends ObjectModel {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this == obj) {
             return true;
         }
@@ -76,14 +79,10 @@ public class NamedObjectModel extends ObjectModel {
         }
         NamedObjectModel other = (NamedObjectModel) obj;
         if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
+            return other.name == null;
+        } else {
+            return name.equals(other.name);
         }
-
-        return true;
     }
 
 }

@@ -16,9 +16,6 @@
 
 package org.drools.core.common;
 
-import static java.util.concurrent.CompletableFuture.runAsync;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -40,7 +37,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
@@ -51,6 +47,9 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.concurrent.CompletableFuture.runAsync;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
@@ -424,7 +423,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) throws ConsequenceException {
+    public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.fireNextItem -> TODO" );
     }
 

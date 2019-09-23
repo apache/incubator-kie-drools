@@ -81,6 +81,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         return (SubProcessNode) getNode();
     }
 
+    @Override
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
     	// if node instance was cancelled, abort
@@ -221,6 +222,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         }
     }
 
+    @Override
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {

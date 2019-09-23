@@ -270,7 +270,7 @@ public class UserTaskModelMetaData {
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
 
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
-        toMapMethod.get().setBody(toMapBody);
+        toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
         return compilationUnit;
     }
 }

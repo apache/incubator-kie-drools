@@ -260,7 +260,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 			mv.visitMethodInsn( INVOKEVIRTUAL,
 			                    Type.getInternalName( core.getDefinedClass() ),
-			                    BuildUtils.setterName( coreField.getName(), coreField.getTypeName() ),
+			                    BuildUtils.setterName( coreField.getName()),
 			                    "(" + BuildUtils.getTypeDescriptor( coreField.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 			                    false );
 		} else {
@@ -370,7 +370,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 		mv.visitMethodInsn( INVOKEVIRTUAL,
 		                    BuildUtils.getInternalType( proxyName ),
-		                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+		                    BuildUtils.setterName( fld.getName()),
 		                    "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 		                    false );
 	}
@@ -416,7 +416,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		}
 		mv.visitMethodInsn( INVOKEVIRTUAL,
 		                    BuildUtils.getInternalType( proxyName ),
-		                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+		                    BuildUtils.setterName( fld.getName()),
 		                    "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ),
 		                    false );
 		if ( ! BuildUtils.isPrimitive( fld.getTypeName() ) ) {

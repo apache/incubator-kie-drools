@@ -30,6 +30,12 @@ public class AfterActivationFiredEventImpl  extends ActivationEventImpl implemen
         this.beforeMatchFiredEvent = beforeMatchFiredEvent;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public AfterActivationFiredEventImpl() {
+    }
+
     public BeforeMatchFiredEvent getBeforeMatchFiredEvent() {
         return beforeMatchFiredEvent;
     }

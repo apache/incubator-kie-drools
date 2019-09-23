@@ -29,15 +29,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.time.SessionPseudoClock;
 import org.kie.services.time.InternalSchedulerService;
 import org.kie.services.time.Job;
 import org.kie.services.time.JobContext;
 import org.kie.services.time.JobHandle;
-import org.drools.core.time.SessionPseudoClock;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.Trigger;
 import org.kie.services.time.impl.DefaultJobHandle;
 import org.kie.services.time.impl.DefaultTimerJobFactoryManager;
+import org.kie.services.time.impl.DefaultTimerJobInstance;
 import org.kie.services.time.impl.TimerJobFactoryManager;
 import org.kie.services.time.impl.TimerJobInstance;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class PseudoClockScheduler
     private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
 
     private AtomicLong                      timer;
-    private PriorityBlockingQueue<Callable<Void>>   queue;
+    private PriorityBlockingQueue<DefaultTimerJobInstance>   queue;
     private transient InternalWorkingMemory session;
 
     private TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
@@ -70,7 +71,7 @@ public class PseudoClockScheduler
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
         this.timer = new AtomicLong(0);
-        this.queue = new PriorityBlockingQueue<Callable<Void>>();
+        this.queue = new PriorityBlockingQueue<>();
         this.session = session;
     }
 
@@ -78,7 +79,7 @@ public class PseudoClockScheduler
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityBlockingQueue<Callable<Void>> tmp = (PriorityBlockingQueue<Callable<Void>>) in.readObject();
+        PriorityBlockingQueue<DefaultTimerJobInstance> tmp = (PriorityBlockingQueue<DefaultTimerJobInstance>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -139,7 +140,7 @@ public class PseudoClockScheduler
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized(queue) {
-            queue.add( ( Callable<Void> ) timerJobInstance );
+            queue.add( ( DefaultTimerJobInstance ) timerJobInstance );
         }
     }
 
@@ -197,9 +198,9 @@ public class PseudoClockScheduler
     @SuppressWarnings("unchecked")
     private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
         long endTime = this.timer.get() + increase;
-        TimerJobInstance item = (TimerJobInstance) queue.peek();
+        TimerJobInstance item = queue.peek();
         long fireTime;
-        while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime ) ) )  ) {
+        while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
             // remove the head
             synchronized( queue ) {
                 queue.remove(item);
@@ -220,7 +221,7 @@ public class PseudoClockScheduler
             }
             // get next head
             synchronized( queue ) {
-                item = (TimerJobInstance) queue.peek();
+                item = queue.peek();
             }
         }
         this.timer.set( endTime );
@@ -229,7 +230,7 @@ public class PseudoClockScheduler
 
     public long getTimeToNextJob() {
         synchronized( queue ) {
-            TimerJobInstance item = (TimerJobInstance) queue.peek();
+            TimerJobInstance item = queue.peek();
             return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
         }
     }

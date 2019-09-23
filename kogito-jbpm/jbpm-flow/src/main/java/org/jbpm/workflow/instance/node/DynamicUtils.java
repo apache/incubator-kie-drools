@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemManager;
@@ -47,14 +46,11 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.command.RegistryContext;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-;
 
 public class DynamicUtils {
 
@@ -255,7 +251,7 @@ public class DynamicUtils {
                 }
             });
         } else {
-            throw new IllegalArgumentException("Unsupported ksession: " + ksession == null ? "null" : ksession.getClass().getName());
+            throw new IllegalArgumentException("Unsupported ksession: " + (ksession == null ? "null" : ksession.getClass().getName()));
         }
     }
 
@@ -270,22 +266,21 @@ public class DynamicUtils {
                          processId);
             throw new IllegalArgumentException("No process definition found with id: " + processId);
         } else {
-            ProcessEventSupport eventSupport = ((InternalProcessRuntime)
-                    ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+            ProcessEventSupport eventSupport = ((InternalProcessRuntime) ksession.getProcessRuntime()).getProcessEventSupport();
             eventSupport.fireBeforeNodeTriggered(subProcessNodeInstance,
                                                  ksession);
 
             ProcessInstance subProcessInstance = null;
             if (((WorkflowProcessInstanceImpl) processInstance).getCorrelationKey() != null) {
-                List<String> businessKeys = new ArrayList<String>();
+                List<String> businessKeys = new ArrayList<>();
                 businessKeys.add(((WorkflowProcessInstanceImpl) processInstance).getCorrelationKey());
                 businessKeys.add(processId);
                 businessKeys.add(String.valueOf(System.currentTimeMillis()));
                 CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
                 CorrelationKey subProcessCorrelationKey = correlationKeyFactory.newCorrelationKey(businessKeys);
-                subProcessInstance = (ProcessInstance) ((CorrelationAwareProcessRuntime) ksession).createProcessInstance(processId,
-                                                                                                                         subProcessCorrelationKey,
-                                                                                                                         parameters);
+                subProcessInstance = (ProcessInstance) ksession.createProcessInstance(processId,
+                                                                                      subProcessCorrelationKey,
+                                                                                      parameters);
             } else {
                 subProcessInstance = (ProcessInstance) ksession.createProcessInstance(processId,
                                                                                       parameters);
@@ -300,7 +295,7 @@ public class DynamicUtils {
 
             eventSupport.fireAfterNodeTriggered(subProcessNodeInstance,
                                                 ksession);
-            if (subProcessInstance.getState() == ProcessInstance.STATE_COMPLETED) {
+            if (subProcessInstance.getState() == org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED) {
                 subProcessNodeInstance.triggerCompleted();
             } else {
 
@@ -309,5 +304,9 @@ public class DynamicUtils {
 
             return subProcessInstance.getId();
         }
+    }
+
+    private DynamicUtils() {
+        // It is not allowed to create instances of util classes.
     }
 }

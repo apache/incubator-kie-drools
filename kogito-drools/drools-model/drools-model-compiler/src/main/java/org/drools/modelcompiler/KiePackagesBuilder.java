@@ -183,7 +183,7 @@ public class KiePackagesBuilder {
 
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
-                pkg.addTypeDeclaration( createTypeDeclaration( pkg, metaType ) );
+                pkg.addTypeDeclaration( createTypeDeclaration(metaType ) );
             }
 
             for (Global global : model.getGlobals()) {

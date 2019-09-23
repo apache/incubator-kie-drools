@@ -32,7 +32,7 @@ public class XpathBackReference {
     private final Pattern pattern;
     private final List<Class<?>> backReferenceClasses;
 
-    private Map<String, Declaration> declarations = Collections.EMPTY_MAP;
+    private Map<String, Declaration> declarations = Collections.emptyMap();
 
     private MapAdapter declarationMap;
 
@@ -65,8 +65,8 @@ public class XpathBackReference {
                                        new RelativePattern( pattern, relativeOffset ),
                                        true );
 
-        if (declarations == Collections.EMPTY_MAP) {
-            declarations = new HashMap<String, Declaration>();
+        if (declarations.isEmpty()) {
+            declarations = new HashMap<>();
         }
 
         declarations.put( id, declaration );

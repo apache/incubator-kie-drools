@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -108,9 +109,9 @@ public class DefaultAgenda
 
     private InternalAgendaGroup                                  mainAgendaGroup;
 
-    private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<RuleAgendaItem>();
+    private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<>();
 
-    private final Map<QueryImpl, RuleAgendaItem>                 queries = new ConcurrentHashMap<QueryImpl, RuleAgendaItem>();
+    private final Map<QueryImpl, RuleAgendaItem>                 queries = new ConcurrentHashMap<>();
 
     private AgendaGroupFactory                                   agendaGroupFactory;
 
@@ -127,7 +128,7 @@ public class DefaultAgenda
 
     private ActivationsFilter                                    activationsFilter;
 
-    private volatile List<PropagationContext>                    expirationContexts = new ArrayList<PropagationContext>();
+    private volatile List<PropagationContext>                    expirationContexts = new ArrayList<>();
 
     private RuleEvaluator ruleEvaluator;
 
@@ -153,9 +154,9 @@ public class DefaultAgenda
     DefaultAgenda(InternalKnowledgeBase kBase,
                   boolean initMain,
                   ExecutionStateMachine executionStateMachine) {
-        this.agendaGroups = new HashMap<String, InternalAgendaGroup>();
-        this.activationGroups = new HashMap<String, InternalActivationGroup>();
-        this.focusStack = new LinkedList<AgendaGroup>();
+        this.agendaGroups = new HashMap<>();
+        this.activationGroups = new HashMap<>();
+        this.focusStack = new LinkedList<>();
         this.agendaGroupFactory = kBase.getConfiguration().getAgendaGroupFactory();
         this.executionStateMachine = executionStateMachine;
 
@@ -183,6 +184,7 @@ public class DefaultAgenda
         this.sequential = kBase.getConfiguration().isSequential();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         setWorkingMemory( (InternalWorkingMemory) in.readObject() );
@@ -197,6 +199,7 @@ public class DefaultAgenda
         this.executionStateMachine = new ExecutionStateMachine();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( workingMemory );
         out.writeObject( agendaGroups );
@@ -209,6 +212,7 @@ public class DefaultAgenda
         out.writeBoolean( sequential );
     }
 
+    @Override
     public RuleAgendaItem createRuleAgendaItem(final int salience,
                                                final PathMemory rs,
                                                final TerminalNode rtn ) {
@@ -225,6 +229,7 @@ public class DefaultAgenda
         return lazyAgendaItem;
     }
 
+    @Override
     public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                        final int salience,
                                        final PropagationContext context,
@@ -238,6 +243,7 @@ public class DefaultAgenda
         return rtnLeftTuple;
     }
 
+    @Override
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.mainAgendaGroup = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
@@ -259,10 +265,12 @@ public class DefaultAgenda
                new SynchronizedPropagationList( workingMemory );
     }
 
+    @Override
     public PropagationList getPropagationList() {
         return propagationList;
     }
 
+    @Override
     public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
@@ -316,6 +324,7 @@ public class DefaultAgenda
      *
      * @param item
      */
+    @Override
     public void addItemToActivationGroup(final AgendaItem item) {
         if ( item.isRuleAgendaItem() ) {
             throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
@@ -338,8 +347,8 @@ public class DefaultAgenda
     public void insertAndStageActivation(final AgendaItem activation) {
         if ( activationObjectTypeConf == null ) {
             EntryPointId ep = workingMemory.getEntryPoint();
-            activationObjectTypeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
-                                                                                                                                                                                            activation );
+            activationObjectTypeConf = workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() ).getObjectTypeConfigurationRegistry().getObjectTypeConf(ep,
+                                                                                                                                                               activation );
         }
 
         InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
@@ -347,10 +356,12 @@ public class DefaultAgenda
         activation.setActivationFactHandle( factHandle );
     }
 
+    @Override
     public boolean isDeclarativeAgenda() {
         return declarativeAgenda;
     }
 
+    @Override
     public void modifyActivation(final AgendaItem activation,
                                  boolean previouslyActive) {
         // in Phreak this is only called for declarative agenda, on rule instances
@@ -361,15 +372,18 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                (InternalAgendaGroup) agendaGroup );
     }
 
+    @Override
     public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId) {
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
     }
 
+    @Override
     public void cancelActivation(final Tuple leftTuple,
                                  final PropagationContext context,
                                  final Activation activation,
@@ -440,6 +454,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#setFocus(java.lang.String)
      */
+    @Override
     public void setFocus(final String name) {
         setFocus( null, name );
     }
@@ -456,6 +471,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getFocus()
      */
+    @Override
     public AgendaGroup getFocus() {
         return this.focusStack.getLast();
     }
@@ -465,6 +481,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getNextFocus()
      */
+    @Override
     public InternalAgendaGroup getNextFocus() {
         if (focusStack.isEmpty()) {
             return null;
@@ -531,14 +548,17 @@ public class DefaultAgenda
         this.focusStack.clear();
     }
 
+    @Override
     public RuleAgendaItem peekNextRule() {
         return (RuleAgendaItem) ((InternalAgendaGroup) this.focusStack.peekLast()).peek();
     }
 
+    @Override
     public AgendaGroup getAgendaGroup(final String name) {
         return getAgendaGroup( name, workingMemory == null ? null : workingMemory.getKnowledgeBase() );
     }
 
+    @Override
     public AgendaGroup getAgendaGroup(final String name,
                                       InternalKnowledgeBase kBase) {
         String groupName = (name == null || name.length() == 0) ? AgendaGroup.MAIN : name;
@@ -557,51 +577,55 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
+    @Override
     public AgendaGroup[] getAgendaGroups() {
         return this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
 
+    @Override
     public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
         return this.agendaGroups;
     }
 
+    @Override
     public AgendaGroup[] getStack() {
         return this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
 
+    @Override
     public LinkedList<AgendaGroup> getStackList() {
         return this.focusStack;
     }
 
+    @Override
     public void addAgendaGroupOnStack(AgendaGroup agendaGroup) {
         if ( focusStack.isEmpty() || focusStack.getLast() != agendaGroup ) {
             focusStack.add( agendaGroup );
         }
     }
 
+    @Override
     public Map<String, InternalActivationGroup> getActivationGroupsMap() {
         return this.activationGroups;
     }
 
+    @Override
     public InternalActivationGroup getActivationGroup(final String name) {
-        ActivationGroupImpl activationGroup = (ActivationGroupImpl) this.activationGroups.get( name );
-        if ( activationGroup == null ) {
-            activationGroup = new ActivationGroupImpl( this, name );
-            this.activationGroups.put( name,
-                                       activationGroup );
-        }
-        return activationGroup;
+        return this.activationGroups.computeIfAbsent(name, k -> new ActivationGroupImpl( this, k ));
     }
 
+    @Override
     public RuleFlowGroup getRuleFlowGroup(final String name) {
         return ( RuleFlowGroup ) getAgendaGroup(name);
     }
 
+    @Override
     public void activateRuleFlowGroup(final String name) {
         InternalRuleFlowGroup group =  (InternalRuleFlowGroup) getRuleFlowGroup( name );
         activateRuleFlowGroup( group, null, null );
     }
 
+    @Override
     public void activateRuleFlowGroup(final String name,
                                       String processInstanceId,
                                       String nodeInstanceId) {
@@ -622,6 +646,7 @@ public class DefaultAgenda
         propagationList.notifyWaitOnRest();
     }
 
+    @Override
     public void deactivateRuleFlowGroup(final String name) {
         deactivateRuleFlowGroup( (InternalRuleFlowGroup) getRuleFlowGroup( name ) );
     }
@@ -647,6 +672,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#focusStackSize()
      */
+    @Override
     public int focusStackSize() {
         int size = 0;
         for ( final AgendaGroup group : this.focusStack ) {
@@ -660,6 +686,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#agendaSize()
      */
+    @Override
     public int agendaSize() {
         int size = 0;
         for ( InternalAgendaGroup internalAgendaGroup : this.agendaGroups.values() ) {
@@ -673,16 +700,16 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getActivations()
      */
+    @Override
     public Activation[] getActivations() {
-        final List<Activation> list = new ArrayList<Activation>();
+        final List<Activation> list = new ArrayList<>();
         for (InternalAgendaGroup group : this.agendaGroups.values()) {
-            for (Match activation : group.getActivations()) {
-                list.add((Activation) activation);
-            }
+            list.addAll(Arrays.asList(group.getActivations()));
         }
-        return list.toArray( new Activation[list.size()] );
+        return list.toArray(new Activation[]{});
     }
 
+    @Override
     public void clear() {
         // reset focus stack
         clearFocusStack();
@@ -703,6 +730,7 @@ public class DefaultAgenda
         propagationList.reset();
     }
 
+    @Override
     public void reset() {
         // reset focus stack
         clearFocusStack();
@@ -725,6 +753,7 @@ public class DefaultAgenda
         propagationList.reset();
     }
 
+    @Override
     public void clearAndCancel() {
         // Cancel all items and fire a Cancelled event for each Activation
         for ( InternalAgendaGroup internalAgendaGroup : this.agendaGroups.values() ) {
@@ -742,6 +771,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
+    @Override
     public void clearAndCancelAgendaGroup(final String name) {
         InternalAgendaGroup agendaGroup = this.agendaGroups.get( name );
         if ( agendaGroup != null ) {
@@ -754,6 +784,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#clearAgendaGroup(org.kie.common.AgendaGroupImpl)
      */
+    @Override
     public void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup) {
         // enforce materialization of all activations of this group before removing them
         for (Activation activation : agendaGroup.getActivations()) {
@@ -766,7 +797,7 @@ public class DefaultAgenda
 
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
-        List<RuleAgendaItem> lazyItems = new ArrayList<RuleAgendaItem>();
+        List<RuleAgendaItem> lazyItems = new ArrayList<>();
         for ( Activation aQueueable : agendaGroup.getAndClear() ) {
             final AgendaItem item = (AgendaItem) aQueueable;
             if ( item.isRuleAgendaItem() ) {
@@ -799,6 +830,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#clearActivationGroup(java.lang.String)
      */
+    @Override
     public void clearAndCancelActivationGroup(final String name) {
         final InternalActivationGroup activationGroup = this.activationGroups.get( name );
         if ( activationGroup != null ) {
@@ -811,6 +843,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#clearActivationGroup(org.kie.spi.ActivationGroup)
      */
+    @Override
     public void clearAndCancelActivationGroup(final InternalActivationGroup activationGroup) {
         final EventSupport eventsupport = this.workingMemory;
 
@@ -835,6 +868,7 @@ public class DefaultAgenda
         activationGroup.reset();
     }
 
+    @Override
     public void clearAndCancelRuleFlowGroup(final String name) {
         clearAndCancelAgendaGroup( agendaGroups.get( name ) );
     }
@@ -849,9 +883,10 @@ public class DefaultAgenda
      * @throws ConsequenceException
      *             If an error occurs while firing an agenda item.
      */
+    @Override
     public int fireNextItem(final AgendaFilter filter,
                             int fireCount,
-                            int fireLimit) throws ConsequenceException {
+                            int fireLimit) {
         // Because rules can be on the agenda, but after network evaluation produce no full matches, the
         // engine uses tryAgain to drive a loop to find a rule that has matches, until there are no more rules left to try.
         // once rule with 1..n matches is found, it'll return back to the outer loop.
@@ -877,6 +912,7 @@ public class DefaultAgenda
         return localFireCount;
     }
 
+    @Override
     public void evaluateEagerList() {
         while ( !eager.isEmpty() ) {
             RuleAgendaItem item = eager.removeFirst();
@@ -900,6 +936,7 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public int sizeOfRuleFlowGroup(String name) {
         InternalAgendaGroup group = agendaGroups.get( name );
         if (group == null) {
@@ -914,6 +951,7 @@ public class DefaultAgenda
         return count;
     }
 
+    @Override
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
                                             String processInstanceId) {
@@ -929,18 +967,16 @@ public class DefaultAgenda
                 ruleExecutor.evaluateNetwork(this);
                 TupleList list = ruleExecutor.getLeftTupleList();
                 for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
-                    if ( ruleName.equals( lt.getRule().getName() ) ) {
-                        if ( checkProcessInstance( lt, processInstanceId ) ) {
-                            return true;
-                        }
+                    if ( ruleName.equals( lt.getRule().getName() )
+                            && ( checkProcessInstance( lt, processInstanceId ) )) {
+                        return true;
                     }
                 }
 
             }   else {
-                if ( ruleName.equals( act.getRule().getName() ) ) {
-                    if ( checkProcessInstance( act, processInstanceId ) ) {
-                        return true;
-                    }
+                if ( ruleName.equals( act.getRule().getName() )
+                        && ( checkProcessInstance( act, processInstanceId ) )) {
+                    return true;
                 }
             }
         }
@@ -963,6 +999,7 @@ public class DefaultAgenda
         return true;
     }
 
+    @Override
     public String getFocusName() {
         return this.getFocus().getName();
     }
@@ -975,10 +1012,12 @@ public class DefaultAgenda
         ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
     }
 
+    @Override
     public void fireUntilHalt() {
         fireUntilHalt( null );
     }
 
+    @Override
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
@@ -995,6 +1034,7 @@ public class DefaultAgenda
         fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
     }
 
+    @Override
     public int fireAllRules(AgendaFilter agendaFilter, int fireLimit) {
         if (!executionStateMachine.toFireAllRules()) {
             return 0;
@@ -1120,7 +1160,7 @@ public class DefaultAgenda
             public PropagationEntry handleRest(DefaultAgenda agenda, boolean isInternalFire) {
                 boolean deactivated = false;
                 if (isInternalFire && agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
-                    agenda.executionStateMachine.inactiveOnFireUntilHalt( agenda.propagationList );
+                    agenda.executionStateMachine.inactiveOnFireUntilHalt();
                     deactivated = true;
                 }
 
@@ -1166,6 +1206,7 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public void executeFlush() {
         if (!executionStateMachine.toExecuteTaskState()) {
             return;
@@ -1178,14 +1219,17 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public void activate() {
         executionStateMachine.activate(this, propagationList);
     }
 
+    @Override
     public void deactivate() {
         executionStateMachine.deactivate();
     }
 
+    @Override
     public boolean tryDeactivate() {
         return executionStateMachine.tryDeactivate();
     }
@@ -1209,6 +1253,7 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public synchronized void halt() {
         // only attempt halt an engine that is currently firing
         // This will place a halt command on the propagation queue
@@ -1218,11 +1263,13 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public boolean dispose(InternalWorkingMemory wm) {
         propagationList.dispose();
         return executionStateMachine.dispose( wm );
     }
 
+    @Override
     public boolean isAlive() {
         return executionStateMachine.isAlive();
     }
@@ -1231,14 +1278,17 @@ public class DefaultAgenda
         executionStateMachine.internalHalt();
     }
 
+    @Override
     public void setActivationsFilter(ActivationsFilter filter) {
         this.activationsFilter = filter;
     }
 
+    @Override
     public ActivationsFilter getActivationsFilter() {
         return this.activationsFilter;
     }
 
+    @Override
     public void handleException(InternalWorkingMemory wm, Activation activation, Exception e) {
         if ( this.legacyConsequenceExceptionHandler != null ) {
             this.legacyConsequenceExceptionHandler.handleException( activation, wm, e );
@@ -1437,17 +1487,17 @@ public class DefaultAgenda
             synchronized (stateMachineLock) {
                 if (currentState != ExecutionState.INACTIVE) {
                     setCurrentState( ExecutionState.INACTIVE );
-                    stateMachineLock.notify();
+                    stateMachineLock.notifyAll();
                     propagationList.onEngineInactive();
                 }
             }
         }
 
-        public void inactiveOnFireUntilHalt(PropagationList propagationList) {
+        public void inactiveOnFireUntilHalt() {
             synchronized (stateMachineLock) {
                 if (currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
                     setCurrentState( ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT );
-                    stateMachineLock.notify();
+                    stateMachineLock.notifyAll();
                 }
             }
         }
@@ -1470,7 +1520,7 @@ public class DefaultAgenda
                     workingMemory.notifyWaitOnRest();
                 }
                 waitAndEnterExecutionState( ExecutionState.DISPOSED );
-                stateMachineLock.notify();
+                stateMachineLock.notifyAll();
                 return true;
             }
         }
@@ -1482,6 +1532,7 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public void registerExpiration(PropagationContext ectx) {
         // it is safe to add into the expirationContexts list without any synchronization because
         // the state machine already guarantees that only one thread at time can access it

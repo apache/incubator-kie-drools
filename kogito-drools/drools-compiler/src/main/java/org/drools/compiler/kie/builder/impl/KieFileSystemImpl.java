@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
 import java.util.Properties;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -72,7 +73,7 @@ public class KieFileSystemImpl
         try {
             return write( path, readBytesFromInputStream(resource.getInputStream()) );
         } catch (IOException e) {
-            throw new RuntimeException("Unable to write Resource: " + resource.toString(), e);
+            throw new UncheckedIOException("Unable to write Resource: " + resource.toString(), e);
         }
     }
 
@@ -96,7 +97,7 @@ public class KieFileSystemImpl
                 throw new RuntimeException( "Resource does not have neither a source nor a target path. Impossible to add it to the bundle. Please set either the source or target name of the resource before adding it." + resource.toString());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Unable to write Resource: " + resource.toString(), e);
+            throw new UncheckedIOException("Unable to write Resource: " + resource.toString(), e);
         }
     }
 
@@ -146,9 +147,7 @@ public class KieFileSystemImpl
     public KieFileSystem clone() {
         try {
             final ByteArrayOutputStream byteArray = writeToByteArray( this );
-            final KieFileSystem kieFileSystem = readFromByteArray( byteArray );
-
-            return kieFileSystem;
+            return readFromByteArray( byteArray );
         } catch ( IOException | ClassNotFoundException ioe ) {
             logger.warn( "Unable to clone KieFileSystemImpl", ioe );
             return null;

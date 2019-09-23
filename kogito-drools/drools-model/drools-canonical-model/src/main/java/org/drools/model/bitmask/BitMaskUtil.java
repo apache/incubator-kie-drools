@@ -45,7 +45,7 @@ public class BitMaskUtil {
         BitMask mask = getEmptyPropertyReactiveMask( metadata.getPropertiesSize() );
         for (String propertyName : listenedProperties) {
             if (propertyName.equals(isPositive ? "*" : "!*")) {
-                return isPositive ? AllSetBitMask.get() : AllSetBitMask.get();
+                return AllSetBitMask.get();
             }
             if (propertyName.startsWith("!") ^ !isPositive) {
                 continue;
@@ -107,7 +107,7 @@ public class BitMaskUtil {
     }
 
     private static List<String> findAccessibleProperties( Class<?> clazz ) {
-        Set<PropertyInClass> props = new TreeSet<PropertyInClass>();
+        Set<PropertyInClass> props = new TreeSet<>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 String propName = getter2property(m.getName());
@@ -123,7 +123,7 @@ public class BitMaskUtil {
             }
         }
 
-        List<String> accessibleProperties = new ArrayList<String>();
+        List<String> accessibleProperties = new ArrayList<>();
         for ( PropertyInClass setter : props ) {
             accessibleProperties.add(setter.setter);
         }
@@ -170,5 +170,9 @@ public class BitMaskUtil {
         public int hashCode() {
             return 29 * clazz.hashCode() + 31 * setter.hashCode();
         }
+    }
+
+    private BitMaskUtil() {
+        // It is not allowed to create instances of util classes.
     }
 }

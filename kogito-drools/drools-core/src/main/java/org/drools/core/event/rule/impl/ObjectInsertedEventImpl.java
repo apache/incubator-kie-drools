@@ -41,12 +41,21 @@ public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
         this.object = object;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ObjectInsertedEventImpl() {
+        super();
+    }
+
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );
         out.writeObject( object );
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -54,10 +63,12 @@ public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
         this.object = in.readObject();
     }
 
+    @Override
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
 
+    @Override
     public Object getObject() {
         return this.object;
     }

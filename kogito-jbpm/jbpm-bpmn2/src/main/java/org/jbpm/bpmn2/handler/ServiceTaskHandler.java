@@ -51,19 +51,19 @@ public class ServiceTaskHandler implements WorkItemHandler {
         String[] services = {service, interfaceImplementationRef};
         Class<?> c = null;
         
-        for(String serv : services) {
+        for (String serv : services) {
             try {
                 c = Class.forName(serv);
                 break;
             } catch (ClassNotFoundException cnfe) {
-                if(serv.compareTo(services[services.length - 1]) == 0) {
+                if (serv.compareTo(services[services.length - 1]) == 0) {
                     handleException(cnfe, service, interfaceImplementationRef, operation, parameterType, parameter);
                 }
             }
         }
         
         try {
-            Object instance = c.newInstance();
+            Object instance = c.getDeclaredConstructor().newInstance();
             Class<?>[] classes = null;
             Object[] params = null;
             if (parameterType != null) {

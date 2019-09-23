@@ -36,19 +36,15 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -80,9 +76,9 @@ public abstract class AbstractKieModule
 
     private static final Logger log = LoggerFactory.getLogger(AbstractKieModule.class);
 
-    private transient final Map<String, KnowledgeBuilder> kBuilders = new HashMap<String, KnowledgeBuilder>();
+    private final transient Map<String, KnowledgeBuilder> kBuilders = new HashMap<>();
 
-    private transient final Map<String, Results> resultsCache = new HashMap<String, Results>();
+    private final transient Map<String, Results> resultsCache = new HashMap<>();
 
     protected ReleaseId releaseId;
 
@@ -91,11 +87,9 @@ public abstract class AbstractKieModule
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
     // Map< KBaseName, CompilationCache>
-    protected Map<String, CompilationCache> compilationCache = new HashMap<String, CompilationCache>();
+    protected Map<String, CompilationCache> compilationCache = new HashMap<>();
 
-    private Map<String, TypeMetaInfo> typesMetaInfo;
-
-    private transient Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<String, ResourceConfiguration>();
+    private transient Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<>();
 
     protected transient PomModel pomModel;
 
@@ -118,7 +112,7 @@ public abstract class AbstractKieModule
 
     public void addKieDependency(InternalKieModule dependency) {
         if (kieDependencies == null) {
-            kieDependencies = new HashMap<ReleaseId, InternalKieModule>();
+            kieDependencies = new HashMap<>();
         }
         kieDependencies.put(dependency.getReleaseId(), dependency);
     }
@@ -174,23 +168,13 @@ public abstract class AbstractKieModule
     }
 
     public Map<String, byte[]> getClassesMap() {
-        Map<String, byte[]> classes = new HashMap<String, byte[]>();
+        Map<String, byte[]> classes = new HashMap<>();
         for (String fileName : getFileNames()) {
             if (fileName.endsWith(".class")) {
                 classes.put(fileName, getBytes(fileName));
             }
         }
         return classes;
-    }
-
-    private Map<String, TypeMetaInfo> getTypesMetaInfo() {
-        if (typesMetaInfo == null) {
-            byte[] bytes = getBytes(KieModuleModelImpl.KMODULE_INFO_JAR_PATH);
-            if (bytes != null) {
-                typesMetaInfo = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes, IoUtils.UTF8_CHARSET)).getTypeMetaInfos();
-            }
-        }
-        return typesMetaInfo;
     }
 
     public KnowledgePackagesBuildResult buildKnowledgePackages(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages) {
@@ -226,7 +210,7 @@ public abstract class AbstractKieModule
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase(kBaseModel.getName(), conf );
         kBase.addPackages( pkgs );
         return kBase;
     }
@@ -321,7 +305,7 @@ public abstract class AbstractKieModule
             try {
                 prop.load(new ByteArrayInputStream(getBytes(fileName + ".properties")));
             } catch (IOException e) {
-                log.error("Error loading resource configuration from file: " + fileName + ".properties");
+                log.error(String.format("Error loading resource configuration from file: %s.properties", fileName));
             }
         }
         if (ResourceType.DTABLE.matchesExtension(fileName)) {
@@ -349,21 +333,21 @@ public abstract class AbstractKieModule
             if (fileContents != null) {
                 ExtensionRegistry registry = KieModuleCacheHelper.buildRegistry();
                 try {
-                    Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
+                    Header header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
 
-                    if (!Drools.isCompatible(_header.getVersion().getVersionMajor(),
-                                             _header.getVersion().getVersionMinor(),
-                                             _header.getVersion().getVersionRevision())) {
+                    if (!Drools.isCompatible(header.getVersion().getVersionMajor(),
+                                             header.getVersion().getVersionMinor(),
+                                             header.getVersion().getVersionRevision())) {
                         // if cache has been built with an incompatible version avoid to use it
                         log.warn("The compilation cache has been built with an incompatible version. " +
                                  "You should recompile your project in order to use it with current release.");
                         return null;
                     }
 
-                    KModuleCache _cache = KModuleCache.parseFrom(_header.getPayload());
+                    KModuleCache kModuleCache = KModuleCache.parseFrom(header.getPayload());
 
                     cache = new CompilationCache();
-                    for (CompilationData _data : _cache.getCompilationDataList()) {
+                    for (CompilationData _data : kModuleCache.getCompilationDataList()) {
                         for (CompDataEntry _entry : _data.getEntryList()) {
                             cache.addEntry(_data.getDialect(), _entry.getId(),  _entry.getData().toByteArray());
                         }
@@ -378,13 +362,6 @@ public abstract class AbstractKieModule
     }
 
     public PomModel getPomModel() {
-        if (pomModel == null) {
-            try {
-                byte[] pomXml = getPomXml();
-            } catch( Exception e ) {
-                // nothing to do as it was not possible to retrieve pom.xml
-            }
-        }
         return pomModel;
     }
 
@@ -392,19 +369,12 @@ public abstract class AbstractKieModule
         this.pomModel = pomModel;
     }
 
-    private void validatePomModel(PomModel pomModel) {
-        ReleaseId pomReleaseId = pomModel.getReleaseId();
-        if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
-            throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
-        }
-    }
-
     private byte[] getPomXml() {
-        return null;//getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+        return getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
     }
 
     public InputStream getPomAsStream() {
-        byte[] pom = null;//getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+        byte[] pom = getPomXml();
         return pom != null ? new ByteArrayInputStream(pom) : null;
     }
 

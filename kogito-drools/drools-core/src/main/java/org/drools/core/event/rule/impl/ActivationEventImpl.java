@@ -34,7 +34,14 @@ public class ActivationEventImpl implements MatchEvent, Externalizable {
         this.activation = activation;
         this.kruntime = kruntime;
     }
-    
+
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ActivationEventImpl() {
+        super();
+    }
+
     public Match getMatch() {
         return this.activation;
     }
@@ -51,7 +58,8 @@ public class ActivationEventImpl implements MatchEvent, Externalizable {
                                             ClassNotFoundException {
         this.activation = new SerializableActivation();
         ((SerializableActivation)this.activation).readExternal( in );
-        this.kruntime = null; // we null this as it isn't serializable;
+        // we null this as it isn't serializable
+        this.kruntime = null;
     }
 
     @Override

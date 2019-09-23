@@ -24,25 +24,33 @@
 
 package org.drools.mvel.parser;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
+
+import com.github.javaparser.JavaToken;
+import com.github.javaparser.Problem;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.comments.CommentsCollection;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import com.github.javaparser.utils.Pair;
-import com.github.javaparser.Problem;
-import org.drools.mvel.parser.Token;
-import com.github.javaparser.JavaToken;
-import com.github.javaparser.TokenRange;
-
-
-
-import java.util.*;
 
 import static com.github.javaparser.GeneratedJavaParserConstants.EOF;
 import static com.github.javaparser.ast.type.ArrayType.unwrapArrayTypes;

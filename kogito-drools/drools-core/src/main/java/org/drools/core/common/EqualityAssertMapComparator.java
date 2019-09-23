@@ -33,12 +33,15 @@ public class EqualityAssertMapComparator
     public EqualityAssertMapComparator() {
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
+    @Override
     public int hashCodeOf(final Object obj) {
         if ( obj instanceof FactHandle) {
             return AbstractHashTable.rehash( ((InternalFactHandle) obj).getObjectHashCode() );
@@ -50,8 +53,9 @@ public class EqualityAssertMapComparator
      * Special comparator  that  allows FactHandles to  be  keys, but always  checks
      * equals with the  identity of the  objects involved
      */
-    public boolean equal(final Object o1,
-                         Object o2) {
+    @Override
+    public boolean areEqual(final Object o1,
+                            Object o2) {
         if ( o1 == o2 ) {
             return true;
             
@@ -72,6 +76,7 @@ public class EqualityAssertMapComparator
         return ((Comparable) o1).compareTo( o2 );
     }
 
+    @Override
     public String toString() {
         return "equality";
     }

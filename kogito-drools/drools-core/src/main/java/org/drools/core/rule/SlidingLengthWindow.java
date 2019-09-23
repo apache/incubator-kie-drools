@@ -164,6 +164,12 @@ public class SlidingLengthWindow
             this.handles = new EventFactHandle[size];
         }
 
+        /**
+         * Do not use this constructor! It should be used just by deserialization.
+         */
+        public SlidingLengthWindowContext() {
+        }
+
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             this.pos = in.readInt();

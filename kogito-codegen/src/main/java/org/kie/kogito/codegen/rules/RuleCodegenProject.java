@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -103,11 +104,13 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
             for (KieBaseModel kBaseModel : kBaseModels.values()) {
                 for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
                     CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
-                    ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
+                    ClassOrInterfaceDeclaration template = cu
+                            .findFirst( ClassOrInterfaceDeclaration.class )
+                            .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
                     annotator.withNamedSingletonComponent(template, "$SessionName$");                                        
                     template.setName( "SessionRuleUnit_" + sessionName );
                     
-                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));;
+                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));
                     
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
                     template.getMembers().sort(new BodyDeclarationComparator());

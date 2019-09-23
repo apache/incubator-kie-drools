@@ -41,12 +41,18 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
     public ProcessEventSupport(UnitOfWorkManager unitOfWorkManager) {
         this.unitOfWorkManager = unitOfWorkManager;
     }
-    
+
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ProcessEventSupport() {
+    }
+
     public void fireBeforeProcessStarted(final ProcessInstance instance, KieRuntime kruntime ) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
                 do{
                     iter.next().beforeProcessStarted(e);
@@ -59,7 +65,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
                 do {
                     iter.next().afterProcessStarted(e);
@@ -72,7 +78,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
                 do {
                     iter.next().beforeProcessCompleted(e);
@@ -85,7 +91,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
             
                 do {
@@ -99,7 +105,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessNodeTriggeredEvent event = new ProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
             
                 do {
@@ -113,7 +119,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessNodeTriggeredEvent event = new ProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
             
                 do{
@@ -127,7 +133,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
         
         final ProcessNodeLeftEvent event = new ProcessNodeLeftEventImpl(nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
             
                 do{
@@ -141,7 +147,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final ProcessNodeLeftEvent event = new ProcessNodeLeftEventImpl(nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
             
                 do{
@@ -158,7 +164,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         
         final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
                                                                                       id, instanceId, oldValue, newValue, processInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
             
                 do {
@@ -174,7 +180,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
         final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
                                                                                       name, id, oldValue, newValue, processInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
                       
                 do {
@@ -188,7 +194,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
             
                 do{
@@ -202,7 +208,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {
             
                 do {
@@ -216,7 +222,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {            
                 do{
                     iter.next().beforeSLAViolated(e);
@@ -228,7 +234,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
     public void fireAfterSLAViolated(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
             if (iter.hasNext()) {           
             
                 do {

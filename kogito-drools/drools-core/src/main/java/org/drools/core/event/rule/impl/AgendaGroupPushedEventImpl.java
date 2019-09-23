@@ -26,6 +26,13 @@ public class AgendaGroupPushedEventImpl extends AgendaGroupEventImpl implements 
         super( agendaGroup, kruntime );
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public AgendaGroupPushedEventImpl() {
+        super();
+    }
+
     @Override
     public String toString() {
         return "==>[AgendaGroupPushedEvent: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="

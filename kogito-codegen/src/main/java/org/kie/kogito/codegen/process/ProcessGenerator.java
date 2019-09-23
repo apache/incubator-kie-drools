@@ -18,22 +18,8 @@ package org.kie.kogito.codegen.process;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.kogito.Model;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
-import org.kie.kogito.codegen.GeneratorContext;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.process.ProcessInstancesFactory;
-import org.kie.kogito.process.impl.AbstractProcess;
+import java.util.NoSuchElementException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -61,6 +47,18 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.StringUtils;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.Model;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.process.ProcessInstancesFactory;
+import org.kie.kogito.process.impl.AbstractProcess;
 
 /**
  * Generates the Process&lt;T&gt; container
@@ -73,45 +71,36 @@ public class ProcessGenerator {
     private final String packageName;
     private final WorkflowProcess process;
     private final ProcessExecutableModelGenerator legacyProcessGenerator;
-    private final Map<String, WorkflowProcess> processMapping;
     private final String typeName;
     private final String modelTypeName;
     private final String generatedFilePath;
     private final String completePath;
-    private final String canonicalName;
     private final String targetCanonicalName;
     private final String appCanonicalName;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private boolean persistence;
-    
-    private final GeneratorContext context;
-    
+
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
     public ProcessGenerator(
             WorkflowProcess process,
             ProcessExecutableModelGenerator legacyProcessGenerator,
-            Map<String, WorkflowProcess> processMapping,
             String typeName,
             String modelTypeName,
-            String appCanonicalName,
-            GeneratorContext context) {
+            String appCanonicalName) {
 
         this.appCanonicalName = appCanonicalName;
 
         this.packageName = process.getPackageName();
         this.process = process;
         this.legacyProcessGenerator = legacyProcessGenerator;
-        this.processMapping = processMapping;
         this.typeName = typeName;
         this.modelTypeName = modelTypeName;
-        this.canonicalName = packageName + "." + typeName;
         this.targetTypeName = typeName + "Process";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.completePath = "src/main/java/" + generatedFilePath;
-        this.context = context;
     }
 
     public String targetCanonicalName() {
@@ -174,13 +163,13 @@ public class ProcessGenerator {
         return methodDeclaration;
     }
 
-    private MethodDeclaration legacyProcess(ProcessMetaData processMetaDate) {
-        MethodDeclaration legacyProcess = processMetaDate.getGeneratedClassModel()
-                .findFirst(MethodDeclaration.class).get()
+    private MethodDeclaration legacyProcess(ProcessMetaData processMetaData) {
+        return processMetaData.getGeneratedClassModel()
+                .findFirst(MethodDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a method declaration!"))
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .setType(Process.class.getCanonicalName())
                 .setName("legacyProcess");
-        return legacyProcess;
     }
 
     private MethodCallExpr createProcessRuntime() {

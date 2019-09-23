@@ -419,7 +419,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 		                                   null);
 		mv.visitCode();
 
-		TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+		TraitFactory.invokeExtractor(mv, masterName, core, field );
 
 		if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
@@ -432,11 +432,11 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
     }
 
     protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
-        buildHardSetter( cw, field, masterName, trait, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC  );
+        buildHardSetter(cw, field, masterName, trait, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC  );
     }
 
     protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition core ) {
-        buildSoftSetter( cw, field, proxy, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+        buildSoftSetter(cw, field, proxy, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC );
     }
 
     protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition core, String setterName, int accessMode ) {

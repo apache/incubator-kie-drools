@@ -564,7 +564,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 		Label l0 = new Label();
 		mv.visitJumpInsn( IFEQ, l0 );
 
-		TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
+		TraitFactory.invokeExtractor(mv, wrapperName, core, field );
 
 		if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			TraitFactory.valueOf( mv, field.getTypeName() );

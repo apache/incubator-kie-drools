@@ -32,15 +32,11 @@ public class DateUtils {
     private static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     private static final String DEFINE_LANGUAGE = getDefaultLanguage();
 
-    private static ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>() {
-        protected SimpleDateFormat initialValue() {
-            DateFormatSymbols dateSymbol = new DateFormatSymbols(new Locale(
-                    DEFINE_LANGUAGE, DEFINE_COUNTRY));
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    DATE_FORMAT_MASK, dateSymbol);
-            return dateFormat;
-        };
-    };
+    private static ThreadLocal<SimpleDateFormat> df = ThreadLocal.withInitial(() -> {
+        DateFormatSymbols dateSymbol = new DateFormatSymbols(new Locale(
+                DEFINE_LANGUAGE, DEFINE_COUNTRY));
+        return new SimpleDateFormat(DATE_FORMAT_MASK, dateSymbol);
+    });
 
     private static String getDefaultLanguage() {
         String fmt = System.getProperty("drools.defaultlanguage");
@@ -100,5 +96,9 @@ public class DateUtils {
             fmt = DEFAULT_FORMAT_MASK;
         }
         return fmt;
+    }
+
+    private DateUtils() {
+        // It is not allowed to create instances of util classes.
     }
 }

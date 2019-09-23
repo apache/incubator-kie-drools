@@ -40,12 +40,18 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, WorkItem> workItems = new ConcurrentHashMap<String, WorkItem>();
+    private Map<String, WorkItem> workItems = new ConcurrentHashMap<>();
     private InternalKnowledgeRuntime kruntime;
-    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
     public DefaultWorkItemManager(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
+    }
+
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public DefaultWorkItemManager() {
     }
 
     @SuppressWarnings("unchecked")
@@ -121,7 +127,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
     
     public Set<WorkItem> getWorkItems() {
-        return new HashSet<WorkItem>(workItems.values());
+        return new HashSet<>(workItems.values());
     }
 
     public WorkItem getWorkItem(String id) {

@@ -76,7 +76,7 @@ public class RuleBuildContext extends PackageBuildContext {
             if (abductive == null) {
                 this.rule = new QueryImpl(ruleDescr.getName());
             } else {
-                this.rule = new AbductiveQuery(ruleDescr.getName(), abductive.mode());
+                this.rule = new AbductiveQuery(ruleDescr.getName());
             }
         } else {
             this.rule = ruleDescr.toRule();

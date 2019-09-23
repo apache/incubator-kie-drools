@@ -50,4 +50,8 @@ public class FlattenScope {
         }
         return res;
     }
+
+    private FlattenScope() {
+        // It is not allowed to create instances of util classes.
+    }
 }

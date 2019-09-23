@@ -29,7 +29,6 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
@@ -67,6 +66,12 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
 
         this.mode = mode;
         setMode( this.mode, getComponentFactory() );
+    }
+
+    /**
+     * Do not use this constructor! It should be used just by deserialisation.
+     */
+    public StandaloneTraitFactory() {
     }
 
     @Override
@@ -123,7 +128,8 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         return store;
     }
 
-    public T getProxy( K core, Class<?> trait, boolean logical ) throws LogicalTypeInconsistencyException {
+    @Override
+    public T getProxy(K core, Class<?> trait, boolean logical ) throws LogicalTypeInconsistencyException {
         encode( trait );
         if ( ! getTraitRegistry().getTraits().containsKey( trait.getName() ) ) {
             try {
@@ -132,7 +138,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
                 e.printStackTrace();
             }
         }
-        return (T) super.getProxy( core, trait, logical );
+        return super.getProxy(core, trait, logical );
     }
 
     private void encode( Class<?> trait ) {
@@ -169,7 +175,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     }
 
     private Class<T> extendAsProperTrait( Class<T> trait ) {
-        String extName = trait.getName() + TraitFactory.SUFFIX;
+        String extName = trait.getName() + AbstractTraitFactory.SUFFIX;
         if ( ! classLoader.isClassInUse( extName ) ) {
             try {
                 ClassDefinition extDef = new ClassDefinition( extName );

@@ -322,7 +322,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
 
             mv = cw.visitMethod( ACC_PUBLIC,
-                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+                    BuildUtils.setterName( fld.getName()),
                     "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")V",
                     null,
                     null );

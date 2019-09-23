@@ -89,11 +89,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
     }
 
     protected ClassFieldAccessorStore getClassFieldAccessorStore() {
-        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
+        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get(PACKAGE);
         if ( traitPackage == null ) {
-            traitPackage = new KnowledgePackageImpl( pack );
+            traitPackage = new KnowledgePackageImpl(PACKAGE);
             traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
-            kBase.getPackagesMap().put( pack, traitPackage );
+            kBase.getPackagesMap().put(PACKAGE, traitPackage );
         }
         return traitPackage.getClassFieldAccessorStore();
     }

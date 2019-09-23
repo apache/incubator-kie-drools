@@ -16,7 +16,6 @@
 
 package org.jbpm.workflow.instance.impl;
 
-import static org.jbpm.process.core.context.exception.CompensationScope.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -32,12 +31,13 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
-import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.EventListener;
+
+import static org.jbpm.process.core.context.exception.CompensationScope.COMPENSATION_SCOPE;
+import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
 class CompensationEventListener implements EventListener {
 
@@ -62,10 +62,10 @@ class CompensationEventListener implements EventListener {
      *    the <node-container-containing-compensation-scope-id>. 
      */
     public void signalEvent(String compensationType, Object activityRefStr) {
-        if( activityRefStr == null || ! (activityRefStr instanceof String) ) { 
+        if(!(activityRefStr instanceof String) ) {
             throw new WorkflowRuntimeException(null, getProcessInstance(), 
                     "Compensation can only be triggered with String events, not an event of type " 
-                    + activityRefStr == null ? "null" : activityRefStr.getClass().getSimpleName());
+                    + (activityRefStr == null ? "null" : activityRefStr.getClass().getSimpleName()));
         }
        
         // 1. parse the activity ref (is it general or specific compensation?)
@@ -133,7 +133,7 @@ class CompensationEventListener implements EventListener {
     
     private Node findNode(String nodeId) { 
         Node found = null;
-        Queue<Node> allProcessNodes = new LinkedList<Node>();
+        Queue<Node> allProcessNodes = new LinkedList<>();
         allProcessNodes.addAll(Arrays.asList( instance.getNodeContainer().getNodes() ));
         while( ! allProcessNodes.isEmpty() ) { 
             Node node = allProcessNodes.poll();
@@ -148,7 +148,7 @@ class CompensationEventListener implements EventListener {
         return found;
     }
 
-    private Stack<NodeInstance> createNodeInstanceContainers(Node toCompensateNode, boolean generalCompensation) { 
+    private Stack<NodeInstance> createNodeInstanceContainers(Node toCompensateNode, boolean generalCompensation) {
        Stack<NodeContainer> nestedNodes = new Stack<NodeContainer>();
        Stack<NodeInstance> generatedInstances = new Stack<NodeInstance>();
        
@@ -168,7 +168,7 @@ class CompensationEventListener implements EventListener {
            generatedInstances.add((NodeInstance) parentInstance);
        }
        
-       NodeInstanceContainer childInstance = parentInstance;
+       NodeInstanceContainer childInstance;
        while( ! nestedNodes.isEmpty() ) {
            // generate
            childInstance = (NodeInstanceContainer) parentInstance.getNodeInstance((Node) nestedNodes.pop());
@@ -179,7 +179,7 @@ class CompensationEventListener implements EventListener {
            generatedInstances.add((NodeInstance) childInstance);
            
            // loop
-           parentInstance = (CompositeContextNodeInstance) childInstance;
+           parentInstance = childInstance;
        }
        if( generalCompensation ) { 
            childInstance = (NodeInstanceContainer) parentInstance.getNodeInstance(toCompensateNode);

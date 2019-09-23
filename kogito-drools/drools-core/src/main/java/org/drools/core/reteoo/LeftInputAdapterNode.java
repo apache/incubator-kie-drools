@@ -61,7 +61,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     protected static final transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
     private ObjectSource objectSource;
 
     private ObjectSinkNode previousRightTupleSinkNode;
@@ -91,7 +91,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
-        while (!(current.getType() == NodeTypeEnums.ObjectTypeNode)) {
+        while (current.getType() != NodeTypeEnums.ObjectTypeNode) {
             current = current.getParentObjectSource();
         }
 
@@ -378,7 +378,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
             BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory( this, workingMemory ) );
+                doUpdateObject(leftTuple, context, workingMemory, leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, workingMemory ) );
                 if (leftTuple instanceof Activation) {
                     ((Activation)leftTuple).setActive(true);
                 }
@@ -400,7 +400,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         while ( leftTuple != null && leftTuple.getInputOtnId().before( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
 
-            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
+            LeftInputAdapterNode prevLiaNode = leftTuple.getTupleSource();
             LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
             SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
@@ -480,7 +480,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return true;
         }
 
-        if ( object == null || !(object instanceof LeftInputAdapterNode) || this.hashCode() != object.hashCode() ) {
+        if ( !(object instanceof LeftInputAdapterNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
         return this.objectSource.getId() == ((LeftInputAdapterNode)object).objectSource.getId() && this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
@@ -586,17 +586,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
             implements
             ObjectSink {
         private LeftTupleSink sink;
-        private boolean       leftTupleMemoryEnabled;
         private LeftInputAdapterNode liaNode;
 
         public RightTupleSinkAdapter(LeftInputAdapterNode liaNode) {
             this.liaNode = liaNode;
         }
 
-        public RightTupleSinkAdapter(final LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-            this.sink = sink;
-            this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
+        public RightTupleSinkAdapter() {
         }
 
         public void assertObject(final InternalFactHandle factHandle,
@@ -657,12 +656,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public boolean isAssociatedWith( Rule rule ) {
             return sink.isAssociatedWith( rule );
         }
-
-        public boolean thisNodeEquals(final Object object) {
-            return false;
-        }
-
-        public int nodeHashCode() {return this.hashCode();}
     }
 
     @Override
@@ -673,7 +666,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     @Override
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         if (this.partitionId != null && this.partitionId != partitionId) {
-            objectSource.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold );
+            objectSource.sink.changeSinkPartition(this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold );
         }
         this.partitionId = partitionId;
     }

@@ -39,12 +39,21 @@ public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements Obje
         this.oldbOject = object;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ObjectDeletedEventImpl() {
+        super();
+    }
+
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );
         out.writeObject( oldbOject );
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -52,10 +61,12 @@ public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements Obje
         this.oldbOject = in.readObject();
     }
     
+    @Override
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
 
+    @Override
     public Object getOldObject() {
         return this.oldbOject;
     }

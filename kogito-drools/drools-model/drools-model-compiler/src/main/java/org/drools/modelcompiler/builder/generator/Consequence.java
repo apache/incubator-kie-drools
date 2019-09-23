@@ -20,12 +20,10 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -33,9 +31,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -50,14 +45,13 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
-
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
@@ -66,12 +60,10 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExp
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTESCRIPT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 
 
 public class Consequence {
@@ -189,10 +181,10 @@ public class Consequence {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
+        } else {
+            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
         }
-
-        Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
     }
 
     public static boolean containsWord(String word, String body) {

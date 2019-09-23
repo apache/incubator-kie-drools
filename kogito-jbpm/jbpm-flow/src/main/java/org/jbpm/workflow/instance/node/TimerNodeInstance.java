@@ -51,6 +51,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     	this.timerId = timerId;
     }
 
+    @Override
     public void internalTrigger(NodeInstance from, String type) {
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
@@ -108,6 +109,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
     }
     
+    @Override
     public void cancel() {
     	((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime()
 			.getProcessRuntime()).getTimerManager().cancelTimer(timerId);

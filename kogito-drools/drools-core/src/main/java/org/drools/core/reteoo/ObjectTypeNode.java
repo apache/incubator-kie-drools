@@ -190,7 +190,7 @@ public class ObjectTypeNode extends ObjectSource
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || !(o instanceof Id)) return false;
+            if (!(o instanceof Id)) return false;
 
             Id otherId = (Id) o;
             return id == otherId.id && otnId == otherId.otnId;
@@ -210,6 +210,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         super.readExternal(in);
@@ -228,6 +229,7 @@ public class ObjectTypeNode extends ObjectSource
         idGenerator = new IdGenerator(id);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(objectType);
@@ -236,6 +238,7 @@ public class ObjectTypeNode extends ObjectSource
         out.writeBoolean(queryNode);
     }
 
+    @Override
     public short getType() {
         return NodeTypeEnums.ObjectTypeNode;
     }
@@ -252,6 +255,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * Returns the partition ID for which this node belongs to
      */
+    @Override
     public RuleBasePartitionId getPartitionId() {
         return RuleBasePartitionId.MAIN_PARTITION;
     }
@@ -308,6 +312,7 @@ public class ObjectTypeNode extends ObjectSource
      * @param context       The propagation context.
      * @param workingMemory The working memory session.
      */
+    @Override
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -413,6 +418,7 @@ public class ObjectTypeNode extends ObjectSource
         idGenerator.reset();
     }
 
+    @Override
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
@@ -432,6 +438,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
+    @Override
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
@@ -451,6 +458,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * Rete needs to know that this ObjectTypeNode has been added
      */
+    @Override
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
 
@@ -470,6 +478,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
+    @Override
     public void networkUpdated(UpdateContext updateContext) {
         this.dirty = true;
     }
@@ -520,6 +529,7 @@ public class ObjectTypeNode extends ObjectSource
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
      * to switch back to a standard HashMap.
      */
+    @Override
     public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
@@ -536,6 +546,7 @@ public class ObjectTypeNode extends ObjectSource
         this.objectMemoryEnabled = objectMemoryEnabled;
     }
 
+    @Override
     public String toString() {
         return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + " expiration=" + this.getExpirationOffset() + "ms ]";
     }
@@ -550,7 +561,7 @@ public class ObjectTypeNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof ObjectTypeNode) || this.hashCode() != object.hashCode() ) {
+        if ( !(object instanceof ObjectTypeNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -592,6 +603,7 @@ public class ObjectTypeNode extends ObjectSource
             implements
             Job {
 
+        @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
             context.workingMemory.queueWorkingMemoryAction(context.expireAction);
@@ -614,10 +626,12 @@ public class ObjectTypeNode extends ObjectSource
             this.workingMemory = workingMemory;
         }
 
+        @Override
         public JobHandle getJobHandle() {
             return this.handle;
         }
 
+        @Override
         public void setJobHandle(JobHandle jobHandle) {
             this.handle = jobHandle;
         }
@@ -638,11 +652,13 @@ public class ObjectTypeNode extends ObjectSource
             this.handle = handle;
         }
 
+        @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
             //this.behavior = (O)
         }
 
+        @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             // TODO Auto-generated method stub
 
@@ -667,6 +683,7 @@ public class ObjectTypeNode extends ObjectSource
 
         }
 
+        @Override
         public ProtobufMessages.Timers.Timer serialize(JobContext jobCtx,
                                                        MarshallerWriteContext outputCtx) {
             // ExpireJob, no state
@@ -708,10 +725,11 @@ public class ObjectTypeNode extends ObjectSource
 
         }
 
+        @Override
         public void deserialize(MarshallerReaderContext inCtx,
-                                Timer _timer) throws ClassNotFoundException {
-            ExpireTimer _expire = _timer.getExpire();
-            InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
+                                Timer timer) throws ClassNotFoundException {
+            ExpireTimer expire = timer.getExpire();
+            InternalFactHandle factHandle = inCtx.handles.get( expire.getHandleId() );
 
             TimerService clock = inCtx.wm.getTimerService();
 
@@ -719,12 +737,13 @@ public class ObjectTypeNode extends ObjectSource
                                                       inCtx.wm );
             JobHandle jobHandle = clock.scheduleJob( job,
                                                      jobctx,
-                                                     new PointInTimeTrigger( _expire.getNextFireTimestamp(), null, null ) );
+                                                     new PointInTimeTrigger( expire.getNextFireTimestamp(), null, null ) );
             jobctx.setJobHandle( jobHandle );
             ((EventFactHandle) factHandle).addJob(jobHandle);
         }
     }
 
+    @Override
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
@@ -746,6 +765,7 @@ public class ObjectTypeNode extends ObjectSource
             store = ((ClassAwareObjectStore) wm.getObjectStore()).getOrCreateClassStore(classType);
         }
 
+        @Override
         public short getNodeType() {
             return NodeTypeEnums.ObjectTypeNode;
         }
@@ -754,36 +774,45 @@ public class ObjectTypeNode extends ObjectSource
             return store.factHandlesIterator(true);
         }
 
+        @Override
         public SegmentMemory getSegmentMemory() {
             return null;
         }
 
+        @Override
         public void setSegmentMemory(SegmentMemory segmentMemory) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Memory getPrevious() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void setPrevious(Memory previous) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void nullPrevNext() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void setNext(Memory next) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Memory getNext() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void reset() { }
 
+        @Override
         public String toString() {
             return "ObjectTypeMemory for " + classType;
         }

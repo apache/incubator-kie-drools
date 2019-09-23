@@ -34,12 +34,15 @@ public class IdentityAssertMapComparator
     public IdentityAssertMapComparator() {
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
+    @Override
     public int hashCodeOf(final Object obj) {
         if (obj instanceof InternalFactHandle) {
             return AbstractHashTable.rehash(((InternalFactHandle)obj).getIdentityHashCode());
@@ -52,8 +55,9 @@ public class IdentityAssertMapComparator
      * Special comparator that allows FactHandles to be keys, but always  checks
      * like for like.
      */
-    public boolean equal(final Object o1,
-                         final Object o2) {
+    @Override
+    public boolean areEqual(final Object o1,
+                            final Object o2) {
         if ( o1 instanceof InternalFactHandle ) {
             return ((InternalFactHandle) o1).getId() == ((InternalFactHandle) o2).getId();
         }
@@ -74,6 +78,7 @@ public class IdentityAssertMapComparator
         return ((Comparable) o1).compareTo( o2 );
     }
 
+    @Override
     public String toString() {
         return "identity";
     }

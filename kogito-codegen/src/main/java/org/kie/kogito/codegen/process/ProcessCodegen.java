@@ -208,7 +208,7 @@ public class ProcessCodegen extends AbstractGenerator {
         // then we can instantiate the exec model generator
         // with the data classes that we have already resolved
         ProcessToExecModelGenerator execModelGenerator =
-                new ProcessToExecModelGenerator(processIdToModel, contextClassLoader);
+                new ProcessToExecModelGenerator(contextClassLoader);
 
         // collect all process descriptors (exec model)
         for (WorkflowProcess workFlowProcess : processes.values()) {
@@ -230,11 +230,10 @@ public class ProcessCodegen extends AbstractGenerator {
             ProcessGenerator p = new ProcessGenerator(
                     workFlowProcess,
                     execModelGen,
-                    processes,
                     classPrefix,
                     modelClassGenerator.className(),
-                    applicationCanonicalName, 
-                    context)
+                    applicationCanonicalName
+            )
                     .withDependencyInjection(annotator)
                     .withPersistence(persistence);
 
@@ -254,7 +253,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     .withDependencyInjection(annotator)
                     .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                     .withSignals(metaData.getSignals())
-                    .withTriggers(metaData.getTriggers(), metaData.isStartable());
+                    .withTriggers(metaData.isStartable());
             
             rgs.add(resourceGenerator);
             

@@ -127,26 +127,17 @@ public class ParameterInfo<T> {
             return false;
         }
         if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
+            return other.value == null;
+        } else {
+            return value.equals(other.value);
         }
-        return true;
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("ParameterInfo( ");
-        stringBuilder.append("correlationId=").append(correlationId).append(", ");
-        stringBuilder.append("name=").append(name).append(", ");
-        stringBuilder.append("type=").append(type != null ? type.getName() : "undetermined").append(", ");
-        if (type != null && type.getName().equals(String.class.getName())) {
-            stringBuilder.append("value=").append(value).append(" )");
-        } else {
-            stringBuilder.append("value=").append(value).append(" )");
-        }
-        return stringBuilder.toString();
+        return "ParameterInfo( " + "correlationId=" + correlationId + ", " +
+                "name=" + name + ", " +
+                "type=" + (type != null ? type.getName() : "undetermined") + ", " +
+                "value=" + value + " )";
     }
 }

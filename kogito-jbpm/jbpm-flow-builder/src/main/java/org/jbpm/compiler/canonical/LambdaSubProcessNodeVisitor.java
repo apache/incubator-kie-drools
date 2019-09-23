@@ -18,42 +18,37 @@ package org.jbpm.compiler.canonical;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
-import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
 public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
 
-    private final Map<String, ModelMetaData> processToModel;
-
-    public LambdaSubProcessNodeVisitor(Map<String, ModelMetaData> processToModel) {
-        this.processToModel = processToModel;
+    public LambdaSubProcessNodeVisitor() {
     }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
 
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java");
-        Expression retValue = parse(resourceAsStream).findFirst(Expression.class).get();
+        Optional<Expression> retValue = parse(resourceAsStream).findFirst(Expression.class);
 
         SubProcessNode subProcessNode = (SubProcessNode) node;
         String subProcessId = subProcessNode.getProcessId();
@@ -67,24 +62,33 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, nodeVar, "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
 
         Map<String, String> inputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.InputTypes");
-        Map<String, String> outputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
 
         String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
-        ModelMetaData subProcessModel = new ModelMetaData(subProcessId, metadata.getPackageName(), subProcessModelClassName, WorkflowProcess.PRIVATE_VISIBILITY, VariableDeclarations.of(inputTypes));
+        ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
+                                                          metadata.getPackageName(),
+                                                          subProcessModelClassName,
+                                                          WorkflowProcess.PRIVATE_VISIBILITY,
+                                                          VariableDeclarations.of(inputTypes));
 
-        retValue.findAll(ClassOrInterfaceType.class)
-                .stream()
-                .filter(t -> t.getNameAsString().equals("$Type$"))
-                .forEach(t -> t.setName(subProcessModelClassName));
+        retValue.ifPresent(retValueExpression -> {
+            retValueExpression.findAll(ClassOrInterfaceType.class)
+                    .stream()
+                    .filter(t -> t.getNameAsString().equals("$Type$"))
+                    .forEach(t -> t.setName(subProcessModelClassName));
 
-        retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                .ifPresent(m -> m.setBody(bind(variableScope, subProcessNode, subProcessModel)));
-        retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
-                .ifPresent(m -> m.setBody(createInstance(subProcessNode, metadata)));
-        retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                .ifPresent(m -> m.setBody(unbind(variableScope, subProcessNode, subProcessModel)));
+            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
+                    .ifPresent(m -> m.setBody(bind(variableScope, subProcessNode, subProcessModel)));
+            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
+                    .ifPresent(m -> m.setBody(createInstance(subProcessNode, metadata)));
+            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
+                    .ifPresent(m -> m.setBody(unbind(variableScope, subProcessNode)));
+        });
 
-        addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory", retValue);
+        if (retValue.isPresent()) {
+            addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory", retValue.get());
+        } else {
+            addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory");
+        }
         
         visitMetaData(subProcessNode.getMetaData(), body, "subProcessNode" + node.getId());
         
@@ -119,7 +123,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
     }
 
-    private BlockStmt unbind(VariableScope variableScope, SubProcessNode subProcessNode, ModelMetaData subProcessModel) {
+    private BlockStmt unbind(VariableScope variableScope, SubProcessNode subProcessNode) {
         BlockStmt stmts = new BlockStmt();
 
         for (Map.Entry<String, String> e : subProcessNode.getOutMappings().entrySet()) {

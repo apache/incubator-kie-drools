@@ -213,17 +213,17 @@ public class NamedEntryPoint
                     handle = createHandle( object,
                                            typeConf );
                 } else {
-                    TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
+                    TruthMaintenanceSystem truthMaintenanceSystem = getTruthMaintenanceSystem();
 
                     EqualityKey key;
                     if ( handle != null && handle.getEqualityKey().getStatus() == EqualityKey.STATED ) {
                         // it's already stated, so just return the handle
                         return handle;
                     } else {
-                        key = tms.get( object );
+                        key = truthMaintenanceSystem.get( object );
                     }
 
-                    if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+                    if ( handle != null && key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
                         // The justified set needs to be staged, before we can continue with the stated insert
                         BeliefSet bs = handle.getEqualityKey().getBeliefSet();
                         bs.getBeliefSystem().stage( propagationContext, bs ); // staging will set it's status to stated
@@ -233,7 +233,7 @@ public class NamedEntryPoint
                                            typeConf ); // we know the handle is null
                     if ( key == null ) {
                         key = new EqualityKey( handle, EqualityKey.STATED  );
-                        tms.put( key );
+                        truthMaintenanceSystem.put( key );
                     } else {
                         key.addFactHandle( handle );
                     }
@@ -384,8 +384,8 @@ public class NamedEntryPoint
 
                     if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
                         // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
-                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-                                                                "Rule " + activation.getRule().getName() + " attempted an illegal operation");
+                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. "
+                                                                + (activation != null ? "Rule " + activation.getRule().getName() + " attempted an illegal operation" : ""));
                     }
 
                     if (newKey == null) {
@@ -523,7 +523,7 @@ public class NamedEntryPoint
 
     private void deleteFromTMS( InternalFactHandle handle, EqualityKey key, ObjectTypeConf typeConf, PropagationContext propagationContext ) {
         if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
-            TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
+            TruthMaintenanceSystem truthMaintenanceSystem = getTruthMaintenanceSystem();
 
             // Update the equality key, which maintains a list of stated FactHandles
             key.removeFactHandle( handle );
@@ -531,7 +531,7 @@ public class NamedEntryPoint
 
             // If the equality key is now empty, then remove it, as it's no longer state either
             if ( key.isEmpty() && key.getLogicalFactHandle() == null ) {
-                tms.remove( key );
+                truthMaintenanceSystem.remove( key );
             } else if ( key.getLogicalFactHandle() != null ) {
                 // The justified set can be unstaged, now that the last stated has been deleted
                 final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
@@ -594,7 +594,7 @@ public class NamedEntryPoint
 
             if( dynamicFlag ) {
                 if( dynamicFacts == null ) {
-                    dynamicFacts = new HashSet<InternalFactHandle>();
+                    dynamicFacts = new HashSet<>();
                 }
                 dynamicFacts.add( handle );
             }

@@ -33,7 +33,6 @@ import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of a milestone node.
- * 
  */
 public class MilestoneNodeInstance extends StateBasedNodeInstance implements AgendaEventListener {
 
@@ -43,46 +42,49 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         return (MilestoneNode) getNode();
     }
 
+    @Override
     public void internalTrigger(final NodeInstance from, String type) {
-    	super.internalTrigger(from, type);
-    	// if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
-			return;
-		}
-		if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        super.internalTrigger(from, type);
+        // if node instance was cancelled, abort
+        if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+            return;
+        }
+        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "A MilestoneNode only accepts default incoming connections!");
+                    "A MilestoneNode only accepts default incoming connections!");
         }
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
-        	+ "-" + getMilestoneNode().getUniqueId();
+                + "-" + getMilestoneNode().getUniqueId();
         boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
+                .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
         if (isActive) {
-        	triggerCompleted();
+            triggerCompleted();
         } else {
-            addActivationListener();
+            addActivationEventListener();
         }
     }
-    
+
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
-        addActivationListener();
-    }
-    
-    private void addActivationListener() {
-    	getProcessInstance().getKnowledgeRuntime().addEventListener(this);
-    	getProcessInstance().addEventListener(getActivationEventType(), this, true);
+        addActivationEventListener();
     }
 
+    private void addActivationEventListener() {
+        getProcessInstance().getKnowledgeRuntime().addEventListener(this);
+        getProcessInstance().addEventListener(getActivationEventType(), this, true);
+    }
+
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
         getProcessInstance().removeEventListener(getActivationEventType(), this, true);
     }
-    
+
     private String getActivationEventType() {
         return "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
-            + "-" + getMilestoneNode().getUniqueId();
+                + "-" + getMilestoneNode().getUniqueId();
     }
 
     @Override
@@ -96,6 +98,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         }
     }
 
+    @Override
     public void matchCreated(MatchCreatedEvent event) {
         // check whether this activation is from the DROOLS_SYSTEM agenda group
         String ruleFlowGroup = ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup();
@@ -105,46 +108,53 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
             String ruleName = event.getMatch().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getMilestoneNode().getUniqueId();
             if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch()) && checkDeclarationMatch(event.getMatch(), getMilestoneNode().getMatchVariable())) {
-                
-                	synchronized(getProcessInstance()) {
-    	                removeEventListeners();
-    	                triggerCompleted();
-                	}
-                
+
+                synchronized (getProcessInstance()) {
+                    removeEventListeners();
+                    triggerCompleted();
+                }
             }
         }
     }
 
+    @Override
     public void matchCancelled(MatchCancelledEvent event) {
         // Do nothing
     }
 
+    @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
         // Do nothing
     }
 
+    @Override
     public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
         // Do nothing
     }
 
+    @Override
     public void agendaGroupPushed(AgendaGroupPushedEvent event) {
         // Do nothing
     }
 
+    @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
         // Do nothing
     }
 
-	public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-	}
+    @Override
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    }
 
-	public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-	}
+    @Override
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    }
 
-	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-	}
+    @Override
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    }
 
-	public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-	}
-
+    @Override
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    }
 }

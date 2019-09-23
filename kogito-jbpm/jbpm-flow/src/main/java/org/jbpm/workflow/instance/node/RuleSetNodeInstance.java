@@ -16,7 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +39,6 @@ import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
@@ -64,7 +62,6 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitMemory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -73,29 +70,29 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a ruleset node.
- * 
  */
-public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
+public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener,
+                                                                           ContextInstanceContainer {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
     private static final Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
-    
+
     private static final String ACT_AS_WAIT_STATE_PROPERTY = "org.jbpm.rule.task.waitstate";
     private static final String FIRE_RULE_LIMIT_PROPERTY = "org.jbpm.rule.task.firelimit";
     private static final String FIRE_RULE_LIMIT_PARAMETER = "FireRuleLimit";
     private static final int DEFAULT_FIRE_RULE_LIMIT = Integer.parseInt(System.getProperty(FIRE_RULE_LIMIT_PROPERTY, "10000"));
-    
-    private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
+
+    private Map<String, FactHandle> factHandles = new HashMap<>();
     private String ruleFlowGroup;
 
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
-    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
-    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
     }
 
+    @Override
     public void internalTrigger(final NodeInstance from, String type) {
         try {
             super.internalTrigger(from, type);
@@ -107,7 +104,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 throw new IllegalArgumentException("A RuleSetNode only accepts default incoming connections!");
             }
             RuleSetNode ruleSetNode = getRuleSetNode();
-            
+
             KieRuntime kruntime = Optional.ofNullable(getRuleSetNode().getKieRuntime()).orElse(() -> getProcessInstance().getKnowledgeRuntime()).get();
             Map<String, Object> inputs = evaluateParameters(ruleSetNode);
 
@@ -117,14 +114,14 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 String namespace = resolveVariable(decisionModel.getNamespace());
                 String model = resolveVariable(decisionModel.getModel());
                 String decision = resolveVariable(decisionModel.getDecision());
-                
+
                 DMNRuntime runtime = Optional.ofNullable(getRuleSetNode().getDmnRuntime()).orElse(() -> ((KieSession) kruntime).getKieRuntime(DMNRuntime.class)).get();
                 DMNModel dmnModel = runtime.getModel(namespace, model);
                 if (dmnModel == null) {
                     // if was not found by name try to look it up by id
                     dmnModel = runtime.getModelById(namespace, model);
                 }
-                
+
                 if (dmnModel == null) {
                     throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
                 }
@@ -143,7 +140,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                 if (dmnResult.hasErrors()) {
                     String errors = dmnResult.getMessages(Severity.ERROR).stream()
-                            .map(message -> message.toString())
+                            .map(Object::toString)
                             .collect(Collectors.joining(", "));
 
                     throw new RuntimeException("DMN result errors:: " + errors);
@@ -160,7 +157,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         // don't put control parameter for fire limit into working memory
                         continue;
                     }
-                    
+
                     String inputKey = getRuleFlowGroup() + "_" + getProcessInstance().getId() + "_" + entry.getKey();
 
                     factHandles.put(inputKey, kruntime.insert(entry.getValue()));
@@ -170,10 +167,9 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     addRuleSetListener();
                     ((InternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
-
                 } else {
                     int fireLimit = DEFAULT_FIRE_RULE_LIMIT;
-                    
+
                     if (inputs.containsKey(FIRE_RULE_LIMIT_PARAMETER)) {
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
@@ -182,8 +178,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                     int fired = ((KieSession) kruntime).fireAllRules(fireLimit);
                     if (fired == fireLimit) {
-                        throw new RuntimeException("Fire rule limit reached " + fireLimit + ", limit can be set via system property " + FIRE_RULE_LIMIT_PROPERTY 
-                                                   + " or via data input of business rule task named " + FIRE_RULE_LIMIT_PARAMETER);
+                        throw new RuntimeException("Fire rule limit reached " + fireLimit + ", limit can be set via system property " + FIRE_RULE_LIMIT_PROPERTY
+                                                           + " or via data input of business rule task named " + FIRE_RULE_LIMIT_PARAMETER);
                     }
 
                     removeEventListeners();
@@ -209,29 +205,26 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     private void handleException(Throwable e) {
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(e);
-        if(exceptionScopeInstance != null) {
+        if (exceptionScopeInstance != null) {
             exceptionScopeInstance.handleException(e.getClass().getName(), e);
-            
-            return;
         } else {
             Throwable rootCause = getRootException(e);
-            if(rootCause != null) {                
+            if (rootCause != null) {
                 exceptionScopeInstance = getExceptionScopeInstance(rootCause);
-                if(exceptionScopeInstance != null) {
+                if (exceptionScopeInstance != null) {
                     exceptionScopeInstance.handleException(rootCause.getClass().getName(), rootCause);
-                    
+
                     return;
                 }
             }
             throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
-            
         }
     }
 
     private ExceptionScopeInstance getExceptionScopeInstance(Throwable e) {
         return (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e.getClass().getName());
     }
-   
+
     protected Throwable getRootException(Throwable exception) {
         Throwable rootException = exception;
         while (rootException.getCause() != null) {
@@ -239,7 +232,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         }
         return rootException;
     }
-    
+
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         addRuleSetListener();
@@ -258,12 +252,13 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         getProcessInstance().addEventListener(getRuleSetEventType(), this, true);
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener(getRuleSetEventType(), this, true);
-
     }
 
+    @Override
     public void cancel() {
         super.cancel();
         if (actAsWaitState()) {
@@ -271,6 +266,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         }
     }
 
+    @Override
     public void signalEvent(String type, Object event) {
         if (getRuleSetEventType().equals(type)) {
             removeEventListeners();
@@ -280,29 +276,26 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         }
     }
 
-	
-	public void retractFacts(KieRuntime kruntime) {
-	    Map<String, Object> objects = new HashMap<String, Object>();
-        
-	    
-	    for (Entry<String, FactHandle> entry : factHandles.entrySet()) {
-	        
-            Object object = ((StatefulKnowledgeSession)kruntime).getObject(entry.getValue());
+    public void retractFacts(KieRuntime kruntime) {
+        Map<String, Object> objects = new HashMap<>();
+
+        for (Entry<String, FactHandle> entry : factHandles.entrySet()) {
+
+            Object object = kruntime.getObject(entry.getValue());
             String key = entry.getKey();
-            key = key.replaceAll(getRuleFlowGroup()+"_", "");
-            key = key.replaceAll(getProcessInstance().getId()+"_", "");
-            objects.put(key , object);
-            
+            key = key.replaceAll(getRuleFlowGroup() + "_", "");
+            key = key.replaceAll(getProcessInstance().getId() + "_", "");
+            objects.put(key, object);
+
             kruntime.delete(entry.getValue());
-	        
-	    }
-	    
-	    processOutputs(objects);
+        }
+
+        processOutputs(objects);
         factHandles.clear();
-	}
-	
-	private void processOutputs(Map<String, Object> objects) {
-	    RuleSetNode ruleSetNode = getRuleSetNode();
+    }
+
+    private void processOutputs(Map<String, Object> objects) {
+        RuleSetNode ruleSetNode = getRuleSetNode();
         if (ruleSetNode != null) {
             for (Iterator<DataAssociation> iterator = ruleSetNode.getOutAssociations().iterator(); iterator.hasNext(); ) {
                 DataAssociation association = iterator.next();
@@ -312,21 +305,17 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     if (transformer != null) {
                         Object parameterValue = transformer.transform(transformation.getCompiledExpression(), objects);
                         VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                                resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
-                              
                             variableScopeInstance.setVariable(association.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", association.getTarget());
                             logger.warn("Continuing without setting variable.");
                         }
-                        if (parameterValue != null) {
-                            variableScopeInstance.setVariable(association.getTarget(), parameterValue);
-                        }
                     }
                 } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                            resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                     if (variableScopeInstance != null) {
                         Object value = objects.get(association.getSources().get(0));
                         if (value == null) {
@@ -346,31 +335,29 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     } else {
                         logger.warn("Could not find variable scope for variable {}", association.getTarget());
                     }
-
-                }               
+                }
             }
         }
-        
     }
 
     protected Map<String, Object> evaluateParameters(RuleSetNode ruleSetNode) {
-	    Map<String, Object> replacements = new HashMap<String, Object>();
-	    
+        Map<String, Object> replacements = new HashMap<>();
+
         for (Iterator<DataAssociation> iterator = ruleSetNode.getInAssociations().iterator(); iterator.hasNext(); ) {
             DataAssociation association = iterator.next();
             if (association.getTransformation() != null) {
-            	Transformation transformation = association.getTransformation();
-            	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-            	if (transformer != null) {
-            		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
-            		if (parameterValue != null) {
-            			replacements.put(association.getTarget(), parameterValue);
+                Transformation transformation = association.getTransformation();
+                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+                if (transformer != null) {
+                    Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
+                    if (parameterValue != null) {
+                        replacements.put(association.getTarget(), parameterValue);
                     }
-            	}
+                }
             } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                 Object parameterValue = null;
                 VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
+                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
                 if (variableScopeInstance != null) {
                     parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
                 } else {
@@ -383,37 +370,36 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     }
                 }
                 if (parameterValue != null) {
-                	replacements.put(association.getTarget(), parameterValue);
+                    replacements.put(association.getTarget(), parameterValue);
                 }
             }
         }
-        
-        for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
+
+        for (Map.Entry<String, Object> entry : ruleSetNode.getParameters().entrySet()) {
             if (entry.getValue() instanceof String) {
-                
+
                 Object value = resolveVariable(entry.getValue());
                 if (value != null) {
                     replacements.put(entry.getKey(), value);
                 }
-                
             }
         }
-        
+
         return replacements;
-	}
-	
-	private Object resolveVariable(Object s) {
-        
-	    if (s instanceof String) {
+    }
+
+    private Object resolveVariable(Object s) {
+
+        if (s instanceof String) {
             Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher((String) s);
             while (matcher.find()) {
                 String paramName = matcher.group(1);
-               
+
                 VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
                 if (variableScopeInstance != null) {
                     Object variableValue = variableScopeInstance.getVariable(paramName);
-                    if (variableValue != null) { 
+                    if (variableValue != null) {
                         return variableValue;
                     }
                 } else {
@@ -427,38 +413,37 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     }
                 }
             }
-	    } 
-        
+        }
+
         return s;
-        
     }
-	
+
     protected Map<String, Object> getSourceParameters(DataAssociation association) {
-    	Map<String, Object> parameters = new HashMap<String, Object>();
-    	for (String sourceParam : association.getSources()) {
-	    	Object parameterValue = null;
-	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	        resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
-	        if (variableScopeInstance != null) {
-	            parameterValue = variableScopeInstance.getVariable(sourceParam);
-	        } else {
-	            try {
-	                parameterValue = MVELSafeHelper.getEvaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
-	            } catch (Throwable t) {
-	                logger.warn("Could not find variable scope for variable {}", sourceParam);
-	            }
-	        }
-	        if (parameterValue != null) {
-	        	parameters.put(association.getTarget(), parameterValue);
-	        }
-    	}
-    	
-    	return parameters;
+        Map<String, Object> parameters = new HashMap<>();
+        for (String sourceParam : association.getSources()) {
+            Object parameterValue = null;
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
+            if (variableScopeInstance != null) {
+                parameterValue = variableScopeInstance.getVariable(sourceParam);
+            } else {
+                try {
+                    parameterValue = MVELSafeHelper.getEvaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
+                } catch (Throwable t) {
+                    logger.warn("Could not find variable scope for variable {}", sourceParam);
+                }
+            }
+            if (parameterValue != null) {
+                parameters.put(association.getTarget(), parameterValue);
+            }
+        }
+
+        return parameters;
     }
-	
-	private String resolveRuleFlowGroup(String origin) {
-	    return (String) resolveVariable(origin);
-	}
+
+    private String resolveRuleFlowGroup(String origin) {
+        return resolveVariable(origin);
+    }
 
     public Map<String, FactHandle> getFactHandles() {
         return factHandles;
@@ -477,7 +462,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     }
 
     public void setRuleFlowGroup(String ruleFlowGroup) {
-        
+
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
@@ -486,7 +471,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         if (asWaitState != null) {
             return Boolean.parseBoolean(asWaitState.toString());
         }
-        
+
         return false;
     }
 
@@ -497,11 +482,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     @Override
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
-        List<ContextInstance> list = this.subContextInstances.get(contextId);
-        if (list == null) {
-            list = new ArrayList<ContextInstance>();
-            this.subContextInstances.put(contextId, list);
-        }
+        List<ContextInstance> list = this.subContextInstances.computeIfAbsent(contextId, key -> new ArrayList<>());
         list.add(contextInstance);
     }
 
@@ -517,7 +498,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);
         if (contextInstances != null) {
-            for (ContextInstance contextInstance: contextInstances) {
+            for (ContextInstance contextInstance : contextInstances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }
@@ -532,7 +513,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        ContextInstance contextInstance = conf.getContextInstance(context, this, getProcessInstance());
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }

@@ -430,7 +430,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 		                                   null);
 		mv.visitCode();
 
-		TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+		TraitFactory.invokeExtractor(mv, masterName, core, field );
 
 		if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
@@ -445,11 +445,11 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 
 
 	protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
-        buildHardSetter( cw, field, masterName, trait, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+        buildHardSetter(cw, field, masterName, trait, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC );
     }
 
 	private void buildSoftSetter( ClassWriter cw, FieldDefinition field, String masterName, ClassDefinition core ) {
-		buildSoftSetter( cw, field, masterName, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+		buildSoftSetter(cw, field, masterName, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC );
 	}
 
 	protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition core, String setterName, int accessMode ) {

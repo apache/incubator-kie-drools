@@ -70,6 +70,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         return (SubProcessNode) getNode();
     }
 
+    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
@@ -111,6 +112,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         }
     }
 
+    @Override
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {

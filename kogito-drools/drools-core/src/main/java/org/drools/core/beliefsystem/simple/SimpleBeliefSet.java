@@ -46,7 +46,8 @@ public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet
 
     public void cancel(PropagationContext context) {        
         // get all but last, as that we'll do via the BeliefSystem, for cleanup
-        for ( SimpleMode entry = getFirst(); entry != getLast();  ) {
+        SimpleMode entry = getFirst();
+        while (entry != getLast()) {
             SimpleMode temp = entry.getNext(); // get next, as we are about to remove it
             final LogicalDependency<SimpleMode> node = entry.getObject();
             node.getJustifier().getLogicalDependencies().remove( node );
@@ -62,7 +63,8 @@ public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet
     
     public void clear(PropagationContext context) { 
         // remove all, but don't allow the BeliefSystem to clean up, the FH is most likely going to be used else where
-        for ( SimpleMode entry = getFirst(); entry != null;  ) {
+        SimpleMode entry = getFirst();
+        while (entry != null) {
             SimpleMode temp = entry.getNext(); // get next, as we are about to remove it
             final LogicalDependency<SimpleMode> node = entry.getObject();
             node.getJustifier().getLogicalDependencies().remove( node );
@@ -99,5 +101,9 @@ public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet
         return ! isEmpty();
     }
 
-
+    /**
+     * Do not use this constructor! It is here just for deserialization purposes.
+     */
+    public SimpleBeliefSet() {
+    }
 }

@@ -28,71 +28,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public final class IoUtils {
 
     public static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
 
-    public static int findPort() {
-        for( int i = 1024; i < 65535; i++) {
-            if ( validPort( i ) ) {
-                return i;
-            }
-        }
-        throw new RuntimeException( "No valid port could be found" );
-    }
-    
-    public static boolean validPort(int port) {
-
-        try (ServerSocket ss = new ServerSocket(port);
-             DatagramSocket ds = new DatagramSocket(port)) {
-            ss.setReuseAddress(true);
-            ds.setReuseAddress(true);
-            return true;
-        } catch (IOException e) {
-        }
-
-        return false;
-    }
-
     public static String readFileAsString(File file) {
         try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET))) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }
             return sb.toString();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        }
-    }
-
-    public static void copyFile(File sourceFile, File destFile) {
-        if (!destFile.getParentFile().mkdirs()) {
-            throw new IllegalStateException("Cannot create directory structure for file " + destFile.getParentFile().getAbsolutePath() + "!");
-        }
-        try {
-            destFile.createNewFile();
-        } catch (IOException ioe) {
-            throw new UncheckedIOException("Unable to create file " + destFile.getAbsolutePath(), ioe);
-        }
-
-        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
-             FileChannel destination = new FileOutputStream(destFile).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-        } catch (IOException ioe) {
-            throw new UncheckedIOException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
         }
     }
 
@@ -105,13 +59,6 @@ public final class IoUtils {
             count += n;
         }
         return count;
-    }
-
-    public static File copyInTempFile( InputStream input, String fileExtension ) throws IOException {
-        File tempFile = File.createTempFile( UUID.randomUUID().toString(), "." + fileExtension );
-        tempFile.deleteOnExit();
-        copy(input, new FileOutputStream(tempFile));
-        return tempFile;
     }
 
     public static List<String> recursiveListFile(File folder) {
@@ -183,16 +130,6 @@ public final class IoUtils {
 
     private static byte[] createBytesBuffer( InputStream input ) throws IOException {
         return new byte[Math.max(input.available(), 8192)];
-    }
-
-    public static byte[] readBytesFromZipEntry(File file, ZipEntry entry) throws IOException {
-        if ( entry == null ) {
-            return null;
-        }
-
-        try (ZipFile zipFile = new ZipFile( file )) {
-            return IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
-        }
     }
 
     public static byte[] readBytes(File f) throws IOException {

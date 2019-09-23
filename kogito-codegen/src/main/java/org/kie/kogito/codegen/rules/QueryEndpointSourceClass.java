@@ -16,6 +16,7 @@
 
 package org.kie.kogito.codegen.rules;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,12 +80,16 @@ public class QueryEndpointSourceClass implements FileGenerator {
                 this.getClass().getResourceAsStream("/class-templates/RestQueryTemplate.java"));
         cu.setPackageDeclaration(query.getNamespace());
 
-        ClassOrInterfaceDeclaration clazz = cu.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration clazz = cu
+                .findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
         clazz.setName( targetCanonicalName );
 
         cu.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
 
-        FieldDeclaration ruleUnitDeclaration = clazz.getFieldByName( "ruleUnit" ).get();
+        FieldDeclaration ruleUnitDeclaration = clazz
+                .getFieldByName( "ruleUnit" )
+                .orElseThrow(() -> new NoSuchElementException("ClassOrInterfaceDeclaration doesn't contain a field named ruleUnit!"));
         setUnitGeneric( ruleUnitDeclaration.getElementType() );
         if (annotator != null) {
             annotator.withInjection( ruleUnitDeclaration );
@@ -100,7 +105,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
     private void generateConstructors( ClassOrInterfaceDeclaration clazz ) {
         for (ConstructorDeclaration c : clazz.getConstructors()) {
             c.setName( targetCanonicalName );
-            if (c.getParameters().size() > 0) {
+            if (!c.getParameters().isEmpty()) {
                 setUnitGeneric( c.getParameter( 0 ).getType() );
             }
         }
@@ -112,7 +117,10 @@ public class QueryEndpointSourceClass implements FileGenerator {
 
         setGeneric(queryMethod.getType(), returnType);
 
-        Statement statement = queryMethod.getBody().get().getStatement( 0 );
+        Statement statement = queryMethod
+                .getBody()
+                .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                .getStatement( 0 );
         statement.findAll( VariableDeclarator.class ).forEach( decl -> setUnitGeneric( decl.getType() ) );
     }
 
@@ -121,7 +129,10 @@ public class QueryEndpointSourceClass implements FileGenerator {
         String returnType;
         if (query.getBindings().size() == 1) {
             returnType = query.getBindings().values().iterator().next().getCanonicalName();
-            Statement statement = toResultMethod.getBody().get().getStatement( 0 );
+            Statement statement = toResultMethod
+                    .getBody()
+                    .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                    .getStatement( 0 );
             statement.findAll( CastExpr.class ).get(0).setType( returnType );
         } else {
             returnType = "Result";

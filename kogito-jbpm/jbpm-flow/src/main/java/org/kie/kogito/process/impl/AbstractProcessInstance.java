@@ -120,7 +120,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         
         
         org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id);
-        addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (legacyProcessInstance != null) {
             this.status = legacyProcessInstance.getState();
@@ -132,14 +132,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     public void abort() {
-        if (legacyProcessInstance() == null) {
-            return;
-        }
+        legacyProcessInstance();
         String pid = legacyProcessInstance().getId();
         unbind(variables, legacyProcessInstance().getVariables());        
         this.rt.abortProcessInstance(pid);
         this.status = legacyProcessInstance.getState();
-        addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
     }
 
     @Override
@@ -175,7 +173,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         for (Entry<String, Object> entry : map.entrySet()) {
             ((WorkflowProcessInstance)legacyProcessInstance()).setVariable(entry.getKey(), entry.getValue());
         }
-        addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
     }
 
     @Override
@@ -257,10 +255,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             this.status = legacyProcessInstance.getState();
             this.id = legacyProcessInstance.getId();
             
-            addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
+            addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
             
         } else {
-            addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
+            addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
         }
         unbind(this.variables, legacyProcessInstance().getVariables());
         this.status = legacyProcessInstance.getState();

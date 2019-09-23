@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -44,8 +44,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -60,7 +58,6 @@ import org.kie.kogito.rules.DataStream;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static com.github.javaparser.StaticJavaParser.parseStatement;
 
 public class RuleSetNodeVisitor extends AbstractVisitor {
 
@@ -90,24 +87,30 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleType.getName()), lambda);
         } else if (ruleType.isRuleUnit()) {
             InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/RuleUnitFactoryTemplate.java");
-            Expression ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class).get();
+            Optional<Expression> ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class);
 
             String unitName = ruleType.getName();
             Class<?> unitClass = loadUnitClass(unitName);
 
-            ruleUnitFactory.findAll(ClassOrInterfaceType.class)
-                    .stream()
-                    .filter(t -> t.getNameAsString().equals("$Type$"))
-                    .forEach(t -> t.setName(unitName));
+            ruleUnitFactory.ifPresent(factory -> {
+                factory.findAll(ClassOrInterfaceType.class)
+                        .stream()
+                        .filter(t -> t.getNameAsString().equals("$Type$"))
+                        .forEach(t -> t.setName(unitName));
 
-            ruleUnitFactory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                    .ifPresent(m -> m.setBody(bind(variableScope, ruleSetNode, unitClass)));
-            ruleUnitFactory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unit"))
-                    .ifPresent(m -> m.setBody(unit(unitName)));
-            ruleUnitFactory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                    .ifPresent(m -> m.setBody(unbind(variableScope, ruleSetNode, unitClass)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
+                        .ifPresent(m -> m.setBody(bind(variableScope, ruleSetNode, unitClass)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unit"))
+                        .ifPresent(m -> m.setBody(unit(unitName)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
+                        .ifPresent(m -> m.setBody(unbind(variableScope, ruleSetNode, unitClass)));
+            });
 
-            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory);
+            if (ruleUnitFactory.isPresent()) {
+                addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory.get());
+            } else {
+                addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()));
+            }
         } else if (ruleType.isDecision()) {
             RuleSetNode.RuleType.Decision decisionModel = (RuleSetNode.RuleType.Decision) ruleType;
             MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(new NameExpr("app"), "dmnRuntimeBuilder");

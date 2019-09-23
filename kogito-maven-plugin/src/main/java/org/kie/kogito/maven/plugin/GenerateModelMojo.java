@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -173,7 +172,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
-        boolean usePersistence = persistence ? true : hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
+        boolean usePersistence = persistence || hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
         
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
@@ -205,13 +204,14 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private KieModuleModel getKModuleModel() throws IOException {
-        for (Resource resource : project.getResources()) {
-            Path moduleXmlPath = Paths.get(resource.getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
+        if (!project.getResources().isEmpty()) {
+            Path moduleXmlPath = Paths.get(project.getResources().get(0).getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
             return KieModuleModelImpl.fromXML(
                     new ByteArrayInputStream(
                             Files.readAllBytes(moduleXmlPath)));
+        } else {
+            return new KieModuleModelImpl();
         }
-        return new KieModuleModelImpl();
     }
 
     private void writeGeneratedFile(GeneratedFile f) throws IOException {
@@ -243,7 +243,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     
     protected boolean hasClassOnClasspath(String className) {
-        URLClassLoader cl = null;
         try {
             Set<Artifact> elements = project.getDependencyArtifacts();
             URL[] urls = new URL[elements.size()];
@@ -251,25 +250,17 @@ public class GenerateModelMojo extends AbstractKieMojo {
             int i = 0;
             Iterator<Artifact> it = elements.iterator();
             while (it.hasNext()) {
-                Artifact artifact = (Artifact) it.next();
+                Artifact artifact = it.next();
                 
                 urls[i] = artifact.getFile().toURI().toURL();
                 i++;
             }
-            
-            cl = new URLClassLoader(urls);
-            cl.loadClass(className);
-            
+            try (URLClassLoader cl = new URLClassLoader(urls)) {
+                cl.loadClass(className);
+            }
             return true;
         } catch (Exception e) {
             return false;
-        } finally {
-            if (cl != null) {
-                try {
-                    cl.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 }

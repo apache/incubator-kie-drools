@@ -63,7 +63,7 @@ public abstract class ClassUtils {
     protected ClassUtils() { }
 
     static {
-        final Map<String, String> m = new HashMap<String, String>();
+        final Map<String, String> m = new HashMap<>();
         m.put("int", "I");
         m.put("boolean", "Z");
         m.put("float", "F");
@@ -73,13 +73,13 @@ public abstract class ClassUtils {
         m.put("double", "D");
         m.put("char", "C");
         m.put("void", "V");
-        final Map<String, String> r = new HashMap<String, String>();
+        final Map<String, String> r = new HashMap<>();
         for (final Map.Entry<String, String> e : m.entrySet()) {
             r.put(e.getValue(), e.getKey());
         }
         abbreviationMap = Collections.unmodifiableMap(m);
 
-        final Map<String, Class<?>> m2 = new HashMap<String, Class<?>>();
+        final Map<String, Class<?>> m2 = new HashMap<>();
         m2.put("int", int.class);
         m2.put("boolean", boolean.class);
         m2.put("float", float.class);
@@ -92,12 +92,7 @@ public abstract class ClassUtils {
     }
 
     static {
-        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
-
-            public Object run() {
-                return ClassLoaderUtil.class.getProtectionDomain();
-            }
-        } );
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged((PrivilegedAction) ClassLoaderUtil.class::getProtectionDomain);
 
         // determine if we are running on Android
         boolean isAndroid;
@@ -190,7 +185,7 @@ public abstract class ClassUtils {
      */
     public static Class<?> loadClass(String className,
                                      ClassLoader classLoader) {
-        Class cls = (Class) classes.get( className );
+        Class cls = classes.get(className );
         if ( cls == null ) {
             try {
                 cls = Class.forName( className );
@@ -270,11 +265,7 @@ public abstract class ClassUtils {
      */
     public static Object instantiateObject(String className,
                                            ClassLoader classLoader, Object...args) {
-        Constructor c = (Constructor) constructors.get( className );
-        if ( c == null ) {
-            c = loadClass(className, classLoader).getConstructors()[0];
-            constructors.put(className, c);
-        }
+        Constructor c = constructors.computeIfAbsent(className, n -> loadClass(n, classLoader).getConstructors()[0]);
 
         Object object;
         try {
@@ -318,7 +309,7 @@ public abstract class ClassUtils {
                             STAR);
                 } else {
                     // create a new list and add it
-                    List<String> list = new ArrayList<String>();
+                    List<String> list = new ArrayList<>();
                     list.add(name);
                     patterns.put(qualifiedNamespace, list);
                 }
@@ -423,7 +414,7 @@ public abstract class ClassUtils {
     }
 
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
-        Set<PropertyInClass> props = new TreeSet<PropertyInClass>();
+        Set<PropertyInClass> props = new TreeSet<>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 String propName = getter2property(m.getName());
@@ -441,7 +432,7 @@ public abstract class ClassUtils {
             }
         }
 
-        List<String> accessibleProperties = new ArrayList<String>();
+        List<String> accessibleProperties = new ArrayList<>();
         for ( PropertyInClass setter : props ) {
             accessibleProperties.add(setter.setter);
         }
@@ -496,7 +487,7 @@ public abstract class ClassUtils {
 
     public static Class extractGenericType(Class<?> clazz, final String methodName) {
         Method method = ClassUtils.getAccessor(clazz, methodName);
-        if(method == null) {
+        if (method == null) {
             throw new RuntimeException(String.format("Unknown accessor %s on %s", methodName, clazz));
         }
 
@@ -505,8 +496,8 @@ public abstract class ClassUtils {
         if(returnType instanceof ParameterizedType){
             ParameterizedType type = (ParameterizedType) returnType;
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
-            for(java.lang.reflect.Type typeArgument : typeArguments){
-                return (Class) typeArgument;
+            if (typeArguments.length > 0) {
+                return (Class) typeArguments[0];
             }
         }
         throw new RuntimeException("No generic type");
@@ -630,7 +621,7 @@ public abstract class ClassUtils {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null) {
+            if (!(obj instanceof PropertyInClass)) {
                 return false;
             }
             PropertyInClass other = (PropertyInClass) obj;
@@ -736,7 +727,7 @@ public abstract class ClassUtils {
     }
 
     public static Set<Class<?>> getAllImplementedInterfaceNames( Class<?> klass ) {
-        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        Set<Class<?>> interfaces = new HashSet<>();
         while( klass != null ) {
             Class<?>[] localInterfaces = klass.getInterfaces();
             for ( Class<?> intf : localInterfaces ) {
@@ -756,12 +747,12 @@ public abstract class ClassUtils {
     }
 
     public static Set<Class<?>> getMinimalImplementedInterfaceNames( Class<?> klass ) {
-        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        Set<Class<?>> interfaces = new HashSet<>();
         while( klass != null ) {
             Class<?>[] localInterfaces = klass.getInterfaces();
             for ( Class<?> intf : localInterfaces ) {
                 boolean subsumed = false;
-                for ( Class<?> i : new ArrayList<Class<?>>( interfaces ) ) {
+                for ( Class<?> i : new ArrayList<>(interfaces) ) {
                     if ( intf.isAssignableFrom( i ) ) {
                         subsumed = true;
                         break;
@@ -881,8 +872,10 @@ public abstract class ClassUtils {
         try {
             return cl.loadClass( name );
         }
-        catch ( final ClassNotFoundException cnfe ) { } // class doesn't exist
-        catch ( final NoClassDefFoundError ncdfe ) { } // potential mis-match induced by Mac/OSX
+        catch ( final ClassNotFoundException | NoClassDefFoundError cnfe ) {
+            // class doesn't exist
+            // potential mis-match induced by Mac/OSX
+        }
         return null;
     }
 

@@ -72,7 +72,7 @@ public class AsyncSend extends ConditionalElement implements PatternSource {
 
     @Override
     public List<? extends RuleConditionElement> getNestedElements() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override

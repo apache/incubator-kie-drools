@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.decision;
 
 import java.net.URLEncoder;
+import java.util.NoSuchElementException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -29,9 +30,9 @@ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.process.CodegenUtils;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.isApplicationField;
 
 public class DMNRestResourceGenerator {
 
@@ -71,8 +72,9 @@ public class DMNRestResourceGenerator {
         CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/DMNRestResourceTemplate.java"));
         clazz.setPackageDeclaration(this.packageName);
 
-        ClassOrInterfaceDeclaration template =
-                clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration template = clazz
+                .findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
         template.setName(resourceClazzName);
         
@@ -81,17 +83,17 @@ public class DMNRestResourceGenerator {
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
+                             CodegenUtils::isApplicationField).forEach(fd -> annotator.withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
+                             CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
         }
         
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
     
-    private void initializeApplicationField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {        
+    private void initializeApplicationField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
 

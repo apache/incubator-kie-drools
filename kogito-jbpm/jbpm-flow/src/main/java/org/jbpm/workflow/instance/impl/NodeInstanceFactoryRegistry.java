@@ -201,7 +201,6 @@ public class NodeInstanceFactoryRegistry {
         nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
         nodeInstance.setProcessInstance(processInstance);
         String uniqueId = (String) node.getMetaData().get("UniqueId");
-        assert uniqueId != null : node.getClass().getSimpleName() + " [" + node.getName() + "] does not have a unique id.";
         if (uniqueId == null) {
             uniqueId = node.getId() + "";
         }
@@ -210,6 +209,4 @@ public class NodeInstanceFactoryRegistry {
         nodeInstance.setLevel(level);
         return nodeInstance;
     }
-
-    ;
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.Model;
@@ -55,7 +56,6 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
     private static final String RESOURCE = "/class-templates/ProcessesTemplate.java";
     private final String packageName;
     private final List<ProcessGenerator> processes;
-    private final List<ProcessInstanceGenerator> processInstances;
     private final List<BodyDeclaration<?>> factoryMethods;
 
     private DependencyInjectionAnnotator annotator;
@@ -68,7 +68,6 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
         super("Processes", "processes", Processes.class);
         this.packageName = packageName;
         this.processes = new ArrayList<>();
-        this.processInstances = new ArrayList<>();
         this.factoryMethods = new ArrayList<>();
         this.applicationDeclarations = new NodeList<>();
 
@@ -110,7 +109,10 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
                                                 "configure")),
                                         null);
 
-        byProcessIdMethodDeclaration.getBody().get().addStatement(byProcessId);
+        byProcessIdMethodDeclaration
+                .getBody()
+                .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                .addStatement(byProcessId);
     }
 
     public ProcessesContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -118,11 +120,18 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
         return this;
     }
 
+    @Override
     public ClassOrInterfaceDeclaration classDeclaration() {
-        byProcessIdMethodDeclaration.getBody().get().addStatement(new ReturnStmt(new NullLiteralExpr()));
+        byProcessIdMethodDeclaration
+                .getBody()
+                .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                .addStatement(new ReturnStmt(new NullLiteralExpr()));
 
         NodeList<Expression> processIds = NodeList.nodeList(processes.stream().map(p -> new StringLiteralExpr(p.processId())).collect(Collectors.toList()));
-        processesMethodDeclaration.getBody().get().addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
+        processesMethodDeclaration
+                .getBody()
+                .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                .addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
 
         ClassOrInterfaceDeclaration cls = super.classDeclaration().setMembers(applicationDeclarations);
         cls.getMembers().sort(new BodyDeclarationComparator());
@@ -133,9 +142,11 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
     @Override
     public CompilationUnit injectableClass() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream(RESOURCE)).setPackageDeclaration(packageName);                        
-        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration cls = compilationUnit
+                .findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
         
-        cls.findAll(FieldDeclaration.class, (fd) -> fd.getVariable(0).getNameAsString().equals("processes")).forEach(fd -> {
+        cls.findAll(FieldDeclaration.class, fd -> fd.getVariable(0).getNameAsString().equals("processes")).forEach(fd -> {
             annotator.withInjection(fd);
             fd.getVariable(0).setType(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), 
                                                                NodeList.nodeList(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new WildcardType(new ClassOrInterfaceType(null, Model.class.getCanonicalName())))))));

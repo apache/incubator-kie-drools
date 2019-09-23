@@ -196,7 +196,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 }
                 mv.visitMethodInsn( INVOKEVIRTUAL,
                                     BuildUtils.getInternalType( classDef.getName() ),
-                                    BuildUtils.setterName( field.getName(), field.getTypeName() ),
+                                    BuildUtils.setterName( field.getName()),
                                     "(" + BuildUtils.getTypeDescriptor( field.getTypeName() )+ ")V");
             }
 
@@ -1269,7 +1269,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             } else {
                 mv.visitMethodInsn( INVOKESPECIAL,
                                     BuildUtils.getInternalType( classDef.getSuperClass() ),
-                                    BuildUtils.setterName( fieldDef.getName(), fieldDef.getOverriding() ),
+                                    BuildUtils.setterName( fieldDef.getName()),
                                     Type.getMethodDescriptor( Type.VOID_TYPE,
                                                               new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding()) )} ),
                                     false );

@@ -20,14 +20,8 @@ import org.kie.api.internal.utils.ServiceRegistry;
 
 public class XmlProcessDumperFactory {
 
-    private static XmlProcessDumperFactoryService service;
-
     public static XmlProcessDumper newXmlProcessDumperFactory() {
         return getXmlProcessDumperFactoryService().newXmlProcessDumper();
-    }
-
-    public static synchronized void setXmlProcessDumperFactoryService(XmlProcessDumperFactoryService service) {
-        XmlProcessDumperFactory.service = service;
     }
 
     public static XmlProcessDumperFactoryService getXmlProcessDumperFactoryService() {
@@ -36,5 +30,9 @@ public class XmlProcessDumperFactory {
 
     private static class LazyHolder {
         private static final XmlProcessDumperFactoryService service = ServiceRegistry.getInstance().get( XmlProcessDumperFactoryService.class );
+    }
+
+    private XmlProcessDumperFactory() {
+        // It is not allowed to create instances of util classes.
     }
 }

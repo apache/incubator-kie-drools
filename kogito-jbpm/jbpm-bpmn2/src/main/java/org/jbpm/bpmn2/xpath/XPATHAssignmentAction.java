@@ -60,26 +60,22 @@ public class XPATHAssignmentAction implements AssignmentAction {
 
         XPathExpression exprTo = xpathTo.compile(to);
 
-        Object target = null;
-        Object source = null;
+        Object target;
+        Object source;
         
         if (isInput) {
             source = context.getVariable(sourceExpr);
-            target = ((WorkItem) workItem).getParameter(targetExpr);
+            target = workItem.getParameter(targetExpr);
         } else {
             target = context.getVariable(targetExpr);
-            source = ((WorkItem) workItem).getResult(sourceExpr);
+            source = workItem.getResult(sourceExpr);
         }
         
         Object targetElem = null;
-        
-//        XPATHExpressionModifier modifier = new XPATHExpressionModifier();
-//        // modify the tree, returning the root node
-//        target = modifier.insertMissingData(to, (org.w3c.dom.Node) target);
 
         // now pick the leaf for this operation
         if (target != null) {
-            org.w3c.dom.Node parent = null;
+            org.w3c.dom.Node parent;
                 parent = ((org.w3c.dom.Node) target).getParentNode();
                 
                 
@@ -104,7 +100,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
             throw new RuntimeException("Source value was null for source " + sourceExpr);
         }
         
-        if (nl.getLength() == 0) {
+        if (nl == null || nl.getLength() == 0) {
             throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + sourceExpr);
         }
         for (int i = 0 ; i < nl.getLength(); i++) {
@@ -131,7 +127,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
         }
         
         if (isInput) {
-            ((WorkItem) workItem).setParameter(targetExpr, target);
+            workItem.setParameter(targetExpr, target);
         } else {
             context.setVariable(targetExpr, target);
         }

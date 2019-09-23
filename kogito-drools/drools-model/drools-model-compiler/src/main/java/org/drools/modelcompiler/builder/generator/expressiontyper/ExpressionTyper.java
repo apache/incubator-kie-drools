@@ -8,6 +8,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
@@ -232,16 +233,18 @@ public class ExpressionTyper {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr(THIS_PLACEHOLDER) : arrayAccessExpr.getName());
             } else if (arrayAccessExpr.getName() instanceof FieldAccessExpr ) {
                 Optional<TypedExpression> typedExpression = toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
-                typedExpression.map(te -> {
+                typedExpression.ifPresent(te -> {
                     final Expression originalExpression = te.getExpression();
-                    final Expression withoutRootNode = DrlxParseUtil.removeRootNode(originalExpression).getWithoutRootNode();
-                    return new TypedExpression(withoutRootNode, typeCursor);
+                    DrlxParseUtil.removeRootNode(originalExpression);
                 });
                 return typedExpression;
             } else {
                 String name = printConstraint(drlxExpr.asArrayAccessExpr().getName());
                 final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
-                Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
+                Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() )
+                        .getTypedExpression()
+                        .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
+                        .getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
                         createArrayAccessExpression(indexExpr , te.getExpression()) :
                         createMapAccessExpression(indexExpr, te.getExpression()));
@@ -432,7 +435,8 @@ public class ExpressionTyper {
 
             } else if (part instanceof ArrayAccessExpr) {
                 final ArrayAccessExpr inlineCastExprPart = (ArrayAccessExpr) part;
-                TypedExpressionCursor typedExpr = arrayAccessExpr(inlineCastExprPart, typeCursor, previous).get();
+                TypedExpressionCursor typedExpr = arrayAccessExpr(inlineCastExprPart, typeCursor, previous)
+                        .orElseThrow(() -> new NoSuchElementException("ArrayAccessExpr doesn't contain TypedExpressionCursor!"));
                 typeCursor = typedExpr.typeCursor;
                 previous = typedExpr.expressionCursor;
 
@@ -589,10 +593,17 @@ public class ExpressionTyper {
 
     private TypedExpressionCursor binaryExpr( BinaryExpr binaryExpr ) {
         TypedExpressionResult left = toTypedExpression( binaryExpr.getLeft() );
-        binaryExpr.setLeft( left.getTypedExpression().get().getExpression() );
+        binaryExpr.setLeft( left.getTypedExpression()
+                                    .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
+                                    .getExpression() );
         TypedExpressionResult right = toTypedExpression( binaryExpr.getRight() );
-        binaryExpr.setRight( right.getTypedExpression().get().getExpression() );
-        return new TypedExpressionCursor( binaryExpr, left.getTypedExpression().get().getType() );
+        binaryExpr.setRight( right.getTypedExpression()
+                                     .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
+                                     .getExpression() );
+        return new TypedExpressionCursor( binaryExpr,
+                                          left.getTypedExpression()
+                                                  .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
+                                                  .getType());
     }
 
     private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor ) {
@@ -671,7 +682,8 @@ public class ExpressionTyper {
         for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
             Expression arg = methodCallExpr.getArgument( i );
             TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
-            TypedExpression typedExpr = typedArg.getTypedExpression().get();
+            TypedExpression typedExpr = typedArg.getTypedExpression()
+                    .orElseThrow(() -> new NoSuchElementException("Node argument doesn't contain typed expression!"));
             argsType[i] = toRawClass( typedExpr.getType() );
             methodCallExpr.setArgument( i, typedExpr.getExpression() );
         }
@@ -720,7 +732,8 @@ public class ExpressionTyper {
         TypedExpressionCursor nameExpr = expressionCursor.get();
         java.lang.reflect.Type arrayType = nameExpr.typeCursor;
         Class<?> rawClass = toRawClass( arrayType );
-        TypedExpression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get();
+        TypedExpression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression()
+                .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
 
         if (rawClass.isArray()) {
             ArrayAccessExpr result = new ArrayAccessExpr( nameExpr.expressionCursor, indexExpr.getExpression() );
@@ -740,7 +753,11 @@ public class ExpressionTyper {
         if (optInit.isPresent()) {
             NodeList<Expression> values = optInit.get().getValues();
             for (int i = 0; i < values.size(); i++) {
-                values.set( i, toTypedExpressionFromMethodCallOrField( values.get(i) ).getTypedExpression().get().getExpression() );
+                values.set( i,
+                            toTypedExpressionFromMethodCallOrField( values.get(i) )
+                                    .getTypedExpression()
+                                    .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
+                                    .getExpression() );
             }
         }
 

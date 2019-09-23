@@ -70,7 +70,7 @@ public class PatternVisitor {
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
         if (context.isPatternDSL()) {
-            return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
+            return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
         } else {
             return new FlowDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
         }

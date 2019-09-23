@@ -19,11 +19,12 @@ package org.drools.core.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
 /**
  * Utility methods for math classes
  */
 public class MathUtils {
-    
+
     public static BigDecimal getBigDecimal( Object value ) {
         BigDecimal ret = null;
         if( value != null ) {
@@ -34,7 +35,7 @@ public class MathUtils {
             } else if( value instanceof BigInteger ) {
                 ret = new BigDecimal( (BigInteger) value );
             } else if( value instanceof Number ) {
-                ret = new BigDecimal( ((Number)value).doubleValue() );
+                ret = BigDecimal.valueOf(((Number)value).doubleValue());
             } else {
                 throw new ClassCastException("Not possible to coerce ["+value+"] from class "+value.getClass()+" into a BigDecimal.");
             }
@@ -58,5 +59,9 @@ public class MathUtils {
             }
         }
         return ret;
+    }
+
+    private MathUtils() {
+        // It is not allowed to create instances of util classes.
     }
 }

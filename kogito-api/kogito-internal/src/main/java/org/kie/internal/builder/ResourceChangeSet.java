@@ -21,8 +21,8 @@ import java.util.List;
 public class ResourceChangeSet {
     private final String     resourceName;  // src/main/resources/org/drools/rules.drl
     private final ChangeType status;
-    private final List<ResourceChange> changes = new ArrayList<ResourceChange>();
-    private List<RuleLoadOrder> loadOrder = new ArrayList<RuleLoadOrder>();
+    private final List<ResourceChange> changes = new ArrayList<>();
+    private List<RuleLoadOrder> loadOrder = new ArrayList<>();
 
     public ResourceChangeSet(String resourceName, ChangeType status) {
         this.resourceName = resourceName;
@@ -49,7 +49,7 @@ public class ResourceChangeSet {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((changes == null) ? 0 : changes.hashCode());
+        result = prime * result + changes.hashCode();
         result = prime * result + ((resourceName == null) ? 0 : resourceName.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         return result;
@@ -61,9 +61,7 @@ public class ResourceChangeSet {
         if ( obj == null ) { return false; }
         if ( getClass() != obj.getClass() ) { return false; }
         ResourceChangeSet other = (ResourceChangeSet) obj;
-        if ( changes == null ) {
-            if ( other.changes != null ) { return false; }
-        } else if ( !changes.equals( other.changes ) ) {
+        if ( !changes.equals( other.changes ) ) {
             return false;
         }
         if ( resourceName == null ) {
@@ -71,11 +69,7 @@ public class ResourceChangeSet {
         } else if ( !resourceName.equals( other.resourceName ) ) {
             return false;
         }
-        if ( status != other.status ) {
-            return false;
-        }
-
-        return true;
+        return status == other.status;
     }
 
     public static class RuleLoadOrder {

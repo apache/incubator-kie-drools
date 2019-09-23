@@ -21,6 +21,7 @@ import static org.kie.kogito.codegen.process.CodegenUtils.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.drools.core.util.StringUtils;
@@ -71,8 +72,7 @@ public class ResourceGenerator {
     private boolean startable;
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
-    private List<TriggerMetaData> triggers;
-    
+
     public ResourceGenerator(
             WorkflowProcess process,
             String modelfqcn,
@@ -106,8 +106,7 @@ public class ResourceGenerator {
         return this;
     }
     
-    public ResourceGenerator withTriggers(List<TriggerMetaData> triggers, boolean startable) {
-        this.triggers = triggers;
+    public ResourceGenerator withTriggers(boolean startable) {
         this.startable = startable;
         return this;
     }
@@ -122,8 +121,9 @@ public class ResourceGenerator {
         clazz.setPackageDeclaration(process.getPackageName());
         clazz.addImport(modelfqcn);
 
-        ClassOrInterfaceDeclaration template =
-                clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration template = clazz
+                .findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
         template.setName(resourceClazzName);
         
@@ -133,8 +133,9 @@ public class ResourceGenerator {
                                                      this.getClass().getResourceAsStream("/class-templates/RestResourceUserTaskTemplate.java"));
             
             
-            ClassOrInterfaceDeclaration userTaskTemplate =
-                    userTaskClazz.findFirst(ClassOrInterfaceDeclaration.class).get();
+            ClassOrInterfaceDeclaration userTaskTemplate = userTaskClazz
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
             for (UserTaskModelMetaData userTask : userTasks) {
        
                 userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {                    
@@ -210,16 +211,16 @@ public class ResourceGenerator {
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
+                             CodegenUtils::isProcessField).forEach(fd -> annotator.withNamedInjection(fd, processId));
             
             template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
+                             CodegenUtils::isApplicationField).forEach(fd -> annotator.withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd, template));
+                             CodegenUtils::isProcessField).forEach(this::initializeProcessField);
             
             template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
+                             CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
         }
         
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
@@ -234,11 +235,11 @@ public class ResourceGenerator {
     }
 
     
-    private void initializeProcessField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
+    private void initializeProcessField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
     }
     
-    private void initializeApplicationField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {        
+    private void initializeApplicationField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
 

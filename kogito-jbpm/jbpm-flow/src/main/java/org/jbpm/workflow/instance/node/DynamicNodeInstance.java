@@ -60,6 +60,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
         return resolveVariable(super.getNodeName());
     }
 
+    @Override
     public void internalTrigger(NodeInstance from, String type) {
     	triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
     	

@@ -80,9 +80,9 @@ public class PersistenceGenerator extends AbstractGenerator {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         
         Collection dataModelClasses = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
-        Path protoFilePath = Paths.get(targetDirectory.getParent().toString(), "src/main/resources", "/persistence/kogito-application.proto");
+        Path protoFilePath = Paths.get(targetDirectory.getParent(), "src/main/resources", "/persistence/kogito-application.proto");
         
-        if (!Files.exists(protoFilePath)) {
+        if (!protoFilePath.toFile().exists()) {
             try {
                 // generate proto file based on known data model
                 Proto proto = protoGenerator.generate(packageName, dataModelClasses, "import \"kogito-types.proto\";");
@@ -144,7 +144,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             }
             List<String> variableMarshallers = new ArrayList<>();  
             // handler process variable marshallers
-            if (Files.exists(protoFilePath)) {
+            if (protoFilePath.toFile().exists()) {
                 MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.classLoader);
                 try {
                     String protoContent = new String(Files.readAllBytes(protoFilePath));

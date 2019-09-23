@@ -16,16 +16,10 @@
 
 package org.jbpm.compiler.canonical;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import org.drools.core.util.StringUtils;
-import org.jbpm.workflow.core.WorkflowProcess;
-import org.kie.internal.kogito.codegen.Generated;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -52,6 +46,12 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.StringUtils;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.internal.kogito.codegen.Generated;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class ModelMetaData {
 
@@ -133,7 +133,7 @@ public class ModelMetaData {
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 
         if (!processMethod.isPresent()) {
-            throw new RuntimeException("Cannot find class declaration in the template");
+            throw new NoSuchElementException("Cannot find class declaration in the template");
         }
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
         
@@ -187,7 +187,7 @@ public class ModelMetaData {
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
 
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
-        toMapMethod.get().setBody(toMapBody);
+        toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
 
         modelClass.findFirst(
                 MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)// make sure to take only the method with two parameters (id and params)

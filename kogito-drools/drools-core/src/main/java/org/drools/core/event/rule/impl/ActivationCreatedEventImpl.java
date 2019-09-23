@@ -26,6 +26,13 @@ public class ActivationCreatedEventImpl extends ActivationEventImpl implements M
         super( activation, kruntime );
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ActivationCreatedEventImpl() {
+        super();
+    }
+
     @Override
     public String toString() {
         return "==>[ActivationCreatedEvent: getActivation()=" + getMatch()

@@ -30,7 +30,7 @@ import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.MyError;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
+import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -270,7 +270,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ErrorBoundaryEventOnBusinessRuleTask.bpmn2",
                 "BPMN2-ErrorBoundaryEventOnBusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ksession.addEventListener(new RuleAwareProcessEventListener());
         ProcessInstance processInstance = ksession.startProcess("BPMN2-ErrorBoundaryEventOnBusinessRuleTask");
 
         assertProcessInstanceFinished(processInstance, ksession);
@@ -282,7 +282,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiErrorBoundaryEventsOnBusinessRuleTask.bpmn2",
                 "BPMN2-MultiErrorBoundaryEventsOnBusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ksession.addEventListener(new RuleAwareProcessEventListener());
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person());
@@ -295,7 +295,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         ksession.dispose();
 
         ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ksession.addEventListener(new RuleAwareProcessEventListener());
         params = new HashMap<String, Object>();
         params.put("person", new Person("unsupported"));
         ProcessInstance processInstance2 = ksession.startProcess("BPMN2-MultiErrorBoundaryEventeOnBusinessRuleTask", params);

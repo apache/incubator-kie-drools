@@ -42,6 +42,14 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         this.object = object;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public ObjectUpdatedEventImpl() {
+        super();
+    }
+
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );
@@ -49,6 +57,7 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         out.writeObject( oldObject );
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -57,14 +66,17 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         this.oldObject = in.readObject();
     }
     
+    @Override
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
 
+    @Override
     public Object getObject() {
         return this.object;
     }
 
+    @Override
     public Object getOldObject() {
         return this.oldObject;
     }

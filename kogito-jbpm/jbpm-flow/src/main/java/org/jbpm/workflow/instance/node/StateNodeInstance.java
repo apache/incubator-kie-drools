@@ -36,7 +36,8 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         return (StateNode) getNode();
     }
     
-	public void internalTrigger(NodeInstance from, String type) {
+	@Override
+    public void internalTrigger(NodeInstance from, String type) {
 		super.internalTrigger(from, type);
 		// if node instance was cancelled, abort
 		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {

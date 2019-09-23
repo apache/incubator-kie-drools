@@ -28,7 +28,7 @@ import java.util.Stack;
 
 public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
-    public static enum SortDirection {
+    public enum SortDirection {
         ASCENDING,
         DESCENDING
     }
@@ -74,7 +74,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
     }
 
     private static ReleaseId getFirstSorted(List<ReleaseId> releaseIds, SortDirection sortDirection) {
-        if (releaseIds != null && releaseIds.size() > 0) {
+        if (releaseIds != null && !releaseIds.isEmpty()) {
             releaseIds.sort(new ReleaseIdComparator(sortDirection));
             return releaseIds.get(0);
         }
@@ -104,32 +104,33 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
         private static class IntegerItem implements Item {
 
-            private static final BigInteger BigInteger_ZERO = new BigInteger("0");
-
             private final BigInteger value;
 
             public static final IntegerItem ZERO = new IntegerItem();
 
             private IntegerItem() {
-                this.value = BigInteger_ZERO;
+                this.value = BigInteger.ZERO;
             }
 
             public IntegerItem(String str) {
                 this.value = new BigInteger(str);
             }
 
+            @Override
             public int getType() {
                 return INTEGER_ITEM;
             }
 
+            @Override
             public boolean isNull() {
-                return BigInteger_ZERO.equals(value);
+                return BigInteger.ZERO.equals(value);
             }
 
+            @Override
             public int compareTo(Item item) {
                 if (item == null)
                 {
-                    return BigInteger_ZERO.equals(value) ? 0 : 1; // 1.0 == 1, 1.1 > 1
+                    return BigInteger.ZERO.equals(value) ? 0 : 1; // 1.0 == 1, 1.1 > 1
                 }
 
                 switch (item.getType())
@@ -196,10 +197,12 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 this.value = ALIASES.containsKey(value) ? ALIASES.get(value) : value;
             }
 
+            @Override
             public int getType() {
                 return STRING_ITEM;
             }
 
+            @Override
             public boolean isNull() {
                 return (comparableQualifier(value).compareTo(RELEASE_VERSION_INDEX) == 0);
             }
@@ -222,6 +225,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 return i == -1 ? _QUALIFIERS.size() + "-" + qualifier : String.valueOf(i);
             }
 
+            @Override
             public int compareTo(Item item) {
                 if (item == null) {
                     // 1-rc < 1, 1-ga > 1
@@ -253,10 +257,12 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
          */
         private static class ListItem extends ArrayList<Item> implements Item {
 
+            @Override
             public int getType() {
                 return LIST_ITEM;
             }
 
+            @Override
             public boolean isNull() {
                 return (size() == 0);
             }
@@ -272,6 +278,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 }
             }
 
+            @Override
             public int compareTo(Item item) {
                 if (item == null) {
                     if (size() == 0) {
@@ -296,7 +303,16 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                             Item r = right.hasNext() ? right.next() : null;
 
                             // if this is shorter, then invert the compare and mul with -1
-                            int result = l == null ? -1 * r.compareTo(l) : l.compareTo(r);
+                            final int result;
+                            if (l == null) {
+                                if (r == null) {
+                                    result = 0;
+                                } else {
+                                    result = -1 * r.compareTo(l);
+                                }
+                            } else {
+                                result = l.compareTo(r);
+                            }
 
                             if (result != 0) {
                                 return result;
@@ -310,6 +326,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 }
             }
 
+            @Override
             public String toString() {
                 StringBuilder buffer = new StringBuilder("(");
                 for (Iterator<Item> iter = iterator(); iter.hasNext();)
@@ -338,7 +355,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
             ListItem list = items;
 
-            Stack<Item> stack = new Stack<Item>();
+            Stack<Item> stack = new Stack<>();
             stack.push(list);
 
             boolean isDigit = false;
@@ -369,8 +386,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                         if ((i + 1 < version.length()) && Character.isDigit(version.charAt(i + 1))) {
                             // new ListItem only if previous were digits and new char is a digit,
                             // ie need to differentiate only 1.1 from 1-1
-                            list.add(list = new ListItem());
-
+                            list = new ListItem();
                             stack.push(list);
                         }
                     }
@@ -408,18 +424,22 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
             return isDigit ? new IntegerItem(buf) : new StringItem(buf, false);
         }
 
+        @Override
         public int compareTo(ComparableVersion o) {
             return items.compareTo(o.items);
         }
 
+        @Override
         public String toString() {
             return value;
         }
 
+        @Override
         public boolean equals(Object o) {
             return (o instanceof ComparableVersion) && canonical.equals(((ComparableVersion) o).canonical);
         }
 
+        @Override
         public int hashCode() {
             return canonical.hashCode();
         }

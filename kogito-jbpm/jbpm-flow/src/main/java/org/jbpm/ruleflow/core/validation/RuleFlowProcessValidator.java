@@ -73,8 +73,6 @@ import org.kie.services.time.impl.CronExpression;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow validator.
@@ -83,12 +81,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     public static final String ASSOCIATIONS = "BPMN.Associations";
 
-    // TODO: make this pluggable
-    // TODO: extract generic process stuff and generic workflow stuff
-
     private static RuleFlowProcessValidator instance;
-
-    private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessValidator.class);
 
     private RuleFlowProcessValidator() {
     }
@@ -101,7 +94,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     }
 
     public ProcessValidationError[] validateProcess(final RuleFlowProcess process) {
-        final List<ProcessValidationError> errors = new ArrayList<ProcessValidationError>();
+        final List<ProcessValidationError> errors = new ArrayList<>();
 
         if (process.getName() == null) {
             errors.add(new ProcessValidationErrorImpl(process,
@@ -292,7 +285,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     String n = join.getN();
                     if (!n.startsWith("#{") || !n.endsWith("}")) {
                         try {
-                            new Integer(n);
+                            Integer.parseInt(n);
                         } catch (NumberFormatException e) {
                             addErrorMessage(process,
                                             node,
@@ -332,7 +325,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof StateNode) {
                 final StateNode stateNode = (StateNode) node;
-                if (stateNode.getDefaultIncomingConnections().size() == 0 && !acceptsNoIncomingConnections(node)) {
+                if (stateNode.getDefaultIncomingConnections().isEmpty() && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                                     node,
                                     errors,
@@ -409,7 +402,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     } else if ("mvel".equals(droolsAction.getDialect())) {
                         try {
                             ParserContext parserContext = new ParserContext();
-                            //parserContext.setStrictTypeEnforcement(true);
                             ExpressionCompiler compiler = new ExpressionCompiler(actionString,
                                                                                  parserContext);
                             compiler.setVerifying(true);
@@ -431,7 +423,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                             "Action has invalid action: " + t.getMessage() + ".");
                         }
                     }
-                    // TODO: validation for "java" and "drools" scripts!
                     validateCompensationIntermediateOrEndEvent(actionNode,
                                                                process,
                                                                errors);
@@ -491,27 +482,19 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                     errors,
                                     "ForEach has no collection expression");
                 }
-                if (forEachNode.getDefaultIncomingConnections().size() == 0 && !acceptsNoIncomingConnections(node)) {
+                if (forEachNode.getDefaultIncomingConnections().isEmpty() && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                                     node,
                                     errors,
                                     "ForEach has no incoming connection");
                 }
-                if (forEachNode.getDefaultOutgoingConnections().size() == 0 && !acceptsNoOutgoingConnections(node)) {
+                if (forEachNode.getDefaultOutgoingConnections().isEmpty() && !acceptsNoOutgoingConnections(node)) {
                     addErrorMessage(process,
                                     node,
                                     errors,
                                     "ForEach has no outgoing connection");
                 }
-                // TODO: check, if no linked connections, for start and end node(s)
-//                if (forEachNode.getLinkedIncomingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
-//                    errors.add(new ProcessValidationErrorImpl(process,
-//                        "ForEach node '%s' [%d] has no linked start node"));
-//                }
-//                if (forEachNode.getLinkedOutgoingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
-//                    errors.add(new ProcessValidationErrorImpl(process,
-//                        "ForEach node '%s' [%d] has no linked end node"));
-//                }
+
                 final List<Node> start = RuleFlowProcess.getStartNodes(forEachNode.getNodes());
                 if (start != null) {
                     for (Node s : start) {
@@ -529,14 +512,14 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             } else if (node instanceof DynamicNode) {
                 final DynamicNode dynamicNode = (DynamicNode) node;
 
-                if (dynamicNode.getDefaultIncomingConnections().size() == 0 && !acceptsNoIncomingConnections(dynamicNode)) {
+                if (dynamicNode.getDefaultIncomingConnections().isEmpty() && !acceptsNoIncomingConnections(dynamicNode)) {
                     addErrorMessage(process,
                                     node,
                                     errors,
                                     "Dynamic has no incoming connection");
                 }
 
-                if (dynamicNode.getDefaultOutgoingConnections().size() == 0 && !acceptsNoOutgoingConnections(dynamicNode)) {
+                if (dynamicNode.getDefaultOutgoingConnections().isEmpty() && !acceptsNoOutgoingConnections(dynamicNode)) {
                     addErrorMessage(process,
                                     node,
                                     errors,
@@ -555,7 +538,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             } else if (node instanceof CompositeNode) {
                 final CompositeNode compositeNode = (CompositeNode) node;
                 for (Map.Entry<String, NodeAndType> inType : compositeNode.getLinkedIncomingNodes().entrySet()) {
-                    if (compositeNode.getIncomingConnections(inType.getKey()).size() == 0 && !acceptsNoIncomingConnections(node)) {
+                    if (compositeNode.getIncomingConnections(inType.getKey()).isEmpty() && !acceptsNoIncomingConnections(node)) {
                         addErrorMessage(process,
                                         node,
                                         errors,
@@ -569,7 +552,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     }
                 }
                 for (Map.Entry<String, NodeAndType> outType : compositeNode.getLinkedOutgoingNodes().entrySet()) {
-                    if (compositeNode.getOutgoingConnections(outType.getKey()).size() == 0) {
+                    if (compositeNode.getOutgoingConnections(outType.getKey()).isEmpty()) {
                         addErrorMessage(process,
                                         node,
                                         errors,
@@ -583,7 +566,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     }
                 }
 
-                if (compositeNode.getLinkedIncomingNodes().values().size() < 1) {
+                if (compositeNode.getLinkedIncomingNodes().values().isEmpty()) {
                     boolean foundStartNode = false;
 
                     for (Node internalNode : compositeNode.getNodes()) {
@@ -673,13 +656,13 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                               process);
             } else if (node instanceof EventNode) {
                 final EventNode eventNode = (EventNode) node;
-                if (eventNode.getEventFilters().size() == 0) {
+                if (eventNode.getEventFilters().isEmpty()) {
                     addErrorMessage(process,
                                     node,
                                     errors,
                                     "Event should specify an event type");
                 }
-                if (eventNode.getDefaultOutgoingConnections().size() == 0) {
+                if (eventNode.getDefaultOutgoingConnections().isEmpty()) {
                     addErrorMessage(process,
                                     node,
                                     errors,
@@ -763,15 +746,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                                boolean isDynamic,
                                                final List<ProcessValidationError> errors,
                                                RuleFlowProcess process) {
-        final Map<Node, Boolean> processNodes = new HashMap<Node, Boolean>();
+        final Map<Node, Boolean> processNodes = new HashMap<>();
         final Node[] nodes;
         if (container instanceof CompositeNode) {
             nodes = ((CompositeNode) container).internalGetNodes();
         } else {
             nodes = container.getNodes();
         }
-        List<Node> eventNodes = new ArrayList<Node>();
-        List<CompositeNode> compositeNodes = new ArrayList<CompositeNode>();
+        List<Node> eventNodes = new ArrayList<>();
+        List<CompositeNode> compositeNodes = new ArrayList<>();
         for (int i = 0; i < nodes.length; i++) {
             final Node node = nodes[i];
             processNodes.put(node,
@@ -785,7 +768,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
         if (isDynamic) {
             for (Node node : nodes) {
-                if (node.getIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+                if (node.getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
                     processNode(node,
                                 processNodes);
                 }
@@ -832,13 +815,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         if (!nodes.containsKey(node) && !((node instanceof CompositeNodeEnd) || (node instanceof ForEachSplitNode) || (node instanceof ForEachJoinNode))) {
             throw new IllegalStateException("A process node is connected with a node that does not belong to the process: " + node.getName());
         }
-        final Boolean prevValue = (Boolean) nodes.put(node,
-                                                      Boolean.TRUE);
-        if (prevValue == Boolean.FALSE || prevValue == null) {
-            for (final Iterator<List<Connection>> it = node.getOutgoingConnections().values().iterator(); it.hasNext(); ) {
-                final List<Connection> list = it.next();
-                for (final Iterator<Connection> it2 = list.iterator(); it2.hasNext(); ) {
-                    processNode(it2.next().getTo(),
+        final Boolean prevValue = nodes.put(node,
+                                            Boolean.TRUE);
+        if (prevValue == null || Boolean.FALSE.equals(prevValue)) {
+            for (final List<Connection> list : node.getOutgoingConnections().values()) {
+                for (final Connection connection : list) {
+                    processNode(connection.getTo(),
                                 nodes);
                 }
             }
@@ -846,9 +828,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     }
 
     private boolean acceptsNoIncomingConnections(Node node) {
-        NodeContainer nodeContainer = node.getNodeContainer();
-        return nodeContainer instanceof DynamicNode ||
-                (nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
+        return acceptsNoOutgoingConnections(node);
     }
 
     private boolean acceptsNoOutgoingConnections(Node node) {
@@ -871,25 +851,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 try {
                     switch (timer.getTimeType()) {
                         case Timer.TIME_CYCLE:
-                            if (CronExpression.isValidExpression(timer.getDelay())) {
-
-                            } else {
-
+                            if (!CronExpression.isValidExpression(timer.getDelay())) {
                                 // when using ISO date/time period is not set
                                 DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
                             }
-
                             break;
                         case Timer.TIME_DURATION:
-
                             DateTimeUtils.parseDuration(timer.getDelay());
-
                             break;
                         case Timer.TIME_DATE:
                             DateTimeUtils.parseDateAsDuration(timer.getDate());
-
                             break;
-
                         default:
                             break;
                     }
@@ -901,35 +873,28 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             }
         }
-        if (timer.getPeriod() != null) {
-            if (!timer.getPeriod().contains("#{")) {
-                try {
-                    if (CronExpression.isValidExpression(timer.getPeriod())) {
-
-                    } else {
-                        // when using ISO date/time period is not set
-                        DateTimeUtils.parseRepeatableDateTime(timer.getPeriod());
-                    }
-                } catch (RuntimeException e) {
-                    addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    "Could not parse period '" + timer.getPeriod() + "': " + e.getMessage());
+        if (timer.getPeriod() != null && !timer.getPeriod().contains("#{")) {
+            try {
+                if (!CronExpression.isValidExpression(timer.getPeriod())) {
+                    // when using ISO date/time period is not set
+                    DateTimeUtils.parseRepeatableDateTime(timer.getPeriod());
                 }
+            } catch (RuntimeException e) {
+                addErrorMessage(process,
+                                node,
+                                errors,
+                                "Could not parse period '" + timer.getPeriod() + "': " + e.getMessage());
             }
         }
 
-        if (timer.getDate() != null) {
-            if (!timer.getDate().contains("#{")) {
-                try {
-
-                    DateTimeUtils.parseDateAsDuration(timer.getDate());
-                } catch (RuntimeException e) {
-                    addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    "Could not parse date '" + timer.getDate() + "': " + e.getMessage());
-                }
+        if (timer.getDate() != null && !timer.getDate().contains("#{")) {
+            try {
+                DateTimeUtils.parseDateAsDuration(timer.getDate());
+            } catch (RuntimeException e) {
+                addErrorMessage(process,
+                                node,
+                                errors,
+                                "Could not parse date '" + timer.getDate() + "': " + e.getMessage());
             }
         }
     }
@@ -961,10 +926,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     @Override
     public boolean accept(Process process,
                           Resource resource) {
-        if (RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType())) {
-            return true;
-        }
-        return false;
+        return RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType());
     }
 
     protected void validateCompensationIntermediateOrEndEvent(Node node,
@@ -975,7 +937,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             String activityRef = (String) node.getMetaData().get("Compensation");
             Node refNode = null;
             if (activityRef != null) {
-                Queue<Node> nodeQueue = new LinkedList<Node>();
+                Queue<Node> nodeQueue = new LinkedList<>();
                 nodeQueue.addAll(Arrays.asList(process.getNodes()));
                 while (!nodeQueue.isEmpty()) {
                     Node polledNode = nodeQueue.poll();
@@ -1018,9 +980,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                    Node node,
                                    List<ProcessValidationError> errors,
                                    String message) {
-        String error = String.format("Node '%s' [%d] " + message,
+        String error = String.format("Node '%s' [%d] %s",
                                      node.getName(),
-                                     node.getId());
+                                     node.getId(),
+                                     message);
         errors.add(new ProcessValidationErrorImpl(process,
                                                   error));
     }

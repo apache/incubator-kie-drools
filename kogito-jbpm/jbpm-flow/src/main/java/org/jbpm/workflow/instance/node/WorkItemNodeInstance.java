@@ -123,6 +123,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 .getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
     }
 
+    @Override
     public void internalTrigger(final NodeInstance from, String type) {
         super.internalTrigger(from, type);
         // if node instance was cancelled, abort
@@ -353,6 +354,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
+    @Override
     public void cancel() {
         WorkItem workItem = getWorkItem();
         if (workItem != null &&

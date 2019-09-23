@@ -32,6 +32,13 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
         this.partition = partition;
     }
 
+    /**
+     * Do not use this constructor! It should be used just by deserialization.
+     */
+    public PartitionedDefaultAgenda() {
+        partition = 0;
+    }
+
     @Override
     protected void doRetract( PropagationContext ectx ) {
         InternalFactHandle factHandle = ectx.getFactHandle();

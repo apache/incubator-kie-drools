@@ -17,18 +17,14 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
@@ -51,7 +47,6 @@ public class RuleUnitSourceClass implements FileGenerator {
     private final String typeName;
     private final String generatedSourceFile;
     private final String generatedFilePath;
-    private final String canonicalName;
     private final String targetCanonicalName;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
@@ -63,7 +58,6 @@ public class RuleUnitSourceClass implements FileGenerator {
         this.packageName = ruleUnit.getPackage().getName();
         this.typeName = ruleUnit.getSimpleName();
         this.generatedSourceFile = generatedSourceFile;
-        this.canonicalName = packageName + "." + typeName;
         this.targetTypeName = typeName + "RuleUnit";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
@@ -111,41 +105,10 @@ public class RuleUnitSourceClass implements FileGenerator {
         CompilationUnit compilationUnit = parse(getClass().getResourceAsStream("/class-templates/rules/RuleUnitTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
 
-        classDeclaration(compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get());
+        classDeclaration(
+                compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                        .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!")));
         return compilationUnit;
-    }
-
-    private MethodDeclaration createInstanceMethod(String ruleUnitInstanceFQCN) {
-        MethodDeclaration methodDeclaration = new MethodDeclaration();
-
-        ReturnStmt returnStmt = new ReturnStmt(
-                new ObjectCreationExpr()
-                        .setType(ruleUnitInstanceFQCN)
-                        .setArguments(nodeList(
-                                new ThisExpr(),
-                                new NameExpr("value"),
-                                newKieSession())));
-
-        methodDeclaration.setName("createInstance")
-                .addModifier(Modifier.Keyword.PUBLIC)
-                .addParameter(canonicalName, "value")
-                .setType(ruleUnitInstanceFQCN)
-                .setBody(new BlockStmt()
-                                 .addStatement(returnStmt));
-
-        return methodDeclaration;
-    }
-
-    private MethodCallExpr newKieSession() {
-        MethodCallExpr createKieBaseFromModel = createKieBaseFromModel();
-        return new MethodCallExpr(createKieBaseFromModel, "newKieSession");
-    }
-
-    private MethodCallExpr createKieBaseFromModel() {
-        return new MethodCallExpr(
-                new NameExpr("org.drools.modelcompiler.builder.KieBaseBuilder"),
-                "createKieBaseFromModel").addArgument(
-                new ObjectCreationExpr().setType(packageName + "." + generatedSourceFile + "_" + typeName));
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {

@@ -34,6 +34,12 @@ public class RuleFlowGroupEventImpl implements RuleFlowGroupEvent, Externalizabl
         this.kruntime = kruntime;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
+    public RuleFlowGroupEventImpl() {
+    }
+
     public RuleFlowGroup getRuleFlowGroup() {
         return ruleFlowGroup;
     }
@@ -50,7 +56,7 @@ public class RuleFlowGroupEventImpl implements RuleFlowGroupEvent, Externalizabl
                                             ClassNotFoundException {
         this.ruleFlowGroup = new SerializableRuleFlowGroup( );
         ((SerializableRuleFlowGroup)this.ruleFlowGroup).readExternal( in );
-        this.kruntime = null; // we null this as it isn't serializable;
+        this.kruntime = null; // we null this as it isn't serializable
     }
 
     @Override

@@ -47,7 +47,9 @@ public class DMNInputDataInfo implements Serializable {
             String actualNS = id.getNamespaceURI(typeRef.getPrefix());
             typeRef = new QName(actualNS, typeRef.getLocalPart(), typeRef.getPrefix());
         }
-        res.setTypeRef(typeRef.getLocalPart());
+        if (typeRef != null) {
+            res.setTypeRef(typeRef.getLocalPart());
+        }
         return res;
     }
 

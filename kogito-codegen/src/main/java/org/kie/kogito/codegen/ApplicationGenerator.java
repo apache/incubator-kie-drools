@@ -17,6 +17,7 @@ package org.kie.kogito.codegen;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,7 +63,6 @@ public class ApplicationGenerator {
     public static final Logger logger = LoggerFactory.getLogger(ApplicationGenerator.class);
 
     private static final String RESOURCE = "/class-templates/ApplicationTemplate.java";
-    private final static String LABEL_PREFIX = "org.kie/";
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
@@ -70,7 +71,6 @@ public class ApplicationGenerator {
     
     private final String packageName;
     private final String sourceFilePath;
-    private final String completePath;
     private final String targetCanonicalName;
     private final File targetDirectory;
 
@@ -82,9 +82,9 @@ public class ApplicationGenerator {
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator;
     private List<Generator> generators = new ArrayList<>();
-    
+
     private GeneratorContext context = new GeneratorContext();
-    private boolean persistence; 
+    private boolean persistence;
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
         if (packageName == null) {
@@ -95,7 +95,6 @@ public class ApplicationGenerator {
         this.targetTypeName = "Application";
         this.targetCanonicalName = this.packageName + "." + targetTypeName;
         this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
-        this.completePath = "src/main/java/" + sourceFilePath;
         this.factoryMethods = new ArrayList<>();
         this.configGenerator = new ConfigGenerator(packageName);
     }
@@ -116,7 +115,9 @@ public class ApplicationGenerator {
         CompilationUnit compilationUnit =
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
-        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration cls = compilationUnit
+                .findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
         
         VariableDeclarator eventPublishersDeclarator;
         FieldDeclaration eventPublishersFieldDeclaration = new FieldDeclaration();
@@ -238,7 +239,10 @@ public class ApplicationGenerator {
         
         if (cp != null) {
             String packageName = cp.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
-            String clazzName = packageName + "." + cp.findFirst(ClassOrInterfaceDeclaration.class).map(c -> c.getName().toString()).get();
+            String clazzName = packageName + "." + cp
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .map(c -> c.getName().toString())
+                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
             generatedFiles.add(new GeneratedFile(GeneratedFile.Type.CLASS,
                                                  clazzName.replace('.', '/') + ".java",
                                  log( cp.toString() ).getBytes(StandardCharsets.UTF_8)));
@@ -258,7 +262,8 @@ public class ApplicationGenerator {
         try {
             Path imageMetaDataFile = Paths.get(targetDirectory.getAbsolutePath(), "image_metadata.json");
             ImageMetaData imageMetadata;
-            if (Files.exists(imageMetaDataFile)) {
+
+            if (imageMetaDataFile.toFile().exists()) {
                 // read the file to merge the content
                 imageMetadata =  mapper.readValue(imageMetaDataFile.toFile(), ImageMetaData.class);
             } else {
@@ -270,7 +275,7 @@ public class ApplicationGenerator {
             Files.write(imageMetaDataFile,
                         mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }    
 

@@ -63,8 +63,8 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
-                                                                            current.key ) ) {
+                if ( hashCode == current.cachedHashCode && this.comparator.areEqual(key,
+                                                                                    current.key ) ) {
                     final Object oldValue = current.value;
                     current.value = value;
                     return oldValue;
@@ -93,8 +93,8 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
-                                                                        current.key ) ) {
+            if ( hashCode == current.cachedHashCode && this.comparator.areEqual(key,
+                                                                                current.key ) ) {
                 return current.value;
             }
             current = (ObjectEntry) current.getNext();
@@ -111,8 +111,8 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         ObjectEntry current = previous;
         while ( current != null ) {
             final ObjectEntry next = (ObjectEntry) current.getNext();
-            if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
-                                                                        current.key ) ) {
+            if ( hashCode == current.cachedHashCode && this.comparator.areEqual(key,
+                                                                                current.key ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
                 } else {
