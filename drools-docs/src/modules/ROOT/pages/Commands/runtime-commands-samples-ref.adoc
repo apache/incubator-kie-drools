@@ -73,6 +73,8 @@ Contains multiple commands to be executed together.
 
 |===
 
+NOTE: KIE session IDs are in the `kmodule.xml` file of your {PRODUCT} project. To view or add a KIE session ID in {CENTRAL} to use with the `lookup` command attribute, navigate to the relevant project in {CENTRAL} and go to project *Settings* -> *KIE bases* -> *KIE sessions*. If no KIE bases exist, click *Add KIE base* -> *KIE sessions* to define the new KIE base and KIE sessions.
+
 .Example JSON request body
 [source,json]
 ----
