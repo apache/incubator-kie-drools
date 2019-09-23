@@ -17,6 +17,7 @@
 package org.optaplanner.examples.nurserostering.domain.solver;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
 
 import org.optaplanner.examples.nurserostering.domain.Shift;
@@ -24,14 +25,15 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>,
         Serializable {
 
-    private static final Comparator<ShiftDate> SHIFT_DATE_DESCENDING_COMPARATOR =
-            Comparator.comparing(ShiftDate::getDate).reversed();
     private static final Comparator<Shift> COMPARATOR =
-            Comparator.comparing(Shift::getShiftDate, SHIFT_DATE_DESCENDING_COMPARATOR)
-                    .thenComparing(Shift::getShiftType, Comparator.comparingLong(ShiftType::getId).reversed())
+            comparing(Shift::getShiftDate, Collections.reverseOrder(comparing(ShiftDate::getDate)))
+                    .thenComparing(Shift::getShiftType, comparingLong(ShiftType::getId).reversed())
                     .thenComparingInt(Shift::getRequiredEmployeeSize);
 
     @Override

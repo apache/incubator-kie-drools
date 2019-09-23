@@ -18,11 +18,15 @@ package org.optaplanner.examples.curriculumcourse.domain.solver;
 
 import java.util.Comparator;
 
-import com.google.common.base.Functions;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+
+import static com.google.common.base.Functions.identity;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
 
 public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Period> {
 
@@ -41,14 +45,12 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
 
         // The higher unavailablePeriodPenaltyCount, the weaker
         private static final Comparator<PeriodStrengthWeight> BASE_COMPARATOR =
-                Comparator.comparingInt((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount).reversed();
-        private static final Comparator<Period> PERIOD_COMPARATOR =
-                Comparator.comparingInt((Period p) -> p.getDay().getDayIndex())
-                        .thenComparingInt(p -> p.getTimeslot().getTimeslotIndex())
-                        .thenComparingLong(Period::getId);
-        private static final Comparator<PeriodStrengthWeight> COMPARATOR =
-                Comparator.comparing(Functions.identity(), BASE_COMPARATOR)
-                        .thenComparing(w -> w.period, PERIOD_COMPARATOR);
+                reverseOrder(comparingInt((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount));
+        private static final Comparator<Period> PERIOD_COMPARATOR = comparingInt((Period p) -> p.getDay().getDayIndex())
+                .thenComparingInt(p -> p.getTimeslot().getTimeslotIndex())
+                .thenComparingLong(Period::getId);
+        private static final Comparator<PeriodStrengthWeight> COMPARATOR = comparing(identity(), BASE_COMPARATOR)
+                .thenComparing(w -> w.period, PERIOD_COMPARATOR);
 
         private final Period period;
         private final int unavailablePeriodPenaltyCount;
