@@ -175,6 +175,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     @Override
     public TypedExpression visit(ArrayAccessExpr n, Void arg) {
+        if (parentIsExpressionStmt(n)) {
+            return rhsOrError();
+        }
+
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
@@ -201,7 +205,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     /*
         This means there's no LHS
      */
-    private boolean parentIsExpressionStmt(FieldAccessExpr n) {
+    private boolean parentIsExpressionStmt(Node n) {
         return n.getParentNode().filter(p -> p instanceof ExpressionStmt).isPresent();
     }
 
