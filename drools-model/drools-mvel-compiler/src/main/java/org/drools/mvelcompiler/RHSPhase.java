@@ -25,9 +25,9 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.drools.core.util.ClassUtils;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -45,7 +45,6 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
-import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
