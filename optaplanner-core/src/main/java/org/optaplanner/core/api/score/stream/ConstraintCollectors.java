@@ -16,8 +16,11 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
@@ -190,6 +193,26 @@ public final class ConstraintCollectors {
                     return (() -> resultContainer[0] -= value);
                 },
                 resultContainer -> resultContainer[0]);
+    }
+
+    // ************************************************************************
+    // max
+    // ************************************************************************
+
+    public static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> max(Comparator<A> comparator) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a) -> {
+                    resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
+                    return (() -> {
+                        resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1);
+                    });
+                },
+                (resultContainer) -> resultContainer.size() == 0 ? null : resultContainer.lastKey());
+    }
+
+    public static <A extends Comparable<A>> UniConstraintCollector<A, SortedMap<A, Long>, A> max() {
+        return max(Comparable::compareTo);
     }
 
     private ConstraintCollectors() {

@@ -53,7 +53,7 @@ public interface UniConstraintCollector<A, ResultContainer_, Result_> {
 
     /**
      * A lambda that converts the result container into the result.
-     * @return never null
+     * @return null when the result would be invalid, such as maximum value from an empty container.
      */
     Function<ResultContainer_, Result_> finisher();
 

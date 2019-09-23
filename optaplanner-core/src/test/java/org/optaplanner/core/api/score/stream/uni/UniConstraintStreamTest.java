@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.stream.uni;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
@@ -41,9 +42,12 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
+import static java.util.Comparator.comparing;
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -341,6 +345,35 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector,
                 assertMatchWithScore(-7, solution.getFirstEntityGroup(), 7),
                 assertMatchWithScore(-3, entityGroup1, 3));
+    }
+
+    @Test
+    public void groupBy_1Mapping1Collector_max() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity lastEntity = solution.getEntityList().get(solution.getEntityList().size() - 1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        entity1.setIntegerProperty(1_000_000);
+        entity1.setEntityGroup(entityGroup1);
+        solution.getEntityList().add(entity1);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, max(comparing(TestdataLavishEntity::getCode)))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, max) -> max.getIntegerProperty());
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1_000_000, entityGroup1, entity1),
+                assertMatchWithScore(-1, lastEntity.getEntityGroup(), lastEntity));
+
+        // Now remove all entities and see that the score is zero. (= all matches removed)
+        solution.setEntityList(Collections.emptyList());
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
     }
 
     @Test
