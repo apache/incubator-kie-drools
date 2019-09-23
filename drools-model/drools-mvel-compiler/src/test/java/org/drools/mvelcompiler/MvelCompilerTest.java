@@ -194,6 +194,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testMapSetWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
     public void testMapSetWithMapGetAsValue() {
         test(ctx -> {
                  ctx.addDeclaration("$p", Person.class);
