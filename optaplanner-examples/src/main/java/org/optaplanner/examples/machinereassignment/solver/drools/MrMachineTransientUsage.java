@@ -31,9 +31,10 @@ import static java.util.Comparator.comparingLong;
 public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
 
     private static final Comparator<MrMachineTransientUsage> COMPARATOR =
-            comparing((MrMachineTransientUsage usage) -> usage.getClass().getName())
-                    .thenComparing(usage -> usage.machineCapacity, comparingLong(MrMachineCapacity::getId))
-                    .thenComparingLong(usage -> usage.usage);
+            comparing((MrMachineTransientUsage transientUsage) -> transientUsage.getClass().getName())
+                    .thenComparing(transientUsage -> transientUsage.machineCapacity, comparingLong(MrMachineCapacity::getId))
+                    .thenComparingLong(transientUsage -> transientUsage.usage);
+    
     private MrMachineCapacity machineCapacity;
     private long usage;
 

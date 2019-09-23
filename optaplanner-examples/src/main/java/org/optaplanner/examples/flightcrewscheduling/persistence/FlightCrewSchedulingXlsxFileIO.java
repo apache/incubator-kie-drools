@@ -354,7 +354,6 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 Comparator.<FlightAssignment, LocalDateTime>comparing(a -> a.getFlight().getDepartureUTCDateTime())
                         .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
                         .thenComparingLong(FlightAssignment::getId);
-        ;
 
         public FlightCrewSchedulingXlsxWriter(FlightCrewSolution solution) {
             super(solution, FlightCrewSchedulingApp.SOLVER_CONFIG);

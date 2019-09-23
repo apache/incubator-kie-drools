@@ -40,7 +40,7 @@ import static java.util.Comparator.*;
 
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
-    private static Comparator<Night> NIGHT_COMPARATOR = comparingLong(Night::getId);
+    private static final Comparator<Night> NIGHT_COMPARATOR = comparingLong(Night::getId);
     // This comparison is sameBedInSameNight safe.
     private static final Comparator<BedDesignation> COMPARATOR =
             comparing((BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
