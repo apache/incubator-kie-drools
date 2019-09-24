@@ -16,11 +16,11 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 /**
  * Used when you need to reprocess the RHS after having processed the LHS
  */
-public class PostProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpression>, Void> {
+public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpression>, Void> {
 
     private TypedExpression lhs;
 
-    PostProcessRHSPhase() {
+    ReProcessRHSPhase() {
     }
 
     public Optional<TypedExpression> invoke(TypedExpression rhs, TypedExpression lhs) {
