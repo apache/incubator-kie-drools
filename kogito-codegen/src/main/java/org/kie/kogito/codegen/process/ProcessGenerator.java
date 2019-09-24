@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
+import javax.lang.model.SourceVersion;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -101,6 +103,11 @@ public class ProcessGenerator {
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.completePath = "src/main/java/" + generatedFilePath;
+
+        if (!SourceVersion.isName(targetTypeName)) {
+            throw new IllegalArgumentException("Process id '" + typeName + "' is not valid");   
+        }
+
     }
 
     public String targetCanonicalName() {
