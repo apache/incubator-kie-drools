@@ -41,6 +41,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -54,6 +55,7 @@ import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -83,10 +85,21 @@ public abstract class AbstractExpressionBuilder {
             Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
-        if (drlxParseResult.getExprBinding() != null) {
+
+        if(DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
+            Expression inputExpr = createInputExpression(drlxParseResult.getExprBinding());
+            context.addExpression(inputExpr);
+        } else if (drlxParseResult.getExprBinding() != null) {
             Expression dslExpr = buildBinding(drlxParseResult);
             context.addExpression(dslExpr);
         }
+    }
+
+    private MethodCallExpr createInputExpression(String identifier) {
+        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
+        exprDSL.addArgument( context.getVarExpr(identifier) );
+
+        return exprDSL;
     }
 
     public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
