@@ -415,7 +415,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1_000_000, entityGroup1, entity1),
                 assertMatchWithScore(-1, firstEntity.getEntityGroup(), firstEntity));
 
-        // Now remove all entities and see that the score is zero. (= all matches removed)
+        // Now remove all entities and see that the score is zero (= all matches removed).
         solution.setEntityList(Collections.emptyList());
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector);
@@ -444,7 +444,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1_000_000, entityGroup1, entity1),
                 assertMatchWithScore(-1, lastEntity.getEntityGroup(), lastEntity));
 
-        // Now remove all entities and see that the score is zero. (= all matches removed)
+        // Now remove all entities and see that the score is zero (= all matches removed).
         solution.setEntityList(Collections.emptyList());
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector);

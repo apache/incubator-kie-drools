@@ -199,18 +199,6 @@ public final class ConstraintCollectors {
     // min
     // ************************************************************************
 
-    private static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> minOrMax(Comparator<A> comparator,
-            boolean min) {
-        Function<SortedMap<A, Long>, A> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
-        return new DefaultUniConstraintCollector<>(
-                () -> new TreeMap<>(comparator),
-                (resultContainer, a) -> {
-                    resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
-                    return (() -> resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1));
-                },
-                (resultContainer) -> resultContainer.size() == 0 ? null : keySupplier.apply(resultContainer));
-    }
-
     public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
         return minOrMax(comparator, true);
     }
@@ -229,6 +217,18 @@ public final class ConstraintCollectors {
 
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
         return max(Comparable::compareTo);
+    }
+
+    private static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> minOrMax(Comparator<A> comparator,
+            boolean min) {
+        Function<SortedMap<A, Long>, A> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return new DefaultUniConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a) -> {
+                    resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
+                    return (() -> resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1));
+                },
+                (resultContainer) -> resultContainer.size() == 0 ? null : keySupplier.apply(resultContainer));
     }
 
     private ConstraintCollectors() {
