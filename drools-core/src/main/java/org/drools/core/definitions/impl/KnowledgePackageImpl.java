@@ -151,15 +151,15 @@ public class KnowledgePackageImpl
      */
     public KnowledgePackageImpl(final String name) {
         this.name = name;
-        this.accumulateFunctions = new HashMap<>();
-        this.staticImports = new HashSet<>();
-        this.globals = new HashMap<>();
-        this.factTemplates = new HashMap<>();
-        this.functions = new HashMap<>();
+        this.accumulateFunctions = Collections.emptyMap();
+        this.staticImports = Collections.emptySet();
+        this.globals = Collections.emptyMap();
+        this.factTemplates = Collections.emptyMap();
+        this.functions = Collections.emptyMap();
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
-        this.entryPointsIds = new HashSet<>();
-        this.windowDeclarations = new HashMap<>();
+        this.entryPointsIds = Collections.emptySet();
+        this.windowDeclarations = Collections.emptyMap();
         this.resourceTypePackages = new ResourceTypePackageRegistry();
     }
 
@@ -396,10 +396,17 @@ public class KnowledgePackageImpl
     }
 
     public void addStaticImport(final String functionImport) {
+        if (this.staticImports == Collections.EMPTY_SET) {
+            this.staticImports = new HashSet<>(2);
+        }
         this.staticImports.add(functionImport);
     }
 
     public void addFunction(final Function function) {
+        if (this.functions == Collections.EMPTY_MAP) {
+            this.functions = new HashMap<>(1);
+        }
+
         this.functions.put(function.getName(),
                            function);
         dialectRuntimeRegistry.getDialectData(function.getDialect()).setDirty(true);
@@ -410,6 +417,10 @@ public class KnowledgePackageImpl
     }
 
     public void addAccumulateFunction(final String name, final AccumulateFunction function) {
+        if (this.accumulateFunctions == Collections.EMPTY_MAP) {
+            this.accumulateFunctions = new HashMap<>(1);
+        }
+
         this.accumulateFunctions.put(name,
                                      function);
     }
@@ -428,6 +439,9 @@ public class KnowledgePackageImpl
 
     public void addGlobal(final String identifier,
                           final Class<?> clazz) {
+        if (this.globals == Collections.EMPTY_MAP) {
+            this.globals = new HashMap<>(1);
+        }
         this.globals.put(identifier,
                          clazz.getName());
     }
@@ -453,6 +467,9 @@ public class KnowledgePackageImpl
     }
 
     public void addFactTemplate(final FactTemplate factTemplate) {
+        if (this.factTemplates == Collections.EMPTY_MAP) {
+            this.factTemplates = new HashMap<>(1);
+        }
         this.factTemplates.put(factTemplate.getName(),
                                factTemplate);
     }
@@ -622,6 +639,9 @@ public class KnowledgePackageImpl
     }
 
     public void addEntryPointId(String id) {
+        if (entryPointsIds == Collections.EMPTY_SET) {
+            entryPointsIds = new HashSet<>();
+        }
         entryPointsIds.add(id);
     }
 
@@ -646,6 +666,9 @@ public class KnowledgePackageImpl
     }
 
     public void addWindowDeclaration(WindowDeclaration window) {
+        if (windowDeclarations == Collections.EMPTY_MAP) {
+            windowDeclarations = new HashMap<>();
+        }
         this.windowDeclarations.put(window.getName(), window);
     }
 
