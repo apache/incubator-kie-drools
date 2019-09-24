@@ -26,6 +26,7 @@ import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
 import static javax.json.Json.createArrayBuilder;
 import static javax.json.Json.createValue;
+import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
 public class UserTaskInstanceMetaMapperTest {
@@ -40,7 +41,14 @@ public class UserTaskInstanceMetaMapperTest {
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId);
         JsonObject json = new UserTaskInstanceMetaMapper().apply(event);
         SoftAssertions softly = new SoftAssertions();
+
         softly.assertThat(json)
+                .isNotNull()
+                .containsEntry("id", createValue(rootProcessInstanceId))
+                .containsEntry("processId", createValue(rootProcessId))
+                .containsKey(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+
+        softly.assertThat((JsonObject) json.getJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).get(0))
                 .isNotNull()
                 .containsEntry("id", createValue(taskId))
                 .containsEntry("processInstanceId", createValue(processInstanceId))

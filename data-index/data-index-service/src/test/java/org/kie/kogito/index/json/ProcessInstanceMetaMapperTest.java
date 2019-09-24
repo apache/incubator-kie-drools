@@ -26,6 +26,7 @@ import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
 import static javax.json.Json.createValue;
+import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 
 public class ProcessInstanceMetaMapperTest {
@@ -39,7 +40,29 @@ public class ProcessInstanceMetaMapperTest {
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
         JsonObject json = new ProcessInstanceMetaMapper().apply(event);
         SoftAssertions softly = new SoftAssertions();
+
         softly.assertThat(json)
+                .isNotNull()
+                .containsEntry("id", createValue(rootProcessInstanceId))
+                .containsEntry("processId", createValue(rootProcessId))
+                .containsKey(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE)
+                .containsEntry("processId", createValue(rootProcessId));
+
+        softly.assertThat(json.getJsonObject("traveller"))
+                .isNotNull()
+                .containsEntry("firstName", createValue("Maciej"));
+
+        softly.assertThat(json.getJsonObject("hotel"))
+                .isNotNull()
+                .containsEntry("name", createValue("Meriton"));
+
+        softly.assertThat(json.getJsonObject("flight"))
+                .isNotNull()
+                .containsEntry("flightNumber", createValue("MX555"))
+                .containsEntry("arrival", createValue("2019-08-20T22:12:57.340Z"))
+                .containsEntry("departure", createValue("2019-08-20T07:12:57.340Z"));
+
+        softly.assertThat((JsonObject) json.getJsonArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).get(0))
                 .isNotNull()
                 .containsEntry("id", createValue(processInstanceId))
                 .containsEntry("processId", createValue(processId))

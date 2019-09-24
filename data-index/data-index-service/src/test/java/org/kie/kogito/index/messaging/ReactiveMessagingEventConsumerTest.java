@@ -16,17 +16,33 @@
 
 package org.kie.kogito.index.messaging;
 
+import java.util.UUID;
+
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.EventBus;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
+import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.IndexingService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.doThrow;
+import static java.lang.String.format;
+import static javax.json.Json.createValue;
+import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
+import static org.kie.kogito.index.json.JsonUtils.parseJson;
+import static org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer.KOGITO_DOMAIN_EVENTS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ReactiveMessagingEventConsumerTest {
@@ -34,36 +50,76 @@ public class ReactiveMessagingEventConsumerTest {
     @Mock
     IndexingService service;
 
+    @Mock
+    EventBus eventBus;
+
     @InjectMocks
     ReactiveMessagingEventConsumer consumer;
 
     @Test
-    public void testOnProcessInstanceDomainEvent() {
-        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
-        consumer.onProcessInstanceDomainEvent(event);
-        verify(service).indexProcessInstanceModel(event);
+    public void testOnProcessInstanceDomainEvent() throws Exception {
+        when(eventBus.send(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
+            ((Handler) invocation.getArgument(2)).handle(null);
+            return null;
+        });
+
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+
+        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+
+        consumer.onProcessInstanceDomainEvent(event).toCompletableFuture().get();
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(parseJson(captor.getValue()))
+                .isNotNull()
+                .containsEntry("id", createValue(processInstanceId))
+                .containsEntry("processId", createValue(processId));
+
+        softly.assertAll();
     }
 
     @Test
-    public void testOnProcessInstanceEvent() {
-        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
-        consumer.onProcessInstanceEvent(event);
-        verify(service).indexProcessInstance(event);
+    public void testOnUserTaskInstanceDomainEvent() throws Exception {
+        when(eventBus.send(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
+            ((Handler) invocation.getArgument(2)).handle(null);
+            return null;
+        });
+
+        String taskId = UUID.randomUUID().toString();
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+
+        consumer.onUserTaskInstanceDomainEvent(event).toCompletableFuture().get();
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(parseJson(captor.getValue()))
+                .isNotNull()
+                .containsEntry("id", createValue(processInstanceId))
+                .containsEntry("processId", createValue(processId));
+
+        softly.assertAll();
     }
 
     @Test
-    public void testOnProcessInstanceDomainEventException() {
+    public void testOnProcessInstanceEvent() throws Exception {
         KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
-        doThrow(new RuntimeException()).when(service).indexProcessInstanceModel(event);
-        consumer.onProcessInstanceDomainEvent(event);
-        verify(service).indexProcessInstanceModel(event);
+        consumer.onProcessInstanceEvent(event).toCompletableFuture().get();
+        verify(service).indexProcessInstance(event.getData());
     }
 
     @Test
-    public void testOnProcessInstanceEventException() {
-        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
-        doThrow(new RuntimeException()).when(service).indexProcessInstance(event);
-        consumer.onProcessInstanceEvent(event);
-        verify(service).indexProcessInstance(event);
+    public void testOnUserTaskInstanceEvent() throws Exception {
+        KogitoUserTaskCloudEvent event = mock(KogitoUserTaskCloudEvent.class);
+        consumer.onUserTaskInstanceEvent(event).toCompletableFuture().get();
+        verify(service).indexUserTaskInstance(event.getData());
     }
 }

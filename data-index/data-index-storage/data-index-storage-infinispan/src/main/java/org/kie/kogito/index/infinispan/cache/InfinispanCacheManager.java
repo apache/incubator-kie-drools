@@ -44,6 +44,7 @@ public class InfinispanCacheManager implements CacheService {
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);
     private static final String PROCESS_INSTANCES_CACHE = "processinstances";
     private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
+    private static final String PROCESS_ID_MODEL_CACHE = "processidmodel";
 
     private DataFormat jsonDataFormat = DataFormat.builder().valueType(MediaType.APPLICATION_JSON).valueMarshaller(new JsonDataFormatMarshaller()).build();
 
@@ -113,7 +114,7 @@ public class InfinispanCacheManager implements CacheService {
 
     @Override
     public Map<String, String> getProcessIdModelCache() {
-        return manager.administration().getOrCreateCache("processidmodel", (String) null);
+        return manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null);
     }
 
     @Override

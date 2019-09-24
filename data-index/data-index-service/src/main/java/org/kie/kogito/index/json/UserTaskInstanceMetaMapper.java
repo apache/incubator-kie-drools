@@ -20,11 +20,14 @@ import java.util.Set;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 
 public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudEvent, JsonObject> {
 
@@ -35,6 +38,14 @@ public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudE
         }
 
         UserTaskInstance ut = event.getData();
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("id", event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
+        builder.add("processId", event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+        builder.add(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, getUserTaskJson(ut));
+        return builder.build();
+    }
+
+    private JsonArray getUserTaskJson(UserTaskInstance ut) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("id", ut.getId());
         builder.add("processInstanceId", ut.getProcessInstanceId());
@@ -62,12 +73,12 @@ public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudE
         if (ut.getStarted() != null) {
             builder.add("started", ut.getStarted().toInstant().toEpochMilli());
         }
-        return builder.build();
+        return Json.createArrayBuilder().add(builder).build();
     }
 
     private void mapArray(String attribute, Set<String> strings, JsonObjectBuilder builder) {
         if (strings != null && !strings.isEmpty()) {
-            builder.add(attribute, new JsonArrayMapper().apply(strings));
+            builder.add(attribute, Json.createArrayBuilder(strings));
         }
     }
 }
