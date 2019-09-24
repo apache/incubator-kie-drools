@@ -269,17 +269,8 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
     }
 
-    private static Variable<?> findPatternVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
-        Variable<?> patternVariable;
-
-        if(viewItem.getVariables().length > 0) {
-            Variable firstVariable2 = viewItem.getVariables()[0];
-            if (!vars.contains(firstVariable2)) {
-                return firstVariable2;
-            }
-        }
-
-        patternVariable = viewItem.getFirstVariable();
+    private static Variable<?> findPatternVariable(ViewItem viewItem, Set<Variable<?>> vars ) {
+        Variable<?> patternVariable = viewItem.getFirstVariable();
         if (!vars.contains( patternVariable )) {
             return patternVariable;
         }
@@ -408,12 +399,7 @@ public class ViewFlowBuilder implements ViewBuilder {
             if (acc.getExpr() instanceof InputViewItem) {
                 newCondition = condition;
             } else if (acc.getExpr() instanceof Binding) {
-                Binding binding;
-                if(condition instanceof PatternImpl && !(((PatternImpl) condition).getBindings().isEmpty())) {
-                    binding = (Binding) (((PatternImpl) condition).getBindings()).iterator().next();
-                } else {
-                    binding = (Binding) acc.getExpr();
-                }
+                Binding binding = (( Binding ) acc.getExpr());
                 PatternImpl bindingPattern = new PatternImpl( binding.getInputVariable() );
                 bindingPattern.addBinding( binding );
                 newCondition = bindingPattern;
