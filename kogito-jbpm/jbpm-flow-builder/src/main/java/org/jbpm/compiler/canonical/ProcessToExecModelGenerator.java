@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +26,33 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+
+import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowProcess;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -41,33 +70,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.jbpm.process.core.ContextContainer;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.BoundaryEventNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.FaultNode;
-import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.RuleSetNode;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.NodeContainer;
-import org.kie.api.definition.process.WorkflowProcess;
-
-import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ProcessToExecModelGenerator extends AbstractVisitor {
 
@@ -92,6 +94,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         this.nodesVisitors.put(BoundaryEventNode.class, new BoundaryEventNodeVisitor());
         this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
         this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));
+        this.nodesVisitors.put(CompositeContextNode.class, new CompositeContextNodeVisitor(nodesVisitors));
     }
 
     public ProcessMetaData generate(WorkflowProcess process) {

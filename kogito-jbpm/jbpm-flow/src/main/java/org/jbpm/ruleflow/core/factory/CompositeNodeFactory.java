@@ -102,6 +102,11 @@ public class CompositeNodeFactory extends RuleFlowNodeContainerFactory {
     	this.linkedOutgoingNodeId = nodeId;
     	return this;
     }
+    
+    public CompositeNodeFactory metaData(String name, Object value) {
+        getCompositeNode().setMetaData(name, value);
+        return this;
+    }
 
     public RuleFlowNodeContainerFactory done() {
     	if (linkedIncomingNodeId != -1) {

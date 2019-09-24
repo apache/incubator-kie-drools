@@ -31,12 +31,10 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-public class ForEachNodeVisitor extends AbstractVisitor {
+public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor {
     
-    private Map<Class<?>, AbstractVisitor> nodesVisitors;
-
     public ForEachNodeVisitor(Map<Class<?>, AbstractVisitor> nodesVisitors) {
-        this.nodesVisitors = nodesVisitors;
+        super(nodesVisitors);
     }
 
     @Override
@@ -67,26 +65,5 @@ public class ForEachNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "forEachNode" + node.getId(), "done");
         
     }
-    
-    protected void visitNodes(String factoryField, Node[] nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
 
-        for (Node node: nodes) {
-            AbstractVisitor visitor = nodesVisitors.get(node.getClass());
-
-            if (visitor == null) {
-                continue;
-            }
-
-            visitor.visitNode(factoryField, node, body, variableScope, metadata);
-        }
-
-    }
-    
-    protected String stripExpression(String expression) {
-        if (expression.startsWith("#{")) {
-            return expression.substring(2, expression.length() -1);
-        }
-        
-        return expression;
-    }
 }
