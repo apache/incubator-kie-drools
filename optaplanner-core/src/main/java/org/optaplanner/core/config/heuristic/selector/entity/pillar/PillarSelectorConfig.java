@@ -123,7 +123,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }
-        boolean subPillarActuallyEnabled = BooleanUtils.isTrue(subPillarEnabled) || subPillarType != SubPillarType.NONE;
+        boolean subPillarActuallyEnabled =
+                BooleanUtils.isTrue(subPillarEnabled) || (subPillarType != null && subPillarType != SubPillarType.NONE);
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
