@@ -38,19 +38,22 @@ public class DefaultCountDownProcessEventListener extends DefaultProcessEventLis
         this.latch = new CountDownLatch(threads);
     }
 
-    public void waitTillCompleted() {
+    public boolean waitTillCompleted() {
         try {
             latch.await();
+            return true;
         } catch (InterruptedException e) {
             logger.debug("Interrputed thread while waiting for all triggers");
+            return false;
         }
     }
 
-    public void waitTillCompleted(long timeOut) {
+    public boolean waitTillCompleted(long timeOut) {
         try {
-            latch.await(timeOut, TimeUnit.MILLISECONDS);
+            return latch.await(timeOut, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.debug("Interrputed thread while waiting for all triggers");
+            return false;
         }
     }
 

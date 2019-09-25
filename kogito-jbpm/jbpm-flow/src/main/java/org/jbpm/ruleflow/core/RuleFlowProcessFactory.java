@@ -16,19 +16,33 @@
 
 package org.jbpm.ruleflow.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.validation.ProcessValidationError;
+import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.StateBasedNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +166,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     }
     
     public RuleFlowProcessFactory validate() {
+        link();
         ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(getRuleFlowProcess());
         for (ProcessValidationError error : errors) {
             logger.error(error.toString());
@@ -162,12 +177,115 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         return this;
     }
     
+    public RuleFlowProcessFactory link() {
+        linkBoundaryEvents(getRuleFlowProcess());
+        return this;
+    }
+    
     public RuleFlowNodeContainerFactory done() {
     	throw new IllegalArgumentException("Already on the top-level.");
     }
 
     public RuleFlowProcess getProcess() {
         return getRuleFlowProcess();
+    }
+    
+    protected void linkBoundaryEvents(NodeContainer nodeContainer) {
+        for (Node node: nodeContainer.getNodes()) {
+            if (node instanceof EventNode) {
+                
+                final String attachedTo = (String) node.getMetaData().get("AttachedTo");
+                
+                if (attachedTo != null) {
+                    Node attachedNode = findNodeByIdOrUniqueIdInMetadata(nodeContainer, attachedTo, "Could not find node to attach to: " + attachedTo);
+                    for( EventFilter filter : ((EventNode) node).getEventFilters() ) {
+                        String type = ((EventTypeFilter) filter).getType();
+                        if (type.startsWith("Timer-")) {
+                            linkBoundaryTimerEvent(nodeContainer, node, attachedTo, attachedNode);
+                        } else if (node.getMetaData().get("SignalName") != null || type.startsWith("Message-")) {
+                            linkBoundarySignalEvent(nodeContainer, node, attachedTo, attachedNode);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    protected void linkBoundaryTimerEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
+        boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
+        StateBasedNode compositeNode = (StateBasedNode) attachedNode;
+        String timeDuration = (String) node.getMetaData().get("TimeDuration");
+        String timeCycle = (String) node.getMetaData().get("TimeCycle");
+        String timeDate = (String) node.getMetaData().get("TimeDate");
+        Timer timer = new Timer();
+        if (timeDuration != null) {
+            timer.setDelay(timeDuration);
+            timer.setTimeType(Timer.TIME_DURATION);
+            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId()));
+        } else if (timeCycle != null) {
+            int index = timeCycle.indexOf("###");
+            if (index != -1) {
+                String period = timeCycle.substring(index + 3);
+                timeCycle = timeCycle.substring(0, index);
+                timer.setPeriod(period);
+            }
+            timer.setDelay(timeCycle);
+            timer.setTimeType(Timer.TIME_CYCLE);
+            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId()));
+        } else if (timeDate != null) {
+            timer.setDate(timeDate);
+            timer.setTimeType(Timer.TIME_DATE);
+            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId()));
+        }
+        
+        if (cancelActivity) {
+            List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
+            if (actions == null) {
+                actions = new ArrayList<DroolsAction>();
+            }
+            DroolsConsequenceAction cancelAction =  new DroolsConsequenceAction("java", null);
+            cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
+            actions.add(cancelAction);
+            ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+        }
+    }
+    
+    protected void linkBoundarySignalEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
+        boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
+        if (cancelActivity) {
+            List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
+            if (actions == null) {
+                actions = new ArrayList<DroolsAction>();
+            }
+            DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
+            action.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
+            actions.add(action);
+            ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+        }
+    }
+    
+    protected DroolsAction timerAction(String type) {
+        DroolsAction signal = new DroolsAction();
+                
+        Action action = (kcontext) -> kcontext.getProcessInstance().signalEvent(type, kcontext.getNodeInstance().getId()); 
+        signal.wire(action);
+        
+        return signal;
+    }
+    
+    protected Node findNodeByIdOrUniqueIdInMetadata(NodeContainer nodeContainer, final String nodeRef, String errorMsg) { 
+        Node node = null;
+        // try looking for a node with same "UniqueId" (in metadata)
+        for (Node containerNode: nodeContainer.getNodes()) {
+            if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
+                node = containerNode;
+                break;
+            }
+        }
+        if (node == null) {
+            throw new IllegalArgumentException(errorMsg);
+        }
+        return node;
     }
 }
 

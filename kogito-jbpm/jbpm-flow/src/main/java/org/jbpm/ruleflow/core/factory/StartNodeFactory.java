@@ -16,9 +16,12 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 
 /**
@@ -33,12 +36,28 @@ public class StartNodeFactory extends NodeFactory {
     protected Node createNode() {
         return new StartNode();
     }
+    
+    protected StartNode getStartNode() {
+        return (StartNode) getNode();
+    }
 
     public StartNodeFactory name(String name) {
         getNode().setName(name);
         return this;
+    }    
+    
+    public StartNodeFactory trigger(String triggerEventType, String mapping) {
+        EventTrigger trigger = new EventTrigger();
+        EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setType(triggerEventType);
+        trigger.addEventFilter(eventFilter);
+        
+        if (mapping != null) {
+            trigger.addInMapping(mapping, getStartNode().getOutMapping(mapping));
+        }
+
+        getStartNode().addTrigger(trigger);
+        
+        return this;
     }
-    
-    // TODO event triggers
-    
 }

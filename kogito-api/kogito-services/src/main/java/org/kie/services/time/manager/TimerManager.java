@@ -209,8 +209,7 @@ public class TimerManager {
                     throw new IllegalArgumentException("Could not find process instance for timer ");
                 }
 
-                ctx.getTimer().setLastTriggered(
-                        new Date(ctx.getKnowledgeRuntime().<SessionClock> getSessionClock().getCurrentTime()));
+                ctx.getTimer().setLastTriggered(new Date());
 
                 
                 // if there is no more trigger reset period on timer so its node instance can be removed

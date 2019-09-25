@@ -43,7 +43,9 @@ public class BoundaryEventNodeVisitor extends AbstractVisitor {
             variable = variableScope.findVariable(boundaryEventNode.getVariableName());
         }
         
-        metadata.getSignals().put(boundaryEventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+        if (boundaryEventNode.getMetaData("SignalName") != null) {
+            metadata.getSignals().put(boundaryEventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+        }
 
         visitMetaData(boundaryEventNode.getMetaData(), body, "boundaryEventNode" + node.getId());
         

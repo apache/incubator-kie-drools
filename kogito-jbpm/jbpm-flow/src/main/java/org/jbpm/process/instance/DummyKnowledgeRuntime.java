@@ -221,6 +221,11 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     public ProcessInstance startProcessInstance(String processInstanceId) {
         return null;
     }
+    
+    @Override
+    public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return null;
+    }
 
     @Override
     public void signalEvent(String type, Object event) {

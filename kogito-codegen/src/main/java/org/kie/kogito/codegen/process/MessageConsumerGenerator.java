@@ -18,6 +18,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class MessageConsumerGenerator {
@@ -83,7 +84,10 @@ public class MessageConsumerGenerator {
         template.setName(resourceClazzName);        
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> interpolateArguments(md, trigger.getDataType()));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> { 
+            interpolateArguments(md, trigger.getDataType());
+            md.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+        });
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
         
         if (useInjection()) {
@@ -117,11 +121,7 @@ public class MessageConsumerGenerator {
     private void interpolateStrings(MethodCallExpr vv) {
         String s = vv.getNameAsString();        
         String interpolated =
-                s.replace("$ModelRef$", StringUtils.capitalize(trigger.getModelRef()));
+                s.replace("$ModelRef$", StringUtils.capitalize(trigger.getModelRef()));                
         vv.setName(interpolated);
-    }
-    
-    private void annotateFields(FieldDeclaration fd) {       
-        annotator.withNamedInjection(fd, processId);
     }
 }

@@ -1869,6 +1869,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public ProcessInstance startProcessInstance(String processInstanceId) {
         return getProcessRuntime().startProcessInstance( processInstanceId );
     }
+    
+    public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return getProcessRuntime().startProcessInstance( processInstanceId, trigger );
+    }
 
     public Collection<ProcessInstance> getProcessInstances() {
         return getProcessRuntime().getProcessInstances();
@@ -2173,6 +2177,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         @Override
         public ProcessInstance startProcessInstance( String processInstanceId ) {
             throw new UnsupportedOperationException( );
+        }
+        
+        @Override
+        public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+            // TODO Auto-generated method stub
+            return null;
         }
 
         @Override

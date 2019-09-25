@@ -91,6 +91,32 @@ public class SignalEventTest extends AbstractCodegenTest {
     }
     
     @Test
+    public void testBoundaryInterruptingSignalEventWithData() throws Exception {
+        
+        Application app = generateCode(Collections.singletonList("signalevent/BoundaryInterruptingSignalEventOnTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("BoundarySignalOnTask");
+        
+        Model m = p.createModel();
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+   
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        processInstance.send(Sig.of("MySignal", "test"));
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKey("x");
+        assertThat(result.toMap().get("x")).isEqualTo("test");
+        
+        assertThat(p.instances().values()).hasSize(0);
+    }
+    
+    @Test
     public void testIntermediateSignalEventWithDataControlledByUnitOfWork() throws Exception {
         
         Application app = generateCode(Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        

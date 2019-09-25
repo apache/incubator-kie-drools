@@ -499,6 +499,11 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
     public ProcessInstance startProcessInstance(String processInstanceId) {
         return getProcessRuntime().startProcessInstance(processInstanceId);
     }
+    
+    @Override
+    public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return getProcessRuntime().startProcessInstance(processInstanceId, trigger);
+    }
 
     @Override
     public void signalEvent(String type, Object event) {

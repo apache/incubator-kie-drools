@@ -48,6 +48,7 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -95,6 +96,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
         this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));
         this.nodesVisitors.put(CompositeContextNode.class, new CompositeContextNodeVisitor(nodesVisitors));
+        this.nodesVisitors.put(TimerNode.class, new TimerNodeVisitor());
     }
 
     public ProcessMetaData generate(WorkflowProcess process) {

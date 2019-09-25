@@ -20,7 +20,7 @@ public class $Type$MessageConsumer {
             model.set$ModelRef$(eventData);
             org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 ProcessInstance<$Type$> pi = process.createInstance(model);
-                pi.start();  
+                pi.start("$Trigger$");  
                 
                 return null;
             });

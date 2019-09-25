@@ -47,6 +47,9 @@ public class StartNodeVisitor extends AbstractVisitor {
                                                            (String)nodeMetaData.get("MessageType"), 
                                                            (String)nodeMetaData.get("TriggerMapping"),
                                                            String.valueOf(node.getId())).validate());
+            
+            addFactoryMethodWithArgs(body, "startNode" + node.getId(), "trigger", new StringLiteralExpr((String)nodeMetaData.get("TriggerRef")),
+                                                                                  new StringLiteralExpr(getOrDefault((String)nodeMetaData.get("TriggerMapping"), "")));
         } else {
             // since there is start node without trigger then make sure it is startable
             metadata.setStartable(true);

@@ -18,7 +18,6 @@ import org.kie.kogito.process.workitem.LifeCyclePhase;
  *  <li>Release</li>
  * </ul>
  * 
- * This is a terminating (final) phase.
  */
 public class Abort implements LifeCyclePhase {
 
@@ -39,7 +38,7 @@ public class Abort implements LifeCyclePhase {
 
     @Override
     public boolean isTerminating() {
-        return true;
+        return false;
     }
     
     @Override

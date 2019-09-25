@@ -47,19 +47,19 @@
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="MessageStartEvent">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="120.0" y="100.0"/>
-        <bpmndi:BPMNLabel labelStyle="#//@definitions/@diagrams.0/@labelStyle.0">
+        <bpmndi:BPMNLabel id="BPMNLabel_1" labelStyle="BPMNLabelStyle_1">
           <dc:Bounds height="11.0" width="52.0" x="112.0" y="136.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1" isExpanded="true">
         <dc:Bounds height="50.0" width="110.0" x="261.0" y="93.0"/>
-        <bpmndi:BPMNLabel labelStyle="#//@definitions/@diagrams.0/@labelStyle.0">
+        <bpmndi:BPMNLabel id="BPMNLabel_2" labelStyle="BPMNLabelStyle_1">
           <dc:Bounds height="11.0" width="52.0" x="290.0" y="112.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="439.0" y="100.0"/>
-        <bpmndi:BPMNLabel labelStyle="#//@definitions/@diagrams.0/@labelStyle.0">
+        <bpmndi:BPMNLabel id="BPMNLabel_3" labelStyle="BPMNLabelStyle_1">
           <dc:Bounds height="11.0" width="50.0" x="432.0" y="136.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
@@ -67,16 +67,16 @@
         <di:waypoint xsi:type="dc:Point" x="156.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="208.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="261.0" y="118.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
         <di:waypoint xsi:type="dc:Point" x="371.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="405.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="439.0" y="118.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
-    <bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="BPMNLabelStyle_1">
       <dc:Font name="arial" size="9.0"/>
     </bpmndi:BPMNLabelStyle>
   </bpmndi:BPMNDiagram>

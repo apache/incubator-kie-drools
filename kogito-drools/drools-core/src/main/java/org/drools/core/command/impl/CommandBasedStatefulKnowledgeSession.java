@@ -284,6 +284,12 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         command.setProcessInstanceId( processInstanceId );
         return runner.execute( command );
 	}
+	
+	public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        StartProcessInstanceCommand command = new StartProcessInstanceCommand();
+        command.setProcessInstanceId( processInstanceId );
+        return runner.execute( command );
+    }
 
     public void dispose() {
         runner.execute( new DisposeCommand() );

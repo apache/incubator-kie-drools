@@ -244,6 +244,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
     public ProcessInstance startProcessInstance(String processInstanceId) {
         return delegate.startProcessInstance(processInstanceId);
     }
+    
+    public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return delegate.startProcessInstance(processInstanceId, trigger);
+    }
 
     public ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey,
                                                  Map<String, Object> parameters) {

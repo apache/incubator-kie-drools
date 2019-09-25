@@ -46,6 +46,11 @@ public interface ProcessInstance<T> {
     void start();
     
     /**
+     * Starts process instance with trigger
+     */
+    void start(String trigger);
+    
+    /**
      * Sends given signal into this process instance
      * @param signal signal to be processed
      */

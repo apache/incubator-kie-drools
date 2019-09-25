@@ -44,6 +44,16 @@ public class TimerNodeFactory extends NodeFactory {
         return this;
     }
     
+    public TimerNodeFactory type(int type) {
+        Timer timer = getTimerNode().getTimer();
+        if (timer == null) {
+            timer = new Timer();
+            getTimerNode().setTimer(timer);
+        }
+        timer.setTimeType(type);
+        return this;
+    }
+    
     public TimerNodeFactory delay(String delay) {
     	Timer timer = getTimerNode().getTimer();
     	if (timer == null) {
@@ -64,4 +74,13 @@ public class TimerNodeFactory extends NodeFactory {
     	return this;
     }
     
+    public TimerNodeFactory date(String date) {
+        Timer timer = getTimerNode().getTimer();
+        if (timer == null) {
+            timer = new Timer();
+            getTimerNode().setTimer(timer);
+        }
+        timer.setDate(date);
+        return this;
+    }
 }

@@ -110,8 +110,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
         this.legacyProcessInstance = null;
     }
-
+    
     public void start() {
+        start(null);
+    }
+
+    public void start(String trigger) {
         if (this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already was started");
         }
@@ -119,7 +123,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
         
         
-        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id);
+        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (legacyProcessInstance != null) {

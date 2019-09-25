@@ -73,6 +73,18 @@ public interface ProcessRuntime {
      * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
      */
     ProcessInstance startProcessInstance(String processInstanceId);
+    
+    /**
+     * Starts the given process instance (which was created by using createProcesInstance
+     * but not yet started).  This method can only be called once for each process
+     * instance.  You should only use this method if you need a reference to the
+     * process instance before actually starting it.  Otherwise, use startProcess.
+     *
+     * @param processInstanceId  the id of the process instance that needs to be started
+     * @param trigger - type of trigger to locate proper start event, can be null
+     * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+     */
+    ProcessInstance startProcessInstance(String processInstanceId, String trigger);
 
     /**
      * Signals the engine that an event has occurred. The type parameter defines
