@@ -9,7 +9,6 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class LambdaUtil {
@@ -20,9 +19,9 @@ public class LambdaUtil {
 
     }
 
-    public static MethodCallExpr compose(LambdaExpr l1, LambdaExpr l2, String typeA, String typeB) {
+    public static MethodCallExpr compose(LambdaExpr l1, LambdaExpr l2, Type aType, Type bType) {
         Type type = new ClassOrInterfaceType(null, new SimpleName("org.drools.model.functions.Function1"),
-                                             nodeList(parseClassOrInterfaceType(typeA), parseClassOrInterfaceType(typeB)));
+                                             nodeList(aType, bType));
 
         Expression castedExpr = new EnclosedExpr(new CastExpr(type, new EnclosedExpr(l1)));
         return new MethodCallExpr(castedExpr, AND_THEN_CALL, nodeList(l2));
