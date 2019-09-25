@@ -721,7 +721,7 @@ public class DrlxParseUtil {
                         .collect( toList() );
     }
 
-    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, List<String> patternBindings, List<Expression> expressions) {
+    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, Collection<String> patternBindings, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
                 boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);

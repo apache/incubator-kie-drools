@@ -3,6 +3,8 @@ package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
@@ -10,17 +12,13 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
@@ -44,7 +42,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     @Override
     protected void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
-            final List<String> patterBinding = newBinding.patternBinding;
+            final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
             if (patterBinding.size() == 1) {
