@@ -194,6 +194,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "week of year( date(2004, 1, 4) )", BigDecimal.valueOf( 1 ), null}, 
                 { "week of year( date(2005, 1, 3) )", BigDecimal.valueOf( 1 ), null}, 
                 { "week of year( date(2005, 1, 9) )", BigDecimal.valueOf( 1 ), null}, 
+                { "week of year( date(2005, 1, 1) )", BigDecimal.valueOf( 53 ), null}, 
         };
         return addAdditionalParameters(cases, false);
     }
