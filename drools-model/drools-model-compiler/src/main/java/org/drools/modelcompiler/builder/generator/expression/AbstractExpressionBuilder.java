@@ -249,7 +249,7 @@ public abstract class AbstractExpressionBuilder {
 
     protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
         Optional<Class<?>> leftType = Optional.ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
-        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);;
+        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
 
         // Use Number.class if they're both Numbers but different in order to use best possible type in the index
         Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {

@@ -255,7 +255,7 @@ public class BuildContext {
      * Method used to undo previous id assignment
      */
     public void releaseId(NetworkNode node) {
-        kBase.getReteooBuilder().getIdGenerator().releaseId(rule, node);
+        kBase.getReteooBuilder().getIdGenerator().releaseId(node);
     }
 
     /**

@@ -135,7 +135,6 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
@@ -182,7 +181,7 @@ public class KiePackagesBuilder {
 
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
-                pkg.addTypeDeclaration( createTypeDeclaration( pkg, metaType ) );
+                pkg.addTypeDeclaration( createTypeDeclaration(metaType ) );
             }
 
             for (Global global : model.getGlobals()) {

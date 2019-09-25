@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.core.rule.constraint;
 
@@ -117,9 +117,9 @@ public class ASMConditionEvaluatorJitter {
                                                   ClassLoader classLoader,
                                                   Tuple tuple) {
         ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
-                .setInterfaces( ConditionEvaluator.class )
-                .addStaticField( ACC_PRIVATE | ACC_FINAL, "EXPRESSION", String.class, expression )
-                .addField( ACC_PRIVATE | ACC_FINAL, "declarations", Declaration[].class );
+                .setInterfaces(ConditionEvaluator.class)
+                .addStaticField(ACC_PRIVATE | ACC_FINAL, "EXPRESSION", String.class, expression)
+                .addField(ACC_PRIVATE | ACC_FINAL, "declarations", Declaration[].class);
 
         generator.addMethod(ACC_PUBLIC,
                             "evaluate",
@@ -127,25 +127,25 @@ public class ASMConditionEvaluatorJitter {
                             new EvaluateMethodGenerator(condition, declarations, operators, tuple));
 
         if (operators.length == 0) {
-            generator.addDefaultConstructor( new ClassGenerator.MethodBody() {
-                public void body( MethodVisitor mv ) {
-                    putFieldInThisFromRegistry( "declarations", Declaration[].class, 1 );
-                    mv.visitInsn( RETURN );
+            generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
+                public void body(MethodVisitor mv) {
+                    putFieldInThisFromRegistry("declarations", Declaration[].class, 1);
+                    mv.visitInsn(RETURN);
                 }
-            }, Declaration[].class );
+            }, Declaration[].class);
 
             return generator.newInstance(Declaration[].class, declarations);
         }
 
-        generator.addField( ACC_PRIVATE | ACC_FINAL, "operators", EvaluatorWrapper[].class );
+        generator.addField(ACC_PRIVATE | ACC_FINAL, "operators", EvaluatorWrapper[].class);
 
-        generator.addDefaultConstructor( new ClassGenerator.MethodBody() {
-            public void body( MethodVisitor mv ) {
-                putFieldInThisFromRegistry( "declarations", Declaration[].class, 1 );
-                putFieldInThisFromRegistry( "operators", EvaluatorWrapper[].class, 2 );
-                mv.visitInsn( RETURN );
+        generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
+            public void body(MethodVisitor mv) {
+                putFieldInThisFromRegistry("declarations", Declaration[].class, 1);
+                putFieldInThisFromRegistry("operators", EvaluatorWrapper[].class, 2);
+                mv.visitInsn(RETURN);
             }
-        }, Declaration[].class, EvaluatorWrapper[].class );
+        }, Declaration[].class, EvaluatorWrapper[].class);
 
         return generator.newInstance(Declaration[].class, declarations, EvaluatorWrapper[].class, operators);
     }
@@ -159,6 +159,7 @@ public class ASMConditionEvaluatorJitter {
     }
 
     private static class EvaluateMethodGenerator extends GeneratorHelper.DeclarationAccessorMethod {
+
         private static final int LEFT_OPERAND = 5;
         private static final int RIGHT_OPERAND = 7;
         private static final int ARGUMENTS = 9;
@@ -205,7 +206,7 @@ public class ASMConditionEvaluatorJitter {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
                     mv.visitVarInsn(ALOAD, 1); // InternalFactHandle
-                    invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                     declPositions[i] = decPos;
                     decPos += storeObjectFromDeclaration(declarationMatcher.getDeclaration(), decPos);
                     continue;
@@ -239,14 +240,14 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitCondition(Condition condition) {
             if (condition instanceof FixedValueCondition) {
-                mv.visitInsn(((FixedValueCondition)condition).getFixedValue() ? ICONST_1 : ICONST_0);
+                mv.visitInsn(((FixedValueCondition) condition).getFixedValue() ? ICONST_1 : ICONST_0);
                 return;
             }
 
             if (condition instanceof SingleCondition) {
-                jitSingleCondition((SingleCondition)condition);
+                jitSingleCondition((SingleCondition) condition);
             } else {
-                jitCombinedCondition((CombinedCondition)condition);
+                jitCombinedCondition((CombinedCondition) condition);
             }
 
             if (condition.isNegated()) {
@@ -276,8 +277,8 @@ public class ASMConditionEvaluatorJitter {
             Label shortcut = new Label();
             Label noShortcut = new Label();
 
-            for (Condition condition : combinedCondition.getConditions()) {
-                jitCondition(condition);
+            for (Condition individualCondition : combinedCondition.getConditions()) {
+                jitCondition(individualCondition);
                 mv.visitJumpInsn(isAnd ? IFEQ : IFNE, shortcut);
             }
 
@@ -316,7 +317,7 @@ public class ASMConditionEvaluatorJitter {
                 return;
             }
 
-            final String matchingString = ((FixedExpression)singleCondition.getRight()).getValue().toString();
+            final String matchingString = ((FixedExpression) singleCondition.getRight()).getValue().toString();
             final String patternVariableName = getUniqueName("pattern");
             getClassGenerator().addStaticField(ACC_PRIVATE | ACC_FINAL, patternVariableName, Pattern.class, null);
             getClassGenerator().addStaticInitBlock(new ClassGenerator.MethodBody() {
@@ -332,8 +333,8 @@ public class ASMConditionEvaluatorJitter {
             store(LEFT_OPERAND, singleCondition.getLeft().getType());
 
             Label notNullLabel = jitLeftIsNull(singleCondition.getLeft().getType() == String.class ?
-                    jitNullSafeOperationStart() :
-                    jitNullSafeCoercion(singleCondition.getLeft().getType(), String.class));
+                                                       jitNullSafeOperationStart() :
+                                                       jitNullSafeCoercion(singleCondition.getLeft().getType(), String.class));
 
             mv.visitInsn(ICONST_0);
 
@@ -350,7 +351,7 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitInstanceof(SingleCondition singleCondition) {
-            Class<?> value = (Class<?>)((FixedExpression)singleCondition.getRight()).getValue();
+            Class<?> value = (Class<?>) ((FixedExpression) singleCondition.getRight()).getValue();
             String internalClassName = internalName(value);
 
             Expression left = singleCondition.getLeft();
@@ -403,7 +404,7 @@ public class ASMConditionEvaluatorJitter {
                     mv.visitJumpInsn(IFNULL, nullArg);
                 }
             } else if (exp instanceof AritmeticExpression) {
-                ensureNotNullInAritmeticExpression((AritmeticExpression)exp, nullArg);
+                ensureNotNullInAritmeticExpression((AritmeticExpression) exp, nullArg);
             }
         }
 
@@ -506,31 +507,31 @@ public class ASMConditionEvaluatorJitter {
 
         private Class<?> findComparingParameterClass(Type interfaze) {
             if (interfaze instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType)interfaze;
+                ParameterizedType pType = (ParameterizedType) interfaze;
                 Type rawType = pType.getRawType();
                 if (rawType == Comparable.class) {
                     Type comparableType = pType.getActualTypeArguments()[0];
                     return comparableType instanceof Class ?
-                           ( (Class) comparableType ) :
-                           (Class)( (ParameterizedType) comparableType ).getRawType();
+                            ((Class) comparableType) :
+                            (Class) ((ParameterizedType) comparableType).getRawType();
                 }
                 if (rawType instanceof Class) {
-                    return findComparingClassOnSuperInterfaces( (Class) rawType );
+                    return findComparingClassOnSuperInterfaces((Class) rawType);
                 }
             }
             if (interfaze instanceof Class) {
                 if (interfaze == Comparable.class) {
                     return Object.class;
                 }
-                return findComparingClassOnSuperInterfaces( (Class) interfaze );
+                return findComparingClassOnSuperInterfaces((Class) interfaze);
             }
             return null;
         }
 
-        private Class<?> findComparingClassOnSuperInterfaces( Class rawType ) {
-            for ( Type superInterfaze : rawType.getGenericInterfaces() ) {
-                Class<?> comparingClass = findComparingParameterClass( superInterfaze );
-                if ( comparingClass != null ) {
+        private Class<?> findComparingClassOnSuperInterfaces(Class rawType) {
+            for (Type superInterfaze : rawType.getGenericInterfaces()) {
+                Class<?> comparingClass = findComparingParameterClass(superInterfaze);
+                if (comparingClass != null) {
                     return comparingClass;
                 }
             }
@@ -546,14 +547,12 @@ public class ASMConditionEvaluatorJitter {
             }
 
             Label notNullLabel = jitLeftIsNull( type == null || !requiresCoercion( leftType, type ) ?
-                    jitNullSafeOperationStart() :
-                    jitNullSafeCoercion(leftType, type));
+                                                       jitNullSafeOperationStart() :
+                                                       jitNullSafeCoercion(leftType, type));
 
             if (operation.isEquality() && !rightType.isPrimitive()) {
-                // if (left == null) return right == null
                 checkNullEquality();
             } else {
-                // if (left == null) return false
                 mv.visitInsn(ICONST_0);
             }
 
@@ -654,11 +653,11 @@ public class ASMConditionEvaluatorJitter {
 
             if (!toType.isAssignableFrom(fromType)) {
                 if (canBeCoercedByStringConstructor(toType)) {
-                    mv.visitTypeInsn( NEW, internalName( toType ) );
-                    mv.visitInsn( DUP );
-                    load( regNr );
-                    coerceByConstructor( fromType, toType );
-                    store( regNr, toType );
+                    mv.visitTypeInsn(NEW, internalName(toType));
+                    mv.visitInsn(DUP);
+                    load(regNr);
+                    coerceByConstructor(fromType, toType);
+                    store(regNr, toType);
                 } else {
                     mv.visitInsn(ACONST_NULL);
                     mv.visitVarInsn(ASTORE, regNr);
@@ -731,7 +730,7 @@ public class ASMConditionEvaluatorJitter {
             } else if (exp instanceof VariableExpression) {
                 return jitVariableExpression((VariableExpression) exp);
             } else if (exp instanceof AritmeticExpression) {
-                return jitAritmeticExpression((AritmeticExpression)exp);
+                return jitAritmeticExpression((AritmeticExpression) exp);
             } else if (exp instanceof ArrayCreationExpression) {
                 return jitArrayCreationExpression((ArrayCreationExpression) exp);
             } else if (exp instanceof CastExpression) {
@@ -743,7 +742,7 @@ public class ASMConditionEvaluatorJitter {
 
         private Class<?> jitCastExpression(CastExpression exp) {
             jitExpression(exp.expression, Object.class);
-            cast(exp.expression instanceof FixedExpression ? ((FixedExpression)exp.expression).getTypeAsPrimitive() : exp.expression.getType(), exp.getType());
+            cast(exp.expression instanceof FixedExpression ? ((FixedExpression) exp.expression).getTypeAsPrimitive() : exp.expression.getType(), exp.getType());
             return exp.getType();
         }
 
@@ -779,21 +778,21 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitReadVariable(String variableName) {
-            for ( int i = 0; i < declarations.length; i++ ) {
-                if ( declarations[i].getBindingName().equals( variableName ) ) {
-                    load( declPositions[i] );
+            for (int i = 0; i < declarations.length; i++) {
+                if (declarations[i].getBindingName().equals(variableName)) {
+                    load(declPositions[i]);
                     return;
                 }
             }
-            for ( int i = 0; i < operators.length; i++ ) {
-                if ( operators[i].getBindingName().equals( variableName ) ) {
-                    getFieldFromThis( "operators", EvaluatorWrapper[].class );
-                    push( i );
-                    mv.visitInsn( AALOAD ); // operators[i]
+            for (int i = 0; i < operators.length; i++) {
+                if (operators[i].getBindingName().equals(variableName)) {
+                    getFieldFromThis("operators", EvaluatorWrapper[].class);
+                    push(i);
+                    mv.visitInsn(AALOAD); // operators[i]
                     return;
                 }
             }
-            if (WM_ARGUMENT.equals( variableName )) {
+            if (WM_ARGUMENT.equals(variableName)) {
                 mv.visitVarInsn(ALOAD, 2);
                 return;
             }
@@ -839,7 +838,7 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private boolean isDeclarationExpression(Expression expression) {
-            return expression instanceof VariableExpression && ((VariableExpression)expression).subsequentInvocations == null;
+            return expression instanceof VariableExpression && ((VariableExpression) expression).subsequentInvocations == null;
         }
 
         private void jitAritmeticOperation(Class<?> operationType, AritmeticOperator operator) {
@@ -848,7 +847,7 @@ public class ASMConditionEvaluatorJitter {
             } else if (operationType == long.class) {
                 mv.visitInsn(operator.getLongOp());
             } else if (operationType == double.class) {
-                switch(operator) {
+                switch (operator) {
                     case ADD:
                         mv.visitInsn(DADD);
                         break;
@@ -867,7 +866,7 @@ public class ASMConditionEvaluatorJitter {
                 }
             } else if (operationType == BigDecimal.class || operationType == BigInteger.class) {
                 try {
-                    switch(operator) {
+                    switch (operator) {
                         case ADD:
                             invoke(operationType.getMethod("add", operationType));
                             break;
@@ -891,7 +890,7 @@ public class ASMConditionEvaluatorJitter {
 
         private Class<?> jitInvocation(Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
             if (invocation instanceof MethodInvocation) {
-                jitMethodInvocation((MethodInvocation)invocation, currentClass, firstInvocation);
+                jitMethodInvocation((MethodInvocation) invocation, currentClass, firstInvocation);
             } else if (invocation instanceof ConstructorInvocation) {
                 jitConstructorInvocation((ConstructorInvocation) invocation);
             } else if (invocation instanceof ArrayAccessInvocation) {
@@ -903,7 +902,7 @@ public class ASMConditionEvaluatorJitter {
             } else if (invocation instanceof MapAccessInvocation) {
                 jitMapAccessInvocation((MapAccessInvocation) invocation, firstInvocation);
             } else {
-                jitFieldAccessInvocation((FieldAccessInvocation)invocation, currentClass, firstInvocation);
+                jitFieldAccessInvocation((FieldAccessInvocation) invocation, currentClass, firstInvocation);
             }
             return invocation.getReturnType();
         }
@@ -912,13 +911,13 @@ public class ASMConditionEvaluatorJitter {
             Method method = invocation.getMethod();
             if (firstInvocation && (method == null || (method.getModifiers() & Modifier.STATIC) == 0)) {
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                invokeInterface(InternalFactHandle.class, "getObject", Object.class);
             }
 
             if (method == null) {
                 if (!firstInvocation) {
                     mv.visitVarInsn(ALOAD, 1);
-                    invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                 }
                 if (!invocation.getReturnType().isAssignableFrom(currentClass)) {
                     cast(invocation.getReturnType());
@@ -974,7 +973,7 @@ public class ASMConditionEvaluatorJitter {
         private void jitMapAccessInvocation(MapAccessInvocation invocation, boolean firstInvocation) {
             if (firstInvocation) {
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                 cast(Map.class);
             }
             Class<?> keyClass = jitExpression(invocation.getKey(), invocation.getKeyType());
@@ -993,7 +992,7 @@ public class ASMConditionEvaluatorJitter {
 
             if (firstInvocation && !isStatic) {
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                invokeInterface(InternalFactHandle.class, "getObject", Object.class);
             }
             if (!isStatic && !field.getDeclaringClass().isAssignableFrom(currentClass)) {
                 cast(field.getDeclaringClass());
@@ -1036,21 +1035,33 @@ public class ASMConditionEvaluatorJitter {
         private int toOpCode(BooleanOperator op, Class<?> type) {
             if (type == double.class || type == long.class || type == float.class) {
                 switch (op) {
-                    case EQ: return IFEQ;
-                    case NE: return IFNE;
-                    case GT: return IFGT;
-                    case GE: return IFGE;
-                    case LT: return IFLT;
-                    case LE: return IFLE;
+                    case EQ:
+                        return IFEQ;
+                    case NE:
+                        return IFNE;
+                    case GT:
+                        return IFGT;
+                    case GE:
+                        return IFGE;
+                    case LT:
+                        return IFLT;
+                    case LE:
+                        return IFLE;
                 }
             } else {
                 switch (op) {
-                    case EQ: return IF_ICMPEQ;
-                    case NE: return IF_ICMPNE;
-                    case GT: return IF_ICMPGT;
-                    case GE: return IF_ICMPGE;
-                    case LT: return IF_ICMPLT;
-                    case LE: return IF_ICMPLE;
+                    case EQ:
+                        return IF_ICMPEQ;
+                    case NE:
+                        return IF_ICMPNE;
+                    case GT:
+                        return IF_ICMPGT;
+                    case GE:
+                        return IF_ICMPGE;
+                    case LT:
+                        return IF_ICMPLT;
+                    case LE:
+                        return IF_ICMPLE;
                 }
             }
             throw new RuntimeException("Unknown operator: " + op);
@@ -1086,8 +1097,8 @@ public class ASMConditionEvaluatorJitter {
                 if (op.isEquality()) {
                     return Object.class;
                 } else {
-                    throw new RuntimeException( "Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
-                                                 " ||  " + class1.hashCode() + " vs " + class2.hashCode()
+                    throw new RuntimeException("Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
+                                                       " ||  " + class1.hashCode() + " vs " + class2.hashCode()
                     );
                 }
             }
@@ -1307,10 +1318,8 @@ public class ASMConditionEvaluatorJitter {
                 }
             }
 
-            if (class1 == BigInteger.class) {
-                if (class2 == BigDecimal.class) {
-                    return BigDecimal.class;
-                }
+            if (class1 == BigInteger.class && class2 == BigDecimal.class) {
+                return BigDecimal.class;
             }
 
             return null;

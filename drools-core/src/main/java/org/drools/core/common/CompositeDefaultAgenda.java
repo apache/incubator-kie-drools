@@ -37,7 +37,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
@@ -423,7 +422,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) throws ConsequenceException {
+    public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.fireNextItem -> TODO" );
     }
 

@@ -40,14 +40,17 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     private static final long serialVersionUID = 510l;
 
     private AtomicLong workItemCounter = new AtomicLong(0);
-    private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
+    private Map<Long, WorkItem> workItems = new ConcurrentHashMap<>();
     private InternalKnowledgeRuntime kruntime;
-    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
     public DefaultWorkItemManager(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
     public DefaultWorkItemManager() {
     }
 
@@ -130,7 +133,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
     
     public Set<WorkItem> getWorkItems() {
-        return new HashSet<WorkItem>(workItems.values());
+        return new HashSet<>(workItems.values());
     }
 
     public WorkItem getWorkItem(long id) {

@@ -16,13 +16,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -82,10 +82,9 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -255,7 +254,7 @@ public class DrlxParseUtil {
             usedDeclarations.add(name);
         }
         Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass );
-        return type.orElseThrow(() -> new IllegalArgumentException("Cannot get expression type by name " + name + "!"));
+        return type.orElseThrow(() -> new NoSuchElementException("Cannot get expression type by name " + name + "!"));
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
@@ -379,8 +378,8 @@ public class DrlxParseUtil {
                 acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr, acc.isEmpty() ? expr : acc.getLast()));
-        } else if (expr instanceof NameExpr || expr instanceof DrlNameExpr) {
-            if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
+        } else if (expr instanceof NameExpr) {
+            if(!acc.isEmpty() && acc.getLast() instanceof NodeWithOptionalScope) {
                 ((NodeWithOptionalScope) acc.getLast()).setScope(null);
 
                 for (ListIterator<Expression> iterator = acc.listIterator(); iterator.hasNext(); ) {
@@ -457,8 +456,8 @@ public class DrlxParseUtil {
         return key.substring( "var_".length() );
     }
 
-    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) throws ParseProblemException {
-        return StaticJavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
+    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
+        return StaticJavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
@@ -495,7 +494,7 @@ public class DrlxParseUtil {
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
-            if (e.expression instanceof DrlNameExpr || e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
+            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }
@@ -601,8 +600,7 @@ public class DrlxParseUtil {
     public static Optional<Expression> findViaScopeWithPredicate(Expression expr, Predicate<Expression> predicate) {
 
         final Boolean result = predicate.test(expr);
-
-        if(result) {
+        if(Boolean.TRUE.equals(result)) {
             return Optional.of(expr);
         } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
@@ -771,7 +769,7 @@ public class DrlxParseUtil {
         final Set<String> duplicates = new HashSet<>();
         for(String b : allBindings) {
             Boolean notExisting = duplicates.add(b);
-            if(!notExisting) {
+            if(Boolean.FALSE.equals(notExisting)) {
                 return Optional.of(new InvalidExpressionErrorResult(String.format("Duplicate declaration for variable '%s' in the rule '%s'", b, ruleName)));
             }
         }
@@ -832,5 +830,9 @@ public class DrlxParseUtil {
 
     public static String addSemicolon(String block) {
         return block.endsWith(";") ? block : block + ";";
+    }
+
+    private DrlxParseUtil() {
+        // It is not allowed to create instances of util classes.
     }
 }

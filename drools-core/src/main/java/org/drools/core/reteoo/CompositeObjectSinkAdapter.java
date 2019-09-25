@@ -51,7 +51,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     //    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
     //                                                                                                      "3" ) );
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
     ObjectSinkNodeList        otherSinks;
     ObjectSinkNodeList        hashableSinks;
 
@@ -186,7 +186,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
-                    if ( fieldIndex.isHashed() ) {
+                    if ( fieldIndex != null && fieldIndex.isHashed() ) {
                         HashKey hashKey = new HashKey( index,
                                                        value,
                                                        fieldAccessor );
@@ -260,7 +260,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     void unHashSinks(final FieldIndex fieldIndex) {
         final int index = fieldIndex.getIndex();
         // this is the list of sinks that need to be removed from the hashedSinkMap
-        final List<HashKey> unhashedSinks = new ArrayList<HashKey>();
+        final List<HashKey> unhashedSinks = new ArrayList<>();
 
         final Iterator iter = this.hashedSinkMap.newIterator();
         ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) iter.next();
@@ -307,7 +307,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         // is linkedlist null, if so create and add
         if ( this.hashedFieldIndexes == null ) {
-            this.hashedFieldIndexes = new LinkedList<FieldIndex>();
+            this.hashedFieldIndexes = new LinkedList<>();
             fieldIndex = new FieldIndex( index,
                                          fieldExtractor );
             this.hashedFieldIndexes.add( fieldIndex );
@@ -335,18 +335,20 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if (fieldIndex == null) {
             throw new IllegalStateException("Cannot find field index for index " + index + "!");
         }
-        fieldIndex.decreaseCounter();
+        if (fieldIndex != null) {
+            fieldIndex.decreaseCounter();
 
-        // if the fieldcount is 0 then remove it from the linkedlist
-        if ( fieldIndex.getCount() == 0 ) {
-            this.hashedFieldIndexes.remove( fieldIndex );
+            // if the fieldcount is 0 then remove it from the linkedlist
+            if ( fieldIndex.getCount() == 0 ) {
+                this.hashedFieldIndexes.remove( fieldIndex );
 
-            // if the linkedlist is empty then null it
-            if ( this.hashedFieldIndexes.isEmpty() ) {
-                this.hashedFieldIndexes = null;
+                // if the linkedlist is empty then null it
+                if ( this.hashedFieldIndexes.isEmpty() ) {
+                    this.hashedFieldIndexes = null;
+                }
             }
-        }
 
+        }
         return fieldIndex;
     }
 
@@ -548,7 +550,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if ( this.sinks != null ) {
             return sinks;
         }
-        ObjectSink[] sinks = new ObjectSink[size()];
+        ObjectSink[] newSinks = new ObjectSink[size()];
         int at = 0;
 
         if ( this.hashedFieldIndexes != null ) {
@@ -563,7 +565,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     HashKey hashKey = (HashKey) entry.getKey();
                     if (hashKey.getIndex() == index) {
-                        sinks[at++] = (ObjectSink) entry.getValue();
+                        newSinks[at++] = (ObjectSink) entry.getValue();
                     }
                 }
             }
@@ -571,17 +573,17 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sinks[at++] = sink;
+                newSinks[at++] = sink;
             }
         }
 
         if ( this.otherSinks != null ) {
             for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sinks[at++] = sink;
+                newSinks[at++] = sink;
             }
         }
-        this.sinks = sinks;
-        return sinks;
+        this.sinks = newSinks;
+        return newSinks;
     }
     
     public void doLinkRiaNode(InternalWorkingMemory wm) {
@@ -863,7 +865,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         public boolean equals(final Object object) {
-            if (object == null) {
+            if (!(object instanceof HashKey)) {
                 return false;
             }
             final HashKey other = (HashKey) object;

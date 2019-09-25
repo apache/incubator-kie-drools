@@ -141,7 +141,7 @@ public abstract class BaseNode
                           ReteooBuilder builder) {
         boolean removed = doRemove( context, builder );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
-            builder.getIdGenerator().releaseId( context.getRule(), this );
+            builder.getIdGenerator().releaseId(this );
         }
         return removed;
     }

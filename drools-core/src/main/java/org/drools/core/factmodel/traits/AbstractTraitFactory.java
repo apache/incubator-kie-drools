@@ -16,6 +16,19 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.UncheckedIOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.factmodel.BuildUtils;
@@ -32,43 +45,18 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes,
                                                                                                    Externalizable {
 
     protected VirtualPropertyMode mode = VirtualPropertyMode.MAP;
 
-    public final static String SUFFIX = "_Trait__Extension";
+    public static final String SUFFIX = "_Trait__Extension";
 
-    protected static final String pack = "org.drools.core.factmodel.traits.";
+    protected static final String PACKAGE = "org.drools.core.factmodel.traits.";
 
     protected Map<String, Constructor> factoryCache = new HashMap<>();
 
-    protected Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
-
-    private InstantiatorFactory instantiatorFactory = new InstantiatorFactory() {
-        @Override
-        public TraitableBean instantiate(Class<?> trait, Object id) {
-            return new Entity(id.toString());
-        }
-
-        @Override
-        public Object createId(Class<?> klass) {
-            return UUID.randomUUID().toString();
-        }
-    };
+    protected Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<>();
 
     public AbstractTraitFactory() {
     }
@@ -157,7 +145,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     protected Constructor<T> cacheConstructor(String key, K core, Class<?> trait) {
-        Class<T> proxyClass = buildProxyClass(key, core, trait);
+        Class<T> proxyClass = buildProxyClass(core, trait);
         if (proxyClass == null) {
             return null;
         }
@@ -195,11 +183,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         return (trait.getName() + "." + core.getName());
     }
 
-    public static String getSoftFieldKey(String fieldName, Class fieldType, Class trait, Class core) {
-        return fieldName;
-    }
-
-    protected Class<T> buildProxyClass(String key, K core, Class<?> trait) {
+    protected Class<T> buildProxyClass(K core, Class<?> trait) {
 
         Class coreKlass = core.getClass();
 
@@ -217,7 +201,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                                                            " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly");
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException("Unable to create definition for class " + trait + " : " + e.getMessage());
+                    throw new UncheckedIOException("Unable to create definition for class " + trait + " : " + e.getMessage(), e);
                 }
                 getTraitRegistry().addTrait(tdef);
             } else {
@@ -229,7 +213,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                 try {
                     cdef = buildClassDefinition(core.getClass(), core.getClass());
                 } catch (IOException e) {
-                    throw new RuntimeException("Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage());
+                    throw new UncheckedIOException("Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage(), e);
                 }
                 getTraitRegistry().addTraitable(cdef);
             } else {
@@ -263,10 +247,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         }
 
         try {
-            BitSet mask = getTraitRegistry().getFieldMask(trait.getName(), cdef.getDefinedClass().getName());
-            Class<T> wrapperClass = (Class<T>) getRootClassLoader().loadClass(wrapperName);
-            Class<T> proxyClass = (Class<T>) getRootClassLoader().loadClass(proxyName);
-            return proxyClass;
+            getTraitRegistry().getFieldMask(trait.getName(), cdef.getDefinedClass().getName());
+            getRootClassLoader().loadClass(wrapperName);
+            return (Class<T>) getRootClassLoader().loadClass(proxyName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -275,7 +258,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     public synchronized <K> CoreWrapper<K> getCoreWrapper(Class<K> coreKlazz, ClassDefinition coreDef) {
         if (wrapperCache == null) {
-            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
+            wrapperCache = new HashMap<>();
         }
         Class<? extends CoreWrapper<K>> wrapperClass = null;
         if (wrapperCache.containsKey(coreKlazz)) {
@@ -306,20 +289,23 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                 e.printStackTrace();
             }
         }
+        if (coreDef == null) {
+            throw new IllegalArgumentException("Class definition is not specified!");
+        } else {
+            if (core instanceof Map) {
+                if (!coreDef.isTraitable()) {
+                    throw new UnsupportedOperationException("Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
+                }
+                return coreDef.isFullTraiting() ? new LogicalMapCore((Map) core) : new MapCore((Map) core);
+            }
 
-        if (core instanceof Map) {
-            if (!coreDef.isTraitable()) {
+            CoreWrapper<K> wrapper = (CoreWrapper<K>) getCoreWrapper(core.getClass(), coreDef);
+            if (wrapper == null) {
                 throw new UnsupportedOperationException("Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
             }
-            return coreDef.isFullTraiting() ? new LogicalMapCore((Map) core) : new MapCore((Map) core);
+            wrapper.init(core);
+            return wrapper;
         }
-
-        CoreWrapper<K> wrapper = (CoreWrapper<K>) getCoreWrapper(core.getClass(), coreDef);
-        if (wrapper == null) {
-            throw new UnsupportedOperationException("Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
-        }
-        wrapper.init(core);
-        return wrapper;
     }
 
     public ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
@@ -407,14 +393,6 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         try {
             byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass(coreDef, getRootClassLoader());
             registerAndLoadTypeDefinition(wrapperName, wrapper);
-//            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
-//                getDialectData( "java" ));
-
-//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( wrapperName );
-//            data.putClassDefinition( resourceName, wrapper );
-//            data.write( resourceName, wrapper );
-
-//            data.onBeforeExecute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -442,7 +420,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                 false);
     }
 
-    public static void invokeExtractor(MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field) {
+    public static void invokeExtractor(MethodVisitor mv, String masterName, ClassDefinition core, FieldDefinition field) {
         FieldDefinition tgtField = core.getFieldByAlias(field.resolveAlias());
         String fieldType = tgtField.getTypeName();
         String returnType = BuildUtils.getTypeDescriptor(fieldType);

@@ -73,7 +73,6 @@ import org.kie.api.runtime.rule.FactHandle.State;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -96,6 +95,9 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         this.delegate = (StatefulKnowledgeSessionImpl) workingMemory;
     }
 
+    /**
+     * This should be used just by deserialization. Please avoid using this empty constructor in your code.
+     */
     public WrappedStatefulKnowledgeSessionForRHS() {
     }
 

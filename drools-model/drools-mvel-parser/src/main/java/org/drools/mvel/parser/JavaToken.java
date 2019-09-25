@@ -43,7 +43,6 @@ public class JavaToken extends com.github.javaparser.JavaToken {
 
     public JavaToken(com.github.javaparser.Token token, String text) {
         super(Range.range(token.beginLine, token.beginColumn, token.endLine, token.endColumn), token.kind, text, null, null);
-        this.kind = kind;
         this.text = text;
         this.range = Range.range(token.beginLine, token.beginColumn, token.endLine, token.endColumn);
     }
@@ -63,6 +62,7 @@ public class JavaToken extends com.github.javaparser.JavaToken {
         return kind;
     }
 
+    @Override
     public com.github.javaparser.JavaToken.Category getCategory() {
         return TokenTypes.getCategory(kind);
     }
@@ -91,10 +91,7 @@ public class JavaToken extends com.github.javaparser.JavaToken {
         if (kind != javaToken.kind) {
             return false;
         }
-        if (!text.equals(javaToken.text)) {
-            return false;
-        }
-        return true;
+        return text.equals(javaToken.text);
     }
 
 }

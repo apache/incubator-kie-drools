@@ -112,7 +112,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     @Override
     public void visit(PatternDescr descr) {
         final PatternSourceDescr patternSource = descr.getSource();
-        if (patternSource != null && patternSource instanceof CollectDescr) {
+        if (patternSource instanceof CollectDescr) {
             fromCollectVisitor.trasformFromCollectToCollectList(descr, (CollectDescr) patternSource);
         } else {
             if (patternSource instanceof AccumulateDescr) {

@@ -30,7 +30,11 @@ public class ActivationCancelledEventImpl extends ActivationEventImpl implements
         this.cause = cause;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
     public ActivationCancelledEventImpl() {
+        super();
     }
 
     public MatchCancelledCause getCause() {

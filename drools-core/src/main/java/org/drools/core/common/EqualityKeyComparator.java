@@ -38,12 +38,15 @@ public class EqualityKeyComparator
         return EqualityKeyComparator.instance;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
-    
+
+    @Override
     public int hashCodeOf(final Object key) {
         return AbstractHashTable.rehash( key.hashCode() );
     }    
@@ -51,8 +54,9 @@ public class EqualityKeyComparator
     /**
      * Equality key  reverses the compare, so  that  the  key  controls the  comparison
      */
-    public boolean equal(final Object o1,
-                         final Object o2) {
+    @Override
+    public boolean areEqual(final Object o1,
+                            final Object o2) {
         return (o1 == null) ? (o2 == null) : (o1 == o2) || o2.equals( o1 );
     }
 
@@ -61,6 +65,7 @@ public class EqualityKeyComparator
         return ((Comparable) o1).compareTo( o2 );
     }
 
+    @Override
     public String toString() {
         return "[EqualityKeyComparator]";
     }

@@ -28,7 +28,7 @@ public class ClassUtil {
 
     private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = new HashMap<>();
 
-    public static class NullType { }
+    public interface NullType { }
 
     public static String asJavaSourceName( Class<?> clazz ) {
         return clazz.getCanonicalName().replace( '.', '_' );
@@ -54,64 +54,53 @@ public class ClassUtil {
         if (methods.length == 0) {
             return null;
         }
+        final Method bestCandidate = getBestCandidateMethod(methodName, argsType, methods, null);
+        if (bestCandidate != null) {
+            return bestCandidate;
+        } else if (clazz.isInterface()) {
+            final Method[] objMethods = Object.class.getMethods();
+            final Method[] nMethods = new Method[methods.length + objMethods.length];
+            System.arraycopy( methods, 0, nMethods, 0, methods.length );
+            System.arraycopy( objMethods, 0, nMethods, methods.length, objMethods.length );
+            return getBestCandidateMethod(methodName, argsType, nMethods, bestCandidate);
+        } else {
+            return null;
+        }
+    }
 
+    private static Method getBestCandidateMethod(final String methodName,
+                                                 final Class[] argsType,
+                                                 final Method[] methods,
+                                                 final Method oldBestCandidate) {
         Class<?>[] parmTypes;
-        Method bestCandidate = null;
         int bestScore = -1;
-        boolean retry = false;
-
-        do {
-            for (Method meth : methods) {
-
-                if (methodName.equals(meth.getName())) {
-                    parmTypes = meth.getParameterTypes();
-                    if (parmTypes.length == 0 && argsType.length == 0) {
-                        if (bestCandidate == null || isMoreSpecialized(meth, bestCandidate) ) {
-                            bestCandidate = meth;
-                        }
-                        continue;
+        Method bestCandidate = oldBestCandidate;
+        for (final Method meth : methods) {
+            if (methodName.equals(meth.getName())) {
+                parmTypes = meth.getParameterTypes();
+                if (parmTypes.length == 0 && argsType.length == 0) {
+                    if (bestCandidate == null || isMoreSpecialized(meth, bestCandidate) ) {
+                        bestCandidate = meth;
                     }
+                    continue;
+                }
 
-                    boolean isVarArgs = meth.isVarArgs();
-                    if ( isArgsNumberNotCompatible( argsType, parmTypes, isVarArgs ) ) {
-                        continue;
-                    }
+                final boolean isVarArgs = meth.isVarArgs();
+                if ( isArgsNumberNotCompatible( argsType, parmTypes, isVarArgs ) ) {
+                    continue;
+                }
 
-                    int score = getMethodScore(argsType, parmTypes, isVarArgs);
-                    if (score != 0) {
-                        if (score > bestScore) {
-                            bestCandidate = meth;
-                            bestScore = score;
-                        }
-                        else if (score == bestScore) {
-                            if (isMoreSpecialized(meth, bestCandidate) && !isVarArgs) {
-                                bestCandidate = meth;
-                            }
-                        }
+                final int score = getMethodScore(argsType, parmTypes, isVarArgs);
+                if (score != 0) {
+                    if (score > bestScore) {
+                        bestCandidate = meth;
+                        bestScore = score;
+                    } else if ((score == bestScore) && (isMoreSpecialized(meth, bestCandidate) && !isVarArgs)) {
+                        bestCandidate = meth;
                     }
                 }
             }
-
-            if (bestCandidate != null) {
-                break;
-            }
-
-            if (!retry && clazz.isInterface()) {
-                Method[] objMethods = Object.class.getMethods();
-                Method[] nMethods = new Method[methods.length + objMethods.length];
-                System.arraycopy( methods, 0, nMethods, 0, methods.length );
-
-                System.arraycopy( objMethods, 0, nMethods, methods.length, objMethods.length );
-                methods = nMethods;
-
-                retry = true;
-            }
-            else {
-                break;
-            }
         }
-        while (true);
-
         return bestCandidate;
     }
 

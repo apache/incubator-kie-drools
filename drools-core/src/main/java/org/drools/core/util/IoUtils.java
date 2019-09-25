@@ -129,7 +129,7 @@ public class IoUtils {
     }
 
     public static File copyInTempFile( InputStream input, String fileExtension ) throws IOException {
-        File tempFile = File.createTempFile( UUID.randomUUID().toString(), "." + fileExtension );
+        File tempFile = File.createTempFile(UUID.randomUUID().toString(), "." + fileExtension );
         tempFile.deleteOnExit();
         copy(input, new FileOutputStream(tempFile));
         return tempFile;
@@ -140,7 +140,7 @@ public class IoUtils {
     }
 
     public static List<String> recursiveListFile(File folder, String prefix, Predicate<File> filter) {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
         for (File child : safeListFiles(folder)) {
             filesInFolder(files, child, prefix, filter);
         }
@@ -211,15 +211,9 @@ public class IoUtils {
             return null;
         }
 
-        ZipFile zipFile = null;
-        byte[] bytes = null;
-        try {
-            zipFile = new ZipFile( file );
+        byte[] bytes;
+        try (ZipFile zipFile = new ZipFile( file )) {
             bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
-        } finally {
-            if ( zipFile != null ) {
-                zipFile.close();
-            }
         }
         return bytes;
 

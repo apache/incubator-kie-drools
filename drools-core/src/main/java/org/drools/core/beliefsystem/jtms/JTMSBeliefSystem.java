@@ -38,8 +38,8 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 public class JTMSBeliefSystem<M extends JTMSMode<M>>
         implements
         BeliefSystem<M> {
-    protected static final transient Logger  log    = LoggerFactory.getLogger(JTMSBeliefSystem.class);
-    public static                    boolean STRICT = false;
+    protected static final Logger  log    = LoggerFactory.getLogger(JTMSBeliefSystem.class);
+    public static boolean STRICT = false;
 
     private   TruthMaintenanceSystem tms;
     protected InternalWorkingMemoryEntryPoint        ep;

@@ -16,9 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.spi.PatternExtractor;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,13 +23,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.spi.PatternExtractor;
+
 public class XpathBackReference {
     public static final String BACK_REFERENCE_HEAD = "$back$ref$";
 
     private final Pattern pattern;
     private final List<Class<?>> backReferenceClasses;
 
-    private Map<String, Declaration> declarations = Collections.EMPTY_MAP;
+    private Map<String, Declaration> declarations = Collections.emptyMap();
 
     private MapAdapter declarationMap;
 
@@ -65,8 +65,8 @@ public class XpathBackReference {
                                        new RelativePattern( pattern, relativeOffset ),
                                        true );
 
-        if (declarations == Collections.EMPTY_MAP) {
-            declarations = new HashMap<String, Declaration>();
+        if (declarations.isEmpty()) {
+            declarations = new HashMap<>();
         }
 
         declarations.put( id, declaration );

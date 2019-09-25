@@ -19,11 +19,7 @@ package org.drools.core.factmodel;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
-public class BuildUtils {
-
-
-
-
+public final class BuildUtils {
 
     public static String[] getInternalTypes( String[] superClasses ) {
         if ( superClasses == null ) {
@@ -131,7 +127,9 @@ public class BuildUtils {
             internalType = "V";
         } else if ( type != null && type.startsWith( "[" ) ) {
             int j = 0;
-            while ( type.charAt( ++j ) == '[' ) { }
+            while ( type.charAt( ++j ) == '[' ) {
+                // Just ignore these chars.
+            }
             if ( type.charAt( j ) == 'L' ) {
                 internalType = type.replace( '.', '/' );
             } else {
@@ -251,7 +249,6 @@ public class BuildUtils {
             return fld.getDefaultValueAsBoolean();
         }
 
-//        return StringUtils.isEmpty( fld.getInitExpr() ) ? null : MVEL.eval( fld.getInitExpr() );
         return null;
 
     }
@@ -414,8 +411,6 @@ public class BuildUtils {
 
     public static boolean isBoolean(String type) {
         return "boolean".equals( type );
-//                || "java.lang.Boolean".equals( type )
-//                || "Boolean".equals( type );
     }
 
     public static int zero( String type ) {
@@ -450,7 +445,7 @@ public class BuildUtils {
     }
 
 
-    public static String setterName(String fieldName, String type) {
+    public static String setterName(String fieldName) {
         return "set" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
     }
 
@@ -617,5 +612,9 @@ public class BuildUtils {
             } else {
                 return type;
             }
+    }
+
+    private BuildUtils() {
+        // It is not allowed to create instances of util classes.
     }
 }

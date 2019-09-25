@@ -26,7 +26,11 @@ public class AgendaGroupPoppedEventImpl extends AgendaGroupEventImpl implements 
         super( agendaGroup, kruntime );
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
     public AgendaGroupPoppedEventImpl() {
+        super();
     }
 
     @Override

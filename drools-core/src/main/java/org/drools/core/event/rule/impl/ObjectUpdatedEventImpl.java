@@ -16,15 +16,15 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.api.runtime.rule.FactHandle;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements ObjectUpdatedEvent {
     private FactHandle factHandle;
@@ -42,9 +42,14 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         this.object = object;
     }
 
+    /**
+     * Do not use this constructor. It should be used just by deserialization.
+     */
     public ObjectUpdatedEventImpl() {
+        super();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );
@@ -52,6 +57,7 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         out.writeObject( oldObject );
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -60,14 +66,17 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         this.oldObject = in.readObject();
     }
     
+    @Override
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
 
+    @Override
     public Object getObject() {
         return this.object;
     }
 
+    @Override
     public Object getOldObject() {
         return this.oldObject;
     }

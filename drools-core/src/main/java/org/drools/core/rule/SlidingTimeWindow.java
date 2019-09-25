@@ -73,6 +73,7 @@ public class SlidingTimeWindow
      *
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
+    @Override
     public void readExternal(final ObjectInput in) throws IOException,
                                                           ClassNotFoundException {
         this.size = in.readLong();
@@ -84,11 +85,13 @@ public class SlidingTimeWindow
      *
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
+    @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeLong( this.size );
         out.writeInt( this.nodeId );
     }
 
+    @Override
     public BehaviorType getType() {
         return BehaviorType.TIME_WINDOW;
     }
@@ -111,10 +114,12 @@ public class SlidingTimeWindow
         this.size = size;
     }
 
+    @Override
     public Behavior.Context createContext() {
         return new SlidingTimeWindowContext();
     }
 
+    @Override
     public boolean assertFact(final Object context,
                               final InternalFactHandle fact,
                               final PropagationContext pctx,
@@ -138,6 +143,7 @@ public class SlidingTimeWindow
         return true;
     }
 
+    @Override
     public void retractFact(final Object context,
                             final InternalFactHandle fact,
                             final PropagationContext pctx,
@@ -163,6 +169,7 @@ public class SlidingTimeWindow
         }
     }
 
+    @Override
     public void expireFacts(final Object context,
                             final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
@@ -216,10 +223,12 @@ public class SlidingTimeWindow
         }
     }
 
+    @Override
     public long getExpirationOffset() {
         return this.size;
     }
 
+    @Override
     public String toString() {
         return "SlidingTimeWindow( size=" + size + " )";
     }
@@ -234,17 +243,20 @@ public class SlidingTimeWindow
         private JobHandle                      jobHandle;
 
         public SlidingTimeWindowContext() {
-            this.queue = new PriorityQueue<EventFactHandle>( 16 ); // arbitrary size... can we improve it?
+            this.queue = new PriorityQueue<>(16); // arbitrary size... can we improve it?
         }
 
+        @Override
         public JobHandle getJobHandle() {
             return this.jobHandle;
         }
 
+        @Override
         public void setJobHandle(JobHandle jobHandle) {
             this.jobHandle = jobHandle;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
@@ -252,6 +264,7 @@ public class SlidingTimeWindow
             this.expiringHandle = (EventFactHandle) in.readObject();
         }
 
+        @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( this.queue );
             out.writeObject( this.expiringHandle );
@@ -262,10 +275,6 @@ public class SlidingTimeWindow
         }
 
         public void setExpiringHandle( EventFactHandle expiringHandle ) {
-            this.expiringHandle = expiringHandle;
-        }
-
-        public void setExpiringTuple(EventFactHandle expiringHandle) {
             this.expiringHandle = expiringHandle;
         }
 
@@ -293,6 +302,7 @@ public class SlidingTimeWindow
             return queue.remove( );
         }
 
+        @Override
         public Collection<EventFactHandle> getFactHandles() {
             return queue;
         }
@@ -312,6 +322,7 @@ public class SlidingTimeWindow
             outputCtx.writeLong( handle.getId() );
         }
 
+        @Override
         public Timer serialize(JobContext jobCtx,
                                MarshallerWriteContext outputCtx) {
             // BehaviorJob, no state            
@@ -331,20 +342,21 @@ public class SlidingTimeWindow
     }
 
     public static class BehaviorJobContextTimerInputMarshaller implements TimersInputMarshaller {
-        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
+        public void read(MarshallerReaderContext inCtx) throws IOException {
             int sinkId = inCtx.readInt();
             WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
 
             WindowMemory memory = inCtx.wm.getNodeMemory( windowNode );
 
-            Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
+            Object[] behaviorContext = memory.behaviorContext;
 
             int i = inCtx.readInt();
         }
 
+        @Override
         public void deserialize(MarshallerReaderContext inCtx,
-                                Timer _timer) throws ClassNotFoundException {
-            long i = _timer.getBehavior().getHandleId();
+                                Timer timer) throws ClassNotFoundException {
+            long i = timer.getBehavior().getHandleId();
         }
     }
 
@@ -369,22 +381,29 @@ public class SlidingTimeWindow
             this.behaviorContext = behaviorContext;
         }
 
+        /**
+         * Do not use this constructor! It should be used just by deserialization.
+         */
         public BehaviorJobContext() {
         }
 
+        @Override
         public JobHandle getJobHandle() {
             return behaviorContext.getJobHandle();
         }
 
+        @Override
         public void setJobHandle(JobHandle jobHandle) {
             behaviorContext.setJobHandle( jobHandle );
         }
 
+        @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
             //this.behavior = (O)
         }
 
+        @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             // TODO Auto-generated method stub
         }
@@ -399,6 +418,7 @@ public class SlidingTimeWindow
             implements
             Job {
 
+        @Override
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
             context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.nodeId,
@@ -439,8 +459,8 @@ public class SlidingTimeWindow
         }
 
         public BehaviorExpireWMAction(MarshallerReaderContext context,
-                                      Action _action) {
-            nodeId =_action.getBehaviorExpire().getNodeId();
+                                      Action action) {
+            nodeId = action.getBehaviorExpire().getNodeId();
             WindowNode windowNode = (WindowNode) context.sinks.get( nodeId );
 
             WindowMemory memory = context.wm.getNodeMemory( windowNode );
@@ -453,20 +473,22 @@ public class SlidingTimeWindow
             this.context = behaviorContext[i];
         }
 
+        @Override
         public void execute(InternalWorkingMemory workingMemory) {
             this.behavior.expireFacts( context,
                                        null,
                                        workingMemory );
         }
 
+        @Override
         public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext outputCtx) {
-            ProtobufMessages.ActionQueue.BehaviorExpire _be = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
+            ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
                                                                                                          .setNodeId( nodeId )
                                                                                                          .build();
 
             return ProtobufMessages.ActionQueue.Action.newBuilder()
                                                       .setType( ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE )
-                                                      .setBehaviorExpire( _be )
+                                                      .setBehaviorExpire( behaviorExpire )
                                                       .build();
 
         }
