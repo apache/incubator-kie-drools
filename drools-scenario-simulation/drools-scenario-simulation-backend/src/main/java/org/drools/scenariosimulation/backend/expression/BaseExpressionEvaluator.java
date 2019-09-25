@@ -49,12 +49,12 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw) {
-        if (!(raw instanceof String)) {
-            return raw;
+    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
+        if (!(rawExpression instanceof String)) {
+            return rawExpression;
         }
 
-        return commonEvaluationLiteralExpression(className, genericClasses, (String) raw);
+        return commonEvaluationLiteralExpression(className, genericClasses, (String) rawExpression);
     }
 
     @Override

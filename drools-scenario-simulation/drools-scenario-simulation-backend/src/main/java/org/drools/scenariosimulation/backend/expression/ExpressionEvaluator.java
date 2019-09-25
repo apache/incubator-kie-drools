@@ -22,7 +22,7 @@ public interface ExpressionEvaluator {
 
     boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass);
 
-    Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw);
+    Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression);
 
     String fromObjectToExpression(Object value);
 }
