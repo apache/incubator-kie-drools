@@ -20,8 +20,8 @@ public class LambdaUtil {
 
     }
 
-    public static Expression compose(LambdaExpr l1, LambdaExpr l2, String typeA, String typeB) {
-        Type type = new ClassOrInterfaceType(null, new SimpleName("Function1"),
+    public static MethodCallExpr compose(LambdaExpr l1, LambdaExpr l2, String typeA, String typeB) {
+        Type type = new ClassOrInterfaceType(null, new SimpleName("org.drools.model.functions.Function1"),
                                              nodeList(parseClassOrInterfaceType(typeA), parseClassOrInterfaceType(typeB)));
 
         Expression castedExpr = new EnclosedExpr(new CastExpr(type, new EnclosedExpr(l1)));
