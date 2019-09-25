@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import io.quarkus.runtime.StartupEvent;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
@@ -57,8 +58,7 @@ public class ProtobufService {
     @Inject
     Event<FileDescriptorRegisteredEvent> event;
 
-    @PostConstruct
-    public void init() {
+    void onStart(@Observes StartupEvent ev) {
         kogitoDescriptors.getFileDescriptors().forEach((name, bytes) -> {
             LOGGER.info("Registering Kogito ProtoBuffer file: {}", name);
             manager.getProtobufCache().put(name, new String(bytes));

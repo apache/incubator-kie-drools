@@ -137,6 +137,17 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
     }
+    
+    @Test //Reproducer for KOGITO-334
+    public void testDefaultGraphqlTypes(){
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances{ id } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.UserTaskInstances", isA(Collection.class));
+    }
 
     @Test
     public void testAddProtoFile() throws Exception {
