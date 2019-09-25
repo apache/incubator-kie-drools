@@ -1,29 +1,27 @@
 package org.drools.modelcompiler.util;
 
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
-
-import static com.github.javaparser.ast.NodeList.nodeList;
+import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 
 public class LambdaUtil {
-
-    private static String AND_THEN_CALL = "andThen";
 
     private LambdaUtil() {
 
     }
 
-    public static MethodCallExpr compose(LambdaExpr l1, LambdaExpr l2, Type aType, Type bType) {
-        Type type = new ClassOrInterfaceType(null, new SimpleName("org.drools.model.functions.Function1"),
-                                             nodeList(aType, bType));
+    public static Expression compose(LambdaExpr l1, LambdaExpr l2) {
+        ExpressionStmt l1ExprStmt = (ExpressionStmt) l1.getBody();
+        ExpressionStmt l2ExprStmt = (ExpressionStmt) l2.getBody();
 
-        Expression castedExpr = new EnclosedExpr(new CastExpr(type, new EnclosedExpr(l1)));
-        return new MethodCallExpr(castedExpr, AND_THEN_CALL, nodeList(l2));
+        DrlxParseUtil.RemoveRootNodeResult removeRootNodeResult = DrlxParseUtil.removeRootNode(l2ExprStmt.getExpression());
+
+        NodeWithOptionalScope<?> newExpr = (NodeWithOptionalScope<?>) removeRootNodeResult.getWithoutRootNode();
+
+        Expression expr = (Expression) newExpr.setScope(l1ExprStmt.getExpression());
+        l1.setBody(new ExpressionStmt(expr));
+        return l1;
     }
 }

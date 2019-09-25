@@ -70,23 +70,13 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
 
     private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        String inputObjectType = ((PatternDescr) input).getObjectType();
-        Class<?> aType = context.resolveType(inputObjectType)
-                .orElseThrow(() -> new UnsupportedOperationException("Input type not found"));
-
-
         pattern.getParentNode().ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            NameExpr oldBindVar = (NameExpr) oldBind.getArgument(0);
-            Type bType = context.getDeclarationById(oldBindVar.toString().replace("var_", ""))
-                    .map(DeclarationSpec::getBoxedType)
-                    .orElseThrow(() -> new UnsupportedOperationException("Cannot find bindingId in declaration"));
             LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
             LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
 
-            MethodCallExpr newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda,
-                                                                  parseClassOrInterfaceType(aType.getCanonicalName()), bType);
+            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
 
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);
