@@ -1095,6 +1095,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
 
+    // do also the test with two functions
     @Test
     public void testAccumulateWithMax() {
         String str =
@@ -1102,8 +1103,9 @@ public class AccumulateTest extends BaseModelTest {
                         "import " + StockTick.class.getCanonicalName() + ";" +
                         "rule AccumulateMaxDate when\n" +
                         "  $max1 : Number() from accumulate(\n" +
-                        "    StockTick($time : getTimeFieldAsDate().altro());\n" + // These two exprs should be combined in a single bind in the function
-                        "    max($time.getTime()) " + // <--- here COMPOSE BIND
+                        "    StockTick($time : getTimeFieldAsDate());\n" + // These two exprs should be combined in a single bind in the function
+                        "    max($time.getTime())" + // <--- here COMPOSE BIND
+                        " )" +
                         "then\n" +
                         "end\n";
 

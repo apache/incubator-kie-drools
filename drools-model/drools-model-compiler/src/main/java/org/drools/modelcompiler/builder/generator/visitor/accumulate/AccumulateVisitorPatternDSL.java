@@ -16,6 +16,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
@@ -35,14 +36,17 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     @Override
-    protected void processNewBinding(Optional<NewBinding> optNewBinding) {
+    protected void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
             final List<String> patterBinding = newBinding.patternBinding;
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
-            if (!patterBinding.isEmpty()) {
-                final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(context, patterBinding, allExpressions);
+            if (patterBinding.size() == 1) {
+                final Optional<MethodCallExpr> optPattern = findPatternWithBinding(context, patterBinding, allExpressions);
                 optPattern.ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
+            } else if (patterBinding.size() == 2) {
+                final Optional<MethodCallExpr> optPattern = findPatternWithBinding(context, patterBinding, allExpressions);
+                optPattern.ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)
                         .orElseThrow(() -> new RuntimeException("Need the last pattern to add the binding"));
@@ -56,6 +60,26 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         final Optional<Node> optParent = pattern.getParentNode();
         newBindingExpression.setScope(pattern);
         optParent.ifPresent(parent -> parent.replace(pattern, newBindingExpression));
+    }
+
+
+    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+        final Optional<Node> optOldBindExpression = pattern.getParentNode();
+        newBindingExpression.setScope(pattern);
+        optOldBindExpression.ifPresent(oldBindExpression -> {
+            System.out.println("parent = " + oldBindExpression);
+
+            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
+
+            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
+            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+
+
+
+
+            oldBindExpression.replace(pattern, newBindingExpression);
+            System.out.println("parent = " + oldBindExpression);
+        });
     }
 
     private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {

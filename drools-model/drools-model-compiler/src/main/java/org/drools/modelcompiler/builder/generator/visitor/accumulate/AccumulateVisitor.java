@@ -109,7 +109,7 @@ public abstract class AccumulateVisitor {
 
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
-                processNewBinding(optNewBinding);
+                processNewBinding(optNewBinding, accumulateDSL);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
@@ -438,7 +438,7 @@ public abstract class AccumulateVisitor {
 
     protected abstract MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression);
 
-    protected abstract void processNewBinding(Optional<NewBinding> optNewBinding);
+    protected abstract void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL);
 
     protected abstract void postVisit();
 
