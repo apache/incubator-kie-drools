@@ -69,6 +69,8 @@ public abstract class AccumulateVisitor {
     private final ModelGeneratorVisitor modelGeneratorVisitor;
     protected AbstractExpressionBuilder expressionBuilder;
 
+    protected BaseDescr input;
+
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
         this.modelGeneratorVisitor = modelGeneratorVisitor;
@@ -84,7 +86,7 @@ public abstract class AccumulateVisitor {
         context.pushExprPointer(accumulateExprs::addArgument);
 
         Set<String> externalDeclrs = new HashSet<>( context.getAvailableBindings() );
-        BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+        input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
         input.accept(modelGeneratorVisitor);
 
         if (accumulateExprs.getArguments().isEmpty()) {

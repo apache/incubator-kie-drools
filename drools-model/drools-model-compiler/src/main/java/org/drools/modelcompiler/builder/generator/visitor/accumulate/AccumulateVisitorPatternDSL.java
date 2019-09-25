@@ -10,6 +10,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -47,8 +48,12 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
                 findPatternWithBinding(context, patterBinding, allExpressions)
                         .ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
             } else if (patterBinding.size() == 2) {
+                String inputObjectType = ((PatternDescr) input).getObjectType();
+                Class<?> inputType = context.resolveType(inputObjectType)
+                        .orElseThrow(() -> new UnsupportedOperationException("Input type not found"));
+
                 findPatternWithBinding(context, patterBinding, allExpressions)
-                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
+                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern, inputType.getCanonicalName(), "Date"));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)
                         .orElseThrow(() -> new RuntimeException("Need the last pattern to add the binding"));
@@ -65,7 +70,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
 
-    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern, String aType, String bType) {
         pattern.getParentNode().ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
@@ -73,8 +78,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
 
             MethodCallExpr newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda,
-                                                                  "StockTick",
-                                                                  "Date");
+                                                                  aType,
+                                                                  bType);
 
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);
