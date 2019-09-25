@@ -17,7 +17,7 @@ public class LambdaUtilTest {
 
         Expression expected = parseExpression("((Function1<StockTick, Date>)((_this) -> _this.getTimeFieldAsDate())).andThen((_this) -> _this.getTime())");
 
-        Expression actual = LambdaUtil.compose(l1, l2);
+        Expression actual = LambdaUtil.compose(l1, l2, "StockTick", "Date");
         assertEquals(expected.toString(), actual.toString());
     }
 }
