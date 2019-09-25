@@ -77,25 +77,9 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    public void processExpression(SingleDrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.hasUnificationVariable()) {
-            Expression dslExpr = buildUnificationExpression(drlxParseResult);
-            context.addExpression(dslExpr);
-        } else if ( drlxParseResult.isValidExpression() ) {
-            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
-            context.addExpression(dslExpr);
-        }
+    public abstract void processExpression(SingleDrlxParseSuccess drlxParseResult);
 
-        if(DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
-            Expression inputExpr = createInputExpression(drlxParseResult.getExprBinding());
-            context.addExpression(inputExpr);
-        } else if (drlxParseResult.getExprBinding() != null) {
-            Expression dslExpr = buildBinding(drlxParseResult);
-            context.addExpression(dslExpr);
-        }
-    }
-
-    private MethodCallExpr createInputExpression(String identifier) {
+    protected MethodCallExpr createInputExpression(String identifier) {
         MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
         exprDSL.addArgument( context.getVarExpr(identifier) );
 
@@ -109,7 +93,7 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    private Expression buildUnificationExpression(SingleDrlxParseSuccess drlxParseResult) {
+    protected Expression buildUnificationExpression(SingleDrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType(), drlxParseResult.getUnificationName());
         return exprDSL;
