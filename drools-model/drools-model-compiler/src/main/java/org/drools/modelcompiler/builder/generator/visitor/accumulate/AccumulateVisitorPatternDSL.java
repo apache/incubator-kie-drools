@@ -32,7 +32,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
-        usedDeclaration.stream().map(d -> context.getVarExpr(d)).forEach(bindDSL::addArgument);
+        usedDeclaration.stream().map(context::getVarExpr).forEach(bindDSL::addArgument);
         bindDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindDSL;
     }
@@ -44,13 +44,11 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
             if (patterBinding.size() == 1) {
-                final Optional<MethodCallExpr> optPattern = findPatternWithBinding(context, patterBinding, allExpressions);
-                optPattern.ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
+                findPatternWithBinding(context, patterBinding, allExpressions)
+                        .ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
             } else if (patterBinding.size() == 2) {
-                final Optional<MethodCallExpr> optPattern = findPatternWithBinding(context, patterBinding, allExpressions);
-                optPattern.ifPresent(pattern -> {
-                    composeTwoBindings(newBindingExpression, pattern, accumulateDSL);
-                });
+                findPatternWithBinding(context, patterBinding, allExpressions)
+                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)
                         .orElseThrow(() -> new RuntimeException("Need the last pattern to add the binding"));
@@ -67,11 +65,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
 
-    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern, Expression accumulateDSL) {
-        final Optional<Node> optOldBindExpression = pattern.getParentNode();
-        newBindingExpression.setScope(pattern);
-        optOldBindExpression.ifPresent(oldBindExpression -> {
-
+    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+        pattern.getParentNode().ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
             LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
@@ -81,15 +76,11 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
                                                                   "StockTick",
                                                                   "Date");
 
-            MethodCallExpr newBindingWithClonedLambda = newBindingExpression.clone();
+            newBindingExpression.getArguments().removeLast();
+            newBindingExpression.addArgument(newComposedLambda);
+            newBindingExpression.setScope(pattern);
 
-            newBindingWithClonedLambda.getArguments().removeLast();
-            newBindingWithClonedLambda.addArgument(newComposedLambda);
-            newBindingWithClonedLambda.setScope(pattern);
-
-            accumulateDSL.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString()))
-                    .forEach(t -> t.replace(newBindingWithClonedLambda));
-
+            oldBind.replace(newBindingExpression);
         });
     }
 
@@ -111,7 +102,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             }
         } );
 
-        return (MethodCallExpr) bindExpression;
+        return bindExpression;
     }
 
     @Override
