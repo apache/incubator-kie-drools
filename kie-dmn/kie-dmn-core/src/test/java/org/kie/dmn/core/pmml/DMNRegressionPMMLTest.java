@@ -17,7 +17,6 @@
 package org.kie.dmn.core.pmml;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -62,9 +61,8 @@ public class DMNRegressionPMMLTest {
 
         final DMNContext resultContext = dmnResult.getContext();
         Assertions.assertThat(resultContext).isNotNull();
-        Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(Map.class);
-        final Map<String, Object> decisions = (Map<String, Object>) resultContext.get("Decision");
-        final BigDecimal result = (BigDecimal) decisions.get("result");
+        Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(BigDecimal.class);
+        final BigDecimal result = (BigDecimal) resultContext.get("Decision");
 
         return result;
     }
