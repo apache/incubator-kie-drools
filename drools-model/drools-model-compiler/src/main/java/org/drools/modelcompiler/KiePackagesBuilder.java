@@ -702,7 +702,8 @@ public class KiePackagesBuilder {
         }
 
         if(accFunction.getSource() instanceof Variable) {
-            return new Declaration[] { ctx.getPattern((Variable) accFunction.getSource()).getDeclaration() };
+            Pattern pattern = ctx.getPattern((Variable) accFunction.getSource());
+            return pattern == null ? new Declaration[0] : new Declaration[] { pattern.getDeclaration() };
         } else {
             return new Declaration[0];
         }
