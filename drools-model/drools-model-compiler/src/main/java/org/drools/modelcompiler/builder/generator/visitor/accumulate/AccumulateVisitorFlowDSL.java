@@ -50,8 +50,9 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
 
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
-            if (patterBinding.size() == 2) {
-                return composeTwoBindingIntoExpression(allExpressions, newBindingExpression);
+            if (patterBinding.size() == 2 && findLastBinding(allExpressions) != null) {
+                MethodCallExpr lastBinding = findLastBinding(allExpressions);
+                return composeTwoBindingIntoExpression(newBindingExpression, lastBinding);
             } else {
                 replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
                 newBindingResults.add( newBinding );
@@ -60,8 +61,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         });
     }
 
-    private Optional<Expression> composeTwoBindingIntoExpression(List<Expression> allExpressions, MethodCallExpr newBindingExpression) {
-        MethodCallExpr lastBinding = findLastBinding(allExpressions);
+    private Optional<Expression> composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression, MethodCallExpr lastBinding) {
         if(lastBinding != null) {
             String inputName = composeTwoBindings(newBindingExpression, lastBinding).get().toString();
 
