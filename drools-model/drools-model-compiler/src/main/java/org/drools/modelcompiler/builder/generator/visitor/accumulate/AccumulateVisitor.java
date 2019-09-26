@@ -66,15 +66,21 @@ public abstract class AccumulateVisitor {
     private final ModelGeneratorVisitor modelGeneratorVisitor;
     AbstractExpressionBuilder expressionBuilder;
 
-    protected BaseDescr input;
-
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
         this.modelGeneratorVisitor = modelGeneratorVisitor;
         this.packageModel = packageModel;
     }
 
+
+    protected BaseDescr input;
+    private PatternDescr basePattern;
+    private AccumulateDescr descr;
+
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
+        this.basePattern = basePattern;
+        this.descr = descr;
+
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, ACCUMULATE_CALL);
         context.addExpression(accumulateDSL);
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
@@ -93,10 +99,10 @@ public abstract class AccumulateVisitor {
         }
 
         if (!descr.getFunctions().isEmpty()) {
-            if (validateBindings(descr)) {
+            if (validateBindings()) {
                 return;
             }
-            classicAccumulate(descr, basePattern, accumulateDSL);
+            classicAccumulate(accumulateDSL);
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             new AccumulateInlineVisitor(context, packageModel).inlineAccumulate(descr, basePattern, accumulateDSL, externalDeclrs, input);
         } else {
@@ -107,14 +113,14 @@ public abstract class AccumulateVisitor {
         postVisit();
     }
 
-    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL) {
+    private void classicAccumulate(MethodCallExpr accumulateDSL) {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-            final Optional<NewBinding> optNewBinding = visit(function, accumulateDSL, basePattern);
+            final Optional<NewBinding> optNewBinding = visit(function, accumulateDSL);
             processNewBinding(optNewBinding, accumulateDSL);
         }
     }
 
-    private boolean validateBindings(AccumulateDescr descr) {
+    private boolean validateBindings() {
         final List<String> allBindings = descr
                 .getFunctions()
                 .stream()
@@ -127,7 +133,7 @@ public abstract class AccumulateVisitor {
         return invalidExpressionErrorResult.isPresent();
     }
 
-    protected Optional<NewBinding> visit(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern) {
+    protected Optional<NewBinding> visit(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
