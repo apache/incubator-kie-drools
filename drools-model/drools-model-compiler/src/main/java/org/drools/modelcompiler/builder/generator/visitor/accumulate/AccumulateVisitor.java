@@ -417,24 +417,6 @@ public abstract class AccumulateVisitor {
         return lambdaExpr;
     }
 
-    Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        return pattern.getParentNode().map(oldBindExpression -> {
-            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
-
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
-
-            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
-
-            newBindingExpression.getArguments().removeLast();
-            newBindingExpression.addArgument(newComposedLambda);
-            NameExpr argument = (NameExpr) oldBind.getArgument(0);
-            newBindingExpression.setArgument(0, argument);
-
-            return argument;
-        });
-    }
-
     private BlockStmt parseBlockAddSemicolon(String block) {
         return StaticJavaParser.parseBlock(String.format("{%s}", addSemicolon(block)));
     }

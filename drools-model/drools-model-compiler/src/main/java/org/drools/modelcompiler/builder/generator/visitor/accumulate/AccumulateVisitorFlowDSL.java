@@ -18,6 +18,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.drools.modelcompiler.util.LambdaUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
@@ -72,6 +73,23 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             });
         }
         return Optional.empty();
+    }
+
+    Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+        return pattern.getParentNode().map(oldBindExpression -> {
+            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
+
+            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
+            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+
+            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
+
+            newBindingExpression.getArguments().removeLast();
+            newBindingExpression.addArgument(newComposedLambda);
+            NameExpr argument = (NameExpr) oldBind.getArgument(0);
+            newBindingExpression.setArgument(0, argument);
+            return argument;
+        });
     }
 
     private MethodCallExpr findLastPattern(List<Expression> expressions) {
