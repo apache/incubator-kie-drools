@@ -86,7 +86,7 @@ public class BuildUtils {
      * @return the actual attached node that may be the one given as parameter
      *         or eventually one that was already in the cache if sharing is enabled
      */
-    public <T extends BaseNode> T attachNode(BuildContext context, T candidate) {
+    public static <T extends BaseNode> T attachNode(BuildContext context, T candidate) {
         BaseNode node = null;
         RuleBasePartitionId partition = null;
         if ( candidate.getType() == NodeTypeEnums.EntryPointNode ) {
@@ -155,7 +155,7 @@ public class BuildUtils {
         return (T)node;
     }
 
-    private void mergeNodes(BaseNode node, BaseNode duplicate) {
+    private static void mergeNodes(BaseNode node, BaseNode duplicate) {
         if (node instanceof AlphaNode) {
             AlphaNodeFieldConstraint alphaConstraint = ((AlphaNode) node).getConstraint();
             alphaConstraint.addPackageNames(((AlphaNode) duplicate).getConstraint().getPackageNames());
@@ -172,7 +172,7 @@ public class BuildUtils {
     /**
      * Utility function to check if sharing is enabled for nodes of the given class
      */
-    private boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
+    private static boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
         if ( NodeTypeEnums.isLeftTupleSource( node )) {
             return context.getKnowledgeBase().getConfiguration().isShareBetaNodes();
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {

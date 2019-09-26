@@ -24,7 +24,7 @@
   </appender>
 
   <logger name="org.kie" level="info"/>
-  <logger name="org.kie.dmn.core.compiler.execmodelbased" level="info"/> <!-- useful default when moving generic org.kie to <info -->
+  <logger name="org.kie.dmn.core.compiler.execmodelbased" level="debug"/> <!-- useful default when moving generic org.kie to <info -->
   <logger name="org.kie.dmn.feel.codegen" level="info"/> <!-- useful default when moving generic org.kie to <info -->
 
   <logger name="org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator" level="info"/><!-- DEBUG this to inspect class generation in Strongly Typed DMN, with FQCN (including package statement) -->
