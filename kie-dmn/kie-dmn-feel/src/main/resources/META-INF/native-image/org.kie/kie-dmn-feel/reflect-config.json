@@ -135,6 +135,24 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.DayOfWeekFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.DayOfYearFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.DecimalFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -342,6 +360,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.MonthOfYearFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.NotFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -541,6 +568,15 @@
     },
     {
         "name": "org.kie.dmn.feel.runtime.functions.UnionFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.WeekOfYearFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
         "allDeclaredMethods": true,

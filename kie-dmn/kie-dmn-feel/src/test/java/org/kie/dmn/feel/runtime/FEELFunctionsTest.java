@@ -185,6 +185,16 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "any( [] )", false, null},
                 { "any( 0 )", null, FEELEvent.Severity.ERROR},
                 { "any( )", null, FEELEvent.Severity.ERROR},
+                
+                { "day of year( date(2019, 9, 17) )", BigDecimal.valueOf( 260 ), null},
+                { "day of week( date(2019, 9, 17) )", "Tuesday", null},
+                { "month of year( date(2019, 9, 17) )", "September", null},
+                { "week of year( date(2019, 9, 17) )", BigDecimal.valueOf( 38 ), null},
+                { "week of year( date(2003, 12, 29) )", BigDecimal.valueOf( 1 ), null}, // ISO defs.
+                { "week of year( date(2004, 1, 4) )", BigDecimal.valueOf( 1 ), null}, 
+                { "week of year( date(2005, 1, 3) )", BigDecimal.valueOf( 1 ), null}, 
+                { "week of year( date(2005, 1, 9) )", BigDecimal.valueOf( 1 ), null}, 
+                { "week of year( date(2005, 1, 1) )", BigDecimal.valueOf( 53 ), null}, 
         };
         return addAdditionalParameters(cases, false);
     }

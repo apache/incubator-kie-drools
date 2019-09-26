@@ -80,6 +80,11 @@ public class BuiltInFunctions {
             EvenFunction.INSTANCE,
             OddFunction.INSTANCE,
             MedianFunction.INSTANCE,
+            
+            DayOfWeekFunction.INSTANCE,
+            DayOfYearFunction.INSTANCE,
+            MonthOfYearFunction.INSTANCE,
+            WeekOfYearFunction.INSTANCE,
             };
 
     public static FEELFunction[] getFunctions() {
