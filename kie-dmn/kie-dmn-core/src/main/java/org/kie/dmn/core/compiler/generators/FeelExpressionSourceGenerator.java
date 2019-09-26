@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler.execmodelbased;
+package org.kie.dmn.core.compiler.generators;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +23,22 @@ import java.util.Map;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
+import org.kie.dmn.core.compiler.execmodelbased.JavaParserSourceGenerator;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompiler.SourceGenerator {
+public class FeelExpressionSourceGenerator implements SourceGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(FeelExpressionSourceGenerator.class);
 
-    static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
-    static final  String FEEL_EXPRESSION_ARRAY_NAME = "FEEL_EXPRESSION_ARRAY";
-    static final String OUTPUT_NAME = "Output";
+    public static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
+    public static final  String FEEL_EXPRESSION_ARRAY_NAME = "FEEL_EXPRESSION_ARRAY";
+    public static final String OUTPUT_NAME = "Output";
 
     private Class<?> COMPILED_FEEL_EXPRESSION_TYPE = CompiledFEELExpression.class;
 
@@ -45,7 +48,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         String pkgName = dTableModel.getNamespace();
         String dTableName = dTableModel.getTableName();
 
-        sourceGenerator = new JavaParserSourceGenerator(dTableName, ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION.type, pkgName);
+        sourceGenerator = new JavaParserSourceGenerator(dTableName, ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION.getType(), pkgName);
         sourceGenerator.addImports(org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.class,

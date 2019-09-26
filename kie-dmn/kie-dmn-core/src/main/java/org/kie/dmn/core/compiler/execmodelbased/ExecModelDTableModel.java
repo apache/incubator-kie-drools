@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.compiler.generators.FeelExpressionSourceGenerator;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -28,9 +29,9 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE;
-import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.getOutputName;
-import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.instanceName;
+import static org.kie.dmn.core.compiler.generators.FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE;
+import static org.kie.dmn.core.compiler.generators.FeelExpressionSourceGenerator.getOutputName;
+import static org.kie.dmn.core.compiler.generators.FeelExpressionSourceGenerator.instanceName;
 
 public class ExecModelDTableModel extends DTableModel {
 
@@ -45,7 +46,7 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.debug("Reading " + rows.size() + " rows from class loader");;
-        CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) readFieldWithRuntimeCheck(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
+        CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) readFieldWithRuntimeCheck( FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
         for (int i = 0; i < rows.size(); i++) {
             DRowModel row = rows.get(i);
             row.compiledOutputs = Arrays.asList(array[i]);

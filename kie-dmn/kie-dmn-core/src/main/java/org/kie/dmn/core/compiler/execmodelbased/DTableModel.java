@@ -54,6 +54,7 @@ import org.kie.dmn.model.api.UnaryTests;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+
 import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
@@ -138,7 +139,7 @@ public class DTableModel {
         iterateOverRows((row, rowIndex) -> row.compiledOutputs = row.outputs.stream().map(expr -> compileFeelExpression(dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex)).collect(toList()));
     }
 
-    protected ClassOrInterfaceDeclaration[][] generateRows(CompilerContext feelctx) {
+    public ClassOrInterfaceDeclaration[][] generateRows(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration[]> allRows = new ArrayList<>();
         iterateOverRows((row, integer) -> {
             ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map(expr -> feel.generateFeelExpressionSource(expr, feelctx)).toArray(ClassOrInterfaceDeclaration[]::new);
@@ -163,7 +164,7 @@ public class DTableModel {
         iterateOverInputClauses((column, index) -> column.compiledInputClause = compileFeelExpression(column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index));
     }
 
-    protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
+    public List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
         iterateOverInputClauses((column, index) -> inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx)));
         return inputClauses;
@@ -352,10 +353,10 @@ public class DTableModel {
         return Optional.ofNullable( inputClause.getInputValues() ).map( UnaryTests::getText ).orElse(null);
     }
 
-    public String getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator) {
+    public String getGeneratedClassName( String generatorType ) {
         String pkgName = getNamespace();
         String tableName = getTableName();
-        return pkgName + "." + tableName + generator.type;
+        return pkgName + "." + tableName + generatorType;
     }
 
     public static class DOutputModel {

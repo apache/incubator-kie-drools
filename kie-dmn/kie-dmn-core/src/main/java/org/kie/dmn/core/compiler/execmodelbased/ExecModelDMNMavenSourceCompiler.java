@@ -29,6 +29,8 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.DecisionTable;
 
+import static org.kie.dmn.core.compiler.generators.GeneratorsUtil.getDecisionTableName;
+
 public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompiler {
     private GeneratorsEnum[] ALL_GENERATORS = new GeneratorsEnum[] {
             GeneratorsEnum.EVALUATOR,

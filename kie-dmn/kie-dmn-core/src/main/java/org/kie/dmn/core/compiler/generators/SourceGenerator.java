@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler.execmodelbased;
+package org.kie.dmn.core.compiler.generators;
 
-public class FeelValue {
-    private final Object value;
+import org.kie.dmn.core.compiler.DMNCompilerContext;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 
-    public FeelValue( Object value ) {
-        this.value = value;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "FeelValue{" +
-                "value=" + value +
-                '}';
-    }
+public interface SourceGenerator {
+    String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel );
 }
