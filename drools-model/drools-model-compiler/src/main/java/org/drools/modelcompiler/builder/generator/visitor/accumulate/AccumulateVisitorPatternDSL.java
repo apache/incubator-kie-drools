@@ -40,7 +40,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     @Override
-    protected void processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
+    protected void processNewBinding(MethodCallExpr accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             final List<Expression> allExpressions = context.getExpressions();

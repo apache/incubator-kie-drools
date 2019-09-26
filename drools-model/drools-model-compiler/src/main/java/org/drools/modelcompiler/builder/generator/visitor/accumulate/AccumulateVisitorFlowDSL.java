@@ -46,7 +46,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     @Override
-    protected void processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
+    protected void processNewBinding(MethodCallExpr accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
