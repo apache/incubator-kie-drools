@@ -69,8 +69,6 @@ public abstract class AccumulateVisitor {
     private final ModelGeneratorVisitor modelGeneratorVisitor;
     protected AbstractExpressionBuilder expressionBuilder;
 
-    List<Expression> newBindingsConcatenated = new ArrayList<>();
-
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
         this.modelGeneratorVisitor = modelGeneratorVisitor;
@@ -111,8 +109,7 @@ public abstract class AccumulateVisitor {
 
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
-                Optional<Expression> expression = processNewBinding(optNewBinding, accumulateDSL);
-                expression.ifPresent(newBindingsConcatenated::add);
+                processNewBinding(optNewBinding, accumulateDSL);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
@@ -440,7 +437,7 @@ public abstract class AccumulateVisitor {
 
     protected abstract MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression);
 
-    protected abstract Optional<Expression> processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL);
+    protected abstract void processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL);
 
     protected abstract void postVisit();
 

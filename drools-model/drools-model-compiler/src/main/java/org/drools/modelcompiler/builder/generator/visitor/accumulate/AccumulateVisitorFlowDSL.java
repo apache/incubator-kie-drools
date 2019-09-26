@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -26,7 +27,8 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CA
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
-    final List<NewBinding> newBindingResults = new ArrayList<>();
+    private final List<NewBinding> newBindingResults = new ArrayList<>();
+    private final List<Expression> newBindingsConcatenated = new ArrayList<>();
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
@@ -38,44 +40,41 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        usedDeclaration.stream().map(d -> context.getVarExpr(d)).forEach(bindAsDSL::addArgument);
+        usedDeclaration.stream().map(context::getVarExpr).forEach(bindAsDSL::addArgument);
         bindAsDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindAsDSL;
     }
 
     @Override
-    protected Optional<Expression> processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
-        return optNewBinding.flatMap(newBinding -> {
+    protected void processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
+        optNewBinding.ifPresent(newBinding -> {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
 
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             if (patterBinding.size() == 2 && findLastBinding(allExpressions) != null) {
-                MethodCallExpr lastBinding = findLastBinding(allExpressions);
-                return composeTwoBindingIntoExpression(newBindingExpression, lastBinding);
+                Optional<MethodCallExpr> lastBinding = Optional.ofNullable(findLastBinding(allExpressions));
+                composeTwoBindingIntoExpression(newBindingExpression, lastBinding);
             } else {
                 replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
                 newBindingResults.add( newBinding );
-                return Optional.empty();
             }
         });
     }
 
-    private Optional<Expression> composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression, MethodCallExpr lastBinding) {
-        if(lastBinding != null) {
-            String inputName = composeTwoBindings(newBindingExpression, lastBinding).get().toString();
-
-            return lastBinding.getParentNode().flatMap(n -> {
-                Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-                n.replace(input);
-
-                return Optional.of(newBindingExpression);
+    private void composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression, Optional<MethodCallExpr> optLastBinding) {
+        optLastBinding.ifPresent(lastBinding -> {
+            composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString).ifPresent(inputName -> {
+                lastBinding.getParentNode().ifPresent(n -> {
+                    Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
+                    n.replace(input);
+                    newBindingsConcatenated.add(newBindingExpression);
+                });
             });
-        }
-        return Optional.empty();
+        });
     }
 
-    Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+    private Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         return pattern.getParentNode().map(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
