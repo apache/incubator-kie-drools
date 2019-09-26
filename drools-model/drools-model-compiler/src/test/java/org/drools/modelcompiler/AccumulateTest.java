@@ -1103,8 +1103,8 @@ public class AccumulateTest extends BaseModelTest {
                         "import " + StockTick.class.getCanonicalName() + ";" +
                         "rule AccumulateMaxDate when\n" +
                         "  $max1 : Number() from accumulate(\n" +
-                        "    StockTick($time : getTimeFieldAsDate());\n" + // These two exprs should be combined in a single bind in the function
-                        "    max($time.getTime())" + // <--- here COMPOSE BIND
+                        "    StockTick($time : getTimeFieldAsDate());\n" +
+                        "    max($time.getTime())" +
                         " )" +
                         "then\n" +
                         "end\n";
