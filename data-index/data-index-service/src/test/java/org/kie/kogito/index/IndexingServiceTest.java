@@ -19,6 +19,7 @@ package org.kie.kogito.index;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -76,7 +77,7 @@ public class IndexingServiceTest {
     }
 
     private static String formatZonedDateTime(ZonedDateTime time) {
-        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(time);
+        return time.truncatedTo(ChronoUnit.MILLIS).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     @Test

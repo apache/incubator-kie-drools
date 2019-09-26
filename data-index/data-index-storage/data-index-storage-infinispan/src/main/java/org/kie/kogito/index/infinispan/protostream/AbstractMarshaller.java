@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,11 @@ import java.util.Date;
 
 public abstract class AbstractMarshaller {
 
-    public ZonedDateTime dateToZonedDateTime(Date date){
+    public ZonedDateTime dateToZonedDateTime(Date date) {
         return date == null ? null : ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
     }
 
-    public Date zonedDateTimeToDate(ZonedDateTime date){
-        return date == null ? null : new Date(date.toInstant().toEpochMilli());
+    public Date zonedDateTimeToDate(ZonedDateTime date) {
+        return date == null ? null : Date.from(date.toInstant());
     }
-    
 }

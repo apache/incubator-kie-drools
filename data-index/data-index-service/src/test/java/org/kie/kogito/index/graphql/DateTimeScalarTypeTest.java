@@ -19,6 +19,7 @@ package org.kie.kogito.index.graphql;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
 
@@ -83,7 +84,7 @@ public class DateTimeScalarTypeTest {
         assertThat(dateTimeScalar.getName()).isEqualTo("DateTime");
         ZonedDateTime time = ZonedDateTime.now();
         String result = (String) dateTimeScalar.getCoercing().serialize(String.valueOf(time.toInstant().toEpochMilli()));
-        assertThat(result).isEqualTo(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(time.withZoneSameInstant(ZoneOffset.UTC)));
+        assertThat(result).isEqualTo(time.withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
 
     @Test
