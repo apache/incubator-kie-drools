@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -46,12 +45,10 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-import org.drools.modelcompiler.util.LambdaUtil;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemicolon;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
@@ -94,61 +91,38 @@ public abstract class AccumulateVisitor {
         }
 
         if (!descr.getFunctions().isEmpty()) {
-            final List<String> allBindings = descr
-                    .getFunctions()
-                    .stream()
-                    .map(AccumulateDescr.AccumulateFunctionCallDescr::getBind)
-                    .filter(Objects::nonNull)
-                    .collect(toList());
-
-            final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(context.getRuleName(), allBindings);
-            invalidExpressionErrorResult.ifPresent(context::addCompilationError);
-            if(invalidExpressionErrorResult.isPresent()) {
+            if (validateBindings(descr)) {
                 return;
             }
-
-            for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
-                processNewBinding(optNewBinding, accumulateDSL);
-            }
+            classicAccumulate(descr, basePattern, accumulateDSL, input);
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
-            // LEGACY: Accumulate with inline custom code
-            AccumulateInline accumulateInline = new AccumulateInline(context, packageModel, descr, basePattern);
-            if (input instanceof PatternDescr) {
-                try {
-                    accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) input).getIdentifier());
-                } catch (UnsupportedInlineAccumulate e) {
-                    new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
-                } catch (MissingSemicolonInlineAccumulateException e) {
-                    context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage()));
-                }
-            } else if (input instanceof AndDescr) {
-                BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
-                Collection<String> allNamesInActionBlock = collectNamesInBlock(actionBlock, context);
-
-                final Optional<BaseDescr> bindingUsedInAccumulate =
-                        ((AndDescr) input).getDescrs()
-                                .stream()
-                                .filter(b -> allNamesInActionBlock.contains(((PatternDescr) b).getIdentifier()))
-                                .findFirst();
-
-                if(bindingUsedInAccumulate.isPresent()) {
-                    BaseDescr binding = bindingUsedInAccumulate.get();
-                    try {
-                        accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) binding).getIdentifier());
-                    } catch (UnsupportedInlineAccumulate e) {
-                        new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
-                    }
-                }
-            } else {
-                throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
-            }
+            new AccumulateInlineVisitor(context, packageModel).inlineAccumulate(descr, basePattern, accumulateDSL, externalDeclrs, input);
         } else {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
 
         context.popExprPointer();
         postVisit();
+    }
+
+    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL, BaseDescr input) {
+        for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
+            final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
+            processNewBinding(optNewBinding, accumulateDSL);
+        }
+    }
+
+    private boolean validateBindings(AccumulateDescr descr) {
+        final List<String> allBindings = descr
+                .getFunctions()
+                .stream()
+                .map(AccumulateDescr.AccumulateFunctionCallDescr::getBind)
+                .filter(Objects::nonNull)
+                .collect(toList());
+
+        final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(context.getRuleName(), allBindings);
+        invalidExpressionErrorResult.ifPresent(context::addCompilationError);
+        return invalidExpressionErrorResult.isPresent();
     }
 
     protected Optional<NewBinding> visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, BaseDescr descr) {
@@ -414,11 +388,7 @@ public abstract class AccumulateVisitor {
         return lambdaExpr;
     }
 
-    private BlockStmt parseBlockAddSemicolon(String block) {
-        return StaticJavaParser.parseBlock(String.format("{%s}", addSemicolon(block)));
-    }
-
-    static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
+    public static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
         return block.findAll(NameExpr.class, n -> {
             Optional<DeclarationSpec> optD = context.getDeclarationById(n.getNameAsString());
             return optD.filter(d -> !d.isGlobal()).isPresent(); // Global aren't supported
