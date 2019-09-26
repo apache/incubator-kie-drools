@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -18,6 +21,7 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
@@ -39,18 +43,48 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     @Override
-    protected void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL) {
-        optNewBinding.ifPresent(newBinding -> {
+    protected Optional<Expression> processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
+        return optNewBinding.flatMap(newBinding -> {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
-            replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
-            newBindingResults.add( newBinding );
+
+            final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
+            if (patterBinding.size() == 2) {
+                return composeTwoBindingIntoExpression(allExpressions, newBindingExpression);
+            } else {
+                replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
+                newBindingResults.add( newBinding );
+                return Optional.empty();
+            }
         });
+    }
+
+    private Optional<Expression> composeTwoBindingIntoExpression(List<Expression> allExpressions, MethodCallExpr newBindingExpression) {
+        MethodCallExpr lastBinding = findLastBinding(allExpressions);
+        if(lastBinding != null) {
+            String inputName = composeTwoBindings(newBindingExpression, lastBinding).get().toString();
+
+            return lastBinding.getParentNode().flatMap(n -> {
+                Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
+                n.replace(input);
+
+                return Optional.of(newBindingExpression);
+            });
+        }
+        return Optional.empty();
     }
 
     private MethodCallExpr findLastPattern(List<Expression> expressions) {
         final List<MethodCallExpr> collect = expressions.stream().flatMap( e ->
             e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals(FlowExpressionBuilder.EXPR_CALL)).stream()
+        ).collect( Collectors.toList());
+
+        return collect.isEmpty() ? null : collect.get(collect.size() - 1);
+    }
+
+    private MethodCallExpr findLastBinding(List<Expression> expressions) {
+        final List<MethodCallExpr> collect = expressions.stream().flatMap( e ->
+            e.findAll(MethodCallExpr.class, expr -> FlowExpressionBuilder.BIND_CALL.equals(expr.getNameAsString())).stream()
         ).collect( Collectors.toList());
 
         return collect.isEmpty() ? null : collect.get(collect.size() - 1);
@@ -84,5 +118,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     protected void postVisit() {
         // Bind expressions are outside the Accumulate Expr
         newBindingResults.forEach(e -> context.getExpressions().add(context.getExpressions().size()-1, e.bindExpression));
+
+        newBindingsConcatenated.forEach(e -> context.getExpressions().add(context.getExpressions().size()-1, e));
     }
 }

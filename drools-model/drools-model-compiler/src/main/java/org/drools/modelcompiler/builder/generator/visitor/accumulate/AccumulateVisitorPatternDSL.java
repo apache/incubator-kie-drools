@@ -17,7 +17,6 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-import org.drools.modelcompiler.util.LambdaUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
@@ -40,7 +39,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     @Override
-    protected void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL) {
+    protected Optional<Expression> processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             final List<Expression> allExpressions = context.getExpressions();
@@ -58,30 +57,13 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
                 addBindAsLastChainCall(replacedBinding, lastPattern);
             }
         });
+        return Optional.empty();
     }
 
     private void addBindAsLastChainCall(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         final Optional<Node> optParent = pattern.getParentNode();
         newBindingExpression.setScope(pattern);
         optParent.ifPresent(parent -> parent.replace(pattern, newBindingExpression));
-    }
-
-
-    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        pattern.getParentNode().ifPresent(oldBindExpression -> {
-            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
-
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
-
-            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
-
-            newBindingExpression.getArguments().removeLast();
-            newBindingExpression.addArgument(newComposedLambda);
-            newBindingExpression.setScope(pattern);
-
-            oldBind.replace(newBindingExpression);
-        });
     }
 
     private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {

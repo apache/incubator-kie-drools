@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,6 +46,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.drools.modelcompiler.util.LambdaUtil;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
@@ -68,6 +68,8 @@ public abstract class AccumulateVisitor {
 
     private final ModelGeneratorVisitor modelGeneratorVisitor;
     protected AbstractExpressionBuilder expressionBuilder;
+
+    List<Expression> newBindingsConcatenated = new ArrayList<>();
 
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
@@ -109,7 +111,8 @@ public abstract class AccumulateVisitor {
 
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
-                processNewBinding(optNewBinding, accumulateDSL);
+                Optional<Expression> expression = processNewBinding(optNewBinding, accumulateDSL);
+                expression.ifPresent(newBindingsConcatenated::add);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
@@ -414,6 +417,23 @@ public abstract class AccumulateVisitor {
         return lambdaExpr;
     }
 
+    Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
+        return pattern.getParentNode().map(oldBindExpression -> {
+            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
+
+            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
+            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+
+            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
+
+            newBindingExpression.getArguments().removeLast();
+            newBindingExpression.addArgument(newComposedLambda);
+            NameExpr argument = (NameExpr) oldBind.getArgument(0);
+            newBindingExpression.setArgument(0, argument);
+
+            return argument;
+        });
+    }
 
     private BlockStmt parseBlockAddSemicolon(String block) {
         return StaticJavaParser.parseBlock(String.format("{%s}", addSemicolon(block)));
@@ -438,7 +458,7 @@ public abstract class AccumulateVisitor {
 
     protected abstract MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression);
 
-    protected abstract void processNewBinding(Optional<NewBinding> optNewBinding, Expression accumulateDSL);
+    protected abstract Optional<Expression> processNewBinding(Optional<NewBinding> optNewBinding, MethodCallExpr accumulateDSL);
 
     protected abstract void postVisit();
 
