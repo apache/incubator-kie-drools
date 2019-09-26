@@ -64,7 +64,9 @@ public abstract class AccumulateVisitor {
     protected final PackageModel packageModel;
 
     private final ModelGeneratorVisitor modelGeneratorVisitor;
-    protected AbstractExpressionBuilder expressionBuilder;
+    AbstractExpressionBuilder expressionBuilder;
+
+    protected BaseDescr input;
 
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
@@ -81,7 +83,7 @@ public abstract class AccumulateVisitor {
         context.pushExprPointer(accumulateExprs::addArgument);
 
         Set<String> externalDeclrs = new HashSet<>( context.getAvailableBindings() );
-        BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+        input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
         input.accept(modelGeneratorVisitor);
 
         if (accumulateExprs.getArguments().isEmpty()) {
@@ -94,7 +96,7 @@ public abstract class AccumulateVisitor {
             if (validateBindings(descr)) {
                 return;
             }
-            classicAccumulate(descr, basePattern, accumulateDSL, input);
+            classicAccumulate(descr, basePattern, accumulateDSL);
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             new AccumulateInlineVisitor(context, packageModel).inlineAccumulate(descr, basePattern, accumulateDSL, externalDeclrs, input);
         } else {
@@ -105,9 +107,9 @@ public abstract class AccumulateVisitor {
         postVisit();
     }
 
-    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL, BaseDescr input) {
+    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL) {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-            final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, input);
+            final Optional<NewBinding> optNewBinding = visit(function, accumulateDSL, basePattern);
             processNewBinding(optNewBinding, accumulateDSL);
         }
     }
@@ -125,7 +127,7 @@ public abstract class AccumulateVisitor {
         return invalidExpressionErrorResult.isPresent();
     }
 
-    protected Optional<NewBinding> visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, BaseDescr descr) {
+    protected Optional<NewBinding> visit(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
@@ -244,8 +246,8 @@ public abstract class AccumulateVisitor {
                            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
                            List<String> ids = new ArrayList<>();
                            ids.add(singleResult.getPatternBinding());
-                           if(descr instanceof  PatternDescr) {
-                               ids.add(((PatternDescr) descr).getIdentifier());
+                           if(input instanceof  PatternDescr) {
+                               ids.add(((PatternDescr) input).getIdentifier());
                            }
                            return Optional.of(new NewBinding(ids, binding));
                        }
@@ -360,7 +362,7 @@ public abstract class AccumulateVisitor {
                 .orElse(importedAccumulateFunction);
     }
 
-    String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
+    private String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
         final Expression rootNode = methodCallWithoutRootNode.getRootNode().orElseThrow(UnsupportedOperationException::new);
 
         final String rootNodeName;
@@ -372,7 +374,7 @@ public abstract class AccumulateVisitor {
         return rootNodeName;
     }
 
-    TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
+    private TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
         final Class clazz = context.getDeclarationById(variableName)
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
@@ -388,7 +390,7 @@ public abstract class AccumulateVisitor {
         return lambdaExpr;
     }
 
-    public static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
+    static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
         return block.findAll(NameExpr.class, n -> {
             Optional<DeclarationSpec> optD = context.getDeclarationById(n.getNameAsString());
             return optD.filter(d -> !d.isGlobal()).isPresent(); // Global aren't supported
