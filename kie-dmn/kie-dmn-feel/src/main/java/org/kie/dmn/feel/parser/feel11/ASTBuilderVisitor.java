@@ -404,8 +404,8 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitIfExpression(FEEL_1_1Parser.IfExpressionContext ctx) {
         BaseNode c = visit( ctx.c );
-        BaseNode t = visit( ctx.t );
-        BaseNode e = visit( ctx.e );
+        BaseNode t = ctx.t != null ? visit(ctx.t) : null;
+        BaseNode e = ctx.e != null ? visit(ctx.e) : null;
         return ASTBuilderFactory.newIfExpression( ctx, c, t, e );
     }
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -34,6 +35,10 @@ import org.antlr.v4.runtime.FailedPredicateException;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.Vocabulary;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.misc.IntervalSet;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Scope;
@@ -172,6 +177,30 @@ public class FEELParser {
                                             line,
                                             charPositionInLine,
                                             offendingSymbol );
+            } else if (e != null && parser.getRuleInvocationStack().get(0).equals("ifExpression")) {
+                List<String> expected = toList(e.getExpectedTokens(), e.getRecognizer().getVocabulary());
+                if (expected.contains("ELSE")) {
+                    error = new SyntaxErrorEvent(FEELEvent.Severity.ERROR,
+                                                 Msg.createMessage(Msg.IF_MISSING_ELSE, token.getText(), msg),
+                                                 e,
+                                                 line,
+                                                 charPositionInLine,
+                                                 offendingSymbol);
+                } else if (expected.contains("THEN")) {
+                    error = new SyntaxErrorEvent(FEELEvent.Severity.ERROR,
+                                                 Msg.createMessage(Msg.IF_MISSING_THEN, token.getText(), msg),
+                                                 e,
+                                                 line,
+                                                 charPositionInLine,
+                                                 offendingSymbol);
+                } else { // fallback.
+                    error = new SyntaxErrorEvent(FEELEvent.Severity.ERROR,
+                                                 msg,
+                                                 e,
+                                                 line,
+                                                 charPositionInLine,
+                                                 offendingSymbol);
+                }
             } else {
                 error = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
                                                   msg,
@@ -198,6 +227,37 @@ public class FEELParser {
 
         public List<FEELEvent> getErrors() {
             return errors;
+        }
+    }
+
+    private static List<String> toList(IntervalSet intervals, Vocabulary vocabulary) {
+        List<String> result = new ArrayList<>();
+        if (intervals == null || intervals.getIntervals() == null || intervals.getIntervals().isEmpty()) {
+            return result;
+        }
+        Iterator<Interval> iter = intervals.getIntervals().iterator();
+        while (iter.hasNext()) {
+            Interval I = iter.next();
+            int a = I.a;
+            int b = I.b;
+            if (a == b) {
+                result.add(elementName(vocabulary, a));
+            } else {
+                for (int i = a; i <= b; i++) {
+                    result.add(elementName(vocabulary, i));
+                }
+            }
+        }
+        return result;
+    }
+
+    private static String elementName(Vocabulary vocabulary, int a) {
+        if (a == Token.EOF) {
+            return "<EOF>";
+        } else if (a == Token.EPSILON) {
+            return "<EPSILON>";
+        } else {
+            return vocabulary.getSymbolicName(a);
         }
     }
 
