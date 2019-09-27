@@ -76,6 +76,7 @@ public class POJOGenerator {
     private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
 
     public static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
+
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
         predefinedClassLevelAnnotation.put("duration", Duration.class);

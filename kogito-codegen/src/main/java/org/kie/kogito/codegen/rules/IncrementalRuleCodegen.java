@@ -195,6 +195,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             addGeneratedFiles( generatedFiles, pkgSources.getRuleSources() );
             addGeneratedFile( generatedFiles, pkgSources.getDomainClassSource() );
 
+            if (pkgSources.getReflectConfigSource() != null) {
+                addGeneratedFile( generatedFiles, pkgSources.getReflectConfigSource(), "../../classes/" );
+            }
+
             Collection<Class<?>> ruleUnits = pkgSources.getRuleUnits();
             if (!ruleUnits.isEmpty()) {
                 hasRuleUnits = true;
@@ -279,8 +283,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private void addGeneratedFile( List<GeneratedFile> generatedFiles, org.drools.modelcompiler.builder.GeneratedFile source ) {
+        addGeneratedFile( generatedFiles, source, "" );
+    }
+
+    private void addGeneratedFile( List<GeneratedFile> generatedFiles, org.drools.modelcompiler.builder.GeneratedFile source, String pathPrefix ) {
         ApplicationGenerator.log( source.getData() );
-        generatedFiles.add( new GeneratedFile(GeneratedFile.Type.RULE, source.getPath(), source.getData()) );
+        generatedFiles.add( new GeneratedFile(GeneratedFile.Type.RULE, pathPrefix + source.getPath(), source.getData()) );
     }
 
     @Override

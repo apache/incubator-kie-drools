@@ -20,8 +20,8 @@ import java.nio.charset.StandardCharsets;
 
 public class GeneratedFile {
 
-    final String path;
-    final byte[] data;
+    private final String path;
+    private final byte[] data;
 
     public GeneratedFile(String path, String data) {
         this.path = path;

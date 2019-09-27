@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PackageSources {
 
@@ -30,6 +31,8 @@ public class PackageSources {
 
     private GeneratedFile mainSource;
     private GeneratedFile domainClassSource;
+
+    private GeneratedFile reflectConfigSource;
 
     private List<String> modelNames = new ArrayList<>();
 
@@ -42,9 +45,15 @@ public class PackageSources {
     public static PackageSources dumpSources(PackageModel pkgModel, boolean oneClassPerRule) {
         PackageSources sources = new PackageSources();
 
+        List<String> pojoClasses = new ArrayList<>();
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel, oneClassPerRule);
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
             sources.pojoSources.add(new GeneratedFile(declaredType.getName(), declaredType.getSource()));
+            pojoClasses.add(declaredType.getClassName());
+        }
+
+        if (!pojoClasses.isEmpty()) {
+            sources.reflectConfigSource = new GeneratedFile("META-INF/native-image/" + pkgModel.getPathName() + "/reflect-config.json", reflectConfigSource(pojoClasses));
         }
 
         for (AccumulateClassWriter accumulateClassWriter : packageModelWriter.getAccumulateClasses()) {
@@ -110,4 +119,35 @@ public class PackageSources {
     public Collection<QueryModel> getQueriesInRuleUnit( Class<?> ruleUnit ) {
         return queries.get( ruleUnit );
     }
+
+    public GeneratedFile getReflectConfigSource() {
+        return reflectConfigSource;
+    }
+
+    private static String reflectConfigSource( List<String> pojoClasses) {
+        return pojoClasses.stream().collect( Collectors.joining( JSON_DELIMITER, JSON_PREFIX, JSON_SUFFIX ) );
+    }
+
+    private static final String REFLECTION_PERMISSIONS =
+            "        \"allDeclaredConstructors\": true,\n" +
+            "        \"allPublicConstructors\": true,\n" +
+            "        \"allDeclaredMethods\": true,\n" +
+            "        \"allPublicMethods\": true,\n" +
+            "        \"allDeclaredFields\": true,\n" +
+            "        \"allPublicFields\": true\n";
+
+    private static final String JSON_PREFIX = "[\n" +
+            "    {\n" +
+            "        \"name\": \"";
+
+    private static final String JSON_DELIMITER = "\",\n" +
+            REFLECTION_PERMISSIONS +
+            "    },\n" +
+            "    {\n" +
+            "        \"name\": \"";
+
+    private static final String JSON_SUFFIX = "\",\n" +
+            REFLECTION_PERMISSIONS +
+            "    }\n" +
+            "]";
 }

@@ -26,7 +26,7 @@ public class ModelWriter {
         this.basePath = basePath;
     }
 
-    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageSources> packageSources) {
+    public Result writeModel(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, Collection<PackageSources> packageSources) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         List<String> modelFiles = new ArrayList<>();
 
@@ -37,6 +37,10 @@ public class ModelWriter {
             generatedFiles.addAll( pkgSources.getRuleSources() );
             generatedFiles.add( pkgSources.getDomainClassSource() );
             modelFiles.addAll( pkgSources.getModelNames() );
+
+            if (pkgSources.getReflectConfigSource() != null) {
+                trgMfs.write( pkgSources.getReflectConfigSource().getPath(), pkgSources.getReflectConfigSource().getData() );
+            }
         }
 
         List<String> sourceFiles = new ArrayList<>();

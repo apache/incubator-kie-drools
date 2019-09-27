@@ -57,7 +57,7 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
         List<String> generatedSourceFiles = new ArrayList<>();
         ModelWriter modelWriter = new ModelWriter();
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
-            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageSources());
+            ModelWriter.Result result = modelWriter.writeModel(srcMfs, trgMfs, modelBuilder.getPackageSources());
             generatedSourceFiles.addAll(result.getModelFiles());
         }
 

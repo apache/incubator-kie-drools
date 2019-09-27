@@ -66,11 +66,28 @@ public class KieModuleModelMethod {
         return methodDeclaration.toString();
     }
 
-    public String toNewKieSessionMethod() {
+    public String toNewKieBaseMethods() {
+        return
+                "    @Override\n" +
+                "    public KieBase newKieBase() {\n" +
+                ( defaultKieBaseName != null ?
+                "        return newKieBase(\"" + defaultKieBaseName + "\");\n" :
+                "        throw new UnsupportedOperationException(\"There is no default KieBase\");\n") +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public KieBase newKieBase(String name) {\n" +
+                "        return kbases.get(name);\n" +
+                "    }\n";
+    }
+
+    public String toNewKieSessionMethods() {
         return
                 "    @Override\n" +
                 "    public KieSession newKieSession() {\n" +
-                "        return newKieSession(\"" + defaultKieSessionName + "\");\n" +
+                ( defaultKieSessionName != null ?
+                "        return newKieSession(\"" + defaultKieSessionName + "\");\n" :
+                "        throw new UnsupportedOperationException(\"There is no default KieSession\");\n") +
                 "    }\n" +
                 "\n" +
                 "    @Override\n" +
@@ -80,10 +97,11 @@ public class KieModuleModelMethod {
                 "\n" +
                 "    @Override\n" +
                 "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-                "        return java.util.Optional.ofNullable(getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null)).map(k -> {\nruleConfig.ruleEventListeners().agendaListeners().forEach( l -> k.addEventListener(l));\n" + 
-                "            ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( l -> k.addEventListener(l));\n" + 
-                "            return k;\n" + 
-                "        }).get();" +
+                "        return java.util.Optional.ofNullable(getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null)).map(k -> {\n" +
+                "            ruleConfig.ruleEventListeners().agendaListeners().forEach( k::addEventListener );\n" +
+                "            ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( k::addEventListener );\n" +
+                "            return k;\n" +
+                "        }).get();\n" +
                 "    }\n";
     }
 

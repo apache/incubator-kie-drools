@@ -16,18 +16,27 @@
 
 package org.kie.kogito.rules.impl;
 
+import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStream;
+import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitMemory;
 
 public class SessionMemory implements RuleUnitMemory {
-    private final DataStream<Object> dataSource = DataSource.createStream();
+    private final DataStore<Object> dataSource = DataSource.createStore();
 
     public DataSource<Object> getDataSource() {
         return dataSource;
     }
 
-    public void add(Object obj) {
-        dataSource.append( obj );
+    public DataHandle add(Object obj) {
+        return dataSource.add( obj );
+    }
+
+    public void remove(DataHandle dh) {
+        dataSource.remove( dh );
+    }
+
+    public void update(DataHandle dh, Object obj) {
+        dataSource.update( dh, obj );
     }
 }

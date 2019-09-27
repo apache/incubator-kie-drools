@@ -15,9 +15,13 @@
 
 package org.kie.kogito.rules;
 
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 public interface KieRuntimeBuilder {
+    KieBase newKieBase();
+    KieBase newKieBase(String name);
+
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);
     KieSession newKieSession(String sessionName, RuleConfig ruleConfig);
