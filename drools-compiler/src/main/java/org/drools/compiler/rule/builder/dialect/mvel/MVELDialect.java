@@ -19,7 +19,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -429,14 +428,6 @@ public class MVELDialect
                     return;
                 }
             }
-
-            //no matching method, so now try and find a matching public property
-            for (Field field : cls.getFields()) {
-                if (field.isAccessible() && field.getName().equals(methodName)) {
-                    this.data.addImport(methodName, field);
-                    return;
-                }
-            }
         }
 
         // we never managed to make the import, so log an error
@@ -457,13 +448,6 @@ public class MVELDialect
         for (Method method : cls.getDeclaredMethods()) {
             if ((method.getModifiers() | Modifier.STATIC) > 0) {
                 this.data.addImport(method.getName(), method);
-            }
-        }
-
-        for (Field field : cls.getFields()) {
-            if (field.isAccessible() && (field.getModifiers() | Modifier.STATIC) > 0) {
-                this.data.addImport(field.getName(), field);
-                return;
             }
         }
     }
