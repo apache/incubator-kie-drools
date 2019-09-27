@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -47,29 +48,21 @@ public class MVELDialectRuntimeData
 
     private static final long              serialVersionUID = 510l;
 
-    private final MapFunctionResolverFactory functionFactory;
+    private final MapFunctionResolverFactory functionFactory = new MapFunctionResolverFactory();
 
-    private Map<Wireable, List<MVELCompileable>>   invokerLookups;
-    private Set<MVELCompileable>             mvelReaders;
+    private Map<Wireable, List<MVELCompileable>>   invokerLookups = Collections.synchronizedMap( new IdentityHashMap<>() );
+    private Set<MVELCompileable>             mvelReaders = ConcurrentHashMap.newKeySet();
 
     private ClassLoader                      rootClassLoader;
     private DialectRuntimeRegistry           registry;
 
     private List<Wireable>                   wireList = Collections.emptyList();
 
-    private Map<String, Object>              imports;
-    private HashSet<String>                  packageImports;
+    private Map<String, Object>              imports = new HashMap<String, Object>();
+    private HashSet<String>                  packageImports = new HashSet<>();
     private ParserConfiguration              parserConfiguration;
 
     private boolean                          dirty;
-
-    public MVELDialectRuntimeData() {
-        this.functionFactory = new MapFunctionResolverFactory();
-        this.invokerLookups = Collections.synchronizedMap( new IdentityHashMap<>() );
-        this.mvelReaders = new HashSet<MVELCompileable> ();
-        this.imports = new HashMap<String, Object>();
-        this.packageImports = new HashSet<String>();
-    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         for ( Entry<String, Object> entry : this.imports.entrySet() ) {
@@ -341,13 +334,6 @@ public class MVELDialectRuntimeData
         if ( this.parserConfiguration != null ) {
             this.parserConfiguration.addImport( str,  method );
         }
-    }
-
-    public void addImport(String str, Field field) {
-//        this.imports.put( str, field );
-//        if ( this.parserConfiguration != null ) {
-//            this.parserConfiguration.addImport( str,  field );
-//        }
     }
 
     public void addPackageImport(String str) {
