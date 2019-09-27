@@ -35,14 +35,18 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.PropagationContext;
 import org.drools.model.SingleConstraint;
+import org.drools.model.Variable;
+import org.drools.model.constraints.SingleConstraint1;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
 import static org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler.compile;
 import static org.drools.core.reteoo.builder.BuildUtils.attachNode;
+import static org.drools.model.DSL.declarationOf;
 
 public class CompiledAlphaNetwork {
 
@@ -67,11 +71,20 @@ public class CompiledAlphaNetwork {
         BuildContext ctx = new BuildContext(kBase);
         EntryPointNode entryPoint = ctx.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
         ClassObjectType objectType = new ClassObjectType( EvaluationContext.class );
+        Variable<EvaluationContext> ctxVar = declarationOf( EvaluationContext.class, "$ctx" );
 
         ObjectTypeNode otn = new ObjectTypeNode( ctx.getNextId(), entryPoint, objectType, ctx );
         ctx.setObjectSource( otn );
 
-        LambdaConstraint c1 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[0], SingleConstraint.TRUE));
+        SingleConstraint constraint = new SingleConstraint1(ctxVar, x -> {
+            System.out.println(x);
+            return true;
+        });
+
+        Pattern pattern = new Pattern( 1, objectType, "$ctx" );
+        Declaration declaration = pattern.getDeclaration();
+
+        LambdaConstraint c1 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[] { declaration }, constraint));
         AlphaNode alpha1 = attachNode( ctx, new AlphaNode( ctx.getNextId(), c1, otn, ctx ) );
         alpha1.addObjectSink( new ResultCollectorAlphaSink( ctx.getNextId(), alpha1, ctx, "Approved", network.resultCollector ) );
 
