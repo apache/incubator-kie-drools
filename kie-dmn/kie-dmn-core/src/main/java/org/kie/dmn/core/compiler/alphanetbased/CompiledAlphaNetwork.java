@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +48,11 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import static org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler.compile;
 import static org.drools.core.reteoo.builder.BuildUtils.attachNode;
 import static org.drools.model.DSL.declarationOf;
-
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gracefulEq;
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gt;
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.includes;
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.range;
 public class CompiledAlphaNetwork {
 
     private final ResultCollector resultCollector = new ResultCollector();
@@ -66,24 +69,73 @@ public class CompiledAlphaNetwork {
         return results.get(0);
     }
 
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT1 = (feelExprCtx, left) -> gracefulEq(feelExprCtx, "false", left);
+
+    public static final java.math.BigDecimal K_80 = new java.math.BigDecimal(80, java.math.MathContext.DECIMAL128);
+    public static final java.math.BigDecimal K_90 = new java.math.BigDecimal(90, java.math.MathContext.DECIMAL128);
+    public static final java.math.BigDecimal K_100 = new java.math.BigDecimal(100, java.math.MathContext.DECIMAL128);
+    public static final java.math.BigDecimal K_110 = new java.math.BigDecimal(110, java.math.MathContext.DECIMAL128);
+    public static final java.math.BigDecimal K_120 = new java.math.BigDecimal(120, java.math.MathContext.DECIMAL128);
+    public static final java.math.BigDecimal K_130 = new java.math.BigDecimal(130, java.math.MathContext.DECIMAL128);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT2 = (feelExprCtx, left) -> lt(left, K_100);
+
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT3 = (feelExprCtx, left) -> includes(feelExprCtx, range(feelExprCtx,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED,
+                                                                                                                    K_100, K_120,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.OPEN), left);
+
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT4 = (feelExprCtx, left) -> includes(feelExprCtx, range(feelExprCtx,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED,
+                                                                                                                    K_120, K_130,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED), left);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT5 = (feelExprCtx, left) -> gt(left, K_130);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT6 = (feelExprCtx, left) -> gracefulEq(feelExprCtx, "true", left);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT7 = (feelExprCtx, left) -> lt(left, K_80);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT8 = (feelExprCtx, left) -> includes(feelExprCtx, range(feelExprCtx,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED,
+                                                                                                                    K_80, K_90,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.OPEN), left);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT9 = (feelExprCtx, left) -> includes(feelExprCtx, range(feelExprCtx,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED,
+                                                                                                                    K_90, K_110,
+                                                                                                                    org.kie.dmn.feel.runtime.Range.RangeBoundary.CLOSED), left);
+
+    public static final org.kie.dmn.feel.runtime.UnaryTest UT10 = (feelExprCtx, left) -> gt(left, K_110);
+
     public static CompiledAlphaNetwork generateCompiledNetwork() {
         CompiledAlphaNetwork network = new CompiledAlphaNetwork();
 
         NetworkBuilderContext ctx = new NetworkBuilderContext();
 
-        AlphaNode alphaNotAffordable = createAlphaNode( ctx, ctx.otn, x -> !(boolean)x.getValue( "isAffordable" ) );
-        addResultSink( ctx, network, alphaNotAffordable, "Declined" );
+        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, x -> UT1.apply(x, x.getValue("Existing Customer")));
 
-        AlphaNode alphaAffordable = createAlphaNode( ctx, ctx.otn, x -> (boolean)x.getValue( "isAffordable" ) );
-        AlphaNode alphaHighRisk = createAlphaNode( ctx, alphaAffordable, x -> x.getValue( "RiskCategory" ).equals( "High" ) );
-        addResultSink( ctx, network, alphaHighRisk, "Declined" );
+        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, x -> UT2.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r1, "HIGH");
+        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, x -> UT3.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r2, "MEDIUM");
+        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, x -> UT4.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r3, "LOW");
+        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, x -> UT5.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r4, "VERY LOW");
 
-        AlphaNode alphaLowRisk = createAlphaNode( ctx, alphaAffordable, x -> x.getValue( "RiskCategory" ).equals( "Medium" ) || x.getValue( "RiskCategory" ).equals( "Low" ));
-        AlphaNode alphaNotAdult = createAlphaNode( ctx, alphaLowRisk, x -> (( BigDecimal )x.getValue( "Age" )).compareTo( new BigDecimal( 18 ) ) < 0 );
-        addResultSink( ctx, network, alphaNotAdult, "Declined" );
+        AlphaNode alphac1r5 = createAlphaNode(ctx, ctx.otn, x -> UT6.apply(x, x.getValue("Existing Customer")));
 
-        AlphaNode alphaAdult = createAlphaNode( ctx, alphaLowRisk, x -> (( BigDecimal )x.getValue( "Age" )).compareTo( new BigDecimal( 18 ) ) >= 0 );
-        addResultSink( ctx, network, alphaAdult, "Approved" );
+        AlphaNode alphac2r5 = createAlphaNode(ctx, alphac1r5, x -> UT7.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r5, "DECLINE");
+        AlphaNode alphac2r6 = createAlphaNode(ctx, alphac1r5, x -> UT8.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r6, "HIGH");
+        AlphaNode alphac2r7 = createAlphaNode(ctx, alphac1r5, x -> UT9.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r7, "MEDIUM");
+        AlphaNode alphac2r8 = createAlphaNode(ctx, alphac1r5, x -> UT10.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r8, "LOW");
 
         network.compiledNetwork = compile(new KnowledgeBuilderImpl(ctx.kBase), ctx.otn);
         network.compiledNetwork.setObjectTypeNode(ctx.otn);
