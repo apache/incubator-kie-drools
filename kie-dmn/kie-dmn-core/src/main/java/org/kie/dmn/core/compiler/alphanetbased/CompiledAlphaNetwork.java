@@ -36,11 +36,14 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.Constraint;
 import org.drools.core.spi.PropagationContext;
-import org.drools.model.SingleConstraint;
+import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.index.AlphaIndexImpl;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -115,7 +118,8 @@ public class CompiledAlphaNetwork {
 
         NetworkBuilderContext ctx = new NetworkBuilderContext();
 
-        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, x -> UT1.apply(x, x.getValue("Existing Customer")));
+        Index index1 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "false");
+        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, x -> UT1.apply(x, x.getValue("Existing Customer")), index1);
 
         AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, x -> UT2.apply(x, x.getValue("Application Risk Score")));
         addResultSink(ctx, network, alphac2r1, "HIGH");
@@ -126,7 +130,8 @@ public class CompiledAlphaNetwork {
         AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, x -> UT5.apply(x, x.getValue("Application Risk Score")));
         addResultSink(ctx, network, alphac2r4, "VERY LOW");
 
-        AlphaNode alphac1r5 = createAlphaNode(ctx, ctx.otn, x -> UT6.apply(x, x.getValue("Existing Customer")));
+        Index index2 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "true");
+        AlphaNode alphac1r5 = createAlphaNode(ctx, ctx.otn, x -> UT6.apply(x, x.getValue("Existing Customer")), index2);
 
         AlphaNode alphac2r5 = createAlphaNode(ctx, alphac1r5, x -> UT7.apply(x, x.getValue("Application Risk Score")));
         addResultSink(ctx, network, alphac2r5, "DECLINE");
@@ -136,6 +141,10 @@ public class CompiledAlphaNetwork {
         addResultSink(ctx, network, alphac2r7, "MEDIUM");
         AlphaNode alphac2r8 = createAlphaNode(ctx, alphac1r5, x -> UT10.apply(x, x.getValue("Application Risk Score")));
         addResultSink(ctx, network, alphac2r8, "LOW");
+
+        Index index3 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "dummy");
+        AlphaNode alphaDummy = createAlphaNode(ctx, ctx.otn, x -> false, index3);
+        addResultSink(ctx, network, alphaDummy, "DUMMY");
 
         network.compiledNetwork = compile(new KnowledgeBuilderImpl(ctx.kBase), ctx.otn);
         network.compiledNetwork.setObjectTypeNode(ctx.otn);
@@ -147,10 +156,19 @@ public class CompiledAlphaNetwork {
     }
 
     private static AlphaNode createAlphaNode( NetworkBuilderContext ctx, ObjectSource source, Predicate1<EvaluationContext> predicate ) {
-        SingleConstraint constraint = new SingleConstraint1(ctx.variable, predicate);
+        return createAlphaNode( ctx, source, predicate, null );
+    }
 
-        LambdaConstraint c1 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[] { ctx.declaration }, constraint));
-        return attachNode( ctx.buildContext, new AlphaNode( ctx.buildContext.getNextId(), c1, source, ctx.buildContext ) );
+    private static AlphaNode createAlphaNode( NetworkBuilderContext ctx, ObjectSource source, Predicate1<EvaluationContext> predicate, Index index ) {
+        SingleConstraint1 constraint = new SingleConstraint1(ctx.variable, predicate);
+        constraint.setIndex( index );
+        LambdaConstraint lambda = new LambdaConstraint(new ConstraintEvaluator(new Declaration[] { ctx.declaration }, constraint));
+        lambda.setType( Constraint.ConstraintType.ALPHA );
+        return attachNode( ctx.buildContext, new AlphaNode( ctx.buildContext.getNextId(), lambda, source, ctx.buildContext ) );
+    }
+
+    private static <I> AlphaIndexImpl<EvaluationContext, I> createIndex( Class<I> indexedClass, Function1<EvaluationContext, I> leftExtractor, I rightValue) {
+        return new AlphaIndexImpl<EvaluationContext, I>(indexedClass, Index.ConstraintType.EQUAL, 1, leftExtractor, rightValue);
     }
 
     static class ResultCollector {
