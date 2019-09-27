@@ -34,7 +34,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
-      <version>${version.org.kie7}</version>
       <exclusions>
         <exclusion>
           <groupId>org.kie</groupId>

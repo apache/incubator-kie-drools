@@ -22,7 +22,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${version.org.kie7}</version>
       <exclusions>
         <exclusion>
           <groupId>org.kie</groupId>

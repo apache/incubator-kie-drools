@@ -124,7 +124,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${version.org.kie7}</version>
       <exclusions>
         <exclusion>
           <groupId>org.kie</groupId>
@@ -159,7 +158,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
-      <version>${version.org.kie7}</version>
       <exclusions>
         <exclusion>
           <groupId>org.kie</groupId>
@@ -174,7 +172,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
-      <version>${version.org.kie7}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -200,7 +197,6 @@
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>${version.org.reflections}</version>
     </dependency>
 
     <dependency>
