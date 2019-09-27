@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Predicate1;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -67,34 +69,36 @@ public class CompiledAlphaNetwork {
     public static CompiledAlphaNetwork generateCompiledNetwork() {
         CompiledAlphaNetwork network = new CompiledAlphaNetwork();
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext ctx = new BuildContext(kBase);
-        EntryPointNode entryPoint = ctx.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
-        ClassObjectType objectType = new ClassObjectType( EvaluationContext.class );
-        Variable<EvaluationContext> ctxVar = declarationOf( EvaluationContext.class, "$ctx" );
+        NetworkBuilderContext ctx = new NetworkBuilderContext();
 
-        ObjectTypeNode otn = new ObjectTypeNode( ctx.getNextId(), entryPoint, objectType, ctx );
-        ctx.setObjectSource( otn );
+        AlphaNode alphaNotAffordable = createAlphaNode( ctx, ctx.otn, x -> !(boolean)x.getValue( "isAffordable" ) );
+        addResultSink( ctx, network, alphaNotAffordable, "Declined" );
 
-        SingleConstraint constraint = new SingleConstraint1(ctxVar, x -> {
-            System.out.println(x);
-            return true;
-        });
+        AlphaNode alphaAffordable = createAlphaNode( ctx, ctx.otn, x -> (boolean)x.getValue( "isAffordable" ) );
+        AlphaNode alphaHighRisk = createAlphaNode( ctx, alphaAffordable, x -> x.getValue( "RiskCategory" ).equals( "High" ) );
+        addResultSink( ctx, network, alphaHighRisk, "Declined" );
 
-        Pattern pattern = new Pattern( 1, objectType, "$ctx" );
-        Declaration declaration = pattern.getDeclaration();
+        AlphaNode alphaLowRisk = createAlphaNode( ctx, alphaAffordable, x -> x.getValue( "RiskCategory" ).equals( "Medium" ) || x.getValue( "RiskCategory" ).equals( "Low" ));
+        AlphaNode alphaNotAdult = createAlphaNode( ctx, alphaLowRisk, x -> (( BigDecimal )x.getValue( "Age" )).compareTo( new BigDecimal( 18 ) ) < 0 );
+        addResultSink( ctx, network, alphaNotAdult, "Declined" );
 
-        LambdaConstraint c1 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[] { declaration }, constraint));
-        AlphaNode alpha1 = attachNode( ctx, new AlphaNode( ctx.getNextId(), c1, otn, ctx ) );
-        alpha1.addObjectSink( new ResultCollectorAlphaSink( ctx.getNextId(), alpha1, ctx, "Approved", network.resultCollector ) );
+        AlphaNode alphaAdult = createAlphaNode( ctx, alphaLowRisk, x -> (( BigDecimal )x.getValue( "Age" )).compareTo( new BigDecimal( 18 ) ) >= 0 );
+        addResultSink( ctx, network, alphaAdult, "Approved" );
 
-        LambdaConstraint c2 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[0], SingleConstraint.FALSE));
-        AlphaNode alpha2 = attachNode( ctx, new AlphaNode( ctx.getNextId(), c2, otn, ctx ) );
-        alpha2.addObjectSink( new ResultCollectorAlphaSink( ctx.getNextId(), alpha2, ctx, "Declined", network.resultCollector ) );
-
-        network.compiledNetwork = compile(new KnowledgeBuilderImpl(kBase), otn);
-        network.compiledNetwork.setObjectTypeNode(otn);
+        network.compiledNetwork = compile(new KnowledgeBuilderImpl(ctx.kBase), ctx.otn);
+        network.compiledNetwork.setObjectTypeNode(ctx.otn);
         return network;
+    }
+
+    private static void addResultSink( NetworkBuilderContext ctx, CompiledAlphaNetwork network, ObjectSource source, Object result ) {
+        source.addObjectSink( new ResultCollectorAlphaSink( ctx.buildContext.getNextId(), source, ctx.buildContext, result, network.resultCollector ) );
+    }
+
+    private static AlphaNode createAlphaNode( NetworkBuilderContext ctx, ObjectSource source, Predicate1<EvaluationContext> predicate ) {
+        SingleConstraint constraint = new SingleConstraint1(ctx.variable, predicate);
+
+        LambdaConstraint c1 = new LambdaConstraint(new ConstraintEvaluator(new Declaration[] { ctx.declaration }, constraint));
+        return attachNode( ctx.buildContext, new AlphaNode( ctx.buildContext.getNextId(), c1, source, ctx.buildContext ) );
     }
 
     static class ResultCollector {
@@ -125,6 +129,28 @@ public class CompiledAlphaNetwork {
         @Override
         public void byPassModifyToBetaNode( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory ) {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    private static class NetworkBuilderContext {
+        public InternalKnowledgeBase kBase;
+        public BuildContext buildContext;
+        public Variable<EvaluationContext> variable;
+        public Declaration declaration;
+        public ObjectTypeNode otn;
+
+        public NetworkBuilderContext() {
+            kBase = ( InternalKnowledgeBase ) KnowledgeBaseFactory.newKnowledgeBase();
+            buildContext = new BuildContext( kBase );
+            EntryPointNode entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
+            ClassObjectType objectType = new ClassObjectType( EvaluationContext.class );
+            variable = declarationOf( EvaluationContext.class, "$ctx" );
+
+            Pattern pattern = new Pattern( 1, objectType, "$ctx" );
+            declaration = pattern.getDeclaration();
+
+            otn = new ObjectTypeNode( buildContext.getNextId(), entryPoint, objectType, buildContext );
+            buildContext.setObjectSource( otn );
         }
     }
 }
