@@ -19,11 +19,13 @@ package org.drools.compiler.integrationtests;
 import static org.junit.Assert.*;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BasicEvent;
+import org.drools.compiler.integrationtests.facts.DummyEvent;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -496,5 +498,71 @@ public class ExpirationTest {
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
         clock.advanceTime(10, TimeUnit.MILLISECONDS);
         Assertions.assertThat(kieSession.getObjects()).isEmpty();
+    }
+
+    @Test
+    public void testExpiredEventWithIdConstraint() throws InterruptedException {
+        // DROOLS-4577
+        testEventExpiredContraint(true, true);
+    }
+
+    @Test
+    public void testExpiredEventWithoutIdConstraint() throws InterruptedException {
+        testEventExpiredContraint(true, false);
+    }
+
+    @Test
+    public void testNotExpiredEventWithIdConstraint() throws InterruptedException {
+        testEventExpiredContraint(false, true);
+    }
+
+    @Test
+    public void testNotExpiredEventWithoutIdConstraint() throws InterruptedException {
+        testEventExpiredContraint(false, false);
+    }
+
+    private void testEventExpiredContraint(boolean expired, boolean constraint) throws InterruptedException {
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                " declare DummyEvent\n" +
+                "     @role( event )\n" +
+                "     @timestamp( eventTimestamp )\n" +
+                "     @expires( 2h )\n" +
+                " end\n" +
+                " \n" +
+                " rule R1\n" +
+                " when\n" +
+                "     $dummyEvent : DummyEvent(state != \"release\")\n" +
+                "     $dummyEventContext : DummyEvent(this != $dummyEvent, this before $dummyEvent, state != " +
+                "\"release\"" + (constraint ? ", idA == $dummyEvent.idA" : "") +")\n" +
+                " then \n" +
+                "     modify($dummyEventContext){setState(\"release\");} \n" +
+                " end\n" +
+                " rule R2\n" +
+                " when\n" +
+                "     $dummyEvent : DummyEvent(state != \"release\")\n" +
+                "     $dummyEventContext : DummyEvent(this != $dummyEvent, this before $dummyEvent, state != " +
+                "\"release\"" + (constraint ? ", idB == $dummyEvent.idB" : "") + ")\n" +
+                " then \n" +
+                "     modify($dummyEventContext){setState(\"release\");} \n" +
+                " end\n";
+
+        final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        final KieBase kieBase = helper.build( EventProcessingOption.STREAM );
+        final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        final long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime - 1);
+
+        kieSession.insert(new DummyEvent(1, currentTime, "A", "B"));
+        kieSession.insert(new DummyEvent(2, (expired ? currentTime - Duration.ofHours(8).toMillis() : currentTime + Duration.ofHours(8).toMillis()), "A", "B"));
+
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }
