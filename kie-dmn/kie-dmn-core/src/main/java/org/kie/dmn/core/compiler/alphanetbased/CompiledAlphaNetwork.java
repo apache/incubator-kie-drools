@@ -142,6 +142,11 @@ public class CompiledAlphaNetwork {
         AlphaNode alphac2r8 = createAlphaNode(ctx, alphac1r5, x -> UT10.apply(x, x.getValue("Application Risk Score")));
         addResultSink(ctx, network, alphac2r8, "LOW");
 
+        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        for (char c : alphabet) {
+            alphabet(network, ctx, String.valueOf(c));
+        }
+
         Index index3 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "dummy");
         AlphaNode alphaDummy = createAlphaNode(ctx, ctx.otn, x -> false, index3);
         addResultSink(ctx, network, alphaDummy, "DUMMY");
@@ -149,6 +154,22 @@ public class CompiledAlphaNetwork {
         network.compiledNetwork = compile(new KnowledgeBuilderImpl(ctx.kBase), ctx.otn);
         network.compiledNetwork.setObjectTypeNode(ctx.otn);
         return network;
+    }
+
+    private static void alphabet(CompiledAlphaNetwork network, NetworkBuilderContext ctx, String sChar) {
+        System.out.println(sChar);
+        final org.kie.dmn.feel.runtime.UnaryTest UTx = (feelExprCtx, left) -> gracefulEq(feelExprCtx, sChar, left);
+        Index index1 = createIndex(String.class, x -> (String) x.getValue("Existing Customer"), sChar);
+        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, x -> UTx.apply(x, x.getValue("Existing Customer")), index1);
+
+        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, x -> UT2.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r1, "HIGH");
+        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, x -> UT3.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r2, "MEDIUM");
+        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, x -> UT4.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r3, "LOW");
+        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, x -> UT5.apply(x, x.getValue("Application Risk Score")));
+        addResultSink(ctx, network, alphac2r4, "VERY LOW");
     }
 
     private static void addResultSink( NetworkBuilderContext ctx, CompiledAlphaNetwork network, ObjectSource source, Object result ) {
