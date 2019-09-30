@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.kie.kogito.event.DataEvent;
 
 public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
+    
+    private static final String SPEC_VERSION = "0.3";
 
     protected String specversion;
     protected String id;

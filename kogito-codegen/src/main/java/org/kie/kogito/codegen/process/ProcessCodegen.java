@@ -262,9 +262,7 @@ public class ProcessCodegen extends AbstractGenerator {
                 
                 for (TriggerMetaData trigger : metaData.getTriggers()) {
                     
-                    MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess, 
-                                                            modelClassGenerator.className(), 
-                                                            execModelGen.className(),
+                    MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,                                                            
                                                             trigger)
                                                                   .withDependencyInjection(annotator);
                     mdegs.add(msgDataEventGenerator);

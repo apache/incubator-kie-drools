@@ -1,13 +1,27 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.kogito.codegen.process;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.interpolateArguments;
 import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
 
 import org.drools.core.util.StringUtils;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -21,6 +35,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class MessageProducerGenerator {
+    
+    private static final String EVENT_DATA_VAR = "eventData";
+    
     private final String relativePath;
 
     private WorkflowProcess process;
@@ -76,10 +93,10 @@ public class MessageProducerGenerator {
         template.setName(resourceClazzName);        
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).forEach(md -> md.getParameters().stream().filter(p -> p.getNameAsString().equals("eventData")).forEach(p -> p.setType(trigger.getDataType())));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).forEach(md -> md.getParameters().stream().filter(p -> p.getNameAsString().equals(EVENT_DATA_VAR)).forEach(p -> p.setType(trigger.getDataType())));
         template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("configure")).forEach(md -> md.addAnnotation("javax.annotation.PostConstruct"));
         template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("marshall")).forEach(md -> {
-            md.getParameters().stream().filter(p -> p.getNameAsString().equals("eventData")).forEach(p -> p.setType(trigger.getDataType()));
+            md.getParameters().stream().filter(p -> p.getNameAsString().equals(EVENT_DATA_VAR)).forEach(p -> p.setType(trigger.getDataType()));
             md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         });
         
@@ -91,10 +108,10 @@ public class MessageProducerGenerator {
             annotator.withOutgoingMessage(emitterField, trigger.getName());
             emitterField.getVariable(0).setType(annotator.emitterType("String"));
             
-            MethodDeclaration produceMethod = template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).findFirst().get();
+            MethodDeclaration produceMethod = template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).findFirst().orElseThrow(() -> new IllegalStateException("Cannot find produce methos in MessageProducerTemplate"));
             BlockStmt body = new BlockStmt();
             MethodCallExpr sendMethodCall = new MethodCallExpr(new NameExpr("emitter"), "send");
-            annotator.withMessageProducer(sendMethodCall, trigger.getName(), new MethodCallExpr(new ThisExpr(), "marshall").addArgument(new NameExpr("pi")).addArgument(new NameExpr("eventData")));
+            annotator.withMessageProducer(sendMethodCall, trigger.getName(), new MethodCallExpr(new ThisExpr(), "marshall").addArgument(new NameExpr("pi")).addArgument(new NameExpr(EVENT_DATA_VAR)));
             body.addStatement(sendMethodCall);
             produceMethod.setBody(body);
         } 

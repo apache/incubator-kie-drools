@@ -28,33 +28,35 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class TimerNodeVisitor extends AbstractVisitor {
+    
+    protected static final String TIMER_NODE_VAR = "timerNode";
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         TimerNode timerNode = (TimerNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, TimerNodeFactory.class, "timerNode" + node.getId(), "timerNode", new LongLiteralExpr(timerNode.getId()));
-        addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(timerNode.getName(), "End")));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, TimerNodeFactory.class, TIMER_NODE_VAR + node.getId(), "timerNode", new LongLiteralExpr(timerNode.getId()));
+        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "name", new StringLiteralExpr(getOrDefault(timerNode.getName(), "End")));
         
         Timer timer = timerNode.getTimer();
-        addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "type", new IntegerLiteralExpr(timer.getTimeType()));
+        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "type", new IntegerLiteralExpr(timer.getTimeType()));
         
         if (timer.getTimeType() == Timer.TIME_CYCLE) {           
-            addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
+            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
             
             if (timer.getPeriod() != null && !timer.getPeriod().isEmpty()) {
-                addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "period", new StringLiteralExpr(timer.getPeriod()));
+                addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "period", new StringLiteralExpr(timer.getPeriod()));
             }
         } else if (timer.getTimeType() == Timer.TIME_DURATION) {           
-            addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
+            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
             
         } else if (timer.getTimeType() == Timer.TIME_DATE) {           
-            addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "date", new StringLiteralExpr(timer.getDate()));
+            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "date", new StringLiteralExpr(timer.getDate()));
         }
         
                
-        visitMetaData(timerNode.getMetaData(), body, "timerNode" + node.getId());
+        visitMetaData(timerNode.getMetaData(), body, TIMER_NODE_VAR + node.getId());
         
-        addFactoryMethodWithArgs(body, "timerNode" + node.getId(), "done");
+        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "done");
     }
 }

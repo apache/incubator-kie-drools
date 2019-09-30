@@ -46,7 +46,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 public abstract class AbstractVisitor {
 
     protected static final String FACTORY_FIELD_NAME = "factory";
-
+    protected static final String KCONTEXT_VAR = "kcontext";
 
     public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
@@ -100,7 +100,7 @@ public abstract class AbstractVisitor {
                                                new CastExpr(
                                                             type,
                                                             new MethodCallExpr(
-                                                                               new NameExpr("kcontext"),
+                                                                               new NameExpr(KCONTEXT_VAR),
                                                                                "getVariable")
                                                                                              .addArgument(new StringLiteralExpr(name))),
                                                AssignExpr.Operator.ASSIGN);

@@ -32,6 +32,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
     
+    protected static final String C_C_NODE_VAR = "compositeContextNode";
+    
     public CompositeContextNodeVisitor(Map<Class<?>, AbstractVisitor> nodesVisitors) {
         super(nodesVisitors);
     }
@@ -40,14 +42,14 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         CompositeContextNode compositeContextNode = (CompositeContextNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, CompositeNodeFactory.class, "compositeContextNode" + node.getId(), "compositeNode", new LongLiteralExpr(compositeContextNode.getId()));
-        visitMetaData(compositeContextNode.getMetaData(), body, "compositeContextNode" + node.getId());
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, CompositeNodeFactory.class, C_C_NODE_VAR + node.getId(), "compositeNode", new LongLiteralExpr(compositeContextNode.getId()));
+        visitMetaData(compositeContextNode.getMetaData(), body, C_C_NODE_VAR + node.getId());
         
         // visit nodes
-        visitNodes("compositeContextNode" + node.getId(), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);      
-        visitConnections("compositeContextNode" + node.getId(), compositeContextNode.getNodes(), body);
+        visitNodes(C_C_NODE_VAR + node.getId(), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);      
+        visitConnections(C_C_NODE_VAR + node.getId(), compositeContextNode.getNodes(), body);
 
-        addFactoryMethodWithArgs(body, "compositeContextNode" + node.getId(), "done");
+        addFactoryMethodWithArgs(body, C_C_NODE_VAR + node.getId(), "done");
         
     }
     

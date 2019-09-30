@@ -26,7 +26,6 @@ import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Message;
-import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformerImpl;
@@ -47,7 +46,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class BoundaryEventHandler extends AbstractNodeHandler {
-
+    
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     protected Node createNode(Attributes attrs) {
@@ -74,35 +73,35 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             if ("escalationEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleEscalationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "escalation");
+                node.setMetaData(EVENT_TYPE, "escalation");
                 break;
             } else if ("errorEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleErrorNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "error");
+                node.setMetaData(EVENT_TYPE, "error");
                 break;
             } else if ("timerEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleTimerNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "timer");
+                node.setMetaData(EVENT_TYPE, "timer");
                 break;
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleCompensationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "compensation");
+                node.setMetaData(EVENT_TYPE, "compensation");
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleSignalNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "signal");
+                node.setMetaData(EVENT_TYPE, "signal");
                 break;
             } else if ("conditionalEventDefinition".equals(nodeName)) {
                 handleConditionNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "conditional");
+                node.setMetaData(EVENT_TYPE, "conditional");
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 handleMessageNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
-                node.setMetaData("EventType", "message");
+                node.setMetaData(EVENT_TYPE, "message");
                 break;
             }
             xmlNode = xmlNode.getNextSibling();

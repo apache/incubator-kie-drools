@@ -22,16 +22,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
@@ -201,9 +200,9 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                     for( EventFilter filter : ((EventNode) node).getEventFilters() ) {
                         String type = ((EventTypeFilter) filter).getType();
                         if (type.startsWith("Timer-")) {
-                            linkBoundaryTimerEvent(nodeContainer, node, attachedTo, attachedNode);
+                            linkBoundaryTimerEvent(node, attachedTo, attachedNode);
                         } else if (node.getMetaData().get("SignalName") != null || type.startsWith("Message-")) {
-                            linkBoundarySignalEvent(nodeContainer, node, attachedTo, attachedNode);
+                            linkBoundarySignalEvent(node, attachedTo);
                         }
                     }
                 }
@@ -211,7 +210,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         }
     }
     
-    protected void linkBoundaryTimerEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
+    protected void linkBoundaryTimerEvent(Node node, String attachedTo, Node attachedNode) {
         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
         StateBasedNode compositeNode = (StateBasedNode) attachedNode;
         String timeDuration = (String) node.getMetaData().get("TimeDuration");
@@ -241,7 +240,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction =  new DroolsConsequenceAction("java", null);
             cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
@@ -250,12 +249,12 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         }
     }
     
-    protected void linkBoundarySignalEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
+    protected void linkBoundarySignalEvent(Node node, String attachedTo) {
         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
             action.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
@@ -267,7 +266,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     protected DroolsAction timerAction(String type) {
         DroolsAction signal = new DroolsAction();
                 
-        Action action = (kcontext) -> kcontext.getProcessInstance().signalEvent(type, kcontext.getNodeInstance().getId()); 
+        Action action = kcontext -> kcontext.getProcessInstance().signalEvent(type, kcontext.getNodeInstance().getId()); 
         signal.wire(action);
         
         return signal;

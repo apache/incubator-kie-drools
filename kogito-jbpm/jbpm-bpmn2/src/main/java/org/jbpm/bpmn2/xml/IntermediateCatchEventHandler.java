@@ -72,12 +72,12 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleSignalNode(node, element, uri, localName, parser);
-                node.setMetaData("EventType", "signal");
+                node.setMetaData(EVENT_TYPE, "signal");
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleMessageNode(node, element, uri, localName, parser);
-                node.setMetaData("EventType", "message");
+                node.setMetaData(EVENT_TYPE, "message");
                 break;
             } else if ("timerEventDefinition".equals(nodeName)) {
                 // create new timerNode
@@ -87,7 +87,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 timerNode.setMetaData("UniqueId",
                         node.getMetaData().get("UniqueId"));
                 node = timerNode;
-                node.setMetaData("EventType", "timer");
+                node.setMetaData(EVENT_TYPE, "timer");
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
             } else if ("conditionalEventDefinition".equals(nodeName)) {
@@ -98,14 +98,14 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 stateNode.setMetaData("UniqueId",
                         node.getMetaData().get("UniqueId"));
                 node = stateNode;
-                node.setMetaData("EventType", "conditional");
+                node.setMetaData(EVENT_TYPE, "conditional");
                 handleStateNode(node, element, uri, localName, parser);
                 break;
             } else if ("linkEventDefinition".equals(nodeName)) {
                 CatchLinkNode linkNode = new CatchLinkNode();
                 linkNode.setId(node.getId());
                 node = linkNode;
-                node.setMetaData("EventType", "link");
+                node.setMetaData(EVENT_TYPE, "link");
                 handleLinkNode(element, node, xmlNode, parser);
                 break;
             }

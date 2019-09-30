@@ -2181,7 +2181,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         
         @Override
         public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
-            // TODO Auto-generated method stub
             return null;
         }
 

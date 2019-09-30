@@ -30,9 +30,7 @@ package org.kie.kogito.event;
  *
  * @param <T> type of the body of the event
  */
-public interface DataEvent<T> {
-    
-    public static final String SPEC_VERSION = "0.3";
+public interface DataEvent<T> {   
 
     /**
      * Returns specification version of the cloud event
