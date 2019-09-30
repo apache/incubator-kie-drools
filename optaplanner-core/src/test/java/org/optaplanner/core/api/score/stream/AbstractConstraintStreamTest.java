@@ -41,7 +41,8 @@ public abstract class AbstractConstraintStreamTest {
         return new Object[][]{
                 {false, ConstraintStreamImplType.BAVET},
                 {true, ConstraintStreamImplType.BAVET},
-                {false, ConstraintStreamImplType.DROOLS}
+//                {false, ConstraintStreamImplType.DROOLS},
+//                {true, ConstraintStreamImplType.DROOLS}
         };
     }
 
