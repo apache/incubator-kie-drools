@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,38 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet;
+package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
-import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.drools.model.Global;
+import org.drools.model.Rule;
+import org.drools.model.impl.ModelImpl;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.kie.api.KieBase;
+import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
+import static org.drools.model.DSL.*;
+
+public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
 
-    public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
                 = solutionDescriptor.getConstraintConfigurationDescriptor();
@@ -52,30 +56,14 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
         }
     }
 
-    // ************************************************************************
-    // from
-    // ************************************************************************
-
     @Override
-    public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
-        return new BavetFromUniConstraintStream<>(this, fromClass);
+    public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
+        return new DroolsFromUniConstraintStream<>(this, fromClass);
     }
-
-    // ************************************************************************
-    // fromUniquePair
-    // ************************************************************************
 
     @Override
     public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can be made unique ([A,B] vs [B,A]).");
-        }
-        // TODO Breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************
@@ -84,7 +72,17 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
 
     @Override
     public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
-        List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
+        ModelImpl model = new ModelImpl();
+
+        AbstractScoreHolder<?> scoreHolder = (AbstractScoreHolder<?>) solutionDescriptor.getScoreDefinition()
+                .buildScoreHolder(false);
+        Class<? extends AbstractScoreHolder> scoreHolderClass = scoreHolder.getClass();
+        Global<? extends AbstractScoreHolder> scoreHolderGlobal = globalOf(scoreHolderClass,
+                solutionDescriptor.getSolutionClass().getPackage().getName(),
+                DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        model.addGlobal(scoreHolderGlobal);
+
+        List<DroolsConstraint<Solution_>> droolsConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
         for (Constraint constraint : constraints) {
             if (constraint.getConstraintFactory() != this) {
@@ -95,19 +93,22 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
             if (!added) {
                 throw new IllegalStateException(
                         "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
-                        + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
+                                + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
             }
-            BavetConstraint<Solution_> bavetConstraint = (BavetConstraint) constraint;
-            bavetConstraintList.add(bavetConstraint);
+            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
+            droolsConstraintList.add(droolsConstraint);
+            Rule rule = droolsConstraint.createRule(scoreHolderGlobal);
+            model.addRule(rule);
         }
-        return new BavetConstraintSessionFactory<>(solutionDescriptor, bavetConstraintList);
+        // TODO when trace is active, show the Rule (DRL or exectable model) in logging
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }

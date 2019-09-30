@@ -29,6 +29,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -42,18 +43,15 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-import static java.util.Comparator.comparing;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static java.util.Comparator.*;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
-    public UniConstraintStreamTest(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+    public UniConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
+        super(constraintMatchEnabled, constraintStreamImplType);
     }
 
     // ************************************************************************
@@ -511,7 +509,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .penalize("myConstraint1", SimpleScore.ONE),
             factory.from(TestdataEntity.class)
                     .penalize("myConstraint2", SimpleScore.ONE, entity -> 20)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -534,7 +532,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .penalize("myConstraint1", SimpleLongScore.ONE),
             factory.from(TestdataEntity.class)
                     .penalizeLong("myConstraint2", SimpleLongScore.ONE, entity -> 20L)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -557,7 +555,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
             factory.from(TestdataEntity.class)
                     .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, entity -> new BigDecimal("0.2"))
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -580,7 +578,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .reward("myConstraint1", SimpleScore.ONE),
             factory.from(TestdataEntity.class)
                     .reward("myConstraint2", SimpleScore.ONE, entity -> 20)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -603,7 +601,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .reward("myConstraint1", SimpleLongScore.ONE),
             factory.from(TestdataEntity.class)
                     .rewardLong("myConstraint2", SimpleLongScore.ONE, entity -> 20L)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -626,7 +624,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .reward("myConstraint1", SimpleBigDecimalScore.ONE),
             factory.from(TestdataEntity.class)
                     .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, entity -> new BigDecimal("0.2"))
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -646,7 +644,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                         .penalize("duplicateConstraintName", SimpleScore.ONE),
                 factory.from(TestdataLavishEntity.class)
                         .penalize("duplicateConstraintName", SimpleScore.ONE)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
@@ -713,7 +711,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                         return true;
                     })
                     .penalize("myConstraint2", SimpleScore.ONE)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         // From scratch
@@ -752,7 +750,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
             factory.from(TestdataLavishEntity.class)
                     .filter(predicate)
                     .penalize("myConstraint2", SimpleScore.ONE)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         // From scratch
@@ -767,5 +765,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.calculateScore();
         assertEquals(1, monitorCount.get());
     }
+
+    // TODO add test for reusing streams: have 2 scorings from the same BiConstraintStream instance
 
 }

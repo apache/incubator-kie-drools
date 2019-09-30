@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.holder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -135,6 +136,49 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         return constraintMatchTotalMap.computeIfAbsent(constraintId,
                 k -> new ConstraintMatchTotal(constraintPackage, constraintName, null, zeroScore));
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     * @param kcontext never null
+     */
+    public void impactScore(RuleContext kcontext) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support an no weightMultiplier.");
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     * @param kcontext never null
+     * @param weightMultiplier any
+     */
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     * @param kcontext never null
+     * @param weightMultiplier any
+     */
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     * @param kcontext never null
+     * @param weightMultiplier any
+     */
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
     }
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {

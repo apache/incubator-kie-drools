@@ -33,14 +33,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
-public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_>  {
+public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_> {
 
     private final boolean constraintMatchEnabled;
     private final Score<?> zeroScore;
@@ -186,6 +185,9 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         }
         return indictmentMap;
     }
+
+    @Override
+    public void close() {}
 
     // ************************************************************************
     // Getters/setters

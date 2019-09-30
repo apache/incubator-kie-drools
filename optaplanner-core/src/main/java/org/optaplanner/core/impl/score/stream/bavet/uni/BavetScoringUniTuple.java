@@ -27,7 +27,7 @@ public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> impl
     private final BavetAbstractUniTuple<A> parentTuple;
 
     private UndoScoreImpacter undoScoreImpacter = null;
-    /** Always null if {@link BavetConstraintSession#constraintMatchEnabled} is false. */
+    /** Always null if {@link BavetConstraintSession#isConstraintMatchEnabled()} is false. */
     private Score<?> matchScore = null;
 
     public BavetScoringUniTuple(BavetScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.common;
+package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
+public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
-    protected final BavetConstraintFactory<Solution_> constraintFactory;
+    protected final DroolsConstraintFactory<Solution_> constraintFactory;
 
-    public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
+    public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         this.constraintFactory = constraintFactory;
     }
 
@@ -37,34 +37,34 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // Penalize/reward
     // ************************************************************************
 
-    protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight, boolean positive) {
+    protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight, boolean positive) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory,
+        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        return new DroolsConstraint<>(constraintFactory,
                 constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
     }
 
-    protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName, boolean positive) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory,
+        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        return new DroolsConstraint<>(constraintFactory,
                 constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
     }
 
     // ************************************************************************
-    // Node creation
+    // Pattern creation
     // ************************************************************************
 
-    public abstract List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList();
+    public abstract List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList();
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
     @Override
-    public BavetConstraintFactory<Solution_> getConstraintFactory() {
+    public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
     }
 

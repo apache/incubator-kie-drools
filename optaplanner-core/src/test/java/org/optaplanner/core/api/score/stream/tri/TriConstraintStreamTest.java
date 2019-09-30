@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -44,8 +45,8 @@ import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
-    public TriConstraintStreamTest(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+    public TriConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
+        super(constraintMatchEnabled, constraintStreamImplType);
     }
 
     // ************************************************************************
@@ -137,7 +138,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalize("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -164,7 +165,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -191,7 +192,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value, extra) -> new BigDecimal("0.2"))
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -218,7 +219,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .reward("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -245,7 +246,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -272,7 +273,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
                     .join(TestdataValue.class)
                     .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value, extra) -> new BigDecimal("0.2"))
-        });
+        }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);

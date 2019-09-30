@@ -14,43 +14,46 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet;
+package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.kie.api.KieBase;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
-public final class BavetConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
+public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final List<BavetConstraint<Solution_>> constraintList;
+    private final KieBase kieBase;
+    private List<DroolsConstraint<Solution_>> constraintList;
 
-    public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,  List<BavetConstraint<Solution_>> constraintList) {
+    public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase,
+            List<DroolsConstraint<Solution_>> constraintList) {
         this.solutionDescriptor = solutionDescriptor;
+        this.kieBase = kieBase;
         this.constraintList = constraintList;
     }
 
-    // ************************************************************************
-    // Node creation
-    // ************************************************************************
-
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        Score<?> zeroScore = solutionDescriptor.getScoreDefinition().getZeroScore();
-        Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
-        for (BavetConstraint<Solution_> constraint : constraintList) {
+        KieSession kieSession = kieBase.newKieSession();
+        ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
+        AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
+        for (DroolsConstraint<Solution_> constraint : constraintList) {
             Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
-            if (!constraintWeight.equals(zeroScore)) {
-                constraintToWeightMap.put(constraint, constraintWeight);
-            }
+            Rule rule = kieBase.getRule(constraint.getConstraintPackage(), constraint.getConstraintName());
+            scoreHolder.configureConstraintWeight(rule, constraintWeight);
         }
-        return new BavetConstraintSession<>(constraintMatchEnabled, solutionDescriptor.getScoreDefinition(),
-                constraintToWeightMap);
+        kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
+        return new DroolsConstraintSession<>(constraintMatchEnabled, kieSession, scoreHolder);
     }
 
     // ************************************************************************

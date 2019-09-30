@@ -43,6 +43,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -81,6 +82,8 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.*;
+
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
 
@@ -98,6 +101,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected Class<? extends ConstraintProvider> constraintProviderClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> constraintProviderCustomProperties = null;
+    protected ConstraintStreamImplType constraintStreamImplType;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
@@ -220,6 +224,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.constraintProviderCustomProperties = constraintProviderCustomProperties;
     }
 
+    public ConstraintStreamImplType getConstraintStreamImplType() {
+        return constraintStreamImplType;
+    }
+
+    public void setConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+        this.constraintStreamImplType = constraintStreamImplType;
+    }
+
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
         return incrementalScoreCalculatorClass;
     }
@@ -322,13 +334,18 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig  withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+    public ScoreDirectorFactoryConfig withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
         this.constraintProviderClass = constraintProviderClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig  withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
+    public ScoreDirectorFactoryConfig withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
         this.constraintProviderCustomProperties = constraintProviderCustomProperties;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+        this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 
@@ -541,7 +558,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                     "constraintProviderClass", this.constraintProviderClass);
             ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                     constraintProviderCustomProperties, "constraintProviderCustomProperties");
-            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+            ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.BAVET);
+            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider, constraintStreamImplType_);
         } else {
             if (constraintProviderCustomProperties != null) {
                 throw new IllegalStateException("If there is no constraintProviderClass (" + constraintProviderClass
@@ -716,6 +734,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 constraintProviderClass, inheritedConfig.getConstraintProviderClass());
         constraintProviderCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 constraintProviderCustomProperties, inheritedConfig.getConstraintProviderCustomProperties());
+        constraintStreamImplType = ConfigUtils.inheritOverwritableProperty(
+                constraintStreamImplType, inheritedConfig.getConstraintStreamImplType());
         incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(

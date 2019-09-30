@@ -69,7 +69,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
-        reward(kcontext, -1);
+        impactScore(kcontext, -1);
     }
 
     /**
@@ -78,7 +78,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
      * @param weightMultiplier at least 0
      */
     public void penalize(RuleContext kcontext, int weightMultiplier) {
-        reward(kcontext, -weightMultiplier);
+        impactScore(kcontext, -weightMultiplier);
     }
 
     /**
@@ -86,7 +86,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
-        reward(kcontext, 1);
+        impactScore(kcontext, 1);
     }
 
     /**
@@ -95,6 +95,16 @@ public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
      * @param weightMultiplier at least 0
      */
     public void reward(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, weightMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, 1);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Integer> matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {

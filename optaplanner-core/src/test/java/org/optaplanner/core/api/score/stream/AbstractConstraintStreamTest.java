@@ -37,16 +37,20 @@ public abstract class AbstractConstraintStreamTest {
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
 
     @Parameterized.Parameters(name = "constraintMatchEnabled={0}")
-    public static Object[] data() {
-        return new Object[]{
-                false, true
+    public static Object[][] data() {
+        return new Object[][]{
+                {false, ConstraintStreamImplType.BAVET},
+                {true, ConstraintStreamImplType.BAVET},
+                {false, ConstraintStreamImplType.DROOLS}
         };
     }
 
-    protected boolean constraintMatchEnabled;
+    protected final boolean constraintMatchEnabled;
+    protected final ConstraintStreamImplType constraintStreamImplType;
 
-    public AbstractConstraintStreamTest(boolean constraintMatchEnabled) {
+    public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         this.constraintMatchEnabled = constraintMatchEnabled;
+        this.constraintStreamImplType = constraintStreamImplType;
     }
 
     // ************************************************************************
@@ -57,7 +61,8 @@ public abstract class AbstractConstraintStreamTest {
         ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataLavishSolution.buildSolutionDescriptor(),
-                (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)});
+                (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
+                constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 

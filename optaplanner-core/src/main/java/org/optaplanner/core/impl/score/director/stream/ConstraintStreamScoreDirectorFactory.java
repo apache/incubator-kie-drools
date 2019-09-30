@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director.stream;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -26,6 +27,7 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirectorFactory}.
@@ -38,9 +40,19 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
     private final ConstraintSessionFactory<Solution_> constraintSessionFactory;
 
     public ConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider) {
+            ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
         super(solutionDescriptor);
-        InnerConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
+        InnerConstraintFactory<Solution_> constraintFactory;
+        switch (constraintStreamImplType) {
+            case BAVET:
+                constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
+                break;
+            case DROOLS:
+                constraintFactory = new DroolsConstraintFactory<>(solutionDescriptor);
+                break;
+            default:
+                throw new IllegalStateException("The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
+        }
         Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
         constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }

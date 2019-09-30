@@ -107,6 +107,7 @@ public class ConstraintStreamScoreDirector<Solution_>
     @Override
     public void close() {
         super.close();
+        session.close();
         session = null;
     }
 

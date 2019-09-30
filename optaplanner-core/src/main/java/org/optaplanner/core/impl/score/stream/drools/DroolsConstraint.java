@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.common;
+package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
+import org.drools.model.Global;
+import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
+import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class BavetConstraint<Solution_> implements Constraint {
+public class DroolsConstraint<Solution_> implements Constraint {
 
-    private final BavetConstraintFactory<Solution_> constraintFactory;
+    private final DroolsConstraintFactory<Solution_> constraintFactory;
     private final String constraintPackage;
     private final String constraintName;
     private Function<Solution_, Score<?>> constraintWeightExtractor;
     private final boolean positive;
-    private final List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList;
+    private final List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList;
 
-    public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory,
+    public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory,
             String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor, boolean positive,
-            List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
+            List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -47,28 +51,19 @@ public final class BavetConstraint<Solution_> implements Constraint {
         this.fromStreamList = fromStreamList;
     }
 
-    // ************************************************************************
-    // Node creation
-    // ************************************************************************
-
     public Score<?> extractConstraintWeight(Solution_ workingSolution) {
         Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
         constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         return positive ? constraintWeight : constraintWeight.negate();
     }
 
-    public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap,
-            Score<?> constraintWeight) {
-        for (BavetFromUniConstraintStream<Solution_, Object> stream : fromStreamList) {
-            int nodeOrder = 0;
-            BavetFromUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder, null);
-            BavetFromUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(stream.getFromClass(), node);
-            if (oldNode != null && oldNode != node) {
-                throw new IllegalStateException("The oldNode (" + oldNode
-                        + ") differs from the new node (" + node + ").");
-            }
+    public Rule createRule(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(fromStreamList.size());
+        for (DroolsFromUniConstraintStream<Solution_, Object> fromStream : fromStreamList) {
+            fromStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal, null, null);
         }
+        return PatternDSL.rule(constraintPackage, constraintName)
+                .build(ruleItemBuilderList.toArray(new RuleItemBuilder<?>[0]));
     }
 
     // ************************************************************************
@@ -76,7 +71,7 @@ public final class BavetConstraint<Solution_> implements Constraint {
     // ************************************************************************
 
     @Override
-    public BavetConstraintFactory<Solution_> getConstraintFactory() {
+    public ConstraintFactory getConstraintFactory() {
         return constraintFactory;
     }
 

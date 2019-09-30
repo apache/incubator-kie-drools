@@ -50,7 +50,7 @@ public class DroolsScoreDirector<Solution_>
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
     protected KieSession kieSession;
-    protected ScoreHolder workingScoreHolder;
+    protected ScoreHolder scoreHolder;
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
@@ -77,7 +77,7 @@ public class DroolsScoreDirector<Solution_>
         }
         kieSession = scoreDirectorFactory.newKieSession();
         ((RuleEventManager) kieSession).addEventListener(new OptaplannerRuleEventListener());
-        resetWorkingScoreHolder();
+        resetScoreHolder();
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         Collection<Object> workingFacts = getWorkingFacts();
         for (Object fact : workingFacts) {
@@ -85,15 +85,15 @@ public class DroolsScoreDirector<Solution_>
         }
     }
 
-    private void resetWorkingScoreHolder() {
-        workingScoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
+    private void resetScoreHolder() {
+        scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
                 (Rule rule, Function<Solution_, Score<?>> extractor) -> {
             Score<?> constraintWeight = extractor.apply(workingSolution);
             getSolutionDescriptor().validateConstraintWeight(rule.getPackageName(), rule.getName(), constraintWeight);
-            workingScoreHolder.configureConstraintWeight(rule, constraintWeight);
+            scoreHolder.configureConstraintWeight(rule, constraintWeight);
         });
-        kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
+        kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
     }
 
     private static final class OptaplannerRuleEventListener implements RuleEventListener {
@@ -127,14 +127,14 @@ public class DroolsScoreDirector<Solution_>
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         kieSession.fireAllRules();
-        Score score = workingScoreHolder.extractScore(workingInitScore);
+        Score score = scoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }
 
     @Override
     public boolean isConstraintMatchEnabled() {
-        return workingScoreHolder.isConstraintMatchEnabled();
+        return scoreHolder.isConstraintMatchEnabled();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class DroolsScoreDirector<Solution_>
         }
         // Notice that we don't trigger the variable listeners
         kieSession.fireAllRules();
-        return workingScoreHolder.getConstraintMatchTotals();
+        return scoreHolder.getConstraintMatchTotals();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DroolsScoreDirector<Solution_>
         }
         // Notice that we don't trigger the variable listeners
         kieSession.fireAllRules();
-        return workingScoreHolder.getConstraintMatchTotalMap();
+        return scoreHolder.getConstraintMatchTotalMap();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class DroolsScoreDirector<Solution_>
         }
         // Notice that we don't trigger the variable listeners
         kieSession.fireAllRules();
-        return workingScoreHolder.getIndictmentMap();
+        return scoreHolder.getIndictmentMap();
     }
 
     @Override

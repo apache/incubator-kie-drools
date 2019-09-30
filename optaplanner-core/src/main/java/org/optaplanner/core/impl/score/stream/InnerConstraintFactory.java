@@ -16,10 +16,34 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
+
+    // ************************************************************************
+    // from
+    // ************************************************************************
+
+    @Override
+    default <A> UniConstraintStream<A> from(Class<A> fromClass) {
+        UniConstraintStream<A> stream = fromUnfiltered(fromClass);
+        EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(fromClass);
+        if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
+            Predicate<A> predicate = (Predicate<A>) entityDescriptor.getIsInitializedPredicate();
+            stream = stream.filter(predicate);
+        }
+        return stream;
+    }
+
+    // ************************************************************************
+    // SessionFactory creation
+    // ************************************************************************
 
     /**
      * This method is thread-safe.
@@ -27,5 +51,14 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
      * @return never null
      */
     ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints);
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    /**
+     * @return never null
+     */
+    SolutionDescriptor<Solution_> getSolutionDescriptor();
 
 }

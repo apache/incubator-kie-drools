@@ -135,7 +135,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
-        reward(kcontext, -1L);
+        impactScore(kcontext, -1L);
     }
 
     /**
@@ -144,7 +144,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
      * @param weightMultiplier at least 0
      */
     public void penalize(RuleContext kcontext, long weightMultiplier) {
-        reward(kcontext, -weightMultiplier);
+        impactScore(kcontext, -weightMultiplier);
     }
 
     /**
@@ -163,7 +163,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
         for (int i = 0; i < negatedSoftWeightsMultiplier.length; i++) {
             negatedSoftWeightsMultiplier[i] = -softWeightsMultiplier[i];
         }
-        reward(kcontext, negatedHardWeightsMultiplier, negatedSoftWeightsMultiplier);
+        impactScore(kcontext, negatedHardWeightsMultiplier, negatedSoftWeightsMultiplier);
     }
 
     /**
@@ -171,7 +171,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
-        reward(kcontext, 1L);
+        impactScore(kcontext, 1L);
     }
 
     /**
@@ -180,14 +180,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
      * @param weightMultiplier at least 0
      */
     public void reward(RuleContext kcontext, long weightMultiplier) {
-        Rule rule = kcontext.getRule();
-        BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
-        matchExecutor.accept(kcontext, weightMultiplier);
+        impactScore(kcontext, weightMultiplier);
     }
 
     /**
@@ -198,6 +191,27 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
      * @param softWeightsMultiplier elements at least 0
      */
     public void reward(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {
+        impactScore(kcontext, hardWeightsMultiplier, softWeightsMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, 1L);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    private void impactScore(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BendableLongScore> matchExecutor = matchExecutorByScoreMap.get(rule);
         if (matchExecutor == null) {

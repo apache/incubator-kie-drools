@@ -70,7 +70,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
-        reward(kcontext, BigDecimal.ONE.negate());
+        impactScore(kcontext, BigDecimal.ONE.negate());
     }
 
     /**
@@ -79,7 +79,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param weightMultiplier at least 0
      */
     public void penalize(RuleContext kcontext, BigDecimal weightMultiplier) {
-        reward(kcontext, weightMultiplier.negate());
+        impactScore(kcontext, weightMultiplier.negate());
     }
 
     /**
@@ -87,7 +87,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
-        reward(kcontext, BigDecimal.ONE);
+        impactScore(kcontext, BigDecimal.ONE);
     }
 
     /**
@@ -96,6 +96,16 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param weightMultiplier at least 0
      */
     public void reward(RuleContext kcontext, BigDecimal weightMultiplier) {
+        impactScore(kcontext, weightMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, BigDecimal.ONE);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
