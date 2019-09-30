@@ -18,13 +18,14 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
-import javax.json.bind.annotation.JsonbProperty;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.model.api.InputData;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNInputDataInfo implements Serializable {
 
@@ -53,7 +54,7 @@ public class DMNInputDataInfo implements Serializable {
         return res;
     }
 
-    @JsonbProperty("inputdata-id")
+    @JsonProperty("inputdata-id")
     public String getId() {
         return id;
     }
@@ -62,7 +63,7 @@ public class DMNInputDataInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonbProperty("inputdata-name")
+    @JsonProperty("inputdata-name")
     public String getName() {
         return name;
     }
@@ -71,7 +72,7 @@ public class DMNInputDataInfo implements Serializable {
         this.name = name;
     }
 
-    @JsonbProperty("inputdata-typeRef")
+    @JsonProperty("inputdata-typeRef")
     public String getTypeRef() {
         return typeRef;
     }

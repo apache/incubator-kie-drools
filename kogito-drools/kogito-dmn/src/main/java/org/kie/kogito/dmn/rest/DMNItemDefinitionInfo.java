@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.json.bind.annotation.JsonbProperty;
-
 import org.kie.dmn.model.api.ItemDefinition;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNItemDefinitionInfo implements Serializable {
 
@@ -61,7 +61,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         return res;
     }
 
-    @JsonbProperty("itemdefinition-id")
+    @JsonProperty("itemdefinition-id")
     public String getId() {
         return id;
     }
@@ -70,7 +70,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonbProperty("itemdefinition-name")
+    @JsonProperty("itemdefinition-name")
     public String getName() {
         return name;
     }
@@ -79,7 +79,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.name = name;
     }
 
-    @JsonbProperty("itemdefinition-typeRef")
+    @JsonProperty("itemdefinition-typeRef")
     public String getTypeRef() {
         return typeRef;
     }
@@ -88,7 +88,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.typeRef = typeRef;
     }
 
-    @JsonbProperty("itemdefinition-allowedValues")
+    @JsonProperty("itemdefinition-allowedValues")
     public DMNUnaryTestsInfo getAllowedValues() {
         return allowedValues;
     }
@@ -97,7 +97,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.allowedValues = allowedValues;
     }
 
-    @JsonbProperty("itemdefinition-itemComponent")
+    @JsonProperty("itemdefinition-itemComponent")
     public List<DMNItemDefinitionInfo> getItemComponent() {
         return itemComponent;
     }
@@ -106,7 +106,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.itemComponent = itemComponent;
     }
 
-    @JsonbProperty("itemdefinition-typeLanguage")
+    @JsonProperty("itemdefinition-typeLanguage")
     public String getTypeLanguage() {
         return typeLanguage;
     }
@@ -115,7 +115,7 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.typeLanguage = typeLanguage;
     }
 
-    @JsonbProperty("itemdefinition-isCollection")
+    @JsonProperty("itemdefinition-isCollection")
     public Boolean getIsCollection() {
         return isCollection;
     }

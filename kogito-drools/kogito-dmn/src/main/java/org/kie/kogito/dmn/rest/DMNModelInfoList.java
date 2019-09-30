@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNModelInfoList implements Serializable {
 
@@ -33,7 +33,7 @@ public class DMNModelInfoList implements Serializable {
         this.models = models.toArray(new DMNModelInfo[]{});
     }
 
-    @JsonbProperty("models")
+    @JsonProperty("models")
     public List<DMNModelInfo> getModels() {
         return Arrays.asList(models);
     }

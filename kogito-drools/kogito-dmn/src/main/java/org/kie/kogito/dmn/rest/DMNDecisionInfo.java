@@ -18,9 +18,9 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
-import javax.json.bind.annotation.JsonbProperty;
-
 import org.kie.dmn.api.core.ast.DecisionNode;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNDecisionInfo implements Serializable {
 
@@ -38,7 +38,7 @@ public class DMNDecisionInfo implements Serializable {
         return res;
     }
 
-    @JsonbProperty("decision-id")
+    @JsonProperty("decision-id")
     public String getId() {
         return id;
     }
@@ -47,7 +47,7 @@ public class DMNDecisionInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonbProperty("decision-name")
+    @JsonProperty("decision-name")
     public String getName() {
         return name;
     }

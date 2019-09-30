@@ -20,11 +20,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbProperty;
-
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
 
@@ -52,7 +52,7 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         return res;
     }
 
-    @JsonbProperty("decision-id")
+    @JsonProperty("decision-id")
     @Override
     public String getDecisionId() {
         return decisionId;
@@ -62,7 +62,7 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.decisionId = decisionId;
     }
 
-    @JsonbProperty("decision-name")
+    @JsonProperty("decision-name")
     @Override
     public String getDecisionName() {
         return decisionName;
@@ -72,7 +72,7 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.decisionName = decisionName;
     }
 
-    @JsonbProperty("status")
+    @JsonProperty("status")
     @Override
     public DecisionEvaluationStatus getEvaluationStatus() {
         return status;
@@ -82,7 +82,7 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.status = status;
     }
 
-    @JsonbProperty("result")
+    @JsonProperty("result")
     @Override
     public Object getResult() {
         return result;
@@ -92,7 +92,7 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.result = MarshallingStubUtils.stubDMNResult(result, String::valueOf);
     }
 
-    @JsonbProperty("messages")
+    @JsonProperty("messages")
     public List<DMNMessage> getMessages() {
         return (List) messages;
     }

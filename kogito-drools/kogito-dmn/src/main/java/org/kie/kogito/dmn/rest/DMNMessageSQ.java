@@ -18,13 +18,13 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
-import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTransient;
-
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.internal.builder.InternalMessage;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNMessageSQ implements Serializable, DMNMessage {
 
@@ -62,16 +62,16 @@ public class DMNMessageSQ implements Serializable, DMNMessage {
         }
     }
 
-    @JsonbProperty("dmn-message-severity")
+    @JsonProperty("dmn-message-severity")
     private DMNMessageSeverityKS severity;
 
-    @JsonbProperty("message")
+    @JsonProperty("message")
     private String message;
 
-    @JsonbProperty("message-type")
+    @JsonProperty("message-type")
     private DMNMessageType messageType;
 
-    @JsonbProperty("source-id")
+    @JsonProperty("source-id")
     private String sourceId;
 
     public DMNMessageSQ() {
@@ -107,55 +107,55 @@ public class DMNMessageSQ implements Serializable, DMNMessage {
         return sourceId;
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public Throwable getException() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public FEELEvent getFeelEvent() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public Object getSourceReference() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public String getKieBaseName() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public InternalMessage setKieBaseName(String kieBaseName) {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public long getId() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public String getPath() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public int getLine() {
         throw new UnsupportedOperationException();
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public int getColumn() {
         throw new UnsupportedOperationException();
@@ -175,7 +175,7 @@ public class DMNMessageSQ implements Serializable, DMNMessage {
         }
     }
 
-    @JsonbTransient
+    @JsonIgnore
     @Override
     public String getText() {
         throw new UnsupportedOperationException();
