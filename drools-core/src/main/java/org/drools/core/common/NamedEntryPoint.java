@@ -362,11 +362,6 @@ public class NamedEntryPoint
 
                 final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint, object);
 
-                if (handle.getId() == -1 || handle.isExpired()) {
-                    // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
-                    return handle;
-                }
-
                 if (originalObject != object || !AssertBehaviour.IDENTITY.equals(this.kBase.getConfiguration().getAssertBehaviour())) {
                     this.objectStore.updateHandle(handle, object);
                 }
