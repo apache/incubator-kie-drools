@@ -16,10 +16,6 @@
 
 package org.drools.core.common;
 
-import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -54,6 +50,11 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class NamedEntryPoint
         implements
@@ -361,11 +362,6 @@ public class NamedEntryPoint
                 }
 
                 final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint, object);
-
-                if (handle.getId() == -1 || handle.isExpired()) {
-                    // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
-                    return handle;
-                }
 
                 if (originalObject != object || !AssertBehaviour.IDENTITY.equals(this.kBase.getConfiguration().getAssertBehaviour())) {
                     this.objectStore.updateHandle(handle, object);
