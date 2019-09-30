@@ -16,6 +16,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
@@ -27,6 +28,7 @@ public class MessageProducerGenerator {
     private final String resourceClazzName;
     private String processId;
     private final String processName;
+    private final String messageDataEventClassName;
     private DependencyInjectionAnnotator annotator;
     
     private TriggerMetaData trigger;
@@ -35,6 +37,7 @@ public class MessageProducerGenerator {
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
+            String messageDataEventClassName,
             TriggerMetaData trigger) {
         this.process = process;
         this.trigger = trigger;
@@ -44,6 +47,7 @@ public class MessageProducerGenerator {
         String classPrefix = StringUtils.capitalize(processName);
         this.resourceClazzName = classPrefix + "MessageProducer_" + trigger.getOwnerId();
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        this.messageDataEventClassName = messageDataEventClassName;
     }
 
     public MessageProducerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -72,7 +76,12 @@ public class MessageProducerGenerator {
         template.setName(resourceClazzName);        
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).forEach(md -> interpolateArguments(md, trigger.getDataType()));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).forEach(md -> md.getParameters().stream().filter(p -> p.getNameAsString().equals("eventData")).forEach(p -> p.setType(trigger.getDataType())));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("configure")).forEach(md -> md.addAnnotation("javax.annotation.PostConstruct"));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("marshall")).forEach(md -> {
+            md.getParameters().stream().filter(p -> p.getNameAsString().equals("eventData")).forEach(p -> p.setType(trigger.getDataType()));
+            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
+        });
         
         if (useInjection()) {
             annotator.withApplicationComponent(template);
@@ -80,12 +89,12 @@ public class MessageProducerGenerator {
             FieldDeclaration emitterField = template.findFirst(FieldDeclaration.class).filter(fd -> fd.getVariable(0).getNameAsString().equals("emitter")).get();
             annotator.withInjection(emitterField);
             annotator.withOutgoingMessage(emitterField, trigger.getName());
-            emitterField.getVariable(0).setType(annotator.emitterType(trigger.getDataType()));
+            emitterField.getVariable(0).setType(annotator.emitterType("String"));
             
-            MethodDeclaration produceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("produce")).get();
+            MethodDeclaration produceMethod = template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).findFirst().get();
             BlockStmt body = new BlockStmt();
             MethodCallExpr sendMethodCall = new MethodCallExpr(new NameExpr("emitter"), "send");
-            annotator.withMessageProducer(sendMethodCall, trigger.getName(), "eventData");
+            annotator.withMessageProducer(sendMethodCall, trigger.getName(), new MethodCallExpr(new ThisExpr(), "marshall").addArgument(new NameExpr("pi")).addArgument(new NameExpr("eventData")));
             body.addStatement(sendMethodCall);
             produceMethod.setBody(body);
         } 

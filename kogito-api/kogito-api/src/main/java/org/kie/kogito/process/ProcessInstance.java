@@ -47,8 +47,10 @@ public interface ProcessInstance<T> {
     
     /**
      * Starts process instance with trigger
+     * @param trigger name of the trigger that will indicate what start node to trigger
+     * @param referenceId optional reference id that points to a another  component triggering this instance
      */
-    void start(String trigger);
+    void start(String trigger, String referenceId);
     
     /**
      * Sends given signal into this process instance

@@ -112,7 +112,7 @@ public class AbstractCodegenTest {
     }
     
     protected void log(String content) {
-        logger.debug(content);
+        logger.info(content);
     }
 
     private static class TestClassLoader extends URLClassLoader {

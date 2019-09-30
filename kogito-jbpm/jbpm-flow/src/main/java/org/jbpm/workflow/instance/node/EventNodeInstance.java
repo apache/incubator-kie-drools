@@ -81,6 +81,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
             throw new IllegalArgumentException(
                 "An EventNode only accepts default incoming connections!");
         }
+    	triggerTime = new Date();
     	addEventListeners();
         // Do nothing, event activated
     }

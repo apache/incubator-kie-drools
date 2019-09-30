@@ -33,6 +33,7 @@ public class MessageConsumerGenerator {
     private String modelfqcn;
     private final String processName;
     private final String appCanonicalName;
+    private final String messageDataEventClassName;
     private DependencyInjectionAnnotator annotator;
     
     private TriggerMetaData trigger;
@@ -42,6 +43,7 @@ public class MessageConsumerGenerator {
             String modelfqcn,
             String processfqcn,
             String appCanonicalName,
+            String messageDataEventClassName,
             TriggerMetaData trigger) {
         this.process = process;
         this.trigger = trigger;
@@ -55,6 +57,7 @@ public class MessageConsumerGenerator {
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
+        this.messageDataEventClassName = messageDataEventClassName;
     }
 
     public MessageConsumerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -84,9 +87,11 @@ public class MessageConsumerGenerator {
         template.setName(resourceClazzName);        
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
+        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("configure")).forEach(md -> md.addAnnotation("javax.annotation.PostConstruct"));
         template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> { 
-            interpolateArguments(md, trigger.getDataType());
+            interpolateArguments(md, "String");
             md.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         });
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
         

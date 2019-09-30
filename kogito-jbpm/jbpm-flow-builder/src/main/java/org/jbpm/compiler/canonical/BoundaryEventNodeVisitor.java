@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
@@ -43,8 +45,15 @@ public class BoundaryEventNodeVisitor extends AbstractVisitor {
             variable = variableScope.findVariable(boundaryEventNode.getVariableName());
         }
         
-        if (boundaryEventNode.getMetaData("SignalName") != null) {
+        if ("signal".equals(boundaryEventNode.getMetaData("EventType"))) {
             metadata.getSignals().put(boundaryEventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+        } else if ("message".equals(boundaryEventNode.getMetaData("EventType"))) {
+            Map<String, Object> nodeMetaData = boundaryEventNode.getMetaData();
+            metadata.getTriggers().add(new TriggerMetaData((String)nodeMetaData.get("TriggerRef"), 
+                                                           (String)nodeMetaData.get("TriggerType"), 
+                                                           (String)nodeMetaData.get("MessageType"), 
+                                                           boundaryEventNode.getVariableName(),
+                                                           String.valueOf(node.getId())).validate());
         }
 
         visitMetaData(boundaryEventNode.getMetaData(), body, "boundaryEventNode" + node.getId());

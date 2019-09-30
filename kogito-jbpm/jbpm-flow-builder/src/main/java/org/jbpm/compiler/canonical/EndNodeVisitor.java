@@ -68,7 +68,7 @@ public class EndNodeVisitor extends AbstractVisitor {
                          new MethodCallExpr(new NameExpr("kcontext"), "getVariable")
                              .addArgument(new StringLiteralExpr(triggerMetaData.getModelRef())));
             
-            MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce").addArgument(variable);
+            MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce").addArgument(new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance")).addArgument(variable);
             actionBody.addStatement(producerMethodCall);
             
             addFactoryMethodWithArgs(body, "endNode" + node.getId(), "action", lambda);

@@ -96,14 +96,41 @@ public interface DependencyInjectionAnnotator {
      */
     void withOutgoingMessage(NodeWithAnnotations<?> node, String channel);
     
+    /**
+     * Annotates given node with configuration parameter injection
+     * @param configKey name of the configuration property to be injected
+     * @param node node to be annotated
+     */
     void withConfigInjection(String configKey, NodeWithAnnotations<?> node);
     
+    /**
+     * Annotates given node with configuration parameter injection with default value
+     * @param configKey name of the configuration property to be injected
+     * @param defaultValue value to be used in case there is no config parameter defined
+     * @param node node to be annotated
+     */
     void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node);
     
-    void withMessageProducer(MethodCallExpr produceMethod, String channel, String event);
-    
+    /**
+     * Annotates and enhances method used to produce messages 
+     * @param produceMethod method to be annotated
+     * @param channel channel on which messages should be produced
+     * @param event actual data to be send
+     */
+    void withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event);
+
+    /**
+     * Create initialization method with given expression as body 
+     * @param expression body of the init method
+     * @return complete initialization method declaration
+     */
     MethodDeclaration withInitMethod(Expression... expression);
     
+    /**
+     * Creates an expression that represents optional instance for given field
+     * @param fieldName name of the field that should be considered optional
+     * @return complete expression for optional instance
+     */
     Expression optionalInstanceExists(String fieldName);
     
     /**

@@ -47,7 +47,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         m.fromMap(parameters);
         
         ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();     
+        processInstance.start("customers", null);     
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
@@ -69,7 +69,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         m.fromMap(parameters);
         
         ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();     
+        processInstance.start("customers", null);     
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
@@ -142,7 +142,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         
         // next start it via message start event
         processInstance = p.createInstance(m);
-        processInstance.start("customers");     
+        processInstance.start("customers", null);     
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         result = (Model)processInstance.variables();

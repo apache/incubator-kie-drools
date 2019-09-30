@@ -41,7 +41,7 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
     private final String kogitoUserTaskinstanceState;
 
     public UserTaskInstanceDataEvent(String source, Map<String, String> metaData, UserTaskInstanceEventBody body) {
-        this.specversion = "0.3";
+        this.specversion = SPEC_VERSION;
         this.id = UUID.randomUUID().toString();
         this.source = source;
         this.type = "UserTaskInstanceEvent";

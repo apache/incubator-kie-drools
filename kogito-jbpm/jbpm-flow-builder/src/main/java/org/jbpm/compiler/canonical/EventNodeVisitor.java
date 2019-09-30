@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
@@ -41,7 +43,17 @@ public class EventNodeVisitor extends AbstractVisitor {
             addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "variableName", new StringLiteralExpr(eventNode.getVariableName()));
             variable = variableScope.findVariable(eventNode.getVariableName());
         }
-        metadata.getSignals().put(eventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+        
+        if ("signal".equals(eventNode.getMetaData("EventType"))) {
+            metadata.getSignals().put(eventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+        } else if ("message".equals(eventNode.getMetaData("EventType"))) {
+            Map<String, Object> nodeMetaData = eventNode.getMetaData();
+            metadata.getTriggers().add(new TriggerMetaData((String)nodeMetaData.get("TriggerRef"), 
+                                                           (String)nodeMetaData.get("TriggerType"), 
+                                                           (String)nodeMetaData.get("MessageType"), 
+                                                           eventNode.getVariableName(),
+                                                           String.valueOf(node.getId())).validate());
+        }
 
         visitMetaData(eventNode.getMetaData(), body, "eventNode" + node.getId());
         

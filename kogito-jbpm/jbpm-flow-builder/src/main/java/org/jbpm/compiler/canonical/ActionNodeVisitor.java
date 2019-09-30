@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
@@ -23,11 +25,14 @@ import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 
 public class ActionNodeVisitor extends AbstractVisitor {
@@ -39,20 +44,48 @@ public class ActionNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgsWithAssignment(factoryField, body, ActionNodeFactory.class, "actionNode" + node.getId(), "actionNode", new LongLiteralExpr(actionNode.getId()));
         addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(actionNode.getName(), "Script")));
         
-        
-        BlockStmt actionBody = new BlockStmt();
-        LambdaExpr lambda = new LambdaExpr(
-                new Parameter(new UnknownType(), "kcontext"), // (kcontext) ->
-                actionBody
-        );
+        // if there is trigger defined on end event create TriggerMetaData for it
+        if (actionNode.getMetaData("TriggerRef") != null) {
+            Map<String, Object> nodeMetaData = actionNode.getMetaData();
+            TriggerMetaData triggerMetaData = new TriggerMetaData((String)nodeMetaData.get("TriggerRef"), 
+                                                                  (String)nodeMetaData.get("TriggerType"), 
+                                                                  (String)nodeMetaData.get("MessageType"), 
+                                                                  (String)nodeMetaData.get("MappingVariable"),
+                                                                  String.valueOf(node.getId()))
+                                                    .validate();
+            metadata.getTriggers().add(triggerMetaData);
+            
+            // and add trigger action
+            BlockStmt actionBody = new BlockStmt();
+            LambdaExpr lambda = new LambdaExpr(
+                    new Parameter(new UnknownType(), "kcontext"), // (kcontext) ->
+                    actionBody
+            );
 
-        for (Variable v : variableScope.getVariables()) {
-            actionBody.addStatement(makeAssignment(v));
+            CastExpr variable = new CastExpr(
+                         new ClassOrInterfaceType(null, triggerMetaData.getDataType()),
+                         new MethodCallExpr(new NameExpr("kcontext"), "getVariable")
+                             .addArgument(new StringLiteralExpr(triggerMetaData.getModelRef())));
+            
+            MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce").addArgument(new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance")).addArgument(variable);
+            actionBody.addStatement(producerMethodCall);
+            
+            addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "action", lambda);
+        } else {
+        
+            BlockStmt actionBody = new BlockStmt();
+            LambdaExpr lambda = new LambdaExpr(
+                    new Parameter(new UnknownType(), "kcontext"), // (kcontext) ->
+                    actionBody
+            );
+    
+            for (Variable v : variableScope.getVariables()) {
+                actionBody.addStatement(makeAssignment(v));
+            }
+            actionBody.addStatement(new NameExpr(actionNode.getAction().toString()));
+            
+            addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "action", lambda);
         }
-        actionBody.addStatement(new NameExpr(actionNode.getAction().toString()));
-        
-        addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "action", lambda);
-
         visitMetaData(actionNode.getMetaData(), body, "actionNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "done");

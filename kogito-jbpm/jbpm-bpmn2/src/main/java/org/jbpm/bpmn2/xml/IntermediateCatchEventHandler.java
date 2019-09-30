@@ -72,10 +72,12 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleSignalNode(node, element, uri, localName, parser);
+                node.setMetaData("EventType", "signal");
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleMessageNode(node, element, uri, localName, parser);
+                node.setMetaData("EventType", "message");
                 break;
             } else if ("timerEventDefinition".equals(nodeName)) {
                 // create new timerNode
@@ -85,6 +87,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 timerNode.setMetaData("UniqueId",
                         node.getMetaData().get("UniqueId"));
                 node = timerNode;
+                node.setMetaData("EventType", "timer");
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
             } else if ("conditionalEventDefinition".equals(nodeName)) {
@@ -95,12 +98,14 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 stateNode.setMetaData("UniqueId",
                         node.getMetaData().get("UniqueId"));
                 node = stateNode;
+                node.setMetaData("EventType", "conditional");
                 handleStateNode(node, element, uri, localName, parser);
                 break;
             } else if ("linkEventDefinition".equals(nodeName)) {
                 CatchLinkNode linkNode = new CatchLinkNode();
                 linkNode.setId(node.getId());
                 node = linkNode;
+                node.setMetaData("EventType", "link");
                 handleLinkNode(element, node, xmlNode, parser);
                 break;
             }
@@ -228,6 +233,8 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                             "Could not find message " + messageRef);
                 }
                 eventNode.setMetaData("MessageType", message.getType());
+                eventNode.setMetaData("TriggerType", "ConsumeMessage");
+                eventNode.setMetaData("TriggerRef", message.getName());
                 List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setType("Message-" + message.getName());

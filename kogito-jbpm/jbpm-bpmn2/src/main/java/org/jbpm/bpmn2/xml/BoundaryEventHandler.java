@@ -74,28 +74,35 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             if ("escalationEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleEscalationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "escalation");
                 break;
             } else if ("errorEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleErrorNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "error");
                 break;
             } else if ("timerEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleTimerNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "timer");
                 break;
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleCompensationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "compensation");
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleSignalNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "signal");
                 break;
             } else if ("conditionalEventDefinition".equals(nodeName)) {
                 handleConditionNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "conditional");
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 handleMessageNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                node.setMetaData("EventType", "message");
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -425,6 +432,8 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     throw new IllegalArgumentException("Could not find message " + messageRef);
                 }
                 eventNode.setMetaData("MessageType", message.getType());
+                eventNode.setMetaData("TriggerType", "ConsumeMessage");
+                eventNode.setMetaData("TriggerRef", message.getName());
                 List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setType("Message-" + message.getName());

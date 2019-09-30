@@ -257,6 +257,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     variable = (String) v.getMetaData(variable);
                 }
 				actionNode.setMetaData("MessageType", message.getType());
+				actionNode.setMetaData("TriggerType", "ProduceMessage");
+				actionNode.setMetaData("TriggerRef", message.getName());
 				actionNode
 						.setAction(new DroolsConsequenceAction(
 								"java",

@@ -111,6 +111,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     private int slaCompliance = SLA_NA;
     private Date slaDueDate;
     private long slaTimerId = -1;
+    
+    private String referenceId;
 
     @Override
     public NodeContainer getNodeContainer() {
@@ -951,6 +953,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     @Override
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    @Override
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    @Override
+    public String getReferenceId() {
+        return this.referenceId;
     }
 
     private boolean isVariableExpression(String eventType) {

@@ -326,5 +326,10 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             return null;
         }
 
+        @Override
+        public String getReferenceId() {
+            return null;
+        }
+
     }
 }

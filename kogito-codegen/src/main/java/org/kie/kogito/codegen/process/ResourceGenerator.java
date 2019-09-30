@@ -16,7 +16,7 @@
 package org.kie.kogito.codegen.process;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.*;
+import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
 
 import java.util.List;
 import java.util.Map;
@@ -25,10 +25,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
@@ -162,7 +161,7 @@ public class ResourceGenerator {
             int index = 0;
             for (Entry<String, String> entry : signals.entrySet()) {
                 MethodDeclaration signalMethod = new MethodDeclaration()
-                        .setName("signal_" + index)
+                        .setName("signal_" + index++)
                         .setType(modelfqcn)
                         .setModifiers(Keyword.PUBLIC)
                         .addAnnotation("POST")

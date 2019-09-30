@@ -112,16 +112,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
     
     public void start() {
-        start(null);
+        start(null, null);
     }
 
-    public void start(String trigger) {
+    public void start(String trigger, String referenceId) {
         if (this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already was started");
         }
         this.status = ProcessInstance.STATE_ACTIVE;
         ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
         
+        if (referenceId != null) {
+            ((WorkflowProcessInstance)legacyProcessInstance).setReferenceId(referenceId); 
+        }
         
         org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
@@ -131,12 +134,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
     }
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
         ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
     public void abort() {
-        legacyProcessInstance();
+
         String pid = legacyProcessInstance().getId();
         unbind(variables, legacyProcessInstance().getVariables());        
         this.rt.abortProcessInstance(pid);
@@ -146,6 +150,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public <S> void send(Signal<S> signal) {
+        if (signal.referenceId() != null) {
+            ((WorkflowProcessInstance)legacyProcessInstance()).setReferenceId(signal.referenceId());
+        }
         legacyProcessInstance().signalEvent(signal.channel(), signal.payload());
         removeOnFinish();
     }
@@ -309,6 +316,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return result;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

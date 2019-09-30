@@ -55,6 +55,7 @@ message ProcessInstance {
     optional string root_process_id = 24;
     optional string error_node_id = 25;
     optional string error_message = 26;
+    optional string reference_id = 27;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;

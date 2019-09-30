@@ -126,6 +126,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getErrorMessage() != null) {
             _instance.setErrorMessage(workFlow.getErrorMessage());
         }
+        if (workFlow.getReferenceId() != null) {
+            _instance.setReferenceId(workFlow.getReferenceId());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -755,6 +758,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         
         processInstance.internalSetErrorNodeId(_instance.getErrorNodeId());
         processInstance.internalSetErrorMessage(_instance.getErrorMessage());
+        
+        processInstance.setReferenceId(_instance.getReferenceId());
         
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
             processInstance.addCompletedNodeId(completedNodeId);

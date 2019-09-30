@@ -84,8 +84,8 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
     
     @Override
-    public void withMessageProducer(MethodCallExpr produceMethod, String channel, String event) {
-        produceMethod.addArgument(new NameExpr(event));
+    public void withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
+        produceMethod.addArgument(event);
     }
     
     @Override

@@ -85,8 +85,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
     
     @Override
-    public void withMessageProducer(MethodCallExpr produceMethod, String channel, String event) {
-        produceMethod.addArgument(new StringLiteralExpr(channel)).addArgument(new NameExpr(event));
+    public void withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
+        produceMethod.addArgument(new StringLiteralExpr(channel)).addArgument(event);
     }
 
     @Override
@@ -140,5 +140,5 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
         
     }
-
+    
 }

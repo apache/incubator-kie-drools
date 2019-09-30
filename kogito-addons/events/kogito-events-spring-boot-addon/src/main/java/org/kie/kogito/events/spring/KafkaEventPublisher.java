@@ -16,6 +16,7 @@
 package org.kie.kogito.events.spring;
 
 import java.util.Collection;
+import java.util.TimeZone;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
@@ -27,6 +28,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 @Component
 public class KafkaEventPublisher implements EventPublisher {
@@ -46,6 +48,10 @@ public class KafkaEventPublisher implements EventPublisher {
     
     @Value("${kogito.events.usertasks.enabled:true}")
     private boolean userTasksEvents;
+        
+    public KafkaEventPublisher() {
+        json.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
+    }
     
     @Override
     public void publish(DataEvent<?> event) {

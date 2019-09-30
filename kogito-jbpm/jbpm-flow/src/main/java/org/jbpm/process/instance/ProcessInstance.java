@@ -79,4 +79,5 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
 	
 	void configureSLA();
     
+	void setReferenceId(String referenceId);
 }

@@ -107,5 +107,11 @@ public interface ProcessInstance
      * @return non empty map of process instance variables
      */
     Map<String, Object> getVariables();
+    
+    /**
+     * Returns optional reference id this process instance was triggered by
+     * @return reference id or null if not set
+     */
+    String getReferenceId();
 
 }
