@@ -1982,4 +1982,22 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(first);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
+
+    @Test
+    public void testUseMatch() {
+        // DROOLS-4579
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "    $p: Person()\n" +
+                "then\n" +
+                "    if ($p != drools.getMatch().getObjects().get(0)) throw new RuntimeException();\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
