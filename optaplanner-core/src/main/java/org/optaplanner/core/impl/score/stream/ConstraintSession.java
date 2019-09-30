@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * An instance of this class must be used in only one thread.
  */
-public interface ConstraintSession<Solution_> {
+public interface ConstraintSession<Solution_> extends AutoCloseable {
 
     void insert(Object fact);
 
@@ -50,6 +50,7 @@ public interface ConstraintSession<Solution_> {
      */
     Map<Object, Indictment> getIndictmentMap();
 
+    @Override
     void close();
 
 }
