@@ -115,7 +115,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
 
     @Override
     public void retract(Object fact) {
-        List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.get(fact);
+        List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.remove(fact);
         if (tupleList == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot retract.");
         }

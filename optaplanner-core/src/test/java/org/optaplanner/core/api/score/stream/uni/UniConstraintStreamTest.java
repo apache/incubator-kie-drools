@@ -60,6 +60,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void filter_problemFact() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
         TestdataLavishValueGroup valueGroup1 = new TestdataLavishValueGroup("MyValueGroup 1");
         solution.getValueGroupList().add(valueGroup1);
@@ -88,6 +89,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void filter_entity() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -111,7 +113,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2));
 
-        // Incremental
+        // Incrementally update
         scoreDirector.beforeProblemPropertyChanged(entity3);
         entity3.setEntityGroup(entityGroup);
         scoreDirector.afterProblemPropertyChanged(entity3);
@@ -119,6 +121,24 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2),
                 assertMatch(entity3));
+
+        // Remove entity
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector,
+                assertMatch(entity1),
+                assertMatch(entity2));
+
+        // Add it back again, to make sure it was properly removed before
+        scoreDirector.beforeEntityAdded(entity3);
+        solution.getEntityList().add(entity3);
+        scoreDirector.afterEntityAdded(entity3);
+        assertScore(scoreDirector,
+                assertMatch(entity1),
+                assertMatch(entity2),
+                assertMatch(entity3));
+
     }
 
     // ************************************************************************
@@ -127,6 +147,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_0() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
@@ -159,6 +180,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_1Equal() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -198,6 +220,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_2Equal() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -244,6 +267,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void fromUniquePair_0() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -270,6 +294,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void fromUniquePair_1Equals() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -314,6 +339,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_count() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -348,6 +374,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_countDistinct() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -392,6 +419,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_min() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -421,6 +449,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_max() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -650,6 +679,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void globalNodeOrder() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -689,6 +719,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void zeroConstraintWeightDisabled() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), solution.getFirstValue());
         entity1.setStringProperty("myProperty1");
@@ -731,6 +762,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void nodeSharing() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), solution.getFirstValue());
         entity1.setStringProperty("myProperty1");

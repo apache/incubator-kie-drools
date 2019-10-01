@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -40,8 +41,8 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtr
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -52,6 +53,11 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
     // Filter
     // ************************************************************************
+
+    @Before
+    public void disableAllTestsForDrools() {
+        assumeBavet(); // Skip tests if we're not using Bavet
+    }
 
     @Test
     public void filter_entity() {
