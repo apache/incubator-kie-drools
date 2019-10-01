@@ -75,12 +75,12 @@ public class MvelDialectTest extends BaseModelTest {
                 "              $value4 : 2 " +
                 ")\n" +
                 "  then\n" +
-//                "    m.itemsString[$key1] = $status;\n" +
-//                "    m.itemsString[$key2] = \"value2\";\n" +
-//                "    m.itemsString[\"key3\"] = \"value3\";\n" +
-//                "    m.getItemsString().put( $key1, $status );\n" +
-//                "    m.getItemsString().put( $key2, \"value2\" );\n" +
-//                "    m.getItemsString().put( \"key3\", \"value2\" );\n" +
+                "    m.itemsString[$key1] = $status;\n" +
+                "    m.itemsString[$key2] = \"value2\";\n" +
+                "    m.itemsString[\"key3\"] = \"value3\";\n" +
+                "    m.getItemsString().put( $key1, $status );\n" +
+                "    m.getItemsString().put( $key2, \"value2\" );\n" +
+                "    m.getItemsString().put( \"key3\", \"value2\" );\n" +
                 "    m.getItemsString().put( \"key4\", $value4 );\n" +
                 "    update(m);\n" +
                 "end";
@@ -95,7 +95,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Map<String, String> itemsString = p.getItemsString();
 
-//        assertEquals(4, itemsString.keySet().size());
+        assertEquals(4, itemsString.keySet().size());
     }
 
     @Test

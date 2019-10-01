@@ -176,7 +176,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "$p.items[\"key3\"] = \"value3\";\n" +
                      "}",
              "{ " +
-                     "$p.getItems().put(\"key3\", \"value3\"); " +
+                     "$p.getItems().put(\"key3\", java.lang.String.valueOf(\"value3\")); " +
                      "}");
     }
 
@@ -189,7 +189,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "}",
              "{ " +
                      "java.lang.String key3 = \"key3\";\n" +
-                     "$p.getItems().put(key3, \"value3\"); " +
+                     "$p.getItems().put(key3, java.lang.String.valueOf(\"value3\")); " +
                      "}");
     }
 
@@ -205,16 +205,27 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testMapPutWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
     public void testMapSetWithMapGetAsValue() {
         test(ctx -> {
                  ctx.addDeclaration("$p", Person.class);
-                 ctx.addDeclaration("m", Map.class);
+                 ctx.addDeclaration("n", Integer.class);
              },
              "{" +
-                     "$p.items[\"key3\"] = m[\"key\"];\n" +
+                     "    $p.getItems().put(\"key4\", n);\n" +
                      "}",
              "{ " +
-                     "$p.getItems().put(\"key3\", m.get(\"key\")); " +
+                     "    $p.getItems().put(\"key4\", java.lang.String.valueOf(n));\n" +
                      "}");
     }
 

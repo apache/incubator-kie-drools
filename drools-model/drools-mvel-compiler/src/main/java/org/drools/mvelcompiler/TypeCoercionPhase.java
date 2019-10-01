@@ -20,6 +20,7 @@ public class TypeCoercionPhase {
 
 
 
+
         return statement;
     }
 
