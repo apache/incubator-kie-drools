@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@ package org.kie.kogito.index.graphql;
 
 import java.util.Collection;
 
-import javax.json.JsonObject;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.kie.kogito.index.query.QueryService;
 
-public class DomainModelDataFetcher implements DataFetcher<Collection<JsonObject>> {
+public class DomainModelDataFetcher implements DataFetcher<Collection<ObjectNode>> {
 
     private QueryService queryService;
     private String processId;
@@ -35,7 +34,7 @@ public class DomainModelDataFetcher implements DataFetcher<Collection<JsonObject
     }
 
     @Override
-    public Collection<JsonObject> get(DataFetchingEnvironment env) throws Exception {
+    public Collection<ObjectNode> get(DataFetchingEnvironment env) {
         String query = env.getArgument("query");
         return queryService.queryDomain(processId, query);
     }

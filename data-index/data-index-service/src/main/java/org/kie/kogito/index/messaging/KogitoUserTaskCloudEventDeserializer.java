@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package org.kie.kogito.index.messaging;
 
-import io.quarkus.kafka.client.serialization.JsonbDeserializer;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
-public class KogitoUserTaskCloudEventDeserializer extends JsonbDeserializer<KogitoUserTaskCloudEvent> {
+public class KogitoUserTaskCloudEventDeserializer extends AbstractCloudEventDeserializer<KogitoUserTaskCloudEvent> {
 
     public KogitoUserTaskCloudEventDeserializer() {
         super(KogitoUserTaskCloudEvent.class);

@@ -18,14 +18,12 @@ package org.kie.kogito.index.json;
 
 import java.util.UUID;
 
-import javax.json.JsonObject;
-
-import org.assertj.core.api.SoftAssertions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
-import static javax.json.Json.createArrayBuilder;
-import static javax.json.Json.createValue;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
@@ -39,32 +37,27 @@ public class UserTaskInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId);
-        JsonObject json = new UserTaskInstanceMetaMapper().apply(event);
-        SoftAssertions softly = new SoftAssertions();
+        ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
 
-        softly.assertThat(json)
-                .isNotNull()
-                .containsEntry("id", createValue(rootProcessInstanceId))
-                .containsEntry("processId", createValue(rootProcessId))
-                .containsKey(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
-
-        softly.assertThat((JsonObject) json.getJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).get(0))
-                .isNotNull()
-                .containsEntry("id", createValue(taskId))
-                .containsEntry("processInstanceId", createValue(processInstanceId))
-                .containsEntry("state", createValue(event.getData().getState()))
-                .containsEntry("description", createValue(event.getData().getDescription()))
-                .containsEntry("name", createValue(event.getData().getName()))
-                .containsEntry("priority", createValue(event.getData().getPriority()))
-                .containsEntry("actualOwner", createValue(event.getData().getActualOwner()))
-                .containsEntry("adminUsers", createArrayBuilder(event.getData().getAdminUsers()).build())
-                .containsEntry("adminGroups", createArrayBuilder(event.getData().getAdminGroups()).build())
-                .containsEntry("excludedUsers", createArrayBuilder(event.getData().getExcludedUsers()).build())
-                .containsEntry("potentialGroups", createArrayBuilder(event.getData().getPotentialGroups()).build())
-                .containsEntry("potentialUsers", createArrayBuilder(event.getData().getPotentialUsers()).build())
-                .containsEntry("started", createValue(event.getData().getStarted().toInstant().toEpochMilli()))
-                .containsEntry("completed", createValue(event.getData().getCompleted().toInstant().toEpochMilli()));
-
-        softly.assertAll();
+        assertThat(json).isNotNull();
+        assertThatJson(json.toString()).and(
+                a -> a.node("id").isEqualTo(rootProcessInstanceId),
+                a -> a.node("processId").isEqualTo(rootProcessId),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).isArray().hasSize(1),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].id").isEqualTo(taskId),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].processInstanceId").isEqualTo(processInstanceId),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].state").isEqualTo(event.getData().getState()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].description").isEqualTo(event.getData().getDescription()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].name").isEqualTo(event.getData().getName()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].priority").isEqualTo(event.getData().getPriority()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].actualOwner").isEqualTo(event.getData().getActualOwner()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].adminUsers[0]").isEqualTo(event.getData().getAdminUsers().stream().findFirst().get()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].adminGroups[0]").isEqualTo(event.getData().getAdminGroups().stream().findFirst().get()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].excludedUsers[0]").isEqualTo(event.getData().getExcludedUsers().stream().findFirst().get()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].potentialGroups[0]").isEqualTo(event.getData().getPotentialGroups().stream().findFirst().get()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].potentialUsers[0]").isEqualTo(event.getData().getPotentialUsers().stream().findFirst().get()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].started").isEqualTo(event.getData().getStarted().toInstant().toEpochMilli()),
+                a -> a.node(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE + "[0].completed").isEqualTo(event.getData().getCompleted().toInstant().toEpochMilli())
+        );
     }
 }

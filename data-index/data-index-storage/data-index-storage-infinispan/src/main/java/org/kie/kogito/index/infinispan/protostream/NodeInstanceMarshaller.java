@@ -18,10 +18,15 @@ package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
 
 public class NodeInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<NodeInstance> {
+
+    public NodeInstanceMarshaller(ObjectMapper mapper) {
+        super(mapper);
+    }
 
     @Override
     public NodeInstance readFrom(ProtoStreamReader reader) throws IOException {

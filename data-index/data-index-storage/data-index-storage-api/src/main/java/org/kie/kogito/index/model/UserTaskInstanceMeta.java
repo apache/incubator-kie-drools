@@ -19,29 +19,30 @@ package org.kie.kogito.index.model;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.json.bind.annotation.JsonbProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserTaskInstanceMeta {
 
     private String id;
-    @JsonbProperty("taskDescription")
+    @JsonProperty("taskDescription")
     private String description;
-    @JsonbProperty("taskName")
+    @JsonProperty("taskName")
     private String name;
-    @JsonbProperty("taskPriority")
+    @JsonProperty("taskPriority")
     private String priority;
     private String processInstanceId;
     private String state;
     private String actualOwner;
     private Set<String> adminGroups;
     private Set<String> adminUsers;
-    @JsonbProperty("completeDate")
+    @JsonProperty("completeDate")
     private ZonedDateTime completed;
-    @JsonbProperty("startDate")
+    @JsonProperty("startDate")
     private ZonedDateTime started;
     private Set<String> excludedUsers;
     private Set<String> potentialGroups;
     private Set<String> potentialUsers;
+    private String referenceName;
 
     public String getId() {
         return id;
@@ -159,6 +160,14 @@ public class UserTaskInstanceMeta {
         this.potentialUsers = potentialUsers;
     }
 
+    public String getReferenceName() {
+        return referenceName;
+    }
+
+    public void setReferenceName(String referenceName) {
+        this.referenceName = referenceName;
+    }
+
     @Override
     public String toString() {
         return "UserTaskInstanceMeta{" +
@@ -176,6 +185,7 @@ public class UserTaskInstanceMeta {
                 ", excludedUsers=" + excludedUsers +
                 ", potentialGroups=" + potentialGroups +
                 ", potentialUsers=" + potentialUsers +
+                ", referenceName='" + referenceName + '\'' +
                 '}';
     }
 }

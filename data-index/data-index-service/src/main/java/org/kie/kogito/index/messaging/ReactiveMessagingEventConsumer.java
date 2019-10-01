@@ -21,12 +21,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -37,6 +38,7 @@ import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.json.ProcessInstanceMetaMapper;
 import org.kie.kogito.index.json.UserTaskInstanceMetaMapper;
 import org.kie.kogito.index.service.IndexingService;
+import org.kie.kogito.index.vertx.ObjectNodeMessageCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,13 +59,21 @@ public class ReactiveMessagingEventConsumer {
 
     @Inject
     EventBus eventBus;
+    
+    @Inject
+    ObjectNodeMessageCodec codec;
+    
+    @PostConstruct
+    public void setup(){
+        eventBus.registerDefaultCodec(ObjectNode.class, codec);
+    }
 
-    private Map<String, MessageConsumer<String>> consumers = new HashMap<>();
+    private Map<String, MessageConsumer<ObjectNode>> consumers = new HashMap<>();
 
     public void onDomainModelRegisteredEvent(@Observes DomainModelRegisteredEvent event) {
         LOGGER.info("New domain model registered for Process Id: {}", event.getProcessId());
         consumers.computeIfAbsent(event.getProcessId(), f -> {
-            MessageConsumer<String> consumer = eventBus.consumer(format(KOGITO_DOMAIN_EVENTS, event.getProcessId()), e -> onDomainEvent(e));
+            MessageConsumer<ObjectNode> consumer = eventBus.consumer(format(KOGITO_DOMAIN_EVENTS, event.getProcessId()), e -> onDomainEvent(e));
             LOGGER.info("Consumer registered for address: {}", consumer.address());
             return consumer;
         });
@@ -78,7 +88,7 @@ public class ReactiveMessagingEventConsumer {
     @Incoming(KOGITO_PROCESSDOMAIN_EVENTS)
     public CompletionStage<Void> onProcessInstanceDomainEvent(KogitoProcessCloudEvent event) {
         LOGGER.debug("Process domain consumer received KogitoCloudEvent: \n{}", event);
-        JsonObject json = new ProcessInstanceMetaMapper().apply(event);
+        ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
         return sendMessage(json);
     }
 
@@ -91,18 +101,18 @@ public class ReactiveMessagingEventConsumer {
     @Incoming(KOGITO_USERTASKDOMAIN_EVENTS)
     public CompletionStage<Void> onUserTaskInstanceDomainEvent(KogitoUserTaskCloudEvent event) {
         LOGGER.debug("Task domain received KogitoUserTaskCloudEvent \n{}", event);
-        JsonObject json = new UserTaskInstanceMetaMapper().apply(event);
+        ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
         return sendMessage(json);
     }
 
-    private CompletableFuture<Void> sendMessage(JsonObject json) {
+    private CompletableFuture<Void> sendMessage(ObjectNode json) {
         CompletableFuture<Void> cf = new CompletableFuture<>();
-        String processId = json.getString("processId");
-        eventBus.send(format(KOGITO_DOMAIN_EVENTS, processId), json.toString(), async -> cf.complete(null));
+        String processId = json.get("processId").asText();
+        eventBus.send(format(KOGITO_DOMAIN_EVENTS, processId), json, async -> cf.complete(null));
         return cf;
     }
 
-    private void onDomainEvent(Message<String> message) {
+    private void onDomainEvent(Message<ObjectNode> message) {
         try {
             LOGGER.debug("Processing domain message: {}", message);
             indexingService.indexModel(message.body());

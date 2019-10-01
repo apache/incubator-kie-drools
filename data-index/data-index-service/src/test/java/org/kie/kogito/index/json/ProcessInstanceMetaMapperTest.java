@@ -18,14 +18,13 @@ package org.kie.kogito.index.json;
 
 import java.util.UUID;
 
-import javax.json.JsonObject;
-
-import org.assertj.core.api.SoftAssertions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
-import static javax.json.Json.createValue;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 
@@ -38,42 +37,24 @@ public class ProcessInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
-        JsonObject json = new ProcessInstanceMetaMapper().apply(event);
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(json)
-                .isNotNull()
-                .containsEntry("id", createValue(rootProcessInstanceId))
-                .containsEntry("processId", createValue(rootProcessId))
-                .containsKey(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE)
-                .containsEntry("processId", createValue(rootProcessId));
-
-        softly.assertThat(json.getJsonObject("traveller"))
-                .isNotNull()
-                .containsEntry("firstName", createValue("Maciej"));
-
-        softly.assertThat(json.getJsonObject("hotel"))
-                .isNotNull()
-                .containsEntry("name", createValue("Meriton"));
-
-        softly.assertThat(json.getJsonObject("flight"))
-                .isNotNull()
-                .containsEntry("flightNumber", createValue("MX555"))
-                .containsEntry("arrival", createValue("2019-08-20T22:12:57.340Z"))
-                .containsEntry("departure", createValue("2019-08-20T07:12:57.340Z"));
-
-        softly.assertThat((JsonObject) json.getJsonArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).get(0))
-                .isNotNull()
-                .containsEntry("id", createValue(processInstanceId))
-                .containsEntry("processId", createValue(processId))
-                .containsEntry("rootProcessInstanceId", createValue(rootProcessInstanceId))
-                .containsEntry("parentProcessInstanceId", createValue(rootProcessInstanceId))
-                .containsEntry("rootProcessId", createValue(rootProcessId))
-                .containsEntry("state", createValue(ProcessInstanceState.COMPLETED.ordinal()))
-                .containsEntry("endpoint", createValue(event.getSource().toString()))
-                .containsEntry("start", createValue(event.getData().getStart().toInstant().toEpochMilli()))
-                .containsEntry("end", createValue(event.getData().getEnd().toInstant().toEpochMilli()));
-
-        softly.assertAll();
+        ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
+        assertThat(json).isNotNull();
+        assertThatJson(json.toString()).and(
+                a -> a.node("id").isEqualTo(rootProcessInstanceId),
+                a -> a.node("processId").isEqualTo(rootProcessId),
+                a -> a.node("traveller.firstName").isEqualTo("Maciej"),
+                a -> a.node("hotel.name").isEqualTo("Meriton"),
+                a -> a.node("flight.flightNumber").isEqualTo("MX555"),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).isArray().hasSize(1),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].id").isEqualTo(processInstanceId),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].processId").isEqualTo(processId),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].rootProcessInstanceId").isEqualTo(rootProcessInstanceId),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].parentProcessInstanceId").isEqualTo(rootProcessInstanceId),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].rootProcessId").isEqualTo(rootProcessId),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].state").isEqualTo(ProcessInstanceState.COMPLETED.ordinal()),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].endpoint").isEqualTo(event.getSource().toString()),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
+                a -> a.node(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli())
+        );
     }
 }

@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -29,7 +28,6 @@ import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
 import static java.util.Collections.emptySet;
 
-@QuarkusTest
 public class KogitoCloudEventDeserializerTest {
 
     @Test
@@ -45,7 +43,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("state", 2)
                 .hasFieldOrPropertyWithValue("rootProcessId", "travels")
                 .hasFieldOrPropertyWithValue("rootProcessInstanceId", "f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee")
-                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-20T21:26:02.110668+02:00[Europe/Warsaw]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-20T19:26:02.110668Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "ProcessInstanceEvent")
                 .hasFieldOrPropertyWithValue("data.id", "c2fa5c5e-3002-44c7-aef7-bce82297e3fe")
                 .hasFieldOrPropertyWithValue("data.processId", "hotelBooking")
@@ -81,7 +79,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("processInstanceId", "f78fb147-ec22-4478-a592-3063add9f956")
                 .hasFieldOrPropertyWithValue("rootProcessId", null)
                 .hasFieldOrPropertyWithValue("rootProcessInstanceId", null)
-                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-30T13:48:37.857915+02:00[Europe/Warsaw]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-30T11:48:37.857915Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "UserTaskInstanceEvent")
                 .hasFieldOrPropertyWithValue("data.id", "228d5922-5e88-4bfa-8329-7116a5cbe58b")
                 .hasFieldOrPropertyWithValue("data.processId", "travels")
@@ -91,6 +89,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.state", "Completed")
                 .hasFieldOrPropertyWithValue("data.description", "")
                 .hasFieldOrPropertyWithValue("data.name", "Apply for visa")
+                .hasFieldOrPropertyWithValue("data.referenceName", "http://localhost:8080/travels/{uuid}/ConfirmTravel/{task-uuid}")
                 .hasFieldOrPropertyWithValue("data.priority", "1")
                 .hasFieldOrPropertyWithValue("data.potentialGroups", emptySet())
                 .hasFieldOrPropertyWithValue("data.potentialUsers", emptySet())

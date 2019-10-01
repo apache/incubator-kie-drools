@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 
 package org.kie.kogito.index.json;
 
-import java.io.StringReader;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public final class JsonUtils {
 
-    private JsonUtils(){}
+    private static ObjectMapper MAPPER = new ObjectMapper();
 
-    public static JsonObject parseJson(String json) {
-        try (JsonReader parser = Json.createReader(new StringReader(json))) {
-            return parser.readObject().asJsonObject();
-        }
+    static {
+        MAPPER.registerModule(new JavaTimeModule());
     }
-    
+
+    private JsonUtils() {
+    }
+
+    public static ObjectMapper getObjectMapper() {
+        return MAPPER;
+    }
 }

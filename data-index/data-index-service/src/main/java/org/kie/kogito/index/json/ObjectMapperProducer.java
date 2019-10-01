@@ -16,24 +16,18 @@
 
 package org.kie.kogito.index.json;
 
-import java.io.StringReader;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.bind.adapter.JsonbAdapter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonStringTypeAdapter implements JsonbAdapter<String, JsonObject> {
+@ApplicationScoped
+public class ObjectMapperProducer {
 
-    @Override
-    public JsonObject adaptToJson(String json) throws Exception {
-        try (JsonReader reader = Json.createReader(new StringReader(json))) {
-            return reader.readObject();
-        }
-    }
-
-    @Override
-    public String adaptFromJson(JsonObject json) throws Exception {
-        return json.toString();
+    @Singleton
+    @Produces
+    public ObjectMapper objectMapper() {
+        return JsonUtils.getObjectMapper();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,22 @@ package org.kie.kogito.index.model;
 
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTypeAdapter;
-
-import org.kie.kogito.index.json.JsonStringTypeAdapter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class ProcessInstance extends ProcessInstanceMeta {
 
-    @JsonbTypeAdapter(JsonStringTypeAdapter.class)
-    private String variables;
-    @JsonbProperty("nodeInstances")
+    private JsonNode variables;
+    @JsonProperty("nodeInstances")
     private List<NodeInstance> nodes;
+    
+    private ProcessInstanceError error;
 
-    public String getVariables() {
+    public JsonNode getVariables() {
         return variables;
     }
 
-    public void setVariables(String variables) {
+    public void setVariables(JsonNode variables) {
         this.variables = variables;
     }
 
@@ -44,6 +43,14 @@ public class ProcessInstance extends ProcessInstanceMeta {
 
     public void setNodes(List<NodeInstance> nodes) {
         this.nodes = nodes;
+    }
+
+    public ProcessInstanceError getError() {
+        return error;
+    }
+
+    public void setError(ProcessInstanceError error) {
+        this.error = error;
     }
 
     @Override

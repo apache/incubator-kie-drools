@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.vertx;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -32,17 +34,23 @@ public class RouterSetup {
 
     @Inject
     GraphQLHandler graphQLHandler;
-
+    
     @Inject
     @ConfigProperty(name = "kogito.allowedOriginPattern", defaultValue = "*")
     String allowedOriginPattern;
+    
+    private AtomicBoolean routesAdded = new AtomicBoolean(false);
 
     void setupRouter(@Observes Router router) {
-        router.route("/graphql").handler(CorsHandler.create(allowedOriginPattern).allowedMethod(HttpMethod.POST).allowedHeader("content-type"));
-        router.route("/graphql").handler(graphQLHandler);
-        router.route("/").handler(ctx -> ctx.reroute("/graphql"));
-        router.route().handler(LoggerHandler.create());
-        router.route().handler(StaticHandler.create());
-        router.route().handler(FaviconHandler.create());
+        //Avoid setting up routes twice
+        if (!routesAdded.get()) {
+            router.route("/graphql").handler(CorsHandler.create(allowedOriginPattern).allowedMethod(HttpMethod.POST).allowedHeader("content-type"));
+            router.route("/graphql").handler(graphQLHandler);
+            router.route("/").handler(ctx -> ctx.reroute("/graphql"));
+            router.route().handler(LoggerHandler.create());
+            router.route().handler(StaticHandler.create());
+            router.route().handler(FaviconHandler.create());
+            routesAdded.set(true);
+        }
     }
 }

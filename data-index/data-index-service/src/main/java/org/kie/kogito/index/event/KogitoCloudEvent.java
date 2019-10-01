@@ -19,12 +19,12 @@ package org.kie.kogito.index.event;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
-import javax.json.bind.annotation.JsonbProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class KogitoCloudEvent<T> {
 
     //Cloud Event attributes
-    @JsonbProperty("specversion")
+    @JsonProperty("specversion")
     private String specVersion = "0.3";
     private String type;
     private URI source;
@@ -35,14 +35,15 @@ public abstract class KogitoCloudEvent<T> {
     private T data;
 
     //Extensions
-    @JsonbProperty("kogitoProcessinstanceId")
+    @JsonProperty("kogitoProcessinstanceId")
     private String processInstanceId;
-    @JsonbProperty("kogitoProcessId")
+    @JsonProperty("kogitoProcessId")
     private String processId;
-    @JsonbProperty("kogitoRootProcessinstanceId")
+    @JsonProperty("kogitoRootProcessinstanceId")
     private String rootProcessInstanceId;
-    @JsonbProperty("kogitoRootProcessId")
-    private String rootProcessId;
+    @JsonProperty("kogitoRootProcessId")
+    private String rootProcessId;    
+    private String kogitoReferenceId;
 
     public String getSpecVersion() {
         return specVersion;
@@ -138,6 +139,14 @@ public abstract class KogitoCloudEvent<T> {
         if (id != null && !id.trim().isEmpty()) {
             this.rootProcessId = id;
         }
+    }
+    
+    public String getKogitoReferenceId() {
+        return kogitoReferenceId;
+    }
+    
+    public void setKogitoReferenceId(String kogitoReferenceId) {
+        this.kogitoReferenceId = kogitoReferenceId;
     }
 
     @Override

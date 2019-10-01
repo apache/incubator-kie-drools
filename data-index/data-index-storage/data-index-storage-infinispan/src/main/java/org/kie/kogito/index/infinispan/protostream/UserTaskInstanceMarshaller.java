@@ -19,10 +19,15 @@ package org.kie.kogito.index.infinispan.protostream;
 import java.io.IOException;
 import java.util.HashSet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.UserTaskInstance;
 
 public class UserTaskInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<UserTaskInstance> {
+
+    public UserTaskInstanceMarshaller(ObjectMapper mapper) {
+        super(mapper);
+    }
 
     @Override
     public UserTaskInstance readFrom(ProtoStreamReader reader) throws IOException {
@@ -44,8 +49,9 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         ut.setExcludedUsers(reader.readCollection("excludedUsers", new HashSet<>(), String.class));
         ut.setPotentialGroups(reader.readCollection("potentialGroups", new HashSet<>(), String.class));
         ut.setPotentialUsers(reader.readCollection("potentialUsers", new HashSet<>(), String.class));
-        ut.setInputs(reader.readString("inputs"));
-        ut.setOutputs(reader.readString("outputs"));
+        ut.setInputs(jsonFromString(reader.readString("inputs")));
+        ut.setOutputs(jsonFromString(reader.readString("outputs")));
+        ut.setReferenceName(reader.readString("referenceName"));
         return ut;
     }
 
@@ -68,8 +74,9 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         writer.writeCollection("excludedUsers", ut.getExcludedUsers(), String.class);
         writer.writeCollection("potentialGroups", ut.getPotentialGroups(), String.class);
         writer.writeCollection("potentialUsers", ut.getPotentialUsers(), String.class);
-        writer.writeString("inputs", ut.getInputs());
-        writer.writeString("outputs", ut.getOutputs());
+        writer.writeString("inputs", ut.getInputs() == null ? null : ut.getInputs().toString());
+        writer.writeString("outputs", ut.getOutputs() == null ? null : ut.getOutputs().toString());
+        writer.writeString("referenceName", ut.getReferenceName());
     }
 
     @Override

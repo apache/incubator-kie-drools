@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.kie.kogito.index.cache;
 
 import java.util.Map;
 
-import javax.json.JsonObject;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 
@@ -31,6 +31,5 @@ public interface CacheService {
 
     Map<String, String> getProcessIdModelCache();
 
-    Map<String, JsonObject> getDomainModelCache(String processId);
-    
+    Map<String, ObjectNode> getDomainModelCache(String processId);
 }

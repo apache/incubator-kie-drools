@@ -18,13 +18,13 @@ package org.kie.kogito.index.query;
 
 import java.util.Collection;
 
-import javax.json.JsonObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface QueryService {
 
-    Collection<JsonObject> queryDomain(String domain, String query);
+    Collection<ObjectNode> queryDomain(String domain, String query);
 
-    Collection<JsonObject> queryProcessInstances(ProcessInstanceFilter filter);
+    Collection<ObjectNode> queryProcessInstances(ProcessInstanceFilter filter);
 
-    Collection<JsonObject> queryUserTaskInstances(UserTaskInstanceFilter filter);
+    Collection<ObjectNode> queryUserTaskInstances(UserTaskInstanceFilter filter);
 }

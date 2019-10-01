@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,20 @@ package org.kie.kogito.index.event;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
-import javax.json.bind.annotation.JsonbProperty;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.index.model.UserTaskInstance;
 
 public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance> {
 
-    @JsonbProperty("kogitoUserTaskinstanceId")
+    @JsonProperty("kogitoUserTaskinstanceId")
     private String userTaskInstanceId;
 
-    @JsonbProperty("kogitoUserTaskinstanceState")
+    @JsonProperty("kogitoUserTaskinstanceState")
     private String state;
+    
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public String getUserTaskInstanceId() {
         return userTaskInstanceId;
@@ -47,8 +50,12 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
         this.state = state;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    @Override
+    public String toString() {
+        return "KogitoUserTaskCloudEvent{" +
+                "userTaskInstanceId='" + userTaskInstanceId + '\'' +
+                ", state='" + state + '\'' +
+                "} " + super.toString();
     }
 
     public static final class Builder {
@@ -57,10 +64,6 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
 
         private Builder() {
             event = new KogitoUserTaskCloudEvent();
-        }
-
-        public static Builder aKogitoUserTaskCloudEvent() {
-            return new Builder();
         }
 
         public Builder type(String type) {

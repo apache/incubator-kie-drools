@@ -18,9 +18,9 @@ package org.kie.kogito.index.messaging;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -33,10 +33,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.lang.String.format;
-import static javax.json.Json.createValue;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
-import static org.kie.kogito.index.json.JsonUtils.parseJson;
 import static org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer.KOGITO_DOMAIN_EVENTS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -69,17 +68,13 @@ public class ReactiveMessagingEventConsumerTest {
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
 
         consumer.onProcessInstanceDomainEvent(event).toCompletableFuture().get();
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ObjectNode> captor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
 
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(parseJson(captor.getValue()))
-                .isNotNull()
-                .containsEntry("id", createValue(processInstanceId))
-                .containsEntry("processId", createValue(processId));
-
-        softly.assertAll();
+        assertThatJson(captor.getValue().toString())
+                .isObject()
+                .containsEntry("id", processInstanceId)
+                .containsEntry("processId", processId);
     }
 
     @Test
@@ -96,17 +91,13 @@ public class ReactiveMessagingEventConsumerTest {
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
 
         consumer.onUserTaskInstanceDomainEvent(event).toCompletableFuture().get();
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ObjectNode> captor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
 
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(parseJson(captor.getValue()))
-                .isNotNull()
-                .containsEntry("id", createValue(processInstanceId))
-                .containsEntry("processId", createValue(processId));
-
-        softly.assertAll();
+        assertThatJson(captor.getValue().toString())
+                .isObject()
+                .containsEntry("id", processInstanceId)
+                .containsEntry("processId", processId);
     }
 
     @Test

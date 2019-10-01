@@ -20,11 +20,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 
 public class ProcessInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<ProcessInstance> {
+
+    public ProcessInstanceMarshaller(ObjectMapper mapper) {
+        super(mapper);
+    }
 
     @Override
     public ProcessInstance readFrom(ProtoStreamReader reader) throws IOException {
@@ -32,7 +37,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setId(reader.readString("id"));
         pi.setProcessId(reader.readString("processId"));
         pi.setRoles(reader.readCollection("roles", new HashSet<>(), String.class));
-        pi.setVariables(reader.readString("variables"));
+        pi.setVariables(jsonFromString(reader.readString("variables")));
         pi.setEndpoint(reader.readString("endpoint"));
         pi.setNodes(reader.readCollection("nodes", new ArrayList<>(), NodeInstance.class));
         pi.setState(reader.readInt("state"));
@@ -41,6 +46,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setRootProcessInstanceId(reader.readString("rootProcessInstanceId"));
         pi.setRootProcessId(reader.readString("rootProcessId"));
         pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
+        pi.setProcessName(reader.readString("processName"));
         return pi;
     }
 
@@ -49,7 +55,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString("id", pi.getId());
         writer.writeString("processId", pi.getProcessId());
         writer.writeCollection("roles", pi.getRoles(), String.class);
-        writer.writeString("variables", pi.getVariables());
+        writer.writeString("variables", pi.getVariables() == null ? null : pi.getVariables().toString());
         writer.writeString("endpoint", pi.getEndpoint());
         writer.writeCollection("nodes", pi.getNodes(), NodeInstance.class);
         writer.writeInt("state", pi.getState());
@@ -58,6 +64,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString("rootProcessInstanceId", pi.getRootProcessInstanceId());
         writer.writeString("rootProcessId", pi.getRootProcessId());
         writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());
+        writer.writeString("processName", pi.getProcessName());
     }
 
     @Override

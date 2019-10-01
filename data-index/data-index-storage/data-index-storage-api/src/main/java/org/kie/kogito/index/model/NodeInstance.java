@@ -18,21 +18,21 @@ package org.kie.kogito.index.model;
 
 import java.time.ZonedDateTime;
 
-import javax.json.bind.annotation.JsonbProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class NodeInstance {
 
     private String id;
-    @JsonbProperty("nodeName")
+    @JsonProperty("nodeName")
     private String name;
     private String nodeId;
-    @JsonbProperty("nodeType")
+    @JsonProperty("nodeType")
     private String type;
-    @JsonbProperty("triggerTime")
+    @JsonProperty("triggerTime")
     private ZonedDateTime enter;
-    @JsonbProperty("leaveTime")
+    @JsonProperty("leaveTime")
     private ZonedDateTime exit;
-    @JsonbProperty("nodeDefinitionId")
+    @JsonProperty("nodeDefinitionId")
     private String definitionId;
 
     public String getId() {
@@ -83,12 +83,12 @@ public class NodeInstance {
         this.nodeId = nodeId;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
-    }
-
     public String getDefinitionId() {
         return definitionId;
+    }
+
+    public void setDefinitionId(String definitionId) {
+        this.definitionId = definitionId;
     }
 
     @Override

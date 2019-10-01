@@ -19,23 +19,24 @@ package org.kie.kogito.index.model;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.json.bind.annotation.JsonbProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProcessInstanceMeta {
 
     private String id;
     private String processId;
+    private String processName;
     private Integer state;
     private String endpoint;
     private Set<String> roles;
-    @JsonbProperty("startDate")
+    @JsonProperty("startDate")
     private ZonedDateTime start;
-    @JsonbProperty("endDate")
+    @JsonProperty("endDate")
     private ZonedDateTime end;
-    @JsonbProperty("rootInstanceId")
+    @JsonProperty("rootInstanceId")
     private String rootProcessInstanceId;
     private String rootProcessId;
-    @JsonbProperty("parentInstanceId")
+    @JsonProperty("parentInstanceId")
     private String parentProcessInstanceId;
 
     public ProcessInstanceMeta() {
@@ -126,11 +127,20 @@ public class ProcessInstanceMeta {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstanceMeta{" +
                 "id='" + id + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processName='" + processName + '\'' +
                 ", state=" + state +
                 ", endpoint='" + endpoint + '\'' +
                 ", roles=" + roles +

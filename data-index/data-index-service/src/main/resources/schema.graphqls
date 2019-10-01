@@ -7,6 +7,7 @@ schema {
 type ProcessInstance {
   id: String!
   processId: String!
+  processName: String
   parentProcessInstanceId: String
   rootProcessInstanceId: String
   rootProcessId: String
@@ -22,6 +23,7 @@ type ProcessInstance {
 type ProcessInstanceMeta {
   id: String!
   processId: String!
+  processName: String
   parentProcessInstanceId: String
   rootProcessInstanceId: String
   rootProcessId: String
@@ -84,6 +86,7 @@ type UserTaskInstance {
   potentialUsers: [String!]
   inputs: String
   outputs: String
+  referenceName: String 
 }
 
 type UserTaskInstanceMeta {
@@ -101,6 +104,7 @@ type UserTaskInstanceMeta {
   excludedUsers: [String!]
   potentialGroups: [String!]
   potentialUsers: [String!]
+  referenceName: String
 }
 
 input UserTaskInstanceFilter {

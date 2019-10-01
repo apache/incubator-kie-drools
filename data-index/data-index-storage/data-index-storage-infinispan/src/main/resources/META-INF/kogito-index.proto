@@ -22,6 +22,8 @@ message ProcessInstanceMeta {
     optional string rootProcessId = 9;
     /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string parentProcessInstanceId = 10;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string processName = 11;
 }
 
 /* @Indexed */
@@ -46,6 +48,8 @@ message ProcessInstance {
     optional string rootProcessId = 11;
     /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string parentProcessInstanceId = 12;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string processName = 13;
 }
 
 /* @Indexed */
@@ -100,6 +104,8 @@ message UserTaskInstance {
     repeated string potentialUsers = 17;
     optional string inputs = 18;
     optional string outputs = 19;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string referenceName = 20;
 }
 
 /* @Indexed */
@@ -130,4 +136,6 @@ message UserTaskInstanceMeta {
     repeated string potentialGroups = 13;
     /* @Field(store = Store.YES) */
     repeated string potentialUsers = 14;
+    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    optional string referenceName = 15;
 }

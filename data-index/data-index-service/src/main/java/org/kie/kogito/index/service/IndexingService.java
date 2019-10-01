@@ -21,12 +21,9 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -37,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.json.JsonUtils.parseJson;
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
 public class IndexingService {
@@ -64,9 +61,8 @@ public class IndexingService {
         manager.getUserTaskInstancesCache().put(ut.getId(), ut);
     }
 
-    public void indexModel(String json) {
-        JsonObject jsonObject = parseJson(json);
-        String processId = jsonObject.getString("processId");
+    public void indexModel(ObjectNode json) {
+        String processId = json.get("processId").asText();
         String type = getModelFromProcessId(processId);
         if (type == null) {
 //          Unknown process type, ignore
@@ -74,45 +70,50 @@ public class IndexingService {
             return;
         }
 
-        String processInstanceId = jsonObject.getString("id");
+        String processInstanceId = json.get("id").asText();
 
-        Map<String, JsonObject> cache = manager.getDomainModelCache(processId);
-        JsonObject model = cache.get(processInstanceId);
+        Map<String, ObjectNode> cache = manager.getDomainModelCache(processId);
+        ObjectNode model = cache.get(processInstanceId);
         if (model == null) {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("_type", type);
-            builder.addAll(Json.createObjectBuilder(jsonObject).remove("processId"));
-            JsonObject build = builder.build();
-            cache.put(processInstanceId, build);
+            ObjectNode builder = getObjectMapper().createObjectNode();
+            builder.put("_type", type);
+            json.remove("processId");
+            builder.setAll(json);
+            cache.put(processInstanceId, builder);
         } else {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("_type", type);
-            JsonArray indexPIArray = jsonObject.getJsonArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
+            ObjectNode builder = getObjectMapper().createObjectNode();
+            builder.put("_type", type);
+            ArrayNode indexPIArray = (ArrayNode) json.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
             if (indexPIArray != null) {
-                builder.addAll(Json.createObjectBuilder(jsonObject).remove("processId"));
-                JsonArray utArray = model.getJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+                json.remove("processId");
+                builder.setAll(json);
+                ArrayNode utArray = (ArrayNode) model.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
                 if (utArray != null) {
-                    builder.add(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, utArray);
+                    builder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, utArray);
                 }
                 copyJsonArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, model, builder, indexPIArray);
             }
-            JsonArray indexTIArray = jsonObject.getJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+            ArrayNode indexTIArray = (ArrayNode) json.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
             if (indexTIArray != null) {
-                builder.addAll(Json.createObjectBuilder(model));
+                builder.setAll(model);
                 copyJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, model, builder, indexTIArray);
             }
-            cache.put(processInstanceId, builder.build());
+            cache.put(processInstanceId, builder);
         }
     }
 
-    private void copyJsonArray(String attribute, JsonObject model, JsonObjectBuilder builder, JsonArray indexTIArray) {
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder(indexTIArray);
-        JsonArray jsonArray = model.getJsonArray(attribute);
+    private void copyJsonArray(String attribute, ObjectNode model, ObjectNode builder, ArrayNode arrayNode) {
+        ArrayNode arrayBuilder = getObjectMapper().createArrayNode().addAll(arrayNode);
+        ArrayNode jsonArray = model.withArray(attribute);
         if (jsonArray != null) {
-            String indexTaskId = indexTIArray.get(0).asJsonObject().getString("id");
-            jsonArray.stream().filter(ti -> !indexTaskId.equals(ti.asJsonObject().getString("id"))).forEach(arrayBuilder::add);
+            String indexTaskId = arrayNode.get(0).get("id").asText();
+            jsonArray.forEach(ti -> {
+                if (!indexTaskId.equals(ti.get("id").asText())) {
+                    arrayBuilder.add(ti);
+                }
+            });
         }
         builder.remove(attribute);
-        builder.add(attribute, arrayBuilder.build());
+        builder.set(attribute, arrayBuilder);
     }
 }

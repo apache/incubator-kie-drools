@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,17 @@ import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.MessageMarshaller;
 
 @ApplicationScoped
 public class ProtostreamProducer {
+
+    @Inject
+    ObjectMapper mapper;
 
     @Produces
     FileDescriptorSource kogitoTypesDescriptor() throws IOException {
@@ -37,16 +42,16 @@ public class ProtostreamProducer {
 
     @Produces
     MessageMarshaller userTaskInstanceMarshaller() {
-        return new UserTaskInstanceMarshaller();
+        return new UserTaskInstanceMarshaller(mapper);
     }
 
     @Produces
     MessageMarshaller processInstanceMarshaller() {
-        return new ProcessInstanceMarshaller();
+        return new ProcessInstanceMarshaller(mapper);
     }
 
     @Produces
     MessageMarshaller nodeInstanceMarshaller() {
-        return new NodeInstanceMarshaller();
+        return new NodeInstanceMarshaller(mapper);
     }
 }

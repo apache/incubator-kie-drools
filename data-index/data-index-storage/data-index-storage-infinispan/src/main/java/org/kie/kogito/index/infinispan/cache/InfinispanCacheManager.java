@@ -23,8 +23,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.infinispan.client.hotrod.DataFormat;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -45,8 +46,11 @@ public class InfinispanCacheManager implements CacheService {
     private static final String PROCESS_INSTANCES_CACHE = "processinstances";
     private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
     private static final String PROCESS_ID_MODEL_CACHE = "processidmodel";
+    
+    @Inject
+    JsonDataFormatMarshaller marshaller;
 
-    private DataFormat jsonDataFormat = DataFormat.builder().valueType(MediaType.APPLICATION_JSON).valueMarshaller(new JsonDataFormatMarshaller()).build();
+    DataFormat jsonDataFormat;
 
     @Inject
     @ConfigProperty(name = "kogito.cache.domain.template", defaultValue = "kogito-template")
@@ -57,6 +61,7 @@ public class InfinispanCacheManager implements CacheService {
 
     @PostConstruct
     public void init() {
+        jsonDataFormat = DataFormat.builder().valueType(MediaType.APPLICATION_JSON).valueMarshaller(marshaller).build();
         manager.start();
     }
 
@@ -118,7 +123,7 @@ public class InfinispanCacheManager implements CacheService {
     }
 
     @Override
-    public Map<String, JsonObject> getDomainModelCache(String processId) {
+    public Map<String, ObjectNode> getDomainModelCache(String processId) {
         return getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat);
     }
 }

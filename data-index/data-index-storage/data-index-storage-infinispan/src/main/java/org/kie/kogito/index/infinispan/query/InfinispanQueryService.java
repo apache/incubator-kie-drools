@@ -16,15 +16,15 @@
 
 package org.kie.kogito.index.infinispan.query;
 
-import java.io.StringReader;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.FilterConditionContextQueryBuilder;
@@ -37,28 +37,42 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.query.ProcessInstanceFilter;
 import org.kie.kogito.index.query.QueryService;
 import org.kie.kogito.index.query.UserTaskInstanceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class InfinispanQueryService implements QueryService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanQueryService.class);
+
     @Inject
     InfinispanCacheManager manager;
 
+    @Inject
+    ObjectMapper mapper;
+
     @Override
-    public Collection<JsonObject> queryDomain(String domain, String query) {
+    public Collection<ObjectNode> queryDomain(String domain, String query) {
         if (query == null) {
             return manager.getDomainModelCache(domain).values();
         } else {
             QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getDomainModelCache(domain));
             Query q = qf.create(query);
-            return q.<String>list().stream().map(json -> Json.createReader(new StringReader(json)).readObject()).collect(toList());
+            return q.<String>list().stream().map(json -> {
+                try {
+                    return (ObjectNode) mapper.readTree(json);
+                } catch (IOException e) {
+                    LOGGER.error("Failed to parse JSON: {}", e.getMessage(), e);
+                    return null;
+                }
+            }).collect(toList());
         }
     }
 
     @Override
-    public Collection<JsonObject> queryProcessInstances(ProcessInstanceFilter filter) {
+    public Collection<ObjectNode> queryProcessInstances(ProcessInstanceFilter filter) {
         QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getProcessInstancesCache());
         QueryBuilder qb = qf.from(ProcessInstance.class);
         if (filter != null) {
@@ -76,7 +90,7 @@ public class InfinispanQueryService implements QueryService {
     }
 
     @Override
-    public Collection<JsonObject> queryUserTaskInstances(UserTaskInstanceFilter filter) {
+    public Collection<ObjectNode> queryUserTaskInstances(UserTaskInstanceFilter filter) {
         QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getUserTaskInstancesCache());
         QueryBuilder qb = qf.from(UserTaskInstance.class);
         if (filter != null) {

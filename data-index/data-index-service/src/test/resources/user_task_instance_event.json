@@ -53,7 +53,8 @@
     "state": "Completed",
     "taskDescription": "",
     "taskName": "Apply for visa",
-    "taskPriority": "1"
+    "taskPriority": "1",
+    "referenceName": "http://localhost:8080/travels/{uuid}/ConfirmTravel/{task-uuid}"
   },
   "id": "ef315bd2-93a9-456f-b539-d73c0c83c1df",
   "kogitoProcessId": "travels",

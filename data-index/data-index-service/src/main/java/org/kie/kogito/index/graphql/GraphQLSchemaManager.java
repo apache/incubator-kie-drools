@@ -25,8 +25,8 @@ import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
@@ -76,12 +76,12 @@ public class GraphQLSchemaManager {
         return schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
     }
 
-    private Collection<JsonObject> getProcessInstancesValues(DataFetchingEnvironment env) {
+    private Collection<ObjectNode> getProcessInstancesValues(DataFetchingEnvironment env) {
         Map<String, Object> filter = env.getArgument("filter");
         return queryService.queryProcessInstances(new ProcessInstanceFilterMapper().apply(filter));
     }
 
-    private Collection<JsonObject> getUserTaskInstancesValues(DataFetchingEnvironment env) {
+    private Collection<ObjectNode> getUserTaskInstancesValues(DataFetchingEnvironment env) {
         Map<String, Object> filter = env.getArgument("filter");
         return queryService.queryUserTaskInstances(new UserTaskInstanceFilterMapper().apply(filter));
     }

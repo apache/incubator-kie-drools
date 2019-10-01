@@ -19,66 +19,66 @@ package org.kie.kogito.index.json;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
 
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
-public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudEvent, JsonObject> {
+public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudEvent, ObjectNode> {
 
     @Override
-    public JsonObject apply(KogitoUserTaskCloudEvent event) {
+    public ObjectNode apply(KogitoUserTaskCloudEvent event) {
         if (event == null) {
             return null;
         }
 
         UserTaskInstance ut = event.getData();
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("id", event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
-        builder.add("processId", event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
-        builder.add(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, getUserTaskJson(ut));
-        return builder.build();
+        ObjectNode json = getObjectMapper().createObjectNode();
+        json.put("id", event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
+        json.put("processId", event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+        json.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(ut));
+        return json;
     }
 
-    private JsonArray getUserTaskJson(UserTaskInstance ut) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("id", ut.getId());
-        builder.add("processInstanceId", ut.getProcessInstanceId());
-        builder.add("state", ut.getState());
+    private ObjectNode getUserTaskJson(UserTaskInstance ut) {
+        ObjectNode json = getObjectMapper().createObjectNode();
+        json.put("id", ut.getId());
+        json.put("processInstanceId", ut.getProcessInstanceId());
+        json.put("state", ut.getState());
         if (ut.getDescription() != null) {
-            builder.add("description", ut.getDescription());
+            json.put("description", ut.getDescription());
         }
         if (ut.getName() != null) {
-            builder.add("name", ut.getName());
+            json.put("name", ut.getName());
         }
         if (ut.getPriority() != null) {
-            builder.add("priority", ut.getPriority());
+            json.put("priority", ut.getPriority());
         }
         if (ut.getActualOwner() != null) {
-            builder.add("actualOwner", ut.getActualOwner());
+            json.put("actualOwner", ut.getActualOwner());
         }
-        mapArray("adminUsers", ut.getAdminUsers(), builder);
-        mapArray("adminGroups", ut.getAdminGroups(), builder);
-        mapArray("excludedUsers", ut.getExcludedUsers(), builder);
-        mapArray("potentialGroups", ut.getPotentialGroups(), builder);
-        mapArray("potentialUsers", ut.getPotentialUsers(), builder);
+        mapArray("adminUsers", ut.getAdminUsers(), json);
+        mapArray("adminGroups", ut.getAdminGroups(), json);
+        mapArray("excludedUsers", ut.getExcludedUsers(), json);
+        mapArray("potentialGroups", ut.getPotentialGroups(), json);
+        mapArray("potentialUsers", ut.getPotentialUsers(), json);
         if (ut.getCompleted() != null) {
-            builder.add("completed", ut.getCompleted().toInstant().toEpochMilli());
+            json.put("completed", ut.getCompleted().toInstant().toEpochMilli());
         }
         if (ut.getStarted() != null) {
-            builder.add("started", ut.getStarted().toInstant().toEpochMilli());
+            json.put("started", ut.getStarted().toInstant().toEpochMilli());
         }
-        return Json.createArrayBuilder().add(builder).build();
+        return json;
     }
 
-    private void mapArray(String attribute, Set<String> strings, JsonObjectBuilder builder) {
+    private void mapArray(String attribute, Set<String> strings, ObjectNode json) {
         if (strings != null && !strings.isEmpty()) {
-            builder.add(attribute, Json.createArrayBuilder(strings));
+            ArrayNode array = json.withArray(attribute);
+            strings.forEach(s -> array.add(s));
         }
     }
 }

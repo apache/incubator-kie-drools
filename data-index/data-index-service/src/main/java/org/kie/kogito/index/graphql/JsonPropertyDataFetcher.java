@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,7 @@
 
 package org.kie.kogito.index.graphql;
 
-import javax.json.JsonException;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.PropertyDataFetcher;
 import org.slf4j.Logger;
@@ -30,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class JsonPropertyDataFetcher extends PropertyDataFetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonPropertyDataFetcher.class);
-    
+
     public JsonPropertyDataFetcher(String propertyName) {
         super(propertyName);
     }
@@ -38,28 +33,31 @@ public class JsonPropertyDataFetcher extends PropertyDataFetcher {
     @Override
     public Object get(DataFetchingEnvironment environment) {
         Object source = environment.getSource();
-        if (source instanceof JsonObject) {
-            JsonObject jsonObject = (JsonObject) source;
-            String jsonPointer = "/" + getPropertyName();
+        if (source instanceof JsonNode) {
+            JsonNode jsonObject = (JsonNode) source;
+            String jsonPointer = getPropertyName();
             try {
-                JsonValue value = jsonObject.getValue(jsonPointer);
-                switch (value.getValueType()) {
+                JsonNode value = jsonObject.findValue(jsonPointer);
+                if (value == null) {
+                    return null;
+                }
+                switch (value.getNodeType()) {
                     case OBJECT:
-                        return value.asJsonObject();
+                    case POJO:
                     case ARRAY:
-                        return value.asJsonArray();
+                        return value;
                     case NUMBER:
-                        return ((JsonNumber) value).numberValue();
-                    case TRUE:
-                    case FALSE:
-                        return value.toString();
+                        return value.numberValue();
+                    case BOOLEAN:
+                        return value.asBoolean();
                     case STRING:
-                        return ((JsonString) value).getString();
+                        return value.asText();
                     case NULL:
+                    case MISSING:
                     default:
                         return null;
                 }
-            } catch (JsonException ex){
+            } catch (Exception ex) {
                 LOGGER.warn(ex.getMessage());
                 return null;
             }

@@ -29,9 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.NodeInstance;
@@ -41,6 +39,7 @@ import org.kie.kogito.index.model.UserTaskInstance;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singleton;
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 public final class TestUtils {
 
@@ -105,20 +104,20 @@ public final class TestUtils {
         return newArrayList(ni);
     }
 
-    private static String getProcessInstanceVariables() {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+    private static JsonNode getProcessInstanceVariables() {
+        Map<String, Object> json = new HashMap<>();
         Map<String, Object> traveller = new HashMap<>();
         traveller.put("firstName", "Maciej");
-        builder.add("traveller", Json.createObjectBuilder(traveller).build());
+        json.put("traveller", traveller);
         Map<String, Object> hotel = new HashMap<>();
         hotel.put("name", "Meriton");
-        builder.add("hotel", Json.createObjectBuilder(hotel).build());
+        json.put("hotel", hotel);
         Map<String, Object> flight = new HashMap<>();
         flight.put("flightNumber", "MX555");
         flight.put("arrival", "2019-08-20T22:12:57.340Z");
         flight.put("departure", "2019-08-20T07:12:57.340Z");
-        builder.add("flight", Json.createObjectBuilder(flight).build());
-        return builder.build().toString();
+        json.put("flight", flight);
+        return getObjectMapper().valueToTree(json);
     }
 
     public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {

@@ -16,21 +16,15 @@
 
 package org.kie.kogito.index.model;
 
-import javax.json.bind.annotation.JsonbTypeAdapter;
-
-import org.kie.kogito.index.json.JsonStringTypeAdapter;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class UserTaskInstance extends UserTaskInstanceMeta {
 
     private String processId;
     private String rootProcessId;
     private String rootProcessInstanceId;
-
-    @JsonbTypeAdapter(JsonStringTypeAdapter.class)
-    private String inputs;
-
-    @JsonbTypeAdapter(JsonStringTypeAdapter.class)
-    private String outputs;
+    private JsonNode inputs;
+    private JsonNode outputs;
 
     public String getProcessId() {
         return processId;
@@ -73,19 +67,19 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
         }
     }
 
-    public String getInputs() {
+    public JsonNode getInputs() {
         return inputs;
     }
 
-    public void setInputs(String inputs) {
+    public void setInputs(JsonNode inputs) {
         this.inputs = inputs;
     }
 
-    public String getOutputs() {
+    public JsonNode getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(String outputs) {
+    public void setOutputs(JsonNode outputs) {
         this.outputs = outputs;
     }
 }

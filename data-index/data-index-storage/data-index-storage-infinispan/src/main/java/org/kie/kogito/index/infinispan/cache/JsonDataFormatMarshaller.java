@@ -16,14 +16,14 @@
 
 package org.kie.kogito.index.infinispan.cache;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.infinispan.commons.dataconversion.MediaType;
 import org.infinispan.commons.io.ByteBuffer;
 import org.infinispan.commons.io.ByteBufferImpl;
@@ -31,12 +31,16 @@ import org.infinispan.commons.marshall.AbstractMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ApplicationScoped
 public class JsonDataFormatMarshaller extends AbstractMarshaller {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonDataFormatMarshaller.class);
 
+    @Inject
+    ObjectMapper mapper;
+
     @Override
-    protected ByteBuffer objectToBuffer(Object object, int estimatedSize) throws IOException, InterruptedException {
+    protected ByteBuffer objectToBuffer(Object object, int estimatedSize) {
         String json = object.toString();
         LOGGER.debug("Serializing JSON: \n{}", json);
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
@@ -44,15 +48,13 @@ public class JsonDataFormatMarshaller extends AbstractMarshaller {
     }
 
     @Override
-    public Object objectFromByteBuffer(byte[] buf, int offset, int length) throws IOException, ClassNotFoundException {
-        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(buf, offset, length))) {
-            return reader.readObject();
-        }
+    public Object objectFromByteBuffer(byte[] buf, int offset, int length) throws IOException {
+        return mapper.readTree(buf);
     }
 
     @Override
-    public boolean isMarshallable(Object o) throws Exception {
-        return o instanceof JsonObject;
+    public boolean isMarshallable(Object o) {
+        return o instanceof ObjectNode;
     }
 
     @Override

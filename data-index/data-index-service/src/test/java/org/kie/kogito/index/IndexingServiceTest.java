@@ -58,6 +58,7 @@ import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -323,13 +324,17 @@ public class IndexingServiceTest {
     }
 
     private void indexProcessCloudEvent(KogitoProcessCloudEvent event) throws Exception {
-        consumer.onProcessInstanceEvent(event).toCompletableFuture().get();
-        consumer.onProcessInstanceDomainEvent(event).toCompletableFuture().get();
+        CompletableFuture.allOf(
+                consumer.onProcessInstanceEvent(event).toCompletableFuture(),
+                consumer.onProcessInstanceDomainEvent(event).toCompletableFuture()
+        ).get();
     }
 
     private void indexUserTaskCloudEvent(KogitoUserTaskCloudEvent event) throws Exception {
-        consumer.onUserTaskInstanceEvent(event).toCompletableFuture().get();
-        consumer.onUserTaskInstanceDomainEvent(event).toCompletableFuture().get();
+        CompletableFuture.allOf(
+                consumer.onUserTaskInstanceEvent(event).toCompletableFuture(),
+                consumer.onUserTaskInstanceDomainEvent(event).toCompletableFuture()
+        ).get();
     }
 
     @Test
@@ -529,7 +534,7 @@ public class IndexingServiceTest {
 
         event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, null, null, null);
         event.getData().setEnd(ZonedDateTime.now());
-        event.getData().setVariables("{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }");
+        event.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
         indexProcessCloudEvent(event);
 
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), event);
