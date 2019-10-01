@@ -93,11 +93,7 @@ public class MvelCompiler {
             Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase().invoke(rhs, lhs);
             TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(s)).orElse(lhs);
 
-            Statement expression = (Statement) postProcessedLHS.toJavaExpression();
-
-            Statement typeCoercedExpression = new TypeCoercionPhase().invoke(expression);
-
-            statements.add(typeCoercedExpression);
+            statements.add((Statement) postProcessedLHS.toJavaExpression());
         }
     }
 }
