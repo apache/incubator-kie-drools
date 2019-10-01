@@ -27,11 +27,14 @@ import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -104,6 +107,14 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         }
     }
 
+    /**
+     * Requires @{@link OptaPlannerRuleEventListener} to be added as event listener on {@link KieSession}, otherwise the
+     * score changes caused by the constraint matches would not be undone. See
+     * {@link DroolsScoreDirector#resetKieSession()} for an example.
+     * @param kcontext The rule for which to register the match.
+     * @param constraintUndoListener The operation to run to undo the match.
+     * @param scoreSupplier The score change to be undone when constraint justification enabled.
+     */
     protected void registerConstraintMatch(RuleContext kcontext,
             final Runnable constraintUndoListener, Supplier<Score_> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
@@ -212,7 +223,5 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
                 }
             }
         }
-
     }
-
 }

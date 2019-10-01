@@ -60,7 +60,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void filter_problemFact() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
         TestdataLavishValueGroup valueGroup1 = new TestdataLavishValueGroup("MyValueGroup 1");
         solution.getValueGroupList().add(valueGroup1);
@@ -89,7 +88,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void filter_entity() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);

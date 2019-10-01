@@ -20,18 +20,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Match;
-import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder.ConstraintActivationUnMatchListener;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -76,7 +72,7 @@ public class DroolsScoreDirector<Solution_>
             kieSession.dispose();
         }
         kieSession = scoreDirectorFactory.newKieSession();
-        ((RuleEventManager) kieSession).addEventListener(new OptaplannerRuleEventListener());
+        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener());
         resetScoreHolder();
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         Collection<Object> workingFacts = getWorkingFacts();
@@ -94,29 +90,6 @@ public class DroolsScoreDirector<Solution_>
             scoreHolder.configureConstraintWeight(rule, constraintWeight);
         });
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-    }
-
-    private static final class OptaplannerRuleEventListener implements RuleEventListener {
-
-        @Override
-        public void onUpdateMatch(Match match) {
-            undoPreviousMatch((AgendaItem) match);
-        }
-
-        @Override
-        public void onDeleteMatch(Match match) {
-            undoPreviousMatch((AgendaItem) match);
-        }
-
-        public void undoPreviousMatch(AgendaItem agendaItem) {
-            Object callback = agendaItem.getCallback();
-            // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
-            if (callback instanceof ConstraintActivationUnMatchListener) {
-                ((ConstraintActivationUnMatchListener) callback).run();
-                agendaItem.setCallback(null);
-            }
-        }
-
     }
 
     public Collection<Object> getWorkingFacts() {

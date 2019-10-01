@@ -21,11 +21,13 @@ import java.util.List;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
@@ -45,6 +47,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         KieSession kieSession = kieBase.newKieSession();
+        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules
         ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
         for (DroolsConstraint<Solution_> constraint : constraintList) {
