@@ -16,7 +16,10 @@
 
 package org.kie.kogito.services.uow;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.kie.kogito.event.EventBatch;
@@ -54,8 +57,9 @@ public class CollectingUnitOfWork implements UnitOfWork {
     @Override
     public void end() {
         checkStarted();
-        EventBatch batch = eventManager.newBatch();
-        for (WorkUnit<?> work : collectedWork) {
+        EventBatch batch = eventManager.newBatch();        
+        
+        for (WorkUnit<?> work : sorted()) {
             batch.append(work.data());
             work.perform();
         }
@@ -66,12 +70,13 @@ public class CollectingUnitOfWork implements UnitOfWork {
     @Override
     public void abort() {
         checkStarted();                
-        for (WorkUnit<?> work : collectedWork) {            
+        for (WorkUnit<?> work : sorted()) {            
             work.abort();
         }
         done();
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void intercept(WorkUnit work) {
         checkStarted();
@@ -80,6 +85,13 @@ public class CollectingUnitOfWork implements UnitOfWork {
         }
         collectedWork.remove(work);
         collectedWork.add(work);
+    }
+    
+    protected Collection<WorkUnit<?>> sorted() {
+        List<WorkUnit<?>> sortedCollectedWork = new ArrayList<>(collectedWork);
+        sortedCollectedWork.sort((u1, u2) -> u1.priority().compareTo(u2.priority()));
+        
+        return sortedCollectedWork;
     }
 
     

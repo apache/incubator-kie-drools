@@ -107,4 +107,30 @@ public class DefaultUnitOfWorkManagerTest {
         assertThrows(IllegalStateException.class, () -> unit.intercept(dummyWork), "Cannot intercept on not started unit");
               
     }
+    
+    @Test
+    public void testUnitOfWorkStartEndOrdered() {
+        
+        UnitOfWork unit = unitOfWorkManager.newUnitOfWork();
+        assertThat(unit).isNotNull().isInstanceOf(ManagedUnitOfWork.class);
+        assertThat(((ManagedUnitOfWork)unit).delegate()).isInstanceOf(CollectingUnitOfWork.class);
+        
+        final AtomicInteger counter = new AtomicInteger(0);
+        assertThat(counter.get()).isEqualTo(0);
+        
+        final AtomicInteger picounter = new AtomicInteger(0);
+        
+        BaseWorkUnit dummyWork = new BaseWorkUnit(counter, (d) -> ((AtomicInteger) d).incrementAndGet());
+        ProcessInstanceWorkUnit<?> piWork = new ProcessInstanceWorkUnit<>(null, (d) -> picounter.set(counter.get()));
+        unit.start();
+        // make sure that dummyWork is first added and then piWork
+        unit.intercept(dummyWork);
+        unit.intercept(piWork);
+        unit.end();
+        
+        // after execution the pi should be 0 as this is the initial value of counter which will indicate
+        // it was invoked before dummyWork that increments it
+        assertThat(counter.get()).isEqualTo(1);
+        assertThat(picounter.get()).isEqualTo(0);
+    }
 }

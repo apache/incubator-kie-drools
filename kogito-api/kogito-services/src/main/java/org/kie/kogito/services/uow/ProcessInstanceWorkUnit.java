@@ -55,6 +55,11 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
             compensation.accept(data());
         }
     }
+    
+    @Override
+    public Integer priority() {
+        return 10;
+    }
 
     @Override
     public int hashCode() {

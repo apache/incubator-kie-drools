@@ -43,6 +43,14 @@ public interface WorkUnit<T> {
     }
     
     /**
+     * Returns desired priority for the work unit execution order
+     * @return property as positive number
+     */
+    default Integer priority() {
+        return 100;
+    }
+    
+    /**
      * Creates new WorkUnit that has only action invoked upon completion of the unit of work
      * @param data data associated with the work
      * @param action work to be executed on given data
