@@ -121,7 +121,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     };
     private final Collection<Resource> resources;
     private RuleUnitContainerGenerator moduleGenerator;
-    private final Map<String, String> labels;
 
     private boolean dependencyInjection;
     private DependencyInjectionAnnotator annotator;
@@ -143,7 +142,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         this.kieModuleModel = new KieModuleModelImpl();
         setDefaultsforEmptyKieModule(kieModuleModel);
         this.contextClassLoader = getClass().getClassLoader();
-        this.labels = new HashMap<>();
     }
 
     @Override
@@ -217,7 +215,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
             for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
                 // add the label id of the rule unit with value set to `rules` as resource type
-                labels.put(ruleUnit.label(), "rules");
+                this.addLabel(ruleUnit.label(), "rules");
                 ruleUnit.setApplicationPackageName(packageName);
 
                 generatedFiles.add( ruleUnit.generateFile(GeneratedFile.Type.RULE) );
@@ -289,11 +287,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private void addGeneratedFile( List<GeneratedFile> generatedFiles, org.drools.modelcompiler.builder.GeneratedFile source, String pathPrefix ) {
         ApplicationGenerator.log( source.getData() );
         generatedFiles.add( new GeneratedFile(GeneratedFile.Type.RULE, pathPrefix + source.getPath(), source.getData()) );
-    }
-
-    @Override
-    public Map<String, String> getLabels() {
-        return labels;
     }
 
     @Override

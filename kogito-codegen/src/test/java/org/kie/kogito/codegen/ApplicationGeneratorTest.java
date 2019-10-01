@@ -40,6 +40,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.*;
@@ -108,6 +109,14 @@ public class ApplicationGeneratorTest {
         final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
         final Collection<GeneratedFile> generatedFiles = appGenerator.generate();
         assertGeneratedFiles(generatedFiles, appGenerator.compilationUnit().toString().getBytes(StandardCharsets.UTF_8), 2);
+    }
+    
+    @Test
+    public void generateWithMonitoring() throws IOException {
+        final Path targetDirectory = Paths.get("target");
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, targetDirectory.toFile()).withMonitoring(true);
+        appGenerator.generate();
+        assertImageMetadata(targetDirectory, new PrometheusLabeler().generateLabels());
     }
 
     @Test

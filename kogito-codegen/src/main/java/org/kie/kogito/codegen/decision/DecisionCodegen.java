@@ -86,7 +86,6 @@ public class DecisionCodegen extends AbstractGenerator {
     private DecisionContainerGenerator moduleGenerator;
 
     private final Map<String, Definitions> models;
-    private final Map<String, String> labels = new HashMap<>();
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
     public DecisionCodegen(Collection<? extends Definitions> models) {
@@ -143,10 +142,6 @@ public class DecisionCodegen extends AbstractGenerator {
 
     public List<GeneratedFile> getGeneratedFiles() {
         return generatedFiles;
-    }
-
-    public Map<String, String> getLabels() {
-        return labels;
     }
 
     @Override

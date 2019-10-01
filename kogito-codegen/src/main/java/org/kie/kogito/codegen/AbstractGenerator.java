@@ -16,16 +16,19 @@
 package org.kie.kogito.codegen;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractGenerator implements Generator {
-    
+
     protected Path projectDirectory;
     protected GeneratorContext context;
+
+    private final Map<String, String> labels = new HashMap<>();
 
     @Override
     public void setProjectDirectory(Path projectDirectory) {
         this.projectDirectory = projectDirectory;
-        
     }
 
     @Override
@@ -38,5 +41,13 @@ public abstract class AbstractGenerator implements Generator {
         return this.context;
     }
 
+    public final void addLabel(final String key, final String value) {
+        this.labels.put(key, value);
+    }
+
+    @Override
+    public final Map<String, String> getLabels() {
+        return labels;
+    }
 
 }

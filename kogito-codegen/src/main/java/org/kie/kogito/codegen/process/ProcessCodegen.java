@@ -122,7 +122,6 @@ public class ProcessCodegen extends AbstractGenerator {
     private ProcessesContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
-    private final Map<String, String> labels = new HashMap<>();
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     
     private boolean persistence;
@@ -336,7 +335,7 @@ public class ProcessCodegen extends AbstractGenerator {
         for (ProcessExecutableModelGenerator legacyProcessGenerator : processExecutableModelGenerators) {
             if (legacyProcessGenerator.isPublic()) {
                 publicProcesses.add(legacyProcessGenerator.extractedProcessId());
-                labels.put(legacyProcessGenerator.label(), "process");// add the label id of the process with value set to process as resource type
+                this.addLabel(legacyProcessGenerator.label(), "process"); // add the label id of the process with value set to process as resource type
             }
         }
 
@@ -357,10 +356,6 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public List<GeneratedFile> getGeneratedFiles() {
         return generatedFiles;
-    }
-
-    public Map<String, String> getLabels() {
-        return labels;
     }
 
     @Override

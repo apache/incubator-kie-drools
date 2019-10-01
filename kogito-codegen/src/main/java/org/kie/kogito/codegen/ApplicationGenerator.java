@@ -51,6 +51,8 @@ import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
+import org.kie.kogito.codegen.metadata.Labeler;
+import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.kie.kogito.event.EventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +84,7 @@ public class ApplicationGenerator {
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator;
     private List<Generator> generators = new ArrayList<>();
+    private List<Labeler> labelers = new ArrayList<>();
 
     private GeneratorContext context = new GeneratorContext();
     private boolean persistence;
@@ -203,6 +206,13 @@ public class ApplicationGenerator {
        this.persistence = persistence;
        return this;
    }
+   
+   public ApplicationGenerator withMonitoring(boolean monitoring) {
+       if (monitoring) {
+           this.labelers.add(new PrometheusLabeler());
+       }
+       return this;
+   }
 
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
@@ -213,6 +223,7 @@ public class ApplicationGenerator {
         if (useInjection()) {
             generators.forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
         }
+        this.labelers.forEach(l -> writeLabelsImageMetadata(l.generateLabels()));
         return generatedFiles;
     }
 
