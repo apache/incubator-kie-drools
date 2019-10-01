@@ -56,6 +56,11 @@
         <artifactId>jmh-core</artifactId>
         <scope>compile</scope>
      </dependency>
+<dependency>
+    <groupId>org.freemarker</groupId>
+    <artifactId>freemarker</artifactId>
+</dependency>
+     
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>

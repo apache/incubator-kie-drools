@@ -16,11 +16,18 @@
 
 package org.kie.dmn.core.alphasupport;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
@@ -34,6 +41,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -42,8 +50,8 @@ import org.slf4j.Logger;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @State(Scope.Thread)
-@Warmup(iterations = 100)
-@Measurement(iterations = 50)
+@Warmup(iterations = 200)
+@Measurement(iterations = 100)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class DMNDecisionTableAlphaSupportingDraftBench {
 
@@ -53,11 +61,35 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
     private String existingCustomer;
     private BigDecimal score;
 
+    @Param({"0", "1", "2", "3", "4", "5", "10", "15", "20", "30", "40", "52"})
+    private int alphalength;
+    private char[] alphabet;
+
     @Setup()
-    public void init() {
+    public void init() throws Exception {
+        char[] az = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        this.alphabet = Arrays.copyOf(az, alphalength);
+        System.setProperty("alphalength", Integer.toString(alphalength));
+        
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_26);
+        cfg.setClassForTemplateLoading(DMNDecisionTableAlphaSupportingDraftBench.class, "");
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        
+        Template temp = cfg.getTemplate("alphasupport.dmn.ftlh");
+        StringWriter out = new StringWriter();
+        Map<String, Object> root = new HashMap<>();
+        root.put("letters", alphabet);
+        temp.process(root, out);
+        String xml = out.getBuffer().toString();
+
+        LOG.debug("{}", xml);
+
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
-                                                                    ks.getResources().newClassPathResource("alphasupport.dmn", DMNDecisionTableAlphaSupportingDraftBench.class));
+                                                                    ks.getResources()
+                                                                      .newByteArrayResource(xml.getBytes())
+                                                                      .setTargetPath("src/main/resources/alphasupport.dmn"));
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c0cf6e20-0b43-43ce-9def-c759a5f86df2", "DMN Specification Chapter 11 Example Reduced");
     }
@@ -69,12 +101,11 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
     }
 
     public String existingCustomer() {
-        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
         int randomIdx = new Random().nextInt(alphabet.length + 2);
-        if (randomIdx < alphabet.length - 2) {
+        if (randomIdx < alphabet.length) {
             return String.valueOf(alphabet[randomIdx]);
         } else {
-            return (randomIdx - 2) == 0 ? "true" : "false";
+            return (randomIdx - alphabet.length) == 0 ? "true" : "false";
         }
     }
 
@@ -93,10 +124,14 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
         LOG.debug("{}", dmnResult);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         DMNDecisionTableAlphaSupportingDraftBench u = new DMNDecisionTableAlphaSupportingDraftBench();
+        u.alphalength = 2;
         u.init();
-        u.initIterationValues();
-        u.doTest();
+        for (int i = 0; i < 1000; i++) {
+            u.initIterationValues();
+            u.doTest();
+        }
+        System.out.println("done.");
     }
 }
