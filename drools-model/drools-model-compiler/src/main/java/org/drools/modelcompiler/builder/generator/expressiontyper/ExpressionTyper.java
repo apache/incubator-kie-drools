@@ -131,7 +131,9 @@ public class ExpressionTyper {
         Class<?> typeCursor = patternType;
 
         if (drlxExpr instanceof EnclosedExpr) {
-            drlxExpr = ((EnclosedExpr) drlxExpr).getInner();
+            Expression inner = ((EnclosedExpr) drlxExpr).getInner();
+            Optional<TypedExpression> typedExpression = toTypedExpressionRec(inner);
+            return typedExpression.map(t -> t.cloneWithNewExpression(new EnclosedExpr(t.getExpression())));
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
@@ -195,7 +197,7 @@ public class ExpressionTyper {
 
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
             Optional<TypedExpression> optRight = pointFreeExpr.getRight().size() == 1 ? toTypedExpressionRec(pointFreeExpr.getRight().get( 0 )) : Optional.empty();
-            OperatorSpec opSpec = getOperatorSpec(drlxExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
+            OperatorSpec opSpec = getOperatorSpec(pointFreeExpr.getRight(), pointFreeExpr.getOperator());
 
             return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left, this), left.getType())
                     .setStatic(opSpec.isStatic())
@@ -208,7 +210,7 @@ public class ExpressionTyper {
             Expression parentLeft = findLeftLeafOfNameExpr(halfPointFreeExpr.getParentNode().orElseThrow(UnsupportedOperationException::new));
 
             Optional<TypedExpression> optLeft = toTypedExpressionRec(parentLeft);
-            OperatorSpec opSpec = getOperatorSpec(drlxExpr, halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
+            OperatorSpec opSpec = getOperatorSpec(halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
 
             final PointFreeExpr transformedToPointFree =
                     new PointFreeExpr(halfPointFreeExpr.getTokenRange().orElseThrow(() -> new IllegalStateException("Token range is not present!")),
@@ -324,7 +326,7 @@ public class ExpressionTyper {
         return empty();
     }
 
-    private OperatorSpec getOperatorSpec( Expression drlxExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+    private OperatorSpec getOperatorSpec(NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
         for (Expression rightExpr : rightExpressions) {
             toTypedExpressionRec(rightExpr);
         }
@@ -633,7 +635,6 @@ public class ExpressionTyper {
     }
 
     private TypedExpressionCursor stringLiteralExpr(StringLiteralExpr firstNode) {
-        TypedExpressionCursor teCursor;
         final Class<?> typeCursor = String.class;
         return new TypedExpressionCursor(firstNode, typeCursor);
     }
