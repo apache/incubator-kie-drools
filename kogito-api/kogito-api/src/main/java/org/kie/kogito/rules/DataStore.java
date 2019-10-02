@@ -20,7 +20,7 @@ public interface DataStore<T> extends DataSource<T> {
     DataHandle add(T object );
 
     /**
-     * Updates the fact for which the given FactHandle was assigned with the new
+     * Updates the fact for which the given DataHandle was assigned with the new
      * fact set as the second parameter in this method.
      * It is also possible to optionally specify the set of properties that have been modified.
      *
@@ -30,9 +30,11 @@ public interface DataStore<T> extends DataSource<T> {
     void update(DataHandle handle, T object);
 
     /**
-     * Deletes the fact for which the given FactHandle was assigned
+     * Deletes the fact for which the given DataHandle was assigned
      *
      * @param handle the handle whose fact is to be retracted.
      */
     void remove(DataHandle handle);
+
+    void remove(Object object);
 }

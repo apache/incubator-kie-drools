@@ -17,4 +17,5 @@
 package org.kie.kogito.rules;
 
 public interface DataHandle {
+    Object getObject();
 }

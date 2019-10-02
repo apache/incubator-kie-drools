@@ -78,6 +78,26 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
     }
 
     @Test
+    public void testRuleUnitDelete() throws Exception {
+        generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitDelete.drl");
+
+        AdultUnit adults = new AdultUnit();
+
+        adults.getPersons().add(new Person( "Mario", 45 ));
+        adults.getPersons().add(new Person( "Marilena", 47 ));
+        adults.getPersons().add(new Person( "Sofia", 7 ));
+
+        RuleUnit<AdultUnit> unit = RuleUnitRegistry.create(AdultUnit.class);
+        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
+
+        instance.fire();
+
+        List<String> results = adults.getResults().getResults();
+        assertEquals( 2, results.size() );
+        assertTrue( results.containsAll( asList("Mario", "Marilena") ) );
+    }
+
+    @Test
     public void testRuleUnitQuery() throws Exception {
         generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitQuery.drl");
 

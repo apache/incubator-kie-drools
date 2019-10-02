@@ -25,6 +25,11 @@ public class DataHandleImpl implements DataHandle {
     private static final AtomicLong counter = new AtomicLong();
 
     private final long id = counter.incrementAndGet();
+    private final Object object;
+
+    public DataHandleImpl( Object object ) {
+        this.object = object;
+    }
 
     @Override
     public boolean equals( Object o ) {
@@ -35,7 +40,25 @@ public class DataHandleImpl implements DataHandle {
     }
 
     @Override
+    public Object getObject() {
+        return object;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash( id );
+    }
+
+
+    @Override
+    public String toString() {
+        return "DataHandleImpl{" +
+                "id=" + id +
+                ", object=" + object +
+                '}';
     }
 }

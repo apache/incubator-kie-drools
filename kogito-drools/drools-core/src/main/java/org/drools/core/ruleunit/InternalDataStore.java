@@ -16,11 +16,15 @@
 
 package org.drools.core.ruleunit;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.rules.DataStore;
 
 public interface InternalDataStore<T> extends DataStore<T> {
-    void update( FactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
+    void update( InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
+    void delete( InternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
 }

@@ -400,10 +400,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if (h.getDataStore() != null) {
             // This handle has been insert from a datasource, so update it
             h.getDataStore().update( h,
-                                      ((InternalFactHandle)handle).getObject(),
-                                      mask,
-                                      modifiedClass,
-                                      this.activation );
+                                     h.getObject(),
+                                     mask,
+                                     modifiedClass,
+                                     this.activation );
             return;
         }
 
@@ -446,16 +446,26 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public void delete(FactHandle handle, FactHandle.State fhState ) {
-        Object o = ((InternalFactHandle) handle).getObject();
-        if ( ((InternalFactHandle) handle).isTraiting() ) {
-            delete( ((Thing) o).getCore() );
+        InternalFactHandle h = (InternalFactHandle) handle;
+
+        if (h.getDataStore() != null) {
+            // This handle has been insert from a datasource, so remove from it
+            h.getDataStore().delete(h,
+                                    this.activation.getRule(),
+                                    this.activation.getTuple().getTupleSink(),
+                                    fhState);
             return;
         }
 
-        ((InternalFactHandle) handle).getEntryPoint().delete(handle,
-                                                             this.activation.getRule(),
-                                                             this.activation.getTuple().getTupleSink(),
-                                                             fhState);
+        if ( h.isTraiting() ) {
+            delete( ((Thing) h.getObject()).getCore() );
+            return;
+        }
+
+        h.getEntryPoint().delete(handle,
+                                 this.activation.getRule(),
+                                 this.activation.getTuple().getTupleSink(),
+                                 fhState);
     }
 
     public RuleImpl getRule() {
