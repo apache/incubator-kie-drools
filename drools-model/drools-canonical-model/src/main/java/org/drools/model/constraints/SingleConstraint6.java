@@ -41,7 +41,7 @@ public class SingleConstraint6<A, B, C, D, E, F> extends AbstractSingleConstrain
 
     public SingleConstraint6( Expr6ViewItemImpl<A, B, C, D, E, F> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getPredicate());
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override

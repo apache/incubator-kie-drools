@@ -1,6 +1,9 @@
 package org.drools.model.view;
 
+import org.drools.model.Declaration;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.Variable;
+import org.drools.model.constraints.ReactivitySpecs;
 
 import static java.util.UUID.randomUUID;
 
@@ -9,7 +12,7 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
 
     private final Variable<T> var;
 
-    private String[] reactiveProps;
+    private ReactivitySpecs reactivitySpecs = ReactivitySpecs.EMPTY;
     private String[] watchedProps;
 
     private boolean queryExpression;
@@ -28,9 +31,13 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
         return var;
     }
 
-    public AbstractExprViewItem<T> reactOn(String... props) {
-        this.reactiveProps = props;
+    public AbstractExprViewItem<T> reactOn( String... props ) {
+        this.reactivitySpecs = new ReactivitySpecs( getDomainClassMetadata(), props );
         return this;
+    }
+
+    private DomainClassMetadata getDomainClassMetadata() {
+        return var instanceof Declaration ? (( Declaration<T> ) var).getMetadata() : null;
     }
 
     public AbstractExprViewItem<T> watch(String... props) {
@@ -43,8 +50,8 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
         return exprId;
     }
 
-    public String[] getReactiveProps() {
-        return reactiveProps;
+    public ReactivitySpecs getReactivitySpecs() {
+        return reactivitySpecs;
     }
 
     public String[] getWatchedProps() {

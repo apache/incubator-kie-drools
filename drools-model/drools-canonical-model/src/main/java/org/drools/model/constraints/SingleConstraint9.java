@@ -55,7 +55,7 @@ public class SingleConstraint9<A, B, C, D, E, F, G, H, I> extends AbstractSingle
     public SingleConstraint9( Expr9ViewItemImpl<A, B, C, D, E, F, G, H, I> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getVar7(),
                 expr.getVar8(), expr.getVar9(), expr.getPredicate());
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override

@@ -58,10 +58,12 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private MethodCallExpr addWatchToPattern( MethodCallExpr patternExpression ) {
-        Set<String> settableWatchedProps = getSettableWatchedProps();
-        if (!settableWatchedProps.isEmpty()) {
-            patternExpression = new MethodCallExpr( patternExpression, WATCH_CALL );
-            settableWatchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
+        if (context.isPropertyReactive(patternType)) {
+            Set<String> settableWatchedProps = getSettableWatchedProps();
+            if ( !settableWatchedProps.isEmpty() ) {
+                patternExpression = new MethodCallExpr( patternExpression, WATCH_CALL );
+                settableWatchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
+            }
         }
         return patternExpression;
     }
