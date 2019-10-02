@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
@@ -51,7 +52,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     @Override
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
-                                                  ExpressionEvaluator expressionEvaluator,
+                                                  ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                                   SimulationDescriptor simulationDescriptor) {
         if (!ScenarioSimulationModel.Type.DMN.equals(simulationDescriptor.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
@@ -92,7 +93,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     @Override
     protected void verifyConditions(SimulationDescriptor simulationDescriptor,
                                     ScenarioRunnerData scenarioRunnerData,
-                                    ExpressionEvaluator expressionEvaluator,
+                                    ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
         DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
@@ -110,8 +111,9 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                 FactMapping factMapping = simulationDescriptor.getFactMapping(factIdentifier, expressionIdentifier)
                         .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
+                ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(expectedResult);
+
                 ScenarioResult scenarioResult = fillResult(expectedResult,
-                                                           factIdentifier,
                                                            () -> getSingleFactValueResult(factMapping, expectedResult, decisionResult, expressionEvaluator),
                                                            expressionEvaluator);
 

@@ -19,7 +19,7 @@ package org.drools.scenariosimulation.backend.runner;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
-import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,9 @@ public class AbstractScenarioRunnerTest {
                 new AbstractScenarioRunner(kieContainerMock,
                                            new Simulation(),
                                            "",
-                                           BaseExpressionEvaluator::new) {
+                                           ExpressionEvaluatorFactory.create(
+                                                   this.getClass().getClassLoader(),
+                                                   ScenarioSimulationModel.Type.RULE)) {
                     @Override
                     protected AbstractRunnerHelper newRunnerHelper() {
                         return null;

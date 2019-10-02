@@ -34,7 +34,7 @@ public class ConditionFilterTest {
     public void acceptTest() {
         Function<Object, ResultWrapper> alwaysMatchFunction = ResultWrapper::createResult;
         FactMappingValue factMappingValue = new FactMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, "Test");
-        ScenarioResult scenarioResult = new ScenarioResult(FactIdentifier.DESCRIPTION, factMappingValue);
+        ScenarioResult scenarioResult = new ScenarioResult(factMappingValue);
         ConditionFilter conditionFilter = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 
         Assert.assertFalse(conditionFilter.accept(1));

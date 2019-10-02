@@ -29,35 +29,39 @@ import org.mvel2.ParserContext;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
+    public final static String MVEL_ESCAPE_SYMBOL = "#";
+    public final static String ACTUAL_VALUE_IDENTIFIER = "actualValue";
+
     private final ParserConfiguration config;
-    private MVELEvaluator evaluator = MVELSafeHelper.getEvaluator();
+    private final MVELEvaluator evaluator = MVELSafeHelper.getEvaluator();
+    private final ClassLoader classLoader;
 
     public MVELExpressionEvaluator(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         this.config = new ParserConfiguration();
         config.setClassLoader(classLoader);
     }
 
     @Override
     public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-            // FIXME to test with null
         if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw value should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
+            String rawClass = rawExpression == null ? null : rawExpression.getClass().getCanonicalName();
+            throw new IllegalArgumentException("Raw value should be a String and not a '" + rawClass + "'");
         }
 
         Map<String, Object> params = new HashMap<>();
-        // FIXME move $value to string constant
-        params.put("$value", resultValue);
+        params.put(ACTUAL_VALUE_IDENTIFIER, resultValue);
 
         Object expressionResult = compileAndExecute((String) rawExpression, params);
-        if(!(expressionResult instanceof Boolean)) {
-            throw new IllegalArgumentException("Wrong expression return type");
+        if (!(expressionResult instanceof Boolean)) {
+            // try to compare via compare/equals operators
+            return BaseExpressionOperator.EQUALS.eval(expressionResult, resultValue, resultClass, classLoader);
         }
         return (boolean) expressionResult;
     }
 
     @Override
     public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        // FIXME to test with null
         if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Raw value should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
         }
@@ -66,17 +70,24 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
     @Override
     public String fromObjectToExpression(Object value) {
-        throw new UnsupportedOperationException("Impossible to revert an MVEL expression");
+        throw new UnsupportedOperationException("The condition has not been satisfied");
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> T compileAndExecute(String expression, Map<String, Object> params) {
+    protected Object compileAndExecute(String rawExpression, Map<String, Object> params) {
         ParserContext ctx = new ParserContext(this.config);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             ctx.addVariable(entry.getKey(), entry.getValue().getClass());
         }
 
+        String expression = cleanExpression(rawExpression);
         Object compiledExpression = MVEL.compileExpression(expression, ctx);
-        return (T) evaluator.executeExpression(compiledExpression, params);
+        return evaluator.executeExpression(compiledExpression, params);
+    }
+
+    protected String cleanExpression(String rawExpression) {
+        if (!rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
+        }
+        return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
     }
 }
