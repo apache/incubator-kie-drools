@@ -69,12 +69,14 @@ class FlowDSLPattern extends PatternDSL {
             exprDSL.addArgument( declarationSpec.getDeclarationSource().get() );
         }
 
-        Set<String> settableWatchedProps = getSettableWatchedProps();
-        if (!settableWatchedProps.isEmpty()) {
-            exprDSL = new MethodCallExpr( exprDSL, WATCH_CALL );
-            settableWatchedProps.stream()
-                    .map( StringLiteralExpr::new )
-                    .forEach( exprDSL::addArgument );
+        if (context.isPropertyReactive(patternType)) {
+            Set<String> settableWatchedProps = getSettableWatchedProps();
+            if ( !settableWatchedProps.isEmpty() ) {
+                exprDSL = new MethodCallExpr( exprDSL, WATCH_CALL );
+                settableWatchedProps.stream()
+                        .map( StringLiteralExpr::new )
+                        .forEach( exprDSL::addArgument );
+            }
         }
 
         return exprDSL;

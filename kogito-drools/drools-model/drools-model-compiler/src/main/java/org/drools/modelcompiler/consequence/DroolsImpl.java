@@ -95,10 +95,14 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     @Override
     public void update(Object object, String... modifiedProperties) {
         Class modifiedClass = object.getClass();
-        TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
-        org.drools.core.util.bitmask.BitMask mask = typeDeclaration.isPropertyReactive() ?
-                calculatePositiveMask(modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
-                org.drools.core.util.bitmask.AllSetBitMask.get();
+        org.drools.core.util.bitmask.BitMask mask = org.drools.core.util.bitmask.AllSetBitMask.get();
+
+        if (modifiedProperties.length > 0) {
+            TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
+            if (typeDeclaration.isPropertyReactive()) {
+                mask = calculatePositiveMask( modifiedClass, asList( modifiedProperties ), typeDeclaration.getAccessibleProperties() );
+            }
+        }
 
         knowledgeHelper.update( getFactHandleForObject( object ), mask, modifiedClass);
     }

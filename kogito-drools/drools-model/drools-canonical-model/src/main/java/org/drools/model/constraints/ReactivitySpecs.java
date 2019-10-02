@@ -18,13 +18,19 @@ package org.drools.model.constraints;
 
 import org.drools.model.BitMask;
 import org.drools.model.DomainClassMetadata;
+import org.drools.model.bitmask.AllSetButLastBitMask;
 
 public class ReactivitySpecs {
 
-    public static final ReactivitySpecs EMPTY = new ReactivitySpecs( null );
+    public static final ReactivitySpecs EMPTY = new ReactivitySpecs();
 
     private final BitMask bitMask;
     private final String[] props;
+
+    private ReactivitySpecs() {
+        this.props = new String[0];
+        this.bitMask = AllSetButLastBitMask.get();
+    }
 
     public ReactivitySpecs( DomainClassMetadata metadata, String... props ) {
         this.props = props;
