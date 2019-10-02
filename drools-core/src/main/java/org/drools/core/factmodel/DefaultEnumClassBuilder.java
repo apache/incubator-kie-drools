@@ -16,17 +16,15 @@
 
 package org.drools.core.factmodel;
 
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.FieldVisitor;
-import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
-
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-
 import java.util.List;
+
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -324,7 +322,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
 
             mv = cw.visitMethod( ACC_PUBLIC,
-                    BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+                    BuildUtils.setterName( fld.getName()),
                     "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")V",
                     null,
                     null );

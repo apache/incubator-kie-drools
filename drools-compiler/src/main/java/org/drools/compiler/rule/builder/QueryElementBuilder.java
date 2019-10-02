@@ -15,6 +15,10 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -45,10 +49,6 @@ import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.rule.LogicTransformer.toIntArray;
 import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
@@ -83,7 +83,7 @@ public class QueryElementBuilder
         Declaration[] params = query.getParameters();
 
         List<BaseDescr> args = (List<BaseDescr>) patternDescr.getDescrs();
-        List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
+        List<Declaration> requiredDeclarations = new ArrayList<>();
 
         ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
         InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
@@ -196,7 +196,7 @@ public class QueryElementBuilder
             }
         }
 
-        List<Integer> varIndexList = new ArrayList<Integer>();
+        List<Integer> varIndexList = new ArrayList<>();
         for (int i = 0; i < arguments.length; i++) {
             if (!(arguments[i] instanceof QueryArgument.Declr)) {
                 if (arguments[i] instanceof QueryArgument.Var) {
@@ -331,7 +331,7 @@ public class QueryElementBuilder
             if (analysisResult == null || analysisResult.getIdentifiers().isEmpty()) {
                 arguments[pos] = getLiteralQueryArgument( context, base, result );
             } else {
-                List<Declaration> declarations = new ArrayList<Declaration>();
+                List<Declaration> declarations = new ArrayList<>();
                 for (String identifier : analysisResult.getIdentifiers()) {
                     Declaration declaration = declarationResolver.getDeclaration( identifier );
                     if (declaration != null) {

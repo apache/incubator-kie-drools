@@ -272,38 +272,38 @@ public class LeftTupleIterator
         }
         if ( source instanceof ExistsNode ) {
             BetaMemory memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
+            if (leftTuple != null) {
+                RightTuple rightTuple = leftTuple.getLeftParent().getBlocker();
+                FastIterator localIt = memory.getRightTupleMemory().fullFastIterator( rightTuple );
 
-            RightTuple rightTuple = leftTuple.getLeftParent().getBlocker();
-            FastIterator localIt = memory.getRightTupleMemory().fullFastIterator( rightTuple );
-
-            for ( LeftTuple childleftTuple = leftTuple.getHandleNext(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
-                if ( childleftTuple.getTupleSink() == sink ) {
-                    return childleftTuple;
-                }
-            }
-
-            leftTuple = leftTuple.getLeftParent();
-
-            // now move onto next RightTuple                                                
-            while ( rightTuple != null ) {
-                if ( rightTuple.getBlocked() != null ) {
-                    if ( leftTuple != null ) {
-                        leftTuple = leftTuple.getBlockedNext();
-                    } else {
-                        leftTuple = rightTuple.getBlocked();
+                for ( LeftTuple childleftTuple = leftTuple.getHandleNext(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                    if ( childleftTuple.getTupleSink() == sink ) {
+                        return childleftTuple;
                     }
-                    for ( ; leftTuple != null; leftTuple = leftTuple.getBlockedNext() ) {
-                        for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
-                            if ( childleftTuple.getTupleSink() == sink ) {
-                                return childleftTuple;
+                }
+
+                leftTuple = leftTuple.getLeftParent();
+
+                // now move onto next RightTuple
+                while ( rightTuple != null ) {
+                    if ( rightTuple.getBlocked() != null ) {
+                        if ( leftTuple != null ) {
+                            leftTuple = leftTuple.getBlockedNext();
+                        } else {
+                            leftTuple = rightTuple.getBlocked();
+                        }
+                        for ( ; leftTuple != null; leftTuple = leftTuple.getBlockedNext() ) {
+                            for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                                if ( childleftTuple.getTupleSink() == sink ) {
+                                    return childleftTuple;
+                                }
                             }
                         }
+
                     }
-
+                    rightTuple = (RightTuple) localIt.next( rightTuple );
                 }
-                rightTuple = (RightTuple) localIt.next( rightTuple );
             }
-
         } else if ( source instanceof EvalConditionNode || source instanceof QueryElementNode ) {
             LeftTuple childLeftTuple = leftTuple;
             if ( leftTuple != null ) {

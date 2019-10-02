@@ -147,7 +147,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         }
         return notify ?
                segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit) :
-               segmentMemory.linkSegmentWithoutRuleNotify(wm, nodePosMaskBit);
+               segmentMemory.linkSegmentWithoutRuleNotify(nodePosMaskBit);
     }
 
     public void setNodeDirtyWithoutNotify() {

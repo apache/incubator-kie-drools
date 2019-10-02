@@ -50,15 +50,15 @@ public abstract class AbstractJandexTest {
         Index index = indexer.complete();
 
         Set<ClassInfo> founds = index.getAllKnownImplementors(DotName.createSimple(FEELFunction.class.getCanonicalName()));
-        LOG.info("founds: \n{}", founds);
+        LOG.debug("founds: \n{}", founds);
         Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true));
         List<Object> results = new ArrayList<>();
         for (ClassInfo found : founds.stream().sorted(Comparator.comparing(ClassInfo::name)).collect(Collectors.toList())) {
             results.add(toReflectConfigMap(found));
         }
-        LOG.info("results: \n{}", results);
+        LOG.debug("results: \n{}", results);
         String json = jsonb.toJson(results);
-        LOG.info("Expected reflect-config.json: \n{}", json);
+        LOG.debug("Expected reflect-config.json: \n{}", json);
         
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> fromJson = jsonb.fromJson(new FileReader("src/main/resources/META-INF/native-image/org.kie/" + moduleName + "/reflect-config.json"),

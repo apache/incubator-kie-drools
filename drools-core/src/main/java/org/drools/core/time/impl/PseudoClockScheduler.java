@@ -53,7 +53,7 @@ public class PseudoClockScheduler
     private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
 
     private AtomicLong                      timer;
-    private PriorityBlockingQueue<Callable<Void>>   queue;
+    private PriorityBlockingQueue<DefaultTimerJobInstance>   queue;
     private transient InternalWorkingMemory session;
 
     private TimerJobFactoryManager          jobFactoryManager = DefaultTimerJobFactoryManager.instance;
@@ -74,7 +74,7 @@ public class PseudoClockScheduler
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityBlockingQueue<Callable<Void>> tmp = (PriorityBlockingQueue<Callable<Void>>) in.readObject();
+        PriorityBlockingQueue<DefaultTimerJobInstance> tmp = (PriorityBlockingQueue<DefaultTimerJobInstance>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -135,7 +135,7 @@ public class PseudoClockScheduler
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized (this) {
-            queue.add((Callable<Void>) timerJobInstance);
+            queue.add( ( DefaultTimerJobInstance ) timerJobInstance );
         }
     }
 
@@ -190,9 +190,9 @@ public class PseudoClockScheduler
     @SuppressWarnings("unchecked")
     private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
         long endTime = this.timer.get() + increase;
-        TimerJobInstance item = (TimerJobInstance) queue.peek();
+        TimerJobInstance item = queue.peek();
         long fireTime;
-        while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime ) ) )  ) {
+        while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
             // remove the head
             queue.remove(item);
             if ( item.getJobHandle().isCancel() ) {
@@ -210,14 +210,14 @@ public class PseudoClockScheduler
                 logger.error( "Exception running callbacks: ", e );
             }
             // get next head
-            item = (TimerJobInstance) queue.peek();
+            item = queue.peek();
         }
         this.timer.set( endTime );
         return this.timer.get();
     }
 
     public synchronized long getTimeToNextJob() {
-        TimerJobInstance item = (TimerJobInstance) queue.peek();
+        TimerJobInstance item = queue.peek();
         return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
     }
 

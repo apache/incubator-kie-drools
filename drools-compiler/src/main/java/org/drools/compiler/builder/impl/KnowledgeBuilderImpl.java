@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -148,11 +149,9 @@ import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.AssemblerContext;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
@@ -172,8 +171,6 @@ import static org.drools.core.util.StringUtils.ucFirst;
 public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                                              DroolsAssemblerContext,
                                              AssemblerContext {
-
-    private static final String JAVA_ROOT = "src/main/java/";
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
@@ -304,8 +301,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             this.rootClassLoader = this.configuration.getClassLoader();
         }
 
-        // FIXME, we need to get drools to support "default" namespace.
-        //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
@@ -383,7 +378,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                 (DecisionTableConfiguration) configuration :
                 null;
 
-        if (dtableConfiguration != null && !dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
+        if (!dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
             List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates(resource, dtableConfiguration);
             if (generatedDrls.size() == 1) {
                 return generatedDrlToPackageDescr(resource, generatedDrls.get(0));
@@ -402,20 +397,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             return compositePackageDescr;
         }
 
-        if (dtableConfiguration == null) {
-            dtableConfiguration = createDefaultDTableConf();
-        }
-
         dtableConfiguration.setTrimCell( this.configuration.isTrimCellsInDTable() );
 
         String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
         return generatedDrlToPackageDescr(resource, generatedDrl);
-    }
-
-    private static DecisionTableConfiguration createDefaultDTableConf() {
-        DecisionTableConfiguration configuration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        configuration.setInputType( DecisionTableInputType.XLS );
-        return configuration;
     }
 
     public void addPackageFromGuidedDecisionTable(Resource resource) throws DroolsParserException,
@@ -680,7 +665,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new UncheckedIOException(ex);
         }
         return hasErrors ? null : pkg;
     }
@@ -1422,7 +1407,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             }
         }
         String msg = "Unresolved parent name " + ruleDescr.getParentName();
-        if (candidateRules.size() > 0) {
+        if (!candidateRules.isEmpty()) {
             msg += " >> did you mean any of :" + candidateRules;
         }
         results.add(new RuleBuildError(ruleDescr.toRule(), ruleDescr, msg,
@@ -1535,14 +1520,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         String lastType = null;
         try {
             // merge globals
-            if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
-                Map<String, String> globals = pkg.getGlobals();
+            if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
+                Map<String, String> pkgGlobals = pkg.getGlobals();
                 // Add globals
                 for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
                     final String identifier = entry.getKey();
                     final String type = entry.getValue();
                     lastType = type;
-                    if (globals.containsKey(identifier) && !globals.get(identifier).equals(type)) {
+                    if (pkgGlobals.containsKey(identifier) && !pkgGlobals.get(identifier).equals(type)) {
                         throw new RuntimeException(pkg.getName() + " cannot be integrated");
                     } else {
                         pkg.addGlobal(identifier,
@@ -1695,7 +1680,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                 }
             } catch (final ClassNotFoundException e) {
                 addBuilderResult(new GlobalError(global, e.getMessage()));
-                e.printStackTrace();
+                logger.warn("ClassNotFoundException occured!", e);
             }
         }
 
@@ -2270,7 +2255,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
     public KieBase newKnowledgeBase(KieBaseConfiguration conf) {
         KnowledgeBuilderErrors errors = getErrors();
-        if (errors.size() > 0) {
+        if (!errors.isEmpty()) {
             for (KnowledgeBuilderError error : errors) {
                 logger.error(error.toString());
             }

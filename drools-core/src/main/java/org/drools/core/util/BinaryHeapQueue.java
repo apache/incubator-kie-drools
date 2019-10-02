@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.drools.core.spi.Activation;
@@ -37,7 +38,7 @@ public class BinaryHeapQueue
     protected static final transient Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
 
     /** The default capacity for a binary heap. */
-    private final static int DEFAULT_CAPACITY = 13;
+    private static final int DEFAULT_CAPACITY = 13;
 
     /** The comparator used to order the elements */
     private Comparator<Activation> comparator;
@@ -170,7 +171,7 @@ public class BinaryHeapQueue
      * @return the Queueable at top of heap
      * @throws NoSuchElementException if <code>isEmpty() == true</code>
      */
-    public Activation dequeue() throws NoSuchElementException {
+    public Activation dequeue() {
         if ( isEmpty() ) {
             return null;
         }
@@ -187,7 +188,6 @@ public class BinaryHeapQueue
 
     Activation dequeue(final int index) {
         if ( index < 1 || index > this.size ) {
-            //throw new NoSuchElementException();
             return null;
         }
 
@@ -306,13 +306,13 @@ public class BinaryHeapQueue
      * Increases the size of the heap to support additional elements
      */
     private void grow() {
-        final Activation[] elements = new Activation[this.elements.length * 2];
+        final Activation[] activationElements = new Activation[this.elements.length * 2];
         System.arraycopy( this.elements,
                           0,
-                          elements,
+                          activationElements,
                           0,
                           this.elements.length );
-        this.elements = elements;
+        this.elements = activationElements;
     }
 
     private void setElement(final int index,
@@ -321,7 +321,7 @@ public class BinaryHeapQueue
         element.setQueueIndex(index);
     }
 
-    public Object[] toArray(Object a[]) {
+    public Object[] toArray(Object[] a) {
         if ( a.length < this.size ) {
             a = (Object[]) java.lang.reflect.Array.newInstance( a.getClass().getComponentType(),
                                                                 this.size );
@@ -342,7 +342,7 @@ public class BinaryHeapQueue
 
     @Override
     public String toString() {
-        return Stream.of( elements ).filter( e -> e != null ).collect( toList() ).toString();
+        return Stream.of( elements ).filter(Objects::nonNull).collect(toList() ).toString();
     }
 
     public static class Synchronized extends BinaryHeapQueue {
@@ -395,7 +395,7 @@ public class BinaryHeapQueue
         }
 
         @Override
-        public synchronized Activation dequeue() throws NoSuchElementException {
+        public synchronized Activation dequeue() {
             return super.dequeue();
         }
 

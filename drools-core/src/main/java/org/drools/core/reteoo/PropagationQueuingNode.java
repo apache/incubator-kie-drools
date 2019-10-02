@@ -49,7 +49,7 @@ public class PropagationQueuingNode extends ObjectSource
     ObjectSinkNode,
     MemoryFactory<PropagationQueuingNode.PropagationQueueingNodeMemory> {
 
-    private static final long serialVersionUID        = 510l;
+    private static final long serialVersionUID        = 510L;
 
     // should we make this one configurable?
     private static final int  PROPAGATION_SLICE_LIMIT = 1000;
@@ -271,7 +271,7 @@ public class PropagationQueuingNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof PropagationQueuingNode) || this.hashCode() != object.hashCode() ) {
+        if ( !(object instanceof PropagationQueuingNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
         return this.source.getId() == ((PropagationQueuingNode)object).source.getId();
@@ -293,7 +293,7 @@ public class PropagationQueuingNode extends ObjectSource
 
         public PropagationQueueingNodeMemory() {
             super();
-            this.queue = new ConcurrentLinkedQueue<Action>();
+            this.queue = new ConcurrentLinkedQueue<>();
             this.isQueued = new AtomicBoolean( false );
         }
 
@@ -359,7 +359,7 @@ public class PropagationQueuingNode extends ObjectSource
         }
     }
 
-    private static abstract class Action
+    private abstract static class Action
         implements
         Externalizable {
 
@@ -400,7 +400,11 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
         public AssertAction() {
+            super();
         }
 
         public void execute( final ObjectSinkPropagator sink,
@@ -424,7 +428,11 @@ public class PropagationQueuingNode extends ObjectSource
             nodeSink = sink;
         }
 
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
         public AssertToSinkAction() {
+            super();
         }
 
         public void execute( final ObjectSinkPropagator sink,
@@ -434,8 +442,7 @@ public class PropagationQueuingNode extends ObjectSource
                                    workingMemory );
         }
 
-        @Override
-        public void readExternal( ObjectInput in ) throws IOException,
+        public void readExternal(ObjectInput in ) throws IOException,
                                                   ClassNotFoundException {
             super.readExternal( in );
             nodeSink = (ObjectSink) in.readObject();
@@ -457,7 +464,11 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
         public RetractAction() {
+            super();
         }
 
         public void execute( final ObjectSinkPropagator sink,
@@ -481,7 +492,11 @@ public class PropagationQueuingNode extends ObjectSource
             this.rightTuple = rightTuple;
         }
 
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
         public ModifyToSinkAction() {
+            super();
         }
 
         public void execute( final ObjectSinkPropagator sink,
@@ -533,8 +548,8 @@ public class PropagationQueuingNode extends ObjectSource
         }
 
         public PropagateAction(MarshallerReaderContext context,
-                               ProtobufMessages.ActionQueue.Action _action) {
-            this.node = (PropagationQueuingNode) context.sinks.get( _action.getPropagate().getNodeId() );
+                               ProtobufMessages.ActionQueue.Action action) {
+            this.node = (PropagationQueuingNode) context.sinks.get( action.getPropagate().getNodeId() );
         }
 
         public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context ) {

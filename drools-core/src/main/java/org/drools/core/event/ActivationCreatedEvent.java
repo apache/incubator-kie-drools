@@ -19,19 +19,14 @@ package org.drools.core.event;
 import org.drools.core.spi.Activation;
 
 public class ActivationCreatedEvent extends ActivationEvent {
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
 
     public ActivationCreatedEvent(final Activation activation) {
         super( activation );
     }
 
+    @Override
     public String toString() {
         return "==>[ActivationCreated(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-        //        if (getActivation().getRule().getName().equals("fiSeating")) {
-        //            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-        //        } else {
-        //            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "]";
-        //        }
-
     }
 }

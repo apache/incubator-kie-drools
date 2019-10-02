@@ -19,6 +19,7 @@ package org.drools.cdi;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import org.drools.cdi.kproject.AbstractKnowledgeTest;
@@ -29,7 +30,10 @@ import org.junit.runner.RunWith;
 import org.kie.api.cdi.KReleaseId;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(CDITestRunner.class)
 public class KieSessionDefaultInjectionTest {

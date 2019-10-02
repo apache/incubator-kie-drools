@@ -49,6 +49,8 @@ public final class Msg {
     public static final Message1 MISSING_EXPRESSION = new Message1( "The context entry for key '%s' is missing the value expression");
     public static final Message2 ERROR_COMPILE_EXPR_DT_FUNCTION_RULE_IDX = new Message2( "Error compiling output expression in decision table FEEL function, rule index %s: '%s'");
     public static final Message2 EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN = new Message2("Unary test '%s' does not return a boolean result: '%s'");
+    public static final Message2 IF_MISSING_ELSE = new Message2("Detected 'if' expression without 'else' part (near: %s) [%s]");
+    public static final Message2 IF_MISSING_THEN = new Message2("Detected 'if' expression without 'then' part (near: %s) [%s]");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);

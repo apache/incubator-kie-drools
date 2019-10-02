@@ -46,10 +46,10 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
-import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
@@ -61,6 +61,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class Consequence {
 
@@ -80,6 +81,7 @@ public class Consequence {
 
         knowledgeHelperMethods.add("getWorkingMemory");
         knowledgeHelperMethods.add("getRule");
+        knowledgeHelperMethods.add("getMatch");
         knowledgeHelperMethods.add("getTuple");
         knowledgeHelperMethods.add("getKnowledgeRuntime");
         knowledgeHelperMethods.add("getKieRuntime");

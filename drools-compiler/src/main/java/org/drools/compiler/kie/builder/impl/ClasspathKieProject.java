@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -44,7 +45,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +63,9 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     public static final String OSGI_KIE_MODULE_CLASS_NAME     = "org.kie.osgi.compiler.OsgiKieModule";
 
-    private Map<ReleaseId, InternalKieModule>     kieModules  = new HashMap<ReleaseId, InternalKieModule>();
+    private Map<ReleaseId, InternalKieModule>     kieModules  = new HashMap<>();
 
-    private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
+    private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<>();
 
     private final KieRepository kieRepository;
     
@@ -262,11 +262,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             return null;
         }
 
-        ZipFile zipFile = null;
-
-        try {
-            zipFile = new ZipFile( actualZipFile );
-
+        try (ZipFile zipFile = new ZipFile( actualZipFile )) {
             String file = KieBuilderImpl.findPomProperties( zipFile );
             if ( file == null ) {
                 log.warn( "Unable to find pom.properties in " + rootPath );
@@ -280,14 +276,6 @@ public class ClasspathKieProject extends AbstractKieProject {
             return pomProps;
         } catch ( Exception e ) {
             log.error( "Unable to load pom.properties from " + rootPath + "\n" + e.getMessage() );
-        } finally {
-            try {
-                if (zipFile != null) {
-                    zipFile.close();
-                }
-            } catch ( IOException e ) {
-                log.error( "Error when closing InputStream to " + rootPath + "\n" + e.getMessage() );
-            }
         }
         return null;
     }
@@ -329,26 +317,16 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     private static String getPomPropertiesFromFileSystem(String rootPath) {
-        Reader reader = null;
-        try {
-            File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
-            if ( file == null ) {
-                log.warn( "Unable to find pom.properties in " + rootPath );
-                return null;
-            }
-            reader = new InputStreamReader( new FileInputStream( file ), IoUtils.UTF8_CHARSET );
-            log.debug( "Found and used pom.properties " + file);
+        File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
+        if ( file == null ) {
+            log.warn( "Unable to find pom.properties in " + rootPath );
+            return null;
+        }
+        log.debug( "Found and used pom.properties " + file);
+        try (Reader reader = new InputStreamReader( new FileInputStream( file ), IoUtils.UTF8_CHARSET )) {
             return StringUtils.toString( reader );
         } catch ( Exception e ) {
             log.warn( "Unable to load pom.properties tried recursing down from " + rootPath + "\n" + e.getMessage() );
-        } finally {
-            if ( reader != null ) {
-                try {
-                    reader.close();
-                } catch ( IOException e ) {
-                    log.error( "Error when closing InputStream to " + rootPath + "\n" + e.getMessage() );
-                }
-            }
         }
         return null;
     }
@@ -365,9 +343,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
 
         if ( file != null ) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream( file ) ;
+            try (FileInputStream fis = new FileInputStream( file )) {
                 PomModel pomModel = PomModel.Parser.parse( rootPath + "/pom.xml", fis);
 
                 KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
@@ -380,14 +356,6 @@ public class ClasspathKieProject extends AbstractKieProject {
                 return str;
             } catch ( Exception e ) {
                 log.error( "As folder project tried to fall back to pom.xml " + file + "\nbut failed with exception:\n" + e.getMessage() );
-            } finally {
-                if ( fis != null ) {
-                    try {
-                        fis.close();
-                    } catch ( IOException e ) {
-                        log.error( "Error when closing InputStream to " + file + "\n" + e.getMessage() );
-                    }
-                }
             }
         } else {
             log.warn( "As folder project tried to fall back to pom.xml, but could not find one" );

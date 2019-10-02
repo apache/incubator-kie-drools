@@ -16,6 +16,17 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.BitSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -30,17 +41,6 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.BitSet;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.factmodel.traits.TraitBuilderUtil.buildMixinMethods;
 import static org.drools.core.factmodel.traits.TraitBuilderUtil.findMixinInfo;
@@ -430,7 +430,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 		                                   null);
 		mv.visitCode();
 
-		TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+		TraitFactory.invokeExtractor(mv, masterName, core, field );
 
 		if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
@@ -445,11 +445,11 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 
 
 	protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
-        buildHardSetter( cw, field, masterName, trait, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+        buildHardSetter(cw, field, masterName, trait, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC );
     }
 
 	private void buildSoftSetter( ClassWriter cw, FieldDefinition field, String masterName, ClassDefinition core ) {
-		buildSoftSetter( cw, field, masterName, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+		buildSoftSetter(cw, field, masterName, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC );
 	}
 
 	protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition core, String setterName, int accessMode ) {

@@ -148,31 +148,31 @@ public class KnowledgeBaseImpl
 
     private transient Map<String, Class<?>> globals;
 
-    private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<DialectRuntimeRegistry>();
+    private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
-    private transient final Set<StatefulKnowledgeSessionImpl> statefulSessions = ConcurrentHashMap.newKeySet();
+    private final transient Set<StatefulKnowledgeSessionImpl> statefulSessions = ConcurrentHashMap.newKeySet();
 
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final transient Map<String, TypeDeclaration> classTypeDeclaration = new ConcurrentHashMap<String, TypeDeclaration>();
+    private final transient Map<String, TypeDeclaration> classTypeDeclaration = new ConcurrentHashMap<>();
 
     private ClassFieldAccessorCache classFieldAccessorCache;
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
-    private transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<Integer, SegmentMemory.Prototype>();
+    private transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<>();
 
     private KieComponentFactory kieComponentFactory;
 
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
-    public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<KieBaseEventListener, Boolean>());
+    public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<Runnable>();
+    private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<>();
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
     private transient AtomicBoolean flushingUpdates = new AtomicBoolean( false );
@@ -200,9 +200,9 @@ public class KnowledgeBaseImpl
 
         this.rootClassLoader = this.config.getClassLoader();
 
-        this.pkgs = new HashMap<String, InternalKnowledgePackage>();
-        this.processes = new HashMap<String, Process>();
-        this.globals = new HashMap<String, Class<?>>();
+        this.pkgs = new HashMap<>();
+        this.processes = new HashMap<>();
+        this.globals = new HashMap<>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
         kieComponentFactory = getConfiguration().getComponentFactory();
@@ -281,7 +281,7 @@ public class KnowledgeBaseImpl
             internalRemoveRules( ( (Collection<RuleImpl>) (Object) pkg.getRules() ) );
 
             // getting the list of referenced globals
-            final Set<String> referencedGlobals = new HashSet<String>();
+            final Set<String> referencedGlobals = new HashSet<>();
             for (InternalKnowledgePackage pkgref : this.pkgs.values()) {
                 if (pkgref != pkg) {
                     referencedGlobals.addAll( pkgref.getGlobals().keySet() );
@@ -294,7 +294,7 @@ public class KnowledgeBaseImpl
                 }
             }
             //and now the rule flows
-            for ( String processName : new ArrayList<String>(pkg.getRuleFlows().keySet()) ) {
+            for ( String processName : new ArrayList<>(pkg.getRuleFlows().keySet()) ) {
                 internalRemoveProcess( processName );
             }
             // removing the package itself from the list
@@ -385,9 +385,9 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<KiePackage> getKiePackages() {
-        InternalKnowledgePackage[] pkgs = getPackages();
-        List<KiePackage> list = new ArrayList<KiePackage>( pkgs.length );
-        Collections.addAll( list, pkgs );
+        InternalKnowledgePackage[] knowledgePackages = getPackages();
+        List<KiePackage> list = new ArrayList<>(knowledgePackages.length);
+        Collections.addAll( list, knowledgePackages );
         return list;
     }
 
@@ -422,7 +422,8 @@ public class KnowledgeBaseImpl
             droolsStream = new DroolsObjectInputStream(bytes);
         }
 
-        boolean classLoaderCacheEnabled = droolsStream.readBoolean();
+        // boolean classLoaderCacheEnabled field
+        droolsStream.readBoolean();
         Map<String, byte[]> store = (Map<String, byte[]>) droolsStream.readObject();
 
         this.rootClassLoader = createProjectClassLoader(droolsStream.getParentClassLoader(), store);
@@ -526,19 +527,18 @@ public class KnowledgeBaseImpl
      * The Package uses PackageCompilationData to hold a reference to the generated bytecode. The generated bytecode must be restored before any Rules.
      */
     public void writeExternal(final ObjectOutput out) throws IOException {
-        ObjectOutput droolsStream = null;
+        ObjectOutput droolsStream;
         boolean isDrools = out instanceof DroolsObjectOutputStream;
-        ByteArrayOutputStream bytes = null;
+        ByteArrayOutputStream bytes;
+        out.writeBoolean( isDrools );
+        if (out instanceof DroolsObjectOutputStream) {
+            droolsStream = out;
+            bytes = null;
+        } else {
+            bytes = new ByteArrayOutputStream();
+            droolsStream = new DroolsObjectOutputStream(bytes);
+        }
         try {
-            out.writeBoolean( isDrools );
-            if (isDrools) {
-                droolsStream = out;
-                bytes = null;
-            } else {
-                bytes = new ByteArrayOutputStream();
-                droolsStream = new DroolsObjectOutputStream(bytes);
-            }
-
             // must write this option first in order to properly deserialize later
             droolsStream.writeBoolean(this.config.isClassLoaderCacheEnabled());
 
@@ -563,21 +563,17 @@ public class KnowledgeBaseImpl
 
             droolsStream.writeObject(this.resolvedReleaseId);
         } finally {
-            if (!isDrools) {
-                if (droolsStream != null) {
-                    droolsStream.flush();
-                    droolsStream.close();
-                }
-                if (bytes != null) {
-                    bytes.close();
-                    out.writeObject(bytes.toByteArray());
-                }
+            if (bytes != null) {
+                droolsStream.flush();
+                droolsStream.close();
+                bytes.close();
+                out.writeObject(bytes.toByteArray());
             }
         }
     }
 
     private Map<String, String> buildGlobalMapForSerialization() {
-        Map<String, String> gl = new HashMap<String, String>();
+        Map<String, String> gl = new HashMap<>();
         for (Map.Entry<String, Class<?>> entry : this.globals.entrySet()) {
             gl.put( entry.getKey(),
                     entry.getValue().getName() );
@@ -591,7 +587,7 @@ public class KnowledgeBaseImpl
      * @throws ClassNotFoundException
      */
     private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
-        this.globals = new HashMap<String, Class<?>>();
+        this.globals = new HashMap<>();
         for (Map.Entry<String, String> entry : globs.entrySet()) {
             addGlobal( entry.getKey(),
                        this.rootClassLoader.loadClass( entry.getValue() ) );
@@ -779,7 +775,7 @@ public class KnowledgeBaseImpl
         if (wms.isEmpty()) {
             return true;
         }
-        List<InternalWorkingMemory> deactivatedWMs = new ArrayList<InternalWorkingMemory>();
+        List<InternalWorkingMemory> deactivatedWMs = new ArrayList<>();
         for ( InternalWorkingMemory wm : wms ) {
             if (wm.tryDeactivate()) {
                 deactivatedWMs.add(wm);
@@ -906,8 +902,8 @@ public class KnowledgeBaseImpl
             }
 
             // add entry points to the kbase
-            for (String id : newPkg.getEntryPointIds()) {
-                this.reteooBuilder.addEntryPoint(id);
+            for (String entryPointId : newPkg.getEntryPointIds()) {
+                this.reteooBuilder.addEntryPoint(entryPointId);
             }
 
             // add the rules to the RuleBase
@@ -943,7 +939,7 @@ public class KnowledgeBaseImpl
     }
 
     public void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs ) {
-        List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
+        List<TypeDeclaration> allTypeDeclarations = new ArrayList<>();
         // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
         for ( InternalKnowledgePackage newPkg : pkgs ) {
             // we have to do this before the merging, as it does some classloader resolving
@@ -953,23 +949,20 @@ public class KnowledgeBaseImpl
         }
         Collections.sort( allTypeDeclarations );
 
-        String lastType = null;
-        try {
-            // add type declarations according to the global order
-            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
-                lastType = newDecl.getTypeClassName();
-                InternalKnowledgePackage newPkg = null;
-                for ( InternalKnowledgePackage kpkg : pkgs ) {
-                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
-                        newPkg = kpkg;
-                        break;
-                    }
+        // add type declarations according to the global order
+        for ( TypeDeclaration newDecl : allTypeDeclarations ) {
+            InternalKnowledgePackage newPkg = null;
+            for ( InternalKnowledgePackage kpkg : pkgs ) {
+                if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
+                    newPkg = kpkg;
+                    break;
                 }
-                processTypeDeclaration( newDecl, newPkg );
             }
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
+            try {
+                processTypeDeclaration( newDecl, newPkg );
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( "unable to resolve Type Declaration class '" + newDecl.getTypeClassName() + "'", e );
+            }
         }
     }
 
@@ -1238,15 +1231,15 @@ public class KnowledgeBaseImpl
         String lastType = null;
         try {
             // merge globals
-            if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
-                Map<String, String> globals = pkg.getGlobals();
+            if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
+                Map<String, String> pkgGlobals = pkg.getGlobals();
                 // Add globals
                 for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
                     final String identifier = entry.getKey();
                     final String type = entry.getValue();
                     lastIdent = identifier;
                     lastType = type;
-                    if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
+                    if (pkgGlobals.containsKey( identifier ) && !pkgGlobals.get( identifier ).equals( type )) {
                         throw new RuntimeException(pkg.getName() + " cannot be integrated");
                     } else {
                         pkg.addGlobal( identifier,
@@ -1297,7 +1290,7 @@ public class KnowledgeBaseImpl
 
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
-        List<RuleImpl> rulesToBeRemoved = new ArrayList<RuleImpl>();
+        List<RuleImpl> rulesToBeRemoved = new ArrayList<>();
         for (Rule newRule : newPkg.getRules()) {
             // remove the rule if it already exists
             RuleImpl oldRule = pkg.getRule(newRule.getName());
@@ -1374,7 +1367,7 @@ public class KnowledgeBaseImpl
     }
 
     public void registerAddedEntryNodeCache(EntryPointNode node) {
-        if (addedEntryNodeCache == null) addedEntryNodeCache = new HashSet<EntryPointNode>();
+        if (addedEntryNodeCache == null) addedEntryNodeCache = new HashSet<>();
         addedEntryNodeCache.add(node);
     }
 
@@ -1383,7 +1376,7 @@ public class KnowledgeBaseImpl
     }
 
     public void registeRremovedEntryNodeCache(EntryPointNode node) {
-        if (removedEntryNodeCache == null) removedEntryNodeCache = new HashSet<EntryPointNode>();
+        if (removedEntryNodeCache == null) removedEntryNodeCache = new HashSet<>();
         removedEntryNodeCache.add(node);
     }
 
@@ -1655,8 +1648,6 @@ public class KnowledgeBaseImpl
         return this.pkgs.get( name );
     }
 
-    private static final InternalWorkingMemory[] EMPTY_WMS = new InternalWorkingMemory[0];
-
     public Collection<InternalWorkingMemory> getWorkingMemories() {
         return Collections.unmodifiableSet( statefulSessions );
     }
@@ -1708,7 +1699,7 @@ public class KnowledgeBaseImpl
     }
 
     public Set<String> getEntryPointIds() {
-        Set<String> entryPointIds = new HashSet<String>();
+        Set<String> entryPointIds = new HashSet<>();
         for (InternalKnowledgePackage pkg : this.pkgs.values()) {
             entryPointIds.addAll( pkg.getEntryPointIds() );
         }

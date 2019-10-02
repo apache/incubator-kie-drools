@@ -83,7 +83,6 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
                 PMML4Field pmml4Field = (PMML4Field) r;
                 final String resultName = kv.getKey();
                 if (resultName != null && !resultName.isEmpty()) {
-                    String name = resultName;
                     Optional<String> outputFieldNameFromInfo = pmmlInfo.getModels()
                                                                        .stream()
                                                                        .filter(m -> model.equals(m.getName()))
@@ -91,29 +90,30 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
                                                                        .filter(ofn -> ofn.equalsIgnoreCase(resultName))
                                                                        .findFirst();
                     if (outputFieldNameFromInfo.isPresent()) {
-                        name = outputFieldNameFromInfo.get();
-                    }
-                    try {
-                        Method method = r.getClass().getMethod("getValue");
-                        Object value = method.invoke(r);
-                        result.put(name, EvalHelper.coerceNumber(value));
-                    } catch (Throwable e) {
-                        MsgUtil.reportMessage(LOG,
-                                              DMNMessage.Severity.WARN,
-                                              node,
-                                              ((DMNResultImpl) result),
-                                              e,
-                                              null,
-                                              Msg.INVALID_NAME,
-                                              name,
-                                              e.getMessage());
-                        result.put(name, null);
+                        String name = outputFieldNameFromInfo.get();
+                        try {
+                            Method method = r.getClass().getMethod("getValue");
+                            Object value = method.invoke(r);
+                            result.put(name, EvalHelper.coerceNumber(value));
+                        } catch (Throwable e) {
+                            MsgUtil.reportMessage(LOG,
+                                                  DMNMessage.Severity.WARN,
+                                                  node,
+                                                  ((DMNResultImpl) result),
+                                                  e,
+                                                  null,
+                                                  Msg.INVALID_NAME,
+                                                  name,
+                                                  e.getMessage());
+                            result.put(name, null);
+                        }
                     }
                 }
             }
         }
 
-        return new EvaluatorResultImpl(result, ResultType.SUCCESS);
+        Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();
+        return new EvaluatorResultImpl(coercedResult, ResultType.SUCCESS);
     }
 
 }

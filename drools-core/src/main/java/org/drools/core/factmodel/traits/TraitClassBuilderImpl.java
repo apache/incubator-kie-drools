@@ -105,7 +105,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder,
     protected void buildSetter(ClassWriter cw, FieldDefinition field, String name, String type, String generic) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT,
-                                          BuildUtils.setterName(name, type),
+                                          BuildUtils.setterName(name),
                                           "(" + BuildUtils.getTypeDescriptor(type) + ")V",
                                           generic == null ? null :
                                                   "(" + BuildUtils.getTypeDescriptor(type).replace(";", "<" + BuildUtils.getTypeDescriptor(generic) + ">;") + ")V",
