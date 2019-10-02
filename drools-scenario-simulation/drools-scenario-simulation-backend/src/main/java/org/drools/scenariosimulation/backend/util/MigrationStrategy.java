@@ -36,37 +36,37 @@ public interface MigrationStrategy {
      * Method to obtain the migration function from 1.0 to 1.1
      * @return
      */
-    ThrowingConsumer<Document>  from1_0to1_1();
+    ThrowingConsumer<Document> from1_0to1_1();
 
     /**
      * Method to obtain the migration function from 1.1 to 1.2
      * @return
      */
-    ThrowingConsumer<Document>  from1_1to1_2();
+    ThrowingConsumer<Document> from1_1to1_2();
 
     /**
      * Method to obtain the migration function from 1.2 to 1.3
      * @return
      */
-    ThrowingConsumer<Document>  from1_2to1_3();
+    ThrowingConsumer<Document> from1_2to1_3();
 
     /**
      * Method to obtain the migration function from 1.3 to 1.4
      * @return
      */
-    ThrowingConsumer<Document>  from1_3to1_4();
+    ThrowingConsumer<Document> from1_3to1_4();
 
     /**
      * Method to obtain the migration function from 1.4 to 1.5
      * @return
      */
-    ThrowingConsumer<Document>  from1_4to1_5();
+    ThrowingConsumer<Document> from1_4to1_5();
 
     /**
      * Method to obtain the migration function from 1.5 to 1.6
      * @return
      */
-    ThrowingConsumer<Document>  from1_5to1_6();
+    ThrowingConsumer<Document> from1_5to1_6();
 
     /**
      * Method to obtain the migration function from 1.6 to 1.7

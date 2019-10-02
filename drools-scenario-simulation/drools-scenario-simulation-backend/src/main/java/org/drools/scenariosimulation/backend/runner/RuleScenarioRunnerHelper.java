@@ -128,7 +128,6 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                                                                     List<ScenarioExpect> scenarioOutputsPerFact,
                                                                     ScenarioGiven input,
                                                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
-        FactIdentifier factIdentifier = input.getFactIdentifier();
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
         for (ScenarioExpect scenarioExpect : scenarioOutputsPerFact) {

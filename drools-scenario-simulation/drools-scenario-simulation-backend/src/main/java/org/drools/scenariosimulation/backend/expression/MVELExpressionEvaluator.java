@@ -29,8 +29,8 @@ import org.mvel2.ParserContext;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
-    public final static String MVEL_ESCAPE_SYMBOL = "#";
-    public final static String ACTUAL_VALUE_IDENTIFIER = "actualValue";
+    public static final String MVEL_ESCAPE_SYMBOL = "#";
+    public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
 
     private final ParserConfiguration config;
     private final MVELEvaluator evaluator = MVELSafeHelper.getEvaluator();

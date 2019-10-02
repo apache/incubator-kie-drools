@@ -58,7 +58,7 @@ public class TestUtils {
         }).collect(Collectors.toList());
     }
 
-    public static void commonCheckAuditLogLine(AuditLogLine toCheck,  String expectedMessage, String expectedLevel) {
+    public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedMessage, String expectedLevel) {
         assertNotNull(toCheck);
         assertEquals(expectedMessage, toCheck.getMessage());
         assertEquals(expectedLevel, toCheck.getLevel());
@@ -70,6 +70,4 @@ public class TestUtils {
         when(dmnMessageMock.getLevel()).thenReturn(level);
         return dmnMessageMock;
     }
-
-
 }

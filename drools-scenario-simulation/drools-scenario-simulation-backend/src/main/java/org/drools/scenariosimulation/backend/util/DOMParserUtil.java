@@ -207,7 +207,6 @@ public class DOMParserUtil {
      * Create a <b>nodeToCreateName</b> <code>Node</code> inside <b>containerNode</b>.
      * If <b>nodeContent</b> is not null, add it as text content.
      * If <b>position</b> is not null, put the created node at position 0
-     *
      * @param containerNode
      * @param nodeToCreateName
      * @param nodeContent
@@ -267,7 +266,6 @@ public class DOMParserUtil {
                                 .collect(Collectors.toList())
                 ));
     }
-
 
     public static List<Node> getChildrenNodesList(Node node, String childNodeName) {
         return asStream(node.getChildNodes()).filter(childNode -> Objects.equals(childNode.getNodeName(), childNodeName)).collect(Collectors.toList());

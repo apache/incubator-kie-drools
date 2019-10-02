@@ -18,14 +18,12 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
-import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
