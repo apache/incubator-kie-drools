@@ -2000,4 +2000,22 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( me );
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testMultilinePattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  $p : Person(age == 30\n" +
+                        "    || employed == true)\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person first = new Person("John", 40);
+        first.setEmployed(true);
+        ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
 }
