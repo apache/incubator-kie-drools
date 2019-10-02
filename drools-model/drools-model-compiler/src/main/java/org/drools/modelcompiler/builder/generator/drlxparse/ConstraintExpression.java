@@ -48,7 +48,10 @@ public class ConstraintExpression {
             return constraintExpression;
         }
 
-        return new ConstraintExpression( expression );
+        // I really hope we won't be comparing Strings with newline here.
+        String expressionWithoutNewLines = expression.replace("\n", "");
+
+        return new ConstraintExpression( expressionWithoutNewLines );
     }
 
     public static String parseConstraintExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional) {

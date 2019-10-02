@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
@@ -55,6 +56,46 @@ public class MvelDialectTest extends BaseModelTest {
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertTrue(results.contains("Hello World"));
+    }
+
+    @Test
+    public void testMVELMapSyntax() {
+        final String drl = "" +
+                "import java.util.*;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule \"rule1\"\n" +
+                "  when\n" +
+                "    m: Person($name: name , " +
+                "              $status : \"value1\", " +
+                "              $key1 : \"key1\", " +
+                "              $key2 : \"key2\", " +
+                "              $value4 : 2 " +
+                ")\n" +
+                "  then\n" +
+                "    m.itemsString[$key1] = $status;\n" +
+                "    m.itemsString[$key2] = \"value2\";\n" +
+                "    m.itemsString[\"key3\"] = \"value3\";\n" +
+                "    m.getItemsString().put( $key1, $status );\n" +
+                "    m.getItemsString().put( $key2, \"value2\" );\n" +
+                "    m.getItemsString().put( \"key3\", \"value2\" );\n" +
+                "    m.getItemsString().put( \"key4\", $value4 );\n" +
+                "    update(m);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person p = new Person("Luca");
+
+        ksession.insert(p);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        Map<String, String> itemsString = p.getItemsString();
+
+        assertEquals(4, itemsString.keySet().size());
     }
 
     @Test
@@ -138,7 +179,7 @@ public class MvelDialectTest extends BaseModelTest {
         List<Address> results = getObjectsIntoList(ksession, Address.class);
         assertEquals(1, results.size());
     }
-    
+
     public static class TempDecl1 {}
     public static class TempDecl2 {}
     public static class TempDecl3 {}

@@ -26,8 +26,8 @@ public class CastExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        com.github.javaparser.ast.type.Type type = StaticJavaParser.parseType(this.type.getCanonicalName());
+        com.github.javaparser.ast.type.Type jpType = StaticJavaParser.parseType(this.type.getCanonicalName());
         Expression expression = (Expression) innerExpr.toJavaExpression();
-        return new EnclosedExpr(new CastExpr(type, expression));
+        return new EnclosedExpr(new CastExpr(jpType, expression));
     }
 }

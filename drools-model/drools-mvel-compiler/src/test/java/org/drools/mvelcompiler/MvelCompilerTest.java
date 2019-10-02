@@ -134,6 +134,114 @@ public class MvelCompilerTest implements CompilerTest {
                      "}");
     }
 
+
+    @Test
+    public void testMapGet() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "m[\"key\"];\n" +
+                     "}",
+             "{ " +
+                     "m.get(\"key\");\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetAsField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key3\"];\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().get(\"key3\");\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetInMethodCall() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "System.out.println(m[\"key\"]);\n" +
+                     "}",
+             "{ " +
+                     "System.out.println(m.get(\"key\"));\n" +
+                     "}");
+    }
+
+
+    @Test
+    public void testMapSet() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key3\"] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key3\", java.lang.String.valueOf(\"value3\")); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithVariable() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "String key3 = \"key3\";\n" +
+                     "$p.items[key3] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "java.lang.String key3 = \"key3\";\n" +
+                     "$p.getItems().put(key3, java.lang.String.valueOf(\"value3\")); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapPutWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithMapGetAsValue() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+                 ctx.addDeclaration("n", Integer.class);
+             },
+             "{" +
+                     "    $p.getItems().put(\"key4\", n);\n" +
+                     "}",
+             "{ " +
+                     "    $p.getItems().put(\"key4\", java.lang.String.valueOf(n));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetToNewMap() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "Map newhashmap = new HashMap();\n" +
+                     "$p.items = newhashmap;\n" +
+                     "}",
+             "{ " +
+                     "java.util.Map newhashmap = new HashMap(); \n" +
+                     "$p.setItems(newhashmap); " +
+                     "}");
+    }
+
     @Test
     public void testInitializerMap() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
