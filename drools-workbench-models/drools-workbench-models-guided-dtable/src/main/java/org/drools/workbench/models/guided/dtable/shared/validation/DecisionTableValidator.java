@@ -17,7 +17,6 @@ package org.drools.workbench.models.guided.dtable.shared.validation;
 
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
