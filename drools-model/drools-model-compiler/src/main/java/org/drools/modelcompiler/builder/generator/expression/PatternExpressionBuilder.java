@@ -18,6 +18,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -45,6 +46,22 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     public PatternExpressionBuilder(RuleContext context) {
         super(context);
+    }
+
+    @Override
+    public void processExpression(SingleDrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.hasUnificationVariable()) {
+            Expression dslExpr = buildUnificationExpression(drlxParseResult);
+            context.addExpression(dslExpr);
+        } else if (drlxParseResult.isValidExpression()) {
+            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
+            context.addExpression(dslExpr);
+        }
+
+        if (drlxParseResult.getExprBinding() != null) {
+            Expression dslExpr = buildBinding(drlxParseResult);
+            context.addExpression(dslExpr);
+        }
     }
 
     @Override
@@ -118,7 +135,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
-        SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if (drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
@@ -128,7 +144,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindDSL.addArgument(context.getVar(d)));
         bindDSL.addArgument(constraintExpression);
-        final Optional<MethodCallExpr> methodCallExpr = buildReactOn(singleResult);
+        final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
         methodCallExpr.ifPresent(bindDSL::addArgument);
         return bindDSL;
     }

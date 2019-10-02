@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
@@ -720,11 +721,12 @@ public class DrlxParseUtil {
                         .collect( toList() );
     }
 
-    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, String patternBinding, List<Expression> expressions) {
+    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, Collection<String> patternBindings, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
-                final boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
-                final boolean hasBindingHasArgument = expr.getArguments().contains(context.getVarExpr(patternBinding));
+                boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
+                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(Collectors.toList());
+                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
                 return isPatternExpr && hasBindingHasArgument;
             });
             return pattern.map(Stream::of).orElse(Stream.empty());
