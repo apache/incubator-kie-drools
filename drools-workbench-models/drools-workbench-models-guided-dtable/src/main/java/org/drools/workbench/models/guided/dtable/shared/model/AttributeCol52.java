@@ -17,8 +17,6 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.rule.Attribute;
-
 /**
  * This is a rule attribute - eg salience, no-loop etc.
  */
