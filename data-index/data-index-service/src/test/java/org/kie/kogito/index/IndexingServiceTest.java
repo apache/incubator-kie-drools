@@ -189,12 +189,13 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
         KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
+        subProcessStartEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
         indexProcessCloudEvent(subProcessStartEvent);
 
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(subProcessInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), subProcessStartEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } } }\"}")
+                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -214,6 +215,8 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[1].end", isEmptyOrNullString())
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
+                .body("data.Travels[0].traveller.email", is("mail@mail.com"))
+                .body("data.Travels[0].traveller.nationality", is("Polish"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))

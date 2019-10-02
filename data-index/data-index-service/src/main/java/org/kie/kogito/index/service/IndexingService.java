@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.cache.CacheService;
@@ -40,6 +41,7 @@ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 public class IndexingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
+    private static final String PROCESS_ID = "processId";
 
     @Inject
     CacheService manager;
@@ -62,7 +64,7 @@ public class IndexingService {
     }
 
     public void indexModel(ObjectNode json) {
-        String processId = json.get("processId").asText();
+        String processId = json.get(PROCESS_ID).asText();
         String type = getModelFromProcessId(processId);
         if (type == null) {
 //          Unknown process type, ignore
@@ -77,7 +79,7 @@ public class IndexingService {
         if (model == null) {
             ObjectNode builder = getObjectMapper().createObjectNode();
             builder.put("_type", type);
-            json.remove("processId");
+            json.remove(PROCESS_ID);
             builder.setAll(json);
             cache.put(processInstanceId, builder);
         } else {
@@ -85,8 +87,16 @@ public class IndexingService {
             builder.put("_type", type);
             ArrayNode indexPIArray = (ArrayNode) json.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
             if (indexPIArray != null) {
-                json.remove("processId");
-                builder.setAll(json);
+                json.remove(PROCESS_ID);
+                JsonNode id = indexPIArray.get(0).get("id");
+                if(processInstanceId.equals(id.asText())){
+                    //For processes simply copy all values
+                    builder.setAll(json);
+                } else {
+                    //For sub-process merge with current values
+                    builder.setAll(model);
+                    builder.setAll(json);
+                }
                 ArrayNode utArray = (ArrayNode) model.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
                 if (utArray != null) {
                     builder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, utArray);
