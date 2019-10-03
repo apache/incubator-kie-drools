@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -124,7 +123,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + " because the pillars change every step.");
         }
         boolean subPillarActuallyEnabled =
-                BooleanUtils.isTrue(subPillarEnabled) || (subPillarType != null && subPillarType != SubPillarType.NONE);
+                subPillarEnabled != null ? subPillarEnabled : subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
