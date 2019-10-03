@@ -67,7 +67,8 @@ public class CompiledAlphaNetwork {
 
     public Object evaluate( EvaluationContext evalCtx ) {
         resultCollector.results.clear();
-        compiledNetwork.assertObject( new DefaultFactHandle( 1L, evalCtx ), null, null );
+        TableContext ctx = new TableContext( evalCtx, "Existing Customer", "Application Risk Score" );
+        compiledNetwork.assertObject( new DefaultFactHandle( ctx ), null, null );
         return applyHitPolicy( resultCollector.results );
     }
 
@@ -122,28 +123,28 @@ public class CompiledAlphaNetwork {
 
         NetworkBuilderContext ctx = new NetworkBuilderContext();
 
-        Index index1 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "false");
-        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, "\"false\"", x -> UT1.apply(x, x.getValue("Existing Customer")), index1);
+        Index index1 = createIndex(String.class, x -> (String)x.getValue(0), "false");
+        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, "\"false\"", x -> UT1.apply(x.getEvalCtx(), x.getValue(0)), index1);
 
-        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, "<100", x -> UT2.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, "<100", x -> UT2.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r1, "HIGH");
-        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, "[100..120)", x -> UT3.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, "[100..120)", x -> UT3.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r2, "MEDIUM");
-        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, "[120..130]", x -> UT4.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, "[120..130]", x -> UT4.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r3, "LOW");
-        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, ">130", x -> UT5.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, ">130", x -> UT5.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r4, "VERY LOW");
 
-        Index index2 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "true");
-        AlphaNode alphac1r5 = createAlphaNode(ctx, ctx.otn, "\"true\"", x -> UT6.apply(x, x.getValue("Existing Customer")), index2);
+        Index index2 = createIndex(String.class, x -> (String)x.getValue(0), "true");
+        AlphaNode alphac1r5 = createAlphaNode(ctx, ctx.otn, "\"true\"", x -> UT6.apply(x.getEvalCtx(), x.getValue(0)), index2);
 
-        AlphaNode alphac2r5 = createAlphaNode(ctx, alphac1r5, "<80", x -> UT7.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r5 = createAlphaNode(ctx, alphac1r5, "<80", x -> UT7.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r5, "DECLINE");
-        AlphaNode alphac2r6 = createAlphaNode(ctx, alphac1r5, "[80..90)", x -> UT8.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r6 = createAlphaNode(ctx, alphac1r5, "[80..90)", x -> UT8.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r6, "HIGH");
-        AlphaNode alphac2r7 = createAlphaNode(ctx, alphac1r5, "[90..110]", x -> UT9.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r7 = createAlphaNode(ctx, alphac1r5, "[90..110]", x -> UT9.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r7, "MEDIUM");
-        AlphaNode alphac2r8 = createAlphaNode(ctx, alphac1r5, ">110", x -> UT10.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r8 = createAlphaNode(ctx, alphac1r5, ">110", x -> UT10.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r8, "LOW");
 
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -154,7 +155,7 @@ public class CompiledAlphaNetwork {
             alphabet(network, ctx, String.valueOf(c));
         }
 
-        Index index3 = createIndex(String.class, x -> (String)x.getValue("Existing Customer"), "dummy");
+        Index index3 = createIndex(String.class, x -> (String)x.getValue(0), "dummy");
         AlphaNode alphaDummy = createAlphaNode(ctx, ctx.otn, x -> false, index3);
         addResultSink(ctx, network, alphaDummy, "DUMMY");
 
@@ -165,16 +166,16 @@ public class CompiledAlphaNetwork {
 
     private static void alphabet(CompiledAlphaNetwork network, NetworkBuilderContext ctx, String sChar) {
         final org.kie.dmn.feel.runtime.UnaryTest UTx = (feelExprCtx, left) -> gracefulEq(feelExprCtx, sChar, left);
-        Index index1 = createIndex(String.class, x -> (String) x.getValue("Existing Customer"), sChar);
-        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, "\"" + sChar + "\"", x -> UTx.apply(x, x.getValue("Existing Customer")), index1);
+        Index index1 = createIndex(String.class, x -> (String) x.getValue(0), sChar);
+        AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, "\"" + sChar + "\"", x -> UTx.apply(x.getEvalCtx(), x.getValue(0)), index1);
 
-        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, "<100", x -> UT2.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r1 = createAlphaNode(ctx, alphac1r1, "<100", x -> UT2.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r1, "HIGH");
-        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, "[100..120)", x -> UT3.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r2 = createAlphaNode(ctx, alphac1r1, "[100..120)", x -> UT3.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r2, "MEDIUM");
-        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, "[120..130]", x -> UT4.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r3 = createAlphaNode(ctx, alphac1r1, "[120..130]", x -> UT4.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r3, "LOW");
-        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, ">130", x -> UT5.apply(x, x.getValue("Application Risk Score")));
+        AlphaNode alphac2r4 = createAlphaNode(ctx, alphac1r1, ">130", x -> UT5.apply(x.getEvalCtx(), x.getValue(1)));
         addResultSink(ctx, network, alphac2r4, "VERY LOW");
     }
 
@@ -182,19 +183,19 @@ public class CompiledAlphaNetwork {
         source.addObjectSink( new ResultCollectorAlphaSink( ctx.buildContext.getNextId(), source, ctx.buildContext, result, network.resultCollector ) );
     }
 
-    private static AlphaNode createAlphaNode(NetworkBuilderContext ctx, ObjectSource source, String id, Predicate1<EvaluationContext> predicate) {
+    private static AlphaNode createAlphaNode(NetworkBuilderContext ctx, ObjectSource source, String id, Predicate1<TableContext> predicate) {
         return createAlphaNode( ctx, source, id, predicate, null );
     }
 
     @Deprecated
-    private static AlphaNode createAlphaNode( NetworkBuilderContext ctx, ObjectSource source, Predicate1<EvaluationContext> predicate, Index index ) {
+    private static AlphaNode createAlphaNode( NetworkBuilderContext ctx, ObjectSource source, Predicate1<TableContext> predicate, Index index ) {
         return createAlphaNode(ctx, source, UUID.randomUUID().toString(), predicate, null);
     }
 
     /**
      * IMPORTANT: remember to use the FEEL expression as an Identifier for the same constraint
      */
-    private static AlphaNode createAlphaNode(NetworkBuilderContext ctx, ObjectSource source, String id, Predicate1<EvaluationContext> predicate, Index index) {
+    private static AlphaNode createAlphaNode(NetworkBuilderContext ctx, ObjectSource source, String id, Predicate1<TableContext> predicate, Index index) {
         SingleConstraint1 constraint = new SingleConstraint1(id, ctx.variable, predicate);
         constraint.setIndex(index);
         LambdaConstraint lambda = new LambdaConstraint(new ConstraintEvaluator(new Declaration[]{ctx.declaration}, constraint));
@@ -202,8 +203,8 @@ public class CompiledAlphaNetwork {
         return attachNode(ctx.buildContext, new AlphaNode(ctx.buildContext.getNextId(), lambda, source, ctx.buildContext));
     }
 
-    private static <I> AlphaIndexImpl<EvaluationContext, I> createIndex( Class<I> indexedClass, Function1<EvaluationContext, I> leftExtractor, I rightValue) {
-        return new AlphaIndexImpl<EvaluationContext, I>(indexedClass, Index.ConstraintType.EQUAL, 1, leftExtractor, rightValue);
+    private static <I> AlphaIndexImpl<TableContext, I> createIndex( Class<I> indexedClass, Function1<TableContext, I> leftExtractor, I rightValue) {
+        return new AlphaIndexImpl<TableContext, I>(indexedClass, Index.ConstraintType.EQUAL, 1, leftExtractor, rightValue);
     }
 
     static class ResultCollector {
@@ -240,7 +241,7 @@ public class CompiledAlphaNetwork {
     private static class NetworkBuilderContext {
         public InternalKnowledgeBase kBase;
         public BuildContext buildContext;
-        public Variable<EvaluationContext> variable;
+        public Variable<TableContext> variable;
         public Declaration declaration;
         public ObjectTypeNode otn;
 
@@ -248,14 +249,36 @@ public class CompiledAlphaNetwork {
             kBase = ( InternalKnowledgeBase ) KnowledgeBaseFactory.newKnowledgeBase();
             buildContext = new BuildContext( kBase );
             EntryPointNode entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
-            ClassObjectType objectType = new ClassObjectType( EvaluationContext.class );
-            variable = declarationOf( EvaluationContext.class, "$ctx" );
+            ClassObjectType objectType = new ClassObjectType( TableContext.class );
+            variable = declarationOf( TableContext.class, "$ctx" );
 
             Pattern pattern = new Pattern( 1, objectType, "$ctx" );
             declaration = pattern.getDeclaration();
 
             otn = new ObjectTypeNode( buildContext.getNextId(), entryPoint, objectType, buildContext );
             buildContext.setObjectSource( otn );
+        }
+    }
+
+    public static class TableContext {
+
+        private final EvaluationContext evalCtx;
+        private final Object[] values;
+
+        public TableContext(EvaluationContext evalCtx, String... propNames) {
+            this.evalCtx = evalCtx;
+            this.values = new Object[propNames.length];
+            for (int i = 0; i < propNames.length; i++) {
+                values[i] = evalCtx.getValue( propNames[i] );
+            }
+        }
+
+        public Object getValue(int i) {
+            return values[i];
+        }
+
+        public EvaluationContext getEvalCtx() {
+            return evalCtx;
         }
     }
 }

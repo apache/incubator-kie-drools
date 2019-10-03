@@ -87,6 +87,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle() {
     }
 
+    public DefaultFactHandle(final Object object) {
+        this.object = object;
+    }
+
     public DefaultFactHandle(final long id, final Object object) {
         // this is only used by tests, left as legacy as so many test rely on it.
         this( id,
