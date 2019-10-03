@@ -126,12 +126,13 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
 
     public static void main(String[] args) throws Exception {
         DMNDecisionTableAlphaSupportingDraftBench u = new DMNDecisionTableAlphaSupportingDraftBench();
-        u.alphalength = 2;
+        u.alphalength = 10;
         u.init();
-        for (int i = 0; i < 1000; i++) {
+//        for (int i = 0; i < 1000; i++) {
+        while (true) {
             u.initIterationValues();
             u.doTest();
         }
-        System.out.println("done.");
+//        System.out.println("done.");
     }
 }
