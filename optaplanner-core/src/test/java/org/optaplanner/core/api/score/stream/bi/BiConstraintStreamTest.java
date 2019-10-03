@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -53,11 +52,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
     // Filter
     // ************************************************************************
-
-    @Before
-    public void disableAllTestsForDrools() {
-        assumeBavet(); // Skip tests if we're not using Bavet
-    }
 
     @Test
     public void filter_entity() {
@@ -108,6 +102,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_0() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -159,6 +154,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_1Equal() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -211,6 +207,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_2Equal() {
+        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);

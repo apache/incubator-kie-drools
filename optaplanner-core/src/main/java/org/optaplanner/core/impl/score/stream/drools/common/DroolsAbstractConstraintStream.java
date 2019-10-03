@@ -19,7 +19,10 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.List;
 import java.util.function.Function;
 
+import org.drools.model.Global;
+import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
@@ -58,6 +61,13 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // ************************************************************************
 
     public abstract List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList();
+
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
+    public abstract void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal);
 
     // ************************************************************************
     // Getters/setters

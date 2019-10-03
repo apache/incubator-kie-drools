@@ -40,10 +40,11 @@ import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFacto
 import org.optaplanner.core.impl.score.stream.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends BavetAbstractConstraintStream<Solution_>
-        implements BiConstraintStream<A, B> {
+        implements InnerBiConstraintStream<A, B> {
 
     protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
@@ -132,129 +133,89 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint);
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntBiFunction<A, B> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint);
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            ToIntBiFunction<A, B> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
+            ToLongBiFunction<A, B> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
+            BiFunction<A, B, BigDecimal> matchWeigher, boolean positive) {
+        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
+                this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
@@ -271,7 +232,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return node;
     }
 
-    protected BavetAbstractBiNode<A, B> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeOrder, BavetAbstractBiNode<A, B> parentNode, BavetAbstractBiNode<A, B> node) {
+    protected BavetAbstractBiNode<A, B> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeOrder,
+            BavetAbstractBiNode<A, B> parentNode, BavetAbstractBiNode<A, B> node) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
         BavetAbstractBiNode<A, B> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
@@ -285,7 +247,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return node;
     }
 
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> node) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+            int nodeOrder, BavetAbstractBiNode<A, B> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");

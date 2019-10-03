@@ -20,22 +20,23 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.model.Declaration;
-import org.drools.model.Global;
 import org.drools.model.PatternDSL;
-import org.drools.model.RuleItemBuilder;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
+    private final Declaration<A> variableDeclaration;
+    private final PatternDSL.PatternDef<A> pattern;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
-        this.fromClass = fromClass;
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
+        this.fromClass = fromClass;
+        this.variableDeclaration = PatternDSL.declarationOf(fromClass);
+        this.pattern = PatternDSL.pattern(variableDeclaration);
     }
 
     // ************************************************************************
@@ -45,21 +46,6 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return Collections.singletonList((DroolsFromUniConstraintStream<Solution_, Object>) this);
-    }
-
-    @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            Declaration<A> aVar, PatternDSL.PatternDef<A> parentPattern) {
-        if (aVar != null || parentPattern != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") cannot have an aVar (" + aVar + ") or a parentPattern (" + parentPattern + ").");
-        }
-        aVar = PatternDSL.declarationOf(fromClass);
-        PatternDSL.PatternDef<A> pattern = PatternDSL.pattern(aVar);
-        for (DroolsAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
-            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal, aVar, pattern);
-        }
     }
 
     @Override
@@ -75,4 +61,13 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
         return fromClass;
     }
 
+    @Override
+    public Declaration<A> getVariableDeclaration() {
+        return variableDeclaration;
+    }
+
+    @Override
+    public PatternDSL.PatternDef<A> getPattern() {
+        return pattern;
+    }
 }

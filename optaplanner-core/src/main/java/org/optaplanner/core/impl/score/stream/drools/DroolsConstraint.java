@@ -60,7 +60,7 @@ public class DroolsConstraint<Solution_> implements Constraint {
     public Rule createRule(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(fromStreamList.size());
         for (DroolsFromUniConstraintStream<Solution_, Object> fromStream : fromStreamList) {
-            fromStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal, null, null);
+            fromStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
         }
         return PatternDSL.rule(constraintPackage, constraintName)
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder<?>[0]));

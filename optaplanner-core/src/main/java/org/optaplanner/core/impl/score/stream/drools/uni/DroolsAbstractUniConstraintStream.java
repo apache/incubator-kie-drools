@@ -38,12 +38,15 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
-        implements UniConstraintStream<A> {
+        implements InnerUniConstraintStream<A> {
 
-    protected final List<DroolsAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
+    protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
@@ -66,7 +69,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
-        throw new UnsupportedOperationException();
+        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
+                this, (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream, joiner);
+        childStreamList.add(stream);
+        return stream;
     }
 
     // ************************************************************************
@@ -103,139 +109,103 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntFunction<A> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, ToLongFunction<A> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            ToIntFunction<A> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
+            ToLongFunction<A> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, false);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
+            Function<A, BigDecimal> matchWeigher, boolean positive) {
+        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
+                positive);
+        DroolsScoringUniConstraintStream<Solution_, A> stream =
+                new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
 
     @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
-        childStreamList.add(stream);
-        return constraint;
+    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        for (DroolsAbstractConstraintStream<Solution_> childStream : childStreamList) {
+            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
+        }
     }
 
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
+    public abstract Declaration<A> getVariableDeclaration();
 
-    @Override
-    public Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    @Override
-    public Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName, true);
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
-    }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
-
-    public abstract void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            Declaration<A> aVar, PatternDSL.PatternDef<A> parentPattern);
+    public abstract PatternDSL.PatternDef<A> getPattern();
 
 }

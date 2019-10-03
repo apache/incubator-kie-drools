@@ -20,10 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.drools.model.Declaration;
-import org.drools.model.Global;
 import org.drools.model.PatternDSL;
-import org.drools.model.RuleItemBuilder;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
@@ -52,16 +49,6 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     }
 
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            Declaration<A> aVar, PatternDSL.PatternDef<A> parentPattern) {
-        PatternDSL.PatternDef<A> pattern = parentPattern.expr(predicate::test);
-        for (DroolsAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
-            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal, aVar, pattern);
-        }
-    }
-
-    @Override
     public String toString() {
         return "Filter() with " + childStreamList.size()  + " children";
     }
@@ -69,5 +56,15 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    @Override
+    public Declaration<A> getVariableDeclaration() {
+        return parent.getVariableDeclaration();
+    }
+
+    @Override
+    public PatternDSL.PatternDef<A> getPattern() {
+        return parent.getPattern().expr(predicate::test);
+    }
 
 }

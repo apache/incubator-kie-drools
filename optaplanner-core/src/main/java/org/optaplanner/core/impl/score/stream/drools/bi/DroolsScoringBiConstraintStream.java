@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.function.BiFunction;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
 
 import org.drools.model.Declaration;
 import org.drools.model.Global;
@@ -32,54 +32,51 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
-public final class DroolsScoringUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
+public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final DroolsConstraint<Solution_> constraint;
     private final boolean noMatchWeigher;
-    private final ToIntFunction<A> intMatchWeigher;
-    private final ToLongFunction<A> longMatchWeigher;
-    private final Function<A, BigDecimal> bigDecimalMatchWeigher;
+    private final ToIntBiFunction<A, B> intMatchWeigher;
+    private final ToLongBiFunction<A, B> longMatchWeigher;
+    private final BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher;
 
-    public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            DroolsConstraint<Solution_> constraint) {
+    public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint) {
         this(constraintFactory, parent, constraint, true, null, null, null);
     }
 
-    public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            DroolsConstraint<Solution_> constraint, ToIntFunction<A> intMatchWeigher) {
+    public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
+            ToIntBiFunction<A, B> intMatchWeigher) {
         this(constraintFactory, parent, constraint, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            DroolsConstraint<Solution_> constraint, ToLongFunction<A> longMatchWeigher) {
+    public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
+            ToLongBiFunction<A, B> longMatchWeigher) {
         this(constraintFactory, parent, constraint, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            DroolsConstraint<Solution_> constraint, Function<A, BigDecimal> bigDecimalMatchWeigher) {
+    public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
+            BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, constraint, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
-    private DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            DroolsConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher, Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
-        this.parent = parent;
+    private DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
+            DroolsConstraint<Solution_> constraint, boolean noMatchWeigher, ToIntBiFunction<A, B> intMatchWeigher,
+            ToLongBiFunction<A, B> longMatchWeigher, BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
+        super(constraintFactory, parent);
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
@@ -92,41 +89,37 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     // ************************************************************************
 
     @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
-    @Override
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        PatternDSL.PatternDef<A> parentPattern = getPattern();
-        Declaration<A> aVar = getVariableDeclaration();
-        ruleItemBuilderList.add(parentPattern);
-        ConsequenceBuilder._2<? extends AbstractScoreHolder, A> consequence;
+        ruleItemBuilderList.add(getLeftPattern());
+        ruleItemBuilderList.add(getRightPattern());
+        Declaration<A> aVar = getLeftVariableDeclaration();
+        Declaration<B> bVar = getRightVariableDeclaration();
+        ConsequenceBuilder._3<? extends AbstractScoreHolder, A, B> consequence;
         if (intMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
+            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
+                    .execute((drools, scoreHolder, a, b) -> {
                         RuleContext kcontext = (RuleContext) drools;
-                        int weightMultiplier = intMatchWeigher.applyAsInt(a);
+                        int weightMultiplier = intMatchWeigher.applyAsInt(a, b);
                         scoreHolder.impactScore(kcontext, weightMultiplier);
                     });
         } else if (longMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
+            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
+                    .execute((drools, scoreHolder, a, b) -> {
                         RuleContext kcontext = (RuleContext) drools;
-                        long weightMultiplier = longMatchWeigher.applyAsLong(a);
+                        long weightMultiplier = longMatchWeigher.applyAsLong(a, b);
                         scoreHolder.impactScore(kcontext, weightMultiplier);
                     });
         } else if (bigDecimalMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
+            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
+                    .execute((drools, scoreHolder, a, b) -> {
                         RuleContext kcontext = (RuleContext) drools;
-                        BigDecimal weightMultiplier = bigDecimalMatchWeigher.apply(a);
+                        BigDecimal weightMultiplier = bigDecimalMatchWeigher.apply(a, b);
                         scoreHolder.impactScore(kcontext, weightMultiplier);
                     });
         } else if (noMatchWeigher) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
+            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
+                    .execute((drools, scoreHolder, a, b) -> {
                         RuleContext kcontext = (RuleContext) drools;
                         scoreHolder.impactScore(kcontext);
                     });
@@ -137,18 +130,28 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     }
 
     @Override
+    public Declaration<A> getLeftVariableDeclaration() {
+        return parent.getLeftVariableDeclaration();
+    }
+
+    @Override
+    public PatternDSL.PatternDef<A> getLeftPattern() {
+        return parent.getLeftPattern();
+    }
+
+    @Override
+    public Declaration<B> getRightVariableDeclaration() {
+        return parent.getRightVariableDeclaration();
+    }
+
+    @Override
+    public PatternDSL.PatternDef<B> getRightPattern() {
+        return parent.getRightPattern();
+    }
+
+    @Override
     public String toString() {
-        return "Scoring()";
-    }
-
-    @Override
-    public Declaration<A> getVariableDeclaration() {
-        return parent.getVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getPattern() {
-        return parent.getPattern();
+        return "BiScoring()";
     }
 
     // ************************************************************************
