@@ -43,40 +43,36 @@ public class RuleAttribute {
     }
 
     public String toString() {
-        StringBuilder ret = new StringBuilder();
+        final StringBuilder ret = new StringBuilder();
         ret.append( this.attributeName );
+        ret.append( ' ' );
         if ( NO_LOOP.getAttributeName().equals( attributeName ) ) {
-            ret.append( " " );
             ret.append( this.value == null ? "true" : this.value );
         } else if ( SALIENCE.getAttributeName().equals( this.attributeName ) ||
                 DURATION.getAttributeName().equals( this.attributeName ) ) {
-            ret.append( " " );
             ret.append( this.value );
         } else if (ENABLED.getAttributeName().equals( this.attributeName ) ||
                 AUTO_FOCUS.getAttributeName().equals( this.attributeName ) ||
                 LOCK_ON_ACTIVE.getAttributeName().equals( this.attributeName ) ) {
-            ret.append( " " );
             ret.append( this.value.equals( "true" ) ? "true" : "false" );
         } else if (TIMER.getAttributeName().equals( this.attributeName ) ) {
-            ret.append( " " );
             if ( this.value.startsWith( "(" ) && this.value.endsWith( ")" ) ) {
                 ret.append( this.value );
             } else {
-                ret.append( "(" ).append( this.value ).append( ")" );
+                ret.append( '(' ).append( this.value ).append( ')' );
             }
         } else if (CALENDARS.getAttributeName().equals( this.attributeName ) ) {
             final String raw = this.value.replaceAll( "\"|\\s", "" );
             final String[] calendars = raw.split( "," );
-            ret.append( " " );
             for ( String calendar : calendars ) {
-                ret.append( "\"" ).append( calendar ).append( "\", " );
+                ret.append( '"' ).append( calendar ).append( "\", " );
             }
             ret.delete( ret.length() - 2,
                         ret.length() );
         } else if ( this.value != null ) {
-            ret.append( " \"" );
+            ret.append( '"' );
             ret.append( this.value );
-            ret.append( "\"" );
+            ret.append( '"' );
         }
         return ret.toString();
     }

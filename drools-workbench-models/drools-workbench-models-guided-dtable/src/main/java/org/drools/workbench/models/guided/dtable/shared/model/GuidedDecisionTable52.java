@@ -28,7 +28,6 @@ import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAu
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
 import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.imports.Imports;
-import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 /**

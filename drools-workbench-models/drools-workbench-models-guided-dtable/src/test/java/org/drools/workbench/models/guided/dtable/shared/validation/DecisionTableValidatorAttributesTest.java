@@ -43,7 +43,7 @@ public class DecisionTableValidatorAttributesTest {
 
     @Parameterized.Parameters
     public static Collection<String> attributes() {
-        return Stream.of(Attribute.values()).map(a->a.getAttributeName()).collect(Collectors.toList());
+        return Stream.of(Attribute.values()).map(Attribute::getAttributeName).collect(Collectors.toList());
     }
 
     @Test(expected = DuplicateAttributeException.class)
