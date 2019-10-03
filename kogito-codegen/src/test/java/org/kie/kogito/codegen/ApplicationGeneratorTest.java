@@ -40,6 +40,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.mockito.Mockito;
 
@@ -184,7 +185,7 @@ public class ApplicationGeneratorTest {
         labels.put("testKey2", "testValue2");
         labels.put("testKey3", "testValue3");
 
-        appGenerator.writeLabelsImageMetadata(labels);
+        MetaDataWriter.writeLabelsImageMetadata(targetDirectory.toFile(), labels);
         assertImageMetadata(targetDirectory, labels);
     }
 

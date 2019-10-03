@@ -16,20 +16,13 @@
 package org.kie.kogito.codegen;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -50,8 +43,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.metadata.ImageMetaData;
 import org.kie.kogito.codegen.metadata.Labeler;
+import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.kie.kogito.event.EventPublisher;
 import org.slf4j.Logger;
@@ -68,8 +61,6 @@ public class ApplicationGenerator {
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
-
-    private ObjectMapper mapper = new ObjectMapper();   
     
     private final String packageName;
     private final String sourceFilePath;
@@ -217,13 +208,13 @@ public class ApplicationGenerator {
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
+        generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, gen.getLabels()));
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.add(generateApplicationConfigDescriptor());
         if (useInjection()) {
             generators.forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
         }
-        this.labelers.forEach(l -> writeLabelsImageMetadata(l.generateLabels()));
+        this.labelers.forEach(l -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, l.generateLabels()));
         return generatedFiles;
     }
 
@@ -267,28 +258,7 @@ public class ApplicationGenerator {
         generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
         generator.setContext(context);
         return generator;
-    }
-    
-    protected void writeLabelsImageMetadata(Map<String, String> labels) {
-        try {
-            Path imageMetaDataFile = Paths.get(targetDirectory.getAbsolutePath(), "image_metadata.json");
-            ImageMetaData imageMetadata;
-
-            if (imageMetaDataFile.toFile().exists()) {
-                // read the file to merge the content
-                imageMetadata =  mapper.readValue(imageMetaDataFile.toFile(), ImageMetaData.class);
-            } else {
-                imageMetadata = new ImageMetaData();            
-            }
-            imageMetadata.add(labels);
-
-            Files.createDirectories(imageMetaDataFile.getParent());
-            Files.write(imageMetaDataFile,
-                        mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }    
+    } 
 
     public static String log(String source) {
         if ( logger.isDebugEnabled() ) {
