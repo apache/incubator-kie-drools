@@ -21,36 +21,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.FaviconHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.graphql.GraphQLHandler;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
+import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
 
 public class RouterSetup {
 
     @Inject
     GraphQLHandler graphQLHandler;
-    
-    @Inject
-    @ConfigProperty(name = "kogito.allowedOriginPattern", defaultValue = "*")
-    String allowedOriginPattern;
-    
+
     private AtomicBoolean routesAdded = new AtomicBoolean(false);
 
     void setupRouter(@Observes Router router) {
-        //Avoid setting up routes twice
         if (!routesAdded.get()) {
-            router.route("/graphql").handler(CorsHandler.create(allowedOriginPattern).allowedMethod(HttpMethod.POST).allowedHeader("content-type"));
             router.route("/graphql").handler(graphQLHandler);
-            router.route("/").handler(ctx -> ctx.reroute("/graphql"));
+            router.route("/graphiql/*").handler(GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true)));
+            router.route("/").handler(ctx -> ctx.reroute("/graphiql"));
             router.route().handler(LoggerHandler.create());
             router.route().handler(StaticHandler.create());
             router.route().handler(FaviconHandler.create());
-            routesAdded.set(true);
         }
     }
 }

@@ -46,8 +46,6 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-graphql</artifactId>
-      <!-- use managed version from Quarkus, see: https://github.com/quarkusio/quarkus/pull/3527 -->
-      <version>3.7.1</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
