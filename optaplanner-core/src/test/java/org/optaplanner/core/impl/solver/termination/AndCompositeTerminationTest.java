@@ -134,7 +134,7 @@ public class AndCompositeTerminationTest {
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.5);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
-        // Negative time numbersgradient values are unsupported and ignored, min(0.5,unsupported) = 0.5
+        // Negative time gradient values are unsupported and ignored, min(0.5,unsupported) = 0.5
         assertEquals(0.5, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
