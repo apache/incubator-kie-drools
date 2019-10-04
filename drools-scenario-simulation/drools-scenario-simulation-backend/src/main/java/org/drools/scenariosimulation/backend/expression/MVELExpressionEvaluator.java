@@ -27,10 +27,10 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
-public class MVELExpressionEvaluator implements ExpressionEvaluator {
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 
-    public static final String MVEL_ESCAPE_SYMBOL = "#";
-    public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
+public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
     private final ParserConfiguration config;
     private final MVELEvaluator evaluator = MVELSafeHelper.getEvaluator();

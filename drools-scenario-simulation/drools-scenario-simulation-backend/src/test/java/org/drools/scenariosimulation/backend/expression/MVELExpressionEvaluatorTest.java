@@ -20,7 +20,8 @@ import java.util.Collections;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.drools.scenariosimulation.backend.expression.MVELExpressionEvaluator.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,10 +32,10 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(evaluator.evaluateUnaryExpression("# java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test", String.class));
-        assertFalse(evaluator.evaluateUnaryExpression("# java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test1", String.class));
-        assertTrue(evaluator.evaluateUnaryExpression("# 1", 1, Integer.class));
-        assertFalse(evaluator.evaluateUnaryExpression("# 2", 1, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test", String.class));
+        assertFalse(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test1", String.class));
+        assertTrue(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 1", 1, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 2", 1, Integer.class));
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(new Object(), "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -47,9 +48,9 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        assertEquals(1, evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "# 1"));
+        assertEquals(1, evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"));
 
-        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "# \"Value\""));
+        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " \"Value\""));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "1+"))
                 .isInstanceOf(RuntimeException.class);
@@ -72,9 +73,9 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void cleanExpression() {
-        assertEquals("test", evaluator.cleanExpression("#test"));
-        assertEquals(" test", evaluator.cleanExpression("# test"));
-        assertEquals(" # test", evaluator.cleanExpression("# # test"));
+        assertEquals("test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + "test"));
+        assertEquals(" test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " test"));
+        assertEquals(" " + MVEL_ESCAPE_SYMBOL + " test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " " + MVEL_ESCAPE_SYMBOL + " test"));
 
         assertThatThrownBy(() -> evaluator.cleanExpression("test"))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -19,6 +19,8 @@ package org.drools.scenariosimulation.backend.expression;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+
 public class ExpressionEvaluatorFactory {
 
     private final ClassLoader classLoader;
@@ -44,7 +46,7 @@ public class ExpressionEvaluatorFactory {
 
         Object rawValue = factMappingValue.getRawValue();
 
-        if (rawValue instanceof String && ((String) rawValue).startsWith("#")) {
+        if (rawValue instanceof String && ((String) rawValue).startsWith(MVEL_ESCAPE_SYMBOL)) {
             return getOrCreateMVELExpressionEvaluator();
         } else {
             return getOrCreateBaseExpressionEvaluator();
