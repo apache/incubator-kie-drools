@@ -15,9 +15,17 @@
 
 package org.kie.kogito.codegen.di;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
 /**
@@ -118,6 +126,23 @@ public interface DependencyInjectionAnnotator {
      * @param event actual data to be send
      */
     void withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event);
+    
+    /**
+     * Annotates given node with set of roles to enforce security 
+     * @param node node to be annotated
+     * @param roles roles that are allowed
+     */
+    default void withSecurityRoles(NodeWithAnnotations<?> node, String[] roles) {
+        if (roles != null && roles.length > 0) {
+            List<Expression> rolesExpr = new ArrayList<>();
+            
+            for (String role : roles) {
+                rolesExpr.add(new StringLiteralExpr(role.trim()));
+            }
+                        
+            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
+        }
+    }
 
     /**
      * Create initialization method with given expression as body 

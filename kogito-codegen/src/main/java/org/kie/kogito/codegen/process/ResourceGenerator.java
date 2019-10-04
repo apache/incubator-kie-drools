@@ -126,36 +126,6 @@ public class ResourceGenerator {
 
         template.setName(resourceClazzName);
         
-        if (userTasks != null) {
-
-            CompilationUnit userTaskClazz = parse(
-                                                     this.getClass().getResourceAsStream("/class-templates/RestResourceUserTaskTemplate.java"));
-            
-            
-            ClassOrInterfaceDeclaration userTaskTemplate = userTaskClazz
-                    .findFirst(ClassOrInterfaceDeclaration.class)
-                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
-            for (UserTaskModelMetaData userTask : userTasks) {
-       
-                userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {                    
-                    
-                    MethodDeclaration cloned = md.clone();
-                    template.addMethod(cloned.getName() + "_" + userTask.getId(), Keyword.PUBLIC)
-                    .setType(cloned.getType())
-                    .setParameters(cloned.getParameters())
-                    .setBody(cloned.getBody().get())
-                    .setAnnotations(cloned.getAnnotations());
-                    
-                });
-                
-                template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, userTask));
-                
-                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputMoodelClassSimpleName(), userTask.getOutputMoodelClassSimpleName()));
-                template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
-                
-            }
-        }
-        
         if (signals != null) {
             
             int index = 0;
@@ -203,6 +173,38 @@ public class ResourceGenerator {
                 template.addMember(signalMethod);
             }
         }
+        // security must be applied before user tasks are added to make sure that user task
+        // endpoints are not security annotated as they should restrict access based on user assignments
+        securityAnnotated(template);
+        
+        if (userTasks != null) {
+
+            CompilationUnit userTaskClazz = parse(this.getClass().getResourceAsStream("/class-templates/RestResourceUserTaskTemplate.java"));
+            
+            
+            ClassOrInterfaceDeclaration userTaskTemplate = userTaskClazz
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
+            for (UserTaskModelMetaData userTask : userTasks) {
+       
+                userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {                    
+                    
+                    MethodDeclaration cloned = md.clone();
+                    template.addMethod(cloned.getName() + "_" + userTask.getId(), Keyword.PUBLIC)
+                    .setType(cloned.getType())
+                    .setParameters(cloned.getParameters())
+                    .setBody(cloned.getBody().get())
+                    .setAnnotations(cloned.getAnnotations());
+                    
+                });
+                
+                template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, userTask));
+                
+                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputMoodelClassSimpleName(), userTask.getOutputMoodelClassSimpleName()));
+                template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
+                
+            }
+        }
         
         template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
@@ -229,11 +231,32 @@ public class ResourceGenerator {
                 template.remove(createResourceMethod.get());
             }
         }
+        
+        
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
 
     
+    private void securityAnnotated(ClassOrInterfaceDeclaration template) {
+        if (useInjection() && process.getMetaData().containsKey("securityRoles")) {
+            String[] roles = ((String) process.getMetaData().get("securityRoles")).split(",");
+            template.findAll(MethodDeclaration.class).stream().filter(md -> requiresSecurity(md)).forEach(md -> annotator.withSecurityRoles(md, roles));
+        }
+    }
+    
+    private boolean requiresSecurity(MethodDeclaration md) {
+        // applies to only rest annotated methods
+        if (md.getAnnotationByName("POST").isPresent() ||
+                md.getAnnotationByName("GET").isPresent() ||
+                md.getAnnotationByName("PUT").isPresent() ||
+                md.getAnnotationByName("DELETE").isPresent()) {
+            return true;
+        }
+                
+        return false;
+    }
+
     private void initializeProcessField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
     }

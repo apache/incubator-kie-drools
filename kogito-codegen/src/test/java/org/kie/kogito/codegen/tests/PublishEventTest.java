@@ -169,6 +169,40 @@ public class PublishEventTest extends AbstractCodegenTest {
     }
     
     @Test
+    public void testBasicUserTaskProcessWithSecurityRoles() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcessWithSecurityRoles.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("UserTasksProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
+        uow.start();
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        uow.end();     
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);        
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(2);
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
+        assertThat(body.getRoles()).hasSize(2).contains("employees", "managers");
+        assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
+        
+        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready", "UserTasksProcess");
+    }
+    
+    @Test
     public void testBasicCallActivityTask() throws Exception {
         
         Application app = generateCodeProcessesOnly("subprocess/CallActivity.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        

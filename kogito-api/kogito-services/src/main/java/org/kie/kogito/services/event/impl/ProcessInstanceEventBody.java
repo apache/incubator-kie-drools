@@ -15,9 +15,11 @@
 
 package org.kie.kogito.services.event.impl;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,6 +48,8 @@ public class ProcessInstanceEventBody {
     private Map<String, Object> variables;
     
     private ProcessErrorEventBody error;
+    
+    private List<String> roles;
     
     private ProcessInstanceEventBody() {
     }
@@ -96,8 +100,12 @@ public class ProcessInstanceEventBody {
 
     public Map<String, Object> getVariables() {
         return variables;
-    }
+    }    
     
+    public List<String> getRoles() {
+        return roles;
+    }
+
     public Builder update() {
         return new Builder(this);
     }
@@ -212,6 +220,11 @@ public class ProcessInstanceEventBody {
         
         public Builder error(ProcessErrorEventBody error) {
             instance.error = error;
+            return this;
+        }
+        
+        public Builder roles(String...roles) {
+            instance.roles = Arrays.asList(roles);
             return this;
         }
         

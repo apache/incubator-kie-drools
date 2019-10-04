@@ -148,6 +148,11 @@ public class ProcessInstanceEventBatch implements EventBatch {
                                .build());
         }
         
+        String securityRoles = (String) pi.getProcess().getMetaData().get("securityRoles");
+        if (securityRoles != null) {
+            eventBuilder.roles(securityRoles.split(","));
+        }
+        
         return eventBuilder.build();
     }
     
