@@ -22,30 +22,30 @@ image::MoveAndNeighborhoodSelection/singleMoveNQueens04.png[align="center"]
 
 The new solution is called a _neighbor_ of the original solution, because it can be reached in a single ``Move``.
 Although a single move can change multiple queens, the neighbors of a solution should always be a very small subset of all possible solutions.
-For example, on that original solution, these are all possible ``changeMove``'s:
+For example, on that original solution, these are all possible ``changeMove``s:
 
 image::MoveAndNeighborhoodSelection/possibleMovesNQueens04.png[align="center"]
 
-If we ignore the four ``changeMove``'s that have no impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
+If we ignore the four ``changeMove``s that have no impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
 As the problem scales out, the number of possible moves increases far less than the number of possible solutions.
 
-Yet, in four ``changeMove``'s or less we can reach any solution.
-For example we can reach a very different solution in three ``changeMove``'s:
+Yet, in four ``changeMove``s or less we can reach any solution.
+For example we can reach a very different solution in three ``changeMove``s:
 
 image::MoveAndNeighborhoodSelection/sequentialMovesNQueens04.png[align="center"]
 
 
 [NOTE]
 ====
-There are many other types of moves besides ``changeMove``'s.
+There are many other types of moves besides ``changeMove``s.
 Many move types are included out-of-the-box, but you can also implement custom moves.
 
 A `Move` can affect multiple entities or even create/delete entities.
 But it must not change the problem facts.
 ====
 
-All optimization algorithms use ``Move``'s to transition from one solution to a neighbor solution.
+All optimization algorithms use ``Move``s to transition from one solution to a neighbor solution.
 Therefore, all the optimization algorithms are confronted with `Move` selection: the craft of creating and iterating moves efficiently and the art of finding the most promising subset of random moves to evaluate first.
 
 

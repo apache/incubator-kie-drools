@@ -257,7 +257,7 @@ and you want to increase the cache size in one benchmark:
   </scoreDirectorFactory>
 ----
 
-Add a public setter for each custom property, which is called when a `Solver` is build.
+Add a public setter for each custom property, which is called when a `Solver` is built.
 
 [source,java,options="nowrap"]
 ----

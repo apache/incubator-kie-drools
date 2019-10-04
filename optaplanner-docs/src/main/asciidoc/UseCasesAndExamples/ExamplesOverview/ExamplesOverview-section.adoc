@@ -5,7 +5,7 @@ Planner has several examples. In this manual we explain mainly using the _n_ que
 
 Some of the examples solve problems that are presented in academic contests. The `Contest` column in the following table lists the contests. It also identifies an example as being either _realistic_ or _unrealistic_ for the purpose of a contest. A _realistic contest_ is _an official, independent contest_:
 
-* that clearly defines a real-word use case.
+* that clearly defines a real-world use case.
 * with real-world constraints.
 * with multiple, real-world datasets.
 * that expects reproducible results within a specific time limit on specific hardware.
