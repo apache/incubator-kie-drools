@@ -74,32 +74,32 @@ public class AndCompositeTerminationTest {
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);
-        //min(0.0,0.0) = 0.0
+        // min(0.0,0.0) = 0.0
         assertEquals(0.0, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(0.5);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);
-        //min(0.5,0.0) = 0.0
+        // min(0.5,0.0) = 0.0
         assertEquals(0.0, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(0.5);
-        //min(0.0,0.5) = 0.0
+        // min(0.0,0.5) = 0.0
         assertEquals(0.0, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(-1.0);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(-1.0);
-        //negative number are unsupported and ignored, min(unsupported,unsupported) = 1.0 (default)
+        // Negative number are unsupported and ignored, min(unsupported,unsupported) = 1.0 (default)
         assertEquals(1.0, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(0.5);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(-1.0);
-        //negative number are unsupported and ignored, min(0.5,unsupported) = 0.5
+        // Negative number are unsupported and ignored, min(0.5,unsupported) = 0.5
         assertEquals(0.5, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(-1.0);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(0.5);
-        //negative number are unsupported and ignored, min(unsupported,0.5) = 0.5
+        // Negative number are unsupported and ignored, min(unsupported,0.5) = 0.5
         assertEquals(0.5, compositeTermination.calculateSolverTimeGradient(solverScope), 0.0);
     }
 
@@ -114,32 +114,32 @@ public class AndCompositeTerminationTest {
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.0);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.0);
-        //min(0.0,0.0) = 0.0
+        // min(0.0,0.0) = 0.0
         assertEquals(0.0, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.5);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.0);
-        //min(0.5,0.0) = 0.0
+        // min(0.5,0.0) = 0.0
         assertEquals(0.0, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.0);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.5);
-        //min(0.0,0.5) = 0.0
+        // min(0.0,0.5) = 0.0
         assertEquals(0.0, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
-        //negative number are unsupported and ignored, min(unsupported,unsupported) = 1.0 (default)
+        // Negative number are unsupported and ignored, min(unsupported,unsupported) = 1.0 (default)
         assertEquals(1.0, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.5);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
-        //negative number are unsupported and ignored, min(0.5,unsupported) = 0.5
+        // Negative number are unsupported and ignored, min(0.5,unsupported) = 0.5
         assertEquals(0.5, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
 
         when(termination1.calculatePhaseTimeGradient(phaseScope)).thenReturn(-1.0);
         when(termination2.calculatePhaseTimeGradient(phaseScope)).thenReturn(0.5);
-        //negative number are unsupported and ignored, min(unsupported,0.5) = 0.5
+        // Negative number are unsupported and ignored, min(unsupported,0.5) = 0.5
         assertEquals(0.5, compositeTermination.calculatePhaseTimeGradient(phaseScope), 0.0);
     }
 }
