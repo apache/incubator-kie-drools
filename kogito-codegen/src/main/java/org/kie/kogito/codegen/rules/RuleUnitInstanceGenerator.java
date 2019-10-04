@@ -38,7 +38,7 @@ import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.DataSource;
 
-public class RuleUnitInstanceSourceClass implements FileGenerator {
+public class RuleUnitInstanceGenerator implements FileGenerator {
 
     private final String packageName;
     private final String typeName;
@@ -57,7 +57,7 @@ public class RuleUnitInstanceSourceClass implements FileGenerator {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceSourceClass(String packageName, String typeName, ClassLoader classLoader) {
+    public RuleUnitInstanceGenerator(String packageName, String typeName, ClassLoader classLoader) {
         this.packageName = packageName;
         this.typeName = typeName;
         this.classLoader = classLoader;
@@ -153,7 +153,7 @@ public class RuleUnitInstanceSourceClass implements FileGenerator {
                         new ClassOrInterfaceType(null, AbstractRuleUnitInstance.class.getCanonicalName())
                                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName)))
                 .addConstructor(Modifier.Keyword.PUBLIC)
-                .addParameter(RuleUnitSourceClass.ruleUnitType(canonicalName), "unit")
+                .addParameter(RuleUnitGenerator.ruleUnitType(canonicalName), "unit")
                 .addParameter(canonicalName, "value")
                 .addParameter(KieSession.class.getCanonicalName(), "session")
                 .setBody(new BlockStmt().addStatement(new MethodCallExpr(

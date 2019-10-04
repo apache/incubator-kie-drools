@@ -201,7 +201,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             if (!ruleUnits.isEmpty()) {
                 hasRuleUnits = true;
                 for (Class<?> ruleUnit : ruleUnits) {
-                    RuleUnitSourceClass ruSource = new RuleUnitSourceClass(ruleUnit, pkgSources.getRulesFileName())
+                    RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName())
                             .withDependencyInjection(annotator)
                             .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit ) );
                     moduleGenerator.addRuleUnit(ruSource);
@@ -213,20 +213,20 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         if (hasRuleUnits) {
             generatedFiles.add( new RuleUnitsRegisterClass(unitsMap).generateFile(GeneratedFile.Type.RULE) );
 
-            for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
+            for (RuleUnitGenerator ruleUnit : moduleGenerator.getRuleUnits()) {
                 // add the label id of the rule unit with value set to `rules` as resource type
                 this.addLabel(ruleUnit.label(), "rules");
                 ruleUnit.setApplicationPackageName(packageName);
 
                 generatedFiles.add( ruleUnit.generateFile(GeneratedFile.Type.RULE) );
 
-                RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(contextClassLoader);
+                RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(contextClassLoader);
                 generatedFiles.add( ruleUnitInstance.generateFile(GeneratedFile.Type.RULE) );
 
-                List<QueryEndpointSourceClass> queries = ruleUnit.queries();
+                List<QueryEndpointGenerator> queries = ruleUnit.queries();
                 if (!queries.isEmpty()) {
                     generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitClass() ).generateFile(GeneratedFile.Type.RULE) );
-                    for (QueryEndpointSourceClass query : queries) {
+                    for (QueryEndpointGenerator query : queries) {
                         generatedFiles.add( query.generateFile( GeneratedFile.Type.QUERY ) );
                     }
                 }

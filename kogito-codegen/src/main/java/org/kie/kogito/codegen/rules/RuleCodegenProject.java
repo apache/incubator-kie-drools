@@ -76,7 +76,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                 if (!ruleUnits.isEmpty()) {
                     hasRuleUnits = true;
                     for (Class<?> ruleUnit : ruleUnits) {
-                        RuleUnitSourceClass ruSource = new RuleUnitSourceClass( ruleUnit, pkgSources.getRulesFileName() )
+                        RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName() )
                                 .withDependencyInjection(annotator );
                         moduleGenerator.addRuleUnit( ruSource );
                         unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
@@ -90,12 +90,12 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                     RULE_UNIT_REGISTER_SOURCE,
                     log( new RuleUnitsRegisterClass(unitsMap).generate() ).getBytes( StandardCharsets.UTF_8 ) );
 
-            for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
+            for (RuleUnitGenerator ruleUnit : moduleGenerator.getRuleUnits()) {
                 trgMfs.write(
                         ruleUnit.generatedFilePath(),
                         log( ruleUnit.generate() ).getBytes( StandardCharsets.UTF_8 ) );
 
-                RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(Thread.currentThread().getContextClassLoader());
+                RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(Thread.currentThread().getContextClassLoader());
                 trgMfs.write(
                         ruleUnitInstance.generatedFilePath(),
                         log( ruleUnitInstance.generate() ).getBytes( StandardCharsets.UTF_8 ) );

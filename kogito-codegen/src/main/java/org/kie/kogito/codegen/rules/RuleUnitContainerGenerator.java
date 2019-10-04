@@ -51,7 +51,7 @@ import org.kie.kogito.rules.RuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
-    private final List<RuleUnitSourceClass> ruleUnits;
+    private final List<RuleUnitGenerator> ruleUnits;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
@@ -62,7 +62,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         this.ruleUnits = new ArrayList<>();
     }
 
-    void addRuleUnit(RuleUnitSourceClass rusc) {
+    void addRuleUnit(RuleUnitGenerator rusc) {
         ruleUnits.add(rusc);
     }
 
@@ -73,7 +73,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         SwitchStmt switchStmt = new SwitchStmt();
         switchStmt.setSelector(new NameExpr("fqcn"));
 
-        for (RuleUnitSourceClass ruleUnit : ruleUnits) {
+        for (RuleUnitGenerator ruleUnit : ruleUnits) {
             SwitchEntry switchEntry = new SwitchEntry();
             switchEntry.getLabels().add(new StringLiteralExpr(ruleUnit.getRuleUnitClass().getCanonicalName()));
             ObjectCreationExpr ruleUnitConstructor = new ObjectCreationExpr()
@@ -152,7 +152,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         return this;
     }
 
-    List<RuleUnitSourceClass> getRuleUnits() {
+    List<RuleUnitGenerator> getRuleUnits() {
         return ruleUnits;
     }
 }

@@ -49,20 +49,22 @@ import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
-public class QueryEndpointSourceClass implements FileGenerator {
+public class QueryEndpointGenerator implements FileGenerator {
 
     private final Class<?> ruleUnit;
     private final QueryModel query;
     private final DependencyInjectionAnnotator annotator;
 
     private final String name;
+    private final String endpointName;
     private final String targetCanonicalName;
     private final String generatedFilePath;
 
-    public QueryEndpointSourceClass( Class<?> ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator ) {
+    public QueryEndpointGenerator(Class<?> ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator ) {
         this.ruleUnit = ruleUnit;
         this.query = query;
         this.name = toCamelCase(query.getName());
+        this.endpointName = toKebabCase(name);
         this.annotator = annotator;
 
         this.targetCanonicalName = ruleUnit.getSimpleName() + "Query" + name + "Endpoint";
@@ -77,7 +79,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
     @Override
     public String generate() {
         CompilationUnit cu = parse(
-                this.getClass().getResourceAsStream("/class-templates/RestQueryTemplate.java"));
+                this.getClass().getResourceAsStream("/class-templates/rules/RestQueryTemplate.java"));
         cu.setPackageDeclaration(query.getNamespace());
 
         ClassOrInterfaceDeclaration clazz = cu
@@ -187,6 +189,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
     private void interpolateStrings(StringLiteralExpr vv) {
         String interpolated = vv.getValue()
                 .replace("$name$", name)
+                .replace("$endpointName$", endpointName)
                 .replace("$queryName$", query.getName());
         vv.setString(interpolated);
     }
@@ -195,5 +198,9 @@ public class QueryEndpointSourceClass implements FileGenerator {
         return Stream.of(inputString.split(" "))
                 .map( s -> s.length() > 1 ? s.substring( 0, 1 ).toUpperCase() + s.substring( 1 ) : s.substring( 0, 1 ).toUpperCase() )
                 .collect( Collectors.joining() );
+    }
+
+    private static String toKebabCase(String inputString) {
+        return inputString.replaceAll("(.)(\\p{Upper})", "$1-$2").toLowerCase();
     }
 }

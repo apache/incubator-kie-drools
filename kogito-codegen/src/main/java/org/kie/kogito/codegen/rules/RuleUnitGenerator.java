@@ -40,7 +40,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
-public class RuleUnitSourceClass implements FileGenerator {
+public class RuleUnitGenerator implements FileGenerator {
 
     private final Class<?> ruleUnit;
     private final String packageName;
@@ -53,7 +53,7 @@ public class RuleUnitSourceClass implements FileGenerator {
     private Collection<QueryModel> queries;
     private String applicationPackageName;
 
-    public RuleUnitSourceClass(Class<?> ruleUnit, String generatedSourceFile) {
+    public RuleUnitGenerator(Class<?> ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
         this.packageName = ruleUnit.getPackage().getName();
         this.typeName = ruleUnit.getSimpleName();
@@ -64,14 +64,14 @@ public class RuleUnitSourceClass implements FileGenerator {
         this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
     }
 
-    public RuleUnitInstanceSourceClass instance(ClassLoader classLoader) {
-        return new RuleUnitInstanceSourceClass(packageName, typeName, classLoader);
+    public RuleUnitInstanceGenerator instance(ClassLoader classLoader) {
+        return new RuleUnitInstanceGenerator(packageName, typeName, classLoader);
     }
 
-    public List<QueryEndpointSourceClass> queries() {
+    public List<QueryEndpointGenerator> queries() {
         return queries.stream()
                 .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEndpointSourceClass(ruleUnit, query, annotator))
+                .map(query -> new QueryEndpointGenerator(ruleUnit, query, annotator))
                 .collect(toList());
     }
 
@@ -132,7 +132,7 @@ public class RuleUnitSourceClass implements FileGenerator {
                     .ifPresent(annotator::withInjection);
         }
 
-        String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
+        String ruleUnitInstanceFQCN = RuleUnitInstanceGenerator.qualifiedName(packageName, typeName);
         cls.findAll(ConstructorDeclaration.class).forEach(this::setClassName);
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$InstanceName$"))
                 .forEach(o -> o.setType(ruleUnitInstanceFQCN));
@@ -154,12 +154,12 @@ public class RuleUnitSourceClass implements FileGenerator {
         constructorDeclaration.setName(targetTypeName);
     }
 
-    public RuleUnitSourceClass withDependencyInjection(DependencyInjectionAnnotator annotator) {
+    public RuleUnitGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
         return this;
     }
 
-    public RuleUnitSourceClass withQueries(Collection<QueryModel> queries) {
+    public RuleUnitGenerator withQueries(Collection<QueryModel> queries) {
         this.queries = queries;
         return this;
     }

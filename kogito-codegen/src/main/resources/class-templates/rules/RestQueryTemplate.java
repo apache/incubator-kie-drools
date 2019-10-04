@@ -14,7 +14,7 @@ import org.kie.kogito.rules.RuleUnitInstance;
 
 import static java.util.stream.Collectors.toList;
 
-@Path("/$name$")
+@Path("/$endpointName$")
 public class $unit$Query$name$Endpoint {
 
     RuleUnit<$UnitType$> ruleUnit;
