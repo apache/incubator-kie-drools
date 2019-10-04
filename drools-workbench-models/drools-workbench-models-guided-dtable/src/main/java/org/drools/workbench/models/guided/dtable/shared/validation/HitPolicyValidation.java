@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 import static org.drools.workbench.models.datamodel.rule.Attribute.ACTIVATION_GROUP;
