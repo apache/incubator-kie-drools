@@ -15,10 +15,13 @@
  */
 package org.drools.scenariosimulation.backend.expression;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
@@ -37,6 +40,11 @@ public class MVELExpressionEvaluatorTest {
         assertTrue(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 1", 1, Integer.class));
         assertFalse(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 2", 1, Integer.class));
 
+        assertTrue(evaluator.evaluateUnaryExpression("# " + ACTUAL_VALUE_IDENTIFIER + " == 123", 123, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression("# " + ACTUAL_VALUE_IDENTIFIER + " != 123", 321, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression("# " + ACTUAL_VALUE_IDENTIFIER + " == 123", 321, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression("# " + ACTUAL_VALUE_IDENTIFIER + " != 123", 123, Integer.class));
+
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(new Object(), "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Raw expression should be a String");
@@ -51,6 +59,49 @@ public class MVELExpressionEvaluatorTest {
         assertEquals(1, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"));
 
         assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " \"Value\""));
+
+        assertEquals(6, evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                            Collections.emptyList(),
+                                                            "# 2 * 3"));
+
+        assertEquals(14, evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                             Collections.emptyList(),
+                                                             "# -1 + (3 * 5)"));
+
+        assertEquals(Arrays.asList("Jim"), evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                                               Collections.emptyList(),
+                                                                               "# [\"Jim\"]"));
+
+        assertEquals(Collections.emptyList(), evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                                                  Collections.emptyList(),
+                                                                                  "# []"));
+
+        assertThat(evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       "# {\"Jim\"}"))
+                .isEqualTo(new String[]{"Jim"});
+
+        assertThat(evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       "# { }"))
+                .isEqualTo(new String[]{});
+
+        assertThat(evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       "# \"abc..\"[2]"))
+                .isEqualTo('c');
+
+        assertThat(evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       "# 1.234B"))
+                .isEqualTo(new BigDecimal("1.234"));
+
+        assertThat(evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       "# 1.234d"))
+                .isEqualTo(Double.valueOf("1.234"));
+
+        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "# \"Value\""));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "1+"))
                 .isInstanceOf(RuntimeException.class);
