@@ -30,10 +30,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.namespace.QName;
+
 import org.drools.core.io.impl.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.core.assembler.DMNResource;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
@@ -52,25 +56,26 @@ public class DecisionCodegen extends AbstractGenerator {
             List<File> files = filesStream.filter(p -> p.toString().endsWith(".dmn"))
                                           .map(Path::toFile)
                                           .collect(Collectors.toList());
-            return ofFiles(files);
+            return ofFiles(srcPath, files);
         }
     }
 
-    public static DecisionCodegen ofFiles(Collection<File> files) throws IOException {
-        List<Definitions> result = parseDecisions(files);
-        return ofDecisions(result);
+    public static DecisionCodegen ofFiles(Path basePath, Collection<File> files) throws IOException {
+        List<DMNResource> result = parseDecisions(files);
+        return ofDecisions(basePath, result);
     }
 
-    private static DecisionCodegen ofDecisions(List<Definitions> ds) {
-        return new DecisionCodegen(ds);
+    private static DecisionCodegen ofDecisions(Path basePath, List<DMNResource> result) {
+        return new DecisionCodegen(basePath, result);
     }
 
-    private static List<Definitions> parseDecisions(Collection<File> files) throws IOException {
-        List<Definitions> result = new ArrayList<>();
-        for (File bpmnFile : files) {
-            FileSystemResource r = new FileSystemResource(bpmnFile);
-            Definitions ps = parseDecisionFile(r);
-            result.add(ps);
+    private static List<DMNResource> parseDecisions(Collection<File> files) throws IOException {
+        List<DMNResource> result = new ArrayList<>();
+        for (File dmnFile : files) {
+            FileSystemResource r = new FileSystemResource(dmnFile);
+            Definitions defs = parseDecisionFile(r);
+            DMNResource dmnRes = new DMNResource(new QName(defs.getNamespace(), defs.getName()), new ResourceWithConfigurationImpl(r, null, null, null), defs);
+            result.add(dmnRes);
         }
         return result;
     }
@@ -85,23 +90,29 @@ public class DecisionCodegen extends AbstractGenerator {
     
     private DecisionContainerGenerator moduleGenerator;
 
-    private final Map<String, Definitions> models;
+    private Path basePath;
+    private final Map<String, DMNResource> models;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
-    public DecisionCodegen(Collection<? extends Definitions> models) {
+    public DecisionCodegen(Path basePath, Collection<? extends DMNResource> models) {
+        this.basePath = basePath;
         this.models = new HashMap<>();
-        for (Definitions model : models) {
-            this.models.put(model.getId(), model);
+        for (DMNResource model : models) {
+            this.models.put(model.getDefinitions().getId(), model);
         }
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
+        this.moduleGenerator = new DecisionContainerGenerator(applicationCanonicalName, basePath, models);
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new DecisionContainerGenerator();
         this.applicationCanonicalName = packageName + ".Application";
+    }
+
+    public Path getBasePath() {
+        return this.basePath;
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -119,8 +130,8 @@ public class DecisionCodegen extends AbstractGenerator {
 
         List<DMNRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
         
-        for (Definitions model : models.values()) {
-            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator);
+        for (DMNResource dmnRes : models.values()) {
+            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(dmnRes.getDefinitions(), applicationCanonicalName).withDependencyInjection(annotator);
             rgs.add(resourceGenerator);
         }
         

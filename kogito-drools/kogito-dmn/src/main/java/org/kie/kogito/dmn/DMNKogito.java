@@ -18,6 +18,7 @@ package org.kie.kogito.dmn;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,15 +52,33 @@ public class DMNKogito {
         // intentionally private.
     }
 
+    public static DMNRuntime createGenericDMNRuntime(Reader... resources) {
+        KnowledgeBaseImpl knowledgeBase = new KnowledgeBaseImpl("", new RuleBaseConfiguration());
+        Map<String, InternalKnowledgePackage> pkgs = knowledgeBase.getPackagesMap();
+        DMNCompilerImpl compilerImpl = new DMNCompilerImpl();
+        for (Reader dmnResource : resources) {
+            try {
+                DMNModel m = compilerImpl.compile(dmnResource);
+                InternalKnowledgePackage pkg = pkgs.computeIfAbsent(m.getNamespace(), KnowledgePackageImpl::new);
+                ResourceTypePackageRegistry rpkg = pkg.getResourceTypePackages();
+                DMNPackageImpl dmnpkg = rpkg.computeIfAbsent(ResourceType.DMN, rtp -> new DMNPackageImpl(m.getNamespace()));
+                dmnpkg.addModel(m.getName(), m);// TODO add profiles? and check dups over namespace/name
+            } catch (Exception e) {
+                LOG.error("Failed on DMN resource", e);
+            }
+        }
+        return new DMNRuntimeImpl(knowledgeBase);
+    }
+
     public static DMNRuntime createGenericDMNRuntime() {
         KnowledgeBaseImpl knowledgeBase = new KnowledgeBaseImpl("", new RuleBaseConfiguration());
         Map<String, InternalKnowledgePackage> pkgs = knowledgeBase.getPackagesMap();
         DMNCompilerImpl compilerImpl = new DMNCompilerImpl();
         try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
             List<java.nio.file.Path> files = fileStream
-                                                  .filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".dmn"))
-                                                  .peek(x -> LOG.debug("Adding DMN model {} to runtime", x))
-                                                  .collect(Collectors.toList());
+                                                       .filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".dmn"))
+                                                       .peek(x -> LOG.debug("Adding DMN model {} to runtime", x))
+                                                       .collect(Collectors.toList());
             for (java.nio.file.Path file : files) {
                 DMNModel m = compilerImpl.compile(new FileReader(file.toFile()));
                 InternalKnowledgePackage pkg = pkgs.computeIfAbsent(m.getNamespace(), KnowledgePackageImpl::new);
