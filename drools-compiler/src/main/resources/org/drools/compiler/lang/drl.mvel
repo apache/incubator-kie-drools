@@ -47,7 +47,7 @@ end
 }
 @end{"\n"}@end{}@if{!pkg.rules.isEmpty()}
 
-@foreach{rule : pkg.rules}@{rule.isRule()?"rule":"query"} "@{rule.name}"@if{rule.parentName!=null} extends "@{rule.parentName}"@end{}@if{!rule.annotations.isEmpty()}
+@foreach{rule : pkg.rules}@{rule.isRule()?"rule":"query"} "@{rule.name}"@if{!rule.isRule() && rule.getParameters().length > 0} ( @foreach{n:rule.parameters,t:rule.parameterTypes}@{t} @{n}@end{", "} ) @end{}@if{rule.parentName!=null} extends "@{rule.parentName}"@end{}@if{!rule.annotations.isEmpty()}
 @foreach{ ann : rule.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}@end{}@if{!rule.attributes.isEmpty()}
 @foreach{attr : rule.attributes.values() }    @{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{rule.isRule()}
 when@end{}@includeNamed{"ced"; base=rule.lhs; root=true}@if{rule.isRule()}
