@@ -17,6 +17,7 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -42,7 +43,7 @@ public class GuidedDTDRLPersistenceUniqueHitPolicyTest {
     public void blockUseOfActivationGroup() {
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( "activation-group" );
+        attributeCol52.setAttribute(Attribute.ACTIVATION_GROUP.getAttributeName());
         attributeCol52.setDefaultValue( new DTCellValue52( "test" ) );
 
         dtable.getAttributeCols()

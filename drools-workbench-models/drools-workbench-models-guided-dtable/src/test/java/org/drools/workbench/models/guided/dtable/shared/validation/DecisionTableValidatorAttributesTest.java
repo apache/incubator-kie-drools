@@ -16,17 +16,20 @@
 package org.drools.workbench.models.guided.dtable.shared.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class DecisionTableValidatorAttributesTest {
@@ -40,21 +43,7 @@ public class DecisionTableValidatorAttributesTest {
 
     @Parameterized.Parameters
     public static Collection<String> attributes() {
-        return Arrays.asList( GuidedDecisionTable52.SALIENCE_ATTR,
-                              GuidedDecisionTable52.ENABLED_ATTR,
-                              GuidedDecisionTable52.DATE_EFFECTIVE_ATTR,
-                              GuidedDecisionTable52.DATE_EXPIRES_ATTR,
-                              GuidedDecisionTable52.NO_LOOP_ATTR,
-                              GuidedDecisionTable52.AGENDA_GROUP_ATTR,
-                              GuidedDecisionTable52.ACTIVATION_GROUP_ATTR,
-                              GuidedDecisionTable52.DURATION_ATTR,
-                              GuidedDecisionTable52.TIMER_ATTR,
-                              GuidedDecisionTable52.CALENDARS_ATTR,
-                              GuidedDecisionTable52.AUTO_FOCUS_ATTR,
-                              GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR,
-                              GuidedDecisionTable52.RULEFLOW_GROUP_ATTR,
-                              GuidedDecisionTable52.DIALECT_ATTR,
-                              GuidedDecisionTable52.NEGATE_RULE_ATTR );
+        return Stream.of(Attribute.values()).map(Attribute::getAttributeName).collect(Collectors.toList());
     }
 
     @Test(expected = DuplicateAttributeException.class)
@@ -63,7 +52,7 @@ public class DecisionTableValidatorAttributesTest {
         final DecisionTableValidator validator = getDecisionTableValidator();
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( attributeName );
+        attributeCol52.setAttribute(attributeName);
 
         try {
             validator.isValidToAdd( attributeCol52 );

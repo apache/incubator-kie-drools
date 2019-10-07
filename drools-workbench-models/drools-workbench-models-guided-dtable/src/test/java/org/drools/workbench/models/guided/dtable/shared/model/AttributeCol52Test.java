@@ -16,6 +16,14 @@
 
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.drools.workbench.models.datamodel.rule.Attribute.ACTIVATION_GROUP;
+import static org.drools.workbench.models.datamodel.rule.Attribute.ENABLED;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
 import static org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52.FIELD_ATTRIBUTE;
 import static org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52.FIELD_REVERSE_ORDER;
 import static org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52.FIELD_USE_ROW_NUMBER;
@@ -25,11 +33,6 @@ import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnCon
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 public class AttributeCol52Test extends ColumnTestBase {
 
     private AttributeCol52 column1;
@@ -38,7 +41,7 @@ public class AttributeCol52Test extends ColumnTestBase {
     @Before
     public void setup() {
         column1 = new AttributeCol52();
-        column1.setAttribute("attr");
+        column1.setAttribute(SALIENCE.getAttributeName());
         column1.setReverseOrder(false);
         column1.setUseRowNumber(false);
         column1.setHeader("header");
@@ -46,7 +49,7 @@ public class AttributeCol52Test extends ColumnTestBase {
         column1.setDefaultValue(new DTCellValue52("default"));
 
         column2 = new AttributeCol52();
-        column2.setAttribute("attr");
+        column2.setAttribute(SALIENCE.getAttributeName());
         column2.setReverseOrder(false);
         column2.setUseRowNumber(false);
         column2.setHeader("header");
@@ -61,10 +64,10 @@ public class AttributeCol52Test extends ColumnTestBase {
 
     @Test
     public void testDiffAttribute() {
-        column1.setAttribute("attr1");
-        column2.setAttribute("attr2");
+        column1.setAttribute(ACTIVATION_GROUP.getAttributeName());
+        column2.setAttribute(ENABLED.getAttributeName());
 
-        checkSingleDiff(FIELD_ATTRIBUTE, "attr1", "attr2", column1, column2);
+        checkSingleDiff(FIELD_ATTRIBUTE, ACTIVATION_GROUP.getAttributeName(), ENABLED.getAttributeName(), column1, column2);
     }
 
     @Test
@@ -85,13 +88,13 @@ public class AttributeCol52Test extends ColumnTestBase {
 
     @Test
     public void testDiffAll() {
-        column1.setAttribute("attr1");
+        column1.setAttribute(SALIENCE.getAttributeName());
         column1.setReverseOrder(false);
         column1.setUseRowNumber(false);
         column1.setHeader("header1");
         column1.setHideColumn(false);
         column1.setDefaultValue(new DTCellValue52("default1"));
-        column2.setAttribute("attr2");
+        column2.setAttribute(ACTIVATION_GROUP.getAttributeName());
         column2.setReverseOrder(true);
         column2.setUseRowNumber(true);
         column2.setHeader("header2");
@@ -111,8 +114,8 @@ public class AttributeCol52Test extends ColumnTestBase {
         assertEquals("header1", diff.get(2).getOldValue());
         assertEquals("header2", diff.get(2).getValue());
         assertEquals(FIELD_ATTRIBUTE, diff.get(3).getFieldName());
-        assertEquals("attr1", diff.get(3).getOldValue());
-        assertEquals("attr2", diff.get(3).getValue());
+        assertEquals(SALIENCE.getAttributeName(), diff.get(3).getOldValue());
+        assertEquals(ACTIVATION_GROUP.getAttributeName(), diff.get(3).getValue());
         assertEquals(FIELD_REVERSE_ORDER, diff.get(4).getFieldName());
         assertEquals(false, diff.get(4).getOldValue());
         assertEquals(true, diff.get(4).getValue());

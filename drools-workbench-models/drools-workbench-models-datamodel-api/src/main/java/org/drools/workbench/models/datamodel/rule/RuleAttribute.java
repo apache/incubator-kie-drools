@@ -16,19 +16,19 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import static org.drools.workbench.models.datamodel.rule.Attribute.AUTO_FOCUS;
+import static org.drools.workbench.models.datamodel.rule.Attribute.CALENDARS;
+import static org.drools.workbench.models.datamodel.rule.Attribute.DURATION;
+import static org.drools.workbench.models.datamodel.rule.Attribute.ENABLED;
+import static org.drools.workbench.models.datamodel.rule.Attribute.LOCK_ON_ACTIVE;
+import static org.drools.workbench.models.datamodel.rule.Attribute.NO_LOOP;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
+import static org.drools.workbench.models.datamodel.rule.Attribute.TIMER;
+
 /**
  * This holds values for rule attributes (eg salience, agenda-group etc).
  */
 public class RuleAttribute {
-
-    private static final String NOLOOP = "no-loop";
-    private static final String SALIENCE = "salience";
-    private static final String ENABLED = "enabled";
-    private static final String DURATION = "duration";
-    private static final String TIMER = "timer";
-    private static final String LOCK_ON_ACTIVE = "lock-on-active";
-    private static final String AUTO_FOCUS = "auto-focus";
-    private static final String CALENDARS = "calendars";
 
     public RuleAttribute( final String name,
                           final String value ) {
@@ -43,40 +43,36 @@ public class RuleAttribute {
     }
 
     public String toString() {
-        StringBuilder ret = new StringBuilder();
+        final StringBuilder ret = new StringBuilder();
         ret.append( this.attributeName );
-        if ( NOLOOP.equals( attributeName ) ) {
-            ret.append( " " );
+        ret.append( ' ' );
+        if ( NO_LOOP.getAttributeName().equals( attributeName ) ) {
             ret.append( this.value == null ? "true" : this.value );
-        } else if ( SALIENCE.equals( this.attributeName ) ||
-                DURATION.equals( this.attributeName ) ) {
-            ret.append( " " );
+        } else if ( SALIENCE.getAttributeName().equals( this.attributeName ) ||
+                DURATION.getAttributeName().equals( this.attributeName ) ) {
             ret.append( this.value );
-        } else if ( ENABLED.equals( this.attributeName ) ||
-                AUTO_FOCUS.equals( this.attributeName ) ||
-                LOCK_ON_ACTIVE.equals( this.attributeName ) ) {
-            ret.append( " " );
+        } else if (ENABLED.getAttributeName().equals( this.attributeName ) ||
+                AUTO_FOCUS.getAttributeName().equals( this.attributeName ) ||
+                LOCK_ON_ACTIVE.getAttributeName().equals( this.attributeName ) ) {
             ret.append( this.value.equals( "true" ) ? "true" : "false" );
-        } else if ( TIMER.equals( this.attributeName ) ) {
-            ret.append( " " );
+        } else if (TIMER.getAttributeName().equals( this.attributeName ) ) {
             if ( this.value.startsWith( "(" ) && this.value.endsWith( ")" ) ) {
                 ret.append( this.value );
             } else {
-                ret.append( "(" ).append( this.value ).append( ")" );
+                ret.append( '(' ).append( this.value ).append( ')' );
             }
-        } else if ( CALENDARS.equals( this.attributeName ) ) {
+        } else if (CALENDARS.getAttributeName().equals( this.attributeName ) ) {
             final String raw = this.value.replaceAll( "\"|\\s", "" );
             final String[] calendars = raw.split( "," );
-            ret.append( " " );
             for ( String calendar : calendars ) {
-                ret.append( "\"" ).append( calendar ).append( "\", " );
+                ret.append( '"' ).append( calendar ).append( "\", " );
             }
             ret.delete( ret.length() - 2,
                         ret.length() );
         } else if ( this.value != null ) {
-            ret.append( " \"" );
+            ret.append( '"' );
             ret.append( this.value );
-            ret.append( "\"" );
+            ret.append( '"' );
         }
         return ret.toString();
     }

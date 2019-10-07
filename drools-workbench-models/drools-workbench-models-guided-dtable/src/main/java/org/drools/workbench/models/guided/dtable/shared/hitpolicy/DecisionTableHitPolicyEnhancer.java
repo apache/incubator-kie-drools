@@ -23,6 +23,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.validation.DecisionTableValidator;
 
+import static org.drools.workbench.models.datamodel.rule.Attribute.ACTIVATION_GROUP;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
+
 /**
  * Validates and extends the model based on selected HitPolicy
  * @see org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.HitPolicy
@@ -107,7 +110,7 @@ public class DecisionTableHitPolicyEnhancer {
 
     private int makeSalienceColumn() {
         final AttributeCol52 attributeCol = new AttributeCol52();
-        attributeCol.setAttribute( "salience" );
+        attributeCol.setAttribute( SALIENCE.getAttributeName() );
         dtable.getAttributeCols()
                 .add( attributeCol );
 
@@ -152,7 +155,7 @@ public class DecisionTableHitPolicyEnhancer {
 
     private void addActivationGroup( final String activationGroupType ) {
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( GuidedDecisionTable52.ACTIVATION_GROUP_ATTR );
+        attributeCol52.setAttribute( ACTIVATION_GROUP.getAttributeName() );
         dtable.getAttributeCols()
                 .add( attributeCol52 );
 

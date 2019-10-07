@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
@@ -81,6 +82,8 @@ import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
 import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
+
+import static org.drools.workbench.models.datamodel.rule.Attribute.NEGATE_RULE;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -884,7 +887,7 @@ public class GuidedDTDRLPersistence {
             if (validateAttributeCell(cell)) {
 
                 //If instance of "otherwise" column then flag RuleModel as being negated
-                if (at.getAttribute().equals(GuidedDecisionTable52.NEGATE_RULE_ATTR)) {
+                if (Objects.equals(at.getAttribute(), NEGATE_RULE.getAttributeName())) {
                     rm.setNegated(Boolean.valueOf(cell));
                 } else {
                     attribs.add(new RuleAttribute(at.getAttribute(),

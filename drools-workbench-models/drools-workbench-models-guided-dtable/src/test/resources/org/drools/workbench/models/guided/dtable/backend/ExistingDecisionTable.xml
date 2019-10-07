@@ -8,6 +8,7 @@
   <attributeCols>
     <attribute-column>
       <width>-1</width>
+      <attr>salience</attr>
     </attribute-column>
   </attributeCols>
   <conditionCols>

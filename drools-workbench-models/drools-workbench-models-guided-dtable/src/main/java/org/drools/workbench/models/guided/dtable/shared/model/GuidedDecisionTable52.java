@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -46,25 +46,6 @@ public class GuidedDecisionTable52 implements HasImports,
      * Number of internal elements before ( used for offsets in serialization )
      */
     public static final int INTERNAL_ELEMENTS = 2;
-
-    /**
-     * Various attribute names
-     */
-    public static final String SALIENCE_ATTR = "salience";
-    public static final String ENABLED_ATTR = "enabled";
-    public static final String DATE_EFFECTIVE_ATTR = "date-effective";
-    public static final String DATE_EXPIRES_ATTR = "date-expires";
-    public static final String NO_LOOP_ATTR = "no-loop";
-    public static final String AGENDA_GROUP_ATTR = "agenda-group";
-    public static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String DURATION_ATTR = "duration";
-    public static final String TIMER_ATTR = "timer";
-    public static final String CALENDARS_ATTR = "calendars";
-    public static final String AUTO_FOCUS_ATTR = "auto-focus";
-    public static final String LOCK_ON_ACTIVE_ATTR = "lock-on-active";
-    public static final String RULEFLOW_GROUP_ATTR = "ruleflow-group";
-    public static final String DIALECT_ATTR = "dialect";
-    public static final String NEGATE_RULE_ATTR = "negate";
 
     private String tableName;
 
@@ -147,7 +128,6 @@ public class GuidedDecisionTable52 implements HasImports,
 
     /**
      * Return an immutable list of Pattern columns
-     *
      * @return
      */
     public List<Pattern52> getPatterns() {
@@ -277,7 +257,6 @@ public class GuidedDecisionTable52 implements HasImports,
      * knowledge of individual columns is necessary; for example separate
      * columns in the user-interface or where individual columns need to be
      * analysed.
-     *
      * @return A List of individual columns
      */
     public List<BaseColumn> getExpandedColumns() {
@@ -399,7 +378,6 @@ public class GuidedDecisionTable52 implements HasImports,
 
     /**
      * Retrieve, or lazily instantiate a new, AuditLog.
-     *
      * @return
      */
     public AuditLog getAuditLog() {

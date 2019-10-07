@@ -22,18 +22,21 @@ import java.util.Set;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
+import static org.drools.workbench.models.datamodel.rule.Attribute.ACTIVATION_GROUP;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
+
 public class HitPolicyValidation {
 
-    public static Set<String> getReservedAttributes( GuidedDecisionTable52.HitPolicy hitPolicy ) {
+    public static Set<String> getReservedAttributes(GuidedDecisionTable52.HitPolicy hitPolicy ) {
         switch ( hitPolicy ) {
             case UNIQUE_HIT:
-                return new HashSet<>( Arrays.asList( GuidedDecisionTable52.ACTIVATION_GROUP_ATTR ) );
+                return new HashSet<>( Arrays.asList( ACTIVATION_GROUP.getAttributeName() ) );
             case FIRST_HIT:
             case RESOLVED_HIT:
-                return new HashSet<>( Arrays.asList( GuidedDecisionTable52.SALIENCE_ATTR,
-                                                     GuidedDecisionTable52.ACTIVATION_GROUP_ATTR ) );
+                return new HashSet<>( Arrays.asList( SALIENCE.getAttributeName(),
+                                                     ACTIVATION_GROUP.getAttributeName() ) );
             case RULE_ORDER:
-                return new HashSet<>( Arrays.asList( GuidedDecisionTable52.SALIENCE_ATTR ) );
+                return new HashSet<>( Arrays.asList( SALIENCE.getAttributeName() ) );
             case NONE:
             default:
                 return Collections.EMPTY_SET;

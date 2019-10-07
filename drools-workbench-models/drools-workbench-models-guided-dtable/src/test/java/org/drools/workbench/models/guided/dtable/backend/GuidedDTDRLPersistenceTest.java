@@ -51,6 +51,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -162,7 +163,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.setTableName("michael");
 
         AttributeCol52 attr = new AttributeCol52();
-        attr.setAttribute("salience");
+        attr.setAttribute(Attribute.SALIENCE.getAttributeName());
         attr.setDefaultValue(new DTCellValue52("66"));
         dt.getAttributeCols().add(attr);
 
@@ -265,9 +266,9 @@ public class GuidedDTDRLPersistenceTest {
                    rm.attributes);
 
         AttributeCol52 col1 = new AttributeCol52();
-        col1.setAttribute("salience");
+        col1.setAttribute(Attribute.SALIENCE.getAttributeName());
         AttributeCol52 col2 = new AttributeCol52();
-        col2.setAttribute("agenda-group");
+        col2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
         attributeCols.add(col1);
         attributeCols.add(col2);
         allColumns.addAll(attributeCols);
@@ -358,7 +359,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.setTableName("michael");
 
         AttributeCol52 attr = new AttributeCol52();
-        attr.setAttribute("salience");
+        attr.setAttribute(Attribute.SALIENCE.getAttributeName());
         attr.setDefaultValue(new DTCellValue52("66"));
         dt.getAttributeCols().add(attr);
 
@@ -435,7 +436,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.setTableName("michael");
 
         AttributeCol52 attr = new AttributeCol52();
-        attr.setAttribute("salience");
+        attr.setAttribute(Attribute.SALIENCE.getAttributeName());
         attr.setDefaultValue(new DTCellValue52("66"));
         dt.getAttributeCols().add(attr);
 
@@ -2106,7 +2107,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.setTableName("limited-entry");
 
         AttributeCol52 attr = new AttributeCol52();
-        attr.setAttribute("salience");
+        attr.setAttribute(Attribute.SALIENCE.getAttributeName());
         dt.getAttributeCols().add(attr);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
