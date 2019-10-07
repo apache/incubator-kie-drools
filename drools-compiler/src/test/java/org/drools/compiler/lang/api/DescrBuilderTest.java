@@ -723,4 +723,30 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         String drl = new DrlDumper().dump( pkg );
         assertTrue( drl.contains("window:time(5s)" ) );
     }
+
+    @Test
+    public void testQueryParameters() {
+        // DROOLS-4604
+        PackageDescrBuilder packBuilder =
+                DescrFactory.newPackage()
+                        .name("org.test.rules")
+                        .newImport()
+                        .target("org.test.event.TemporalEvent")
+                        .end()
+                        .newQuery()
+                        .name("getTemporalEventById")
+                        .parameter("String", "eventId")
+                        .lhs()
+                        .pattern( "TemporalEvent")
+                        .constraint("id == eventId")
+                        .from()
+                        .entryPoint("EventStream")
+                        .end()
+                        .end()
+                        .end()
+                        .end();
+
+        String drl = new DrlDumper().dump(packBuilder.getDescr());
+        assertTrue( drl.contains("query \"getTemporalEventById\" ( String eventId ) " ) );
+    }
 }
