@@ -46,7 +46,7 @@ public class ExpressionEvaluatorFactory {
 
         Object rawValue = factMappingValue.getRawValue();
 
-        if (rawValue instanceof String && ((String) rawValue).startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (rawValue instanceof String && ((String) rawValue).trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
             return getOrCreateMVELExpressionEvaluator();
         } else {
             return getOrCreateBaseExpressionEvaluator();

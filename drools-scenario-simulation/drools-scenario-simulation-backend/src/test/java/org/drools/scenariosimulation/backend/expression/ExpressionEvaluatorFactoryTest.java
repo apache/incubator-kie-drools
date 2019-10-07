@@ -40,6 +40,7 @@ public class ExpressionEvaluatorFactoryTest {
         FactMappingValue simpleFMV = new FactMappingValue(FactIdentifier.INDEX, ExpressionIdentifier.INDEX, "10");
         FactMappingValue objectFMV = new FactMappingValue(FactIdentifier.INDEX, ExpressionIdentifier.INDEX, "10");
         FactMappingValue mvelFMV = new FactMappingValue(FactIdentifier.INDEX, ExpressionIdentifier.INDEX, MVEL_ESCAPE_SYMBOL + " 10");
+        FactMappingValue mvelWithSpacesFMV = new FactMappingValue(FactIdentifier.INDEX, ExpressionIdentifier.INDEX, "     " + MVEL_ESCAPE_SYMBOL + " 10");
 
         ExpressionEvaluatorFactory ruleEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE);
         ExpressionEvaluatorFactory dmnEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
@@ -47,9 +48,11 @@ public class ExpressionEvaluatorFactoryTest {
         assertTrue(ruleEvaluatorFactory.getOrCreate(simpleFMV) instanceof BaseExpressionEvaluator);
         assertTrue(ruleEvaluatorFactory.getOrCreate(objectFMV) instanceof BaseExpressionEvaluator);
         assertTrue(ruleEvaluatorFactory.getOrCreate(mvelFMV) instanceof MVELExpressionEvaluator);
+        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof MVELExpressionEvaluator);
 
         assertTrue(dmnEvaluatorFactory.getOrCreate(simpleFMV) instanceof DMNFeelExpressionEvaluator);
         assertTrue(dmnEvaluatorFactory.getOrCreate(objectFMV) instanceof DMNFeelExpressionEvaluator);
         assertTrue(dmnEvaluatorFactory.getOrCreate(mvelFMV) instanceof DMNFeelExpressionEvaluator);
+        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof DMNFeelExpressionEvaluator);
     }
 }
