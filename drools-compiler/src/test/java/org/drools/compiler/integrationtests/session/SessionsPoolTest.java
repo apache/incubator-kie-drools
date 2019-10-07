@@ -32,6 +32,7 @@ import org.drools.core.event.DefaultRuleRuntimeEventListener;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieContainerSessionsPool;
@@ -86,6 +87,30 @@ public class SessionsPoolTest {
             pool.newKieSession();
             fail("after pool shutdown it shouldn't be possible to get sessions from it");
         } catch (IllegalStateException e) { }
+    }
+
+    @Test
+    public void testPooledKieBase() {
+        KieBase kBase = getKieHelper().build( SessionsPoolOption.get( 1 ) );
+
+        KieSession ksession = kBase.newKieSession();
+        try {
+            checkKieSession( ksession );
+        } finally {
+            ksession.dispose();
+        }
+
+        try {
+            ksession.insert( "test2" );
+            fail("it shouldn't be possible to operate on a disposed session even if created from a pool");
+        } catch (Exception e) { }
+
+        KieSession ksession2 = kBase.newKieSession();
+
+        // using a pool with only one session so it should return the same one as before
+        assertSame( ksession, ksession2 );
+        assertNull( ksession2.getGlobal( "list" ) );
+        checkKieSession( ksession2 );
     }
 
     @Test
@@ -148,15 +173,19 @@ public class SessionsPoolTest {
     }
 
     private KieContainer getKieContainer() {
+        return getKieHelper().getKieContainer();
+    }
+
+    private KieHelper getKieHelper() {
         String drl =
                 "global java.util.List list\n" +
-                "rule R1 when\n" +
-                "  $s: String()\n" +
-                "then\n" +
-                "  list.add($s);\n" +
-                "end\n";
+                        "rule R1 when\n" +
+                        "  $s: String()\n" +
+                        "then\n" +
+                        "  list.add($s);\n" +
+                        "end\n";
 
-        return new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        return new KieHelper().addContent( drl, ResourceType.DRL );
     }
 
     private void checkKieSession( KieSession ksession ) {
