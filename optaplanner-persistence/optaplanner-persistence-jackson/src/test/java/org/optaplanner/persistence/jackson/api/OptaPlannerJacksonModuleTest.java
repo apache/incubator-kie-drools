@@ -16,6 +16,7 @@
 
 package org.optaplanner.persistence.jackson.api;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
@@ -29,6 +30,7 @@ public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerA
     @Test
     public void polymorphicScore() {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY);
         objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
         TestOptaPlannerJacksonModuleWrapper input = new TestOptaPlannerJacksonModuleWrapper();
