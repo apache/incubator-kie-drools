@@ -54,6 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
@@ -63,6 +64,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
@@ -312,19 +316,26 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertNull(nullValue.getResult());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void getParamsForBeanTest() {
         List<FactMappingValue> factMappingValues = new ArrayList<>();
-        FactMappingValue factMappingValue = new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "NOT PARSABLE");
-        factMappingValues.add(factMappingValue);
+        FactMappingValue factMappingValue1 = spy(new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "NOT PARSABLE"));
+        FactMappingValue factMappingValue2 = spy(new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "NOT PARSABLE"));
+        FactMappingValue factMappingValue3 = spy(new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "1"));
+        factMappingValues.add(factMappingValue1);
+        factMappingValues.add(factMappingValue2);
+        factMappingValues.add(factMappingValue3);
 
-        try {
-            runnerHelper.getParamsForBean(simulation.getSimulationDescriptor(), disputeFactIdentifier, factMappingValues, expressionEvaluatorFactory);
-            fail();
-        } catch (ScenarioException ignored) {
+        assertThatThrownBy(() -> runnerHelper.getParamsForBean(simulation.getSimulationDescriptor(), disputeFactIdentifier, factMappingValues, expressionEvaluatorFactory))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage("Error in one or more input values");
 
-        }
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue.getStatus());
+        factMappingValues.forEach(fmv -> verify(fmv, times(2)).getRawValue());
+
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue1.getStatus());
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue2.getStatus());
+        assertEquals(FactMappingValueStatus.SUCCESS, factMappingValue3.getStatus());
     }
 
     @Test

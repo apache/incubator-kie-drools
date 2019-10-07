@@ -168,6 +168,8 @@ public abstract class AbstractRunnerHelper {
                                                          ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         Map<List<String>, Object> paramsForBean = new HashMap<>();
 
+        boolean hasError = false;
+
         for (FactMappingValue factMappingValue : factMappingValues) {
             ExpressionIdentifier expressionIdentifier = factMappingValue.getExpressionIdentifier();
 
@@ -186,8 +188,12 @@ public abstract class AbstractRunnerHelper {
                 paramsForBean.put(pathToField, value);
             } catch (RuntimeException e) {
                 factMappingValue.setExceptionMessage(e.getMessage());
-                throw new ScenarioException(e.getMessage(), e);
+                hasError = true;
             }
+        }
+
+        if (hasError) {
+            throw new ScenarioException("Error in one or more input values");
         }
 
         return paramsForBean;
@@ -198,6 +204,7 @@ public abstract class AbstractRunnerHelper {
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
                 scenarioFailed = true;
+                break;
             }
         }
 
@@ -211,16 +218,20 @@ public abstract class AbstractRunnerHelper {
                                         ExpressionEvaluator expressionEvaluator) {
         ResultWrapper<?> resultValue = resultSupplier.get();
 
-        if (!resultValue.isSatisfied() && resultValue.getErrorMessage().isPresent()) {
+        if (resultValue.isSatisfied()) {
+            // result is satisfied so clean up previous error state
+            expectedResult.resetStatus();
+        } else if (resultValue.getErrorMessage().isPresent()) {
+            // propagate error message
             expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
-        } else if (!resultValue.isSatisfied()) {
+        } else {
             try {
+                // set actual as proposed value
                 expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
             } catch (Exception e) {
+                // otherwise generic error message
                 expectedResult.setExceptionMessage(e.getMessage());
             }
-        } else {
-            expectedResult.resetStatus();
         }
 
         return new ScenarioResult(expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
@@ -244,7 +255,7 @@ public abstract class AbstractRunnerHelper {
             }
         } catch (Exception e) {
             expectedResult.setExceptionMessage(e.getMessage());
-            throw new ScenarioException(e.getMessage(), e);
+            return createErrorResultWithErrorMessage(e.getMessage());
         }
     }
 
