@@ -16,14 +16,12 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
-import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.drools.workbench.models.guided.dtable.backend.TestUtil.*;
 
 public class GuidedDTDRLPersistenceRuleOrderHitPolicyTest {
 
@@ -43,7 +41,7 @@ public class GuidedDTDRLPersistenceRuleOrderHitPolicyTest {
     public void blockUseOfSalience() {
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( "salience" );
+        attributeCol52.setAttribute(Attribute.SALIENCE.getAttributeName());
         attributeCol52.setDefaultValue( new DTCellValue52( "123" ) );
 
         dtable.getAttributeCols()

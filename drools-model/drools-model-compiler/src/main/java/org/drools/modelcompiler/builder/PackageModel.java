@@ -645,10 +645,12 @@ public class PackageModel {
         return globals.get(id) != null;
     }
 
-    public void registerDomainClass(Class<?> domainClass) {
+    public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
             domainClasses.add( domainClass );
+            return true;
         }
+        return false;
     }
 
     public String getDomainClassesMetadataSource() {

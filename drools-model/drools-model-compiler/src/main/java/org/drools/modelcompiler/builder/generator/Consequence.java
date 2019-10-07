@@ -20,7 +20,6 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -52,6 +51,8 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
@@ -61,6 +62,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class Consequence {
@@ -274,34 +276,40 @@ public class Consequence {
 
         Set<String> initializedBitmaskFields = new HashSet<>();
         for (MethodCallExpr updateExpr : updateExprs) {
-            Expression argExpr = updateExpr.getArgument(0);
-            if (argExpr instanceof NameExpr) {
-                String updatedVar = ((NameExpr) argExpr).getNameAsString();
-                Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
+            Expression argExpr = updateExpr.getArgument( 0 );
+            if ( argExpr instanceof NameExpr ) {
 
-                if (!initializedBitmaskFields.contains(updatedVar)) {
-                    MethodCallExpr bitMaskCreation = createBitMaskInitialization(newDeclarations, updatedVar, modifiedProps);
-                    ruleBlock.addStatement(createBitMaskField(updatedVar, bitMaskCreation));
+                String updatedVar = (( NameExpr ) argExpr).getNameAsString();
+                Class<?> updatedClass = findUpdatedClass( newDeclarations, updatedVar );
+
+                if (context.isPropertyReactive(updatedClass)) {
+
+                    if ( !initializedBitmaskFields.contains( updatedVar ) ) {
+                        Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
+                        MethodCallExpr bitMaskCreation = createBitMaskInitialization( newDeclarations, updatedClass, modifiedProps );
+                        ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
+                    }
+
+                    updateExpr.addArgument( "mask_" + updatedVar );
+                    initializedBitmaskFields.add( updatedVar );
                 }
-
-                updateExpr.addArgument("mask_" + updatedVar);
-                initializedBitmaskFields.add(updatedVar);
             }
         }
-
 
         return requireDrools.get();
     }
 
+    private Class<?> findUpdatedClass( Map<String, String> newDeclarations, String updatedVar ) {
+        String declarationVar = newDeclarations.getOrDefault(updatedVar, updatedVar);
+        return context.getDeclarationById(declarationVar).map( DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
+    }
 
-    private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, String updatedVar, Set<String> modifiedProps) {
+    private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, Class<?> updatedClass, Set<String> modifiedProps) {
         MethodCallExpr bitMaskCreation;
         if (modifiedProps != null && !modifiedProps.isEmpty()) {
-            String declarationVar = newDeclarations.getOrDefault(updatedVar, updatedVar);
-            Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
-
+            String domainClassSourceName = asJavaSourceName( updatedClass );
             bitMaskCreation = new MethodCallExpr(new NameExpr(BitMask.class.getCanonicalName()), "getPatternMask");
-            bitMaskCreation.addArgument(new ClassExpr(toClassOrInterfaceType(updatedClass)));
+            bitMaskCreation.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
             modifiedProps.forEach(s -> bitMaskCreation.addArgument(new StringLiteralExpr(s)));
         } else {
             bitMaskCreation = new MethodCallExpr(new NameExpr(AllSetButLastBitMask.class.getCanonicalName()), "get");

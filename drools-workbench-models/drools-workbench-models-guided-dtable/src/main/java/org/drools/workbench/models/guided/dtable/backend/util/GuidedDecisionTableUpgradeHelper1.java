@@ -15,6 +15,12 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -38,12 +44,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.legacy.MetadataCol
 import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * Helper class to upgrade model used for Guided Decision Table. This
  * implementation converts legacy GuidedDecisionTable objects to
@@ -56,7 +56,6 @@ public class GuidedDecisionTableUpgradeHelper1
 
     /**
      * Convert the legacy Decision Table model to the new
-     *
      * @param legacyDTModel
      * @return The new DTModel
      */

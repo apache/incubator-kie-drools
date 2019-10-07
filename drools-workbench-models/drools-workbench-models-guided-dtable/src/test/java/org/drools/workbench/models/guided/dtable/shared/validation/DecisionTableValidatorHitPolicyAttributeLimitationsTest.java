@@ -24,35 +24,38 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.drools.workbench.models.datamodel.rule.Attribute.ACTIVATION_GROUP;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class DecisionTableValidatorHitPolicyAttributeLimitationsTest {
 
     private final GuidedDecisionTable52.HitPolicy hitPolicy;
-    private final String attributeName;
+    private final String attribute;
     private final boolean isAllowed;
 
     public DecisionTableValidatorHitPolicyAttributeLimitationsTest( final GuidedDecisionTable52.HitPolicy hitPolicy,
-                                                                    final String attributeName,
+                                                                    final String attribute,
                                                                     final boolean isAllowed ) {
         this.hitPolicy = hitPolicy;
-        this.attributeName = attributeName;
+        this.attribute = attribute;
         this.isAllowed = isAllowed;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> attributes() {
         return Arrays.asList( new Object[][]{
-                {GuidedDecisionTable52.HitPolicy.NONE, GuidedDecisionTable52.SALIENCE_ATTR, true},
-                {GuidedDecisionTable52.HitPolicy.FIRST_HIT, GuidedDecisionTable52.SALIENCE_ATTR, false},
-                {GuidedDecisionTable52.HitPolicy.RULE_ORDER, GuidedDecisionTable52.SALIENCE_ATTR, false},
-                {GuidedDecisionTable52.HitPolicy.UNIQUE_HIT, GuidedDecisionTable52.SALIENCE_ATTR, true},
-                {GuidedDecisionTable52.HitPolicy.NONE, GuidedDecisionTable52.ACTIVATION_GROUP_ATTR, true},
-                {GuidedDecisionTable52.HitPolicy.FIRST_HIT, GuidedDecisionTable52.ACTIVATION_GROUP_ATTR, false},
-                {GuidedDecisionTable52.HitPolicy.RULE_ORDER, GuidedDecisionTable52.ACTIVATION_GROUP_ATTR, true},
-                {GuidedDecisionTable52.HitPolicy.UNIQUE_HIT, GuidedDecisionTable52.ACTIVATION_GROUP_ATTR, false}
+                {GuidedDecisionTable52.HitPolicy.NONE, SALIENCE.getAttributeName(), true},
+                {GuidedDecisionTable52.HitPolicy.FIRST_HIT, SALIENCE.getAttributeName(), false},
+                {GuidedDecisionTable52.HitPolicy.RULE_ORDER, SALIENCE.getAttributeName(), false},
+                {GuidedDecisionTable52.HitPolicy.UNIQUE_HIT, SALIENCE.getAttributeName(), true},
+                {GuidedDecisionTable52.HitPolicy.NONE, ACTIVATION_GROUP.getAttributeName(), true},
+                {GuidedDecisionTable52.HitPolicy.FIRST_HIT, ACTIVATION_GROUP.getAttributeName(), false},
+                {GuidedDecisionTable52.HitPolicy.RULE_ORDER, ACTIVATION_GROUP.getAttributeName(), true},
+                {GuidedDecisionTable52.HitPolicy.UNIQUE_HIT, ACTIVATION_GROUP.getAttributeName(), false}
         } );
     }
 
@@ -64,7 +67,7 @@ public class DecisionTableValidatorHitPolicyAttributeLimitationsTest {
         final DecisionTableValidator validator = new DecisionTableValidator( table );
 
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( attributeName );
+        attributeCol52.setAttribute( attribute );
 
         boolean wasAllowed = true;
         try {

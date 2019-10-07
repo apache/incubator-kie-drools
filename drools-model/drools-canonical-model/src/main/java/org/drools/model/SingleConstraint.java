@@ -42,6 +42,7 @@ public interface SingleConstraint extends Constraint {
     String getExprId();
 
     String[] getReactiveProps();
+    BitMask getReactivityBitMask();
 
     default boolean isTemporal() {
         return false;

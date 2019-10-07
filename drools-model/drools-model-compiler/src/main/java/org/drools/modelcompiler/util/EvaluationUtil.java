@@ -19,6 +19,14 @@ package org.drools.modelcompiler.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.drools.model.BitMask;
+import org.drools.model.bitmask.AllSetBitMask;
+import org.drools.model.bitmask.AllSetButLastBitMask;
+import org.drools.model.bitmask.EmptyBitMask;
+import org.drools.model.bitmask.EmptyButLastBitMask;
+import org.drools.model.bitmask.LongBitMask;
+import org.drools.model.bitmask.OpenBitSet;
+
 public class EvaluationUtil {
 
     public static boolean areNullSafeEquals(Object obj1, Object obj2) {
@@ -143,5 +151,31 @@ public class EvaluationUtil {
             return new BigDecimal( ( Float ) obj );
         }
         return null;
+    }
+
+
+    public static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
+        if (mask == null) {
+            return null;
+        }
+        if (mask instanceof LongBitMask ) {
+            return new org.drools.core.util.bitmask.LongBitMask( ( (LongBitMask) mask ).asLong() );
+        }
+        if (mask instanceof EmptyBitMask ) {
+            return org.drools.core.util.bitmask.EmptyBitMask.get();
+        }
+        if (mask instanceof AllSetBitMask ) {
+            return org.drools.core.util.bitmask.AllSetBitMask.get();
+        }
+        if (mask instanceof AllSetButLastBitMask ) {
+            return org.drools.core.util.bitmask.AllSetButLastBitMask.get();
+        }
+        if (mask instanceof EmptyButLastBitMask ) {
+            return org.drools.core.util.bitmask.EmptyButLastBitMask.get();
+        }
+        if (mask instanceof OpenBitSet ) {
+            return new org.drools.core.util.bitmask.OpenBitSet( ( (OpenBitSet) mask ).getBits(), ( (OpenBitSet) mask ).getNumWords() );
+        }
+        throw new IllegalArgumentException( "Unknown bitmask: " + mask );
     }
 }

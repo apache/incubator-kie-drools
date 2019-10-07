@@ -15,13 +15,17 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
-import java.util.List;
+import static org.drools.workbench.models.datamodel.rule.Attribute.DURATION;
+import static org.drools.workbench.models.datamodel.rule.Attribute.SALIENCE;
 
 /**
  * Helper class to upgrade data-types for Guided Decision Table. This
@@ -34,7 +38,6 @@ public class GuidedDecisionTableUpgradeHelper2
 
     /**
      * Convert the data-types in the Decision Table model
-     *
      * @param source
      * @return The new DTModel
      */
@@ -53,10 +56,10 @@ public class GuidedDecisionTableUpgradeHelper2
             final BaseColumn column = allColumns.get(iCol);
             if (column instanceof AttributeCol52) {
                 AttributeCol52 attributeCol = (AttributeCol52) column;
-                final String attributeName = attributeCol.getAttribute();
-                if (GuidedDecisionTable52.SALIENCE_ATTR.equals(attributeName)) {
+                final String  attributeName = attributeCol.getAttribute();
+                if (Objects.equals(SALIENCE.getAttributeName(), attributeName)) {
                     iSalienceColumnIndex = iCol;
-                } else if (GuidedDecisionTable52.DURATION_ATTR.equals(attributeName)) {
+                } else if (Objects.equals(DURATION.getAttributeName(), attributeName)) {
                     iDurationColumnIndex = iCol;
                 }
             }

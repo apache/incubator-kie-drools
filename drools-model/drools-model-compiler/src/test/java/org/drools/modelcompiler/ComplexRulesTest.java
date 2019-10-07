@@ -32,7 +32,9 @@ import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.EnumFact2;
 import org.drools.modelcompiler.domain.InterfaceAsEnum;
+import org.drools.modelcompiler.domain.ManyPropFact;
 import org.drools.modelcompiler.domain.RootFact;
+import org.drools.modelcompiler.domain.SubFact;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -626,5 +628,48 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.insert( (short) 1 );
         ksession.insert( 2.0 );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testManyPropFactWithNot() {
+        // DROOLS-4572
+        try {
+            System.setProperty("drools.propertySpecific", "ALLOWED");
+            String str =
+                    "import " + ManyPropFact.class.getCanonicalName() + ";\n" +
+                    "import " + SubFact.class.getCanonicalName() + ";\n" +
+                    "rule R1\n" +
+                    "    when\n" +
+                    "        $fact : ManyPropFact(  id == 1 ) \n" +
+                    "        $subFact : SubFact(  parentId == $fact.id) \n" +
+                    "        not ( \n" +
+                    "            $notFact : ManyPropFact ( id == $fact.id, indicator == true)\n" +
+                    "            and\n" +
+                    "            $notSubFact : SubFact ( parentId == $notFact.id, indicator == true)\n" +
+                    "        )\n" +
+                    "    then\n" +
+                    "        $fact.setIndicator(true);\n" +
+                    "        $subFact.setIndicator(true);\n" +
+                    "        update($fact);\n" +
+                    "        update($subFact);\n" +
+                    "end";
+
+            KieSession ksession = getKieSession(str);
+
+            ManyPropFact fact = new ManyPropFact();
+            fact.setId(1);
+
+            SubFact subFact = new SubFact();
+            subFact.setParentId(1);
+
+            ksession.insert(fact);
+            ksession.insert(subFact);
+
+            int fired = ksession.fireAllRules(2); // avoid infinite loop
+
+            assertEquals(1, fired);
+        } finally {
+            System.clearProperty("drools.propertySpecific");
+        }
     }
 }

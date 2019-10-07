@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
@@ -2016,6 +2018,26 @@ public class CompilerTest extends BaseModelTest {
         Person first = new Person("John", 40);
         first.setEmployed(true);
         ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
+
+    @Test
+    public void testAccumulateWithMax() {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                        "import " + StockTick.class.getCanonicalName() + ";" +
+                        "rule AccumulateMaxDate when\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick($time : getTimeFieldAsDate());\n" +
+                        "    max($time.getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setTimeField(new Date().getTime());
+        ksession.insert(st);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 }
