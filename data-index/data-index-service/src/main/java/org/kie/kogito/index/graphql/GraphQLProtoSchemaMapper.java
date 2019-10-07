@@ -27,10 +27,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import graphql.Scalars;
-import graphql.schema.FieldCoordinates;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLCodeRegistry;
-import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
@@ -41,10 +39,13 @@ import org.kie.kogito.index.domain.DomainDescriptor;
 import org.kie.kogito.index.event.DomainModelRegisteredEvent;
 import org.kie.kogito.index.model.ProcessInstanceMeta;
 import org.kie.kogito.index.model.UserTaskInstanceMeta;
-import org.kie.kogito.index.query.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static graphql.schema.FieldCoordinates.coordinates;
+import static graphql.schema.GraphQLArgument.newArgument;
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLNonNull.nonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -55,9 +56,6 @@ import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUT
 public class GraphQLProtoSchemaMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLProtoSchemaMapper.class);
-
-    @Inject
-    QueryService queryService;
 
     @Inject
     GraphQLSchemaManager schemaManager;
@@ -88,13 +86,24 @@ public class GraphQLProtoSchemaMapper {
                     qBuilder.clearFields();
                     qBuilder.fields(schema.getQueryType().getFieldDefinitions().stream().filter(field -> rootType.getName().equals(field.getName()) == false).collect(toList()));
                 }
-                GraphQLArgument argument = GraphQLArgument.newArgument().name("query").type(Scalars.GraphQLString).build();
-                qBuilder.field(GraphQLFieldDefinition.newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).argument(argument));
+                GraphQLArgument argument = newArgument().name("query").type(Scalars.GraphQLString).build();
+                qBuilder.field(newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).argument(argument));
             });
             builder.query(query);
-            GraphQLCodeRegistry registry = schema.getCodeRegistry().transform(codeBuilder -> {
-                codeBuilder.dataFetcher(FieldCoordinates.coordinates("Query", rootType.getName()), new DomainModelDataFetcher(queryService, event.getProcessId()));
+
+            GraphQLObjectType subscription = schema.getSubscriptionType();
+            subscription = subscription.transform(sBuilder -> {
+                sBuilder.field(newFieldDefinition().name(rootType.getName() + "Added").type(nonNull(rootType)).build());
+                sBuilder.field(newFieldDefinition().name(rootType.getName() + "Updated").type(nonNull(rootType)).build());
             });
+            builder.subscription(subscription);
+
+            GraphQLCodeRegistry registry = schema.getCodeRegistry().transform(codeBuilder -> {
+                codeBuilder.dataFetcher(coordinates("Query", rootType.getName()), schemaManager.getDomainModelDataFetcher(event.getProcessId()));
+                codeBuilder.dataFetcher(coordinates("Subscription", rootType.getName() + "Added"), schemaManager.getDomainModelAddedDataFetcher(event.getProcessId()));
+                codeBuilder.dataFetcher(coordinates("Subscription", rootType.getName() + "Updated"), schemaManager.getDomainModelUpdatedDataFetcher(event.getProcessId()));
+            });
+
             builder.codeRegistry(registry);
         });
     }
@@ -146,9 +155,9 @@ public class GraphQLProtoSchemaMapper {
                 domain.getAttributes().forEach(field -> {
                     LOGGER.debug("GraphQL mapping field: {}", field);
                     if (ProcessInstanceMeta.class.getName().equals(field.getTypeName())) {
-                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
+                        builder.field(newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
                     } else if (UserTaskInstanceMeta.class.getName().equals(field.getTypeName())) {
-                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("UserTaskInstanceMeta")))).build();
+                        builder.field(newFieldDefinition().name(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("UserTaskInstanceMeta")))).build();
                     } else {
                         GraphQLOutputType type;
                         switch (field.getTypeName()) {
@@ -168,7 +177,7 @@ public class GraphQLProtoSchemaMapper {
                             default:
                                 type = getGraphQLType(field, schema, additionalTypes, allTypes);
                         }
-                        builder.field(GraphQLFieldDefinition.newFieldDefinition().name(field.getName()).type(type));
+                        builder.field(newFieldDefinition().name(field.getName()).type(type));
                     }
                 });
             };

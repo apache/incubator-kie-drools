@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index;
+package org.kie.kogito.index.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -33,6 +33,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.infinispan.protostream.ProtobufService;
@@ -159,6 +160,7 @@ public class IndexingServiceTest {
         String subProcessInstanceId = UUID.randomUUID().toString();
         String firstTaskId = UUID.randomUUID().toString();
         String secondTaskId = UUID.randomUUID().toString();
+        String state = "InProgress";
 
         protobufService.registerProtoBufferType(getTravelsProtoBufferFile());
 
@@ -227,7 +229,7 @@ public class IndexingServiceTest {
 
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), endEvent);
 
-        KogitoUserTaskCloudEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId, processInstanceId, processId);
+        KogitoUserTaskCloudEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId, processInstanceId, processId, state);
 
         indexUserTaskCloudEvent(firstUserTaskEvent);
 
@@ -266,7 +268,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
 
-        KogitoUserTaskCloudEvent secondUserTaskEvent = getUserTaskCloudEvent(secondTaskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent secondUserTaskEvent = getUserTaskCloudEvent(secondTaskId, processId, processInstanceId, null, null, state);
 
         indexUserTaskCloudEvent(secondUserTaskEvent);
 
@@ -343,6 +345,7 @@ public class IndexingServiceTest {
     @Test
     public void testIndexingDomainUsingUserTaskEventFirst() throws Exception {
         String taskId = UUID.randomUUID().toString();
+        String state = "InProgress";
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
@@ -352,7 +355,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         consumer.onUserTaskInstanceDomainEvent(userTaskEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
@@ -401,6 +404,7 @@ public class IndexingServiceTest {
     @Test
     public void testIndexingDomainUsingProcessEventFirst() throws Exception {
         String taskId = UUID.randomUUID().toString();
+        String state = "InProgress";
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
@@ -429,7 +433,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString());
 
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         consumer.onUserTaskInstanceDomainEvent(userTaskEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
@@ -458,6 +462,7 @@ public class IndexingServiceTest {
     @Test
     public void testIndexingDomainParallelEvents() throws Exception {
         String taskId = UUID.randomUUID().toString();
+        String state = "InProgress";
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
@@ -468,7 +473,7 @@ public class IndexingServiceTest {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
 
         CompletableFuture.allOf(
                 consumer.onProcessInstanceDomainEvent(processEvent).toCompletableFuture(),
@@ -564,6 +569,7 @@ public class IndexingServiceTest {
     @Test
     public void testUserTaskInstanceIndex() throws Exception {
         String taskId = UUID.randomUUID().toString();
+        String state = "InProgress";
         String processId = "deals";
         String processInstanceId = UUID.randomUUID().toString();
 
@@ -573,7 +579,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).build()), event);
@@ -597,7 +603,7 @@ public class IndexingServiceTest {
                 .body("data.Deals[0].userTasks[0].started", is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Deals[0].userTasks[0].completed", is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))));
 
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         event.getData().setCompleted(ZonedDateTime.now());
         event.getData().setPriority("Low");
         event.getData().setActualOwner("admin");

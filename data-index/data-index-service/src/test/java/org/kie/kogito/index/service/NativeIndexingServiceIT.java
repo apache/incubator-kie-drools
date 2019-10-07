@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index;
+package org.kie.kogito.index.service;
 
 import io.quarkus.test.junit.SubstrateTest;
 

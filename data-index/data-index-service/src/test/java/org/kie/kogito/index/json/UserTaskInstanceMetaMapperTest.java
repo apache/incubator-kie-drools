@@ -36,7 +36,7 @@ public class UserTaskInstanceMetaMapperTest {
         String rootProcessId = "root_travels";
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId);
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, "InProgress");
         ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
 
         assertThat(json).isNotNull();

@@ -2,6 +2,7 @@ scalar DateTime
 
 schema {
   query: Query
+  subscription: Subscription
 }
 
 type ProcessInstance {
@@ -116,4 +117,11 @@ input UserTaskInstanceFilter {
   potentialGroups: [String!]
   limit: Int
   offset: Int
+}
+
+type Subscription {
+  ProcessInstanceAdded: ProcessInstance!
+  ProcessInstanceUpdated: ProcessInstance!
+  UserTaskInstanceAdded: UserTaskInstance!
+  UserTaskInstanceUpdated: UserTaskInstance!
 }

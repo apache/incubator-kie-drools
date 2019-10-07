@@ -24,7 +24,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.infinispan.client.hotrod.DataFormat;
@@ -33,6 +32,7 @@ import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.exceptions.HotRodClientException;
 import org.infinispan.commons.dataconversion.MediaType;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
+import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -46,7 +46,7 @@ public class InfinispanCacheManager implements CacheService {
     private static final String PROCESS_INSTANCES_CACHE = "processinstances";
     private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
     private static final String PROCESS_ID_MODEL_CACHE = "processidmodel";
-    
+
     @Inject
     JsonDataFormatMarshaller marshaller;
 
@@ -78,7 +78,6 @@ public class InfinispanCacheManager implements CacheService {
     /**
      * Gets the cache if exists, otherwise tries to create one with the given template.
      * If the template does not exist on the server, creates the cache based on a default configuration.
-     * 
      * @param name the cache manager name
      * @param template the template that must exists on the server
      * @see KogitoCacheDefaultConfiguration
@@ -89,13 +88,13 @@ public class InfinispanCacheManager implements CacheService {
             RemoteCache<K, V> remoteCache = manager.getCache(name);
             if (remoteCache == null) {
                 LOGGER.debug("Cache {} not found, trying to create a new one based on template {}", name, template);
-                return manager.administration().createCache(name, template);
+                return manager.administration().getOrCreateCache(name, template);
             }
             return remoteCache;
         } catch (HotRodClientException e) {
             if (e.isServerError()) {
                 LOGGER.info("Creating a cache for '{}' based on the default configuration", name);
-                RemoteCache<K, V> cache = manager.administration().createCache(name, new KogitoCacheDefaultConfiguration(name));
+                RemoteCache<K, V> cache = manager.administration().getOrCreateCache(name, new KogitoCacheDefaultConfiguration(name));
                 LOGGER.debug("Default cache created {}", cache.getName());
                 return cache;
             }
@@ -104,13 +103,13 @@ public class InfinispanCacheManager implements CacheService {
     }
 
     @Override
-    public Map<String, ProcessInstance> getProcessInstancesCache() {
-        return getOrCreateCache(PROCESS_INSTANCES_CACHE, cacheTemplateName);
+    public Cache<String, ProcessInstance> getProcessInstancesCache() {
+        return new CacheImpl<>(getOrCreateCache(PROCESS_INSTANCES_CACHE, cacheTemplateName));
     }
 
     @Override
-    public Map<String, UserTaskInstance> getUserTaskInstancesCache() {
-        return getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName);
+    public Cache<String, UserTaskInstance> getUserTaskInstancesCache() {
+        return new CacheImpl<>(getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName));
     }
 
     public Map<String, String> getProtobufCache() {
@@ -118,12 +117,12 @@ public class InfinispanCacheManager implements CacheService {
     }
 
     @Override
-    public Map<String, String> getProcessIdModelCache() {
-        return manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null);
+    public Cache<String, String> getProcessIdModelCache() {
+        return new CacheImpl<>(manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null));
     }
 
     @Override
-    public Map<String, ObjectNode> getDomainModelCache(String processId) {
-        return getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat);
+    public Cache<String, ObjectNode> getDomainModelCache(String processId) {
+        return new CacheImpl<>(getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat));
     }
 }

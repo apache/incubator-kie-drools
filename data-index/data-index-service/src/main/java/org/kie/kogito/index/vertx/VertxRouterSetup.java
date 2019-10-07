@@ -18,27 +18,33 @@ package org.kie.kogito.index.vertx;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import graphql.GraphQL;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.FaviconHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.graphql.ApolloWSHandler;
 import io.vertx.ext.web.handler.graphql.GraphQLHandler;
+import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
 
-public class RouterSetup {
+@ApplicationScoped
+public class VertxRouterSetup {
 
     @Inject
-    GraphQLHandler graphQLHandler;
+    GraphQL graphQL;
 
     private AtomicBoolean routesAdded = new AtomicBoolean(false);
 
     void setupRouter(@Observes Router router) {
         if (!routesAdded.get()) {
-            router.route("/graphql").handler(graphQLHandler);
+            router.route("/graphql").handler(ApolloWSHandler.create(graphQL));
+            router.route("/graphql").handler(GraphQLHandler.create(graphQL, new GraphQLHandlerOptions()));
             router.route("/graphiql/*").handler(GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true)));
             router.route("/").handler(ctx -> ctx.reroute("/graphiql"));
             router.route().handler(LoggerHandler.create());

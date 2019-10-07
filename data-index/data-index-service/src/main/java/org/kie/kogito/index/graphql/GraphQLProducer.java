@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.vertx;
+package org.kie.kogito.index.graphql;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import graphql.GraphQL;
-import io.vertx.ext.web.handler.graphql.GraphQLHandler;
-import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
-import org.kie.kogito.index.graphql.GraphQLInstrumentation;
-import org.kie.kogito.index.graphql.GraphQLSchemaManager;
+import graphql.execution.SubscriptionExecutionStrategy;
 
 @ApplicationScoped
-public class GraphQLHandlerProducer {
+public class GraphQLProducer {
 
     @Inject
     GraphQLInstrumentation instrumentation;
@@ -36,8 +33,10 @@ public class GraphQLHandlerProducer {
     GraphQLSchemaManager manager;
 
     @Produces
-    public GraphQLHandler createHandler() {
-        GraphQL graphQL = GraphQL.newGraphQL(manager.getGraphQLSchema()).instrumentation(instrumentation).build();
-        return GraphQLHandler.create(graphQL, new GraphQLHandlerOptions());
+    public GraphQL createGraphQL() {
+        return GraphQL.newGraphQL(manager.getGraphQLSchema())
+                .instrumentation(instrumentation)
+                .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
+                .build();
     }
 }

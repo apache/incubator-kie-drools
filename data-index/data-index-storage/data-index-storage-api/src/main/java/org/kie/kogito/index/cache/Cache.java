@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
 
 package org.kie.kogito.index.cache;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
-public interface CacheService {
+public interface Cache<K, V> extends ConcurrentMap<K, V> {
 
-    Cache<String, ProcessInstance> getProcessInstancesCache();
+    void addObjectCreatedListener(Consumer<V> consumer);
 
-    Cache<String, UserTaskInstance> getUserTaskInstancesCache();
+    void addObjectUpdatedListener(Consumer<V> consumer);
 
-    Cache<String, String> getProcessIdModelCache();
-
-    Cache<String, ObjectNode> getDomainModelCache(String processId);
+    void addObjectRemovedListener(Consumer<K> consumer);
 }

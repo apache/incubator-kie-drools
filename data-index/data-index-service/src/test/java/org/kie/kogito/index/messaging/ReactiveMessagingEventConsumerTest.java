@@ -57,7 +57,7 @@ public class ReactiveMessagingEventConsumerTest {
 
     @Test
     public void testOnProcessInstanceDomainEvent() throws Exception {
-        when(eventBus.send(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
+        when(eventBus.request(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
             ((Handler) invocation.getArgument(2)).handle(null);
             return null;
         });
@@ -69,7 +69,7 @@ public class ReactiveMessagingEventConsumerTest {
 
         consumer.onProcessInstanceDomainEvent(event).toCompletableFuture().get();
         ArgumentCaptor<ObjectNode> captor = ArgumentCaptor.forClass(ObjectNode.class);
-        verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
+        verify(eventBus).request(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
 
         assertThatJson(captor.getValue().toString())
                 .isObject()
@@ -79,7 +79,7 @@ public class ReactiveMessagingEventConsumerTest {
 
     @Test
     public void testOnUserTaskInstanceDomainEvent() throws Exception {
-        when(eventBus.send(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
+        when(eventBus.request(any(), any(), any(Handler.class))).thenAnswer(invocation -> {
             ((Handler) invocation.getArgument(2)).handle(null);
             return null;
         });
@@ -88,11 +88,11 @@ public class ReactiveMessagingEventConsumerTest {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null);
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
 
         consumer.onUserTaskInstanceDomainEvent(event).toCompletableFuture().get();
         ArgumentCaptor<ObjectNode> captor = ArgumentCaptor.forClass(ObjectNode.class);
-        verify(eventBus).send(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
+        verify(eventBus).request(eq(format(KOGITO_DOMAIN_EVENTS, processId)), captor.capture(), any(Handler.class));
 
         assertThatJson(captor.getValue().toString())
                 .isObject()

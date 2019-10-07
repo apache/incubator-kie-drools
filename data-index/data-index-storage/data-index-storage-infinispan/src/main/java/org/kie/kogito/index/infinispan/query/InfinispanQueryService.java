@@ -25,12 +25,12 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.FilterConditionContextQueryBuilder;
 import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryBuilder;
 import org.infinispan.query.dsl.QueryFactory;
+import org.kie.kogito.index.infinispan.cache.CacheImpl;
 import org.kie.kogito.index.infinispan.cache.InfinispanCacheManager;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -58,7 +58,7 @@ public class InfinispanQueryService implements QueryService {
         if (query == null) {
             return manager.getDomainModelCache(domain).values();
         } else {
-            QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getDomainModelCache(domain));
+            QueryFactory qf = Search.getQueryFactory(((CacheImpl) manager.getDomainModelCache(domain)).getDelegate());
             Query q = qf.create(query);
             return q.<String>list().stream().map(json -> {
                 try {
@@ -73,7 +73,7 @@ public class InfinispanQueryService implements QueryService {
 
     @Override
     public Collection<ObjectNode> queryProcessInstances(ProcessInstanceFilter filter) {
-        QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getProcessInstancesCache());
+        QueryFactory qf = Search.getQueryFactory(((CacheImpl) manager.getProcessInstancesCache()).getDelegate());
         QueryBuilder qb = qf.from(ProcessInstance.class);
         if (filter != null) {
             FilterConditionContextQueryBuilder filterBuilder = filterList("state", filter.getState(), null, qb);
@@ -91,7 +91,7 @@ public class InfinispanQueryService implements QueryService {
 
     @Override
     public Collection<ObjectNode> queryUserTaskInstances(UserTaskInstanceFilter filter) {
-        QueryFactory qf = Search.getQueryFactory((RemoteCache) manager.getUserTaskInstancesCache());
+        QueryFactory qf = Search.getQueryFactory(((CacheImpl) manager.getUserTaskInstancesCache()).getDelegate());
         QueryBuilder qb = qf.from(UserTaskInstance.class);
         if (filter != null) {
             FilterConditionContextQueryBuilder filterBuilder = filterList("state", filter.getState(), null, qb);

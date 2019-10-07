@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.NodeInstance;
@@ -44,6 +45,10 @@ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 public final class TestUtils {
 
     private TestUtils() {
+    }
+
+    public static int getPortFromConfig() {
+        return ConfigProvider.getConfig().getOptionalValue("quarkus.https.test-port", Integer.class).orElse(8081);
     }
 
     public static String getDealsProtoBufferFile() throws Exception {
@@ -76,7 +81,7 @@ public final class TestUtils {
                 .build();
     }
 
-    private static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
+    public static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
@@ -120,7 +125,7 @@ public final class TestUtils {
         return getObjectMapper().valueToTree(json);
     }
 
-    public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+    public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {
         return KogitoUserTaskCloudEvent.builder()
                 .id(UUID.randomUUID().toString())
                 .userTaskInstanceId(taskId)
@@ -132,11 +137,11 @@ public final class TestUtils {
                 .type("UserTaskInstanceEvent")
                 .source(URI.create("http://localhost:8080/"))
                 .time(ZonedDateTime.now())
-                .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId))
+                .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state))
                 .build();
     }
 
-    private static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+    private static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {
         UserTaskInstance task = new UserTaskInstance();
         task.setId(taskId);
         task.setProcessInstanceId(processInstanceId);
@@ -145,7 +150,7 @@ public final class TestUtils {
         task.setRootProcessInstanceId(rootProcessInstanceId);
         task.setName("TaskName");
         task.setDescription("TaskDescription");
-        task.setState("InProgress");
+        task.setState(state);
         task.setPriority("High");
         task.setStarted(ZonedDateTime.now());
         task.setCompleted(ZonedDateTime.now().plus(1, ChronoUnit.HOURS));

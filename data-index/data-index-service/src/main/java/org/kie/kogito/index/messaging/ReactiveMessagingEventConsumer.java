@@ -108,7 +108,7 @@ public class ReactiveMessagingEventConsumer {
     private CompletableFuture<Void> sendMessage(ObjectNode json) {
         CompletableFuture<Void> cf = new CompletableFuture<>();
         String processId = json.get("processId").asText();
-        eventBus.send(format(KOGITO_DOMAIN_EVENTS, processId), json, async -> cf.complete(null));
+        eventBus.request(format(KOGITO_DOMAIN_EVENTS, processId), json, async -> cf.complete(null));
         return cf;
     }
 
