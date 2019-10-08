@@ -27,8 +27,8 @@ public enum JoinerType {
     GREATER_THAN((a, b) -> greaterThan((Comparable) a, b)),
     GREATER_THAN_OR_EQUAL((a, b) -> greaterThanOrEqual((Comparable) a, b)),
     CONTAINING((a, b) -> ((Collection) a).contains(b)),
-    INTERSECTING((a, b) -> disjointColections((Collection) a, (Collection) b)),
-    DISJOINT((a, b) -> intersectingCollections((Collection) a, (Collection) b));
+    INTERSECTING((a, b) -> intersectingCollections((Collection) a, (Collection) b)),
+    DISJOINT((a, b) -> disjointColections((Collection) a, (Collection) b));
 
     private final BiPredicate<Object, Object> matcher;
 
