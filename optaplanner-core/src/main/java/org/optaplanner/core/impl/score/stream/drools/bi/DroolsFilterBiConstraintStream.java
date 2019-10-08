@@ -24,14 +24,13 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BiPredicate<A, B> biPredicate;
     private final PatternDSL.PatternDef<B> rightPattern;
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
         super(constraintFactory, parent);
-        this.biPredicate = biPredicate;
-        this.rightPattern = parent.getRightPattern().expr(getLeftVariableDeclaration(), (b, a) -> biPredicate.test(a, b));
+        this.rightPattern = parent.getRightPattern().expr(getLeftVariableDeclaration(),
+                (b, a) -> biPredicate.test(a, b));
     }
 
     @Override

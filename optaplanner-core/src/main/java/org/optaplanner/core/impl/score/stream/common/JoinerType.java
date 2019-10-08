@@ -16,15 +16,25 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+
 public enum JoinerType {
-    EQUAL,
-    LESS_THAN,
-    LESS_THAN_OR_EQUAL,
-    GREATER_THAN,
-    GREATER_THAN_OR_EQUAL,
-    CONTAINING,
-    INTERSECTING,
-    DISJOINT;
+    EQUAL(Objects::equals),
+    LESS_THAN((a, b) -> lessThan((Comparable) a, b)),
+    LESS_THAN_OR_EQUAL((a, b) -> lessThanOrEqual((Comparable) a, b)),
+    GREATER_THAN((a, b) -> greaterThan((Comparable) a, b)),
+    GREATER_THAN_OR_EQUAL((a, b) -> greaterThanOrEqual((Comparable) a, b)),
+    CONTAINING((a, b) -> ((Collection) a).contains(b)),
+    INTERSECTING((a, b) -> disjointColections((Collection) a, (Collection) b)),
+    DISJOINT((a, b) -> intersectingCollections((Collection) a, (Collection) b));
+
+    private final BiPredicate<Object, Object> matcher;
+
+    JoinerType(BiPredicate<Object, Object> matcher) {
+        this.matcher = matcher;
+    }
 
     public JoinerType flip() {
         switch (this) {
@@ -39,6 +49,36 @@ public enum JoinerType {
             default:
                 throw new IllegalStateException("The joinerType (" + this + ") cannot be flipped.");
         }
+    }
+
+    public boolean matches(Object left, Object right) {
+        return matcher.test(left, right);
+    }
+
+    private static boolean lessThan(Comparable left, Object right) {
+        return left.compareTo(right) < 0;
+    }
+
+    private static boolean lessThanOrEqual(Comparable left, Object right) {
+        return left.compareTo(right) <= 0;
+    }
+
+    private static boolean greaterThan(Comparable left, Object right) {
+        return left.compareTo(right) > 0;
+    }
+
+    private static boolean greaterThanOrEqual(Comparable left, Object right) {
+        return left.compareTo(right) >= 0;
+    }
+
+    private static boolean disjointColections(Collection leftCollection, Collection rightCollection) {
+        return leftCollection.stream().noneMatch(rightCollection::contains) &&
+                rightCollection.stream().noneMatch(leftCollection::contains);
+    }
+
+    private static boolean intersectingCollections(Collection leftCollection, Collection rightCollection) {
+        return leftCollection.stream().anyMatch(rightCollection::contains) ||
+                rightCollection.stream().anyMatch(leftCollection::contains);
     }
 
 }

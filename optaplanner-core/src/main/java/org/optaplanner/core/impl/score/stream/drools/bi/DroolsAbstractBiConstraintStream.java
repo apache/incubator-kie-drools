@@ -16,7 +16,6 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -26,11 +25,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.model.Declaration;
-import org.drools.model.Global;
 import org.drools.model.PatternDSL;
-import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -41,6 +37,8 @@ import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
@@ -49,7 +47,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         implements InnerBiConstraintStream<A, B> {
 
     protected final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
-    protected final List<DroolsAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
@@ -77,43 +74,12 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1, TriJoiner<A, B, C> joiner2) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1, TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1, TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        throw new UnsupportedOperationException();
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
+                new DroolsJoinTriConstraintStream<>(constraintFactory, this,
+                        (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
+        childStreamList.add(stream);
+        return stream;
     }
 
     @Override
@@ -228,14 +194,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        for (DroolsAbstractBiConstraintStream<Solution_, A, B> childStream : childStreamList) {
-            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
-        }
-    }
-
-    @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         if (parent == null) {
             DroolsJoinBiConstraintStream<Solution_, A, B> joinStream =
@@ -258,6 +216,5 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public abstract Declaration<B> getRightVariableDeclaration();
 
     public abstract PatternDSL.PatternDef<B> getRightPattern();
-
 
 }

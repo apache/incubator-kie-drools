@@ -17,19 +17,14 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.drools.model.Declaration;
-import org.drools.model.Global;
 import org.drools.model.PatternDSL;
-import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
@@ -45,8 +40,6 @@ import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
-
-    protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
@@ -194,14 +187,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
-    }
-
-    @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        for (DroolsAbstractConstraintStream<Solution_> childStream : childStreamList) {
-            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
-        }
     }
 
     public abstract Declaration<A> getVariableDeclaration();

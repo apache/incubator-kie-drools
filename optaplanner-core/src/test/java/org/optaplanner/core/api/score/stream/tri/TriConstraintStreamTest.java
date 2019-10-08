@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -48,11 +47,6 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public TriConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
-    }
-
-    @Before
-    public void disableAllTestsForDrools() {
-        assumeBavet(); // Skip tests if we're not using Bavet
     }
 
     // ************************************************************************

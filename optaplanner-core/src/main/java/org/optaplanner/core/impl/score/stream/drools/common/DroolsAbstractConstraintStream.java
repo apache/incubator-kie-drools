@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -31,6 +32,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraint
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
     protected final DroolsConstraintFactory<Solution_> constraintFactory;
+    protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         this.constraintFactory = constraintFactory;
@@ -66,8 +68,13 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // Pattern creation
     // ************************************************************************
 
-    public abstract void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal);
+    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        for (DroolsAbstractConstraintStream<Solution_> childStream : childStreamList) {
+            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
+        }
+    }
+
 
     // ************************************************************************
     // Getters/setters

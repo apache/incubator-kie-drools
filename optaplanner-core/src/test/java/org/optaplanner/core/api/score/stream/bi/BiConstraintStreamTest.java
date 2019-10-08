@@ -102,7 +102,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_0() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -154,7 +153,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_1Equal() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -207,7 +205,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_2Equal() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);

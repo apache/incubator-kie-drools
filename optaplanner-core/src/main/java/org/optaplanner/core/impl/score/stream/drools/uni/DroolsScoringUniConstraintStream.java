@@ -136,10 +136,9 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         ruleItemBuilderList.add(consequence);
     }
 
-    @Override
-    public String toString() {
-        return "Scoring()";
-    }
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
     @Override
     public Declaration<A> getVariableDeclaration() {
@@ -151,8 +150,9 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         return parent.getPattern();
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
+    @Override
+    public String toString() {
+        return "Scoring()";
+    }
 
 }
