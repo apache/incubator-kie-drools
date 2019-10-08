@@ -47,7 +47,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (!(rawExpression instanceof String)) {
             String rawClass = rawExpression == null ? null : rawExpression.getClass().getCanonicalName();
-            throw new IllegalArgumentException("Raw value should be a String and not a '" + rawClass + "'");
+            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawClass + "'");
         }
 
         Map<String, Object> params = new HashMap<>();
@@ -64,7 +64,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     @Override
     public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
         if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw value should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
+            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
         }
         Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
         Class<Object> requiredClass = loadClass(className, classLoader);

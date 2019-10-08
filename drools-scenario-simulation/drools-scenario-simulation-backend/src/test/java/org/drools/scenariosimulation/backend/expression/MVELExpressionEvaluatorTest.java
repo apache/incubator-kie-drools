@@ -39,11 +39,11 @@ public class MVELExpressionEvaluatorTest {
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(new Object(), "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw value should be a String");
+                .hasMessageStartingWith("Raw expression should be a String");
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(null, "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw value should be a String");
+                .hasMessageStartingWith("Raw expression should be a String");
     }
 
     @Test
@@ -57,11 +57,11 @@ public class MVELExpressionEvaluatorTest {
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), new Object()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw value should be a String");
+                .hasMessageStartingWith("Raw expression should be a String");
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), new Object()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw value should be a String");
+                .hasMessageStartingWith("Raw expression should be a String");
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"))
                 .isInstanceOf(IllegalArgumentException.class)

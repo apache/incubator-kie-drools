@@ -21,6 +21,11 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 
+/**
+ * Factory to obtain specific expression evaluator based on context. It works like a delegate that hides part of context
+ * so it will be possible to distribute the factory and then obtain the specific expression evaluator instance only when
+ * all the information are available
+ */
 public class ExpressionEvaluatorFactory {
 
     private final ClassLoader classLoader;
@@ -39,6 +44,11 @@ public class ExpressionEvaluatorFactory {
         this.type = type;
     }
 
+    /**
+     * Based on factMappingValue information it returns an instance of the specific expression evaluator required.
+     * @param factMappingValue
+     * @return
+     */
     public ExpressionEvaluator getOrCreate(FactMappingValue factMappingValue) {
         if (Type.DMN.equals(type)) {
             return getOrCreateDMNExpressionEvaluator();
