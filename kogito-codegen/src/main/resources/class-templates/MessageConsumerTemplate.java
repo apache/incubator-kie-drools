@@ -23,6 +23,8 @@ public class $Type$MessageConsumer {
 
     Application application;
     
+    Boolean useCloudEvents = true;
+    
     private ObjectMapper json = new ObjectMapper();
         
     public void configure() {
@@ -32,21 +34,36 @@ public class $Type$MessageConsumer {
 	public void consume(String payload) {
 	    final String trigger = "$Trigger$";
         try {
-            final $DataEventType$ eventData = json.readValue(payload, $DataEventType$.class);
-    	    final $Type$ model = new $Type$();
-            model.set$ModelRef$(eventData.getData());
-            org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                
-                if (eventData.getKogitoReferenceId() != null) {
-                    LOGGER.debug("Received message with reference id '{}' going to use it to send signal '{}'", eventData.getKogitoReferenceId(), trigger);
-                    process.instances().findById(eventData.getKogitoReferenceId()).ifPresent(pi -> pi.send(Sig.of("Message-"+trigger, eventData.getData(), eventData.getKogitoProcessinstanceId())));
-                } else {  
+            
+            if (useCloudEvents) {
+                final $DataEventType$ eventData = json.readValue(payload, $DataEventType$.class);
+        	    final $Type$ model = new $Type$();
+                model.set$ModelRef$(eventData.getData());
+                org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+                    
+                    if (eventData.getKogitoReferenceId() != null) {
+                        LOGGER.debug("Received message with reference id '{}' going to use it to send signal '{}'", eventData.getKogitoReferenceId(), trigger);
+                        process.instances().findById(eventData.getKogitoReferenceId()).ifPresent(pi -> pi.send(Sig.of("Message-"+trigger, eventData.getData(), eventData.getKogitoProcessinstanceId())));
+                    } else {  
+                        LOGGER.debug("Received message without reference id, staring new process instance with trigger '{}'", trigger);
+                        ProcessInstance<$Type$> pi = process.createInstance(model);
+                        pi.start(trigger, eventData.getKogitoProcessinstanceId());  
+                    }
+                    return null;
+                });
+            } else {
+                final $DataType$ eventData = json.readValue(payload, $DataType$.class);
+                final $Type$ model = new $Type$();
+                model.set$ModelRef$(eventData);
+                org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+                                    
                     LOGGER.debug("Received message without reference id, staring new process instance with trigger '{}'", trigger);
                     ProcessInstance<$Type$> pi = process.createInstance(model);
-                    pi.start(trigger, eventData.getKogitoProcessinstanceId());  
-                }
-                return null;
-            });
+                    pi.start(trigger, null);  
+                    
+                    return null;
+                });
+            }
         } catch (Exception e) {
             LOGGER.error("Error when consuming message for process {}", process.id(), e);
         }

@@ -114,6 +114,10 @@ public class MessageProducerGenerator {
             annotator.withMessageProducer(sendMethodCall, trigger.getName(), new MethodCallExpr(new ThisExpr(), "marshall").addArgument(new NameExpr("pi")).addArgument(new NameExpr(EVENT_DATA_VAR)));
             body.addStatement(sendMethodCall);
             produceMethod.setBody(body);
+            
+            template.findAll(FieldDeclaration.class,
+                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", "true", fd));
+            
         } 
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();

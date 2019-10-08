@@ -14,6 +14,7 @@ public class MessageProducer {
     
     Object emitter;
     
+    Boolean useCloudEvents = true;
     private ObjectMapper json = new ObjectMapper();
     
     
@@ -27,18 +28,23 @@ public class MessageProducer {
 	    
 	private String marshall(ProcessInstance pi, $Type$ eventData) {
 	    try {
-    	    $DataEventType$ event = new $DataEventType$("",
-    	                                                    eventData,
-    	                                                    pi.getId(),
-    	                                                    pi.getParentProcessInstanceId(),
-    	                                                    pi.getRootProcessInstanceId(),
-    	                                                    pi.getProcessId(),
-    	                                                    pi.getRootProcessId(),
-    	                                                    String.valueOf(pi.getState()));
-    	    if (pi.getReferenceId() != null && !pi.getReferenceId().isEmpty()) {
-    	        event.setKogitoReferenceId(pi.getReferenceId());
-    	    }
-    	    return json.writeValueAsString(event);
+	        
+	        if (useCloudEvents) {
+        	    $DataEventType$ event = new $DataEventType$("",
+        	                                                    eventData,
+        	                                                    pi.getId(),
+        	                                                    pi.getParentProcessInstanceId(),
+        	                                                    pi.getRootProcessInstanceId(),
+        	                                                    pi.getProcessId(),
+        	                                                    pi.getRootProcessId(),
+        	                                                    String.valueOf(pi.getState()));
+        	    if (pi.getReferenceId() != null && !pi.getReferenceId().isEmpty()) {
+        	        event.setKogitoReferenceId(pi.getReferenceId());
+        	    }
+        	    return json.writeValueAsString(event);
+	        } else {
+	            return json.writeValueAsString(eventData);
+	        }
 	    } catch (Exception e) {
 	        throw new RuntimeException(e);
 	    }

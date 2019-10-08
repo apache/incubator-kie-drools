@@ -107,6 +107,7 @@ public class MessageConsumerGenerator {
             interpolateArguments(md, "String");
             md.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
             md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
+            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         });
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
         
@@ -117,6 +118,9 @@ public class MessageConsumerGenerator {
                              fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
             template.findAll(FieldDeclaration.class,
                              fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
+            
+            template.findAll(FieldDeclaration.class,
+                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", "true", fd));
             
             template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
         } else {
