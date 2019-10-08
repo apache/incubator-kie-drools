@@ -145,6 +145,14 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                               classLoader,
                                                                               expressionEvaluatorFactory);
         assertEquals(2, scenario2Inputs.size());
+
+        scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
+        assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getSimulationDescriptor(),
+                                                                    scenario2.getUnmodifiableFactMappingValues(),
+                                                                    classLoader,
+                                                                    expressionEvaluatorFactory))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage("Error in GIVEN data");
     }
 
     @Test

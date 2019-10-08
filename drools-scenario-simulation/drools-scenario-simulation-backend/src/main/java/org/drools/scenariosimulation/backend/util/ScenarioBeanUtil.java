@@ -55,6 +55,8 @@ public class ScenarioBeanUtil {
             } catch (ReflectiveOperationException e) {
                 throw new ScenarioException(new StringBuilder().append("Impossible to fill ").append(className)
                                                     .append(" with the provided properties").toString(), e);
+            } catch (IllegalArgumentException e) {
+                throw new ScenarioException(e.getMessage(), e);
             }
         }
 

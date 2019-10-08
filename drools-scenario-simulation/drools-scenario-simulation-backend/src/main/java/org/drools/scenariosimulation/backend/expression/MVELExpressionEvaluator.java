@@ -29,6 +29,7 @@ import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
@@ -65,7 +66,13 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Raw value should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
         }
-        return compileAndExecute((String) rawExpression, Collections.emptyMap());
+        Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
+        Class<Object> requiredClass = loadClass(className, classLoader);
+        if(expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
+            throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
+                                                       "' to '" + requiredClass.getCanonicalName());
+        }
+        return expressionResult;
     }
 
     @Override

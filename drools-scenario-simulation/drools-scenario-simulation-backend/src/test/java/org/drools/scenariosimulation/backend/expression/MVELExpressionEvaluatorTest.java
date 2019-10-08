@@ -48,7 +48,7 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        assertEquals(1, evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"));
+        assertEquals(1, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"));
 
         assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " \"Value\""));
 
@@ -62,6 +62,10 @@ public class MVELExpressionEvaluatorTest {
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), new Object()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Raw value should be a String");
+
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
     }
 
     @Test

@@ -17,6 +17,7 @@
 package org.drools.scenariosimulation.backend.util;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,6 +90,14 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("fakeField"), null);
 
         ScenarioBeanUtil.fillBean(null, paramsToSet, classLoader);
+    }
+
+    @Test(expected = ScenarioException.class)
+    public void fillBeanFailWrongTypeTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(Arrays.asList("description"), new ArrayList<>());
+
+        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test

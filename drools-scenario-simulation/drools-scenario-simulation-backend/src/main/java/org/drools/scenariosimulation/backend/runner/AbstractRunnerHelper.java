@@ -86,20 +86,31 @@ public abstract class AbstractRunnerHelper {
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
                 groupByFactIdentifierAndFilter(factMappingValues, FactMappingType.GIVEN);
 
+        boolean hasError = false;
+
         for (Map.Entry<FactIdentifier, List<FactMappingValue>> entry : groupByFactIdentifier.entrySet()) {
 
-            FactIdentifier factIdentifier = entry.getKey();
+            try {
 
-            // for each fact, create a map of path to fields and values to set
-            Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
-                                                                       factIdentifier,
-                                                                       entry.getValue(),
-                                                                       expressionEvaluatorFactory);
+                FactIdentifier factIdentifier = entry.getKey();
 
-            Object bean = getDirectMapping(paramsForBean)
-                    .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
+                // for each fact, create a map of path to fields and values to set
+                Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
+                                                                           factIdentifier,
+                                                                           entry.getValue(),
+                                                                           expressionEvaluatorFactory);
 
-            scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
+                Object bean = getDirectMapping(paramsForBean)
+                        .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
+
+                scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
+            } catch(Exception e) {
+                hasError = true;
+            }
+        }
+
+        if (hasError) {
+            throw new ScenarioException("Error in GIVEN data");
         }
 
         return scenarioGiven;
