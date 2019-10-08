@@ -182,12 +182,17 @@ public class CoercedExpression {
             return new IntegerLiteralExpr(expr.getValue());
         }
         if (type == long.class) {
-            return new LongLiteralExpr(expr.getValue().endsWith("l") ? expr.getValue() : expr.getValue() + "l");
+            String value = expr.getValue();
+            return new LongLiteralExpr(isLongLiteral(value) ? expr.getValue() : expr.getValue() + "l");
         }
         if (type == double.class) {
             return new DoubleLiteralExpr(expr.getValue().endsWith("d") ? expr.getValue() : expr.getValue() + "d");
         }
         throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));
+    }
+
+    private boolean isLongLiteral(String value) {
+        return value.endsWith("l") || value.endsWith("L");
     }
 
     private boolean canBeNarrowed(Class<?> leftType, Class<?> rightType) {
