@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.domain;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.kie.api.definition.type.Duration;
@@ -26,6 +27,7 @@ import org.kie.api.definition.type.Role;
 public class StockTick extends StockFact {
 
     private long timeField;
+    private Calendar dueDate;
 
     public StockTick( String company ) {
         super( company );
@@ -41,6 +43,14 @@ public class StockTick extends StockFact {
 
     public Date getTimeFieldAsDate() {
         return new Date(timeField);
+    }
+
+    public Calendar getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Calendar dueDate) {
+        this.dueDate = dueDate;
     }
 
     public StockTick setTimeField( long timeField ) {
