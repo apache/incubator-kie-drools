@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
@@ -58,6 +59,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-20\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
                 { "overlaps( [date(\"2018-08-15\")..date(\"2018-08-28\")], [date(\"2018-08-20\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
                 { "overlapped by( [date(\"2018-08-20\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
+                { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null }
         };
         return addAdditionalParameters(cases, true);
     }
