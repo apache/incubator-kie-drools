@@ -164,7 +164,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public String toString() {
-        return "BiScoring()";
+        return "TriScoring()";
     }
 
 
