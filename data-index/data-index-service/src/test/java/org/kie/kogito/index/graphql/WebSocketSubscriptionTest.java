@@ -186,7 +186,7 @@ public class WebSocketSubscriptionTest {
                 wsFuture.completeExceptionally(websocketRes.cause());
             }
         });
-        cf.thenRun(() -> httpClient.close());
+        cf.whenComplete((r, t) -> httpClient.close());
         wsFuture.get(1, TimeUnit.MINUTES);
         return cf;
     }
