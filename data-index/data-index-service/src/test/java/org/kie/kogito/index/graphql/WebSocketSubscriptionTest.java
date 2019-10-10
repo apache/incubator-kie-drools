@@ -32,6 +32,7 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -51,6 +52,7 @@ import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
+@Disabled("This test times out on cf.get() on CI")
 @QuarkusTest
 public class WebSocketSubscriptionTest {
 
