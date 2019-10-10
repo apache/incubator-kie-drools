@@ -232,6 +232,9 @@ public class ResourceGenerator {
             }
         }
         
+        if (useInjection()) {
+            annotator.withApplicationComponent(template);
+        }
         
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
