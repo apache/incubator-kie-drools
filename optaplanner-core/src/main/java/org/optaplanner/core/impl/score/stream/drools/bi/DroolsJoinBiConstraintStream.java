@@ -37,7 +37,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
         this.biJoiner = (AbstractBiJoiner<A, B>) biJoiner;
-        this.rightPattern = otherStream.getPattern().expr(getLeftVariableDeclaration(), (b, a) -> matches(a, b));
+        this.rightPattern = otherStream.getAPattern().expr(getLeftVariableDeclaration(), (b, a) -> matches(a, b));
     }
 
     @Override
@@ -56,8 +56,8 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getLeftPattern() {
-        return leftParentStream.getPattern();
+    public PatternDSL.PatternDef<A> getAPattern() {
+        return leftParentStream.getAPattern();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     }
 
     @Override
-    public PatternDSL.PatternDef<B> getRightPattern() {
+    public PatternDSL.PatternDef<B> getBPattern() {
         return rightPattern;
     }
 

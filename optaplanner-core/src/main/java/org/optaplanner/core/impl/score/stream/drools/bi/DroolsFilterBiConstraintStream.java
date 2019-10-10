@@ -29,7 +29,7 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
         super(constraintFactory, parent);
-        this.rightPattern = parent.getRightPattern().expr(getLeftVariableDeclaration(),
+        this.rightPattern = parent.getBPattern().expr(getLeftVariableDeclaration(),
                 (b, a) -> biPredicate.test(a, b));
     }
 
@@ -39,8 +39,8 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getLeftPattern() {
-        return parent.getLeftPattern();
+    public PatternDSL.PatternDef<A> getAPattern() {
+        return parent.getAPattern();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
     }
 
     @Override
-    public PatternDSL.PatternDef<B> getRightPattern() {
+    public PatternDSL.PatternDef<B> getBPattern() {
         return rightPattern;
     }
 

@@ -51,7 +51,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinBiConstraintStream)) {
-            throw new IllegalArgumentException("Parent of stream (" + this + ") must not be null, or not join stream.");
+            throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
+                    "unless it's a join stream.");
         }
         this.parent = parent;
     }
@@ -194,10 +195,10 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     public abstract Declaration<A> getLeftVariableDeclaration();
 
-    public abstract PatternDSL.PatternDef<A> getLeftPattern();
+    public abstract PatternDSL.PatternDef<A> getAPattern();
 
     public abstract Declaration<B> getRightVariableDeclaration();
 
-    public abstract PatternDSL.PatternDef<B> getRightPattern();
+    public abstract PatternDSL.PatternDef<B> getBPattern();
 
 }

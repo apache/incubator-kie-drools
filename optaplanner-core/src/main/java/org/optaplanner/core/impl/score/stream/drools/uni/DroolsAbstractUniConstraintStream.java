@@ -174,6 +174,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     public abstract Declaration<A> getVariableDeclaration();
 
-    public abstract PatternDSL.PatternDef<A> getPattern();
+    public abstract PatternDSL.PatternDef<A> getAPattern();
 
 }

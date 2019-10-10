@@ -46,7 +46,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
-            throw new IllegalArgumentException("Parent of stream (" + this + ") must not be null, or not join stream.");
+            throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
+                    "unless it's a join stream.");
         }
         this.parent = parent;
     }

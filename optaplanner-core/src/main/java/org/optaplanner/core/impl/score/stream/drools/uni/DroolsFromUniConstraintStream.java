@@ -67,7 +67,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getPattern() {
+    public PatternDSL.PatternDef<A> getAPattern() {
         return pattern;
     }
 }

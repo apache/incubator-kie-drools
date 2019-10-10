@@ -24,73 +24,80 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.CONTAINING;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.DISJOINT;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.EQUAL;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_THAN;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_THAN_OR_EQUAL;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.INTERSECTING;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN_OR_EQUAL;
 
 public class JoinerTypeTest {
 
     @Test
     public void equals() {
-        assertTrue(JoinerType.EQUAL.matches(1, 1));
-        assertFalse(JoinerType.EQUAL.matches(1, 2));
-        assertFalse(JoinerType.EQUAL.matches(1, null));
-        assertFalse(JoinerType.EQUAL.matches(null, 1));
+        assertTrue(EQUAL.matches(1, 1));
+        assertFalse(EQUAL.matches(1, 2));
+        assertFalse(EQUAL.matches(1, null));
+        assertFalse(EQUAL.matches(null, 1));
     }
 
     @Test
     public void lessThan() {
-        assertFalse(JoinerType.LESS_THAN.matches(1, 1));
-        assertTrue(JoinerType.LESS_THAN.matches(1, 2));
-        assertFalse(JoinerType.LESS_THAN.matches(2, 1));
+        assertFalse(LESS_THAN.matches(1, 1));
+        assertTrue(LESS_THAN.matches(1, 2));
+        assertFalse(LESS_THAN.matches(2, 1));
     }
 
     @Test
     public void lessThanOrEquals() {
-        assertTrue(JoinerType.LESS_THAN_OR_EQUAL.matches(1, 1));
-        assertTrue(JoinerType.LESS_THAN_OR_EQUAL.matches(1, 2));
-        assertFalse(JoinerType.LESS_THAN_OR_EQUAL.matches(2, 1));
+        assertTrue(LESS_THAN_OR_EQUAL.matches(1, 1));
+        assertTrue(LESS_THAN_OR_EQUAL.matches(1, 2));
+        assertFalse(LESS_THAN_OR_EQUAL.matches(2, 1));
     }
 
     @Test
     public void greaterThan() {
-        assertFalse(JoinerType.GREATER_THAN.matches(1, 1));
-        assertTrue(JoinerType.GREATER_THAN.matches(2, 1));
-        assertFalse(JoinerType.GREATER_THAN.matches(1, 2));
+        assertFalse(GREATER_THAN.matches(1, 1));
+        assertTrue(GREATER_THAN.matches(2, 1));
+        assertFalse(GREATER_THAN.matches(1, 2));
     }
 
     @Test
     public void greaterThanOrEquals() {
-        assertTrue(JoinerType.GREATER_THAN_OR_EQUAL.matches(1, 1));
-        assertTrue(JoinerType.GREATER_THAN_OR_EQUAL.matches(2, 1));
-        assertFalse(JoinerType.GREATER_THAN_OR_EQUAL.matches(1, 2));
+        assertTrue(GREATER_THAN_OR_EQUAL.matches(1, 1));
+        assertTrue(GREATER_THAN_OR_EQUAL.matches(2, 1));
+        assertFalse(GREATER_THAN_OR_EQUAL.matches(1, 2));
     }
 
     @Test
     public void containing() {
         Collection<Integer> collection = Arrays.asList(1);
-        assertTrue(JoinerType.CONTAINING.matches(collection, 1));
-        assertFalse(JoinerType.CONTAINING.matches(collection,2));
+        assertTrue(CONTAINING.matches(collection, 1));
+        assertFalse(CONTAINING.matches(collection, 2));
     }
 
     @Test
     public void intersecting() {
         Collection<Integer> left = Arrays.asList(1, 2, 3);
         Collection<Integer> right = Arrays.asList(3, 4, 5);
-        assertTrue(JoinerType.INTERSECTING.matches(left, right));
-        assertTrue(JoinerType.INTERSECTING.matches(right, left));
-        assertFalse(JoinerType.INTERSECTING.matches(left, Collections.emptySet()));
+        assertTrue(INTERSECTING.matches(left, right));
+        assertTrue(INTERSECTING.matches(right, left));
+        assertFalse(INTERSECTING.matches(left, Collections.emptySet()));
     }
 
     @Test
     public void disjoint() {
         Collection<Integer> first = Arrays.asList(1, 2, 3);
         Collection<Integer> second = Arrays.asList(3, 4, 5);
-        assertFalse(JoinerType.DISJOINT.matches(first, second));
-        assertFalse(JoinerType.DISJOINT.matches(second, first));
+        assertFalse(DISJOINT.matches(first, second));
+        assertFalse(DISJOINT.matches(second, first));
         Collection<Integer> third = Arrays.asList(4, 5);
-        assertTrue(JoinerType.DISJOINT.matches(first, third));
-        assertTrue(JoinerType.DISJOINT.matches(third, first));
+        assertTrue(DISJOINT.matches(first, third));
+        assertTrue(DISJOINT.matches(third, first));
         // empty sets are disjoint
-        assertTrue(JoinerType.DISJOINT.matches(Collections.emptyList(), Collections.emptySet()));
-        assertTrue(JoinerType.DISJOINT.matches(first, Collections.emptySet()));
+        assertTrue(DISJOINT.matches(Collections.emptyList(), Collections.emptySet()));
+        assertTrue(DISJOINT.matches(first, Collections.emptySet()));
     }
-
 }

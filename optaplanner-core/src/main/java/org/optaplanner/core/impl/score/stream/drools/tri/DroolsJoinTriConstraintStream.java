@@ -42,7 +42,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
         this.triJoiner = (AbstractTriJoiner<A, B, C>) triJoiner;
-        this.cPattern = otherStream.getPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
+        this.cPattern = otherStream.getAPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
                 getBVariableDeclaration(), (c, a, b) -> matches(a, b, c));
     }
 
@@ -67,7 +67,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public PatternDSL.PatternDef<A> getAPattern() {
-        return leftParentStream.getLeftPattern();
+        return leftParentStream.getAPattern();
     }
 
     @Override
@@ -77,7 +77,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public PatternDSL.PatternDef<B> getBPattern() {
-        return leftParentStream.getRightPattern();
+        return leftParentStream.getBPattern();
     }
 
     @Override

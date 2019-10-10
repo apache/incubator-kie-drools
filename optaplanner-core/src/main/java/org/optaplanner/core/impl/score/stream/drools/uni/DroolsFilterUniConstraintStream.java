@@ -63,8 +63,8 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getPattern() {
-        return parent.getPattern().expr(predicate::test);
+    public PatternDSL.PatternDef<A> getAPattern() {
+        return parent.getAPattern().expr(predicate::test);
     }
 
 }
