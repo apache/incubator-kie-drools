@@ -29,56 +29,51 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final DroolsConstraint<Solution_> constraint;
     private final boolean noMatchWeigher;
     private final ToIntTriFunction<A, B, C> intMatchWeigher;
     private final ToLongTriFunction<A, B, C> longMatchWeigher;
     private final TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher;
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsConstraint<Solution_> constraint) {
-        this(constraintFactory, parent, constraint, true, null, null, null);
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
+        this(constraintFactory, parent, true, null, null, null);
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsConstraint<Solution_> constraint,
-            ToIntTriFunction<A, B, C> intMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, intMatchWeigher, null, null);
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, ToIntTriFunction<A, B, C> intMatchWeigher) {
+        this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsConstraint<Solution_> constraint,
-            ToLongTriFunction<A, B, C> longMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, longMatchWeigher, null);
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, ToLongTriFunction<A, B, C> longMatchWeigher) {
+        this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsConstraint<Solution_> constraint,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, null, bigDecimalMatchWeigher);
+        this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     private DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsConstraint<Solution_> constraint,
-            boolean noMatchWeigher, ToIntTriFunction<A, B, C> intMatchWeigher,
-            ToLongTriFunction<A, B, C> longMatchWeigher, TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, boolean noMatchWeigher,
+            ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
+            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent);
-        this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;

@@ -29,55 +29,50 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsConstraint<Solution_> constraint;
     private final boolean noMatchWeigher;
     private final ToIntBiFunction<A, B> intMatchWeigher;
     private final ToLongBiFunction<A, B> longMatchWeigher;
     private final BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher;
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint) {
-        this(constraintFactory, parent, constraint, true, null, null, null);
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
+        this(constraintFactory, parent, true, null, null, null);
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
-            ToIntBiFunction<A, B> intMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, intMatchWeigher, null, null);
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, ToIntBiFunction<A, B> intMatchWeigher) {
+        this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
-            ToLongBiFunction<A, B> longMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, longMatchWeigher, null);
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, ToLongBiFunction<A, B> longMatchWeigher) {
+        this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsConstraint<Solution_> constraint,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, null, bigDecimalMatchWeigher);
+        this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
     }
 
     private DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
-            DroolsConstraint<Solution_> constraint, boolean noMatchWeigher, ToIntBiFunction<A, B> intMatchWeigher,
-            ToLongBiFunction<A, B> longMatchWeigher, BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean noMatchWeigher,
+            ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
+            BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent);
-        this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;

@@ -30,7 +30,6 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
@@ -63,88 +62,72 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     // ************************************************************************

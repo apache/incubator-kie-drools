@@ -34,7 +34,6 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
@@ -105,88 +104,72 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, boolean positive) {
-        DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         childStreamList.add(stream);
-        return constraint;
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
     // ************************************************************************
