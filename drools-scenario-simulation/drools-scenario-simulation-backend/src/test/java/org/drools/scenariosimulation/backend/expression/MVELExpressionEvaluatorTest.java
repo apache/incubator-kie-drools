@@ -59,10 +59,6 @@ public class MVELExpressionEvaluatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Raw expression should be a String");
 
-        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), new Object()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw expression should be a String");
-
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
