@@ -19,10 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
-import org.kie.kogito.rules.RuleUnitMemory;
-import org.kie.kogito.rules.impl.RuleUnitRegistry;
 
 public class Executor {
 
@@ -38,11 +35,6 @@ public class Executor {
 
     private Executor(ExecutorService executorService) {
         this.executorService = executorService;
-    }
-
-    public Future<Integer> submit(RuleUnitMemory ruleUnitMemory) {
-        RuleUnitInstance<?> instance = RuleUnitRegistry.instance(ruleUnitMemory);
-        return this.submit(instance);
     }
 
     public Future<Integer> submit(RuleUnitInstance<?> instance) {

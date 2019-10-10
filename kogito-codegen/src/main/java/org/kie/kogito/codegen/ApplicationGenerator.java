@@ -51,7 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
 
 public class ApplicationGenerator {
 
@@ -139,19 +138,6 @@ public class ApplicationGenerator {
         }
         
         eventPublishersFieldDeclaration.addVariable(eventPublishersDeclarator);
-        
-
-        if (hasRuleUnits) {
-            BlockStmt blockStmt = cls.addStaticInitializer();
-            TryStmt tryStmt = new TryStmt();
-            blockStmt.addStatement( tryStmt );
-
-            tryStmt.getTryBlock().addStatement( new MethodCallExpr( new NameExpr("Class"), "forName" )
-                    .addArgument( new StringLiteralExpr( RULE_UNIT_REGISTER_FQN ) ) );
-
-            tryStmt.getCatchClauses().add( new CatchClause()
-                    .setParameter( new Parameter( new ClassOrInterfaceType(null, "ClassNotFoundException"), new SimpleName( "e" ) ) ) );
-        }
         
         FieldDeclaration configField = null;
         if (useInjection()) {
