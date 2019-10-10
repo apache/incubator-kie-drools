@@ -22,13 +22,20 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.core.util.StringUtils;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
-import org.kie.dmn.model.api.Definitions;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.CodegenUtils;
 
@@ -89,6 +96,26 @@ public class DMNRestResourceGenerator {
                              CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
         }
         
+        MethodDeclaration dmnMethod = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("dmn")).get(0);
+        for (DecisionService ds : definitions.getDecisionService()) {
+            if (ds.getAdditionalAttributes().keySet().stream().anyMatch(qn -> qn.getLocalPart().equals("dynamicDecisionService"))) {
+                continue;
+            }
+            MethodDeclaration clonedMethod = dmnMethod.clone();
+            String name = CodegenStringUtil.escapeIdentifier("decisionService_" + ds.getName());
+            clonedMethod.setName(name);
+            MethodCallExpr evaluateCall = clonedMethod.findFirst(MethodCallExpr.class, x -> x.getName().toString().equals("evaluateAll")).orElseThrow(() -> new RuntimeException("Template was modified!"));
+            evaluateCall.setName(new SimpleName("evaluateDecisionService"));
+            evaluateCall.addArgument(new StringLiteralExpr(ds.getName()));
+            clonedMethod.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.ws.rs.Path"), new StringLiteralExpr("/" + ds.getName())));
+            ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(() -> new RuntimeException("Template was modified!"));
+            if (ds.getOutputDecision().size() == 1) {
+                MethodCallExpr rewrittenReturnExpr = new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new NameExpr("result"), "getDecisionResults"), "get").addArgument(new IntegerLiteralExpr(0)), "getResult");
+                returnStmt.setExpression(rewrittenReturnExpr);
+            }
+            template.addMember(clonedMethod);
+        }
+
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }

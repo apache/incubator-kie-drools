@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.decision;
+package org.kie.kogito.dmn.rest;
 
-import java.util.Map;
-
-import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNResult;
 
-public interface DecisionModel {
+public class DMNEvaluationErrorException extends RuntimeException {
 
-    DMNContext newContext(Map<String, Object> variables);
+    private DMNResult result;
 
-    DMNResult evaluateAll(DMNContext context);
+    public DMNEvaluationErrorException(org.kie.dmn.api.core.DMNResult result) {
+        super();
+        this.result = result;
+    }
 
-    DMNResult evaluateDecisionService(DMNContext context, String decisionServiceName);
-
+    public DMNResult getResult() {
+        return result;
+    }
 }

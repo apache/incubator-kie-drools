@@ -15,6 +15,11 @@ public class DecisionModels implements org.kie.kogito.decision.DecisionModels {
             public org.kie.dmn.api.core.DMNResult evaluateAll(org.kie.dmn.api.core.DMNContext context) {
                 return dmnRuntime.evaluateAll(dmnRuntime.getModel(namespace, name), context);
             }
+            
+            @Override
+            public org.kie.dmn.api.core.DMNResult evaluateDecisionService(org.kie.dmn.api.core.DMNContext context, java.lang.String decisionServiceName) {
+                return dmnRuntime.evaluateDecisionService(dmnRuntime.getModel(namespace, name), context, decisionServiceName);
+            }
         };
     }
 }
