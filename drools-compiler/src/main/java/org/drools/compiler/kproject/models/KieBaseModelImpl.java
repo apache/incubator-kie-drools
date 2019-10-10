@@ -40,6 +40,7 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.SequentialOption;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.ResourceType;
 
 import static org.drools.core.util.IoUtils.recursiveListFile;
@@ -62,6 +63,8 @@ public class KieBaseModelImpl
     private DeclarativeAgendaOption      declarativeAgenda = DeclarativeAgendaOption.DISABLED;
 
     private SequentialOption             sequential = SequentialOption.NO;
+
+    private SessionsPoolOption sessionsPool = SessionsPoolOption.NO;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
@@ -216,6 +219,15 @@ public class KieBaseModelImpl
         return this;
     }
 
+    public SessionsPoolOption getSessionsPool() {
+        return sessionsPool;
+    }
+
+    public KieBaseModel setSessionsPool( SessionsPoolOption sessionsPool ) {
+        this.sessionsPool = sessionsPool;
+        return this;
+    }
+
     /* (non-Javadoc)
      * @see org.kie.kproject.KieBaseModel#getEqualsBehavior()
      */
@@ -337,6 +349,9 @@ public class KieBaseModelImpl
             if ( kBase.getSequential() != null ) {
                 writer.addAttribute( "sequential", kBase.getSequential() == YES ? "true" : "false" );
             }
+            if ( kBase.getSessionsPool() != null ) {
+                writer.addAttribute( "sessionsPool", "" + kBase.getSessionsPool().getSize() );
+            }
 
             if ( kBase.getScope() != null ) {
                 writer.addAttribute( "scope", kBase.getScope() );
@@ -406,6 +421,11 @@ public class KieBaseModelImpl
             String sequential = reader.getAttribute( "sequential" );
             if ( sequential != null ) {
                 kBase.setSequential( SequentialOption.determineSequential( sequential ) );
+            }
+
+            String sessionsPool = reader.getAttribute( "sessionsPool" );
+            if ( sequential != null ) {
+                kBase.setSessionsPool( SessionsPoolOption.get( Integer.parseInt( sessionsPool ) ) );
             }
 
             String scope = reader.getAttribute( "scope" );
