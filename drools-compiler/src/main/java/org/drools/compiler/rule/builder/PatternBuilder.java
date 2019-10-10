@@ -608,6 +608,7 @@ public class PatternBuilder
                 return;
             }
 
+            result.setNegated( b.isNegated() );
             isPositional &= !(result.getDescrs().size() == 1 && result.getDescrs().get(0) instanceof BindingDescr);
 
             if (isPositional) {
@@ -937,14 +938,15 @@ public class PatternBuilder
         // check if it is an atomic expression
         Constraint constraint = processAtomicExpression(context, pattern, d, expr, aliases);
         // otherwise check if it is a simple expression
-        return constraint != null ? constraint : buildExpression(context, pattern, d, expr, aliases);
+        return constraint != null ? constraint : buildExpression(context, pattern, d, expr, aliases, ccd.isNegated());
     }
 
-    protected Constraint buildExpression(final RuleBuildContext context,
-                                         final Pattern pattern,
-                                         final BaseDescr d,
-                                         final String expr,
-                                         final Map<String, OperatorDescr> aliases) {
+    private Constraint buildExpression(final RuleBuildContext context,
+                                       final Pattern pattern,
+                                       final BaseDescr d,
+                                       final String expr,
+                                       final Map<String, OperatorDescr> aliases,
+                                       boolean negated) {
         if ("_.neg".equals(expr)) {
             pattern.setHasNegativeConstraint(true);
             return new NegConstraint();
@@ -960,12 +962,21 @@ public class PatternBuilder
                 !ClassObjectType.Map_ObjectType.isAssignableFrom(pattern.getObjectType()) &&
                 !ClassObjectType.Match_ObjectType.isAssignableFrom(pattern.getObjectType())) {
             String normalizedExpr = normalizeExpression(context, pattern, relDescr, expr);
+            if (negated) {
+                normalizedExpr = "!(" + normalizedExpr + ")";
+                relDescr.getOperatorDescr().setNegated( !relDescr.getOperatorDescr().isNegated() );
+            }
             return buildRelationalExpression(context, pattern, relDescr, normalizedExpr, aliases);
         }
 
         // Either it's a complex expression, so do as predicate
         // Or it's a Map and we have to treat it as a special case
-        return createAndBuildPredicate(context, pattern, d, rewriteOrExpressions(context, pattern, d, expr), aliases);
+
+        String rewrittenExpr = rewriteOrExpressions(context, pattern, d, expr);
+        if (negated) {
+            rewrittenExpr = "!(" + rewrittenExpr + ")";
+        }
+        return createAndBuildPredicate(context, pattern, d, rewrittenExpr, aliases);
     }
 
     private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {

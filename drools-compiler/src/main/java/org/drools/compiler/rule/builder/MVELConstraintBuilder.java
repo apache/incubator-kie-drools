@@ -142,7 +142,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
-        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator(), operatorDescr.isNegated());
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, aliases);
         EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, relDescr, aliases));
         return new MvelConstraint( Collections.singletonList( context.getPkg().getName() ), expression, declarations, operators, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);

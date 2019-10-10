@@ -6,6 +6,10 @@ public interface Predicate8<A, B, C, D, E, F, G, H> extends Serializable {
 
     boolean test( A a, B b, C c, D d, E e, F f, G g, H h ) throws Exception;
 
+    default Predicate8<A, B, C, D, E, F, G, H> negate() {
+        return (a, b, c, d, e, f, g, h) -> !test( a, b, c, d, e, f, g, h );
+    }
+
     class Impl<A, B, C, D, E, F, G, H> extends IntrospectableLambda implements Predicate8<A, B, C, D, E, F, G, H> {
 
         private final Predicate8<A, B, C, D, E, F, G, H> predicate;

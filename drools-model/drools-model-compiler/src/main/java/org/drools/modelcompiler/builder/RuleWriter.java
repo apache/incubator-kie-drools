@@ -84,9 +84,7 @@ public class RuleWriter {
         }
 
         public String getSource() {
-            String code = prettyPrinter.print(source);
-            pkgModel.logRule(code);
-            return code;
+            return prettyPrinter.print(source);
         }
     }
 }

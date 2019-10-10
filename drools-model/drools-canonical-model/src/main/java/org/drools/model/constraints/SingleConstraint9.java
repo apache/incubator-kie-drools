@@ -88,4 +88,9 @@ public class SingleConstraint9<A, B, C, D, E, F, G, H, I> extends AbstractSingle
         if ( !ModelComponent.areEqualInModel( var9, that.var9 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint9<A, B, C, D, E, F, G, H, I> negate() {
+        return negate( new SingleConstraint9<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, predicate.negate()) );
+    }
 }

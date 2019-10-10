@@ -71,4 +71,12 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
         }
         throw new UnsupportedOperationException( "Unknown expr: " + expr );
     }
+
+    protected <T extends AbstractSingleConstraint> T negate(T negated) {
+        if ( index != null ) {
+            negated.setIndex( index.negate() );
+        }
+        negated.setReactivitySpecs( reactivitySpecs );
+        return negated;
+    }
 }

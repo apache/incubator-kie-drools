@@ -100,4 +100,9 @@ public class SingleConstraint12<A, B, C, D, E, F, G, H, I, J, K, L> extends Abst
         if ( !ModelComponent.areEqualInModel( var12, that.var12 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint12<A, B, C, D, E, F, G, H, I, J, K, L> negate() {
+        return negate( new SingleConstraint12<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, predicate.negate()) );
+    }
 }

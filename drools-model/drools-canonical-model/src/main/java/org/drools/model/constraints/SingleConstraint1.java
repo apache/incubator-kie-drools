@@ -50,4 +50,9 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
         if ( !ModelComponent.areEqualInModel( variable, that.variable ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint1<A> negate() {
+        return negate( new SingleConstraint1<>("!" + getExprId(), variable, predicate.negate()) );
+    }
 }

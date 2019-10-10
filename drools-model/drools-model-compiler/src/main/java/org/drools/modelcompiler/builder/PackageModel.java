@@ -65,8 +65,6 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
 
@@ -83,8 +81,6 @@ import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class PackageModel {
-
-    private static final Logger logger          = LoggerFactory.getLogger(PackageModel.class);
 
     public static final String DATE_TIME_FORMATTER_FIELD = "DATE_TIME_FORMATTER";
     public static final String STRING_TO_DATE_METHOD = "string_2_date";
@@ -629,14 +625,6 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void logRule(String source) {
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "=====" );
-            logger.debug( source );
-            logger.debug( "=====" );
-        }
-    }
-
     public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
         this.accumulateFunctions = accumulateFunctions;
     }
@@ -689,8 +677,6 @@ public class PackageModel {
         }
         sb.append( "}" );
 
-        String domainModelSource = sb.toString();
-        logRule(domainModelSource);
-        return domainModelSource;
+        return sb.toString();
     }
 }

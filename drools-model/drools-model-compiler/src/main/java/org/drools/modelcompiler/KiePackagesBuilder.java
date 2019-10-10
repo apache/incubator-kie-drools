@@ -135,7 +135,7 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
+
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
@@ -477,20 +477,15 @@ public class KiePackagesBuilder {
             }
             case FORALL: {
                 Condition innerCondition = condition.getSubConditions().get(0);
-                Pattern basePattern;
-                List<Pattern> remainingPatterns = new ArrayList<>();
                 if (innerCondition instanceof PatternImpl) {
-                    basePattern = new Pattern( ctx.getNextPatternIndex(),
-                                               0, // offset will be set by ReteooBuilder
-                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable() ),
-                                               BASE_IDENTIFIER,
-                                               true );
-                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition ) );
-                } else {
-                    basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
-                    for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
-                        remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
-                    }
+                    GroupElement ge = new GroupElement( GroupElement.Type.NOT );
+                    ge.addChild( conditionToElement( ctx, group, (( PatternImpl ) innerCondition).negate() ) );
+                    return ge;
+                }
+                List<Pattern> remainingPatterns = new ArrayList<>();
+                Pattern basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
+                for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
+                    remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
                 }
                 return new Forall(basePattern, remainingPatterns);
             }

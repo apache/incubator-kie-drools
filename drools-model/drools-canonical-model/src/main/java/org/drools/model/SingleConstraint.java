@@ -55,6 +55,11 @@ public interface SingleConstraint extends Constraint {
 
     SingleConstraint TRUE = new AbstractSingleConstraint("TRUE") {
         @Override
+        public Constraint negate() {
+            return FALSE;
+        }
+
+        @Override
         public Variable[] getVariables() {
             return new Variable[0];
         }
@@ -76,6 +81,11 @@ public interface SingleConstraint extends Constraint {
     };
 
     SingleConstraint FALSE = new AbstractSingleConstraint("FALSE") {
+        @Override
+        public Constraint negate() {
+            return TRUE;
+        }
+
         @Override
         public Variable[] getVariables() {
             return new Variable[0];

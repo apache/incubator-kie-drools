@@ -16,14 +16,14 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.rule.Namespaceable;
-import org.kie.api.io.Resource;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Objects;
+
+import org.drools.core.rule.Namespaceable;
+import org.kie.api.io.Resource;
 
 /**
  * This is the super type for all pattern AST nodes.
@@ -169,5 +169,13 @@ public class BaseDescr
 
     public void accept(DescrVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public BaseDescr negate() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isNegated() {
+        return false;
     }
 }

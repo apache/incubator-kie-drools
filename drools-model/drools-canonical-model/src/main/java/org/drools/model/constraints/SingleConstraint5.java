@@ -67,4 +67,9 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
         if ( !ModelComponent.areEqualInModel( var5, that.var5 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint5<A, B, C, D, E> negate() {
+        return negate( new SingleConstraint5<>("!" + getExprId(), var1, var2, var3, var4, var5, predicate.negate()) );
+    }
 }

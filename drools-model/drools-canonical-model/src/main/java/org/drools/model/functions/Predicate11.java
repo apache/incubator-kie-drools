@@ -6,6 +6,10 @@ public interface Predicate11<A, B, C, D, E, F, G, H, I, J, K> extends Serializab
 
     boolean test( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k ) throws Exception;
 
+    default Predicate11<A, B, C, D, E, F, G, H, I, J, K> negate() {
+        return (a, b, c, d, e, f, g, h, i, j, k) -> !test( a, b, c, d, e, f, g, h, i, j, k );
+    }
+
     class Impl<A, B, C, D, E, F, G, H, I, J, K> extends IntrospectableLambda implements Predicate11<A, B, C, D, E, F, G, H, I, J, K> {
 
         private final Predicate11<A, B, C, D, E, F, G, H, I, J, K> predicate;

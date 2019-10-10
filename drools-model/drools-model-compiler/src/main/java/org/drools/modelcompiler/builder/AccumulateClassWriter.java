@@ -35,13 +35,11 @@ public class AccumulateClassWriter {
     }
 
     public String getSource() {
-        String source = JavaParserCompiler.toPojoSource(
+        return JavaParserCompiler.toPojoSource(
                 pkgModel.getName(),
                 generatedClassWithPackage.getImports(),
                 pkgModel.getStaticImports(),
                 generatedClassWithPackage.getGeneratedClass());
-        pkgModel.logRule(source);
-        return source;
     }
 
     public String getName() {
