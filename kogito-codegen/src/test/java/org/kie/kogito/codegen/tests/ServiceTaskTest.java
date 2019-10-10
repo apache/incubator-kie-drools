@@ -24,10 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ServiceTaskTest extends AbstractCodegenTest {
     
@@ -123,5 +125,12 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(3).containsKeys("list", "s", "listOut");
         assertThat((List<String>)result.toMap().get("listOut")).isNotNull().hasSize(2).contains("Hello first!", "Hello second!");
+    }
+
+    @Test
+    public void malformedShouldThrowException() {
+        assertThrows(ProcessCodegenException.class, () -> {
+            generateCodeProcessesOnly("servicetask/ServiceProcessMalformed.bpmn2");
+        });
     }
 }

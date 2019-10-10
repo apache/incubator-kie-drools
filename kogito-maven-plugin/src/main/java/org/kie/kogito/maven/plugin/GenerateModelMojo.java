@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -208,10 +209,16 @@ public class GenerateModelMojo extends AbstractKieMojo {
     private KieModuleModel getKModuleModel() throws IOException {
         if (!project.getResources().isEmpty()) {
             Path moduleXmlPath = Paths.get(project.getResources().get(0).getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
-            return KieModuleModelImpl.fromXML(
-                    new ByteArrayInputStream(
-                            Files.readAllBytes(moduleXmlPath)));
+            try {
+                return KieModuleModelImpl.fromXML(
+                        new ByteArrayInputStream(
+                                Files.readAllBytes(moduleXmlPath)));
+            } catch (NoSuchFileException e) {
+                getLog().debug("kmodule.xml is missing. Returned the default value.", e);
+                return new KieModuleModelImpl();
+            }
         } else {
+            getLog().debug("kmodule.xml is missing. Returned the default value.");
             return new KieModuleModelImpl();
         }
     }

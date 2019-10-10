@@ -51,13 +51,21 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         Optional<Expression> retValue = parse(resourceAsStream).findFirst(Expression.class);
 
         SubProcessNode subProcessNode = (SubProcessNode) node;
+        String name = subProcessNode.getName();
         String subProcessId = subProcessNode.getProcessId();
+        String processName = subProcessNode.getProcessName();
+
+        NodeValidator.of("subProcessNode", name)
+                .notEmpty("subProcessId", subProcessId)
+                .validate();
+
+
         String nodeVar = "subProcessNode" + node.getId();
 
         addFactoryMethodWithArgsWithAssignment(factoryField, body, SubProcessNodeFactory.class, nodeVar, "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
-        addFactoryMethodWithArgs(body, nodeVar, "name", new StringLiteralExpr(getOrDefault(subProcessNode.getName(), "Call Activity")));
+        addFactoryMethodWithArgs(body, nodeVar, "name", new StringLiteralExpr(getOrDefault(name, "Call Activity")));
         addFactoryMethodWithArgs(body, nodeVar, "processId", new StringLiteralExpr(subProcessId));
-        addFactoryMethodWithArgs(body, nodeVar, "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));
+        addFactoryMethodWithArgs(body, nodeVar, "processName", new StringLiteralExpr(getOrDefault(processName, "")));
         addFactoryMethodWithArgs(body, nodeVar, "waitForCompletion", new BooleanLiteralExpr(subProcessNode.isWaitForCompletion()));
         addFactoryMethodWithArgs(body, nodeVar, "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
 

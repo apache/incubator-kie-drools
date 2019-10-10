@@ -37,6 +37,7 @@ import org.drools.core.xml.SemanticModules;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.MalformedNodeException;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
@@ -96,9 +97,13 @@ public class ProcessCodegen extends AbstractGenerator {
     private static List<Process> parseProcesses(Collection<File> processFiles) throws IOException {
         List<Process> processes = new ArrayList<>();
         for (File bpmnFile : processFiles) {
-            FileSystemResource r = new FileSystemResource(bpmnFile);
-            Collection<? extends Process> ps = parseProcessFile(r);
-            processes.addAll(ps);
+            try {
+                FileSystemResource r = new FileSystemResource(bpmnFile);
+                Collection<? extends Process> ps = parseProcessFile(r);
+                processes.addAll(ps);
+            } catch (RuntimeException e) {
+                throw new ProcessCodegenException(bpmnFile.getAbsolutePath(), e);
+            }
         }
         return processes;
     }
@@ -214,8 +219,15 @@ public class ProcessCodegen extends AbstractGenerator {
         for (WorkflowProcess workFlowProcess : processes.values()) {
             ProcessExecutableModelGenerator execModelGen =
                     new ProcessExecutableModelGenerator(workFlowProcess, execModelGenerator);
-            processIdToMetadata.put(workFlowProcess.getId(), execModelGen.generate());
-            processExecutableModelGenerators.add(execModelGen);
+                String packageName = workFlowProcess.getPackageName();
+                String id = workFlowProcess.getId();
+            try {
+                ProcessMetaData generate = execModelGen.generate();
+                processIdToMetadata.put(id, generate);
+                processExecutableModelGenerators.add(execModelGen);
+            } catch (RuntimeException e) {
+                throw new ProcessCodegenException(id, packageName, e);
+            }
         }
         
         

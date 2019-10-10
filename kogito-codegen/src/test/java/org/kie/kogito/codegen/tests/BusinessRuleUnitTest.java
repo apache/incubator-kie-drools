@@ -33,12 +33,14 @@ import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BusinessRuleUnitTest extends AbstractCodegenTest {
 
@@ -138,5 +140,12 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         uow.end();
         // after unit of work has been ended listeners are invoked
         assertThat(startedProcesses).hasSize(1);
+    }
+
+    @Test
+    public void malformedShouldThrowException() {
+        assertThrows(ProcessCodegenException.class, () -> {
+            generateCodeProcessesOnly("ruletask/BusinessRuleTaskMalformed.bpmn2");
+        });
     }
 }

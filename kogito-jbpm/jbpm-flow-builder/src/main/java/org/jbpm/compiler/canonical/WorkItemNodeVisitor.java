@@ -16,15 +16,6 @@
 
 package org.jbpm.compiler.canonical;
 
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -40,6 +31,14 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public class WorkItemNodeVisitor extends AbstractVisitor {
 
@@ -69,7 +68,13 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
             String interfaceName = (String) workItemNode.getWork().getParameter("Interface");
             String operationName = (String) workItemNode.getWork().getParameter("Operation");
             String type = (String) workItemNode.getWork().getParameter("ParameterType");
-            
+
+            NodeValidator.of("workItemNode", workItemNode.getName())
+                    .notEmpty("interfaceName", interfaceName)
+                    .notEmpty("operationName", operationName)
+                    .notEmpty("type", type)
+                    .validate();
+
             workName = interfaceName + "." + operationName;
             
             CompilationUnit handlerClass = generateHandlerClassForService(interfaceName, operationName, type, "Parameter");
@@ -79,7 +84,7 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         
         return workName;
     }
-    
+
     protected CompilationUnit generateHandlerClassForService(String interfaceName, String operation, String paramType, String paramName) {
         CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.handlers");        
         

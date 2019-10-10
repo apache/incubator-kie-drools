@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import org.jbpm.process.core.Context;
@@ -74,7 +75,7 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
         }
 
 
-        private String name;
+        protected String name;
 
         private RuleType(String name) {
             this.name = name;
@@ -106,6 +107,13 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
             public boolean isRuleFlowGroup() {
                 return true;
             }
+
+            @Override
+            public String toString() {
+                return new StringJoiner(", ", RuleFlowGroup.class.getSimpleName() + "[", "]")
+                        .add("name='" + name + "'")
+                        .toString();
+            }
         }
 
         public static class RuleUnit extends RuleType {
@@ -117,6 +125,13 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
             @Override
             public boolean isRuleUnit() {
                 return true;
+            }
+
+            @Override
+            public String toString() {
+                return new StringJoiner(", ", RuleUnit.class.getSimpleName() + "[", "]")
+                        .add("name='" + name + "'")
+                        .toString();
             }
         }
 
@@ -146,6 +161,15 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
             public String getDecision() {
                 return decision;
+            }
+
+            @Override
+            public String toString() {
+                return new StringJoiner(", ", Decision.class.getSimpleName() + "[", "]")
+                        .add("namespace='" + namespace + "'")
+                        .add("model='" + name + "'")
+                        .add("decision='" + decision + "'")
+                        .toString();
             }
         }
     }

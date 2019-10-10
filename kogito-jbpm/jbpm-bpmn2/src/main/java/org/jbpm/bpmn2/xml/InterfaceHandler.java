@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +65,7 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
 		String implRef = attrs.getValue("implementationRef");
 		
 		if (name == null || name.isEmpty()) {
-			throw new IllegalArgumentException("Interface name is required attribute");
+			throw new MalformedNodeException(id, name, "interface name is a required attribute");
 		}
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();

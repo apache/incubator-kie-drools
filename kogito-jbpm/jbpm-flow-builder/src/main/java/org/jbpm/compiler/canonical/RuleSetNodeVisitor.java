@@ -18,6 +18,7 @@ package org.jbpm.compiler.canonical;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -70,14 +71,19 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
+        String nodeName = ruleSetNode.getName();
 
         addFactoryMethodWithArgsWithAssignment(factoryField, body, RuleSetNodeFactory.class, "ruleSetNode" + node.getId(), "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(ruleSetNode.getName(), "Rule")));
+        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(nodeName, "Rule")));
         // build supplier for either KieRuntime or DMNRuntime
         BlockStmt actionBody = new BlockStmt();
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
 
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
+        if (ruleType.getName().isEmpty()) {
+            throw new IllegalArgumentException(
+                    MessageFormat.format("Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
+        }
 
         if (ruleType.isRuleFlowGroup()) {
             MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
@@ -90,7 +96,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             Optional<Expression> ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class);
 
             String unitName = ruleType.getName();
-            Class<?> unitClass = loadUnitClass(unitName);
+            Class<?> unitClass = loadUnitClass(nodeName, unitName, metadata.getPackageName());
 
             ruleUnitFactory.ifPresent(factory -> {
                 factory.findAll(ClassOrInterfaceType.class)
@@ -120,7 +126,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
                                      decisionModel.getDecision() == null ? new NullLiteralExpr() : new StringLiteralExpr(decisionModel.getDecision()),
                                      lambda);
         } else {
-            throw new IllegalArgumentException("Unsupported rule language " + ruleSetNode.getLanguage());
+            throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + ruleSetNode.getLanguage());
         }
 
         for (Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
@@ -136,12 +142,21 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
 
     }
 
-    private Class<?> loadUnitClass(String unitName)  {
+    private Class<?> loadUnitClass(String nodeName, String unitName, String packageName) {
+        IllegalArgumentException ex;
         try {
-        return contextClassLoader.loadClass(unitName);
-    } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-    }
+            return contextClassLoader.loadClass(unitName);
+        } catch (ClassNotFoundException e) {
+            ex = new IllegalArgumentException(
+                    MessageFormat.format("Rule task \"{0}\" is invalid: cannot load unit {1}", nodeName, unitName), e);
+        }
+        // maybe the name is not qualified. Let's try with tacking the packageName at the front
+        try {
+            return contextClassLoader.loadClass(packageName + "." + unitName);
+        } catch (ClassNotFoundException e) {
+            // throw the original error
+            throw ex;
+        }
     }
 
     private BlockStmt bind(VariableScope variableScope, RuleSetNode node, Class<?> unitClass) {

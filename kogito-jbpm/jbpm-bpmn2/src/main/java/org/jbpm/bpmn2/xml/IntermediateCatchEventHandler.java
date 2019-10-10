@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,6 @@ import java.util.Map;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
-import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformerImpl;
@@ -213,10 +213,10 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
+            String id = ((Element) xmlNode).getAttribute("id");
+            String name = ((Element) xmlNode).getAttribute("name");
             if ("dataOutput".equals(nodeName)) {
-                String id = ((Element) xmlNode).getAttribute("id");
-                String outputName = ((Element) xmlNode).getAttribute("name");
-                dataOutputs.put(id, outputName);
+                dataOutputs.put(id, name);
             } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
@@ -229,8 +229,9 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException(
-                            "Could not find message " + messageRef);
+                    throw new MalformedNodeException(
+                            id, name,
+                            MessageFormat.format("Could not find message \"{0}\"", messageRef));
                 }
                 eventNode.setMetaData("MessageType", message.getType());
                 eventNode.setMetaData("TriggerType", "ConsumeMessage");

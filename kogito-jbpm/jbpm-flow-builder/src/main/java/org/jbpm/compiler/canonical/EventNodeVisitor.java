@@ -16,6 +16,7 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 import org.jbpm.process.core.context.variable.Variable;
@@ -33,14 +34,15 @@ public class EventNodeVisitor extends AbstractVisitor {
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         EventNode eventNode = (EventNode) node;
-        
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, EventNodeFactory.class, "eventNode" + node.getId(), "eventNode", new LongLiteralExpr(eventNode.getId()));
-        addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(eventNode.getName(), "Event")));
-        addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "eventType", new StringLiteralExpr(eventNode.getType()));
+
+        String variableName = "eventNode" + node.getId();
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, EventNodeFactory.class, variableName, "eventNode", new LongLiteralExpr(eventNode.getId()));
+        addFactoryMethodWithArgs(body, variableName, "name", new StringLiteralExpr(getOrDefault(eventNode.getName(), "Event")));
+        addFactoryMethodWithArgs(body, variableName, "eventType", new StringLiteralExpr(eventNode.getType()));
         
         Variable variable = null;
         if (eventNode.getVariableName() != null) {
-            addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "variableName", new StringLiteralExpr(eventNode.getVariableName()));
+            addFactoryMethodWithArgs(body, variableName, "variableName", new StringLiteralExpr(eventNode.getVariableName()));
             variable = variableScope.findVariable(eventNode.getVariableName());
         }
         
@@ -48,16 +50,25 @@ public class EventNodeVisitor extends AbstractVisitor {
             metadata.getSignals().put(eventNode.getType(), variable != null ? variable.getType().getStringType() : null);
         } else if ("message".equals(eventNode.getMetaData("EventType"))) {
             Map<String, Object> nodeMetaData = eventNode.getMetaData();
-            metadata.getTriggers().add(new TriggerMetaData((String)nodeMetaData.get("TriggerRef"), 
-                                                           (String)nodeMetaData.get("TriggerType"), 
-                                                           (String)nodeMetaData.get("MessageType"), 
-                                                           eventNode.getVariableName(),
-                                                           String.valueOf(node.getId())).validate());
+            try {
+                TriggerMetaData triggerMetaData = new TriggerMetaData((String) nodeMetaData.get("TriggerRef"),
+                                                                      (String) nodeMetaData.get("TriggerType"),
+                                                                      (String) nodeMetaData.get("MessageType"),
+                                                                      eventNode.getVariableName(),
+                                                                      String.valueOf(node.getId())).validate();
+                metadata.getTriggers().add(triggerMetaData);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(
+                        MessageFormat.format(
+                                "Invalid parameters for event node \"{0}\": {1}",
+                                eventNode.getName(),
+                                e.getMessage()), e);
+            }
         }
 
-        visitMetaData(eventNode.getMetaData(), body, "eventNode" + node.getId());
+        visitMetaData(eventNode.getMetaData(), body, variableName);
         
-        addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "done");
+        addFactoryMethodWithArgs(body, variableName, "done");
         
     }
 }
