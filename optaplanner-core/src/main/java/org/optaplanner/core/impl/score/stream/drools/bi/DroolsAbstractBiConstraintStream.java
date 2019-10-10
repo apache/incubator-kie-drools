@@ -57,14 +57,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         this.parent = parent;
     }
 
-    public DroolsAbstractUniConstraintStream<Solution_, A> getLeftParentStream() {
-        return parent.getLeftParentStream();
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, B> getRightParentStream() {
-        return parent.getRightParentStream();
-    }
-
     @Override
     public BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate) {
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream =
@@ -193,11 +185,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         }
     }
 
-    public abstract Declaration<A> getLeftVariableDeclaration();
+    public abstract Declaration<A> getAVariableDeclaration();
 
     public abstract PatternDSL.PatternDef<A> getAPattern();
 
-    public abstract Declaration<B> getRightVariableDeclaration();
+    public abstract Declaration<B> getBVariableDeclaration();
 
     public abstract PatternDSL.PatternDef<B> getBPattern();
 

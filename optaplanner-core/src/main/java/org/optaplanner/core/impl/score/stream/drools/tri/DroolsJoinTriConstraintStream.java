@@ -50,19 +50,17 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // Getters/setters
     // ************************************************************************
 
-    @Override
     public DroolsAbstractBiConstraintStream<Solution_, A, B> getLeftParentStream() {
         return leftParentStream;
     }
 
-    @Override
     public DroolsAbstractUniConstraintStream<Solution_, C> getRightParentStream() {
         return rightParentStream;
     }
 
     @Override
     public Declaration<A> getAVariableDeclaration() {
-        return leftParentStream.getLeftVariableDeclaration();
+        return leftParentStream.getAVariableDeclaration();
     }
 
     @Override
@@ -72,7 +70,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public Declaration<B> getBVariableDeclaration() {
-        return leftParentStream.getRightVariableDeclaration();
+        return leftParentStream.getBVariableDeclaration();
     }
 
     @Override
@@ -82,7 +80,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public Declaration<C> getCVariableDeclaration() {
-        return rightParentStream.getVariableDeclaration();
+        return rightParentStream.getAVariableDeclaration();
     }
 
     @Override

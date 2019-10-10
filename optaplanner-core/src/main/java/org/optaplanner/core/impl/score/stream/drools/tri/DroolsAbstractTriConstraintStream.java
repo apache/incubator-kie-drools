@@ -31,9 +31,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
@@ -149,14 +147,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         } else {
             return parent.getFromStreamList();
         }
-    }
-
-    public DroolsAbstractBiConstraintStream<Solution_, A, B> getLeftParentStream() {
-        return parent.getLeftParentStream();
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, C> getRightParentStream() {
-        return parent.getRightParentStream();
     }
 
     public abstract Declaration<A> getAVariableDeclaration();

@@ -28,7 +28,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     private final DroolsAbstractUniConstraintStream<Solution_, A> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, B> rightParentStream;
     private final AbstractBiJoiner<A, B> biJoiner;
-    private final PatternDSL.PatternDef<B> rightPattern;
+    private final PatternDSL.PatternDef<B> bPattern;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
@@ -37,22 +37,20 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
         this.biJoiner = (AbstractBiJoiner<A, B>) biJoiner;
-        this.rightPattern = otherStream.getAPattern().expr(getLeftVariableDeclaration(), (b, a) -> matches(a, b));
+        this.bPattern = otherStream.getAPattern().expr(getAVariableDeclaration(), (b, a) -> matches(a, b));
     }
 
-    @Override
     public DroolsAbstractUniConstraintStream<Solution_, A> getLeftParentStream() {
         return leftParentStream;
     }
 
-    @Override
     public DroolsAbstractUniConstraintStream<Solution_, B> getRightParentStream() {
         return rightParentStream;
     }
 
     @Override
-    public Declaration<A> getLeftVariableDeclaration() {
-        return leftParentStream.getVariableDeclaration();
+    public Declaration<A> getAVariableDeclaration() {
+        return leftParentStream.getAVariableDeclaration();
     }
 
     @Override
@@ -61,13 +59,13 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     }
 
     @Override
-    public Declaration<B> getRightVariableDeclaration() {
-        return rightParentStream.getVariableDeclaration();
+    public Declaration<B> getBVariableDeclaration() {
+        return rightParentStream.getAVariableDeclaration();
     }
 
     @Override
     public PatternDSL.PatternDef<B> getBPattern() {
-        return rightPattern;
+        return bPattern;
     }
 
     private boolean matches(A left, B right) {

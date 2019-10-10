@@ -26,17 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final Predicate<A> predicate;
+    private final PatternDSL.PatternDef<A> aPattern;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            Predicate<A> predicate) {
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
         this.parent = parent;
-        this.predicate = predicate;
         if (predicate == null) {
             throw new IllegalArgumentException("The predicate (null) cannot be null.");
         }
+        this.aPattern = parent.getAPattern().expr(predicate::test);
     }
 
     // ************************************************************************
@@ -58,13 +57,13 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public Declaration<A> getVariableDeclaration() {
-        return parent.getVariableDeclaration();
+    public Declaration<A> getAVariableDeclaration() {
+        return parent.getAVariableDeclaration();
     }
 
     @Override
     public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern().expr(predicate::test);
+        return aPattern;
     }
 
 }

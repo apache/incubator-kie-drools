@@ -93,7 +93,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         PatternDSL.PatternDef<A> parentPattern = getAPattern();
-        Declaration<A> aVar = getVariableDeclaration();
+        Declaration<A> aVar = getAVariableDeclaration();
         ruleItemBuilderList.add(parentPattern);
         ConsequenceBuilder._2<? extends AbstractScoreHolder, A> consequence;
         if (intMatchWeigher != null) {
@@ -134,8 +134,8 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     // ************************************************************************
 
     @Override
-    public Declaration<A> getVariableDeclaration() {
-        return parent.getVariableDeclaration();
+    public Declaration<A> getAVariableDeclaration() {
+        return parent.getAVariableDeclaration();
     }
 
     @Override

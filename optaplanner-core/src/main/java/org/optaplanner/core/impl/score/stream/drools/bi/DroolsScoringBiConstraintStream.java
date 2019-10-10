@@ -88,8 +88,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         ruleItemBuilderList.add(getAPattern());
         ruleItemBuilderList.add(getBPattern());
-        Declaration<A> aVar = getLeftVariableDeclaration();
-        Declaration<B> bVar = getRightVariableDeclaration();
+        Declaration<A> aVar = getAVariableDeclaration();
+        Declaration<B> bVar = getBVariableDeclaration();
         ConsequenceBuilder._3<? extends AbstractScoreHolder, A, B> consequence;
         if (intMatchWeigher != null) {
             consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
@@ -129,8 +129,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     // ************************************************************************
 
     @Override
-    public Declaration<A> getLeftVariableDeclaration() {
-        return parent.getLeftVariableDeclaration();
+    public Declaration<A> getAVariableDeclaration() {
+        return parent.getAVariableDeclaration();
     }
 
     @Override
@@ -139,8 +139,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     }
 
     @Override
-    public Declaration<B> getRightVariableDeclaration() {
-        return parent.getRightVariableDeclaration();
+    public Declaration<B> getBVariableDeclaration() {
+        return parent.getBVariableDeclaration();
     }
 
     @Override

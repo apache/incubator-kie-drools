@@ -27,7 +27,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     private final Class<A> fromClass;
     private final Declaration<A> variableDeclaration;
-    private final PatternDSL.PatternDef<A> pattern;
+    private final PatternDSL.PatternDef<A> aPattern;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
@@ -36,7 +36,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
         }
         this.fromClass = fromClass;
         this.variableDeclaration = PatternDSL.declarationOf(fromClass);
-        this.pattern = PatternDSL.pattern(variableDeclaration);
+        this.aPattern = PatternDSL.pattern(variableDeclaration);
     }
 
     // ************************************************************************
@@ -62,12 +62,12 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     }
 
     @Override
-    public Declaration<A> getVariableDeclaration() {
+    public Declaration<A> getAVariableDeclaration() {
         return variableDeclaration;
     }
 
     @Override
     public PatternDSL.PatternDef<A> getAPattern() {
-        return pattern;
+        return aPattern;
     }
 }

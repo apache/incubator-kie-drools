@@ -172,7 +172,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
-    public abstract Declaration<A> getVariableDeclaration();
+    public abstract Declaration<A> getAVariableDeclaration();
 
     public abstract PatternDSL.PatternDef<A> getAPattern();
 
