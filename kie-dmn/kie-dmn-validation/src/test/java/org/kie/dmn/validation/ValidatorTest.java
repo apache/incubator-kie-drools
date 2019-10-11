@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -40,7 +39,6 @@ import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -116,7 +114,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testINVOCATION_MISSING_EXPR() {
         List<DMNMessage> validate = validator.validate( getReader( "INVOCATION_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThan(0));
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
         assertThat( validate.get( 0 ).toString(), validate.get( 0 ).getMessageType(), is( DMNMessageType.MISSING_EXPRESSION ) );
     }
 
@@ -153,7 +151,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testINVOCATION_INCONSISTENT_PARAM_NAMES() {
         List<DMNMessage> validate = validator.validate( getReader( "INVOCATION_INCONSISTENT_PARAM_NAMES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThan(0));
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.PARAMETER_MISMATCH ) ) );
     }
     
@@ -177,7 +175,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testINVOCATION_WRONG_PARAM_COUNT() {
         List<DMNMessage> validate = validator.validate( getReader( "INVOCATION_WRONG_PARAM_COUNT.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThan(0));
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.PARAMETER_MISMATCH ) ) );
     }
     
@@ -369,13 +367,5 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                      .theseModels(getReader("DSWithImport20181008-ModelA.dmn"),
                                                                   getReader("DSWithImport20181008-ModelB-missingDMNImport.dmn"));
         assertThat(missingDMNImport.stream().filter(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)).count(), is(2L)); // on Decision and Decision Service missing to locate the dependency given Import is omitted.
-    }
-
-    @Test
-    public void testInvalidFunctionNameInvocation() {
-        List<DMNMessage> validate = validator.validate(getReader("invalidFunctionNameInvocation.dmn"),
-                                                       VALIDATE_MODEL,
-                                                       VALIDATE_COMPILATION);
-        assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING && p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)).count(), is(1L));
     }
 }

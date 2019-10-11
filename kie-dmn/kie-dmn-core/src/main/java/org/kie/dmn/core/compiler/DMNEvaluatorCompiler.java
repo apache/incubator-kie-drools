@@ -41,7 +41,6 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.impl.RootExecutionFrame;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
@@ -188,27 +187,6 @@ public class DMNEvaluatorCompiler {
             return null;
         }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        String[] fnameParts = functionName.split("\\.");
-        Optional<DMNNode> findAsDep = Optional.empty();
-        if (fnameParts.length == 2) {
-            QName importAlias = model.getImportNamespaceAndNameforAlias(fnameParts[0]);
-            findAsDep = node.getDependencies().values().stream().filter(d -> d.getModelNamespace().equals(importAlias.getNamespaceURI()) && d.getName().equals(fnameParts[1])).findAny();
-        } else {
-            findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
-        }
-        Object findAsBuiltin = RootExecutionFrame.INSTANCE.getValue(functionName);
-        if (!findAsDep.isPresent() && findAsBuiltin == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.WARN,
-                                  invocation,
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.EXPRESSION_FOR_INVOCATION_NOT_RESOLVED,
-                                  functionName,
-                                  node.getIdentifierString(),
-                                  node.getDependencies().values().stream().map(DMNNode::getName).collect(Collectors.toList()));
-        }
         DMNInvocationEvaluator invEval = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, invocation, null, ctx.getFeelHelper().newFEELInstance());
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
