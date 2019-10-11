@@ -253,6 +253,16 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
+    @Ignore("https://issues.jboss.org/browse/RHDM-1119")
+    public void testUNKNOWN_OPERATOR() {
+        List<DMNMessage> validate = validator.validate( getReader( "UNKNOWN_OPERATOR.dmn" ),
+                                                        VALIDATE_SCHEMA,
+                                                        VALIDATE_MODEL,
+                                                        VALIDATE_COMPILATION);
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), greaterThan( 0 ) );
+    }
+
+    @Test
     public void testVALIDATION() {
         List<DMNMessage> validate = validator.validate( getReader( "validation.dmn" ), VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 5 ) );
