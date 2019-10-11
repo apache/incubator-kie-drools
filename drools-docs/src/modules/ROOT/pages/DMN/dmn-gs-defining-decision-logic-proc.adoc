@@ -22,7 +22,7 @@ image::dmn/dmn-gs-context-table.png[]
 . Similarly, click the *output-1* column sub-header, enter `Points` in the *Name* field, and select `number` from the *Data Type* field.
 . Next, enter the following values in the first row of the decision table:
 * *Violation.Type*: `"speed"`
-* *Violation.Actual Speed - Violation.Speed Limit*: `[10..30]`
+* *Violation.Actual Speed - Violation.Speed Limit*: `[10..30)`
 * *Amount*: `500`
 * *Points*: `3`
 +
