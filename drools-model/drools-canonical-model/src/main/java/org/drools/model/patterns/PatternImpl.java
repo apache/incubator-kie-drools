@@ -144,4 +144,9 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         if ( !ModelComponent.areEqualInModel( bindings, pattern.bindings ) ) return false;
         return watchedProps != null ? watchedProps.equals( pattern.watchedProps ) : pattern.watchedProps == null;
     }
+
+    public PatternImpl<T> negate() {
+        this.constraint = constraint.negate();
+        return this;
+    }
 }

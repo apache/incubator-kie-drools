@@ -27,6 +27,10 @@ public class OrDescr extends AnnotatedBaseDescr
 
     public OrDescr() { }
 
+    private OrDescr(BaseDescr baseDescr) {
+        addDescr(baseDescr);
+    }
+
     public void insertBeforeLast( final Class<?> clazz,
                                   final BaseDescr baseDescr ) {
         if ( clazz.isInstance( baseDescr ) ) {
@@ -80,5 +84,22 @@ public class OrDescr extends AnnotatedBaseDescr
     @Override
     public void accept(DescrVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public BaseDescr negate() {
+        if (descrs.isEmpty()) {
+            return new OrDescr(new ExprConstraintDescr( "false" ));
+        }
+
+        if (descrs.size() == 1) {
+            return new OrDescr(descrs.get(0).negate());
+        }
+
+        AndDescr and = new AndDescr();
+        for (BaseDescr descr : descrs) {
+            and.addDescr( descr.negate() );
+        }
+        return and;
     }
 }

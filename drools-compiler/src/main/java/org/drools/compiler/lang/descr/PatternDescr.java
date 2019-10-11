@@ -110,6 +110,11 @@ public class PatternDescr extends AnnotatedBaseDescr
         return this.constraint;
     }
 
+    public PatternDescr negateConstraint() {
+        this.constraint = (ConditionalElementDescr) ((BaseDescr)this.constraint).negate();
+        return this;
+    }
+
     public List< ? extends BaseDescr> getPositionalConstraints() {
         return this.doGetConstraints(ExprConstraintDescr.Type.POSITIONAL);
     }

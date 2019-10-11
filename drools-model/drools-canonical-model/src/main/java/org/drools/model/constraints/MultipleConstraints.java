@@ -46,4 +46,16 @@ public class MultipleConstraints extends AbstractConstraint implements ModelComp
 
         return ModelComponent.areEqualInModel( constraints, that.constraints );
     }
+
+    @Override
+    public Constraint negate() {
+        if (constraints.size() == 1) {
+            return new MultipleConstraints(constraints.get(0).negate());
+        }
+        OrConstraints or = new OrConstraints();
+        for (Constraint constraint : constraints) {
+            or.or( constraint.negate() );
+        }
+        return or;
+    }
 }

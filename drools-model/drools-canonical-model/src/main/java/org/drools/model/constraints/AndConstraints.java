@@ -46,4 +46,16 @@ public class AndConstraints extends AbstractConstraint implements ModelComponent
 
         return ModelComponent.areEqualInModel( constraints, that.constraints );
     }
+
+    @Override
+    public Constraint negate() {
+        if (constraints.size() == 1) {
+            return new AndConstraints(constraints.get(0).negate());
+        }
+        OrConstraints or = new OrConstraints();
+        for (Constraint constraint : constraints) {
+            or.or( constraint.negate() );
+        }
+        return or;
+    }
 }

@@ -320,7 +320,7 @@ public class DMNRuntimeImpl
                                                                                null,
                                                                                null,
                                                                                Msg.PARAMETER_TYPE_MISMATCH_DS,
-                                                                               getIdentifier(decisionService),
+                                                                               dep.getName(),
                                                                                t,
                                                                                MsgUtil.clipString(r.toString(), 50)));
                     if (c != originalValue) { //intentional by-reference
