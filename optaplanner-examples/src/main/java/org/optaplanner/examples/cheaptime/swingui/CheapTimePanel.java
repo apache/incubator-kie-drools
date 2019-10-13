@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.cheaptime.swingui;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -37,12 +40,12 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.HighLowRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.ohlc.OHLCSeries;
 import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.util.ShapeUtilities;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
@@ -52,8 +55,6 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static java.util.Comparator.*;
 
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
@@ -160,7 +161,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
         seriesCollection.addSeries(series);
         XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
         renderer.setSeriesPaint(0, TangoColorFactory.ORANGE_1);
-        renderer.setSeriesShape(0, ShapeUtilities.createDiamond(2.0F));
+        renderer.setSeriesShape(0, ShapeUtils.createDiamond(2.0F));
         NumberAxis domainAxis = new NumberAxis("Power price");
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
@@ -208,7 +209,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
             }
             seriesCollection.addSeries(machineSeries);
             renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(machine));
-            renderer.setSeriesShape(seriesIndex, ShapeUtilities.createDiamond(1.5F));
+            renderer.setSeriesShape(seriesIndex, ShapeUtils.createDiamond(1.5F));
             renderer.setSeriesVisibleInLegend(seriesIndex, false);
             seriesIndex++;
         }

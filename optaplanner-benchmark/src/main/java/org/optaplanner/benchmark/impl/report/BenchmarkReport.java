@@ -34,11 +34,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+
 import javax.imageio.ImageIO;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -53,12 +51,12 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.TextAnchor;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
@@ -73,6 +71,10 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class BenchmarkReport {
 
@@ -669,13 +671,13 @@ public class BenchmarkReport {
         BarRenderer renderer = new BarRenderer();
         ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
                 ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
-        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+        renderer.setDefaultPositiveItemLabelPosition(positiveItemLabelPosition);
         ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
                 ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
-        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
-        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
+        renderer.setDefaultNegativeItemLabelPosition(negativeItemLabelPosition);
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator(
                 StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, numberFormat));
-        renderer.setBaseItemLabelsVisible(true);
+        renderer.setDefaultItemLabelsVisible(true);
         return renderer;
     }
 
