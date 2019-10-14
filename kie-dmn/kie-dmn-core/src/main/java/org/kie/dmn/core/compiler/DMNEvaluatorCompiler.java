@@ -196,8 +196,10 @@ public class DMNEvaluatorCompiler {
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
         }
-        Object findAsBuiltin = RootExecutionFrame.INSTANCE.getValue(functionName);
-        if (!findAsDep.isPresent() && findAsBuiltin == null) {
+        boolean findAsBuiltin = RootExecutionFrame.INSTANCE.getValue(functionName) != null;
+        boolean findAsCustomFunction = ctx.getFeelHelper().newCompilerContext().getFEELFunctions().stream().anyMatch(f -> f.getName().equals(functionName));
+        boolean findInContext = ctx.getVariables().get(functionName) != null;
+        if (!findAsDep.isPresent() && !findAsBuiltin && !findAsCustomFunction && !findInContext) {
             MsgUtil.reportMessage(logger,
                                   DMNMessage.Severity.WARN,
                                   invocation,
