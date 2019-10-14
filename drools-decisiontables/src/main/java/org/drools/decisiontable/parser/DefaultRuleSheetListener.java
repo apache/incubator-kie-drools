@@ -304,6 +304,9 @@ implements RuleSheetListener {
      * As when there are merged/spanned cells, they may be left out.
      */
     private void flushRule() {
+        if ( sourceBuilders == null ) {
+            return;
+        }
         for ( SourceBuilder src : sourceBuilders ) {
             if ( src.hasValues() ) {
                 switch ( src.getActionTypeCode() ) {
