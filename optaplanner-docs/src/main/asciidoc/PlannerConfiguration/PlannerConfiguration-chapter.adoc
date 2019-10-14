@@ -116,17 +116,16 @@ These various parts of a configuration are explained further in this manual.
 
 A solver configuration can also be configured with the `SolverConfig` API.
 This is especially useful to change some values dynamically at runtime.
-For example, to change the running time based on user input, before building the ``Solver``:
+For example, to change the running time based on system property, before building the ``Solver``:
 
 [source,java,options="nowrap"]
 ----
-        SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-
-        solverFactory.getSolverConfig()
-                .withTerminationConfig(new TerminationConfig()
+        solverConfig.withTerminationConfig(new TerminationConfig()
                         .withMinutesSpentLimit(userInput));
 
+        SolverFactory<NQueens> solverFactory = SolverFactory.create(solverConfig);
         Solver<NQueens> solver = solverFactory.buildSolver();
 ----
 
@@ -136,27 +135,29 @@ These `$$*$$Config` classes are the Java representation of the XML format.
 They build the runtime components (of the package namespace ``org.optaplanner.core.impl``)
 and assemble them into an efficient ``Solver``.
 
-[IMPORTANT]
+[NOTE]
 ====
-The `SolverFactory` is only thread-safe after it's configured.
-So the `getSolverConfig()` method is not thread-safe.
-To configure a `SolverFactory` dynamically for each user request, build a basic `SolverFactory` during initialization
-and clone it with the `cloneSolverFactory()` method for a user request:
+Don't modify a `SolverConfig` after creating a `SolverFactory`,
+because it currently breaks the thread-safety of the `SolverFactory`.
+To configure a `SolverFactory` dynamically for each user request,
+build a template `SolverConfig` during initialization
+and copy it with the copy constructor for each user request:
 
 [source,java,options="nowrap"]
 ----
-    private SolverFactory<NQueens> base;
+    private SolverConfig template;
 
     public void init() {
-        base = SolverFactory.createFromXmlResource(
+        template = SolverConfigs.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        base.getSolverConfig().setTerminationConfig(new TerminationConfig());
+        template.setTerminationConfig(new TerminationConfig());
     }
 
     // Called concurrently from different threads
-    public void userRequest(..., long userInput)
-        SolverFactory<NQueens> solverFactory = base.cloneSolverFactory();
-        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(userInput);
+    public void userRequest(..., long userInput) {
+        SolverConfig solverConfig = new SolverConfig(template); // Copy it
+        solverConfig.getTerminationConfig().setMinutesSpentLimit(userInput);
+        SolverFactory<NQueens> solverFactory = SolverFactory.create(solverConfig);
         Solver<NQueens> solver = solverFactory.buildSolver();
         ...
     }

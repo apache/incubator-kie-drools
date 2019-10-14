@@ -25,6 +25,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.TestSystemProperties;
@@ -37,10 +38,10 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
     private static final String MOVE_THREAD_COUNT_OVERRIDE = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNT);
 
-    private final String solverConfig;
+    private final String solverConfigResource;
 
-    public SolveAllTurtleTest(String solverConfig) {
-        this.solverConfig = solverConfig;
+    public SolveAllTurtleTest(String solverConfigResource) {
+        this.solverConfigResource = solverConfigResource;
     }
 
     protected abstract Solution_ readProblem();
@@ -48,20 +49,29 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
     @Test
     public void runFastAndFullAssert() {
         checkRunTurtleTests();
-        SolverFactory<Solution_> solverFactory = buildSolverFactory();
+        SolverConfig solverConfig = buildSolverConfig();
         Solution_ problem = readProblem();
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
-        problem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 2L);
+        problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 2L);
         // 2) FAST_ASSERT to run past CH into LS to find easy bugs (but covers much ground)
-        problem = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, problem, 5L);
+        problem = buildAndSolve(solverConfig, EnvironmentMode.FAST_ASSERT, problem, 5L);
         // 3) NON_INTRUSIVE_FULL_ASSERT ASSERT to find LS bugs (but covers little ground)
-        problem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 3L);
+        problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 3L);
     }
 
-    protected Solution_ buildAndSolve(SolverFactory<Solution_> solverFactory, EnvironmentMode environmentMode,
+    protected SolverConfig buildSolverConfig() {
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(solverConfigResource);
+        // buildAndSolve() fills in minutesSpentLimit
+        solverConfig.setTerminationConfig(new TerminationConfig());
+        if (MOVE_THREAD_COUNT_OVERRIDE != null) {
+            solverConfig.setMoveThreadCount(MOVE_THREAD_COUNT_OVERRIDE);
+        }
+        return solverConfig;
+    }
+
+    protected Solution_ buildAndSolve(SolverConfig solverConfig, EnvironmentMode environmentMode,
             Solution_ problem, long maximumMinutesSpent) {
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
         Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = overwritingEasyScoreCalculatorClass();
@@ -71,23 +81,13 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactoryConfig);
         }
+        SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
         Solver<Solution_> solver = solverFactory.buildSolver();
-        Solution_ bestSolution = solver.solve(problem);
-        return bestSolution;
+        return solver.solve(problem);
     }
 
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass()  {
         return null;
-    }
-
-    protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
-        // buildAndSolve() fills in minutesSpentLimit
-        solverFactory.getSolverConfig().setTerminationConfig(new TerminationConfig());
-        if (MOVE_THREAD_COUNT_OVERRIDE != null) {
-            solverFactory.getSolverConfig().setMoveThreadCount(MOVE_THREAD_COUNT_OVERRIDE);
-        }
-        return solverFactory;
     }
 
 }

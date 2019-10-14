@@ -29,11 +29,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.extended.FileConverter;
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
+import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 
 /**
  * @see PlannerBenchmarkFactory
@@ -51,9 +50,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends AbstractPlannerBenchmarkF
      */
     public XStreamXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
         super(solverConfigContext);
-        xStream = XStreamXmlSolverFactory.buildXStream();
-        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
-        xStream.setClassLoader(actualClassLoader);
+        xStream = XStreamConfigReader.buildXStream(solverConfigContext.determineActualClassLoader());
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
         xStream.registerConverter(new FileConverter() {
             @Override

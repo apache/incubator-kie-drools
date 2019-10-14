@@ -32,6 +32,7 @@ import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
@@ -59,8 +60,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
 
     @Test
     public void trackLocalSearch() {
-        SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens problem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));
@@ -75,6 +75,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         solverConfig.getPhaseConfigList().set(1, localSearchPhaseConfig);
 
         NQueensStepTracker listener = new NQueensStepTracker();
+        SolverFactory<NQueens> solverFactory = SolverFactory.create(solverConfig);
         DefaultSolver<NQueens> solver = (DefaultSolver<NQueens>) solverFactory.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         NQueens bestSolution = solver.solve(problem);

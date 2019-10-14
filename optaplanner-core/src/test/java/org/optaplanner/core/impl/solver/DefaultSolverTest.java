@@ -26,6 +26,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -43,8 +44,9 @@ public class DefaultSolverTest {
 
     @Test
     public void solve() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
@@ -59,10 +61,11 @@ public class DefaultSolverTest {
 
     @Test
     public void solveLegacy() {
-        SolverFactory<TestdataLegacySolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataLegacySolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().getScoreDirectorFactoryConfig()
+        solverConfig.getScoreDirectorFactoryConfig()
                 .setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
+        SolverFactory<TestdataLegacySolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataLegacySolution> solver = solverFactory.buildSolver();
 
         TestdataLegacySolution solution = new TestdataLegacySolution();
@@ -76,11 +79,12 @@ public class DefaultSolverTest {
 
     @Test
     public void solveStopsWhenUninitialized() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
         phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(NoChangeCustomPhaseCommand.class));
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
@@ -96,12 +100,13 @@ public class DefaultSolverTest {
 
     @Test
     public void solveStopsWhenPartiallyInitialized() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
         // Run only 2 steps, although 5 are needed to initialize all entities
         phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(2));
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
@@ -117,13 +122,12 @@ public class DefaultSolverTest {
 
     @Test(timeout = 600_000)
     public void solveThrowsExceptionWhenZeroEntity() {
-        SolverFactory<TestdataChainedSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataChainedSolution.class, TestdataChainedEntity.class);
-
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(1));
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
-
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
 
         TestdataChainedSolution solution = new TestdataChainedSolution("1");
@@ -139,4 +143,5 @@ public class DefaultSolverTest {
             assertEquals(true, exception.getMessage().contains("must not return"));
         }
     }
+
 }

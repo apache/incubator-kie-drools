@@ -27,6 +27,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
@@ -53,11 +54,10 @@ public abstract class RealTimePlanningTurtleTest<Solution_> extends AbstractTurt
     }
 
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(createSolverConfigResource());
         solverConfig.setDaemon(true);
         solverConfig.setTerminationConfig(new TerminationConfig().withMillisecondsSpentLimit(SPENT_LIMIT));
-        return solverFactory;
+        return SolverFactory.create(solverConfig);
     }
 
     protected abstract String createSolverConfigResource();

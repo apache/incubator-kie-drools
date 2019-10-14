@@ -58,8 +58,13 @@ public class PlannerTestUtils {
 
     public static <Solution_> SolverFactory<Solution_> buildSolverFactory(
             Class<Solution_> solutionClass, Class<?>... entityClasses) {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createEmpty();
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
+        return SolverFactory.create(solverConfig);
+    }
+
+    public static <Solution_> SolverConfig buildSolverConfig(
+            Class<Solution_> solutionClass, Class<?>... entityClasses) {
+        SolverConfig solverConfig = new SolverConfig();
         solverConfig.setSolutionClass(solutionClass);
         solverConfig.setEntityClassList(Arrays.asList(entityClasses));
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
@@ -71,18 +76,22 @@ public class PlannerTestUtils {
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
-        return solverFactory;
+        return solverConfig;
     }
 
     public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithDroolsScoreDirector(
             Class<Solution_> solutionClass, Class<?>... entityClasses) {
-        SolverFactory<Solution_> solverFactory = buildSolverFactory(solutionClass, entityClasses);
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
                 "org/optaplanner/core/impl/score/dummySimpleScoreDroolsScoreRules.drl"));
-        return solverFactory;
+        return SolverFactory.create(solverConfig);
+    }
+
+    public static <Solution_> Solution_ solve(SolverConfig solverConfig, Solution_ problem) {
+        SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
+        return solverFactory.buildSolver().solve(problem);
     }
 
     // ************************************************************************

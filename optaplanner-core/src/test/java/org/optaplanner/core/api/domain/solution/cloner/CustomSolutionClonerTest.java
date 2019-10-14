@@ -37,57 +37,53 @@ public class CustomSolutionClonerTest {
 
     @Test
     public void clonedUsingCustomCloner() {
-        SolverFactory<TestdataCorrectlyClonedSolution> factory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataCorrectlyClonedSolution.class, TestdataEntity.class);
-        SolverConfig solverConfig = factory.getSolverConfig();
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataCorrectlyClonedSolution solution = new TestdataCorrectlyClonedSolution();
-        TestdataCorrectlyClonedSolution solved = factory.buildSolver().solve(solution);
+        TestdataCorrectlyClonedSolution solved = PlannerTestUtils.solve(solverConfig, solution);
         assertTrue("Custom solution cloner was not used", solved.isClonedByCustomCloner());
     }
 
     @Test
     public void scoreNotCloned() {
         // RHBRMS-1430 Possible NPE when custom cloner doesn't clone score
-        SolverFactory<TestdataScoreNotClonedSolution> factory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataScoreNotClonedSolution.class, TestdataEntity.class);
-        SolverConfig solverConfig = factory.getSolverConfig();
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataScoreNotClonedSolution solution = new TestdataScoreNotClonedSolution();
 
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Cloning corruption: the original's score ");
-        factory.buildSolver().solve(solution);
+        PlannerTestUtils.solve(solverConfig, solution);
     }
 
     @Test
     public void scoreNotEqual() {
-        SolverFactory<TestdataScoreNotEqualSolution> factory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataScoreNotEqualSolution.class, TestdataEntity.class);
-        SolverConfig solverConfig = factory.getSolverConfig();
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataScoreNotEqualSolution solution = new TestdataScoreNotEqualSolution();
 
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Cloning corruption: the original's score ");
-        factory.buildSolver().solve(solution);
+        PlannerTestUtils.solve(solverConfig, solution);
     }
 
     @Test
     public void entitiesNotCloned() {
-        SolverFactory<TestdataEntitiesNotClonedSolution> factory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataEntitiesNotClonedSolution.class, TestdataEntity.class);
-        SolverConfig solverConfig = factory.getSolverConfig();
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataEntitiesNotClonedSolution solution = new TestdataEntitiesNotClonedSolution();
 
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Cloning corruption: the same entity ");
-        factory.buildSolver().solve(solution);
+        PlannerTestUtils.solve(solverConfig, solution);
     }
 
 }

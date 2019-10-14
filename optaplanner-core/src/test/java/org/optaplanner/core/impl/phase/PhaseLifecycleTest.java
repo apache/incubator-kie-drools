@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -38,8 +39,9 @@ public class PhaseLifecycleTest {
     public void verifyEventCounts() {
         PhaseLifecycleListener listener = mock(PhaseLifecycleListener.class);
         // prepare solver
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         // prepare solution
@@ -58,7 +60,7 @@ public class PhaseLifecycleTest {
 
         // step count = number of uninitialized entities (CH) + LS step count limit
         final int stepCount = entitiesCount + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT;
-        final int phaseCount = solverFactory.getSolverConfig().getPhaseConfigList().size();
+        final int phaseCount = solverConfig.getPhaseConfigList().size();
         PlannerAssert.verifyPhaseLifecycle(listener, 1, phaseCount, stepCount);
 
         // forget previous invocations

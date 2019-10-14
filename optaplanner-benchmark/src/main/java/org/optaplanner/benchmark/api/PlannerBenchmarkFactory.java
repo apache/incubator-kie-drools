@@ -35,7 +35,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.solver.AbstractSolverFactory;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
  * Builds {@link PlannerBenchmark} instances.
@@ -63,7 +63,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static <Solution_> PlannerBenchmarkFactory createFromSolverFactory(SolverFactory<Solution_> solverFactory,
             File benchmarkDirectory) {
-        SolverConfigContext solverConfigContext = ((AbstractSolverFactory) solverFactory).getSolverConfigContext();
+        SolverConfigContext solverConfigContext = ((DefaultSolverFactory) solverFactory).getSolverConfigContext();
         PlannerBenchmarkFactory plannerBenchmarkFactory = (solverConfigContext == null)
                 ? new EmptyPlannerBenchmarkFactory() : new EmptyPlannerBenchmarkFactory(solverConfigContext);
         PlannerBenchmarkConfig plannerBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();

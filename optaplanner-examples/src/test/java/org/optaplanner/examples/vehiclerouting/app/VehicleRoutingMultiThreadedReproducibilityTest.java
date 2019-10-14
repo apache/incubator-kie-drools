@@ -10,6 +10,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.app.AbstractTurtleTest;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -48,9 +49,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
             vehicleRoutingSolutions[i] = solution;
         }
 
-        solverFactory = SolverFactory.createFromXmlResource(vehicleRoutingApp.getSolverConfig());
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
-
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
         solverConfig.withEnvironmentMode(EnvironmentMode.REPRODUCIBLE)
                 .withMoveThreadCount(MOVE_THREAD_COUNT);
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {
@@ -58,6 +57,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
                 phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(STEP_LIMIT));
             }
         });
+        solverFactory = SolverFactory.create(solverConfig);
     }
 
     @Test

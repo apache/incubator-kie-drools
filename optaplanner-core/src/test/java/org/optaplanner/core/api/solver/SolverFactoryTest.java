@@ -52,7 +52,7 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void testdataSolverConfigWithClassLoader() throws ClassNotFoundException, IOException {
+    public void testdataSolverConfigWithClassLoader() {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
@@ -62,6 +62,7 @@ public class SolverFactoryTest {
     }
 
     @Test
+    @Deprecated
     public void cloneSolverFactory() {
         SolverFactory<TestdataSolution> solverFactoryTemplate = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");

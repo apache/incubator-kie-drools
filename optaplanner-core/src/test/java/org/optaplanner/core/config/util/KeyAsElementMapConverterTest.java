@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
-import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
+import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +36,7 @@ public class KeyAsElementMapConverterTest {
                 + "    <beta>7</beta>\n"
                 + "  </customProperties>\n"
                 + "</keyAsElementMapConverterTestBean>";
-        XStream xStream = XStreamXmlSolverFactory.buildXStream();
+        XStream xStream = XStreamConfigReader.buildXStream();
         xStream.processAnnotations(KeyAsElementMapConverterTestBean.class);
         xStream.allowTypes(new Class[]{KeyAsElementMapConverterTestBean.class});
         KeyAsElementMapConverterTestBean bean = (KeyAsElementMapConverterTestBean) xStream.fromXML(xml);

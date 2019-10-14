@@ -30,6 +30,7 @@ import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -51,8 +52,9 @@ public class PlannerBenchmarkFactoryTest {
 
     @Test
     public void createFromSolverFactory() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
                 solverFactory);
         TestdataSolution solution = new TestdataSolution("s1");
@@ -64,8 +66,9 @@ public class PlannerBenchmarkFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void problemIsNotASolutionInstance() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
                 solverFactory);
         benchmarkFactory.buildPlannerBenchmark("This is not a solution instance.");
@@ -73,8 +76,9 @@ public class PlannerBenchmarkFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void problemIsNull() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
                 solverFactory);
         TestdataSolution solution = new TestdataSolution("s1");

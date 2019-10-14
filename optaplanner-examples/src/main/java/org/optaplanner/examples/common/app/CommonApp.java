@@ -72,17 +72,17 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     protected final String name;
     protected final String description;
-    protected final String solverConfig;
+    protected final String solverConfigResource;
     protected final String dataDirName;
     protected final String iconResource;
 
     protected SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame;
     protected SolutionBusiness<Solution_> solutionBusiness;
 
-    protected CommonApp(String name, String description, String solverConfig, String dataDirName, String iconResource) {
+    protected CommonApp(String name, String description, String solverConfigResource, String dataDirName, String iconResource) {
         this.name = name;
         this.description = description;
-        this.solverConfig = solverConfig;
+        this.solverConfigResource = solverConfigResource;
         this.dataDirName = dataDirName;
         this.iconResource = iconResource;
     }
@@ -95,8 +95,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         return description;
     }
 
-    public String getSolverConfig() {
-        return solverConfig;
+    public String getSolverConfigResource() {
+        return solverConfigResource;
     }
 
     public String getDataDirName() {
@@ -131,7 +131,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     }
 
     protected Solver<Solution_> createSolver() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
         return solverFactory.buildSolver();
     }
 

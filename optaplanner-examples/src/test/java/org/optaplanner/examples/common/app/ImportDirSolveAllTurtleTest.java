@@ -19,7 +19,6 @@ package org.optaplanner.examples.common.app;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -66,7 +65,7 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
     protected AbstractSolutionImporter<Solution_> solutionImporter;
 
     protected ImportDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
-        super(commonApp.getSolverConfig());
+        super(commonApp.getSolverConfigResource());
         this.commonApp = commonApp;
         this.dataFile = dataFile;
     }

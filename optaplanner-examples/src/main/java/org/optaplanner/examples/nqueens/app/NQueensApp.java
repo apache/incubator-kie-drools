@@ -78,14 +78,13 @@ public class NQueensApp extends CommonApp<NQueens> {
     }
 
     /**
-     * Unused alternative. Abnormal way to create a {@link Solver}.
+     * Unused alternative. A way to create a {@link Solver} without using XML.
      * <p>
-     * Not recommended! It is recommended to use {@link #createSolverByXml()} instead.
+     * It is recommended to use {@link #createSolverByXml()} instead.
      * @return never null
      */
     protected Solver<NQueens> createSolverByApi() {
-        SolverFactory<NQueens> solverFactory = SolverFactory.createEmpty();
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
         solverConfig.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
@@ -111,6 +110,7 @@ public class NQueensApp extends CommonApp<NQueens> {
         phaseConfigList.add(localSearchPhaseConfig);
 
         solverConfig.setPhaseConfigList(phaseConfigList);
+        SolverFactory<NQueens> solverFactory = SolverFactory.create(solverConfig);
         return solverFactory.buildSolver();
     }
 

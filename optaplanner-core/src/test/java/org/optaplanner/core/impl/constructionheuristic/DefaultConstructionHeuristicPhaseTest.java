@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -40,11 +41,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+        solverConfig.setPhaseConfigList(Collections.singletonList(
                 new ConstructionHeuristicPhaseConfig()));
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -56,7 +56,7 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataEntity("e2", v2),
                 new TestdataEntity("e3", v1)));
 
-        solution = solver.solve(solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
@@ -72,11 +72,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithImmovableEntities() {
-        SolverFactory<TestdataImmovableSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataImmovableSolution.class, TestdataImmovableEntity.class);
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+        solverConfig.setPhaseConfigList(Collections.singletonList(
                 new ConstructionHeuristicPhaseConfig()));
-        Solver<TestdataImmovableSolution> solver = solverFactory.buildSolver();
 
         TestdataImmovableSolution solution = new TestdataImmovableSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -88,7 +87,7 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataImmovableEntity("e2", v2, true, false),
                 new TestdataImmovableEntity("e3", null, false, true)));
 
-        solution = solver.solve(solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
         TestdataImmovableEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
@@ -104,11 +103,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithEmptyEntityList() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+        solverConfig.setPhaseConfigList(Collections.singletonList(
                 new ConstructionHeuristicPhaseConfig()));
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -117,18 +115,17 @@ public class DefaultConstructionHeuristicPhaseTest {
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Collections.emptyList());
 
-        solution = solver.solve(solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
         assertEquals(0, solution.getEntityList().size());
     }
 
     @Test
     public void solveWithReinitializeVariable() {
-        SolverFactory<TestdataReinitializeSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataReinitializeSolution.class, TestdataReinitializeEntity.class);
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+        solverConfig.setPhaseConfigList(Collections.singletonList(
                 new ConstructionHeuristicPhaseConfig()));
-        Solver<TestdataReinitializeSolution> solver = solverFactory.buildSolver();
 
         TestdataReinitializeSolution solution = new TestdataReinitializeSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -141,7 +138,7 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataReinitializeEntity("e3", v2, true),
                 new TestdataReinitializeEntity("e4", null, true)));
 
-        solution = solver.solve(solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
         TestdataReinitializeEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);

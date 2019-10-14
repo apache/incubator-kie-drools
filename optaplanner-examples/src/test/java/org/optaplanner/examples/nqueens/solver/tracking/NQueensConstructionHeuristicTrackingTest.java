@@ -32,6 +32,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -58,8 +59,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
 
     @Test
     public void trackConstructionHeuristics() {
-        SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         ConstructionHeuristicPhaseConfig chConfig = new ConstructionHeuristicPhaseConfig();
         chConfig.setValueSorterManner(valueSorterManner);
@@ -71,6 +71,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         NQueens problem = generator.createNQueens(8);
 
         NQueensStepTracker listener = new NQueensStepTracker();
+        SolverFactory<NQueens> solverFactory = SolverFactory.create(solverConfig);
         DefaultSolver<NQueens> solver = (DefaultSolver<NQueens>) solverFactory.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         NQueens bestSolution = solver.solve(problem);

@@ -98,15 +98,15 @@ public class SolverConfigMultiThreadedTest {
     }
 
     private void runSolvingAndVerifySolution(final int entityCount, final int valueCount, final String moveThreadCount) {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().setMoveThreadCount(moveThreadCount);
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        solverConfig.setMoveThreadCount(moveThreadCount);
 
         TestdataSolution solution = createTestSolution(entityCount, valueCount);
-        solution = solver.solve(solution);
 
-        assertSolution(solver, solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        assertNotNull(solution);
+        assertTrue(solution.getScore().isSolutionInitialized());
     }
 
     private TestdataSolution createTestSolution(int entityCount, int valueCount) {
@@ -124,24 +124,19 @@ public class SolverConfigMultiThreadedTest {
         return testdataSolution;
     }
 
-    private void assertSolution(final Solver<TestdataSolution> solver, final TestdataSolution solution) {
-        assertNotNull(solver.getBestSolution());
-        assertSame(solution, solver.getBestSolution());
-        assertTrue(solution.getScore().isSolutionInitialized());
-    }
-
     @Test(timeout = 5000L)
     public void customThreadFactoryClassIsUsed() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().setThreadFactoryClass(MockThreadFactory.class);
-        solverFactory.getSolverConfig().setMoveThreadCount("2");
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        solverConfig.setThreadFactoryClass(MockThreadFactory.class);
+        solverConfig.setMoveThreadCount("2");
 
         TestdataSolution solution = createTestSolution(3, 5);
-        solution = solver.solve(solution);
 
-        assertSolution(solver, solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        assertNotNull(solution);
+        assertTrue(solution.getScore().isSolutionInitialized());
         assertTrue(MockThreadFactory.hasBeenCalled());
     }
+
 }

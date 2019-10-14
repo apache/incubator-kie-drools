@@ -56,7 +56,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
     protected SolutionFileIO<Solution_> solutionFileIO;
 
     protected UnsolvedDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
-        super(commonApp.getSolverConfig());
+        super(commonApp.getSolverConfigResource());
         this.commonApp = commonApp;
         this.dataFile = dataFile;
     }

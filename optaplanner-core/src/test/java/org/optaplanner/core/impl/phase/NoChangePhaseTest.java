@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.phase.NoChangePhaseConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -36,11 +37,10 @@ public class NoChangePhaseTest {
 
     @Test
     public void solve() {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+        solverConfig.setPhaseConfigList(Collections.singletonList(
                 new NoChangePhaseConfig()));
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -52,7 +52,7 @@ public class NoChangePhaseTest {
                 new TestdataEntity("e2", v2),
                 new TestdataEntity("e3", v1)));
 
-        solution = solver.solve(solution);
+        solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);

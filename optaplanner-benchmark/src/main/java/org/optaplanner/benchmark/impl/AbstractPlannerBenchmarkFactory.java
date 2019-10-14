@@ -16,25 +16,12 @@
 
 package org.optaplanner.benchmark.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.ConversionException;
-import com.thoughtworks.xstream.converters.extended.FileConverter;
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
  * @see PlannerBenchmarkFactory

@@ -37,7 +37,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
+import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class BenchmarkResultIO {
     private final XStream xStream;
 
     public BenchmarkResultIO() {
-        xStream = XStreamXmlSolverFactory.buildXStream();
+        xStream = XStreamConfigReader.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkResult.class);
         xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.api\\..*"});
         xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.impl\\..*"});

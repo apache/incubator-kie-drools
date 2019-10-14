@@ -64,8 +64,7 @@ public class DefaultPartitionedSearchPhaseTest {
     public void partCount(String moveThreadCount) {
         final int partSize = 3;
         final int partCount = 7;
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, moveThreadCount);
-        setPartSize(solverFactory.getSolverConfig(), partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, moveThreadCount, partSize);
         DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
         PartitionedSearchPhase<TestdataSolution> phase
                 = (PartitionedSearchPhase<TestdataSolution>) solver.getPhaseList().get(0);
@@ -78,11 +77,10 @@ public class DefaultPartitionedSearchPhaseTest {
         solver.solve(createSolution(partCount * partSize, 2));
     }
 
-    private static SolverFactory<TestdataSolution> createSolverFactory(boolean infinite, String moveThreadCount) {
-        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils
-                .buildSolverFactory(TestdataSolution.class, TestdataEntity.class);
-        SolverConfig solverConfig = solverFactory.getSolverConfig()
-                .withMoveThreadCount(moveThreadCount);
+    private static SolverFactory<TestdataSolution> createSolverFactory(boolean infinite, String moveThreadCount, int partSize) {
+        SolverConfig solverConfig = PlannerTestUtils
+                .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setMoveThreadCount(moveThreadCount);
         PartitionedSearchPhaseConfig partitionedSearchPhaseConfig = new PartitionedSearchPhaseConfig();
         partitionedSearchPhaseConfig.setSolutionPartitionerClass(TestdataSolutionPartitioner.class);
         solverConfig.setPhaseConfigList(Arrays.asList(partitionedSearchPhaseConfig));
@@ -93,7 +91,8 @@ public class DefaultPartitionedSearchPhaseTest {
         }
         partitionedSearchPhaseConfig.setPhaseConfigList(
                 Arrays.asList(constructionHeuristicPhaseConfig, localSearchPhaseConfig));
-        return solverFactory;
+        setPartSize(solverConfig, partSize);
+        return SolverFactory.create(solverConfig);
     }
 
     private static TestdataSolution createSolution(int entities, int values) {
@@ -126,8 +125,7 @@ public class DefaultPartitionedSearchPhaseTest {
         solution.getEntityList().add(new TestdataFaultyEntity("XYZ"));
         assertEquals(partSize * partCount, solution.getEntityList().size());
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE);
-        setPartSize(solverFactory.getSolverConfig(), partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         try {
             solver.solve(solution);
@@ -145,8 +143,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         TestdataSolution solution = createSolution(partCount * partSize, 10);
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE);
-        setPartSize(solverFactory.getSolverConfig(), partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         CountDownLatch solvingStarted = new CountDownLatch(1);
         ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(
@@ -181,8 +178,7 @@ public class DefaultPartitionedSearchPhaseTest {
         CountDownLatch sleepAnnouncement = new CountDownLatch(1);
         solution.getEntityList().add(new TestdataSleepingEntity("XYZ", sleepAnnouncement));
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE);
-        setPartSize(solverFactory.getSolverConfig(), partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
