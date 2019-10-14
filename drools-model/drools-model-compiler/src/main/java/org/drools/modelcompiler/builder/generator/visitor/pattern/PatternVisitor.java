@@ -87,9 +87,17 @@ public class PatternVisitor {
         String oopathExpr = pattern.getDescrs().get(0).getText();
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(oopathExpr);
         XpathAnalysis.XpathPart firstPart = xpathAnalysis.getPart( 0 );
-        String patternType = firstPart.getInlineCast() != null ?
-                firstPart.getInlineCast() :
-                context.getRuleUnitVarType( firstPart.getField() ).getSimpleName();
+
+        String patternType;
+        if (firstPart.getInlineCast() != null) {
+            patternType = firstPart.getInlineCast();
+        } else {
+            Class<?> ruleUnitVarType = context.getRuleUnitVarType(firstPart.getField());
+            if (ruleUnitVarType == null) {
+                throw new IllegalArgumentException("Unknown declaration: " + firstPart.getField());
+            }
+            patternType = ruleUnitVarType.getSimpleName();
+        }
 
         PatternDescr normalizedPattern = new PatternDescr();
         normalizedPattern.setObjectType( patternType );
