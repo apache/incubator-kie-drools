@@ -137,8 +137,6 @@ and assemble them into an efficient ``Solver``.
 
 [NOTE]
 ====
-Don't modify a `SolverConfig` after creating a `SolverFactory`,
-because it currently breaks the thread-safety of the `SolverFactory`.
 To configure a `SolverFactory` dynamically for each user request,
 build a template `SolverConfig` during initialization
 and copy it with the copy constructor for each user request:
