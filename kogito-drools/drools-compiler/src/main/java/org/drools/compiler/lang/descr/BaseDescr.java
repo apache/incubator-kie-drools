@@ -170,4 +170,12 @@ public class BaseDescr
     public void accept(DescrVisitor visitor) {
         visitor.visit(this);
     }
+
+    public BaseDescr negate() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isNegated() {
+        return false;
+    }
 }

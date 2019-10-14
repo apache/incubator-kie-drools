@@ -32,13 +32,11 @@ public class DeclaredTypeWriter {
     }
 
     public String getSource() {
-        String source = JavaParserCompiler.toPojoSource(
+        return JavaParserCompiler.toPojoSource(
                 pkgModel.getName(),
                 pkgModel.getImports(),
                 pkgModel.getStaticImports(),
                 generatedPojo);
-        PackageModel.log(source);
-        return source;
     }
 
     public String getName() {

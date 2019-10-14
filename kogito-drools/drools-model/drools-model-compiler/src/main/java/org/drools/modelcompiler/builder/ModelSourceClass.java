@@ -10,8 +10,6 @@ import org.kie.api.builder.ReleaseId;
 
 import static java.util.stream.Collectors.joining;
 
-import static org.drools.modelcompiler.builder.PackageModel.log;
-
 public class ModelSourceClass {
 
     private final Collection<String> modelSources;
@@ -28,7 +26,7 @@ public class ModelSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(getName(), log(generate() ).getBytes());
+        srcMfs.write(getName(), generate().getBytes());
     }
 
     public String getName() {

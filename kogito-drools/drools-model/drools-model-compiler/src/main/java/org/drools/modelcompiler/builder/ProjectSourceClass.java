@@ -6,8 +6,6 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 
-import static org.drools.modelcompiler.builder.PackageModel.log;
-
 public class ProjectSourceClass {
 
     final KieModuleModelMethod modelMethod;
@@ -47,7 +45,7 @@ public class ProjectSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(getName(), log(generate() ).getBytes());
+        srcMfs.write(getName(), generate().getBytes());
     }
 
     public String getName() {

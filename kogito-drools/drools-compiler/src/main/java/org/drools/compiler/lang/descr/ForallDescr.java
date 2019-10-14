@@ -76,6 +76,10 @@ public class ForallDescr extends BaseDescr
         return null;
     }
 
+    public boolean isSinglePattern() {
+        return this.patterns.size() == 1;
+    }
+
     /**
      * Returns the remaining patterns from the forall CE
      * @return

@@ -8,4 +8,6 @@ public interface Constraint {
     List<Constraint> getChildren();
 
     Type getType();
+
+    Constraint negate();
 }

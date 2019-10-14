@@ -6,6 +6,10 @@ public interface Predicate5<A, B, C, D, E> extends Serializable {
 
     boolean test( A a, B b, C c, D d, E e) throws Exception;
 
+    default Predicate5<A, B, C, D, E> negate() {
+        return (a, b, c, d, e) -> !test( a, b, c, d, e );
+    }
+
     class Impl<A, B, C, D, E> extends IntrospectableLambda implements Predicate5<A, B, C, D, E> {
 
         private final Predicate5<A, B, C, D, E> predicate;

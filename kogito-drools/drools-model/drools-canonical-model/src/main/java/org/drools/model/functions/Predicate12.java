@@ -6,6 +6,10 @@ public interface Predicate12<A, B, C, D, E, F, G, H, I, J, K, L> extends Seriali
 
     boolean test( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l ) throws Exception;
 
+    default Predicate12<A, B, C, D, E, F, G, H, I, J, K, L> negate() {
+        return (a, b, c, d, e, f, g, h, i, j, k, l) -> !test( a, b, c, d, e, f, g, h, i, j, k, l );
+    }
+
     class Impl<A, B, C, D, E, F, G, H, I, J, K, L> extends IntrospectableLambda implements Predicate12<A, B, C, D, E, F, G, H, I, J, K, L> {
 
         private final Predicate12<A, B, C, D, E, F, G, H, I, J, K, L> predicate;

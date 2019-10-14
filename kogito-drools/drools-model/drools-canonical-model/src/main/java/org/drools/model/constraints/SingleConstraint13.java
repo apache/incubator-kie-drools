@@ -104,4 +104,9 @@ public class SingleConstraint13<A, B, C, D, E, F, G, H, I, J, K, L, M> extends A
         if ( !ModelComponent.areEqualInModel( var13, that.var13 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint13<A, B, C, D, E, F, G, H, I, J, K, L, M> negate() {
+        return negate( new SingleConstraint13<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate.negate()) );
+    }
 }

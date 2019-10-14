@@ -92,4 +92,9 @@ public class SingleConstraint10<A, B, C, D, E, F, G, H, I, J> extends AbstractSi
         if ( !ModelComponent.areEqualInModel( var10, that.var10 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint10<A, B, C, D, E, F, G, H, I, J> negate() {
+        return negate( new SingleConstraint10<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, predicate.negate()) );
+    }
 }

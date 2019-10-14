@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -245,10 +249,32 @@ public class IndexUtil {
             }
         }
 
+        public ConstraintType negate() {
+            switch (this) {
+                case EQUAL:
+                    return NOT_EQUAL;
+                case NOT_EQUAL:
+                    return EQUAL;
+                case GREATER_THAN:
+                    return LESS_OR_EQUAL;
+                case GREATER_OR_EQUAL:
+                    return LESS_THAN;
+                case LESS_OR_EQUAL:
+                    return GREATER_THAN;
+                case LESS_THAN:
+                    return GREATER_OR_EQUAL;
+            }
+            return UNKNOWN;
+        }
+
         public static ConstraintType decode(String operator) {
+            return decode( operator, false );
+        }
+
+        public static ConstraintType decode(String operator, boolean negated) {
             for ( ConstraintType c : ConstraintType.values() ) {
                 if ( c.getOperator() != null && c.getOperator().equals(operator) ) {
-                    return c;
+                    return negated ? c.negate() : c;
                 }
             }
             return UNKNOWN;

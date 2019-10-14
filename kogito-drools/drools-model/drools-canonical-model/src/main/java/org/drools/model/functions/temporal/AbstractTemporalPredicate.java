@@ -48,4 +48,10 @@ public abstract class AbstractTemporalPredicate<T extends AbstractTemporalPredic
     }
 
     protected abstract boolean isTemporalPredicateEqualTo(T other);
+
+    @Override
+    public TemporalPredicate negate() {
+        this.negated = !this.negated;
+        return this;
+    }
 }

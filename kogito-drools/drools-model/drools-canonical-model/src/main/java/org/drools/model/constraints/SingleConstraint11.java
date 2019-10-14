@@ -96,4 +96,9 @@ public class SingleConstraint11<A, B, C, D, E, F, G, H, I, J, K> extends Abstrac
         if ( !ModelComponent.areEqualInModel( var11, that.var11 ) ) return false;
         return predicate.equals( that.predicate );
     }
+
+    @Override
+    public SingleConstraint11<A, B, C, D, E, F, G, H, I, J, K> negate() {
+        return negate( new SingleConstraint11<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, predicate.negate()) );
+    }
 }

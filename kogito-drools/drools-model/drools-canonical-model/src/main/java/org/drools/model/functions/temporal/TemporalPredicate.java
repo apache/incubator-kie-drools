@@ -23,4 +23,6 @@ public interface TemporalPredicate {
     Interval getInterval();
 
     boolean isNegated();
+
+    TemporalPredicate negate();
 }

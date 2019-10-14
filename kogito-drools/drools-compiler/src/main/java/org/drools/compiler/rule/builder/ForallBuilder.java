@@ -18,6 +18,7 @@ package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.rule.Forall;
 import org.drools.core.rule.Pattern;
@@ -28,16 +29,22 @@ public class ForallBuilder
     RuleConditionBuilder {
 
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
-        return build( context,
-                      descr,
-                      null );
+                                    final BaseDescr descr,
+                                      final Pattern prefixPattern) {
+        return build( context, descr );
     }
 
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern) {
+                                      final BaseDescr descr) {
         final ForallDescr forallDescr = (ForallDescr) descr;
+
+        if (forallDescr.isSinglePattern()) {
+            PatternDescr pattern = (PatternDescr) forallDescr.getDescrs().get(0);
+            NotDescr notDescr = new NotDescr( pattern.negateConstraint() );
+
+            RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( notDescr.getClass() );
+            return builder.build( context, notDescr );
+        }
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
         final Pattern basePattern = (Pattern) patternBuilder.build( context,

@@ -18,6 +18,7 @@ package org.drools.compiler.lang.descr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AndDescr extends AnnotatedBaseDescr
     implements
@@ -26,6 +27,10 @@ public class AndDescr extends AnnotatedBaseDescr
     private List<BaseDescr>    descrs           = new ArrayList<BaseDescr>();
 
     public AndDescr() { }
+
+    private AndDescr(BaseDescr baseDescr) {
+        addDescr(baseDescr);
+    }
 
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
@@ -99,5 +104,32 @@ public class AndDescr extends AnnotatedBaseDescr
 
     public void accept(DescrVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public BaseDescr negate() {
+        if (descrs.isEmpty()) {
+            return new AndDescr(new ExprConstraintDescr( "false" ));
+        }
+
+        if (descrs.size() == 1) {
+            return new AndDescr(descrs.get(0).negate());
+        }
+
+        boolean allExprs = descrs.stream().allMatch( ExprConstraintDescr.class::isInstance );
+        if (allExprs) {
+            String expr = descrs.stream()
+                    .map( ExprConstraintDescr.class::cast )
+                    .map( ExprConstraintDescr::getText )
+                    .map( e -> "!(" + e + ")" )
+                    .collect( Collectors.joining( "||" ) );
+            return new AndDescr( new ExprConstraintDescr(expr) );
+        }
+
+        OrDescr or = new OrDescr();
+        for (BaseDescr descr : descrs) {
+            or.addDescr( descr.negate() );
+        }
+        return or;
     }
 }
