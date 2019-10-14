@@ -46,6 +46,18 @@ public class ForallBuilder
             return builder.build( context, notDescr );
         }
 
+        BaseDescr selfJoin = forallDescr.getSelfJoinConstraint();
+        if (selfJoin != null) {
+            PatternDescr p1 = (PatternDescr) forallDescr.getDescrs().get(0);
+            PatternDescr p2 = (PatternDescr) forallDescr.getDescrs().get(1);
+            NotDescr notDescr = new NotDescr( p1 );
+            p2.removeConstraint( selfJoin );
+            p2.negateConstraint().getConstraint().getDescrs().forEach( p1::addConstraint );
+
+            RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( notDescr.getClass() );
+            return builder.build( context, notDescr );
+        }
+
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
         final Pattern basePattern = (Pattern) patternBuilder.build( context,
                                                                     forallDescr.getBasePattern() );

@@ -73,4 +73,12 @@ public class FixedTemporalConstraint<A> extends TemporalConstraint {
     public FixedTemporalConstraint<A> negate() {
         return new FixedTemporalConstraint<A>( "!" + getExprId(), var1, func, value, temporalPredicate.negate() );
     }
+
+    @Override
+    public FixedTemporalConstraint replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new FixedTemporalConstraint( getExprId(), newVar, func, value, temporalPredicate );
+        }
+        return this;
+    }
 }

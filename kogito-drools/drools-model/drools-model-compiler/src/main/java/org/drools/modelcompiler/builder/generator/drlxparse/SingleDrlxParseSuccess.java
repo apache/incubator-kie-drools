@@ -24,10 +24,10 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.core.util.index.IndexUtil;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
@@ -53,7 +53,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     private String exprBinding;
 
-    private IndexUtil.ConstraintType decodeConstraintType;
+    private Index.ConstraintType decodeConstraintType;
     private Collection<String> usedDeclarations = new LinkedHashSet<>();
     private Collection<String> usedDeclarationsOnLeft;
     private Set<String> reactOnProperties = Collections.emptySet();
@@ -77,7 +77,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.exprType = exprType;
     }
 
-    public SingleDrlxParseSuccess setDecodeConstraintType(IndexUtil.ConstraintType decodeConstraintType ) {
+    public SingleDrlxParseSuccess setDecodeConstraintType( Index.ConstraintType decodeConstraintType ) {
         this.decodeConstraintType = decodeConstraintType;
         return this;
     }
@@ -212,7 +212,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return isPatternBindingUnification;
     }
 
-    public IndexUtil.ConstraintType getDecodeConstraintType() {
+    public Index.ConstraintType getDecodeConstraintType() {
         return decodeConstraintType;
     }
 
@@ -328,7 +328,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
         return new SingleDrlxParseSuccess(patternType, exprId, patternBinding, new BinaryExpr( expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( newUsedDeclarations ).setUsedDeclarationsOnLeft( newUsedDeclarationsOnLeft )
+                .setDecodeConstraintType( Index.ConstraintType.UNKNOWN ).setUsedDeclarations( newUsedDeclarations ).setUsedDeclarationsOnLeft( newUsedDeclarationsOnLeft )
                 .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( newReactOnProperties ).setBetaNode(isBetaNode)
                 .setLeft( new TypedExpression( this.expr, boolean.class ) )
                 .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
