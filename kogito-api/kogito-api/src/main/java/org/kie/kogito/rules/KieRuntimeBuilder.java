@@ -19,8 +19,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 public interface KieRuntimeBuilder {
-    KieBase newKieBase();
-    KieBase newKieBase(String name);
+    KieBase getKieBase();
+    KieBase getKieBase(String name);
 
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);

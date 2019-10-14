@@ -119,7 +119,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         this.kBase.readLock();
         try {
             StatefulKnowledgeSessionImpl ksession = kBase
-                    .internalCreateStatefulKnowledgeSession( this.environment, this.conf )
+                    .internalCreateStatefulKnowledgeSession( this.environment, this.conf, false )
                     .setStateless( true );
             wmCreated.incrementAndGet();
             return ksession;

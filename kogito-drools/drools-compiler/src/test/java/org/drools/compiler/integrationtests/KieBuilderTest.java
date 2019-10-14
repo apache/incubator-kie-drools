@@ -18,7 +18,6 @@ package org.drools.compiler.integrationtests;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -43,7 +42,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -176,7 +175,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 "end\n";
 
         final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-                "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                 "  <kbase name=\"kbase1\">\n" +
                 "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
                 "  </kbase>\n" +

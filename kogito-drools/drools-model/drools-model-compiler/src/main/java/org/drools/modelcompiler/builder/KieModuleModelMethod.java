@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -17,6 +18,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.SessionsPoolOption;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
@@ -33,7 +35,6 @@ public class KieModuleModelMethod {
     private BlockStmt stmt = new BlockStmt();
 
     private final Map<String, String> kSessionForkBase = new HashMap<>();
-    private final Map<String, BlockStmt> kBaseConfs = new HashMap<>();
     private final Map<String, BlockStmt> kSessionConfs = new HashMap<>();
 
     private String defaultKieBaseName;
@@ -66,17 +67,17 @@ public class KieModuleModelMethod {
         return methodDeclaration.toString();
     }
 
-    public String toNewKieBaseMethods() {
+    public String toGetKieBaseMethods() {
         return
                 "    @Override\n" +
-                "    public KieBase newKieBase() {\n" +
+                "    public KieBase getKieBase() {\n" +
                 ( defaultKieBaseName != null ?
-                "        return newKieBase(\"" + defaultKieBaseName + "\");\n" :
+                "        return getKieBase(\"" + defaultKieBaseName + "\");\n" :
                 "        throw new UnsupportedOperationException(\"There is no default KieBase\");\n") +
                 "    }\n" +
                 "\n" +
                 "    @Override\n" +
-                "    public KieBase newKieBase(String name) {\n" +
+                "    public KieBase getKieBase(String name) {\n" +
                 "        return kbases.get(name);\n" +
                 "    }\n";
     }
@@ -161,7 +162,6 @@ public class KieModuleModelMethod {
             this.kieBaseModelName = "kieBaseModel_" + kieBaseModel.getName();
             this.kieBaseModelNameExpr = new NameExpr(kieBaseModelName);
             this.confExpr = new NameExpr("conf");
-            kBaseConfs.put( kieBaseModel.getName(), this.confBlock );
         }
 
         void toSourceCode() {
@@ -170,6 +170,7 @@ public class KieModuleModelMethod {
             eventProcessingType();
             kieBaseModelPackages();
             kieBaseModelIncludes();
+            kieBaseSessionsPool();
             sessionModels();
         }
 
@@ -189,15 +190,23 @@ public class KieModuleModelMethod {
             createEnum(confBlock, confExpr, kieBaseModel.getEventProcessingMode().getClass().getCanonicalName(), kieBaseModel.getEventProcessingMode().getMode().toUpperCase(), "setEventProcessingMode");
         }
 
-        void kieBaseModelPackages() {
+        private void kieBaseModelPackages() {
             for (String p : kieBaseModel.getPackages()) {
                 stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addPackage", nodeList(new StringLiteralExpr(p))));
             }
         }
 
-        void kieBaseModelIncludes() {
+        private void kieBaseModelIncludes() {
             for (String p : kieBaseModel.getIncludes()) {
                 stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addInclude", nodeList(new StringLiteralExpr(p))));
+            }
+        }
+
+        private void kieBaseSessionsPool() {
+            if (kieBaseModel.getSessionsPool() != SessionsPoolOption.NO) {
+                int poolSize = kieBaseModel.getSessionsPool().getSize();
+                MethodCallExpr poolExpr = new MethodCallExpr(new NameExpr(SessionsPoolOption.class.getCanonicalName()), "get", nodeList(new IntegerLiteralExpr(poolSize)));
+                stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "setSessionsPool", nodeList(poolExpr)));
             }
         }
 

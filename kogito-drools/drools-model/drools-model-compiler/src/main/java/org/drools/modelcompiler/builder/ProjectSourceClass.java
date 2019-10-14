@@ -35,7 +35,7 @@ public class ProjectSourceClass {
                         "\n");
         sb.append(modelMethod.getConstructor());
         sb.append("\n");
-        sb.append(modelMethod.toNewKieBaseMethods());
+        sb.append(modelMethod.toGetKieBaseMethods());
         sb.append("\n");
         sb.append(modelMethod.toNewKieSessionMethods());
         sb.append("\n");

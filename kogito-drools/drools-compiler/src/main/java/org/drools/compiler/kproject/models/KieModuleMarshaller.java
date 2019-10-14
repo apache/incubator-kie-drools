@@ -163,7 +163,6 @@ public class KieModuleMarshaller {
 
     private static class KieModuleValidator {
         private static final Schema schema = loadSchema();
-        private static final Schema oldSchema = loadOldSchema();
 
         private static Schema loadSchema() {
             SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
@@ -214,16 +213,9 @@ public class KieModuleMarshaller {
             try {
                 schema.newValidator().validate(source);
             } catch (Exception schemaException) {
-                try {
-                    // For backwards compatibility, validate against the old namespace (which has 6.0.0 hardcoded)
-                    oldSchema.newValidator().validate(duplicateSource);
-                } catch (Exception oldSchemaException) {
-                    // Throw the original exception, as we want them to use that
-                    throw new RuntimeException(
-                            "XSD validation failed against the new schema (" + schemaException.getMessage()
-                                    + ") and against the old schema (" + oldSchemaException.getMessage() + ").",
-                            schemaException);
-                }
+                throw new RuntimeException(
+                        "XSD validation failed against schema (" + schemaException.getMessage() + ").",
+                        schemaException);
             }
         }
     }

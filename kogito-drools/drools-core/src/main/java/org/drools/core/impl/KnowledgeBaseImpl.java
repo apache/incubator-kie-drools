@@ -189,6 +189,8 @@ public class KnowledgeBaseImpl
 
     private List<AsyncReceiveNode> receiveNodes;
 
+    private KieSessionsPool sessionPool;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -214,6 +216,10 @@ public class KnowledgeBaseImpl
         setupRete();
 
         sessionConfiguration = new SessionConfigurationImpl( null, this.config.getClassLoader(), this.config.getChainedProperties() );
+
+        if (this.config.getSessionPoolSize() > 0) {
+            sessionPool = newKieSessionsPool( this.config.getSessionPoolSize() );
+        }
     }
 
     @Override
@@ -329,6 +335,10 @@ public class KnowledgeBaseImpl
     }
 
     public KieSession newKieSession(KieSessionConfiguration conf, Environment environment) {
+        return newKieSession(conf, environment, false);
+    }
+
+    KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean fromPool) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
             conf = getSessionConfiguration();
@@ -346,7 +356,7 @@ public class KnowledgeBaseImpl
 
         readLock();
         try {
-            return internalCreateStatefulKnowledgeSession( environment, sessionConfig );
+            return internalCreateStatefulKnowledgeSession( environment, sessionConfig, fromPool );
         } finally {
             readUnlock();
         }
@@ -359,10 +369,13 @@ public class KnowledgeBaseImpl
         return internalInitSession( config, session );
     }
 
-    public StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig ) {
-        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
-                .createWorkingMemory( nextWorkingMemoryCounter(), this, sessionConfig, environment );
-        return internalInitSession( sessionConfig, session );
+    public StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig, boolean fromPool ) {
+        if (fromPool || sessionPool == null) {
+            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
+                    .createWorkingMemory( nextWorkingMemoryCounter(), this, sessionConfig, environment );
+            return internalInitSession( sessionConfig, session );
+        }
+        return (StatefulKnowledgeSessionImpl) sessionPool.newKieSession( sessionConfig );
     }
 
     private StatefulKnowledgeSessionImpl internalInitSession( SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {

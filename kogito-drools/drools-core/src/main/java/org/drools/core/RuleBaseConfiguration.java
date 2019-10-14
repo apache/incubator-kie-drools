@@ -16,9 +16,6 @@
 
 package org.drools.core;
 
-import static org.drools.core.util.Drools.isJmxAvailable;
-import static org.drools.core.util.MemoryUtil.hasPermGen;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -45,6 +42,8 @@ import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
+import org.kie.api.conf.SequentialOption;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
@@ -59,12 +58,14 @@ import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
-import org.kie.api.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.util.Drools.isJmxAvailable;
+import static org.drools.core.util.MemoryUtil.hasPermGen;
 
 /**
  * RuleBaseConfiguration
@@ -91,6 +92,7 @@ import org.slf4j.LoggerFactory;
  * drools.shareAlphaNodes  = &lt;true|false&gt;
  * drools.shareBetaNodes = &lt;true|false&gt;
  * drools.alphaNodeHashingThreshold = &lt;1...n&gt;
+ * drools.sessionPool = &lt;1...n&gt;
  * drools.compositeKeyDepth = &lt;1..3&gt;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
  * drools.indexRightBetaMemory = &lt;true/false&gt;
@@ -169,6 +171,8 @@ public class RuleBaseConfiguration
 
     private KieComponentFactory componentFactory;
 
+    private int sessionPoolSize;
+
     private static class DefaultRuleBaseConfigurationHolder {
         private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
     }
@@ -205,6 +209,7 @@ public class RuleBaseConfiguration
         out.writeBoolean(phreakEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
+        out.writeInt(sessionPoolSize);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -236,6 +241,7 @@ public class RuleBaseConfiguration
         phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
+        sessionPoolSize = in.readInt();
     }
 
     /**
@@ -299,6 +305,8 @@ public class RuleBaseConfiguration
             setJittingThreshold( StringUtils.isEmpty( value ) ? ConstraintJittingThresholdOption.DEFAULT_VALUE : Integer.parseInt( value ) );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
+        } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
+            setSessionPoolSize( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt(value));
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
             setCompositeKeyDepth( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
@@ -350,6 +358,8 @@ public class RuleBaseConfiguration
             return Integer.toString( getJittingThreshold() );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             return Integer.toString( getAlphaNodeHashingThreshold() );
+        } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
+            return Integer.toString( getSessionPoolSize() );
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
             return Integer.toString( getCompositeKeyDepth() );
         } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
@@ -425,6 +435,8 @@ public class RuleBaseConfiguration
         setJittingThreshold( Integer.parseInt( this.chainedProperties.getProperty( ConstraintJittingThresholdOption.PROPERTY_NAME, "" + ConstraintJittingThresholdOption.DEFAULT_VALUE)));
 
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
+
+        setSessionPoolSize(Integer.parseInt(this.chainedProperties.getProperty( SessionsPoolOption.PROPERTY_NAME, "-1")));
 
         setCompositeKeyDepth(Integer.parseInt(this.chainedProperties.getProperty(CompositeKeyDepthOption.PROPERTY_NAME, "3")));
 
@@ -569,6 +581,15 @@ public class RuleBaseConfiguration
     public void setAlphaNodeHashingThreshold(final int alphaNodeHashingThreshold) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+    }
+
+    public int getSessionPoolSize() {
+        return this.sessionPoolSize;
+    }
+
+    public void setSessionPoolSize(final int sessionPoolSize) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.sessionPoolSize = sessionPoolSize;
     }
 
     public AssertBehaviour getAssertBehaviour() {
@@ -1082,6 +1103,8 @@ public class RuleBaseConfiguration
             return (T) ConstraintJittingThresholdOption.get(jittingThreshold);
         } else if (AlphaThresholdOption.class.equals(option)) {
             return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
+        } else if ( SessionsPoolOption.class.equals(option)) {
+            return (T) SessionsPoolOption.get(sessionPoolSize);
         } else if (CompositeKeyDepthOption.class.equals(option)) {
             return (T) CompositeKeyDepthOption.get(compositeKeyDepth);
         } else if (ConsequenceExceptionHandlerOption.class.equals(option)) {
@@ -1135,6 +1158,8 @@ public class RuleBaseConfiguration
             setJittingThreshold( ( (ConstraintJittingThresholdOption) option ).getThreshold());
         } else if (option instanceof AlphaThresholdOption) {
             setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
+        } else if (option instanceof SessionsPoolOption ) {
+            setSessionPoolSize( ( ( SessionsPoolOption ) option ).getSize());
         } else if (option instanceof CompositeKeyDepthOption) {
             setCompositeKeyDepth( ( (CompositeKeyDepthOption) option ).getDepth());
         } else if (option instanceof ConsequenceExceptionHandlerOption) {

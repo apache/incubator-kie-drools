@@ -568,7 +568,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     public void testErrorReportingWithWrongKmodule() throws Exception {
         // RHDM-69
         String kmodule =
-                "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                 "  <kbase name=\"ABC\" default=\"false\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\"/>\n" +
                 "  <kbase name=\"ABC\" default=\"false\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\"/>\n" +
                 "</kmodule>\n";

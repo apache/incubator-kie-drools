@@ -59,7 +59,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
 
 
         String kmoduleContent1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                 "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                                  "<kbase name=\"kbase1\" equalsBehavior=\"equality\" default=\"true\" packages=\"rules\" includes=\"kbase2\">\n" +
                                  "<ksession name=\"ksession1\" default=\"true\" type=\"stateful\"/>\n" +
                                  "</kbase>\n"+
@@ -75,7 +75,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
 
 
         String kmoduleContent2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                 "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                                  "<kbase name=\"kbase2\" equalsBehavior=\"equality\" default=\"false\" packages=\"rules2\">\n" +
                                  "<ksession name=\"ksession2\" default=\"false\" type=\"stateful\"/>\n" +
                                  "</kbase>\n"+
@@ -146,7 +146,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
 
 
         String kmoduleContent1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                 "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                                  "<kbase name=\"kbase1\" equalsBehavior=\"equality\" default=\"true\" packages=\"rules\" includes=\"kbase2\">\n" +
                                  "<ksession name=\"ksession1\" default=\"true\" type=\"stateful\"/>\n" +
                                  "</kbase>\n"+
@@ -162,7 +162,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
 
 
         String kmoduleContent2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                 "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                                  "<kbase name=\"kbase2\" equalsBehavior=\"equality\" default=\"false\" packages=\"rules\">\n" +
                                  "<ksession name=\"ksession2\" default=\"false\" type=\"stateful\"/>\n" +
                                  "</kbase>\n"+

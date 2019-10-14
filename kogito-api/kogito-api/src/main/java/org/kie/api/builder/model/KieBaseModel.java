@@ -24,6 +24,7 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.SequentialOption;
+import org.kie.api.conf.SessionsPoolOption;
 
 /**
  * KieBaseModel is a model allowing to programmatically define a KieBase
@@ -104,6 +105,17 @@ public interface KieBaseModel {
      * Default is EqualityBehaviorOption.IDENTITY
      */
     KieBaseModel setEqualsBehavior(EqualityBehaviorOption equalsBehaviour);
+
+    /**
+     * Returns the session pool configuration of this KieBaseModel
+     */
+    SessionsPoolOption getSessionsPool();
+
+    /**
+     * Sets the SessionPoolOption used by the KieBase to create new sessions
+     * Default is SessionPoolOption.NO
+     */
+    KieBaseModel setSessionsPool( SessionsPoolOption sessionPool );
 
     /**
      * Returns the EventProcessingMode of this KieBaseModel

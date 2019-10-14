@@ -65,6 +65,7 @@
       <xsd:attribute name="equalsBehavior" type="insertBehaviorEnum"/>
       <xsd:attribute name="eventProcessingMode" type="eventModeEnum"/>
       <xsd:attribute name="declarativeAgenda" type="declarativeAgendaEnum"/>
+      <xsd:attribute name="sessionsPool" type="xsd:int"/>
     </xsd:complexType>
   </xsd:element>
 
