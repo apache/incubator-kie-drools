@@ -1,20 +1,5 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
-import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import org.drools.core.util.DateUtils;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.*;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
-import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.drools.mvel.parser.ast.expr.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -23,7 +8,49 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.*;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.core.util.DateUtils;
+import org.drools.model.Index;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.core.util.StringUtils.lcFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
@@ -326,10 +353,21 @@ public class ConstraintParser {
             combo = new EnclosedExpr( combo );
         }
 
+        Index.ConstraintType constraintType = DrlxParseUtil.toConstraintType( operator );
+        if ( isForallSelfJoinConstraint( left, right, constraintType ) ) {
+            constraintType = Index.ConstraintType.FORALL_SELF_JOIN;
+        }
+
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
-        return new SingleDrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( DrlxParseUtil.toConstraintType(operator ) )
+        return new SingleDrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( constraintType )
                 .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft ).setUnification( constraint.isUnification() )
                 .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode).setRequiresSplit( requiresSplit );
+    }
+
+    private boolean isForallSelfJoinConstraint( TypedExpression left, TypedExpression right, Index.ConstraintType constraintType ) {
+        return constraintType == Index.ConstraintType.EQUAL && context.getForallFirstIdentifier() != null &&
+                left.isThisExpression() && right.getExpression() instanceof NameExpr &&
+                right.getExpression().toString().equals( context.getForallFirstIdentifier() );
     }
 
     private boolean isCombinable( BinaryExpr binaryExpr ) {

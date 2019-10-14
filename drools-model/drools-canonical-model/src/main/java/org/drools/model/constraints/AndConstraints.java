@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.Constraint;
+import org.drools.model.Variable;
 import org.drools.model.impl.ModelComponent;
+
+import static java.util.stream.Collectors.toList;
 
 public class AndConstraints extends AbstractConstraint implements ModelComponent {
 
@@ -57,5 +60,10 @@ public class AndConstraints extends AbstractConstraint implements ModelComponent
             or.or( constraint.negate() );
         }
         return or;
+    }
+
+    @Override
+    public AndConstraints replaceVariable( Variable oldVar, Variable newVar ) {
+        return new AndConstraints( constraints.stream().map( c -> c.replaceVariable( oldVar, newVar ) ).collect( toList() ) );
     }
 }

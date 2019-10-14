@@ -75,11 +75,12 @@ public class GroupElement extends ConditionalElement
      * Restrictions are:
      * NOT/EXISTS: can have only one child, either a single Pattern or another CE
      */
-    public void addChild(final RuleConditionElement child) {
+    public GroupElement addChild(final RuleConditionElement child) {
         if ( (this.isNot() || this.isExists()) && (this.children.size() > 0) ) {
             throw new RuntimeException( this.type.toString() + " can have only a single child element. Either a single Pattern or another CE." );
         }
         this.children.add( child );
+        return this;
     }
 
     /**

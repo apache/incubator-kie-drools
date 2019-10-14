@@ -78,6 +78,11 @@ public interface SingleConstraint extends Constraint {
         public boolean isEqualTo( ModelComponent other ) {
             return this == other;
         }
+
+        @Override
+        public Constraint replaceVariable( Variable oldVar, Variable newVar ) {
+            return this;
+        }
     };
 
     SingleConstraint FALSE = new AbstractSingleConstraint("FALSE") {
@@ -104,6 +109,11 @@ public interface SingleConstraint extends Constraint {
         @Override
         public boolean isEqualTo( ModelComponent other ) {
             return this == other;
+        }
+
+        @Override
+        public Constraint replaceVariable( Variable oldVar, Variable newVar ) {
+            return this;
         }
     };
 

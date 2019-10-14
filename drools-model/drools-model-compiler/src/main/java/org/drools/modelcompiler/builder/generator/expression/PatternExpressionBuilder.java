@@ -17,8 +17,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -172,7 +170,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             return Optional.empty();
         }
 
-        IndexUtil.ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
@@ -181,7 +178,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             return Optional.empty();
         }
 
-        FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr("org.drools.model.Index.ConstraintType"), decodeConstraintType.toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
+        FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr(org.drools.model.Index.ConstraintType.class.getCanonicalName()), drlxParseResult.getDecodeConstraintType().toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
         LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
         indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
         boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
@@ -202,6 +199,4 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         }
         return Optional.of(indexedByDSL);
     }
-
-
 }

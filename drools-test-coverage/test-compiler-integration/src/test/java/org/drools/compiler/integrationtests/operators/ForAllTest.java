@@ -74,15 +74,49 @@ public class ForAllTest {
         check("age < 18, name.startsWith(\"M\")", 0, new Person("Sofia", 8));
     }
 
-    private void check(String constraints, int expectedFires, Object... objs) {
+    @Test
+    public void test2P1CFiring() {
+        check("age >= 18", "name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Sofia", 8));
+    }
+
+    @Test
+    public void test2P1CNotFiring() {
+        check("age >= 1", "name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Sofia", 8));
+    }
+
+    @Test
+    public void test2P2CFiring() {
+        check("", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43));
+    }
+
+    @Test
+    public void test2P2CNotFiring1() {
+        check("", "age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
+    }
+
+    @Test
+    public void test2P3CFiring() {
+        check("name.length() < 6", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43), new Person("Daniele", 43));
+    }
+
+    private void check(String constraints1, int expectedFires, Object... objs) {
+        check( constraints1, null, expectedFires, objs );
+    }
+
+    private void check(String constraints1, String constraints2, int expectedFires, Object... objs) {
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
-                        "import " + Person.class.getCanonicalName() + ";\n" +
-                        "\n" +
-                        "rule R1 when\n" +
-                        "    forall( Person( " + constraints + " ) )\n" +
-                        "then\n" +
-                        "end";
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    forall(\n" +
+                "       $p: Person( " + constraints1 + " )\n" +
+                ( constraints2 != null ?
+                "       Person( this == $p," + constraints2 + " )\n" :
+                "" ) +
+                "    )\n" +
+                "then\n" +
+                "end";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
 

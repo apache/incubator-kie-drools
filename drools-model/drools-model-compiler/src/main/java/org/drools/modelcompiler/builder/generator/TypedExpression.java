@@ -57,6 +57,10 @@ public class TypedExpression {
         this.unificationName = Optional.of(name);
     }
 
+    public boolean isThisExpression() {
+        return DrlxParseUtil.isThisExpression( expression );
+    }
+
     public String getFieldName() {
         return fieldName;
     }

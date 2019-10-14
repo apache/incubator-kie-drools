@@ -93,4 +93,36 @@ public class SingleConstraint9<A, B, C, D, E, F, G, H, I> extends AbstractSingle
     public SingleConstraint9<A, B, C, D, E, F, G, H, I> negate() {
         return negate( new SingleConstraint9<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint9<A, B, C, D, E, F, G, H, I> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), newVar, var2, var3, var4, var5, var6, var7, var8, var9, predicate);
+        }
+        if (var2 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, newVar, var3, var4, var5, var6, var7, var8, var9, predicate);
+        }
+        if (var3 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, newVar, var4, var5, var6, var7, var8, var9, predicate);
+        }
+        if (var4 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, newVar, var5, var6, var7, var8, var9, predicate);
+        }
+        if (var5 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, var4, newVar, var6, var7, var8, var9, predicate);
+        }
+        if (var6 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, var4, var5, newVar, var7, var8, var9, predicate);
+        }
+        if (var7 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, var4, var5, var6, newVar, var8, var9, predicate);
+        }
+        if (var8 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, newVar, var9, predicate);
+        }
+        if (var9 == oldVar) {
+            return new SingleConstraint9<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, newVar, predicate);
+        }
+        return this;
+    }
 }

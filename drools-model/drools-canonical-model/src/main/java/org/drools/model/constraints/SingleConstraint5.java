@@ -72,4 +72,24 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
     public SingleConstraint5<A, B, C, D, E> negate() {
         return negate( new SingleConstraint5<>("!" + getExprId(), var1, var2, var3, var4, var5, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint5<A, B, C, D, E> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new SingleConstraint5<>(getExprId(), newVar, var2, var3, var4, var5, predicate);
+        }
+        if (var2 == oldVar) {
+            return new SingleConstraint5<>(getExprId(), var1, newVar, var3, var4, var5, predicate);
+        }
+        if (var3 == oldVar) {
+            return new SingleConstraint5<>(getExprId(), var1, var2, newVar, var4, var5, predicate);
+        }
+        if (var4 == oldVar) {
+            return new SingleConstraint5<>(getExprId(), var1, var2, var3, newVar, var5, predicate);
+        }
+        if (var5 == oldVar) {
+            return new SingleConstraint5<>(getExprId(), var1, var2, var3, var4, newVar, predicate);
+        }
+        return this;
+    }
 }

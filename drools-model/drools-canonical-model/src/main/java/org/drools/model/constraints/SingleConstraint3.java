@@ -64,4 +64,18 @@ public class SingleConstraint3<A, B, C> extends AbstractSingleConstraint {
     public SingleConstraint3<A, B, C> negate() {
         return negate( new SingleConstraint3<>("!" + getExprId(), var1, var2, var3, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint3<A, B, C> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new SingleConstraint3<>(getExprId(), newVar, var2, var3, predicate);
+        }
+        if (var2 == oldVar) {
+            return new SingleConstraint3<>(getExprId(), var1, newVar, var3, predicate);
+        }
+        if (var3 == oldVar) {
+            return new SingleConstraint3<>(getExprId(), var1, var2, newVar, predicate);
+        }
+        return this;
+    }
 }

@@ -109,4 +109,48 @@ public class SingleConstraint13<A, B, C, D, E, F, G, H, I, J, K, L, M> extends A
     public SingleConstraint13<A, B, C, D, E, F, G, H, I, J, K, L, M> negate() {
         return negate( new SingleConstraint13<>("!" + getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint13<A, B, C, D, E, F, G, H, I, J, K, L, M> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), newVar, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var2 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, newVar, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var3 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, newVar, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var4 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, newVar, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var5 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, newVar, var6, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var6 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, newVar, var7, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var7 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, newVar, var8, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var8 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, newVar, var9, var10, var11, var12, var13, predicate);
+        }
+        if (var9 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, newVar, var10, var11, var12, var13, predicate);
+        }
+        if (var10 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, newVar, var11, var12, var13, predicate);
+        }
+        if (var11 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, newVar, var12, var13, predicate);
+        }
+        if (var12 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, newVar, var13, predicate);
+        }
+        if (var13 == oldVar) {
+            return new SingleConstraint13<>(getExprId(), var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, newVar, predicate);
+        }
+        return this;
+    }
 }

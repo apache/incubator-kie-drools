@@ -55,4 +55,12 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
     public SingleConstraint1<A> negate() {
         return negate( new SingleConstraint1<>("!" + getExprId(), variable, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint1<A> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (variable == oldVar) {
+            return new SingleConstraint1<>(getExprId(), newVar, predicate);
+        }
+        return this;
+    }
 }

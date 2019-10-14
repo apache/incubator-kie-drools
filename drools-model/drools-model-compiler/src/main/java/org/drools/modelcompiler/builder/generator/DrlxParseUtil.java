@@ -68,8 +68,7 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.DrlxParser;
@@ -83,9 +82,10 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -101,22 +101,22 @@ public class DrlxParseUtil {
         return expr instanceof ThisExpr || (expr instanceof NameExpr && ((NameExpr)expr).getName().getIdentifier().equals(THIS_PLACEHOLDER));
     }
 
-    public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
+    public static Index.ConstraintType toConstraintType( Operator operator) {
         switch (operator) {
             case EQUALS:
-                return ConstraintType.EQUAL;
+                return Index.ConstraintType.EQUAL;
             case NOT_EQUALS:
-                return ConstraintType.NOT_EQUAL;
+                return Index.ConstraintType.NOT_EQUAL;
             case GREATER:
-                return ConstraintType.GREATER_THAN;
+                return Index.ConstraintType.GREATER_THAN;
             case GREATER_EQUALS:
-                return ConstraintType.GREATER_OR_EQUAL;
+                return Index.ConstraintType.GREATER_OR_EQUAL;
             case LESS:
-                return ConstraintType.LESS_THAN;
+                return Index.ConstraintType.LESS_THAN;
             case LESS_EQUALS:
-                return ConstraintType.LESS_OR_EQUAL;
+                return Index.ConstraintType.LESS_OR_EQUAL;
             default:
-                return ConstraintType.UNKNOWN;
+                return Index.ConstraintType.UNKNOWN;
         }
     }
 

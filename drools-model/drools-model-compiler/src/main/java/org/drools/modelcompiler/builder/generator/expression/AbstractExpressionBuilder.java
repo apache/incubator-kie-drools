@@ -40,8 +40,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -151,6 +151,10 @@ public abstract class AbstractExpressionBuilder {
     }
 
     boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
+        if ( drlxParseResult.getDecodeConstraintType() == Index.ConstraintType.FORALL_SELF_JOIN ) {
+            return true;
+        }
+
         TypedExpression left = drlxParseResult.getLeft();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 

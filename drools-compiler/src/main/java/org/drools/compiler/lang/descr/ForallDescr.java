@@ -80,6 +80,32 @@ public class ForallDescr extends BaseDescr
         return this.patterns.size() == 1;
     }
 
+    public BaseDescr getSelfJoinConstraint() {
+        if (this.patterns.size() != 2) {
+            return null;
+        }
+
+        PatternDescr p1 = (PatternDescr) this.patterns.get( 0 );
+        String identifier = p1.getIdentifier();
+        if (identifier == null) {
+            return null;
+        }
+
+        PatternDescr p2 = (PatternDescr) this.patterns.get( 1 );
+        if (!p1.getObjectType().equals( p2.getObjectType() )) {
+            return null;
+        }
+
+        identifier = identifier.replace( "$", "\\$" );
+        for (BaseDescr constraint : p2.getConstraint().getDescrs()) {
+            if ( constraint instanceof ExprConstraintDescr && constraint.getText() != null &&
+                 constraint.getText().matches( "\\s*this\\s*==\\s*" + identifier + "\\s*" ) ) {
+                return constraint;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the remaining patterns from the forall CE
      * @return

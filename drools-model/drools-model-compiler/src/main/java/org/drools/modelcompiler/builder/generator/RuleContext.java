@@ -15,19 +15,21 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.UnknownRuleUnitError;
 import org.kie.api.definition.type.ClassReactive;
@@ -39,6 +41,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 
 public class RuleContext {
@@ -72,7 +75,7 @@ public class RuleContext {
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
-    private Scope currentScope = new Scope("");
+    private Scope currentScope = new Scope();
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
 
@@ -419,9 +422,9 @@ public class RuleContext {
         return DrlxParseUtil.toVar(var != null ? var : currentScope.id + x);
     }
 
-    public void pushScope() {
+    public void pushScope(ConditionalElementDescr scopeElement) {
         scopesStack.addLast( currentScope );
-        currentScope = new Scope();
+        currentScope = new Scope(scopeElement);
     }
 
     public void popScope() {
@@ -429,17 +432,31 @@ public class RuleContext {
         currentScope = scopesStack.removeLast();
     }
 
+    public String getForallFirstIdentifier() {
+        return currentScope.forallFirstIdentifier;
+    }
+
     private static int scopeCounter = 1;
     private class Scope {
         private final String id;
+        private final ConditionalElementDescr scopeElement;
+        private final String forallFirstIdentifier;
         private List<String> vars = new ArrayList<>();
 
         private Scope() {
-            this("sCoPe" + scopeCounter++ + "_");
+            this( "", null );
         }
 
-        private Scope( String id ) {
+        private Scope( ConditionalElementDescr scopeElement ) {
+            this( "sCoPe" + scopeCounter++ + "_", scopeElement );
+        }
+
+        private Scope( String id, ConditionalElementDescr scopeElement ) {
             this.id = id;
+            this.scopeElement = scopeElement;
+            forallFirstIdentifier =
+                (scopeElement instanceof ForallDescr && scopeElement.getDescrs().size() == 2 && scopeElement.getDescrs().get( 0 ) instanceof PatternDescr) ?
+                (( PatternDescr ) scopeElement.getDescrs().get( 0 )).getIdentifier() : null;
         }
 
         private void clear() {

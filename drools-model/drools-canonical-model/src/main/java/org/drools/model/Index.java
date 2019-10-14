@@ -15,10 +15,12 @@ public interface Index<A, V> {
         LESS_THAN,
         LESS_OR_EQUAL,
         RANGE,
+        FORALL_SELF_JOIN,
         UNKNOWN;
 
         public ConstraintType negate() {
             switch (this) {
+                case FORALL_SELF_JOIN:
                 case EQUAL:
                     return NOT_EQUAL;
                 case NOT_EQUAL:

@@ -68,4 +68,21 @@ public class SingleConstraint4<A, B, C, D> extends AbstractSingleConstraint {
     public SingleConstraint4<A, B, C, D> negate() {
         return negate( new SingleConstraint4<>("!" + getExprId(), var1, var2, var3, var4, predicate.negate()) );
     }
+
+    @Override
+    public SingleConstraint4<A, B, C, D> replaceVariable( Variable oldVar, Variable newVar ) {
+        if (var1 == oldVar) {
+            return new SingleConstraint4<>(getExprId(), newVar, var2, var3, var4, predicate);
+        }
+        if (var2 == oldVar) {
+            return new SingleConstraint4<>(getExprId(), var1, newVar, var3, var4, predicate);
+        }
+        if (var3 == oldVar) {
+            return new SingleConstraint4<>(getExprId(), var1, var2, newVar, var4, predicate);
+        }
+        if (var4 == oldVar) {
+            return new SingleConstraint4<>(getExprId(), var1, var2, var3, newVar, predicate);
+        }
+        return this;
+    }
 }
