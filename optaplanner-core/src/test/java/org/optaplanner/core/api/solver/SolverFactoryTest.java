@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -27,24 +31,24 @@ import static org.junit.Assert.*;
 public class SolverFactoryTest {
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void testdataSolverConfigWithoutGenericsForBackwardsCompatibility() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();
-        assertNotNull(solver);
-    }
-
-    @Test
-    public void testdataSolverConfig() {
+    public void createFromXmlResource() {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
 
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void createFromXmlResource_noGenericsForBackwardsCompatibility() {
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
+        Solver solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
     @Test(expected = IllegalArgumentException.class)
-    public void nonExistingSolverConfig() {
+    public void createFromXmlResource_nonExisting() {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
@@ -52,11 +56,41 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void testdataSolverConfigWithClassLoader() {
+    public void createFromXmlResource_classLoader() {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void createFromXmlFile() throws IOException {
+        File solverTestDir = new File("target/solverTest/");
+        solverTestDir.mkdirs();
+        File file = new File(solverTestDir, "testdataSolverConfig.xml");
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(
+                "org/optaplanner/core/api/solver/testdataSolverConfig.xml")) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlFile(file);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void createFromXmlFile_classLoader() throws IOException {
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
+        File solverTestDir = new File("target/solverTest/");
+        solverTestDir.mkdirs();
+        File file = new File(solverTestDir, "classloaderTestdataSolverConfig.xml");
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(
+                "org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml")) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlFile(file, classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
