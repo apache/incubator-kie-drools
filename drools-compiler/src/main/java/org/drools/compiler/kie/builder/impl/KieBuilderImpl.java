@@ -134,7 +134,7 @@ public class KieBuilderImpl
     @Override
     public KieBuilder setDependencies( Resource... resources ) {
         KieRepositoryImpl kr = (KieRepositoryImpl) KieServices.Factory.get().getRepository();
-        List<KieModule> list = new ArrayList<KieModule>();
+        List<KieModule> list = new ArrayList<>();
         for ( Resource res : resources ) {
             InternalKieModule depKieMod = (InternalKieModule) kr.getKieModule( res );
             list.add( depKieMod );
@@ -143,27 +143,31 @@ public class KieBuilderImpl
         return this;
     }
 
-    private PomModel init() {
-        KieServices ks = KieServices.Factory.get();
-
+    private PomModel init(PomModel projectPomModel) {
         results = new ResultsImpl();
+        final PomModel actualPomModel;
+        if (projectPomModel == null) {
+            // if pomModel is null it will generate one from pom.xml
+            // if pomXml is invalid, it assigns pomModel to null
+            actualPomModel = buildPomModel();
+        } else {
+            actualPomModel = projectPomModel;
+        }
 
-        // if pomXML is null it will generate a default, using default ReleaseId
-        // if pomXml is invalid, it assign pomModel to null
-        PomModel pomModel = getPomModel();
+        KieServices ks = KieServices.Factory.get();
 
         // if kModuleModelXML is null or invalid it will generate a default kModule, with a default kbase name
         buildKieModuleModel();
 
-        if ( pomModel != null ) {
+        if ( actualPomModel != null ) {
             // creates ReleaseId from build pom
             // If the pom was generated, it will be the same as teh default ReleaseId
-            releaseId = pomModel.getReleaseId();
+            releaseId = actualPomModel.getReleaseId();
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( AFReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( adapt( dep, pomModel ), pomModel );
+            for ( AFReleaseId dep : actualPomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
+                KieModule depModule = repository.getKieModule( adapt( dep, actualPomModel ), actualPomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }
@@ -173,12 +177,12 @@ public class KieBuilderImpl
             releaseId = KieServices.Factory.get().getRepository().getDefaultReleaseId();
         }
 
-        return pomModel;
+        return actualPomModel;
     }
 
     private void addKieDependency( KieModule depModule ) {
         if ( kieDependencies == null ) {
-            kieDependencies = new ArrayList<KieModule>();
+            kieDependencies = new ArrayList<>();
         }
         kieDependencies.add( depModule );
     }
@@ -193,7 +197,7 @@ public class KieBuilderImpl
         try {
             BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier =
                     (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) projectClass.getField( "SUPPLIER" ).get( null );
-            return buildAll( kprojectSupplier );
+            return buildAll( kprojectSupplier, o -> true );
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException( e );
         }
@@ -204,12 +208,8 @@ public class KieBuilderImpl
         return buildAll( KieModuleKieProject::new, classFilter );
     }
 
-    private KieBuilder buildAll(BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier) {
-        return buildAll( kprojectSupplier, o -> true );
-    }
-
     public KieBuilder buildAll( BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier, Predicate<String> classFilter ) {
-        PomModel pomModel = init();
+        final PomModel currentProjectPomModel = init(pomModel);
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
         if ( !isBuilt() && kModuleModel != null ) {
@@ -225,8 +225,8 @@ public class KieBuilderImpl
                     memoryKieModule.addKieDependency( (InternalKieModule) kieModule );
                 }
             }
-            if ( pomModel != null ) {
-                memoryKieModule.setPomModel( pomModel );
+            if ( currentProjectPomModel != null ) {
+                memoryKieModule.setPomModel( currentProjectPomModel );
             }
 
             KieModuleKieProject kProject = kprojectSupplier.apply( memoryKieModule, classLoader );
@@ -332,7 +332,7 @@ public class KieBuilderImpl
             pomModel = null;
         }
         trgMfs = trgMfs.clone();
-        init();
+        init(pomModel);
         kModule = ((MemoryKieModule)kModule).cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
     }
 
@@ -658,7 +658,7 @@ public class KieBuilderImpl
     }
 
     private void compileJavaClasses( ClassLoader classLoader, Predicate<String> classFilter ) {
-        List<String> classFiles = new ArrayList<String>();
+        List<String> classFiles = new ArrayList<>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
                 trgMfs.write( fileName,
@@ -669,8 +669,8 @@ public class KieBuilderImpl
             }
         }
 
-        List<String> javaFiles = new ArrayList<String>();
-        List<String> javaTestFiles = new ArrayList<String>();
+        List<String> javaFiles = new ArrayList<>();
+        List<String> javaTestFiles = new ArrayList<>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
