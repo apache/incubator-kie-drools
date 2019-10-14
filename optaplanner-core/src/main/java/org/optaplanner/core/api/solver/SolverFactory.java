@@ -26,7 +26,6 @@ import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
@@ -34,7 +33,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  * Most applications only need one SolverFactory.
  * <p>
  * To build an instance, use {@link #createFromXmlResource(String)}.
- * To change the configuration programmatically, create a {@link SolverConfig} with {@link SolverConfigs}
+ * To change the configuration programmatically, create a {@link SolverConfig}
  * and use {@link #create(SolverConfig)}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -78,7 +77,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(solverConfigResource);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         return create(solverConfig);
     }
 
@@ -92,7 +91,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(solverConfigResource, classLoader);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         return create(solverConfig, classLoader);
     }
 
@@ -107,7 +106,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlFile(solverConfigFile);
+        SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile);
         return create(solverConfig);
     }
 
@@ -120,7 +119,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlFile(solverConfigFile, classLoader);
+        SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile, classLoader);
         return create(solverConfig, classLoader);
     }
 
@@ -128,12 +127,12 @@ public abstract class SolverFactory<Solution_> {
      * @param in never null, gets closed
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @deprecated in favor of {@link SolverConfigs#createFromXmlInputStream(InputStream)}
+     * @deprecated in favor of {@link SolverConfig#createFromXmlInputStream(InputStream)}
      * and {@link SolverFactory#create(SolverConfig)}. Will be removed in 8.0.
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlInputStream(in);
+        SolverConfig solverConfig = SolverConfig.createFromXmlInputStream(in);
         return create(solverConfig);
     }
 
@@ -143,12 +142,12 @@ public abstract class SolverFactory<Solution_> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @deprecated in favor of {@link SolverConfigs#createFromXmlInputStream(InputStream, ClassLoader)}
+     * @deprecated in favor of {@link SolverConfig#createFromXmlInputStream(InputStream, ClassLoader)}
      * and {@link SolverFactory#create(SolverConfig, ClassLoader)}. Will be removed in 8.0.
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlInputStream(in, classLoader);
+        SolverConfig solverConfig = SolverConfig.createFromXmlInputStream(in, classLoader);
         return create(solverConfig, classLoader);
     }
 
@@ -156,12 +155,12 @@ public abstract class SolverFactory<Solution_> {
      * @param reader never null, gets closed
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @deprecated in favor of {@link SolverConfigs#createFromXmlReader(Reader)}
+     * @deprecated in favor of {@link SolverConfig#createFromXmlReader(Reader)}
      * and {@link SolverFactory#create(SolverConfig)}. Will be removed in 8.0.
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlReader(reader);
+        SolverConfig solverConfig = SolverConfig.createFromXmlReader(reader);
         return create(solverConfig);
     }
 
@@ -171,12 +170,12 @@ public abstract class SolverFactory<Solution_> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @deprecated in favor of {@link SolverConfigs#createFromXmlReader(Reader, ClassLoader)}
+     * @deprecated in favor of {@link SolverConfig#createFromXmlReader(Reader, ClassLoader)}
      * and {@link SolverFactory#create(SolverConfig, ClassLoader)}. Will be removed in 8.0.
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlReader(reader, classLoader);
+        SolverConfig solverConfig = SolverConfig.createFromXmlReader(reader, classLoader);
         return create(solverConfig, classLoader);
     }
 
@@ -187,7 +186,7 @@ public abstract class SolverFactory<Solution_> {
     /**
      * To build configuration programmatically, use {@link SolverConfig()} instead,
      * although it's often recommended to instead load a partial configuration
-     * with {@link SolverConfigs#createFromXmlResource(String)}.
+     * with {@link SolverConfig#createFromXmlResource(String)}.
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @deprecated in favor of {@link SolverConfig()} and {@link SolverFactory#create(SolverConfig)}.
@@ -254,7 +253,7 @@ public abstract class SolverFactory<Solution_> {
     public static <Solution_> SolverFactory<Solution_> createFromKieContainerXmlResource(
             KieContainer kieContainer, String solverConfigResource) {
         SolverConfigContext solverConfigContext = new SolverConfigContext(kieContainer);
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(solverConfigResource,
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource,
                 solverConfigContext.determineActualClassLoader());
         return new DefaultSolverFactory<>(solverConfig, solverConfigContext);
     }

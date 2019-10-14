@@ -27,7 +27,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 /**
@@ -52,7 +51,7 @@ public abstract class AbstractExhaustiveSearchTest<Solution_> extends AbstractPh
 
     @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(commonApp.getSolverConfigResource());
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(commonApp.getSolverConfigResource());
         solverConfig.setTerminationConfig(new TerminationConfig());
         ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);

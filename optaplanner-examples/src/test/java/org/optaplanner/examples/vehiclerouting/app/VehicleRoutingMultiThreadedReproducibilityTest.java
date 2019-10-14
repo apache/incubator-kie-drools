@@ -10,14 +10,13 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.app.AbstractTurtleTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
@@ -49,7 +48,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
             vehicleRoutingSolutions[i] = solution;
         }
 
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
         solverConfig.withEnvironmentMode(EnvironmentMode.REPRODUCIBLE)
                 .withMoveThreadCount(MOVE_THREAD_COUNT);
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {

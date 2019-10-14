@@ -32,7 +32,6 @@ import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
@@ -60,7 +59,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
 
     @Test
     public void trackLocalSearch() {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens problem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));

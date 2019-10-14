@@ -120,7 +120,7 @@ For example, to change the running time based on system property, before buildin
 
 [source,java,options="nowrap"]
 ----
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
         solverConfig.withTerminationConfig(new TerminationConfig()
                         .withMinutesSpentLimit(userInput));
@@ -148,7 +148,7 @@ and copy it with the copy constructor for each user request:
     private SolverConfig template;
 
     public void init() {
-        template = SolverConfigs.createFromXmlResource(
+        template = SolverConfig.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
         template.setTerminationConfig(new TerminationConfig());
     }

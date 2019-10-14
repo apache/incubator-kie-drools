@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.XStream;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-public class XStreamConfigReader {
+public final class XStreamConfigReader {
 
     /**
      * Builds the {@link XStream} setup which is used to read/write {@link SolverConfig solver configs} and benchmark configs.
@@ -39,6 +39,11 @@ public class XStreamConfigReader {
         return xStream;
     }
 
+    /**
+     * As defined by {@link #buildXStream()}.
+     * @param classLoader sometimes null, ignored if null
+     * @return never null
+     */
     public static XStream buildXStream(ClassLoader classLoader) {
         XStream xStream = buildXStream();
         if (classLoader != null) {

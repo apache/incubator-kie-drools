@@ -25,7 +25,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.TestSystemProperties;
@@ -61,7 +60,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
     }
 
     protected SolverConfig buildSolverConfig() {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(solverConfigResource);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         // buildAndSolve() fills in minutesSpentLimit
         solverConfig.setTerminationConfig(new TerminationConfig());
         if (MOVE_THREAD_COUNT_OVERRIDE != null) {

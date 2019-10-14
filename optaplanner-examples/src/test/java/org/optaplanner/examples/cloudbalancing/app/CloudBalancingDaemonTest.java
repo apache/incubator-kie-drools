@@ -28,7 +28,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
@@ -125,7 +124,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     }
 
     protected Solver<CloudBalance> buildSolver() {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG);
         solverConfig.setDaemon(true);
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreFeasible(true));
         SolverFactory<CloudBalance> solverFactory = SolverFactory.create(solverConfig);

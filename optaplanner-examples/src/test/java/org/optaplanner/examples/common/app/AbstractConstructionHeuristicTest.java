@@ -27,7 +27,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverConfigs;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 
@@ -64,7 +63,7 @@ public abstract class AbstractConstructionHeuristicTest<Solution_> extends Abstr
 
     @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverConfig solverConfig = SolverConfigs.createFromXmlResource(commonApp.getSolverConfigResource());
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(commonApp.getSolverConfigResource());
         solverConfig.setTerminationConfig(new TerminationConfig());
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
