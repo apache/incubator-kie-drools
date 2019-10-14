@@ -32,6 +32,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
@@ -56,7 +57,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     @Override
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
-                                                  ExpressionEvaluator expressionEvaluator,
+                                                  ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                                   SimulationDescriptor simulationDescriptor) {
         if (!Type.RULE.equals(simulationDescriptor.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
@@ -74,9 +75,10 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         scenarioRunnerData.getExpects().stream()
                 .filter(ScenarioExpect::isNewFact)
                 .flatMap(output -> output.getExpectedResult().stream()
-                        .map(factMappingValue -> new ScenarioResult(output.getFactIdentifier(), factMappingValue)))
+                        .map(ScenarioResult::new))
                 .forEach(scenarioResult -> {
                     Class<?> clazz = ScenarioBeanUtil.loadClass(scenarioResult.getFactIdentifier().getClassName(), kieContainer.getClassLoader());
+                    ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(scenarioResult.getFactMappingValue());
                     scenarioRunnerData.addResult(scenarioResult);
                     ruleScenarioExecutableBuilder.addInternalCondition(clazz,
                                                                        createExtractorFunction(expressionEvaluator, scenarioResult.getFactMappingValue(), simulationDescriptor),
@@ -104,7 +106,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     @Override
     protected void verifyConditions(SimulationDescriptor simulationDescriptor,
                                     ScenarioRunnerData scenarioRunnerData,
-                                    ExpressionEvaluator expressionEvaluator,
+                                    ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
 
         for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
@@ -118,15 +120,14 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                 continue;
             }
 
-            getScenarioResultsFromGivenFacts(simulationDescriptor, assertionOnFact, input, expressionEvaluator).forEach(scenarioRunnerData::addResult);
+            getScenarioResultsFromGivenFacts(simulationDescriptor, assertionOnFact, input, expressionEvaluatorFactory).forEach(scenarioRunnerData::addResult);
         }
     }
 
     protected List<ScenarioResult> getScenarioResultsFromGivenFacts(SimulationDescriptor simulationDescriptor,
                                                                     List<ScenarioExpect> scenarioOutputsPerFact,
                                                                     ScenarioGiven input,
-                                                                    ExpressionEvaluator expressionEvaluator) {
-        FactIdentifier factIdentifier = input.getFactIdentifier();
+                                                                    ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
         for (ScenarioExpect scenarioExpect : scenarioOutputsPerFact) {
@@ -136,8 +137,9 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
             for (FactMappingValue expectedResult : scenarioExpect.getExpectedResult()) {
 
+                ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(expectedResult);
+
                 ScenarioResult scenarioResult = fillResult(expectedResult,
-                                                           factIdentifier,
                                                            () -> createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor)
                                                                    .apply(factInstance),
                                                            expressionEvaluator);

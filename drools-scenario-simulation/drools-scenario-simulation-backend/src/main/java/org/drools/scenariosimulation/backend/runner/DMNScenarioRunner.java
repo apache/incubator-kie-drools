@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
-import org.drools.scenariosimulation.backend.expression.DMNFeelExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.kie.api.runtime.KieContainer;
 
 public class DMNScenarioRunner extends AbstractScenarioRunner {
@@ -39,7 +39,13 @@ public class DMNScenarioRunner extends AbstractScenarioRunner {
     }
 
     public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios, String fileName) {
-        super(kieContainer, simulationDescriptor, scenarios, fileName, DMNFeelExpressionEvaluator::new);
+        super(kieContainer,
+              simulationDescriptor,
+              scenarios,
+              fileName,
+              ExpressionEvaluatorFactory.create(
+                      kieContainer.getClassLoader(),
+                      simulationDescriptor.getType()));
     }
 
     @Override

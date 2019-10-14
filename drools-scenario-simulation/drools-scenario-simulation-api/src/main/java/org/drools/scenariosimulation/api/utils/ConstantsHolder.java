@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.scenariosimulation.backend.interfaces;
+package org.drools.scenariosimulation.api.utils;
 
 /**
- * Package meant to contains <b>Functional</b> interfaces
+ * Class which contains shared Constants in Scenario Simulation module
  */
+public class ConstantsHolder {
+
+    /* Constants for manage MVEL expressions */
+    public static final String MVEL_ESCAPE_SYMBOL = "#";
+    public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
+
+    private ConstantsHolder() {
+        // Not instantiable
+    }
+}

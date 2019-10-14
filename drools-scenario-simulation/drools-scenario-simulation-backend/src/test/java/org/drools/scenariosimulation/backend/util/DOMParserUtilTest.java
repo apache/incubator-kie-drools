@@ -32,7 +32,6 @@ import org.w3c.dom.NodeList;
 import static com.github.javaparser.utils.Utils.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class DOMParserUtilTest {
 

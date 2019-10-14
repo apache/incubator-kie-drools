@@ -23,23 +23,21 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 
 public class ScenarioResult {
 
-    private final FactIdentifier factIdentifier;
     private final FactMappingValue factMappingValue;
     private final Object resultValue;
     private boolean result = false;
 
-    public ScenarioResult(FactIdentifier factIdentifier, FactMappingValue factMappingValue) {
-        this(factIdentifier, factMappingValue, null);
+    public ScenarioResult(FactMappingValue factMappingValue) {
+        this(factMappingValue, null);
     }
 
-    public ScenarioResult(FactIdentifier factIdentifier, FactMappingValue factMappingValue, Object resultValue) {
-        this.factIdentifier = factIdentifier;
+    public ScenarioResult(FactMappingValue factMappingValue, Object resultValue) {
         this.factMappingValue = factMappingValue;
         this.resultValue = resultValue;
     }
 
     public FactIdentifier getFactIdentifier() {
-        return factIdentifier;
+        return factMappingValue.getFactIdentifier();
     }
 
     public FactMappingValue getFactMappingValue() {

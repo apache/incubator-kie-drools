@@ -17,13 +17,13 @@
 package org.drools.scenariosimulation.backend.util;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.NotEmptyConstructor;
 import org.drools.scenariosimulation.backend.model.Person;
@@ -32,6 +32,7 @@ import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getField;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
@@ -91,6 +92,14 @@ public class ScenarioBeanUtilTest {
         ScenarioBeanUtil.fillBean(null, paramsToSet, classLoader);
     }
 
+    @Test(expected = ScenarioException.class)
+    public void fillBeanFailWrongTypeTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(Arrays.asList("description"), new ArrayList<>());
+
+        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+    }
+
     @Test
     public void navigateToObjectTest() {
         Dispute dispute = new Dispute();
@@ -113,7 +122,7 @@ public class ScenarioBeanUtilTest {
         List<String> pathToProperty = Arrays.asList("fakeField");
 
         String message = "Impossible to find field with name 'fakeField' in class " + Dispute.class.getCanonicalName();
-        Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, true))
+        assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, true))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage(message);
     }
@@ -124,7 +133,7 @@ public class ScenarioBeanUtilTest {
         List<String> pathToProperty = Arrays.asList("creator", "firstName");
 
         String message = "Impossible to reach field firstName because a step is not instantiated";
-        Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, false))
+        assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, false))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage(message);
     }
@@ -250,24 +259,40 @@ public class ScenarioBeanUtilTest {
         assertNull(convertValue(String.class.getCanonicalName(), revertValue(null), classLoader));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void convertValueFailLoadClassTest() {
-        convertValue("my.NotExistingClass", "Test", classLoader);
+        assertThatThrownBy(() -> convertValue("my.NotExistingClass", "Test", classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Impossible to load ");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void convertValueFailUnsupportedTest() {
-        convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader);
+        assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageEndingWith(" is not supported");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void convertValueFailPrimitiveNullTest() {
-        convertValue("int", null, classLoader);
+        assertThatThrownBy(() -> convertValue("int", null, classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(" is not a String or an instance of");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void convertValueFailNotStringOrTypeTest() {
-        convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
+        assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Object 1 is not a String or an instance of");
+    }
+
+    @Test
+    public void convertValueFailParsing() {
+        String integerCanonicalName = Integer.class.getCanonicalName();
+        assertThatThrownBy(() -> convertValue(integerCanonicalName, "wrongValue", classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Impossible to parse 'wrongValue' as " + integerCanonicalName);
     }
 
     @Test
@@ -275,11 +300,11 @@ public class ScenarioBeanUtilTest {
         assertEquals(String.class, loadClass(String.class.getCanonicalName(), classLoader));
         assertEquals(int.class, loadClass(int.class.getCanonicalName(), classLoader));
 
-        Assertions.assertThatThrownBy(() -> loadClass(null, classLoader))
+        assertThatThrownBy(() -> loadClass(null, classLoader))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Impossible to load class null");
 
-        Assertions.assertThatThrownBy(() -> loadClass("NotExistingClass", classLoader))
+        assertThatThrownBy(() -> loadClass("NotExistingClass", classLoader))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Impossible to load class NotExistingClass");
     }
@@ -289,7 +314,7 @@ public class ScenarioBeanUtilTest {
         assertNotNull(getField(Person.class, "firstName"));
         assertNotNull(getField(SubPerson.class, "firstName"));
         assertNotNull(getField(SubPerson.class, "additionalField"));
-        Assertions.assertThatThrownBy(() -> getField(Person.class, "notExistingField"))
+        assertThatThrownBy(() -> getField(Person.class, "notExistingField"))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessageStartingWith("Impossible to find field with name ");
     }

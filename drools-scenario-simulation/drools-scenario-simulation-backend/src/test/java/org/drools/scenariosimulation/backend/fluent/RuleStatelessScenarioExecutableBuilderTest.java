@@ -24,7 +24,9 @@ import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.fluent.impl.Batch;
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
@@ -83,6 +85,8 @@ public class RuleStatelessScenarioExecutableBuilderTest {
 
     @Test
     public void generateCommands() {
+        FactMappingValue emptyFMV = new FactMappingValue(FactIdentifier.EMPTY, ExpressionIdentifier.DESCRIPTION, null);
+
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
 
         Command<ExecutionResults> batchCommand = builder.generateCommands(null);
@@ -109,7 +113,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
         assertTrue(verifyCommand(batchCommand, InsertElementsCommand.class));
         assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
 
-        builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(FactIdentifier.EMPTY, null));
+        builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(emptyFMV, null));
         batchCommand = builder.generateCommands(null);
         assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
         assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));

@@ -197,7 +197,7 @@ public class AbstractExpressionEvaluatorTest {
         }
 
         @Override
-        public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw) {
+        public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
             throw new UnsupportedOperationException();
         }
 

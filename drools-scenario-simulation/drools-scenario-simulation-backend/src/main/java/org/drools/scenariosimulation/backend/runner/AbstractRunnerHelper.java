@@ -35,6 +35,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
@@ -51,25 +52,25 @@ import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.c
 
 public abstract class AbstractRunnerHelper {
 
-    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluator expressionEvaluator, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
+    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
 
         Scenario scenario = scenarioWithIndex.getScenario();
 
-        extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluator)
+        extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluatorFactory)
                 .forEach(scenarioRunnerData::addGiven);
 
         extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addExpect);
 
         Map<String, Object> requestContext = executeScenario(kieContainer,
                                                              scenarioRunnerData,
-                                                             expressionEvaluator,
+                                                             expressionEvaluatorFactory,
                                                              simulationDescriptor);
 
         scenarioRunnerData.setMetadata(extractResultMetadata(requestContext, scenarioWithIndex));
 
         verifyConditions(simulationDescriptor,
                          scenarioRunnerData,
-                         expressionEvaluator,
+                         expressionEvaluatorFactory,
                          requestContext);
 
         validateAssertion(scenarioRunnerData.getResults(),
@@ -79,26 +80,37 @@ public abstract class AbstractRunnerHelper {
     protected List<ScenarioGiven> extractGivenValues(SimulationDescriptor simulationDescriptor,
                                                      List<FactMappingValue> factMappingValues,
                                                      ClassLoader classLoader,
-                                                     ExpressionEvaluator expressionEvaluator) {
+                                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         List<ScenarioGiven> scenarioGiven = new ArrayList<>();
 
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
                 groupByFactIdentifierAndFilter(factMappingValues, FactMappingType.GIVEN);
 
+        boolean hasError = false;
+
         for (Map.Entry<FactIdentifier, List<FactMappingValue>> entry : groupByFactIdentifier.entrySet()) {
 
-            FactIdentifier factIdentifier = entry.getKey();
+            try {
 
-            // for each fact, create a map of path to fields and values to set
-            Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
-                                                                       factIdentifier,
-                                                                       entry.getValue(),
-                                                                       expressionEvaluator);
+                FactIdentifier factIdentifier = entry.getKey();
 
-            Object bean = getDirectMapping(paramsForBean)
-                    .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
+                // for each fact, create a map of path to fields and values to set
+                Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
+                                                                           factIdentifier,
+                                                                           entry.getValue(),
+                                                                           expressionEvaluatorFactory);
 
-            scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
+                Object bean = getDirectMapping(paramsForBean)
+                        .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
+
+                scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
+            } catch(Exception e) {
+                hasError = true;
+            }
+        }
+
+        if (hasError) {
+            throw new ScenarioException("Error in GIVEN data");
         }
 
         return scenarioGiven;
@@ -164,8 +176,10 @@ public abstract class AbstractRunnerHelper {
     protected Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor,
                                                          FactIdentifier factIdentifier,
                                                          List<FactMappingValue> factMappingValues,
-                                                         ExpressionEvaluator expressionEvaluator) {
+                                                         ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         Map<List<String>, Object> paramsForBean = new HashMap<>();
+
+        boolean hasError = false;
 
         for (FactMappingValue factMappingValue : factMappingValues) {
             ExpressionIdentifier expressionIdentifier = factMappingValue.getExpressionIdentifier();
@@ -176,6 +190,8 @@ public abstract class AbstractRunnerHelper {
             List<String> pathToField = factMapping.getExpressionElementsWithoutClass().stream()
                     .map(ExpressionElement::getStep).collect(toList());
 
+            ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(factMappingValue);
+
             try {
                 Object value = expressionEvaluator.evaluateLiteralExpression(factMapping.getClassName(),
                                                                              factMapping.getGenericTypes(),
@@ -183,8 +199,12 @@ public abstract class AbstractRunnerHelper {
                 paramsForBean.put(pathToField, value);
             } catch (RuntimeException e) {
                 factMappingValue.setExceptionMessage(e.getMessage());
-                throw new ScenarioException(e.getMessage(), e);
+                hasError = true;
             }
+        }
+
+        if (hasError) {
+            throw new ScenarioException("Error in one or more input values");
         }
 
         return paramsForBean;
@@ -195,6 +215,7 @@ public abstract class AbstractRunnerHelper {
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
                 scenarioFailed = true;
+                break;
             }
         }
 
@@ -204,20 +225,27 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected ScenarioResult fillResult(FactMappingValue expectedResult,
-                                        FactIdentifier factIdentifier,
                                         Supplier<ResultWrapper<?>> resultSupplier,
                                         ExpressionEvaluator expressionEvaluator) {
         ResultWrapper<?> resultValue = resultSupplier.get();
 
-        if (!resultValue.isSatisfied() && resultValue.getErrorMessage().isPresent()) {
-            expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
-        } else if (!resultValue.isSatisfied()) {
-            expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
-        } else {
+        if (resultValue.isSatisfied()) {
+            // result is satisfied so clean up previous error state
             expectedResult.resetStatus();
+        } else if (resultValue.getErrorMessage().isPresent()) {
+            // propagate error message
+            expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+        } else {
+            try {
+                // set actual as proposed value
+                expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
+            } catch (Exception e) {
+                // otherwise generic error message
+                expectedResult.setExceptionMessage(e.getMessage());
+            }
         }
 
-        return new ScenarioResult(factIdentifier, expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
+        return new ScenarioResult(expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
     }
 
     protected ResultWrapper getResultWrapper(String className,
@@ -238,7 +266,7 @@ public abstract class AbstractRunnerHelper {
             }
         } catch (Exception e) {
             expectedResult.setExceptionMessage(e.getMessage());
-            throw new ScenarioException(e.getMessage(), e);
+            return createErrorResultWithErrorMessage(e.getMessage());
         }
     }
 
@@ -247,12 +275,12 @@ public abstract class AbstractRunnerHelper {
 
     protected abstract Map<String, Object> executeScenario(KieContainer kieContainer,
                                                            ScenarioRunnerData scenarioRunnerData,
-                                                           ExpressionEvaluator expressionEvaluator,
+                                                           ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                                            SimulationDescriptor simulationDescriptor);
 
     protected abstract void verifyConditions(SimulationDescriptor simulationDescriptor,
                                              ScenarioRunnerData scenarioRunnerData,
-                                             ExpressionEvaluator expressionEvaluator,
+                                             ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                              Map<String, Object> requestContext);
 
     protected abstract Object createObject(String className,

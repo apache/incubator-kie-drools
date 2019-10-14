@@ -30,7 +30,6 @@ public class AuditLog {
     private List<AuditLogLine> auditLogLines = new ArrayList<>();
 
     /**
-     *
      * @return an <b>unmodifiable</b> version of {@link AuditLog#auditLogLines}
      */
     public List<AuditLogLine> getAuditLogLines() {
@@ -52,8 +51,4 @@ public class AuditLog {
     public void addAuditLogLines(List<AuditLogLine> toAdd) {
         auditLogLines.addAll(toAdd);
     }
-
-
-
-
 }

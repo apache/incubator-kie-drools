@@ -18,14 +18,13 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
-import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.runner.Description;
@@ -39,7 +38,7 @@ import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Ty
 public abstract class AbstractScenarioRunner extends Runner {
 
     protected final ClassLoader classLoader;
-    protected final Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory;
+    protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     protected final Description desc;
     protected final KieContainer kieContainer;
     protected final SimulationDescriptor simulationDescriptor;
@@ -50,7 +49,7 @@ public abstract class AbstractScenarioRunner extends Runner {
     public AbstractScenarioRunner(KieContainer kieContainer,
                                   Simulation simulation,
                                   String fileName,
-                                  Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
+                                  ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex(), fileName, expressionEvaluatorFactory);
     }
 
@@ -58,7 +57,7 @@ public abstract class AbstractScenarioRunner extends Runner {
                                   SimulationDescriptor simulationDescriptor,
                                   List<ScenarioWithIndex> scenarios,
                                   String fileName,
-                                  Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
+                                  ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         this.kieContainer = kieContainer;
         this.simulationDescriptor = simulationDescriptor;
         this.scenarios = scenarios;
@@ -111,17 +110,12 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData) {
-        ExpressionEvaluator expressionEvaluator = createExpressionEvaluator();
         newRunnerHelper().run(getKieContainer(),
                               getSimulationDescriptor(),
                               scenarioWithIndex,
-                              expressionEvaluator,
+                              expressionEvaluatorFactory,
                               getClassLoader(),
                               scenarioRunnerData);
-    }
-
-    public ExpressionEvaluator createExpressionEvaluator() {
-        return expressionEvaluatorFactory.apply(classLoader);
     }
 
     public Optional<String> getFileName() {

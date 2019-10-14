@@ -19,7 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
@@ -108,7 +110,10 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         String agendaGroup = "agendaGroup";
         String ruleFlowGroup = "ruleFlowGroup";
 
-        FactIdentifier indexFI = FactIdentifier.INDEX;
+        FactMappingValue indexFMV = new FactMappingValue(
+                FactIdentifier.INDEX,
+                ExpressionIdentifier.INDEX,
+                null);
 
         builder.setActiveAgendaGroup(agendaGroup);
         verify(kieSessionFluentMock, times(1)).setActiveAgendaGroup(eq(agendaGroup));
@@ -122,7 +127,7 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         verify(kieSessionFluentMock, times(1)).insert(eq(toInsert));
         reset(kieContainerFluent);
 
-        builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(indexFI, null));
+        builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(indexFMV, null));
         Map<String, Object> result = builder.run();
 
         verify(kieSessionFluentMock, times(1)).fireAllRules();
