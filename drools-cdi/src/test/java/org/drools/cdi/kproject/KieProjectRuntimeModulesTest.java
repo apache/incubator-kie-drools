@@ -173,11 +173,10 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                                       .list(foundResources)
                                       .stream()
                                       /*
-                                       * This module and uberfire-commons depenency have beans.xml files
+                                       * This module depenency have beans.xml files
                                        * which are found when calling `getResources` with a relative path.
                                        */
-                                      .filter(url -> !url.toString().contains("uberfire-commons")
-                                                      && !url.toString().contains("drools-cdi"))
+                                      .filter(url -> !url.toString().contains("drools-cdi"))
                                       .collect(Collectors.toList());
         assertNotNull(resourcesAsList);
         assertEquals(1, resourcesAsList.size());
