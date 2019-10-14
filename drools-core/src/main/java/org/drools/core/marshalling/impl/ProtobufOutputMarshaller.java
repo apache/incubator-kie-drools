@@ -772,9 +772,12 @@ public class ProtobufOutputMarshaller {
 
             ProtobufMessages.Timers.Builder _timers = ProtobufMessages.Timers.newBuilder();
             for ( TimerJobInstance timer : sortedTimers ) {
-                JobContext jctx = ((SelfRemovalJobContext) timer.getJobContext()).getJobContext();
+                JobContext jctx = timer.getJobContext();
+                if ( jctx instanceof SelfRemovalJobContext ) {
+                    jctx = ((SelfRemovalJobContext) jctx).getJobContext();
+                }
                 if (jctx instanceof ObjectTypeNode.ExpireJobContext &&
-                    !((ObjectTypeNode.ExpireJobContext) jctx).getExpireAction().getFactHandle().isValid()) {
+                    !((ObjectTypeNode.ExpireJobContext) jctx).getExpireAction().getFactHandle().isValid()) {                    
                     continue;
                 }
                 TimersOutputMarshaller writer = outCtx.writersByClass.get( jctx.getClass() );
