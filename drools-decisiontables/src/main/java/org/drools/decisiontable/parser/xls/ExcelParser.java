@@ -167,16 +167,15 @@ public class ExcelParser
                     mergedColStart = cell.getColumnIndex();
                 }
 
-                switch ( cell.getCellType() ) {
-                    case Cell.CELL_TYPE_BOOLEAN:
+                switch ( cell.getCellTypeEnum() ) {
+                    case BOOLEAN:
                         newCell(listeners,
                                 i,
                                 cellNum,
                                 cell.getBooleanCellValue() ? "true" : "false",
                                 mergedColStart);
                         break;
-                    case Cell.CELL_TYPE_FORMULA:
-                        String cellValue = null;
+                    case FORMULA:
                         try {
                             newCell(listeners,
                                     i,
@@ -194,7 +193,7 @@ public class ExcelParser
                                     mergedColStart);
                         }
                         break;
-                    case Cell.CELL_TYPE_NUMERIC:
+                    case NUMERIC:
                         if ( isNumericDisabled(listeners) ) {
                             // don't get a double value. rely on DataFormatter
                         } else {
@@ -230,8 +229,8 @@ public class ExcelParser
     private String tryToReadCachedValue( Cell cell ) {
         DataFormatter formatter = new DataFormatter( Locale.ENGLISH );
         String cachedValue;
-        switch ( cell.getCachedFormulaResultType() ) {
-            case Cell.CELL_TYPE_NUMERIC:
+        switch ( cell.getCachedFormulaResultTypeEnum() ) {
+            case NUMERIC:
                 double num = cell.getNumericCellValue();
                 if ( num - Math.round( num ) != 0 ) {
                     cachedValue = String.valueOf( num );
@@ -240,15 +239,15 @@ public class ExcelParser
                 }
                 break;
 
-            case Cell.CELL_TYPE_STRING:
+            case STRING:
                 cachedValue = cell.getStringCellValue();
                 break;
 
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 cachedValue = String.valueOf( cell.getBooleanCellValue() );
                 break;
 
-            case Cell.CELL_TYPE_ERROR:
+            case ERROR:
                 cachedValue = String.valueOf( cell.getErrorCellValue() );
                 break;
 
@@ -260,10 +259,10 @@ public class ExcelParser
     }
 
     private String getCellValue( final CellValue cv ) {
-        switch ( cv.getCellType() ) {
-            case Cell.CELL_TYPE_BOOLEAN:
+        switch ( cv.getCellTypeEnum() ) {
+            case BOOLEAN:
                 return Boolean.toString( cv.getBooleanValue() );
-            case Cell.CELL_TYPE_NUMERIC:
+            case NUMERIC:
                 return String.valueOf( cv.getNumberValue() );
         }
         return cv.getStringValue();
