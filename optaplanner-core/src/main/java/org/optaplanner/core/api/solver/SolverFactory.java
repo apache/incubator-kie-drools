@@ -40,35 +40,6 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 public abstract class SolverFactory<Solution_> {
 
     // ************************************************************************
-    // Static creation methods: SolverConfig
-    // ************************************************************************
-
-    /**
-     * @param solverConfig never null
-     * @return never null
-     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     */
-    public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
-        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
-        solverConfig = new SolverConfig(solverConfig);
-        return new DefaultSolverFactory<>(solverConfig);
-    }
-
-    /**
-     * As defined by {@link #create(SolverConfig)}.
-     * @param solverConfig never null
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
-     * @return never null
-     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     */
-    public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig, ClassLoader classLoader) {
-        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
-        solverConfig = new SolverConfig(solverConfig);
-        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
-    }
-
-    // ************************************************************************
     // Static creation methods: XML
     // ************************************************************************
 
@@ -180,6 +151,35 @@ public abstract class SolverFactory<Solution_> {
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlReader(reader, classLoader);
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
+    }
+
+    // ************************************************************************
+    // Static creation methods: SolverConfig
+    // ************************************************************************
+
+    /**
+     * @param solverConfig never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     */
+    public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
+        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        solverConfig = new SolverConfig(solverConfig);
+        return new DefaultSolverFactory<>(solverConfig);
+    }
+
+    /**
+     * As defined by {@link #create(SolverConfig)}.
+     * @param solverConfig never null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     */
+    public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig, ClassLoader classLoader) {
+        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
