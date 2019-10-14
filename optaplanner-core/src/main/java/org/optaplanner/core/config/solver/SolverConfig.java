@@ -66,8 +66,8 @@ import org.slf4j.LoggerFactory;
 import static org.apache.commons.lang3.ObjectUtils.*;
 
 /**
- * To read from XML, use {@link #createFromXmlResource(String)}.
- * To build a {@link SolverFactory}, use {@link SolverFactory#create(SolverConfig)}.
+ * To read it from XML, use {@link #createFromXmlResource(String)}.
+ * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
@@ -241,7 +241,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Allows you to programmatically change the {@link SolverConfig} per concurrent request,
      * based on a template solver config,
      * by building a separate {@link SolverFactory} with {@link SolverFactory#create(SolverConfig)}
-     * and a separate {@link Solver} per request.
+     * and a separate {@link Solver} per request to avoid race conditions.
      * @param inheritedConfig never null
      */
     public SolverConfig(SolverConfig inheritedConfig) {

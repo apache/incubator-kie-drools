@@ -46,8 +46,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class DefaultPartitionedSearchPhaseTest {
 
@@ -83,6 +83,9 @@ public class DefaultPartitionedSearchPhaseTest {
         solverConfig.setMoveThreadCount(moveThreadCount);
         PartitionedSearchPhaseConfig partitionedSearchPhaseConfig = new PartitionedSearchPhaseConfig();
         partitionedSearchPhaseConfig.setSolutionPartitionerClass(TestdataSolutionPartitioner.class);
+        Map<String, String> solutionPartitionerCustomProperties = new HashMap<>();
+        solutionPartitionerCustomProperties.put("partSize", Integer.toString(partSize));
+        partitionedSearchPhaseConfig.setSolutionPartitionerCustomProperties(solutionPartitionerCustomProperties);
         solverConfig.setPhaseConfigList(Arrays.asList(partitionedSearchPhaseConfig));
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
@@ -91,7 +94,6 @@ public class DefaultPartitionedSearchPhaseTest {
         }
         partitionedSearchPhaseConfig.setPhaseConfigList(
                 Arrays.asList(constructionHeuristicPhaseConfig, localSearchPhaseConfig));
-        setPartSize(solverConfig, partSize);
         return SolverFactory.create(solverConfig);
     }
 
@@ -106,14 +108,6 @@ public class DefaultPartitionedSearchPhaseTest {
                 .collect(Collectors.toList())
         );
         return solution;
-    }
-
-    private static void setPartSize(SolverConfig solverConfig, int partSize) {
-        PartitionedSearchPhaseConfig phaseConfig
-                = (PartitionedSearchPhaseConfig) solverConfig.getPhaseConfigList().get(0);
-        Map<String, String> map = new HashMap<>();
-        map.put("partSize", Integer.toString(partSize));
-        phaseConfig.setSolutionPartitionerCustomProperties(map);
     }
 
     @Test(timeout = 5_000L)

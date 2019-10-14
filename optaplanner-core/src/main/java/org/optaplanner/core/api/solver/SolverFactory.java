@@ -49,11 +49,13 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
+        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig);
     }
 
     /**
-     * See {@link #create(SolverConfig)}.
+     * As defined by {@link #create(SolverConfig)}.
      * @param solverConfig never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
@@ -61,6 +63,8 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig, ClassLoader classLoader) {
+        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
@@ -78,11 +82,11 @@ public abstract class SolverFactory<Solution_> {
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        return create(solverConfig);
+        return new DefaultSolverFactory<>(solverConfig);
     }
 
     /**
-     * See {@link #createFromXmlResource(String)}.
+     * As defined by {@link #createFromXmlResource(String)}.
      * @param solverConfigResource never null, a classpath resource
      * as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -92,7 +96,7 @@ public abstract class SolverFactory<Solution_> {
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
-        return create(solverConfig, classLoader);
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
     /**
@@ -107,11 +111,11 @@ public abstract class SolverFactory<Solution_> {
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile);
-        return create(solverConfig);
+        return new DefaultSolverFactory<>(solverConfig);
     }
 
     /**
-     * See {@link #createFromXmlFile(File)}.
+     * As defined by {@link #createFromXmlFile(File)}.
      * @param solverConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
@@ -120,7 +124,7 @@ public abstract class SolverFactory<Solution_> {
      */
     public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile, classLoader);
-        return create(solverConfig, classLoader);
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
     /**
@@ -133,7 +137,7 @@ public abstract class SolverFactory<Solution_> {
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in) {
         SolverConfig solverConfig = SolverConfig.createFromXmlInputStream(in);
-        return create(solverConfig);
+        return new DefaultSolverFactory<>(solverConfig);
     }
 
     /**
@@ -148,7 +152,7 @@ public abstract class SolverFactory<Solution_> {
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlInputStream(in, classLoader);
-        return create(solverConfig, classLoader);
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
     /**
@@ -161,7 +165,7 @@ public abstract class SolverFactory<Solution_> {
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlReader(reader);
-        return create(solverConfig);
+        return new DefaultSolverFactory<>(solverConfig);
     }
 
     /**
@@ -176,7 +180,7 @@ public abstract class SolverFactory<Solution_> {
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlReader(reader, classLoader);
-        return create(solverConfig, classLoader);
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
 
     // ************************************************************************
@@ -194,11 +198,11 @@ public abstract class SolverFactory<Solution_> {
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createEmpty() {
-        return create(new SolverConfig());
+        return new DefaultSolverFactory<>(new SolverConfig());
     }
 
     /**
-     * See {@link #createEmpty()}.
+     * As defined by {@link #createEmpty()}.
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
      * @return never null
@@ -208,7 +212,7 @@ public abstract class SolverFactory<Solution_> {
      */
     @Deprecated
     public static <Solution_> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
-        return create(new SolverConfig(), classLoader);
+        return new DefaultSolverFactory<>(new SolverConfig(), new SolverConfigContext(classLoader));
     }
 
     // ************************************************************************
