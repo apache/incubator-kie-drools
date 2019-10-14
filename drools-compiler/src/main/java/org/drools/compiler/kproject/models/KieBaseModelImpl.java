@@ -424,7 +424,7 @@ public class KieBaseModelImpl
             }
 
             String sessionsPool = reader.getAttribute( "sessionsPool" );
-            if ( sequential != null ) {
+            if ( sessionsPool != null ) {
                 kBase.setSessionsPool( SessionsPoolOption.get( Integer.parseInt( sessionsPool ) ) );
             }
 
