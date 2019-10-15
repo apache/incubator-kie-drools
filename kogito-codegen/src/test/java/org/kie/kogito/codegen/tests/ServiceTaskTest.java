@@ -128,9 +128,16 @@ public class ServiceTaskTest extends AbstractCodegenTest {
     }
 
     @Test
-    public void malformedShouldThrowException() {
+    public void malformedShouldThrowException() throws Exception {
         assertThrows(ProcessCodegenException.class, () -> {
             generateCodeProcessesOnly("servicetask/ServiceProcessMalformed.bpmn2");
         });
     }
+
+    @Test
+    public void shouldInferMethodSignatureFromClass() throws Exception {
+        // should no throw
+        generateCodeProcessesOnly("servicetask/ServiceProcessInferMethod.bpmn2");
+    }
+
 }

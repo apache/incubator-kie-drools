@@ -16,6 +16,9 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -41,6 +44,13 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 public class WorkItemNodeVisitor extends AbstractVisitor {
+
+    private final ClassLoader contextClassLoader;
+
+    public WorkItemNodeVisitor(ClassLoader contextClassLoader) {
+        this.contextClassLoader = contextClassLoader;
+    }
+
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
@@ -76,6 +86,10 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
                     .validate();
 
             workName = interfaceName + "." + operationName;
+
+            if (isDefaultParameterType(type)) {
+                type = inferParameterType(workItemNode.getName(),  interfaceName, operationName, type);
+            }
             
             CompilationUnit handlerClass = generateHandlerClassForService(interfaceName, operationName, type, "Parameter");
             
@@ -83,6 +97,25 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         }
         
         return workName;
+    }
+
+    // assume 1 single arg as above
+    private String inferParameterType(String nodeName, String interfaceName, String operationName, String defaultType) {
+        try {
+            Class<?> i = contextClassLoader.loadClass(interfaceName);
+            for (Method m : i.getMethods()) {
+                if (m.getName().equals(operationName) && m.getParameterCount() == 1) {
+                    return m.getParameterTypes()[0].getCanonicalName();
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(MessageFormat.format("Invalid work item \"{0}\": class not found for interfaceName \"{1}\"", nodeName, interfaceName));
+        }
+        throw new IllegalArgumentException(MessageFormat.format("Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"", nodeName, operationName, interfaceName));
+    }
+
+    private boolean isDefaultParameterType(String type) {
+        return type.equals("java.lang.Object") || type.equals("Object");
     }
 
     protected CompilationUnit generateHandlerClassForService(String interfaceName, String operation, String paramType, String paramName) {

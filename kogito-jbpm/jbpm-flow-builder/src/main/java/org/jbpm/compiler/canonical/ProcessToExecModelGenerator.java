@@ -86,7 +86,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         this.nodesVisitors.put(ActionNode.class, new ActionNodeVisitor());
         this.nodesVisitors.put(EndNode.class, new EndNodeVisitor());
         this.nodesVisitors.put(HumanTaskNode.class, new HumanTaskNodeVisitor());
-        this.nodesVisitors.put(WorkItemNode.class, new WorkItemNodeVisitor());
+        this.nodesVisitors.put(WorkItemNode.class, new WorkItemNodeVisitor(contextClassLoader));
         this.nodesVisitors.put(SubProcessNode.class, new LambdaSubProcessNodeVisitor());
         this.nodesVisitors.put(Split.class, new SplitNodeVisitor());
         this.nodesVisitors.put(Join.class, new JoinNodeVisitor());
