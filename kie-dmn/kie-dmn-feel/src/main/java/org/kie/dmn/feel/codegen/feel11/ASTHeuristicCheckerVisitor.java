@@ -27,7 +27,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
-import org.kie.dmn.feel.runtime.events.ASTEventBase;
+import org.kie.dmn.feel.runtime.events.ASTHeuristicCheckEvent;
 import org.kie.dmn.feel.util.Msg;
 
 public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>> {
@@ -46,7 +46,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     @Override
     public List<FEELEvent> visit(InfixOpNode n) {
         if (n.getRight() instanceof UnaryTestNode) {
-            return Arrays.asList(new ASTEventBase(Severity.WARN, Msg.createMessage(Msg.COMPARING_TO_UT, n.getOperator().symbol + " (" + n.getRight().getText()) + ")", n));
+            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.COMPARING_TO_UT, n.getOperator().symbol + " (" + n.getRight().getText()) + ")", n));
         }
         return defaultVisit(n);
     }
@@ -54,7 +54,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     @Override
     public List<FEELEvent> visit(UnaryTestNode n) {
         if (n.getValue() instanceof UnaryTestNode) {
-            return Arrays.asList(new ASTEventBase(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getOperator().symbol + " (" + n.getValue().getText()) + ")", n));
+            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getOperator().symbol + " (" + n.getValue().getText()) + ")", n));
         }
         return defaultVisit(n);
     }
