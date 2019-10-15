@@ -51,6 +51,8 @@ public final class Msg {
     public static final Message2 EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN = new Message2("Unary test '%s' does not return a boolean result: '%s'");
     public static final Message2 IF_MISSING_ELSE = new Message2("Detected 'if' expression without 'else' part (near: %s) [%s]");
     public static final Message2 IF_MISSING_THEN = new Message2("Detected 'if' expression without 'then' part (near: %s) [%s]");
+    public static final Message1 COMPARING_TO_UT = new Message1("Comparing to a unary test is not semantically defined: %s");
+    public static final Message1 UT_OF_UT = new Message1("An unary test of a unary test is not semantically defined: %s");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);

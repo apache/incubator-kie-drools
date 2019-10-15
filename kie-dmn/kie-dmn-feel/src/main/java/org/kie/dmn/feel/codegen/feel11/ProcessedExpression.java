@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -39,6 +41,12 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         this.defaultBackend = defaultBackend;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
         ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
+        List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
+        if (!heuristicChecks.isEmpty()) {
+            for (FEELEventListener listener : ctx.getListeners()) {
+                heuristicChecks.forEach(listener::onEvent);
+            }
+        }
     }
 
     public CompiledFEELExpression getResult() {
