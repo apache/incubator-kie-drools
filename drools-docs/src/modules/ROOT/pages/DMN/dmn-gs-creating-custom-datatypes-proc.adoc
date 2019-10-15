@@ -50,15 +50,15 @@ The following tables list the `Violation`, `Driver`, and `Fine` custom data type
 |===
 
 .Prerequisites
-* You have created the traffic violations DMN decision requirements diagram (DRDs) in {CENTRAL}.
+* You created the traffic violations DMN decision requirements diagram (DRDs) in {CENTRAL}.
 
 .Procedure
-. From the *Data Types* tab, click *Add*.
-. First, create the *tDriver* custom data type. Enter `tDriver` as the *Name* and select `Structure` as the *Type*. Click *Save* for each data type that you add.
+. To create the *tDriver* custom data type, click *Add* on the *Data Types* tab, enter `tDriver` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
 +
 .The tDriver custom data type
 image::dmn/dmn-tDriver-custom-datatype.png[]
-. Next to the *tDriver* data type, click the three vertical dots, select *Insert nested field*, and add the following nested data types. Click *Save* for each data type that you add.
+. To create the first nested data type, enter `Name` in the *Name* field of the nested data type, select *String* from the *Type* list and click *Save*.
+. For each of the remaining nested data types, click the three vertical dots next to the *tDriver* data type, select *Insert nested field*, and add the following nested data types. Click *Save* for each nested data type you add.
 +
 * *Name* (string)
 * *Age* (number)
@@ -66,12 +66,12 @@ image::dmn/dmn-tDriver-custom-datatype.png[]
 * *City* (string)
 * *Points* (number)
 
-. Next, create the *tViolation* data type. From the *Data Types* tab, click *Add*.
+. To create the *tViolation* custom data type, click *Add* on the *Data Types* tab, enter `tViolation` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
 +
 .The tViolation custom data type
 image::dmn/dmn-tViolation-custom-datatype.png[]
-. Enter `tViolation` as the *Name* and select `Structure` as the *Type*. Click *Save* to save the data type.
-. Next to the *tViolation* data type, click the three vertical dots, select *Insert nested field*, and add the following nested data types. Click *Save* for each data type that you add.
+. To create the first nested data type, enter `Code` in the *Name* field of the nested data type, select *String* from the *Type* list and click *Save*.
+. For each of the remaining nested data types, click the three vertical dots next to the *tViolation* data type, select *Insert nested field*, and add the following nested data types. Click *Save* for each nested data type that you add.
 +
 * *Code* (string)
 * *Date* (date)
@@ -79,18 +79,19 @@ image::dmn/dmn-tViolation-custom-datatype.png[]
 * *Speed Limit* (number)
 * *Actual Speed* (number)
 
-. For the nested `Type` data type that you created, click *Edit* -> *Constraints* -> *Enumeration* and add the following constraints. Click the check icon image:dmn/dmn-datatype-constraints-tickmark.png[] to save each enumeration constraint that you add.
+. To add the following constraints to the `Type` nested data type, click *Edit* -> *Constraints* -> *Enumeration* and add the following constraints. Click the check icon image:dmn/dmn-datatype-constraints-tickmark.png[] to save each enumeration constraint that you add.
 +
 * `"speed"`
 * `"parking"`
-* `"Driving under the influence?"`
+* `"driving under the influence"`
 
-. Finally, create the *tFine* data type. From the *Data Types* tab, click *Add*.
+. To create the *tFine* custom data type, click *Add* on the *Data Types* tab, enter `tFine` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
 +
 .The tFine custom data type
 image::dmn/dmn-tFine-custom-datatype.png[]
-. Enter `tFine` as the *Name* and select `Structure` as the *Type*. Click *Save* to save the data type.
-. Next to the *tFine* data type, click the three vertical dots, select *Insert nested field*, and add the following nested data types. Click *Save* for each data type that you add.
+. To create the first nested data type, enter `Amount` in the *Name* field of the nested data type, select *Number* from the *Type* list and click *Save*.
+. For each of the remaining nested data types, click the three vertical dots next to the *tFine* data type, select *Insert nested field*, and add the following nested data types. Click *Save* for each nested data type that you add.
++
 * *Amount* (number)
 * *Points* (number)
 
