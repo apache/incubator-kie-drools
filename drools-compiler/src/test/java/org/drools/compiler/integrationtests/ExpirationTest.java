@@ -26,10 +26,13 @@ import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BasicEvent;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
@@ -678,5 +681,69 @@ public class ExpirationTest {
         kieSession.insert(new DummyEvent(2, currentTime - Duration.ofHours(8).toMillis()));
 
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCollectWithExpiredEvent() {
+        // DROOLS-4626
+        testCollectExpiredEvent(true);
+    }
+
+    @Test
+    public void testCollectWithoutExpiredEvent() {
+        testCollectExpiredEvent(false);
+    }
+
+    private void testCollectExpiredEvent(boolean expired) {
+
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                " import java.util.Collection\n" +
+                " declare DummyEvent\n" +
+                "     @role( event )\n" +
+                "     @timestamp( eventTimestamp )\n" +
+                "     @expires( 3d )\n" +
+                " end\n" +
+                " rule R when\n" +
+                "     $listEvent: Collection(size >= 2) from collect (DummyEvent())" +
+                " then \n" +
+                "	  System.out.println(\"R is fired\");  \n" +
+                " end\n";
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EqualityBehaviorOption.EQUALITY);
+        baseConfig.setOption(EventProcessingOption.STREAM);
+
+        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        final KieBase kieBase = helper.build(baseConfig);
+        final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
+
+        //clock init to current time
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime);
+
+        kieSession.fireAllRules();
+
+        //facts inserts
+        final DummyEvent event1 = new DummyEvent(1, currentTime);
+
+        long timestamp = currentTime;
+
+        if (expired) {
+            timestamp = currentTime - Duration.ofDays(8).toMillis();	//8 days in the past...
+        }
+
+        final DummyEvent event2 = new DummyEvent(2, timestamp);
+
+        kieSession.insert(event1);
+        kieSession.insert(event2);
+
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }
