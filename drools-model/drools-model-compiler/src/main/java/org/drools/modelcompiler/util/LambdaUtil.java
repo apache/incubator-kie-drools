@@ -18,10 +18,10 @@ public class LambdaUtil {
 
         DrlxParseUtil.RemoveRootNodeResult removeRootNodeResult = DrlxParseUtil.removeRootNode(l2ExprStmt.getExpression());
 
-        NodeWithOptionalScope<?> newExpr = (NodeWithOptionalScope<?>) removeRootNodeResult.getWithoutRootNode();
+        NodeWithOptionalScope<?> newExpr = (NodeWithOptionalScope<?>) removeRootNodeResult.getFirstChild();
 
-        Expression expr = (Expression) newExpr.setScope(l1ExprStmt.getExpression());
-        l1.setBody(new ExpressionStmt(expr));
+        newExpr.setScope(l1ExprStmt.getExpression());
+        l1.setBody(new ExpressionStmt(removeRootNodeResult.getWithoutRootNode()));
         return l1;
     }
 }

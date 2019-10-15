@@ -267,9 +267,13 @@ public abstract class AbstractExpressionBuilder {
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!")));
     }
 
-    protected String getIndexIdArgument( SingleDrlxParseSuccess drlxParseResult, TypedExpression left ) {
+    String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {
         return isAccessibleProperties( drlxParseResult.getPatternType(), left.getFieldName() ) ?
                 context.getPackageModel().getDomainClassName( drlxParseResult.getPatternType() ) + ".getPropertyIndex(\"" + left.getFieldName() + "\")" :
                 "-1";
+    }
+
+    boolean shouldBuildReactOn(SingleDrlxParseSuccess drlxParseResult) {
+        return !drlxParseResult.isTemporal() && !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() );
     }
 }
