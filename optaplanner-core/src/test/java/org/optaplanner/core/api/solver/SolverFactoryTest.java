@@ -23,8 +23,12 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import org.junit.Test;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -91,6 +95,26 @@ public class SolverFactoryTest {
             Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlFile(file, classLoader);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void create() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void create_classLoader() {
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
+                .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataScoreRules.drl"));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig, classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
