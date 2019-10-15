@@ -20,7 +20,7 @@ import org.kie.dmn.feel.lang.ast.ASTNode;
 
 public class ASTHeuristicCheckEvent extends ASTEventBase {
 
-    public ASTHeuristicCheckEvent(Severity severity, String message, ASTNode astNode, Throwable sourceException) {
+    public ASTHeuristicCheckEvent(Severity severity, String message, ASTNode astNode) {
         super(severity, message, astNode, null);
     }
 
