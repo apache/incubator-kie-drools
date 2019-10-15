@@ -36,7 +36,9 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     public List<FEELEvent> defaultVisit(ASTNode n) {
         List<FEELEvent> result = new ArrayList<>();
         for (ASTNode node : n.getChildrenNode()) {
-            result.addAll(node.accept(this));
+            if (node != null) {
+                result.addAll(node.accept(this));
+            }
         }
         return result;
     }
