@@ -29,6 +29,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     private final List<NewBinding> newBindingResults = new ArrayList<>();
     private final List<Expression> newBindingsConcatenated = new ArrayList<>();
+    private MethodCallExpr accumulateDSL;
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
@@ -47,6 +48,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     @Override
     protected void processNewBinding(MethodCallExpr accumulateDSL) {
+        this.accumulateDSL = accumulateDSL;
         optNewBinding.ifPresent(newBinding -> {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
@@ -67,7 +69,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString).ifPresent(inputName -> {
                 lastBinding.getParentNode().ifPresent(n -> {
                     Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-                    n.replace(input);
+                    accumulateDSL.setArgument(0, input);
                     newBindingsConcatenated.add(newBindingExpression);
                 });
             });
