@@ -29,7 +29,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     private final List<NewBinding> newBindingResults = new ArrayList<>();
     private final List<Expression> newBindingsConcatenated = new ArrayList<>();
-    private MethodCallExpr accumulateDSL;
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
@@ -48,7 +47,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     @Override
     protected void processNewBinding(MethodCallExpr accumulateDSL) {
-        this.accumulateDSL = accumulateDSL;
         optNewBinding.ifPresent(newBinding -> {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
@@ -56,7 +54,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             if (patterBinding.size() == 2 && findLastBinding(allExpressions) != null) {
                 Optional<MethodCallExpr> lastBinding = Optional.ofNullable(findLastBinding(allExpressions));
-                composeTwoBindingIntoExpression(newBindingExpression, lastBinding);
+                composeTwoBindingIntoExpression(newBindingExpression, lastBinding, accumulateDSL);
             } else {
                 replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
                 newBindingResults.add( newBinding );
@@ -64,16 +62,19 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         });
     }
 
-    private void composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression, Optional<MethodCallExpr> optLastBinding) {
-        optLastBinding.ifPresent(lastBinding -> {
-            composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString).ifPresent(inputName -> {
-                lastBinding.getParentNode().ifPresent(n -> {
-                    Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-                    accumulateDSL.setArgument(0, input);
-                    newBindingsConcatenated.add(newBindingExpression);
-                });
-            });
-        });
+    private void composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression,
+                                                 Optional<MethodCallExpr> optLastBinding,
+                                                 MethodCallExpr accumulateDSL) {
+        optLastBinding.ifPresent(lastBinding ->
+                                         composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString)
+                                                 .ifPresent(inputName -> lastBinding.getParentNode()
+                                                         .ifPresent(n -> replaceBindWithInput(newBindingExpression, accumulateDSL, inputName))));
+    }
+
+    private void replaceBindWithInput(MethodCallExpr newBindingExpression, MethodCallExpr accumulateDSL, String inputName) {
+        Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
+        accumulateDSL.setArgument(0, input);
+        newBindingsConcatenated.add(newBindingExpression);
     }
 
     private Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
