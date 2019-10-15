@@ -28,8 +28,10 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
@@ -102,8 +104,13 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
             return true;
         }
+
+        Map<String, Type> variables = new HashMap<>();
+        variables.put("?", BuiltInType.UNKNOWN);
+        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression, variables));
+
         EvaluationContext evaluationContext = newEvaluationContext();
-        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression));
+        evaluationContext.setValue("?", resultValue);
         return unaryTests.stream()
                 .allMatch(unaryTest -> Optional
                         .ofNullable(unaryTest.apply(evaluationContext, resultValue))
