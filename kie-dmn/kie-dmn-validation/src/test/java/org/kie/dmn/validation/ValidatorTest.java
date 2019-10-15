@@ -39,6 +39,7 @@ import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -253,7 +254,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/RHDM-1119")
     public void testUNKNOWN_OPERATOR() {
         List<DMNMessage> validate = validator.validate( getReader( "UNKNOWN_OPERATOR.dmn" ),
                                                         VALIDATE_SCHEMA,
