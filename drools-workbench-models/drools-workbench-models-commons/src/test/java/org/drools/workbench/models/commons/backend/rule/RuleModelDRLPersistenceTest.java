@@ -110,16 +110,6 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         }
     }
 
-    private void checkMarshallingUsingDsl(String expected,
-                                          RuleModel m) {
-        String drl = ruleModelPersistence.marshal(m);
-        assertNotNull(drl);
-        if (expected != null) {
-            assertEqualsIgnoreWhitespace(expected,
-                                         drl);
-        }
-    }
-
     /*
      * https://issues.jboss.org/browse/DROOLS-1903
      */
@@ -683,8 +673,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "Send an email to administrator\n" +
                 "end\n";
 
-        checkMarshallingUsingDsl(expected,
-                                 m);
+        checkMarshalling(expected,
+                         m);
 
         String drl = ruleModelPersistence.marshal(m);
         assertEqualsIgnoreWhitespace(expected,
@@ -702,8 +692,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertEquals("Send an email to {administrator}",
                      dslSentence.getDefinition());
 
-        checkMarshallingUsingDsl(expected,
-                                 unmarshalledModel);
+        checkMarshalling(expected,
+                         unmarshalledModel);
     }
 
     @Test
@@ -2058,13 +2048,13 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
             ActionInsertFact celebrateOn = new ActionInsertFact("Birthday");
             celebrateOn.addFieldValue(new ActionFieldValue("dob",
-                                                  "31-Jan-2000",
-                                                  DataType.TYPE_DATE));
+                                                           "31-Jan-2000",
+                                                           DataType.TYPE_DATE));
             model.addRhsItem(celebrateOn);
             ActionInsertFact celebrateOn1 = new ActionInsertFact("Birthday");
             celebrateOn1.addFieldValue(new ActionFieldValue("dobPrecise",
-                                                           "31-Jan-2000",
-                                                           DataType.TYPE_LOCAL_DATE));
+                                                            "31-Jan-2000",
+                                                            DataType.TYPE_LOCAL_DATE));
             model.addRhsItem(celebrateOn1);
 
             String result = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
