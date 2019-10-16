@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -33,6 +34,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import static org.junit.Assert.*;
 
 public class SolverFactoryTest {
+
+    private static File solverTestDir;
+
+    @BeforeClass
+    public static void setup() throws IOException {
+        solverTestDir = new File("target/test/solverTest/");
+        solverTestDir.mkdirs();
+    }
 
     @Test
     public void createFromXmlResource() {
@@ -71,8 +80,6 @@ public class SolverFactoryTest {
 
     @Test
     public void createFromXmlFile() throws IOException {
-        File solverTestDir = new File("target/solverTest/");
-        solverTestDir.mkdirs();
         File file = new File(solverTestDir, "testdataSolverConfig.xml");
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml")) {
@@ -87,8 +94,6 @@ public class SolverFactoryTest {
     public void createFromXmlFile_classLoader() throws IOException {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
-        File solverTestDir = new File("target/solverTest/");
-        solverTestDir.mkdirs();
         File file = new File(solverTestDir, "classloaderTestdataSolverConfig.xml");
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(
                 "org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml")) {

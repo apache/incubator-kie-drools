@@ -18,6 +18,9 @@ package org.optaplanner.benchmark.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -43,9 +46,11 @@ import static org.junit.Assert.*;
 
 public class PlannerBenchmarkFactoryTest {
 
+    private static File benchmarkTestDir;
+
     @BeforeClass
     public static void setup() throws IOException {
-        File benchmarkTestDir = new File("target/benchmarkTest/");
+        benchmarkTestDir = new File("target/test/benchmarkTest/");
         benchmarkTestDir.mkdirs();
         new File(benchmarkTestDir, "input.xml").createNewFile();
         new File(benchmarkTestDir, "output/").mkdir();
@@ -106,9 +111,48 @@ public class PlannerBenchmarkFactoryTest {
     // ************************************************************************
 
     @Test
-    public void benchmarkConfig() {
+    public void createFromXmlResource() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void createFromXmlResource_classLoader() {
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void createFromXmlFile() throws IOException {
+        File file = new File(benchmarkTestDir, "testdataPlannerBenchmarkConfig.xml");
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(
+                "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml")) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlFile(file);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void createFromXmlFile_classLoader() throws IOException {
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
+        File file = new File(benchmarkTestDir, "testdataPlannerBenchmarkConfig.xml");
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(
+                "org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml")) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlFile(file, classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
@@ -147,17 +191,6 @@ public class PlannerBenchmarkFactoryTest {
         plannerBenchmark.benchmark();
     }
 
-    @Test
-    public void benchmarkConfigWithClassLoader() {
-        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
-        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
-        plannerBenchmark.benchmark();
-    }
-
     // ************************************************************************
     // Static creation methods: Freemarker
     // ************************************************************************
@@ -190,6 +223,10 @@ public class PlannerBenchmarkFactoryTest {
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
     }
+
+    // ************************************************************************
+    // Static creation methods: PlannerBenchmarkConfig
+    // ************************************************************************
 
     // ************************************************************************
     // Static creation methods: KieContainer
