@@ -22,7 +22,7 @@ public class DTColumnConfig52
         implements BaseColumn,
                    DiffColumn {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -171,10 +171,12 @@ public class DTColumnConfig52
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DTColumnConfig52)) {
+
+        if(o == null || o.getClass() != this.getClass()){
             return false;
         }
-        if (!super.equals(o)) {
+
+        if (!(o instanceof DTColumnConfig52)) {
             return false;
         }
 
