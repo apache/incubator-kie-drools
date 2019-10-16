@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 
 /**
  * Run this class from the command line interface
@@ -38,15 +39,16 @@ public class OptaPlannerBenchmarkCli {
             System.exit(1);
         }
         File benchmarkDirectory = new File(args[1]);
-        PlannerBenchmarkFactory plannerBenchmarkFactory;
+        PlannerBenchmarkConfig benchmarkConfig;
         if (benchmarkConfigFile.getName().endsWith(".ftl")) {
-            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlFile(benchmarkConfigFile);
+            benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlFile(benchmarkConfigFile);
         } else {
-            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlFile(benchmarkConfigFile);
+            benchmarkConfig = PlannerBenchmarkConfig.createFromXmlFile(benchmarkConfigFile);
         }
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setBenchmarkDirectory(benchmarkDirectory);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
+        benchmarkConfig.setBenchmarkDirectory(benchmarkDirectory);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(benchmarkConfig);
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
+        benchmark.benchmark();
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.impl;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -26,20 +24,20 @@ import org.optaplanner.core.config.SolverConfigContext;
 /**
  * @see PlannerBenchmarkFactory
  */
-public class AbstractPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
+public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
+    protected final PlannerBenchmarkConfig plannerBenchmarkConfig;
     protected final SolverConfigContext solverConfigContext;
 
-    protected PlannerBenchmarkConfig plannerBenchmarkConfig = null;
-
-    public AbstractPlannerBenchmarkFactory() {
-        this(new SolverConfigContext());
+    public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig) {
+        this(plannerBenchmarkConfig, new SolverConfigContext());
     }
 
-    /**
-     * @param solverConfigContext never null
-     */
-    public AbstractPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
+    public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig, SolverConfigContext solverConfigContext) {
+        if (plannerBenchmarkConfig == null) {
+            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") cannot be null.");
+        }
+        this.plannerBenchmarkConfig = plannerBenchmarkConfig;
         this.solverConfigContext = solverConfigContext;
     }
 
@@ -48,35 +46,24 @@ public class AbstractPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     // ************************************************************************
 
     @Override
-    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
-        checkPlannerBenchmarkConfigNotNull();
-        return plannerBenchmarkConfig;
-    }
-
-    @Override
     public PlannerBenchmark buildPlannerBenchmark() {
-        checkPlannerBenchmarkConfigNotNull();
         return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
     }
 
     @Override
     @SafeVarargs
     public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
-        checkPlannerBenchmarkConfigNotNull();
         return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext, problems);
     }
 
     @Override
-    public <Solution_> PlannerBenchmark buildPlannerBenchmark(List<Solution_> problemList) {
-        checkPlannerBenchmarkConfigNotNull();
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext, problemList.toArray());
+    @Deprecated
+    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
+        return plannerBenchmarkConfig;
     }
 
-    public void checkPlannerBenchmarkConfigNotNull() {
-        if (plannerBenchmarkConfig == null) {
-            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
-                    " call configure(...) first.");
-        }
+    public SolverConfigContext getSolverConfigContext() {
+        return solverConfigContext;
     }
 
 }

@@ -46,6 +46,7 @@ public abstract class SolverFactory<Solution_> {
     /**
      * Reads an XML solver configuration from the classpath
      * and uses that {@link SolverConfig} to build a {@link SolverFactory}.
+     * The XML root element must be {@code <solver>}.
      * @param solverConfigResource never null, a classpath resource
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
@@ -159,6 +160,9 @@ public abstract class SolverFactory<Solution_> {
     // ************************************************************************
 
     /**
+     * Uses a {@link SolverConfig} to build a {@link SolverFactory}.
+     * If you don't need to manipulate the {@link SolverConfig} programmatically,
+     * use {@link #createFromXmlResource(String)} instead.
      * @param solverConfig never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -286,6 +290,12 @@ public abstract class SolverFactory<Solution_> {
     // ************************************************************************
 
     /**
+     * Creates a new {@link Solver} instance.
+     * @return never null
+     */
+    public abstract Solver<Solution_> buildSolver();
+
+    /**
      * Deprecated. To configure a {@link SolverFactory} dynamically (without parsing XML each time),
      * use {@link SolverFactory#create(SolverConfig)} instead.
      * <p>
@@ -293,7 +303,7 @@ public abstract class SolverFactory<Solution_> {
      * build a template {@link SolverFactory} from XML
      * and clone it {@link SolverFactory#cloneSolverFactory()} for each request, before before calling this method.
      * @return never null
-     * @deprecated in favor of {@link SolverConfig(SolverConfig)}
+     * @deprecated in favor of {@link SolverConfig#SolverConfig(SolverConfig)}
      * and {@link SolverFactory#create(SolverConfig)}. Will be removed in 8.0.
      */
     @Deprecated
@@ -301,22 +311,16 @@ public abstract class SolverFactory<Solution_> {
 
     /**
      * Deprecated. To configure a {@link SolverFactory} dynamically (without parsing XML each time),
-     * use {@link SolverConfig(SolverConfig)} and {@link SolverFactory#create(SolverConfig)} instead.
+     * use {@link SolverConfig#SolverConfig(SolverConfig)} and {@link SolverFactory#create(SolverConfig)} instead.
      * <p>
      * Build a {@link SolverFactory} quickly (without parsing XML) that builds the exact same {@link Solver}
      * with {@link #buildSolver()}, but can also be modified with {@link #getSolverConfig()} to build a different
      * {@link Solver} without affecting the original {@link SolverFactory}.
      * @return never null, often a different {@link SolverFactory} subclass implementation than this instance
-     * @deprecated in favor of {@link SolverConfig(SolverConfig)}
+     * @deprecated in favor of {@link SolverConfig#SolverConfig(SolverConfig)}
      * and {@link SolverFactory#create(SolverConfig)}. Will be removed in 8.0.
      */
     @Deprecated
     public abstract SolverFactory<Solution_> cloneSolverFactory();
-
-    /**
-     * Creates a new {@link Solver} instance.
-     * @return never null
-     */
-    public abstract Solver<Solution_> buildSolver();
 
 }

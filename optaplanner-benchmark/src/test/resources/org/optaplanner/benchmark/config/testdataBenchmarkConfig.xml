@@ -1,11 +1,17 @@
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
+  <benchmarkDirectory>target/benchmarkTest</benchmarkDirectory>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   <solverBenchmark>
     <name>Entity Tabu Search</name>
     <solver>
-      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>20</secondsSpentLimit>
+      </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
@@ -19,10 +25,6 @@
         <forager/>
       </localSearch>
     </solver>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-    </problemBenchmarks>
     <subSingleCount>2</subSingleCount>
   </solverBenchmark>
 </plannerBenchmark>

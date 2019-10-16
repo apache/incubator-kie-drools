@@ -28,7 +28,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
  */
 public final class DefaultSolverFactory<Solution_> extends SolverFactory<Solution_> {
 
-    private SolverConfig solverConfig = null;
+    private final SolverConfig solverConfig;
     private final SolverConfigContext solverConfigContext;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {

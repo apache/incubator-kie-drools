@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.solver.io;
 
+import java.io.File;
+
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.extended.FileConverter;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.solver.SolverConfig;
 
@@ -52,6 +55,27 @@ public final class XStreamConfigReader {
         return xStream;
     }
 
+    public static XStream buildXStream(ClassLoader classLoader, Class... xStreamAnnotations) {
+        XStream xStream = buildXStream(classLoader);
+        if (xStreamAnnotations.length > 0) {
+            xStream.processAnnotations(xStreamAnnotations);
+            xStream.allowTypes(xStreamAnnotations);
+        }
+        return xStream;
+    }
+
+    public static XStream buildXStreamPortable(ClassLoader classLoader, Class... xStreamAnnotations) {
+        XStream xStream = buildXStream(classLoader, xStreamAnnotations);
+        xStream.registerConverter(new FileConverter() {
+            @Override
+            public String toString(Object obj) {
+                // Write "/" path separators (even on Windows) for portability
+                String path = ((File) obj).getPath();
+                return path == null ? null : path.replace('\\', '/');
+            }
+        });
+        return xStream;
+    }
 
     // ************************************************************************
     // Private constructor

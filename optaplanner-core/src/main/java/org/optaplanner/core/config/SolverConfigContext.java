@@ -17,11 +17,12 @@
 package org.optaplanner.core.config;
 
 import org.kie.api.runtime.KieContainer;
-import org.optaplanner.core.config.solver.SolverConfig;
 
 /**
- * Provided to a {@link SolverConfig#buildSolver(SolverConfigContext)}
- * to inject a reference to containers, .
+ * Do not use this class, it is an internal class.
+ * It should be in impl.
+ * <p>
+ * Will be removed in 8.0.
  */
 public class SolverConfigContext {
 

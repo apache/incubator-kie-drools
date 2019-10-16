@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -32,9 +33,8 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 
-    @Override
-    protected String createSolverConfigResource() {
-        return NQueensApp.SOLVER_CONFIG;
+    public NQueensBenchmarkTest() {
+        super(NQueensApp.SOLVER_CONFIG);
     }
 
     // ************************************************************************
@@ -45,40 +45,41 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     public void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
-        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory();
-        addAllStatistics(plannerBenchmarkFactory);
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("AUTO");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark(problem);
-        plannerBenchmark.benchmark();
+        PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
+        addAllStatistics(benchmarkConfig);
+        benchmarkConfig.setParallelBenchmarkCount("AUTO");
+        PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);
+        benchmark.benchmark();
     }
 
     @Test(timeout = 600000)
     public void benchmark64queensSingleThread() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
-        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory();
-        addAllStatistics(plannerBenchmarkFactory);
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("1");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark(problem);
-        plannerBenchmark.benchmark();
+        PlannerBenchmarkConfig benchmarkConfig= buildPlannerBenchmarkConfig();
+        addAllStatistics(benchmarkConfig);
+        benchmarkConfig.setParallelBenchmarkCount("1");
+        PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);
+        benchmark.benchmark();
     }
 
-    protected void addAllStatistics(PlannerBenchmarkFactory plannerBenchmarkFactory) {
+    protected void addAllStatistics(PlannerBenchmarkConfig benchmarkConfig) {
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
         problemBenchmarksConfig.setSingleStatisticTypeList(Arrays.asList(SingleStatisticType.values()));
         problemBenchmarksConfig.setProblemStatisticTypeList(Arrays.asList(ProblemStatisticType.values()));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().setProblemBenchmarksConfig(problemBenchmarksConfig);
+        benchmarkConfig.getInheritedSolverBenchmarkConfig().setProblemBenchmarksConfig(problemBenchmarksConfig);
     }
 
     @Test
     public void benchmarkDirectoryNameDuplication() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/4queens.xml"));
-        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory();
-        DefaultPlannerBenchmark plannerBenchmark = (DefaultPlannerBenchmark) plannerBenchmarkFactory.buildPlannerBenchmark(problem);
+        PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(benchmarkConfig);
+        DefaultPlannerBenchmark plannerBenchmark = (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(problem);
         plannerBenchmark.benchmarkingStarted();
-        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
-        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
+        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(benchmarkConfig.getBenchmarkDirectory());
+        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(benchmarkConfig.getBenchmarkDirectory());
     }
 
 }

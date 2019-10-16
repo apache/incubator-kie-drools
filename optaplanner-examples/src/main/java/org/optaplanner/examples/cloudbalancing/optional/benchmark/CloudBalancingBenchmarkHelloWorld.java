@@ -22,9 +22,7 @@ import java.util.List;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.aggregator.swingui.BenchmarkAggregatorFrame;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld;
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
 /**
@@ -48,9 +46,8 @@ public class CloudBalancingBenchmarkHelloWorld {
      */
     public static void runBasicBenchmark() {
         // Build the PlannerBenchmark
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(solverFactory);
 
         CloudBalancingGenerator generator = new CloudBalancingGenerator();
         PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(

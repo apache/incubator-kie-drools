@@ -20,7 +20,6 @@ import java.io.File;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.persistence.TennisGenerator;
@@ -34,9 +33,8 @@ public class TennisBenchmarkApp extends LoggingMain {
     private final PlannerBenchmarkFactory benchmarkFactory;
 
     public TennisBenchmarkApp() {
-        SolverFactory<TennisSolution> solverFactory = SolverFactory.createFromXmlResource(TennisApp.SOLVER_CONFIG);
-        benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
-                solverFactory, new File("local/data/tennis"));
+        benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
+                TennisApp.SOLVER_CONFIG, new File("local/data/tennis"));
     }
 
     public void benchmark() {

@@ -50,28 +50,29 @@ If you use ANT, you've probably already copied the required jars from the downlo
 [[runASimpleBenchmark]]
 === Run a Simple Benchmark
 
-To quickly setup a benchmark, create a `PlannerBenchmarkFactory` from your `SolverFactory`,
+To quickly setup a benchmark, create a `PlannerBenchmarkFactory` from your solver configuration XML,
 load a few datasets and benchmark them. For example, with 3 datasets:
 
 [source,java,options="nowrap"]
 ----
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(...);
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(solverFactory);
+PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
+        "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
 
-        CloudBalance dataset1 = ...;
-        CloudBalance dataset2 = ...;
-        CloudBalance dataset3 = ...;
-        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
-        benchmark.benchmarkAndShowReportInBrowser();
+CloudBalance dataset1 = ...;
+CloudBalance dataset2 = ...;
+CloudBalance dataset3 = ...;
+PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(
+        dataset1, dataset2, dataset3);
+benchmark.benchmarkAndShowReportInBrowser();
 ----
 
 This generates a benchmark report in `local/benchmarkReport` and shows it in your browser when it's finished.
-The `SolverFactory`'s solver configuration needs a termination to limit how long each dataset runs.
-To configure a different benchmark directory, pass a `File` parameter to `createFromSolverFactory()`.
+The ``SolverFactory``'s solver configuration needs a termination to limit how long each dataset runs.
+To configure a different benchmark directory, pass a `File` parameter to `createFromSolverConfigXmlResource()`.
 
 The generated benchmark report already contains interesting information,
-but it doesn't allow comparing solver configurations to find the best algorithm.
-To do that, set up a benchmark configuration:
+but it doesn't compare solver configurations to find the best algorithm.
+To do that, set up an explicit benchmark configuration:
 
 [[buildAndRunAPlannerBenchmark]]
 === Configure and Run an Advanced Benchmark
@@ -81,13 +82,15 @@ Configure it with a benchmark configuration XML file, provided as a classpath re
 
 [source,java,options="nowrap"]
 ----
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
-        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
-        benchmark.benchmarkAndShowReportInBrowser();
+PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+        "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml");
+PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
+benchmark.benchmarkAndShowReportInBrowser();
 ----
 
-A benchmark configuration file looks like this:
+Alternatively, create a `PlannerBenchmarkFactory` programmatically from a `PlannerBenchmarkConfig`.
+
+A benchmark configuration XML file looks like this:
 
 [source,xml,options="nowrap"]
 ----
@@ -127,13 +130,13 @@ A benchmark configuration file looks like this:
 </plannerBenchmark>
 ----
 
-This `PlannerBenchmark` will try three configurations (Tabu Search, Simulated Annealing and Late Acceptance)
-on two data sets (``100computers-300processes`` and ``200computers-600processes``), so it will run six solvers.
+This `PlannerBenchmark` tries three configurations (Tabu Search, Simulated Annealing and Late Acceptance)
+on two data sets (``100computers-300processes`` and ``200computers-600processes``), so it runs six solvers.
 
 Every `<solverBenchmark>` element contains a solver configuration and one or more `<inputSolutionFile>` elements.
-It will run the solver configuration on each of those unsolved solution files.
+It runs the solver configuration on each of those unsolved solution files.
 The element `name` is optional, because it is generated if absent.
-The `inputSolutionFile` is read by a <<solutionFileIO,SolutionFileIO>> (relative to the working directory).
+The `inputSolutionFile` is read by a <<solutionFileIO,SolutionFileIO>>, relative to the working directory.
 
 [NOTE]
 ====
@@ -142,18 +145,18 @@ Use a forward slash (``/``) as the file separator (for example in the element ``
 Do not use backslash (``\``) as the file separator: that breaks portability because it does not work on Linux and Mac.
 ====
 
-The benchmark report will be written in the directory specified by the `<benchmarkDirectory>` element (relative to the working directory).
+The benchmark report is written in the directory specified by the `<benchmarkDirectory>` element (relative to the working directory).
 
 [NOTE]
 ====
-It's recommended that the `benchmarkDirectory` is a directory ignored for source control and not cleaned by your build system.
-This way the generated files are not bloating your source control and they aren't lost when doing a build.
+It's recommended that the `benchmarkDirectory` is a directory that is ignored for source control and not cleaned by your build system.
+This way the generated files are not bloating your source control and they aren't lost when doing a clean build.
 For example in git, it should be added to ``.gitignore``. Usually that directory is called ``local``.
 ====
 
-If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner).
-Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least one failing single benchmark).
-The failing benchmarks will be clearly marked as such in the benchmark report.
+If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker does not fail-fast (unlike everything else in Planner).
+Instead, the Benchmarker continues to run all other benchmarks, write the benchmark report and then fail (if there is at least one failing single benchmark).
+The failing benchmarks are clearly marked as such in the benchmark report.
 
 
 [[inheritedSolverBenchmark]]

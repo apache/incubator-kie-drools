@@ -17,21 +17,14 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collector;
 
-import org.optaplanner.benchmark.api.PlannerBenchmark;
-import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
-import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType;
-import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
  * Runs an example solver.
@@ -49,24 +42,27 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
     private static final long WARM_UP_SECONDS_SPENT = 2L;
     private static final long MAXIMUM_SECONDS_SPENT = 8L;
 
-    protected abstract String createSolverConfigResource();
+    private final String solverConfigResource;
 
-    protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory() {
-        SolverFactory<Object> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    public PlannerBenchmarkTest(String solverConfigResource) {
+        this.solverConfigResource = solverConfigResource;
+    }
+
+    protected PlannerBenchmarkConfig buildPlannerBenchmarkConfig() {
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         File benchmarkDirectory = new File("target/test/data");
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(solverFactory, benchmarkDirectory);
-        PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
-        plannerBenchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
-        plannerBenchmarkConfig.setSolverBenchmarkConfigList(Collections.emptyList());
-        plannerBenchmarkConfig.setSolverBenchmarkBluePrintConfigList(Collections.singletonList(
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig, benchmarkDirectory);
+        benchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
+        benchmarkConfig.setSolverBenchmarkConfigList(Collections.emptyList());
+        benchmarkConfig.setSolverBenchmarkBluePrintConfigList(Collections.singletonList(
                 new SolverBenchmarkBluePrintConfig().withSolverBenchmarkBluePrintType(
                         SolverBenchmarkBluePrintType.CONSTRUCTION_HEURISTIC_WITH_AND_WITHOUT_LOCAL_SEARCH)));
 
         long maximumSecondsSpentPerSolverBenchmark = MAXIMUM_SECONDS_SPENT / 2;
-        SolverBenchmarkConfig inheritedSolverBenchmarkConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig();
+        SolverBenchmarkConfig inheritedSolverBenchmarkConfig = benchmarkConfig.getInheritedSolverBenchmarkConfig();
         inheritedSolverBenchmarkConfig.getSolverConfig().setTerminationConfig(
                 new TerminationConfig().withSecondsSpentLimit(maximumSecondsSpentPerSolverBenchmark));
-        return benchmarkFactory;
+        return benchmarkConfig;
     }
 
 }

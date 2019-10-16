@@ -16,13 +16,20 @@
 
 package org.optaplanner.benchmark.config;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
 
@@ -151,6 +158,19 @@ public class PlannerBenchmarkConfigTest {
         config.setWarmUpSecondsSpentLimit(5L);
         config.setWarmUpMillisecondsSpentLimit(753L);
         assertEquals(3_725_753L, (long) config.calculateWarmUpTimeMillisSpentLimit());
+    }
+
+    @Test
+    public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+        String benchmarkConfigResource = "org/optaplanner/benchmark/config/testdataBenchmarkConfig.xml";
+        String originalXml = IOUtils.toString(
+                getClass().getClassLoader().getResourceAsStream(benchmarkConfigResource), StandardCharsets.UTF_8);
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource);
+        assertNotNull(PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(new TestdataSolution()));
+        XStream xStream = XStreamConfigReader.buildXStreamPortable(getClass().getClassLoader(), PlannerBenchmarkConfig.class);
+        xStream.setMode(XStream.NO_REFERENCES);
+        String savedXml = xStream.toXML(benchmarkConfig);
+        assertEquals(originalXml.trim(), savedXml.trim());
     }
 
 }

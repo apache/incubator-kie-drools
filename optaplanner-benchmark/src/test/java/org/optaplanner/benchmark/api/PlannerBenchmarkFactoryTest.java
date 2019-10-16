@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -50,7 +51,43 @@ public class PlannerBenchmarkFactoryTest {
         new File(benchmarkTestDir, "output/").mkdir();
     }
 
+    // ************************************************************************
+    // Static creation methods: SolverConfig
+    // ************************************************************************
+
     @Test
+    public void createFromSolverConfigXmlResource() {
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
+                "org/optaplanner/core/config/solver/testdataSolverConfig.xml");
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void problemIsNotASolutionInstance() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
+                PlannerBenchmarkConfig.createFromSolverConfig(solverConfig));
+        benchmarkFactory.buildPlannerBenchmark("This is not a solution instance.");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void problemIsNull() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
+                PlannerBenchmarkConfig.createFromSolverConfig(solverConfig));
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        benchmarkFactory.buildPlannerBenchmark(solution, null);
+    }
+
+    @Test
+    @Deprecated
     public void createFromSolverFactory() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
@@ -64,28 +101,9 @@ public class PlannerBenchmarkFactoryTest {
         benchmark.benchmark();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void problemIsNotASolutionInstance() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
-                solverFactory);
-        benchmarkFactory.buildPlannerBenchmark("This is not a solution instance.");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void problemIsNull() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
-                solverFactory);
-        TestdataSolution solution = new TestdataSolution("s1");
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        benchmarkFactory.buildPlannerBenchmark(solution, null);
-    }
+    // ************************************************************************
+    // Static creation methods: XML
+    // ************************************************************************
 
     @Test
     public void benchmarkConfig() {
@@ -107,24 +125,24 @@ public class PlannerBenchmarkFactoryTest {
 
     @Test
     public void uninitializedBenchmarkResult() {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
-        SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
+        SolverBenchmarkConfig solverBenchmarkConfig = benchmarkConfig.getSolverBenchmarkConfigList().get(0);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
         phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(NoChangeCustomPhaseCommand.class));
         solverBenchmarkConfig.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        PlannerBenchmark plannerBenchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
     }
 
     @Test
     public void subSingleBenchmarkConfig() {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
-        SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
+        SolverBenchmarkConfig solverBenchmarkConfig = benchmarkConfig.getSolverBenchmarkConfigList().get(0);
         solverBenchmarkConfig.setSubSingleCount(3);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        PlannerBenchmark plannerBenchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
     }
@@ -139,6 +157,10 @@ public class PlannerBenchmarkFactoryTest {
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
     }
+
+    // ************************************************************************
+    // Static creation methods: Freemarker
+    // ************************************************************************
 
     @Test
     public void template() {
@@ -168,6 +190,10 @@ public class PlannerBenchmarkFactoryTest {
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
     }
+
+    // ************************************************************************
+    // Static creation methods: KieContainer
+    // ************************************************************************
 
     @Test
     public void createFromReleaseId() throws IOException {
@@ -199,4 +225,5 @@ public class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/testdataKieContainerPlannerBenchmarkConfig.xml");
         return releaseId;
     }
+
 }

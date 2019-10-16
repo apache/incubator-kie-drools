@@ -178,7 +178,6 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                 operationQueue.add(stepOperation);
             }
         }
-        // TODO latch barrier
     }
 
     private boolean forageResult(LocalSearchStepScope<Solution_> stepScope, int stepIndex) {

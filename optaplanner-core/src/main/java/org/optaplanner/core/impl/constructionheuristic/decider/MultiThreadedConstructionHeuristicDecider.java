@@ -176,7 +176,6 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
                 operationQueue.add(stepOperation);
             }
         }
-        // TODO latch barrier
     }
 
     private boolean forageResult(ConstructionHeuristicStepScope<Solution_> stepScope, int stepIndex) {

@@ -29,19 +29,8 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
-    @Override
-    protected String createSolverConfigResource() {
-        return NQueensApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory() {
-        PlannerBenchmarkFactory benchmarkFactory = super.buildPlannerBenchmarkFactory();
-        PlannerBenchmarkConfig benchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
-        benchmarkConfig.setWarmUpSecondsSpentLimit(0L);
-        benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
-                .setStepCountLimit(-100); // Intentionally crash the solver
-        return benchmarkFactory;
+    public BrokenNQueensBenchmarkTest() {
+        super(NQueensApp.SOLVER_CONFIG);
     }
 
     // ************************************************************************
@@ -52,9 +41,12 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
     public void benchmarkBroken8queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/8queens.xml"));
-        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory();
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark(problem);
-        plannerBenchmark.benchmark();
+        PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
+        benchmarkConfig.setWarmUpSecondsSpentLimit(0L);
+        benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
+                .setStepCountLimit(-100); // Intentionally crash the solver
+        PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);
+        benchmark.benchmark();
     }
 
 }

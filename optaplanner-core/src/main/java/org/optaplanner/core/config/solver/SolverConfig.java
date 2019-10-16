@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +84,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * See {@link #createFromXmlResource(String)}.
+     * As defined by {@link #createFromXmlResource(String)}.
      * @param solverConfigResource never null, a classpath resource
      * as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -129,7 +130,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * See {@link #createFromXmlFile(File)}.
+     * As defined by {@link #createFromXmlFile(File)}.
      * @param solverConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
@@ -154,17 +155,17 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * See {@link #createFromXmlInputStream(InputStream)}.
+     * As defined by {@link #createFromXmlInputStream(InputStream)}.
      * @param in never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
     public static SolverConfig createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
-        try (Reader reader = new InputStreamReader(in, "UTF-8")) {
+        try (Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
             return createFromXmlReader(reader, classLoader);
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("This vm does not support UTF-8 encoding.", e);
+            throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading solverConfigInputStream failed.", e);
         }
@@ -179,7 +180,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * See {@link #createFromXmlReader(Reader)}.
+     * As defined by {@link #createFromXmlReader(Reader)}.
      * @param reader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *      null to use the default {@link ClassLoader}
@@ -187,7 +188,13 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
         XStream xStream = XStreamConfigReader.buildXStream(classLoader);
-        return (SolverConfig) xStream.fromXML(reader);
+        Object solverConfig = xStream.fromXML(reader);
+        if (!(solverConfig instanceof SolverConfig)) {
+            throw new IllegalArgumentException("The " + SolverConfig.class.getSimpleName()
+                    + "'s XML root element resolves to a different type ("
+                    + (solverConfig == null ? null : solverConfig.getClass().getSimpleName()));
+        }
+        return (SolverConfig) solverConfig;
     }
 
     // ************************************************************************
@@ -466,6 +473,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
+     * Do not use this method, it is an internal method.
+     * Use {@link SolverFactory#buildSolver()} instead.
+     * <p>
+     * Will be removed in 8.0.
      * @param configContext never null
      * @return never null
      */
@@ -600,6 +611,11 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return phaseList;
     }
 
+    /**
+     * Do not use this method, it is an internal method.
+     * Use {@link #SolverConfig(SolverConfig)} instead.
+     * @param inheritedConfig never null
+     */
     @Override
     public void inherit(SolverConfig inheritedConfig) {
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
