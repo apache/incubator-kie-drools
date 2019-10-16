@@ -81,16 +81,6 @@ public class MVELExpressionEvaluatorTest {
                                                                                   Collections.emptyList(),
                                                                                   mvelExpression("[]")));
 
-        assertThat(evaluator.evaluateLiteralExpression(Object[].class.getCanonicalName(),
-                                                       Collections.emptyList(),
-                                                       mvelExpression("{\"Jim\"}")))
-                .isEqualTo(new String[]{"Jim"});
-
-        assertThat(evaluator.evaluateLiteralExpression(Object[].class.getCanonicalName(),
-                                                       Collections.emptyList(),
-                                                       mvelExpression("{ }")))
-                .isEqualTo(new String[]{});
-
         assertThat(evaluator.evaluateLiteralExpression(Character.class.getCanonicalName(),
                                                        Collections.emptyList(),
                                                        mvelExpression("\"abc..\"[2]")))
