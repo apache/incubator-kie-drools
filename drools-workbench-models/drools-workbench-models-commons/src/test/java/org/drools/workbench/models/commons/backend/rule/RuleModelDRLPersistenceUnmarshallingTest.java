@@ -69,6 +69,7 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
@@ -9583,6 +9584,30 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         SingleFieldConstraint fieldConstraint = model.getLHSBoundField("applicantName");
 
         assertEquals("a, b, c", fieldConstraint.getValue());
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/RHPAM-2457")
+    public void unmarshalStringListsCorrectly_ComplexValues() {
+        final String drl = "package org.mortgages;\n" +
+                "rule \"aaa\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\tApplicant( applicantName : name in ( \"a\", \"b, something\",  \"c()\" ) )\n" +
+                "\tthen\n" +
+                "end";
+
+        when(dmo.getPackageName()).thenReturn("org.mortgages");
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        SingleFieldConstraint fieldConstraint = model.getLHSBoundField("applicantName");
+
+        assertEquals("a, \"b, something\", c()", fieldConstraint.getValue());
         assertEqualsIgnoreWhitespace(drl,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
     }
