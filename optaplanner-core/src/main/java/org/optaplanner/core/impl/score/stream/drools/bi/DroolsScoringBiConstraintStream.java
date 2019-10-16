@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
-import org.drools.model.Declaration;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
@@ -84,68 +84,33 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     // ************************************************************************
 
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        ruleItemBuilderList.add(getAPattern());
-        ruleItemBuilderList.add(getBPattern());
-        Declaration<A> aVar = getAVariableDeclaration();
-        Declaration<B> bVar = getBVariableDeclaration();
-        ConsequenceBuilder._3<? extends AbstractScoreHolder, A, B> consequence;
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsBiCondition<A, B> condition = parent.createCondition();
+        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
+                .build(createRuleItemBuilders(condition, scoreHolderGlobal)
+                        .toArray(new RuleItemBuilder<?>[0]));
+        return Optional.of(rule);
+    }
+
+    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsBiCondition<A, B> condition,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
-                    .execute((drools, scoreHolder, a, b) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        int weightMultiplier = intMatchWeigher.applyAsInt(a, b);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
-                    .execute((drools, scoreHolder, a, b) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        long weightMultiplier = longMatchWeigher.applyAsLong(a, b);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
-                    .execute((drools, scoreHolder, a, b) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        BigDecimal weightMultiplier = bigDecimalMatchWeigher.apply(a, b);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar)
-                    .execute((drools, scoreHolder, a, b) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        scoreHolder.impactScore(kcontext);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
-        ruleItemBuilderList.add(consequence);
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern();
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return parent.getBVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return parent.getBPattern();
+    public DroolsBiCondition<A, B> createCondition() {
+        throw new UnsupportedOperationException("Cannot create BiCondition from a scoring stream.");
     }
 
     @Override

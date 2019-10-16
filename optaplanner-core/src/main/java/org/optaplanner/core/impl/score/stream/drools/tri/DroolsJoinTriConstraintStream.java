@@ -16,12 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.UUID;
-
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
@@ -33,7 +28,6 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, C> rightParentStream;
     private final AbstractTriJoiner<A, B, C> triJoiner;
-    private final PatternDSL.PatternDef<C> cPattern;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
@@ -42,8 +36,15 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
         this.triJoiner = (AbstractTriJoiner<A, B, C>) triJoiner;
-        this.cPattern = otherStream.getAPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
-                getBVariableDeclaration(), (c, a, b) -> matches(a, b, c));
+    }
+
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
+    @Override
+    public DroolsTriCondition<A, B, C> createCondition() {
+        return leftParentStream.createCondition().andJoin(rightParentStream.createCondition(), triJoiner);
     }
 
     // ************************************************************************
@@ -59,52 +60,8 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return leftParentStream.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return leftParentStream.getAPattern();
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return leftParentStream.getBVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return leftParentStream.getBPattern();
-    }
-
-    @Override
-    public Declaration<C> getCVariableDeclaration() {
-        return rightParentStream.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<C> getCPattern() {
-        return cPattern;
-    }
-
-    private boolean matches(A a, B b, C c) {
-        Object[] leftMappings = triJoiner.getLeftCombinedMapping().apply(a, b);
-        Object[] rightMappings = triJoiner.getRightCombinedMapping().apply(c);
-        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return "TriJoin() with " + childStreamList.size()  + " children";
+        return "TriJoin() with " + getChildStreams().size()  + " children";
     }
-
 
 }

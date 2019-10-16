@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -54,7 +52,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public TriConstraintStream<A, B, C> filter(TriPredicate<A, B, C> predicate) {
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsFilterTriConstraintStream<>(constraintFactory, this, predicate);
-        childStreamList.add(stream);
+        addChildStream(stream);
         return stream;
     }
 
@@ -63,8 +61,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
-        childStreamList.add(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        addChildStream(stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -72,8 +70,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        addChildStream(stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -81,8 +79,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        addChildStream(stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -90,16 +88,16 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        addChildStream(stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
-        childStreamList.add(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        addChildStream(stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -107,8 +105,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        addChildStream(stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -116,8 +114,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        addChildStream(stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -125,8 +123,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        childStreamList.add(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        addChildStream(stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     // ************************************************************************
@@ -149,16 +147,5 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         }
     }
 
-    public abstract Declaration<A> getAVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<A> getAPattern();
-
-    public abstract Declaration<B> getBVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<B> getBPattern();
-
-    public abstract Declaration<C> getCVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<C> getCPattern();
-
+    public abstract DroolsTriCondition<A, B, C> createCondition();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.uni;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -24,7 +25,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
- * @param <A> the type of the matched fact (either a problem fact or a {@link PlanningEntity planning entity})
+ * @param <A> the type of the first and only fact in the tuple.
  * @see ConstraintStream
  */
 public interface UniConstraintStream<A> extends ConstraintStream {
@@ -186,20 +186,82 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // Group by
     // ************************************************************************
 
-    <GroupKey_, ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+    /**
+     * Runs all tuples of the stream through a given @{@link UniConstraintCollector} and converts them into a new
+     * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link UniConstraintCollector}.
+     * @param collector never null, the collector to perform the grouping operation with
+     * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
-    <GroupKey_> UniConstraintStream<GroupKey_> groupBy(
-            Function<A, GroupKey_> groupKeyMapping);
+    /**
+     * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing of the set of
+     * tuples resulting from applying the group key mapping function on all tuples of the original stream.
+     * Neither tuple of the new stream will {@link Objects#equals(Object, Object)} any other.
+     * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
+     * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping);
 
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
+     *
+     * <ul>
+     *     <li>As the first fact, the value resulting from applying the group key mapping function on the fact from the
+     *     original tuple.
+     *     Neither such facts of the new stream will {@link Objects#equals(Object, Object)} any other.</li>
+     *     <li>As the second fact, the value of applying a given {@link UniConstraintCollector} on all the facts of the
+     *     original tuple with a matching group key.</li>
+     * </ul>
+     * @param groupKeyMapping never null, function to convert a fact in original tuple to a different fact
+     * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
+     */
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
+     *
+     * <ul>
+     *     <li>As the first fact, the value resulting from applying the "A" group key mapping function to the fact from
+     *     the original tuple.</li>
+     *     <li>As the second fact, the value resulting from applying the "B" group key mapping function to the fact from
+     *     the original tuple, which already passed through the "A" group key mapping.</li>
+     * </ul>
+     *
+     * All bi tuples of the new stream will be unique.
+     * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
+     * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
+     */
     <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping);
 
+    /**
+     * Combines the semantics of {@link #groupBy(Function, Function)} and {@link #groupBy(UniConstraintCollector)}.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(Function, Function)} semantics, and
+     * the third fact is the result of applying {@link UniConstraintCollector#finisher()} on all the tuples of the
+     * original {@link UniConstraintStream} that fall in the group.
+     * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
+     * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
+     * @param collector never null, the collector to perform the grouping operation with
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
     <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping,

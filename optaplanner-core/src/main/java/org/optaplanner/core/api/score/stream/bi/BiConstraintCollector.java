@@ -31,10 +31,10 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
  * <p>
  * Loosely based on JDK's {@link Collector}, but it returns an undo operation for each accumulation
  * to enable incremental score calculation in {@link ConstraintStream constraint streams}.
- * @param <A> the type of the first matched fact in the source {@link BiConstraintStream}
- * @param <B> the type of the second matched fact in the source {@link BiConstraintStream}
+ * @param <A> the type of the first fact of the tuple in the source {@link BiConstraintStream}
+ * @param <B> the type of the second fact of the tuple in the source {@link BiConstraintStream}
  * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
- * @param <Result_> the type of a match fact in the destination {@link ConstraintStream}
+ * @param <Result_> the type of the fact of the tuple in the destination {@link ConstraintStream}
  * @see ConstraintCollectors
  */
 public interface BiConstraintCollector<A, B, ResultContainer_, Result_> {

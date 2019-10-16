@@ -19,23 +19,23 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final PatternDSL.PatternDef<A> aPattern;
+    private final Predicate<A> predicate;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
         this.parent = parent;
-        if (predicate == null) {
-            throw new IllegalArgumentException("The predicate (null) cannot be null.");
-        }
-        this.aPattern = parent.getAPattern().expr(predicate::test);
+        this.predicate = predicate;
+    }
+
+    @Override
+    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -43,27 +43,13 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
+    public DroolsUniCondition<A> createCondition() {
+        return parent.createCondition().andFilter(predicate);
     }
 
     @Override
     public String toString() {
-        return "Filter() with " + childStreamList.size()  + " children";
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return aPattern;
+        return "Filter() with " + getChildStreams().size()  + " children";
     }
 
 }

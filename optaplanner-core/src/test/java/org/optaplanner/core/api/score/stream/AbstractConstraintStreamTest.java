@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.Assume;
 import org.junit.runner.RunWith;
@@ -28,6 +32,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 import static org.junit.Assert.assertEquals;
@@ -56,6 +61,11 @@ public abstract class AbstractConstraintStreamTest {
                 constraintStreamImplType == ConstraintStreamImplType.BAVET);
     }
 
+    protected void assumeDrools() {
+        Assume.assumeTrue("This functionality is not yet supported in Bavet constraint streams.",
+                constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.constraintStreamImplType = constraintStreamImplType;
@@ -74,6 +84,34 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
+    private static List<Object> removeIndirection(DroolsLogicalTuple logicalTuple) {
+        return IntStream.range(0, logicalTuple.getCardinality())
+                .mapToObj(logicalTuple::getItem)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Object> removeIndirection(List<Object> justificationList) {
+        return justificationList.stream()
+                .flatMap(item -> {
+                    if (item instanceof DroolsLogicalTuple) {
+                        return removeIndirection((DroolsLogicalTuple) item).stream();
+                    } else {
+                        return Stream.of(item);
+                    }
+                }).collect(Collectors.toList());
+    }
+
+    private List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {
+        if (constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
+            return new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
+        }
+        return constraintMatchTotal.getConstraintMatchSet().stream()
+                .map(constraintMatch -> new ConstraintMatch(constraintMatch.getConstraintPackage(),
+                        constraintMatch.getConstraintName(), removeIndirection(constraintMatch.getJustificationList()),
+                        constraintMatch.getScore()))
+                .collect(Collectors.toList());
+    }
+
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
             AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
@@ -83,48 +121,66 @@ public abstract class AbstractConstraintStreamTest {
                 .sum();
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
-            ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
-                    .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, TEST_CONSTRAINT_NAME));
             for (AssertableMatch assertableMatch : assertableMatches) {
-                if (constraintMatchTotal.getConstraintMatchSet().stream()
+                ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
+                        .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, assertableMatch.constraintName));
+                List<ConstraintMatch> withoutIndirection = removeIndirections(constraintMatchTotal);
+                if (withoutIndirection.stream()
                         .noneMatch(constraintMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("
-                            + constraintMatchTotal.getConstraintMatchSet() + ").");
+                            + withoutIndirection + ").");
                 }
             }
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+            List<ConstraintMatch> withoutIndirection = scoreDirector.getConstraintMatchTotalMap().values()
+                    .stream()
+                    .flatMap(t -> removeIndirections(t).stream())
+                    .collect(Collectors.toList());
+            for (ConstraintMatch constraintMatch : withoutIndirection) {
                 if (Arrays.stream(assertableMatches)
+                        .filter(assertableMatch -> assertableMatch.constraintName.equals(constraintMatch.getConstraintName()))
                         .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The constraintMatch (" + constraintMatch + ") is in excess,"
                             + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
                 }
             }
-            assertEquals(assertableMatches.length, constraintMatchTotal.getConstraintMatchCount());
         }
         assertEquals(scoreTotal, score.getScore());
     }
 
     protected static AssertableMatch assertMatch(Object... justifications) {
-        return new AssertableMatch(-1, justifications);
+        return assertMatchWithScore(-1, justifications);
+    }
+
+    protected static AssertableMatch assertMatch(String constraintName, Object... justifications) {
+        return assertMatchWithScore(-1, constraintName, justifications);
     }
 
     protected static AssertableMatch assertMatchWithScore(int score, Object... justifications) {
-        return new AssertableMatch(score, justifications);
+        return assertMatchWithScore(score, TEST_CONSTRAINT_NAME, justifications);
+    }
+
+    protected static AssertableMatch assertMatchWithScore(int score, String constraintName, Object... justifications) {
+        return new AssertableMatch(score, constraintName, justifications);
     }
 
     protected static class AssertableMatch {
 
         private final int score;
+        private final String constraintName;
         private final List<Object> justificationList;
 
-        public AssertableMatch(int score, Object... justifications) {
+        public AssertableMatch(int score, String constraintName, Object... justifications) {
             this.justificationList = Arrays.asList(justifications);
+            this.constraintName = constraintName;
             this.score = score;
         }
 
         public boolean isEqualTo(ConstraintMatch constraintMatch) {
             if (score != ((SimpleScore) constraintMatch.getScore()).getScore()) {
+                return false;
+            }
+            if (!constraintName.equals(constraintMatch.getConstraintName())) {
                 return false;
             }
             List<Object> actualJustificationList = constraintMatch.getJustificationList();
@@ -137,7 +193,7 @@ public abstract class AbstractConstraintStreamTest {
 
         @Override
         public String toString() {
-            return justificationList + "=" + score;
+            return constraintName + " " + justificationList + "=" + score;
         }
 
     }

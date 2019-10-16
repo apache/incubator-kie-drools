@@ -46,8 +46,6 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
 
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        KieSession kieSession = kieBase.newKieSession();
-        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules
         ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
         for (DroolsConstraint<Solution_> constraint : constraintList) {
@@ -55,6 +53,8 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
             Rule rule = kieBase.getRule(constraint.getConstraintPackage(), constraint.getConstraintName());
             scoreHolder.configureConstraintWeight(rule, constraintWeight);
         }
+        KieSession kieSession = kieBase.newKieSession();
+        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
         return new DroolsConstraintSession<>(constraintMatchEnabled, kieSession, scoreHolder);
     }

@@ -24,7 +24,6 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -39,8 +38,8 @@ import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
  * A {@link ConstraintStream} that matches two facts.
- * @param <A> the type of the first matched fact (either a problem fact or a {@link PlanningEntity planning entity})
- * @param <B> the type of the second matched fact (either a problem fact or a {@link PlanningEntity planning entity})
+ * @param <A> the type of the first fact in the tuple.
+ * @param <B> the type of the second fact in the tuple.
  * @see ConstraintStream
  */
 public interface BiConstraintStream<A, B> extends ConstraintStream {

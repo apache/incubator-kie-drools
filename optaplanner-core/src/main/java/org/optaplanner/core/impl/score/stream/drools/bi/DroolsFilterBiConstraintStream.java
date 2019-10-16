@@ -18,42 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.util.function.BiPredicate;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final PatternDSL.PatternDef<B> bPattern;
+    private final BiPredicate<A, B> biPredicate;
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
         super(constraintFactory, parent);
-        this.bPattern = parent.getBPattern().expr(getAVariableDeclaration(), (b, a) -> biPredicate.test(a, b));
+        this.biPredicate = biPredicate;
     }
 
     @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern();
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return parent.getBVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return bPattern;
+    public DroolsBiCondition<A, B> createCondition() {
+        return parent.createCondition().andFilter(biPredicate);
     }
 
     @Override
     public String toString() {
-        return "BiFilter() with " + childStreamList.size() + " children";
+        return "BiFilter() with " + getChildStreams().size() + " children";
     }
+
 }

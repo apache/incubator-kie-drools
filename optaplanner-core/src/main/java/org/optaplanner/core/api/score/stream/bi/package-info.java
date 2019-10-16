@@ -15,6 +15,6 @@
  */
 
 /**
- * The {@link org.optaplanner.core.api.score.stream.ConstraintStream} API for two matched facts.
+ * The {@link org.optaplanner.core.api.score.stream.ConstraintStream} API for bi-tuples.
  */
 package org.optaplanner.core.api.score.stream.bi;

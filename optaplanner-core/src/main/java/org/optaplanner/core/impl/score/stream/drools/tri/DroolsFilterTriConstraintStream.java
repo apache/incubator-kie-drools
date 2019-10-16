@@ -16,59 +16,32 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.UUID;
-
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final PatternDSL.PatternDef<C> cPattern;
+    private final TriPredicate<A, B, C> triPredicate;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
         super(constraintFactory, parent);
-        this.cPattern = parent.getCPattern().expr("triFilter-" + UUID.randomUUID(), getAVariableDeclaration(),
-                getBVariableDeclaration(), (c, a, b) -> triPredicate.test(a, b, c));
+        this.triPredicate = triPredicate;
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
 
     @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern();
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return parent.getBVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return parent.getBPattern();
-    }
-
-    @Override
-    public Declaration<C> getCVariableDeclaration() {
-        return parent.getCVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<C> getCPattern() {
-        return cPattern;
+    public DroolsTriCondition<A, B, C> createCondition() {
+        return parent.createCondition().andFilter(triPredicate);
     }
 
     @Override
     public String toString() {
-        return "TriFilter() with " + childStreamList.size() + " children";
+        return "TriFilter() with " + getChildStreams().size() + " children";
     }
 
 }

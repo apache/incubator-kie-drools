@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -30,15 +29,15 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
  * A {@link ConstraintStream} that matches three facts.
- * @param <A> the type of the first matched fact (either a problem fact or a {@link PlanningEntity planning entity})
- * @param <B> the type of the second matched fact (either a problem fact or a {@link PlanningEntity planning entity})
- * @param <C> the type of the third matched fact (either a problem fact or a {@link PlanningEntity planning entity})
+ * @param <A> the type of the first fact in the tuple.
+ * @param <B> the type of the second fact in the tuple.
+ * @param <C> the type of the third fact in the tuple.
  * @see ConstraintStream
  */
 public interface TriConstraintStream<A, B, C> extends ConstraintStream {

@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.drools.model.Declaration;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
@@ -80,67 +80,42 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
-
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        PatternDSL.PatternDef<A> parentPattern = getAPattern();
-        Declaration<A> aVar = getAVariableDeclaration();
-        ruleItemBuilderList.add(parentPattern);
-        ConsequenceBuilder._2<? extends AbstractScoreHolder, A> consequence;
+    public DroolsUniCondition<A> createCondition() {
+        throw new UnsupportedOperationException("Cannot create UniCondition from a scoring stream.");
+    }
+
+    @Override
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsUniCondition<A> condition = parent.createCondition();
+        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
+                .build(createRuleItemBuilders(condition, scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
+        return Optional.of(rule);
+    }
+
+    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsUniCondition<A> condition,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        int weightMultiplier = intMatchWeigher.applyAsInt(a);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        long weightMultiplier = longMatchWeigher.applyAsLong(a);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        BigDecimal weightMultiplier = bigDecimalMatchWeigher.apply(a);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar)
-                    .execute((drools, scoreHolder, a) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        scoreHolder.impactScore(kcontext);
-                    });
+            return condition.completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
-        ruleItemBuilderList.add(consequence);
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern();
     }
 
     @Override
