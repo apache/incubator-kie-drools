@@ -67,13 +67,13 @@ public class CloudBalancingBenchmarkHelloWorld {
                 "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfig.xml");
 
         PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
-
         // Benchmark the problem and show it
         benchmark.benchmarkAndShowReportInBrowser();
 
         // Show aggregator to aggregate multiple reports
         if (aggregator) {
-            BenchmarkAggregatorFrame.createAndDisplay(benchmarkFactory);
+            BenchmarkAggregatorFrame.createAndDisplayFromXmlResource(
+                    "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfig.xml");
         }
     }
 

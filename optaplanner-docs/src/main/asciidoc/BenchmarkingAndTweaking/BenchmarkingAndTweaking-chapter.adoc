@@ -1101,13 +1101,13 @@ Compose the aggregated report in the Benchmark aggregator UI:
 
 image::BenchmarkingAndTweaking/benchmarkAggregatorScreenshot.png[align="center"]
 
-To display that UI, provide a `PlannerBenchmarkFactory` to the `BenchmarkAggregatorFrame`:
+To display that UI, provide a benchmark config to the `BenchmarkAggregatorFrame`:
 
 [source,java,options="nowrap"]
 ----
     public static void main(String[] args) {
-        PlannerBenchmarkFactory benchmarkFactory = ...;
-        BenchmarkAggregatorFrame.createAndDisplay(benchmarkFactory);
+        BenchmarkAggregatorFrame.createAndDisplayFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml");
     }
 ----
 

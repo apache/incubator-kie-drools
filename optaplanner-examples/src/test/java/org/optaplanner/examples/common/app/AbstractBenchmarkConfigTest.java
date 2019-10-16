@@ -50,9 +50,15 @@ public abstract class AbstractBenchmarkConfigTest {
 
     @Test
     public void buildPlannerBenchmark() {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = argOption.buildPlannerBenchmarkFactory();
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        buildEverySolver(plannerBenchmark);
+        String benchmarkConfigResource = argOption.getBenchmarkConfigResource();
+        PlannerBenchmarkFactory benchmarkFactory;
+        if (!argOption.isTemplate()) {
+            benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);
+        } else {
+            benchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(benchmarkConfigResource);
+        }
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
+        buildEverySolver(benchmark);
     }
 
     protected void buildEverySolver(PlannerBenchmark plannerBenchmark) {

@@ -43,6 +43,7 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
     }
 
     public void buildAndBenchmark(String[] args) {
+        // Parse arguments
         boolean aggregator = false;
         ArgOption argOption = null;
         for (String arg : args) {
@@ -63,28 +64,41 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         if (argOption == null) {
             argOption = benchmarkArgumentMap.values().iterator().next();
         }
-        PlannerBenchmarkFactory plannerBenchmarkFactory = argOption.buildPlannerBenchmarkFactory();
+        boolean template = argOption.isTemplate();
+        String benchmarkConfigResource = argOption.getBenchmarkConfigResource();
+
+        // Execute the benchmark or aggregation
         if (!aggregator) {
-            PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-            plannerBenchmark.benchmarkAndShowReportInBrowser();
+            PlannerBenchmarkFactory benchmarkFactory;
+            if (!template) {
+                benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);
+            } else {
+                benchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(benchmarkConfigResource);
+            }
+            PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
+            benchmark.benchmarkAndShowReportInBrowser();
         } else {
-            BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
+            if (!template) {
+                BenchmarkAggregatorFrame.createAndDisplayFromXmlResource(benchmarkConfigResource);
+            } else {
+                BenchmarkAggregatorFrame.createAndDisplayFromFreemarkerXmlResource(benchmarkConfigResource);
+            }
         }
     }
 
     public static class ArgOption {
 
         private String name;
-        private String benchmarkConfig;
+        private String benchmarkConfigResource;
         private boolean template;
 
-        public ArgOption(String name, String benchmarkConfig) {
-            this(name, benchmarkConfig, false);
+        public ArgOption(String name, String benchmarkConfigResource) {
+            this(name, benchmarkConfigResource, false);
         }
 
-        public ArgOption(String name, String benchmarkConfig, boolean template) {
+        public ArgOption(String name, String benchmarkConfigResource, boolean template) {
             this.name = name;
-            this.benchmarkConfig = benchmarkConfig;
+            this.benchmarkConfigResource = benchmarkConfigResource;
             this.template = template;
         }
 
@@ -92,25 +106,17 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
             return name;
         }
 
-        public String getBenchmarkConfig() {
-            return benchmarkConfig;
+        public String getBenchmarkConfigResource() {
+            return benchmarkConfigResource;
         }
 
         public boolean isTemplate() {
             return template;
         }
 
-        public PlannerBenchmarkFactory buildPlannerBenchmarkFactory() {
-            if (!template) {
-                return PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfig);
-            } else {
-                return PlannerBenchmarkFactory.createFromFreemarkerXmlResource(benchmarkConfig);
-            }
-        }
-
         @Override
         public String toString() {
-            return name + " (" + benchmarkConfig + ")";
+            return name + " (" + benchmarkConfigResource + ")";
         }
 
     }

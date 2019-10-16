@@ -40,6 +40,13 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     private Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;
     private Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass = null;
 
+    public BenchmarkReportConfig() {
+    }
+
+    public BenchmarkReportConfig(BenchmarkReportConfig inheritedConfig) {
+        inherit(inheritedConfig);
+    }
+
     public Locale getLocale() {
         return locale;
     }

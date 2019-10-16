@@ -81,14 +81,40 @@ import org.slf4j.LoggerFactory;
 
 public class BenchmarkAggregatorFrame extends JFrame {
 
-    public static void createAndDisplay(PlannerBenchmarkFactory plannerBenchmarkFactory) {
+    /**
+     * Reads an XML benchmark configuration from the classpath
+     * and uses that {@link PlannerBenchmarkConfig} to do an aggregation.
+     * @param benchmarkConfigResource never null, same one as in {@link PlannerBenchmarkFactory#createFromXmlResource(String)}
+     */
+    public static void createAndDisplayFromXmlResource(String benchmarkConfigResource) {
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource);
+        createAndDisplay(benchmarkConfig);
+    }
+
+    /**
+     * Reads an Freemarker template from the classpath that generates an XML benchmark configuration
+     * and uses that {@link PlannerBenchmarkConfig} to do an aggregation.
+     * @param templateResource never null, same one as in {@link PlannerBenchmarkFactory#createFromFreemarkerXmlResource(String)}
+     */
+    public static void createAndDisplayFromFreemarkerXmlResource(String templateResource) {
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlResource(templateResource);
+        createAndDisplay(benchmarkConfig);
+    }
+
+    /**
+     * Uses a {@link PlannerBenchmarkConfig} to do an aggregation.
+     * @param benchmarkConfig never null
+     */
+    public static void createAndDisplay(PlannerBenchmarkConfig benchmarkConfig) {
         SwingUncaughtExceptionHandler.register();
         SwingUtils.fixateLookAndFeel();
-        PlannerBenchmarkConfig plannerBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
         BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
-        benchmarkAggregator.setBenchmarkDirectory(plannerBenchmarkConfig.getBenchmarkDirectory());
-        BenchmarkReportConfig benchmarkReportConfig = plannerBenchmarkConfig.getBenchmarkReportConfig();
-        if (benchmarkReportConfig == null) {
+        benchmarkAggregator.setBenchmarkDirectory(benchmarkConfig.getBenchmarkDirectory());
+        BenchmarkReportConfig benchmarkReportConfig = benchmarkConfig.getBenchmarkReportConfig();
+        if (benchmarkReportConfig != null) {
+            // Defensive copy
+            benchmarkReportConfig = new BenchmarkReportConfig(benchmarkReportConfig);
+        } else {
             benchmarkReportConfig = new BenchmarkReportConfig();
         }
         benchmarkAggregator.setBenchmarkReportConfig(benchmarkReportConfig);
@@ -96,6 +122,16 @@ public class BenchmarkAggregatorFrame extends JFrame {
         BenchmarkAggregatorFrame benchmarkAggregatorFrame = new BenchmarkAggregatorFrame(benchmarkAggregator);
         benchmarkAggregatorFrame.init();
         benchmarkAggregatorFrame.setVisible(true);
+    }
+
+    /**
+     * @param benchmarkFactory never null
+     * @deprecated in favor of {@link #createAndDisplayFromXmlResource(String)}
+     * or {@link #createAndDisplay(PlannerBenchmarkConfig)}.
+     */
+    @Deprecated
+    public static void createAndDisplay(PlannerBenchmarkFactory benchmarkFactory) {
+        createAndDisplay(benchmarkFactory.getPlannerBenchmarkConfig());
     }
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
