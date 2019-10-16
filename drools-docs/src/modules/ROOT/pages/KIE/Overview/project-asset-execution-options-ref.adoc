@@ -21,10 +21,6 @@ a|
 ifdef::DM,PAM[]
 {URL_KIE_APIS}[_{KIE_APIS}_]
 endif::[]
-
-ifdef::PAM[]
-{URL_EXECUTING_PROCESSES}[_{EXECUTING_PROCESSES}_]
-endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:_ch.kie.server[]
 
