@@ -15,10 +15,14 @@
  */
 package org.drools.scenariosimulation.backend.expression;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
@@ -32,10 +36,15 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test", String.class));
-        assertFalse(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\"" + ")", "Test1", String.class));
-        assertTrue(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 1", 1, Integer.class));
-        assertFalse(evaluator.evaluateUnaryExpression(MVEL_ESCAPE_SYMBOL + " 2", 1, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\")"), "Test", String.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", " + "\"Test\")"), "Test1", String.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("1"), 1, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("2"), 1, Integer.class));
+
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 123, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 321, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 321, Integer.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 123, Integer.class));
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(new Object(), "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -48,9 +57,46 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        assertEquals(1, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"));
+        assertEquals(1, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(),
+                                                            Collections.emptyList(),
+                                                            mvelExpression("1")));
 
-        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " \"Value\""));
+        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                                  Collections.emptyList(),
+                                                                  mvelExpression("\"Value\"")));
+
+        assertEquals(6, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(),
+                                                            Collections.emptyList(),
+                                                            mvelExpression("2 * 3")));
+
+        assertEquals(14, evaluator.evaluateLiteralExpression(Integer.class.getCanonicalName(),
+                                                             Collections.emptyList(),
+                                                             mvelExpression("-1 + (3 * 5)")));
+
+        assertEquals(Arrays.asList("Jim"), evaluator.evaluateLiteralExpression(ArrayList.class.getCanonicalName(),
+                                                                               Collections.emptyList(),
+                                                                               mvelExpression("[\"Jim\"]")));
+
+        assertEquals(Collections.emptyList(), evaluator.evaluateLiteralExpression(ArrayList.class.getCanonicalName(),
+                                                                                  Collections.emptyList(),
+                                                                                  mvelExpression("[]")));
+
+        assertThat(evaluator.evaluateLiteralExpression(Character.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       mvelExpression("\"abc..\"[2]")))
+                .isEqualTo('c');
+
+        assertThat(evaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       mvelExpression("1.234B")))
+                .isEqualTo(new BigDecimal("1.234"));
+
+        assertThat(evaluator.evaluateLiteralExpression(Double.class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       mvelExpression("1.234d")))
+                .isEqualTo(Double.valueOf("1.234"));
+
+        assertEquals("Value", evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "# \"Value\""));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "1+"))
                 .isInstanceOf(RuntimeException.class);
@@ -59,7 +105,9 @@ public class MVELExpressionEvaluatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Raw expression should be a String");
 
-        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), MVEL_ESCAPE_SYMBOL + " 1"))
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
+                                                                     Collections.emptyList(),
+                                                                     mvelExpression("1")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
     }
@@ -80,5 +128,9 @@ public class MVELExpressionEvaluatorTest {
         assertThatThrownBy(() -> evaluator.cleanExpression("test"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Malformed MVEL expression");
+    }
+
+    private static String mvelExpression(final String expression) {
+        return MVEL_ESCAPE_SYMBOL + " " + expression;
     }
 }
