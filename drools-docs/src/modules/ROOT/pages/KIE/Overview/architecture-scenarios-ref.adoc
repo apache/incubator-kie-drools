@@ -73,7 +73,7 @@ ifdef::DM,PAM[{EAP_LONG}]
 ifdef::DROOLS,JBPM,OP[Wildfly]
 * *Project storage and build environment*: External Git repository for project versioning (not synchronized with {CENTRAL}) and external Maven repository for project management and building configured with {KIE_SERVER}
 * *Asset-authoring tools*: Integrated development environment (IDE), such as
-ifdef::DM,PAM[Red Hat Developer Studio,]
+ifdef::DM,PAM[Red Hat CodeReady Studio,]
 ifdef::DROOLS,JBPM,OP[Eclipse,]
 and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
 * *Main asset types*:
@@ -101,7 +101,7 @@ endif::[]
 * *Installation environment*: {PRODUCT} libraries embedded within a custom application
 * *Project storage and build environment*: External Git repository for project versioning (not synchronized with {CENTRAL}) and external Maven repository for project management and building configured with your embedded Java application (not configured with {KIE_SERVER})
 * *Asset-authoring tools*: Integrated development environment (IDE), such as
-ifdef::DM,PAM[Red Hat Developer Studio,]
+ifdef::DM,PAM[Red Hat CodeReady Studio,]
 ifdef::DROOLS,JBPM,OP[Eclipse,]
 and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
 * *Main asset types*:
