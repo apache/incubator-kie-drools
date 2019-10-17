@@ -69,7 +69,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromSolverConfigXmlResource(String solverConfigResource,
             ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig);
         return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
     }
@@ -97,7 +97,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromSolverConfigXmlResource(String solverConfigResource,
             File benchmarkDirectory, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig, benchmarkDirectory);
         return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
     }
