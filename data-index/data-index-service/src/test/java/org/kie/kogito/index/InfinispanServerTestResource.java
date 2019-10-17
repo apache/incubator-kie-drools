@@ -18,6 +18,7 @@ package org.kie.kogito.index;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.infinispan.configuration.cache.CacheMode;
@@ -72,11 +73,13 @@ public class InfinispanServerTestResource implements QuarkusTestResourceLifecycl
 
     @Override
     public void stop() {
-        if (hotRodServer != null) {
-            hotRodServer.stop();
-        }
-        if (cacheManager != null) {
-            cacheManager.stop();
-        }
+        CompletableFuture.runAsync(() -> {
+            if (hotRodServer != null) {
+                hotRodServer.stop();
+            }
+            if (cacheManager != null) {
+                cacheManager.stop();
+            }
+        });
     }
 }

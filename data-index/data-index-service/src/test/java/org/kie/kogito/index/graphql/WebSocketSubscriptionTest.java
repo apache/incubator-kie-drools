@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.vertx.core.Vertx;
@@ -32,8 +33,8 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
@@ -52,8 +53,8 @@ import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
-@Disabled("This test times out on cf.get() on CI")
 @QuarkusTest
+@QuarkusTestResource(InfinispanServerTestResource.class)
 public class WebSocketSubscriptionTest {
 
     @Inject
@@ -61,6 +62,9 @@ public class WebSocketSubscriptionTest {
 
     @Inject
     ProtobufService protobufService;
+
+    @Inject
+    MockGraphQLInstrumentation instrumentation;
 
     @Inject
     Vertx vertx;
@@ -163,6 +167,7 @@ public class WebSocketSubscriptionTest {
         HttpClient httpClient = vertx.createHttpClient(new HttpClientOptions().setDefaultPort(TestUtils.getPortFromConfig()));
         CompletableFuture<JsonObject> cf = new CompletableFuture<>();
         CompletableFuture<Void> wsFuture = new CompletableFuture<>();
+        instrumentation.setFuture(wsFuture);
         httpClient.webSocket("/graphql", websocketRes -> {
             if (websocketRes.succeeded()) {
                 WebSocket webSocket = websocketRes.result();
@@ -182,7 +187,7 @@ public class WebSocketSubscriptionTest {
                         .put("id", String.valueOf(counter.getAndIncrement()))
                         .put("type", ApolloWSMessageType.START.getText())
                         .put("payload", new JsonObject().put("query", subscription));
-                webSocket.write(init.toBuffer(), e -> wsFuture.complete(null));
+                webSocket.write(init.toBuffer());
             } else {
                 websocketRes.cause().printStackTrace();
                 wsFuture.completeExceptionally(websocketRes.cause());

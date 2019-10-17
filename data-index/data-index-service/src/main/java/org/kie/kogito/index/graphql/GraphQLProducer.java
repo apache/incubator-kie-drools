@@ -21,7 +21,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import graphql.GraphQL;
-import graphql.execution.SubscriptionExecutionStrategy;
 
 @ApplicationScoped
 public class GraphQLProducer {
@@ -36,7 +35,6 @@ public class GraphQLProducer {
     public GraphQL createGraphQL() {
         return GraphQL.newGraphQL(manager.getGraphQLSchema())
                 .instrumentation(instrumentation)
-                .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
                 .build();
     }
 }

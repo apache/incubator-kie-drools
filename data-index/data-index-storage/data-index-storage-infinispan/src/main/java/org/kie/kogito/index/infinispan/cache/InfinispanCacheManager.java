@@ -22,9 +22,11 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.quarkus.runtime.ShutdownEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.infinispan.client.hotrod.DataFormat;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -73,6 +75,10 @@ public class InfinispanCacheManager implements CacheService {
         } catch (IOException ex) {
             LOGGER.warn("Error trying to close Infinispan remote cache manager", ex);
         }
+    }
+
+    public void stop(@Observes ShutdownEvent event){
+        destroy();
     }
 
     /**
