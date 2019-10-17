@@ -16,13 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.uni;
 
+import java.io.Serializable;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public final class DefaultUniConstraintCollector<A, ResultContainer_, Result_>
+public final class DefaultUniConstraintCollector<A, ResultContainer_ extends Serializable, Result_>
         implements UniConstraintCollector<A, ResultContainer_, Result_> {
 
     private final Supplier<ResultContainer_> supplier;

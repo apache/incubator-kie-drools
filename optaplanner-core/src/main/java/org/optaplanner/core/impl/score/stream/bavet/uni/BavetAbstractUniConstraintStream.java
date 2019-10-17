@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+    public <ResultContainer_ extends Serializable, Result_> UniConstraintStream<Result_> groupBy(
+            UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException(); // TODO
     }
 

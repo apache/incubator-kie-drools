@@ -74,7 +74,7 @@ public final class DroolsBiCondition<A, B> {
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
-        DroolsMetadata<Object, C> cMetadata = cCondition.getaMetadata();
+        DroolsMetadata<Object, C> cMetadata = cCondition.getAMetadata();
         PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),

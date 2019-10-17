@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -78,17 +79,23 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            BiFunction<A, B, GroupKey_> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy
+            (BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
+            BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 

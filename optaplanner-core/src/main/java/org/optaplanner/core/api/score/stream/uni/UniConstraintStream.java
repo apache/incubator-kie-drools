@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -194,7 +195,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
      */
-    <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+    <ResultContainer_ extends Serializable, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**

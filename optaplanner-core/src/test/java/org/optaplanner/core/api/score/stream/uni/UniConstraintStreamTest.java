@@ -388,6 +388,71 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    public void groupBy_0Mapping1Collector_count() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+        // Insert the same entity twice, make sure it doesn't matter.
+        // This will exercise code in Drools that removes duplicates.
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-10, 10));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector, assertMatchWithScore(-9, 9));
+    }
+
+    @Test
+    public void groupBy_0Mapping1Collector_max() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(max(comparing(TestdataLavishEntity::getCode)))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, entity3));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector, assertMatchWithScore(-1, entity2));
+    }
+
+    @Test
     public void groupBy_1Mapping1Collector_count() {
         assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);

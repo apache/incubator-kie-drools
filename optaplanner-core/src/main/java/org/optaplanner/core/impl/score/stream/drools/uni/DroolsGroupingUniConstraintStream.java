@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import org.drools.model.PatternDSL;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
@@ -35,18 +37,30 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import static org.drools.model.PatternDSL.declarationOf;
 import static org.drools.model.PatternDSL.pattern;
 
-public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
-        extends DroolsAbstractUniConstraintStream<Solution_, GroupKey_> {
+public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
+        extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final Function<A, GroupKey_> groupKeyMapping;
+    private final Function<A, NewA> groupKeyMapping;
+    private final UniConstraintCollector<A, ? extends Serializable, NewA> collector;
     private final AtomicInteger ruleId = new AtomicInteger(-1);
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, GroupKey_> groupKeyMapping) {
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
+        this.collector = null;
+    }
+
+    public <ResultContainer_ extends Serializable> DroolsGroupingUniConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent,
+            UniConstraintCollector<A, ResultContainer_, NewA> collector) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.groupKeyMapping = null;
+        this.collector = collector;
     }
 
     @Override
@@ -62,15 +76,25 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         Object createdRuleId = createRuleIdIfAbsent(constraint.getConstraintFactory());
-        String ruleName = "Helper rule #" + createdRuleId + " (GroupBy)";
-        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
-                .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, groupKeyMapping)
-                        .toArray(new RuleItemBuilder<?>[0]));
+        Rule rule;
+        if (groupKeyMapping != null) {
+            String ruleName = "Helper rule #" + createdRuleId + " (GroupBy collecting)";
+            rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
+                    .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, groupKeyMapping)
+                            .toArray(new RuleItemBuilder<?>[0]));
+        } else if (collector != null) {
+            String ruleName = "Helper rule #" + createdRuleId + " (GroupBy remapping)";
+            rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
+                    .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, collector)
+                            .toArray(new RuleItemBuilder<?>[0]));
+        } else {
+            throw new IllegalStateException();
+        }
         return Optional.of(rule);
     }
 
     @Override
-    public DroolsUniCondition<GroupKey_> createCondition() {
+    public DroolsUniCondition<NewA> createCondition() {
         return new DroolsUniCondition<>(declarationOf(DroolsLogicalTuple.class), var -> {
             Object createdRuleId = createRuleIdIfAbsent(getConstraintFactory());
             return pattern(var).expr(logicalTuple ->

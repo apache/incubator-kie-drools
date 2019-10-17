@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -24,15 +25,20 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.drools.model.DSL;
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block3;
+import org.drools.model.view.ExprViewItem;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
@@ -41,6 +47,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetada
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
 
 public final class DroolsUniCondition<A> {
@@ -48,7 +56,7 @@ public final class DroolsUniCondition<A> {
     private final DroolsMetadata<Object, A> aMetadata;
 
     public DroolsUniCondition(Class<A> aVariableType) {
-        Declaration<A> aVariableDeclaration = PatternDSL.declarationOf(aVariableType);
+        Declaration<A> aVariableDeclaration = declarationOf(aVariableType);
         this.aMetadata = (DroolsGenuineMetadata) DroolsMetadata.ofGenuine(aVariableDeclaration,
                 PatternDSL.pattern(aVariableDeclaration));
     }
@@ -63,7 +71,7 @@ public final class DroolsUniCondition<A> {
         this.aMetadata = aMetadata;
     }
 
-    public DroolsMetadata<Object, A> getaMetadata() {
+    public DroolsMetadata<Object, A> getAMetadata() {
         return aMetadata;
     }
 
@@ -87,6 +95,24 @@ public final class DroolsUniCondition<A> {
         } else {
             return new DroolsBiCondition<>(aMetadata, ((DroolsGenuineMetadata) bMetadata).substitute(newPattern));
         }
+    }
+
+    public <ResultContainer extends Serializable, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(
+            Object ruleId, UniConstraintCollector<A, ResultContainer, NewA> collector) {
+        DroolsMetadata<Object, A> inputMetadata = getAMetadata();
+        Variable<Object> inputVariable = inputMetadata.getVariableDeclaration();
+        PatternDSL.PatternDef<Object> innerAccumulatePattern =
+                inputMetadata.getPattern().bind(inputVariable, inputMetadata::extract);
+        AccumulateFunction<ResultContainer> accumulateFunction = new DroolsUniAccumulateFunctionBridge<>(collector);
+        Variable<Object> outputVariable = declarationOf(Object.class);
+        ExprViewItem<Object> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
+                accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));
+        ConsequenceBuilder._1<?> consequence = on(outputVariable)
+                .execute((drools, accumulateResult) -> {
+                    RuleContext kcontext = (RuleContext) drools;
+                    kcontext.insertLogical(new DroolsLogicalTuple(ruleId, accumulateResult));
+                });
+        return Arrays.asList(outerAccumulatePattern, consequence);
     }
 
     public <GroupKey_> List<RuleItemBuilder<?>> completeWithLogicalInsert(Object ruleId,
