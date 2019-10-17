@@ -65,7 +65,7 @@ public class BaseExpressionEvaluatorTest {
     @Test
     public void verifyNullTest() {
         assertTrue(expressionEvaluator.verifyResult("[]", null));
-        assertFalse(expressionEvaluator.verifyResult("[{" + VALUE + " : \"result\"}]", null));
+        assertFalse(expressionEvaluator.verifyResult("[{\"" + VALUE + "\" : \"result\"}]", null));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class BaseExpressionEvaluatorTest {
         assertTrue(expressionEvaluator.evaluateUnaryExpression("{}", null, Map.class));
         assertTrue(expressionEvaluator.evaluateUnaryExpression("[]", null, List.class));
 
-        String mapOfListJson = "{\"key1\" : [{" + VALUE + " : \"value1\"}, {" + VALUE + " : \"value2\"}]}";
+        String mapOfListJson = "{\"key1\" : [{\"" + VALUE + "\" : \"value1\"}, {\"" + VALUE + "\" : \"value2\"}]}";
         Map<String, List<String>> mapOfListToCheck = new HashMap<>();
         assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfListJson, mapOfListToCheck, Map.class));
     }
@@ -86,7 +86,7 @@ public class BaseExpressionEvaluatorTest {
     @Test
     public void mapOfSimpleTypeTest() {
 
-        String givenWorkbenchMapString = "{ \"Home\": { " + VALUE + ": \"123 Any Street\" } }";
+        String givenWorkbenchMapString = "{ \"Home\": { \"" + VALUE + "\": \"123 Any Street\" } }";
         List<String> genericClasses = new ArrayList<>();
         genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(String.class.getCanonicalName());
@@ -96,7 +96,7 @@ public class BaseExpressionEvaluatorTest {
         assertNotNull(parsedWorkbench.get("Home"));
         assertEquals("123 Any Street", parsedWorkbench.get("Home"));
 
-        String givenWorkbenchMapInteger = "{ \"Home\": { " + VALUE + ": \"100\" } }";
+        String givenWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"100\" } }";
         genericClasses.clear();
         genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(Integer.class.getCanonicalName());
@@ -106,7 +106,7 @@ public class BaseExpressionEvaluatorTest {
         assertNotNull(parsedIntegerFromMap.get("Home"));
         assertEquals(100, parsedIntegerFromMap.get("Home").intValue());
 
-        String expectWorkbenchMapInteger = "{ \"Home\": { " + VALUE + ": \"> 100\" } }";
+        String expectWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"> 100\" } }";
         genericClasses.clear();
         genericClasses.add(String.class.getCanonicalName());
         genericClasses.add(Integer.class.getCanonicalName());
@@ -116,14 +116,14 @@ public class BaseExpressionEvaluatorTest {
         resultToTest.put("Home", 20);
         assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest));
 
-        String mapOfStringJson = "{\"key1\" : {" + VALUE + " : \"value1\"}, \"key2\" : {" + VALUE + " : \"value2\"}}";
+        String mapOfStringJson = "{\"key1\" : {\"" + VALUE + "\" : \"value1\"}, \"key2\" : {\"" + VALUE + "\" : \"value2\"}}";
         Map<String, String> mapStringStringToCheck = new HashMap<>();
         mapStringStringToCheck.put("key1", "value1");
         assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
         mapStringStringToCheck.put("key2", "value2");
         assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class));
 
-        String mapOfStringJson1 = "{\"key1\" : {" + VALUE + " : \"\"}}";
+        String mapOfStringJson1 = "{\"key1\" : {\"" + VALUE + "\" : \"\"}}";
         Map<String, String> mapStringStringToCheck1 = new HashMap<>();
         assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class));
         mapStringStringToCheck1.put("key1", "value1");
@@ -172,7 +172,7 @@ public class BaseExpressionEvaluatorTest {
     public void listOfComplexTypeTest() {
 
         String listJsonString = "[{\"name\": \"John\"}, " +
-                "{\"name\": \"John\", \"names\" : [{" + VALUE + ": \"Anna\"}, {" + VALUE + ": \"Mario\"}]}]";
+                "{\"name\": \"John\", \"names\" : [{\"" + VALUE + "\": \"Anna\"}, {\"" + VALUE + "\": \"Mario\"}]}]";
 
         List<ListMapClass> parsedValue = (List<ListMapClass>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(),
                                                                                                 Collections.singletonList(ListMapClass.class.getCanonicalName()));
@@ -190,22 +190,22 @@ public class BaseExpressionEvaluatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void listOfSimpleTypeTest() {
-        String listJsonString = "[{" + VALUE + " : \"10\"}, {" + VALUE + " : \"12\"}]";
+        String listJsonString = "[{\"" + VALUE + "\" : \"10\"}, {\"" + VALUE + "\" : \"12\"}]";
 
         List<Integer> result = (List<Integer>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(), Collections.singletonList(Integer.class.getCanonicalName()));
 
         assertEquals(2, result.size());
         assertTrue(result.contains(10));
 
-        listJsonString = "[{" + VALUE + " : \"> 10\"}]";
+        listJsonString = "[{\"" + VALUE + "\" : \"> 10\"}]";
         List<Integer> toCheck = Collections.singletonList(13);
 
         assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
 
-        listJsonString = "[{" + VALUE + " : \"> 100\"}]";
+        listJsonString = "[{\"" + VALUE + "\" : \"> 100\"}]";
         assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck));
 
-        listJsonString = "[{" + VALUE + " : \"\"}]";
+        listJsonString = "[{\"" + VALUE + "\" : \"\"}]";
         assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
     }
 }
