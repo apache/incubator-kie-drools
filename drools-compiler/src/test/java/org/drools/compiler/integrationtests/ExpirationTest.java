@@ -756,7 +756,7 @@ public class ExpirationTest {
 
 	@Test
 	public void sameConstraintAllExpired() {
-        // DROOLS-????
+        // DROOLS-4656
 	   testSameConstraintExpiredEvent(ExpirationMode.ALL);
 	}
 
@@ -843,7 +843,7 @@ public class ExpirationTest {
 
 	@Test
 	public void differentConstraintAllExpired() {
-        // DROOLS-????
+        // DROOLS-4656
 		testDifferentConstraintExpiredEvent(ExpirationMode.ALL);
 	}
 
