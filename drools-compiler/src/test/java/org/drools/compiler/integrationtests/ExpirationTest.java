@@ -27,6 +27,7 @@ import org.drools.compiler.integrationtests.facts.BasicEvent;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
@@ -46,6 +47,12 @@ import static org.junit.Assert.assertEquals;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 public class ExpirationTest {
+
+    private enum ExpirationMode {
+    	ALL,
+		JUST_ONE,
+		NONE
+	}
 
     @Test
     public void testAlpha() {
@@ -746,4 +753,182 @@ public class ExpirationTest {
 
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
+
+	@Test
+	public void sameConstraintAllExpired() {
+        // DROOLS-????
+	   testSameConstraintExpiredEvent(ExpirationMode.ALL);
+	}
+
+	@Test
+	public void sameConstraintOneExpired() {
+		testSameConstraintExpiredEvent(ExpirationMode.JUST_ONE);
+	}
+
+	@Test
+	public void sameConstraintNoExpiration() {
+		testSameConstraintExpiredEvent(ExpirationMode.NONE);
+	}
+
+    private void testSameConstraintExpiredEvent(ExpirationMode expirationMode) {
+
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+    			" declare DummyEvent\n" +
+    			"     @role( event )\n" +
+    			"     @timestamp( eventTimestamp )\n" +
+    			"	  @expires( 2h )\n" +
+    			" end\n" +
+    			" rule R1 when\n" +
+    			"     $dummyEvent : DummyEvent(state != \"release\")\n" +
+    			"     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent )\n" +
+    			" then \n" +
+    			"    System.out.println(\"R1 Fired\"); \n" +
+    			" end\n" +
+    			" rule R2 when\n" +
+    			"     $dummyEvent : DummyEvent(state != \"release\")\n" +
+    			"     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent )\n" +
+    			" then \n" +
+    			"    System.out.println(\"R2 Fired\"); \n" +
+    			" end\n";
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EqualityBehaviorOption.EQUALITY);
+        baseConfig.setOption(EventProcessingOption.STREAM);
+
+        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        final KieBase kieBase = helper.build(baseConfig);
+        final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
+
+		kieSession.addEventListener(new DebugAgendaEventListener());
+        
+        //clock init to current time
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime);
+
+        kieSession.fireAllRules();
+
+        //facts inserts
+ 		long timeStampEvent1;
+ 		long timeStampEvent2 ;
+
+ 		switch (expirationMode){
+ 			case ALL:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(9).toMillis();	// oldest, expired
+ 				timeStampEvent2 = currentTime - Duration.ofHours(8).toMillis(); // expired
+ 			break;
+ 			case JUST_ONE:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(8).toMillis(); //expired
+ 				timeStampEvent2 = currentTime;
+ 			break;
+ 			default:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(1).toMillis(); //oldest, not expired
+ 				timeStampEvent2 = currentTime;
+ 		}
+
+ 		final DummyEvent event1 = new DummyEvent(1, timeStampEvent1);
+ 		final DummyEvent event2 = new DummyEvent(2, timeStampEvent2);
+
+ 	   kieSession.insert(event1);
+ 	   kieSession.insert(event2);
+
+       Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
+    }
+
+	@Test
+	public void differentConstraintAllExpired() {
+        // DROOLS-????
+		testDifferentConstraintExpiredEvent(ExpirationMode.ALL);
+	}
+
+	@Test
+	public void differentConstraintOneExpired() {
+		testDifferentConstraintExpiredEvent(ExpirationMode.JUST_ONE);
+	}
+
+	@Test
+	public void differentConstraintNoExpiration() {
+		testDifferentConstraintExpiredEvent(ExpirationMode.NONE);
+	}
+
+    private void testDifferentConstraintExpiredEvent(ExpirationMode expirationMode) {
+
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+    			" declare DummyEvent\n" +
+    			"     @role( event )\n" +
+    			"     @timestamp( eventTimestamp )\n" +
+    			"	  @expires( 2h )\n" +
+    			" end\n" +
+    			" rule R1 when\n" +
+    			"     $dummyEvent : DummyEvent(state != \"release\")\n" +
+    			"     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent )\n" +
+    			" then \n" +
+    			"    System.out.println(\"R1 Fired\"); \n" +
+    			" end\n" +
+    			" rule R2 when\n" +
+    			"     $dummyEvent : DummyEvent(state != \"release\")\n" +
+    			"     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent, state == \"initial\" )\n" +	//add state=="initial"
+    			" then \n" +
+    			"    System.out.println(\"R2 Fired\"); \n" +
+    			" end\n";
+        
+        
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EqualityBehaviorOption.EQUALITY);
+        baseConfig.setOption(EventProcessingOption.STREAM);
+
+        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        final KieBase kieBase = helper.build(baseConfig);
+        final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
+
+		kieSession.addEventListener(new DebugAgendaEventListener());
+        
+        //clock init to current time
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime);
+
+        kieSession.fireAllRules();
+
+        //facts inserts
+ 		long timeStampEvent1;
+ 		long timeStampEvent2 ;
+
+ 		switch (expirationMode){
+ 			case ALL:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(9).toMillis();	// oldest, expired
+ 				timeStampEvent2 = currentTime - Duration.ofHours(8).toMillis(); // expired
+ 			break;
+ 			case JUST_ONE:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(8).toMillis(); //expired
+ 				timeStampEvent2 = currentTime;
+ 			break;
+ 			default:
+ 				timeStampEvent1 = currentTime - Duration.ofHours(1).toMillis(); //oldest, not expired
+ 				timeStampEvent2 = currentTime;
+ 		}
+
+ 		final DummyEvent event1 = new DummyEvent(1, timeStampEvent1);
+ 		final DummyEvent event2 = new DummyEvent(2, timeStampEvent2);
+
+ 	   kieSession.insert(event1);
+ 	   kieSession.insert(event2);
+
+       Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
+    }
+
+    
+    
 }
