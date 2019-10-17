@@ -18,15 +18,15 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
 
-public final class BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniTuple<A> {
+public final class BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> extends BavetAbstractUniTuple<A> {
 
-    private final BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node;
+    private final BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> node;
     private final BavetAbstractUniTuple<A> parentTuple;
 
     private Runnable undoAccumulator;
-    private BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple;
+    private BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple;
 
-    public BavetGroupBridgeUniTuple(BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node,
+    public BavetGroupBridgeUniTuple(BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> node,
             BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
@@ -48,7 +48,7 @@ public final class BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Resu
     // ************************************************************************
 
     @Override
-    public BavetGroupBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> getNode() {
+    public BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> getNode() {
         return node;
     }
 
@@ -65,11 +65,11 @@ public final class BavetGroupBridgeUniTuple<A, GroupKey_, ResultContainer_, Resu
         this.undoAccumulator = undoAccumulator;
     }
 
-    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> getChildTuple() {
+    public BavetGroupBiTuple<NewA, ResultContainer_, NewB> getChildTuple() {
         return childTuple;
     }
 
-    public void setChildTuple(BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> childTuple) {
+    public void setChildTuple(BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple) {
         this.childTuple = childTuple;
     }
 
