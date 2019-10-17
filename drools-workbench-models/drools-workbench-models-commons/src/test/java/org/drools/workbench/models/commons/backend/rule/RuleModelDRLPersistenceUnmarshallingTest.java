@@ -9563,4 +9563,27 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEqualsIgnoreWhitespace(drl,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
     }
+
+    @Test
+    public void unmarshalStringListsCorrectly() {
+        final String drl = "package org.mortgages;\n" +
+                "rule \"aaa\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\tApplicant( applicantName : name in ( \"a\", \"b\", \"c\" ) )\n" +
+                "\tthen\n" +
+                "end";
+
+        when(dmo.getPackageName()).thenReturn("org.mortgages");
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        SingleFieldConstraint fieldConstraint = model.getLHSBoundField("applicantName");
+
+        assertEquals("a, b, c", fieldConstraint.getValue());
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
 }
