@@ -162,7 +162,7 @@ public class PlannerBenchmarkConfigTest {
 
     @Test
     public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
-        String benchmarkConfigResource = "org/optaplanner/benchmark/config/testdataBenchmarkConfig.xml";
+        String benchmarkConfigResource = "org/optaplanner/benchmark/config/testdataBenchmarkConfigNoInheritence.xml";
         String originalXml = IOUtils.toString(
                 getClass().getClassLoader().getResourceAsStream(benchmarkConfigResource), StandardCharsets.UTF_8);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource);

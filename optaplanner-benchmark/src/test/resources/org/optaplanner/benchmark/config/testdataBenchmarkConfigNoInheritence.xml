@@ -10,7 +10,7 @@
         <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <secondsSpentLimit>20</secondsSpentLimit>
+        <secondsSpentLimit>0</secondsSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
