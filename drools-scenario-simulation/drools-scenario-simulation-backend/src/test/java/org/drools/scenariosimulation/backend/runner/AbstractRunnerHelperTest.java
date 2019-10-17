@@ -36,6 +36,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -76,27 +77,27 @@ public class AbstractRunnerHelperTest {
     public void fillResult() {
         FactIdentifier factIdentifier = FactIdentifier.create("MyInstance", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
-        FactMappingValue expectedResultSpy = spy(new FactMappingValue(factIdentifier, expressionIdentifier, "value"));
+        FactMappingValue expectedResultSpy = spy(new FactMappingValue(factIdentifier, expressionIdentifier, VALUE));
         AtomicReference<ResultWrapper> resultWrapperAtomicReference = new AtomicReference<>();
         Supplier<ResultWrapper<?>> resultWrapperSupplier = resultWrapperAtomicReference::get;
         ExpressionEvaluator expressionEvaluator = new BaseExpressionEvaluator(AbstractRunnerHelper.class.getClassLoader());
 
         // Success
-        resultWrapperAtomicReference.set(ResultWrapper.createResult("value"));
+        resultWrapperAtomicReference.set(ResultWrapper.createResult(VALUE));
         assertTrue(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
         verify(expectedResultSpy, times(1)).resetStatus();
 
         reset(expectedResultSpy);
 
         // Fail with expected value
-        resultWrapperAtomicReference.set(ResultWrapper.createErrorResult("value", "value1"));
+        resultWrapperAtomicReference.set(ResultWrapper.createErrorResult(VALUE, "value1"));
         assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
-        verify(expectedResultSpy, times(1)).setErrorValue(eq("value"));
+        verify(expectedResultSpy, times(1)).setErrorValue(eq(VALUE));
 
         reset(expectedResultSpy);
 
         // Fail with exception while reverting actual value
-        resultWrapperAtomicReference.set(ResultWrapper.createErrorResult("value", "value1"));
+        resultWrapperAtomicReference.set(ResultWrapper.createErrorResult(VALUE, "value1"));
         ExpressionEvaluator expressionEvaluatorMock = mock(ExpressionEvaluator.class);
         when(expressionEvaluatorMock.fromObjectToExpression(any())).thenThrow(new IllegalArgumentException("Error"));
         assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluatorMock).getResult());
