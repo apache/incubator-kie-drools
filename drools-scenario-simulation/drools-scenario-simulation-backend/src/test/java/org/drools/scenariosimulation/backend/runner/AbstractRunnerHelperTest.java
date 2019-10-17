@@ -26,6 +26,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
@@ -57,7 +58,7 @@ public class AbstractRunnerHelperTest {
         }
 
         @Override
-        protected Map<String, Object> executeScenario(KieContainer kieContainer, ScenarioRunnerData scenarioRunnerData, ExpressionEvaluatorFactory expressionEvaluatorFactory, SimulationDescriptor simulationDescriptor) {
+        protected Map<String, Object> executeScenario(KieContainer kieContainer, ScenarioRunnerData scenarioRunnerData, ExpressionEvaluatorFactory expressionEvaluatorFactory, SimulationDescriptor simulationDescriptor, Settings settings) {
             return null;
         }
 

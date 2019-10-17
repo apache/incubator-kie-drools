@@ -28,13 +28,17 @@ import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPe
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
-    private static final String DMO_SESSION_NODE = "dmoSession";
-    private static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
-    private static final String FACT_IDENTIFIER = "factIdentifier";
-    private static final String FACT_MAPPING_NODE = "FactMapping";
-    private static final String FACT_MAPPINGS_NODE = "factMappings";
-    private static final String SIMULATION_NODE = "simulation";
-    private static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
+    public static final String DMO_SESSION_NODE = "dmoSession";
+    public static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
+    public static final String FACT_IDENTIFIER = "factIdentifier";
+    public static final String FACT_MAPPING_NODE = "FactMapping";
+    public static final String FACT_MAPPINGS_NODE = "factMappings";
+    public static final String SIMULATION_NODE = "simulation";
+    public static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
+    public static final String SCENARIO_SIMULATION_MODEL_NODE = "ScenarioSimulationModel";
+    public static final String SETTINGS_NODE = "settings";
+    public static final String[] SETTINGS = {"dmoSession", "dmnFilePath", "type", "fileName", "kieSession",
+            "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"};
 
     @Override
     public ThrowingConsumer<Document> from1_0to1_1() {
@@ -174,6 +178,25 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                 DOMParserUtil.createNodeAtPosition(factMappingNode, "columnWidth", Double.toString(getColumnWidth(expressionIdentifierName)), null);
             });
             updateVersion(document, "1.7");
+        };
+    }
+
+    @Override
+    public ThrowingConsumer<Document> from1_7to1_8() {
+        return document -> {
+            final Node settings = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null, null);
+            for (String setting : SETTINGS) {
+                final Map<Node, List<Node>> childrenNodesMap = DOMParserUtil.getChildrenNodesMap(document, SIMULATION_DESCRIPTOR_NODE, setting);
+                childrenNodesMap.values().stream()
+                        .filter(childNodeList -> !childNodeList.isEmpty())
+                        .findFirst()
+                        .ifPresent(childNodeList -> {
+                            final Node node = childNodeList.get(0);
+                            DOMParserUtil.createNodeAtPosition(settings, node.getNodeName(), node.getTextContent(), null);
+                            node.getParentNode().removeChild(node);
+                        });
+            }
+            updateVersion(document, "1.8");
         };
     }
 

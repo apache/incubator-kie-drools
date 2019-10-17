@@ -25,6 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileName;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
@@ -35,11 +37,12 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+import org.kie.dmn.feel.util.Pair;
 
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesByExtension;
 
-public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName> {
+public class ScenarioJunitActivator extends ParentRunner<Pair<SimulationWithFileName, Settings>> {
 
     public static final String ACTIVATOR_CLASS_NAME = "ScenarioJunitActivatorTest";
 
@@ -55,28 +58,33 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
     }
 
     @Override
-    protected List<SimulationWithFileName> getChildren() {
+    protected List<Pair<SimulationWithFileName, Settings>> getChildren() {
         return getResources().map(this::parseFile)
-                .filter(this::isNotSkipFromBuild)
+                .filter(pair -> isNotSkipFromBuild(pair.getLeft().getSettings()))
+                .map(this::getChild)
                 .collect(Collectors.toList());
     }
 
     @Override
-    protected Description describeChild(SimulationWithFileName child) {
-        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
+    protected Description describeChild(Pair<SimulationWithFileName, Settings> child) {
+        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getLeft().getFileName()), child.getLeft().getSimulation());
     }
 
     @Override
-    protected void runChild(SimulationWithFileName child, RunNotifier notifier) {
+    protected void runChild(Pair<SimulationWithFileName, Settings> child, RunNotifier notifier) {
         KieContainer kieClasspathContainer = getKieContainer();
-        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation(), child.getFileName());
+        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getLeft().getSimulation(), child.getLeft().getFileName(), child.getRight());
         scenarioRunner.run(notifier);
     }
 
-    protected SimulationWithFileName parseFile(String path) {
+    protected Pair<SimulationWithFileName, Settings> getChild(Pair<ScenarioSimulationModel, String> source) {
+        return new Pair(new SimulationWithFileName(source.getLeft().getSimulation(), source.getRight()), source.getLeft().getSettings());
+    }
+
+    protected Pair<ScenarioSimulationModel, String> parseFile(String path) {
         try (final Scanner scanner = new Scanner(new File(path))) {
             String rawFile = scanner.useDelimiter("\\Z").next();
-            return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), path);
+            return new Pair<>(getXmlReader().unmarshal(rawFile), path);
         } catch (FileNotFoundException e) {
             throw new ScenarioException("File not found, this should not happen: " + path, e);
         } catch (Exception e) {
@@ -84,8 +92,8 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
         }
     }
 
-    protected boolean isNotSkipFromBuild(SimulationWithFileName simulationWithFileName) {
-        return !simulationWithFileName.getSimulation().getSimulationDescriptor().isSkipFromBuild();
+    protected boolean isNotSkipFromBuild(Settings settings) {
+        return !settings.isSkipFromBuild();
     }
 
     ScenarioSimulationXMLPersistence getXmlReader() {
@@ -100,9 +108,9 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
         return KieServices.get().getKieClasspathContainer();
     }
 
-    AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String fileName) {
-        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(simulation.getSimulationDescriptor())
-                .create(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex());
+    AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String fileName, Settings settings) {
+        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(simulation.getSimulationDescriptor(), settings.getType())
+                .create(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex(), settings);
         runner.setFileName(fileName);
         return runner;
     }

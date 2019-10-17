@@ -33,6 +33,7 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -52,7 +53,7 @@ import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.c
 
 public abstract class AbstractRunnerHelper {
 
-    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
+    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData, Settings settings) {
 
         Scenario scenario = scenarioWithIndex.getScenario();
 
@@ -64,7 +65,7 @@ public abstract class AbstractRunnerHelper {
         Map<String, Object> requestContext = executeScenario(kieContainer,
                                                              scenarioRunnerData,
                                                              expressionEvaluatorFactory,
-                                                             simulationDescriptor);
+                                                             simulationDescriptor, settings);
 
         scenarioRunnerData.setMetadata(extractResultMetadata(requestContext, scenarioWithIndex));
 
@@ -276,7 +277,8 @@ public abstract class AbstractRunnerHelper {
     protected abstract Map<String, Object> executeScenario(KieContainer kieContainer,
                                                            ScenarioRunnerData scenarioRunnerData,
                                                            ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                                           SimulationDescriptor simulationDescriptor);
+                                                           SimulationDescriptor simulationDescriptor,
+                                                           Settings settings);
 
     protected abstract void verifyConditions(SimulationDescriptor simulationDescriptor,
                                              ScenarioRunnerData scenarioRunnerData,

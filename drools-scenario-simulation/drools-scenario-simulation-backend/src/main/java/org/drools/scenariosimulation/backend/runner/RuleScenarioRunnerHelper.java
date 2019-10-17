@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -58,16 +59,17 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
                                                   ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                                  SimulationDescriptor simulationDescriptor) {
-        if (!Type.RULE.equals(simulationDescriptor.getType())) {
+                                                  SimulationDescriptor simulationDescriptor,
+                                                  Settings settings) {
+        if (!Type.RULE.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
         RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer,
-                                                                                    simulationDescriptor.getDmoSession(),
-                                                                                    simulationDescriptor.isStateless());
+                                                                                    settings.getDmoSession(),
+                                                                                    settings.isStateless());
 
-        if (simulationDescriptor.getRuleFlowGroup() != null) {
-            ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(simulationDescriptor.getRuleFlowGroup());
+        if (settings.getRuleFlowGroup() != null) {
+            ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(settings.getRuleFlowGroup());
         }
 
         scenarioRunnerData.getGivens().stream().map(ScenarioGiven::getValue).forEach(ruleScenarioExecutableBuilder::insert);

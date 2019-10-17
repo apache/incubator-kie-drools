@@ -28,6 +28,7 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -53,12 +54,13 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
                                                   ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                                  SimulationDescriptor simulationDescriptor) {
-        if (!ScenarioSimulationModel.Type.DMN.equals(simulationDescriptor.getType())) {
+                                                  SimulationDescriptor simulationDescriptor,
+                                                  Settings settings) {
+        if (!ScenarioSimulationModel.Type.DMN.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
         DMNScenarioExecutableBuilder executableBuilder = DMNScenarioExecutableBuilder.createBuilder(kieContainer);
-        executableBuilder.setActiveModel(simulationDescriptor.getDmnFilePath());
+        executableBuilder.setActiveModel(settings.getDmnFilePath());
         for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
             executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
         }

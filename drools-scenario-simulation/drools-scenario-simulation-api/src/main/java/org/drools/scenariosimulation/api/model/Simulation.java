@@ -118,9 +118,6 @@ public class Simulation {
 
     public Simulation cloneSimulation() {
         Simulation toReturn = new Simulation();
-        toReturn.getSimulationDescriptor().setType(simulationDescriptor.getType());
-        toReturn.getSimulationDescriptor().setDmnFilePath(simulationDescriptor.getDmnFilePath());
-        toReturn.getSimulationDescriptor().setDmoSession(simulationDescriptor.getDmoSession());
         final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);

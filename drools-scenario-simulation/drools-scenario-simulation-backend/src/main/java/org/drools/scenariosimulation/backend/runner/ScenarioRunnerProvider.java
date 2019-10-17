@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.List;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.kie.api.runtime.KieContainer;
 
@@ -26,5 +27,6 @@ public interface ScenarioRunnerProvider {
 
     AbstractScenarioRunner create(KieContainer kieContainer,
                                   SimulationDescriptor simulationDescriptor,
-                                  List<ScenarioWithIndex> scenarios);
+                                  List<ScenarioWithIndex> scenarios,
+                                  Settings settings);
 }

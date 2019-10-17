@@ -17,6 +17,7 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -40,15 +41,19 @@ public class AbstractScenarioRunnerTest {
 
     protected AbstractScenarioRunner abstractScenarioRunnerLocal;
 
+    protected Settings settingsLocal;
+
     @Before
     public void setup() {
+        settingsLocal = new Settings();
         abstractScenarioRunnerLocal = spy(
                 new AbstractScenarioRunner(kieContainerMock,
                                            new Simulation(),
                                            "",
                                            ExpressionEvaluatorFactory.create(
                                                    this.getClass().getClassLoader(),
-                                                   ScenarioSimulationModel.Type.RULE)) {
+                                                   ScenarioSimulationModel.Type.RULE),
+                                           settingsLocal) {
                     @Override
                     protected AbstractRunnerHelper newRunnerHelper() {
                         return null;
@@ -61,8 +66,8 @@ public class AbstractScenarioRunnerTest {
         SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
         // all existing types should have a dedicated runner
         for (ScenarioSimulationModel.Type value : ScenarioSimulationModel.Type.values()) {
-            simulationDescriptor.setType(value);
-            AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor);
+            settingsLocal.setType(value);
+            AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor, value);
         }
     }
 

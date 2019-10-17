@@ -29,6 +29,7 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
@@ -69,6 +70,7 @@ public class ScenarioSimulationXMLPersistence {
         toConfigure.alias("Simulation", Simulation.class);
         toConfigure.alias("SimulationDescriptor", SimulationDescriptor.class);
         toConfigure.alias("Import", Import.class);
+        toConfigure.alias("Settings", Settings.class);
     }
 
     public static ScenarioSimulationXMLPersistence getInstance() {
@@ -80,7 +82,13 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String cleanUpUnusedNodes(String input) throws Exception {
-        return DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
+        String toReturn = DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
+        String[] SETTINGS = {"dmoSession", "dmnFilePath", "type", "fileName", "kieSession",
+                "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"};
+        for (String setting : SETTINGS) {
+            toReturn = DOMParserUtil.cleanupNodes(toReturn, "simulationDescriptor", setting);
+        }
+        return toReturn;
     }
 
     public static double getColumnWidth(String expressionIdentifierName) {
@@ -140,6 +148,8 @@ public class ScenarioSimulationXMLPersistence {
                 migrator = migrator.andThen(getMigrationStrategy().from1_5to1_6());
             case "1.6":
                 migrator = migrator.andThen(getMigrationStrategy().from1_6to1_7());
+            case "1.7":
+                migrator = migrator.andThen(getMigrationStrategy().from1_7to1_8());
                 supported = true;
                 break;
             default:

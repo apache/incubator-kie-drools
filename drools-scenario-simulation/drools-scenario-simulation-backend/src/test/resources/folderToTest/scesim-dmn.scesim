@@ -1,4 +1,4 @@
-<ScenarioSimulationModel version="1.2">
+<ScenarioSimulationModel version="1.8">
   <simulation>
     <simulationDescriptor>
       <factMappings>
@@ -54,8 +54,6 @@
           <expressionAlias>PROPERTY 2</expressionAlias>
         </FactMapping>
       </factMappings>
-      <dmnFilePath>src/main/resources/com/new-def.dmn</dmnFilePath>
-      <type>DMN</type>
     </simulationDescriptor>
     <scenarios>
       <Scenario>
@@ -82,6 +80,10 @@
       </Scenario>
     </scenarios>
   </simulation>
+  <settings>
+    <dmnFilePath>src/main/resources/com/new-def.dmn</dmnFilePath>
+    <type>DMN</type>
+  </settings>
   <imports>
     <imports/>
   </imports>
