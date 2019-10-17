@@ -69,17 +69,13 @@ public class JavaDRLConstraintValueBuilder extends MvelDRLConstraintValueBuilder
             buf.append("new java.math.BigDecimal(\"" + fieldValue + "\")");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
             buf.append("new java.math.BigInteger(\"" + fieldValue + "\")");
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BYTE)) {
-            buf.append(fieldValue);
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
             buf.append(fieldValue + "d");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
             buf.append(fieldValue + "f");
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
-            buf.append(fieldValue);
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_LONG)) {
             buf.append(fieldValue + "L");
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_SHORT)) {
+        } else if (DataType.isNumeric(fieldType)) {
             buf.append(fieldValue);
         } else if (fieldType.equals(DataType.TYPE_STRING)) {
             if (!isDelimitedString) {

@@ -29,7 +29,6 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
      * Numerics, Booleans, (Java 1.5+) enums and all other fieldTypes are not
      * escaped at all. Guvnor-type enums are really a pick list of Strings and
      * in these cases the underlying fieldType is a String.
-     *
      * @param buf
      * @param constraintType
      * @param fieldType
@@ -67,17 +66,7 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
             buf.append(fieldValue + "B");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
             buf.append(fieldValue + "I");
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BYTE)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_LONG)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_SHORT)) {
+        } else if (DataType.isNumeric(fieldType)) {
             buf.append(fieldValue);
         } else if (fieldType.equals(DataType.TYPE_STRING)) {
             if (!isDelimitedString) {
@@ -109,7 +98,6 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
      * Booleans, (Java 1.5+) enums and all other fieldTypes are not escaped at
      * all. Guvnor-type enums are really a pick list of Strings and in these
      * cases the underlying fieldType is a String.
-     *
      * @param buf
      * @param fieldType
      * @param fieldValue
@@ -149,17 +137,7 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
             buf.append(fieldValue + "B");
         } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
             buf.append(fieldValue + "I");
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BYTE)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_LONG)) {
-            buf.append(fieldValue);
-        } else if (fieldType.equals(DataType.TYPE_NUMERIC_SHORT)) {
+        } else if (DataType.isNumeric(fieldType)) {
             buf.append(fieldValue);
         } else if (fieldType.equals(DataType.TYPE_STRING)) {
             if (!isDelimitedString) {
