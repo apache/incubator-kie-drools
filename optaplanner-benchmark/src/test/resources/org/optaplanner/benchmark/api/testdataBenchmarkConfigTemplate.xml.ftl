@@ -6,7 +6,7 @@
   <solverBenchmark>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.persistence.common.api.domain.solution.RigidTestdataSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>target/benchmarkTest/input.xml</inputSolutionFile>
+      <inputSolutionFile>target/test/benchmarkTest/input.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
