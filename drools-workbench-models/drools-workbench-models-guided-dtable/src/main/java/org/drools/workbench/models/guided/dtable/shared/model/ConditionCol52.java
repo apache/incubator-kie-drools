@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
@@ -239,28 +240,14 @@ public class ConditionCol52 extends DTColumnConfig52
         if (!super.equals(o)) {
             return false;
         }
-
         ConditionCol52 that = (ConditionCol52) o;
-
-        if (constraintValueType != that.constraintValueType) {
-            return false;
-        }
-        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
-            return false;
-        }
-        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) {
-            return false;
-        }
-        if (operator != null ? !operator.equals(that.operator) : that.operator != null) {
-            return false;
-        }
-        if (valueList != null ? !valueList.equals(that.valueList) : that.valueList != null) {
-            return false;
-        }
-        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
-            return false;
-        }
-        return binding != null ? binding.equals(that.binding) : that.binding == null;
+        return constraintValueType == that.constraintValueType &&
+                Objects.equals(factField, that.factField) &&
+                Objects.equals(fieldType, that.fieldType) &&
+                Objects.equals(operator, that.operator) &&
+                Objects.equals(valueList, that.valueList) &&
+                Objects.equals(parameters, that.parameters) &&
+                Objects.equals(binding, that.binding);
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
@@ -27,7 +28,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
  */
 public class ActionWorkItemCol52 extends ActionCol52 {
 
-    private static final long serialVersionUID = 540l;
+    private static final long serialVersionUID = 729l;
 
     private PortableWorkDefinition workItemDefinition;
 
@@ -169,10 +170,8 @@ public class ActionWorkItemCol52 extends ActionCol52 {
         if (!super.equals(o)) {
             return false;
         }
-
         ActionWorkItemCol52 that = (ActionWorkItemCol52) o;
-
-        return workItemDefinition != null ? workItemDefinition.equals(that.workItemDefinition) : that.workItemDefinition == null;
+        return Objects.equals(workItemDefinition, that.workItemDefinition);
     }
 
     @Override

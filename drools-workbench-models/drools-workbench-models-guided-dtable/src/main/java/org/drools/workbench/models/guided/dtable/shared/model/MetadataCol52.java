@@ -16,11 +16,14 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a rule metadata - eg @foo(bar) etc.
  */
 public class MetadataCol52 extends DTColumnConfig52 {
+
+    private static final long serialVersionUID = 729l;
 
     private String metadata;
 
@@ -79,10 +82,8 @@ public class MetadataCol52 extends DTColumnConfig52 {
         if (!super.equals(o)) {
             return false;
         }
-
         MetadataCol52 that = (MetadataCol52) o;
-
-        return metadata != null ? metadata.equals(that.metadata) : that.metadata == null;
+        return Objects.equals(metadata, that.metadata);
     }
 
     @Override

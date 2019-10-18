@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is the config for a condition column that supports Limited Entry, hence
@@ -25,7 +26,7 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
         implements
         LimitedEntryCol {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     private DTCellValue52 value;
 
@@ -67,16 +68,14 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof LimitedEntryConditionCol52)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
-
         LimitedEntryConditionCol52 that = (LimitedEntryConditionCol52) o;
-
-        return value != null ? value.equals(that.value) : that.value == null;
+        return Objects.equals(value, that.value);
     }
 
     @Override
