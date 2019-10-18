@@ -16,16 +16,19 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 
-public class SimulationWithFileName {
+public class SimulationWithFileNameAndSettings {
 
     private final Simulation simulation;
     private final String fileName;
+    private final Settings settings;
 
-    public SimulationWithFileName(Simulation simulation, String fileName) {
+    public SimulationWithFileNameAndSettings(Simulation simulation, String fileName, Settings settings) {
         this.simulation = simulation;
         this.fileName = fileName;
+        this.settings = settings;
     }
 
     public Simulation getSimulation() {
@@ -34,5 +37,9 @@ public class SimulationWithFileName {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 }

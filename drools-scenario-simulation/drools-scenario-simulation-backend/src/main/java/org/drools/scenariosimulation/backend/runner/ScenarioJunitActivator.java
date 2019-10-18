@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileName;
+import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileNameAndSettings;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -37,12 +37,11 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.feel.util.Pair;
 
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesByExtension;
 
-public class ScenarioJunitActivator extends ParentRunner<Pair<SimulationWithFileName, Settings>> {
+public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileNameAndSettings> {
 
     public static final String ACTIVATOR_CLASS_NAME = "ScenarioJunitActivatorTest";
 
@@ -58,33 +57,29 @@ public class ScenarioJunitActivator extends ParentRunner<Pair<SimulationWithFile
     }
 
     @Override
-    protected List<Pair<SimulationWithFileName, Settings>> getChildren() {
+    protected List<SimulationWithFileNameAndSettings> getChildren() {
         return getResources().map(this::parseFile)
-                .filter(pair -> isNotSkipFromBuild(pair.getLeft().getSettings()))
-                .map(this::getChild)
+                .filter(item -> isNotSkipFromBuild(item.getSettings()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    protected Description describeChild(Pair<SimulationWithFileName, Settings> child) {
-        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getLeft().getFileName()), child.getLeft().getSimulation());
+    protected Description describeChild(SimulationWithFileNameAndSettings child) {
+        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
     }
 
     @Override
-    protected void runChild(Pair<SimulationWithFileName, Settings> child, RunNotifier notifier) {
+    protected void runChild(SimulationWithFileNameAndSettings child, RunNotifier notifier) {
         KieContainer kieClasspathContainer = getKieContainer();
-        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getLeft().getSimulation(), child.getLeft().getFileName(), child.getRight());
+        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation(), child.getFileName(), child.getSettings());
         scenarioRunner.run(notifier);
     }
 
-    protected Pair<SimulationWithFileName, Settings> getChild(Pair<ScenarioSimulationModel, String> source) {
-        return new Pair(new SimulationWithFileName(source.getLeft().getSimulation(), source.getRight()), source.getLeft().getSettings());
-    }
-
-    protected Pair<ScenarioSimulationModel, String> parseFile(String path) {
+    protected SimulationWithFileNameAndSettings parseFile(String path) {
         try (final Scanner scanner = new Scanner(new File(path))) {
             String rawFile = scanner.useDelimiter("\\Z").next();
-            return new Pair<>(getXmlReader().unmarshal(rawFile), path);
+            ScenarioSimulationModel scenarioSimulationModel = getXmlReader().unmarshal(rawFile);
+            return new SimulationWithFileNameAndSettings(scenarioSimulationModel.getSimulation(), path, scenarioSimulationModel.getSettings());
         } catch (FileNotFoundException e) {
             throw new ScenarioException("File not found, this should not happen: " + path, e);
         } catch (Exception e) {

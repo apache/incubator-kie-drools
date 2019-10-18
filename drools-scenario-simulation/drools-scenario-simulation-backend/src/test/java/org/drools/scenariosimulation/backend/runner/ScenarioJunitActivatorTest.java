@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileName;
+import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileNameAndSettings;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.Before;
@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.feel.util.Pair;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -53,7 +52,7 @@ public class ScenarioJunitActivatorTest {
     private AbstractScenarioRunner runnerMock;
 
     @Mock
-    private SimulationWithFileName simulationWithFileNameMock;
+    private SimulationWithFileNameAndSettings simulationWithFileNameAndSettingsMock;
 
     @Mock
     private ScenarioSimulationModel scenarioSimulationModelMock;
@@ -85,7 +84,7 @@ public class ScenarioJunitActivatorTest {
 
     @Test
     public void runChildTest() throws InitializationError {
-        getScenarioJunitActivator().runChild(new Pair<>(simulationWithFileNameMock, settingsLocal), runNotifierMock);
+        getScenarioJunitActivator().runChild(simulationWithFileNameAndSettingsMock, runNotifierMock);
         verify(runnerMock, times(1)).run(runNotifierMock);
     }
 
