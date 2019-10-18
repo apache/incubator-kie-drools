@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -59,7 +60,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * {@link PlanningSolution best solution}, it should be a (un)changed clone.
      * <p>
      * Only call this method on a separate {@link ScoreDirector} instance,
-     * built by {@link Solver#getScoreDirectorFactory()},
+     * built by {@link SolverFactory#getScoreDirectorFactory()},
      * not on the one used inside the {@link Solver} itself.
      * @param workingSolution never null
      */

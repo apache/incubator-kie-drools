@@ -22,7 +22,6 @@ import java.util.function.BiConsumer;
 import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
@@ -121,7 +120,9 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public SolutionBusiness<Solution_> createSolutionBusiness() {
         SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<>(this);
-        solutionBusiness.setSolver(createSolver());
+        SolverFactory<Solution_> solverFactory = createSolverFactory();
+        solutionBusiness.setSolver(solverFactory.buildSolver());
+        solutionBusiness.setGuiScoreDirector(solverFactory.getScoreDirectorFactory().buildScoreDirector());
         solutionBusiness.setDataDir(determineDataDir(dataDirName));
         solutionBusiness.setSolutionFileIO(createSolutionFileIO());
         solutionBusiness.setImporters(createSolutionImporters());
@@ -130,9 +131,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         return solutionBusiness;
     }
 
-    protected Solver<Solution_> createSolver() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
-        return solverFactory.buildSolver();
+    protected SolverFactory<Solution_> createSolverFactory() {
+        return SolverFactory.createFromXmlResource(solverConfigResource);
     }
 
     protected abstract SolutionPanel<Solution_> createSolutionPanel();

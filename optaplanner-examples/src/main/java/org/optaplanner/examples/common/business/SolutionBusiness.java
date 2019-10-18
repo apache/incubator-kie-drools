@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
@@ -44,7 +43,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.Chained
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
@@ -183,8 +181,10 @@ public class SolutionBusiness<Solution_> {
 
     public void setSolver(Solver<Solution_> solver) {
         this.solver = solver;
-        ScoreDirectorFactory<Solution_> scoreDirectorFactory = solver.getScoreDirectorFactory();
-        guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
+    }
+
+    public void setGuiScoreDirector(ScoreDirector<Solution_> guiScoreDirector) {
+        this.guiScoreDirector = guiScoreDirector;
     }
 
     public List<File> getUnsolvedFileList() {

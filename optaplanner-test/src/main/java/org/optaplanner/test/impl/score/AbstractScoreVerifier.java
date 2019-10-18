@@ -55,7 +55,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
         if (solverFactory == null) {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
-        scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory.buildSolver().getScoreDirectorFactory();
+        scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory.getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory).getSolutionDescriptor();
         Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {

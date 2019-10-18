@@ -53,7 +53,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         dataDir = CommonApp.determineDataDir(VehicleRoutingApp.DATA_DIR_NAME);
         solutionFileIO = new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
-        scoreDirectorFactory = solverFactory.buildSolver().getScoreDirectorFactory();
+        scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
     }
 
     public void compare(String... filePaths) {

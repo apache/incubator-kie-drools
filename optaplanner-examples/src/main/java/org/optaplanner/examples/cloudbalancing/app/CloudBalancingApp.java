@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -46,12 +44,6 @@ public class CloudBalancingApp extends CommonApp<CloudBalance> {
                 "Each used computer inflicts a maintenance cost.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 CloudBalancingPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver<CloudBalance> createSolver() {
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

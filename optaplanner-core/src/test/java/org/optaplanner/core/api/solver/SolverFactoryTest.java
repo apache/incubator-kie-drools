@@ -21,14 +21,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -38,7 +43,7 @@ public class SolverFactoryTest {
     private static File solverTestDir;
 
     @BeforeClass
-    public static void setup() throws IOException {
+    public static void setup() {
         solverTestDir = new File("target/test/solverTest/");
         solverTestDir.mkdirs();
     }
@@ -122,6 +127,23 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig, classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
+    }
+
+    @Test
+    public void getScoreDirectorFactory() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        ScoreDirectorFactory<TestdataSolution> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
+        assertNotNull(scoreDirectorFactory);
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        try (ScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(solution);
+            Score score = scoreDirector.calculateScore();
+            assertNotNull(score);
+        }
     }
 
     @Test

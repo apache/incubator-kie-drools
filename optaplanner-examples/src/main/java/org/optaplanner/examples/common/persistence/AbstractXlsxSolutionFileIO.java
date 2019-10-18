@@ -104,8 +104,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         public AbstractXlsxReader(XSSFWorkbook workbook, String solverConfigResource) {
             this.workbook = workbook;
             ScoreDirectorFactory<Solution_> scoreDirectorFactory
-                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource)
-                    .buildSolver().getScoreDirectorFactory();
+                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
         }
 
@@ -377,8 +376,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
             ScoreDirectorFactory<Solution_> scoreDirectorFactory
-                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource)
-                    .buildSolver().getScoreDirectorFactory();
+                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
             try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);

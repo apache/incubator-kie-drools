@@ -27,10 +27,11 @@ import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
 
@@ -123,7 +124,9 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     }
 
     private void assertNewKieSessionSucceeds(Solver<?> solver) {
-        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<?>) solver.getScoreDirectorFactory();
+        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
+        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<?>) defaultSolver.getScoreDirectorFactory();
         scoreDirectorFactory.newKieSession();
     }
+
 }

@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.converters.ConversionException;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -472,12 +473,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         }
     }
 
+    // TODO https://issues.jboss.org/browse/PLANNER-1688
     /**
      * Do not use this method, it is an internal method.
      * Use {@link SolverFactory#buildSolver()} instead.
      * <p>
-     * Will be removed in 8.0.
+     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
      * @param configContext never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
     public <Solution_> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
@@ -487,12 +490,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         Integer moveThreadCount_ = resolveMoveThreadCount();
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
-                = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
-                : scoreDirectorFactoryConfig;
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                configContext, environmentMode_, solutionDescriptor);
+        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(configContext, environmentMode_);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
@@ -567,6 +565,36 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return resolvedMoveThreadCount;
     }
 
+    // TODO https://issues.jboss.org/browse/PLANNER-1688
+    /**
+     * Do not use this method, it is an internal method.
+     * Use {@link SolverFactory#getScoreDirectorFactory()} instead.
+     * <p>
+     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
+     * @param configContext never null
+     * @param environmentMode never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @return never null
+     */
+    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(SolverConfigContext configContext,
+            EnvironmentMode environmentMode) {
+        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
+                = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
+                : scoreDirectorFactoryConfig;
+        return scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
+                configContext, environmentMode, solutionDescriptor);
+    }
+
+    // TODO https://issues.jboss.org/browse/PLANNER-1688
+    /**
+     * Do not use this method, it is an internal method.
+     * <p>
+     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
+     * @param configContext never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @return never null
+     */
     public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
         ScoreDefinition deprecatedScoreDefinition = scoreDirectorFactoryConfig == null ? null
                 : scoreDirectorFactoryConfig.buildDeprecatedScoreDefinition();

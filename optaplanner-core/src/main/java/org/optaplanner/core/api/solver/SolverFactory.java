@@ -24,8 +24,12 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
@@ -168,7 +172,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
-        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        // Defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
         solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig);
     }
@@ -182,7 +186,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig, ClassLoader classLoader) {
-        // Does defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
+        // Defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
         solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(classLoader));
     }
@@ -294,6 +298,14 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      */
     public abstract Solver<Solution_> buildSolver();
+
+    /**
+     * Useful to reuse the {@link Score} calculation (for example in a UI)
+     * and to explain the {@link Score} to the user
+     * with the {@link ConstraintMatchTotal} and {@link Indictment} API.
+     * @return never null
+     */
+    public abstract ScoreDirectorFactory<Solution_> getScoreDirectorFactory();
 
     /**
      * Deprecated. To configure a {@link SolverFactory} dynamically (without parsing XML each time),

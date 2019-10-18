@@ -1225,11 +1225,11 @@ Instead use the ConstraintMatch API below and do it properly.
 === Using Score Calculation Outside the `Solver`
 
 If other parts of your application, for example your webUI, need to calculate the score of a solution,
-reuse the `ScoreDirectorFactory` of the `Solver` to build a separate `ScoreDirector` for that webUI:
+reuse the `ScoreDirectorFactory` of the `SolverFactory` to build a separate `ScoreDirector` for that webUI:
 
 [source,java,options="nowrap"]
 ----
-ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solver.getScoreDirectorFactory();
+ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
 try (ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector()) {
     ...
 }

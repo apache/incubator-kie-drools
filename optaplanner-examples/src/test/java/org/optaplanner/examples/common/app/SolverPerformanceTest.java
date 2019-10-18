@@ -96,7 +96,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
         Solution_ bestSolution = solver.solve(problem);
-        assertScoreAndConstraintMatches(solver, bestSolution, bestScoreLimitString);
+        assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimitString);
     }
 
     protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
@@ -108,10 +108,11 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         return SolverFactory.create(solverConfig);
     }
 
-    private void assertScoreAndConstraintMatches(Solver<Solution_> solver, Solution_ bestSolution, String bestScoreLimitString) {
+    private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory,
+            Solution_ bestSolution, String bestScoreLimitString) {
         assertNotNull(bestSolution);
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
-                = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
+                = (InnerScoreDirectorFactory<Solution_>) solverFactory.getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);
