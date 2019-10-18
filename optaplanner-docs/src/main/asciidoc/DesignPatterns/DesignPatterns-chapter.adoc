@@ -11,8 +11,7 @@
 [[designPatternsIntroduction]]
 == Design patterns introduction
 
-The design patterns in this section list and solve common design challenges.
-//Need to explain what design patterns are.
+OptaPlanner design patterns are generic reusable solutions to common challenges in the model or architecture of projects that perform constraint solving. The design patterns in this section list and solve common design challenges.
 
 [[domainModelingGuide]]
 == Domain modeling guidelines
@@ -21,8 +20,8 @@ Follow the guidelines listed in this section to create a well thought-out model 
 
 
 . *Draw a class diagram of your domain model.*
-.. Normalize the diagram to remove duplicate data.
-// what does it mean to normalize a diagram?
+.. Make sure there are no duplications in your data model and that relationships between objects are clearly defined.
+
 .. Create sample instances for each class. For example, in the Employee Rostering starter application, the samples for the `Employee` class are `Ann`, `Bert`, and `Carl`.
 
 . *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in the Employee Rostering starter application, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
@@ -47,7 +46,7 @@ with a one-to-many and a many-to-one relationship to a new intermediate class.*
 ====
 Optaplanner does not currently support a `@PlanningVariable` annotation on a collection.
 ====
-//I suggest removing this for now, the when you do implement `@PlanningVariable` add this note saying why you shouldn't use it: Although a future version will support it for flexibility reasons. it probably has an inherit performance and complexity cost, so it might be better to avoid it anyway.
+
 +
 For example, in the Employee Rostering starter applicaion the `ShiftAssignment` class is the many-to-many relationship between `Shift` and `Employee`.
 `Shift` contains every shift time that needs to be filled with an employee.
@@ -66,19 +65,18 @@ image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 . *Choose the model in which the number of planning entities is fixed during planning*. For example, in the Employee Rostering starter application, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
 On the other hand, the number of employees per shift is known in advance,
 so it is better to make the `Shift` relationship a problem property
-and the `Employee` relationship a planning variable.
+and the `Employee` relationship a planning variable as shown in the following examples.
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideB.png[align="center"]
 
-// Not clear just what this diagram is showing:
+In the following diagram, each row is a different example and shows the relationship in that example's data model. For the *N Queens* example, the Queen entity has a Row planning variable, which stores objects of type `row`. Many Queens may point to one Row.
 
 image::DesignPatterns/entityVariableAndValueExamples.png[align="center"]
 
 [NOTE]
 ====
-Vehicle routing is an exception because it uses a <<chainedPlanningVariable,chained planning variable>>.
+Vehicle routing is different because it uses a <<chainedPlanningVariable,chained planning variable>>.
 ====
-
 
 [[assigningTimeToPlanningEntities]]
 == Assigning Time to Planning Entities
