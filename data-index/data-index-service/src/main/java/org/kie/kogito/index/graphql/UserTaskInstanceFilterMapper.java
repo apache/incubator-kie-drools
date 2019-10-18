@@ -16,58 +16,17 @@
 
 package org.kie.kogito.index.graphql;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.index.query.UserTaskInstanceFilter;
 
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+
 public class UserTaskInstanceFilterMapper implements Function<Map<String, Object>, UserTaskInstanceFilter> {
 
     @Override
     public UserTaskInstanceFilter apply(Map<String, Object> params) {
-        UserTaskInstanceFilter filter = new UserTaskInstanceFilter();
-        if (params != null) {
-            params.computeIfPresent("state", (key, value) -> {
-                filter.setState((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("processInstanceId", (key, value) -> {
-                filter.setProcessInstanceId((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("id", (key, value) -> {
-                filter.setId((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("actualOwner", (key, value) -> {
-                filter.setActualOwner((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("potentialUsers", (key, value) -> {
-                filter.setPotentialUsers((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("potentialGroups", (key, value) -> {
-                filter.setPotentialGroups((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("limit", (key, value) -> {
-                filter.setLimit((Integer) value);
-                return value;
-            });
-
-            params.computeIfPresent("offset", (key, value) -> {
-                filter.setOffset((Integer) value);
-                return value;
-            });
-        }
-        return filter;
+        return getObjectMapper().convertValue(params, UserTaskInstanceFilter.class);
     }
 }

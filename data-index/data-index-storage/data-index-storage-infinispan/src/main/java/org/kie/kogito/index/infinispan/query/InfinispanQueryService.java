@@ -78,6 +78,8 @@ public class InfinispanQueryService implements QueryService {
         if (filter != null) {
             FilterConditionContextQueryBuilder filterBuilder = filterList("state", filter.getState(), null, qb);
             filterBuilder = filterList("processId", filter.getProcessId(), filterBuilder, qb);
+            filterBuilder = filterList("parentProcessInstanceId", filter.getParentProcessInstanceId(), filterBuilder, qb);
+            filterBuilder = filterList("rootProcessInstanceId", filter.getRootProcessInstanceId(), filterBuilder, qb);
             filterList("id", filter.getId(), filterBuilder, qb);
             if (filter.getLimit() != null) {
                 qb.maxResults(filter.getLimit());

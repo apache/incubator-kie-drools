@@ -22,6 +22,8 @@ public class ProcessInstanceFilter extends AbstractFilter {
 
     private List<Integer> state;
     private List<String> id;
+    private List<String> parentProcessInstanceId;
+    private List<String> rootProcessInstanceId;
     private List<String> processId;
 
     public List<Integer> getState() {
@@ -48,11 +50,29 @@ public class ProcessInstanceFilter extends AbstractFilter {
         this.processId = processId;
     }
 
+    public List<String> getParentProcessInstanceId() {
+        return parentProcessInstanceId;
+    }
+
+    public void setParentProcessInstanceId(List<String> parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
+    }
+
+    public List<String> getRootProcessInstanceId() {
+        return rootProcessInstanceId;
+    }
+
+    public void setRootProcessInstanceId(List<String> rootProcessInstanceId) {
+        this.rootProcessInstanceId = rootProcessInstanceId;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstanceFilter{" +
                 "state=" + state +
                 ", id=" + id +
+                ", parentProcessInstanceId=" + parentProcessInstanceId +
+                ", rootProcessInstanceId=" + rootProcessInstanceId +
                 ", processId=" + processId +
                 "} " + super.toString();
     }
@@ -91,6 +111,16 @@ public class ProcessInstanceFilter extends AbstractFilter {
 
         public Builder processId(List<String> processId) {
             filter.setProcessId(processId);
+            return this;
+        }
+
+        public Builder parentProcessInstanceId(List<String> parentProcessInstanceId) {
+            filter.setParentProcessInstanceId(parentProcessInstanceId);
+            return this;
+        }
+
+        public Builder rootProcessInstanceId(List<String> rootProcessInstanceId) {
+            filter.setRootProcessInstanceId(rootProcessInstanceId);
             return this;
         }
 

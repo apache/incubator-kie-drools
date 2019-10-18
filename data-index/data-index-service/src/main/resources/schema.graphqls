@@ -62,6 +62,8 @@ type Query {
 input ProcessInstanceFilter {
   state: [ProcessInstanceState!]
   id: [String!]
+  parentProcessInstanceId: [String!]
+  rootProcessInstanceId: [String!]
   processId: [String!]
   limit: Int
   offset: Int

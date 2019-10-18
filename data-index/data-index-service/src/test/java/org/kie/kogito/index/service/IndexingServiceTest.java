@@ -505,9 +505,10 @@ public class IndexingServiceTest {
 
     @Test
     public void testProcessInstanceIndex() throws Exception {
-        String taskId = UUID.randomUUID().toString();
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
+        String subProcessId = processId + "_sub";
+        String subProcessInstanceId = UUID.randomUUID().toString();
 
         protobufService.registerProtoBufferType(getTravelsProtoBufferFile());
 
@@ -564,6 +565,12 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.flightNumber", is("QF444"))
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
+
+        event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
+        indexProcessCloudEvent(event);
+        
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(processInstanceId)).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().rootProcessInstanceId(singletonList(processInstanceId)).build()), event);
     }
 
     @Test

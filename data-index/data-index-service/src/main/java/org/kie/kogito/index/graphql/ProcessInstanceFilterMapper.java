@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,17 @@
 
 package org.kie.kogito.index.graphql;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.index.query.ProcessInstanceFilter;
 
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+
 public class ProcessInstanceFilterMapper implements Function<Map<String, Object>, ProcessInstanceFilter> {
 
     @Override
     public ProcessInstanceFilter apply(Map<String, Object> params) {
-        ProcessInstanceFilter filter = new ProcessInstanceFilter();
-        if (params != null) {
-            params.computeIfPresent("state", (key, value) -> {
-                filter.setState((List<Integer>) value);
-                return value;
-            });
-
-            params.computeIfPresent("processId", (key, value) -> {
-                filter.setProcessId((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("id", (key, value) -> {
-                filter.setId((List<String>) value);
-                return value;
-            });
-
-            params.computeIfPresent("limit", (key, value) -> {
-                filter.setLimit((Integer) value);
-                return value;
-            });
-
-            params.computeIfPresent("offset", (key, value) -> {
-                filter.setOffset((Integer) value);
-                return value;
-            });
-        }
-        return filter;
+        return getObjectMapper().convertValue(params, ProcessInstanceFilter.class);
     }
 }
