@@ -242,6 +242,15 @@
           "methodName": "groupBy",
           "elementKind": "method",
           "justification": "Result container has to extend Serializable to work well with Drools."
+        },
+        {
+          "code": "java.method.abstractMethodAdded",
+          "new": "method org.optaplanner.core.impl.score.director.ScoreDirectorFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::getScoreDirectorFactory()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "getScoreDirectorFactory",
+          "elementKind": "method",
+          "justification": "Replaces Solver.getScoreDirectorFactory()"
         }
       ]
     }
