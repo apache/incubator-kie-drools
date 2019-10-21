@@ -1,10 +1,16 @@
-package org.kie.kogito.codegen.data;
+package org.kie.kogito.codegen.unit;
 unit AdultUnit;
 
 import org.kie.kogito.codegen.data.Person
 import org.kie.kogito.codegen.data.Results
 
-rule Adult when
+rule MakeAdult when
+    $p: /persons[ age < 18 ]
+then
+    modify($p) { $p.setAge(22) };
+end
+
+rule IsAdult when
     $p: /persons[ age >= 18, $name : name ]
 then
     results.add($name);

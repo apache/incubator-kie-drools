@@ -1,0 +1,9 @@
+package org.kie.kogito.codegen.unit;
+unit AdultUnit;
+
+rule Adult when
+    $p: /persons[ age >= 18, $name : name ]
+then
+    results.add($name);
+end
+

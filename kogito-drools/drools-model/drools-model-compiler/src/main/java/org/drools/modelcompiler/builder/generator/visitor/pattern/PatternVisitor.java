@@ -89,7 +89,7 @@ public class PatternVisitor {
             if (ruleUnitVarType == null) {
                 throw new IllegalArgumentException("Unknown declaration: " + firstPart.getField());
             }
-            patternType = ruleUnitVarType.getSimpleName();
+            patternType = ruleUnitVarType.getCanonicalName();
         }
 
         PatternDescr normalizedPattern = new PatternDescr();

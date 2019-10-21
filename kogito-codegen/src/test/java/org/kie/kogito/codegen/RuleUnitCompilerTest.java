@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.Executor;
-import org.kie.kogito.codegen.data.AdultUnit;
+import org.kie.kogito.codegen.unit.AdultUnit;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.RuleUnit;
@@ -39,7 +39,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnit() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnit.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnit.drl");
 
         AdultUnit adults = new AdultUnit();
 
@@ -65,7 +65,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitModify() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitModify.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitModify.drl");
 
         AdultUnit adults = new AdultUnit();
 
@@ -82,7 +82,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitDelete() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitDelete.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitDelete.drl");
 
         AdultUnit adults = new AdultUnit();
 
@@ -102,7 +102,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitQuery() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitQuery.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitQuery.drl");
 
         AdultUnit adults = new AdultUnit();
 
@@ -125,7 +125,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitQueryOnPrimitive() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitQuery.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitQuery.drl");
 
         AdultUnit adults = new AdultUnit();
 
@@ -148,7 +148,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitExecutor() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnit.drl");
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnit.drl");
 
         AdultUnit adults = new AdultUnit();
 

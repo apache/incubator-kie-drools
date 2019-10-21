@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.data;
+package org.kie.kogito.codegen.unit;
 
+import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.data.Results;
 import org.kie.kogito.conf.Clock;
 import org.kie.kogito.conf.SessionsPool;
 import org.kie.kogito.rules.DataSource;

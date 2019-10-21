@@ -1,4 +1,4 @@
-package org.kie.kogito.codegen.data;
+package org.kie.kogito.codegen.unit;
 unit AdultUnit;
 
 import org.kie.kogito.codegen.data.Person
