@@ -54,7 +54,7 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
         this.id = UUID.randomUUID().toString();
         this.source = source;
         this.type = this.getClass().getSimpleName();
-        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         this.data = body;
 
         this.kogitoProcessinstanceId = kogitoProcessinstanceId;
@@ -78,7 +78,7 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
         this.id = UUID.randomUUID().toString();
         this.source = source;
         this.type = type;
-        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         this.data = body;
 
         this.kogitoProcessinstanceId = kogitoProcessinstanceId;

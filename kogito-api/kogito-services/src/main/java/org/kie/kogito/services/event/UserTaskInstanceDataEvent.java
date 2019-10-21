@@ -45,7 +45,7 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
         this.id = UUID.randomUUID().toString();
         this.source = source;
         this.type = "UserTaskInstanceEvent";
-        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         this.data = body;
 
         this.kogitoProcessinstanceId = metaData.get(ProcessInstanceEventBody.ID_META_DATA);

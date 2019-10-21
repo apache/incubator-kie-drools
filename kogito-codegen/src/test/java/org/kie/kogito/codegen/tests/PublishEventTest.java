@@ -442,6 +442,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getState()).isEqualTo(state);
         
         assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getTime()).doesNotContain("[");
         
         return body;
     }
@@ -463,6 +464,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         }
         
         assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getTime()).doesNotContain("[");
         
         return body;
     }
