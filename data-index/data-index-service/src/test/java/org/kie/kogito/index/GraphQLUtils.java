@@ -48,6 +48,7 @@ public class GraphQLUtils {
         );
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFiledName()).collect(joining(", ")));
         QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFiledName()).collect(joining(", ")));
+        QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstanceId");
     }
 
     public static String toGraphQLString(UserTaskInstanceFilter filter) {

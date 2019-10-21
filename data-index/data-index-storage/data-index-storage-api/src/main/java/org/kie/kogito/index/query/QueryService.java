@@ -19,12 +19,14 @@ package org.kie.kogito.index.query;
 import java.util.Collection;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.UserTaskInstance;
 
 public interface QueryService {
 
     Collection<ObjectNode> queryDomain(String domain, String query);
 
-    Collection<ObjectNode> queryProcessInstances(ProcessInstanceFilter filter);
+    Collection<ProcessInstance> queryProcessInstances(ProcessInstanceFilter filter);
 
-    Collection<ObjectNode> queryUserTaskInstances(UserTaskInstanceFilter filter);
+    Collection<UserTaskInstance> queryUserTaskInstances(UserTaskInstanceFilter filter);
 }

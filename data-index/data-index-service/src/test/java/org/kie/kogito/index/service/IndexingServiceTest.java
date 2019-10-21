@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,9 +140,9 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
     }
-    
+
     @Test //Reproducer for KOGITO-334
-    public void testDefaultGraphqlTypes(){
+    public void testDefaultGraphqlTypes() {
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
@@ -195,6 +195,8 @@ public class IndexingServiceTest {
         indexProcessCloudEvent(subProcessStartEvent);
 
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(subProcessInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), subProcessStartEvent);
+
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), startEvent, subProcessInstanceId);
 
         given().contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end } } }\"}")
@@ -314,7 +316,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
     }
 
-    private void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
+    private void validateProcessInstance(String query, KogitoProcessCloudEvent event, String... childProcessInstances) {
         LOGGER.debug("GraphQL query: {}", query);
         given().contentType(ContentType.JSON).body(query)
                 .when().post("/graphql")
@@ -325,7 +327,12 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
                 .body("data.ProcessInstances[0].parentProcessInstanceId", is(event.getParentProcessInstanceId()))
                 .body("data.ProcessInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? isEmptyOrNullString() : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? isEmptyOrNullString() : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.ProcessInstances[0].childProcessInstanceId", childProcessInstances == null ? isA(Collection.class) : hasItems(childProcessInstances));
+    }
+
+    private void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
+        validateProcessInstance(query, event, null);
     }
 
     private void indexProcessCloudEvent(KogitoProcessCloudEvent event) throws Exception {
@@ -541,12 +548,12 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, null, null, null);
-        event.getData().setEnd(ZonedDateTime.now());
-        event.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
-        indexProcessCloudEvent(event);
+        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, null, null, null);
+        endEvent.getData().setEnd(ZonedDateTime.now());
+        endEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
+        indexProcessCloudEvent(endEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), endEvent);
 
         given().contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
@@ -560,17 +567,18 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
                 .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.COMPLETED.name()))
-                .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].flight.flightNumber", is("QF444"))
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
         event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
         indexProcessCloudEvent(event);
-        
+
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(processInstanceId)).build()), event);
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().rootProcessInstanceId(singletonList(processInstanceId)).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), endEvent, subProcessInstanceId);
     }
 
     @Test

@@ -20,9 +20,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -44,12 +46,16 @@ import io.vertx.axle.core.eventbus.Message;
 import io.vertx.axle.core.eventbus.MessageConsumer;
 import io.vertx.axle.core.eventbus.MessageProducer;
 import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
+import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.query.ProcessInstanceFilter;
 import org.kie.kogito.index.query.QueryService;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
@@ -95,6 +101,10 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher("UserTaskInstances", this::getUserTaskInstancesValues);
                     return builder;
                 })
+                .type("ProcessInstance", builder -> {
+                    builder.dataFetcher("childProcessInstanceId", this::getChildProcessInstancesValues);
+                    return builder;
+                })
                 .type("ProcessInstanceState", builder -> {
                     builder.enumValues(name -> ProcessInstanceState.valueOf(name).ordinal());
                     return builder;
@@ -113,12 +123,18 @@ public class GraphQLSchemaManager {
         return schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
     }
 
-    private Collection<ObjectNode> getProcessInstancesValues(DataFetchingEnvironment env) {
+    private Set<String> getChildProcessInstancesValues(DataFetchingEnvironment env) {
+        ProcessInstance source = env.getSource();
+        Collection<ProcessInstance> pil = queryService.queryProcessInstances(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(source.getId())).build());
+        return pil.stream().map(pi -> pi.getId()).collect(Collectors.toSet());
+    }
+
+    private Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
         Map<String, Object> filter = env.getArgument("filter");
         return queryService.queryProcessInstances(new ProcessInstanceFilterMapper().apply(filter));
     }
 
-    private Collection<ObjectNode> getUserTaskInstancesValues(DataFetchingEnvironment env) {
+    private Collection<UserTaskInstance> getUserTaskInstancesValues(DataFetchingEnvironment env) {
         Map<String, Object> filter = env.getArgument("filter");
         return queryService.queryUserTaskInstances(new UserTaskInstanceFilterMapper().apply(filter));
     }

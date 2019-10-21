@@ -72,7 +72,7 @@ public class InfinispanQueryService implements QueryService {
     }
 
     @Override
-    public Collection<ObjectNode> queryProcessInstances(ProcessInstanceFilter filter) {
+    public Collection<ProcessInstance> queryProcessInstances(ProcessInstanceFilter filter) {
         QueryFactory qf = Search.getQueryFactory(((CacheImpl) manager.getProcessInstancesCache()).getDelegate());
         QueryBuilder qb = qf.from(ProcessInstance.class);
         if (filter != null) {
@@ -92,7 +92,7 @@ public class InfinispanQueryService implements QueryService {
     }
 
     @Override
-    public Collection<ObjectNode> queryUserTaskInstances(UserTaskInstanceFilter filter) {
+    public Collection<UserTaskInstance> queryUserTaskInstances(UserTaskInstanceFilter filter) {
         QueryFactory qf = Search.getQueryFactory(((CacheImpl) manager.getUserTaskInstancesCache()).getDelegate());
         QueryBuilder qb = qf.from(UserTaskInstance.class);
         if (filter != null) {
