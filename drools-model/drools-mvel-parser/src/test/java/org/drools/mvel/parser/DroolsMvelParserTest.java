@@ -873,8 +873,8 @@ public class DroolsMvelParserTest {
     public void testModifyLambda() {
         String expr = "{  modify($p) {  setCanDrinkLambda(() -> true); } }";
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{\n" +
-                             "    modify ($p) { setCanDrinkLambda(() -> true) };\n" +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { setCanDrinkLambda(() -> true) };" + newLine() +
                              "}", printConstraint(expression));
     }
 
