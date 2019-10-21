@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.Test;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.Executor;
 import org.kie.kogito.codegen.data.AdultUnit;
@@ -30,6 +31,7 @@ import org.kie.kogito.rules.RuleUnitInstance;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -49,6 +51,8 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
+
+        assertTrue( instance.getClock() instanceof SessionPseudoClock );
 
         assertEquals(2, instance.fire() );
         assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );

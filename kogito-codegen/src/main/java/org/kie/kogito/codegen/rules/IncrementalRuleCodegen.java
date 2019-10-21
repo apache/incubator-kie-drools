@@ -39,10 +39,6 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.SessionsPool;
-import org.kie.api.conf.SessionsPoolOption;
-import org.kie.kogito.codegen.GeneratedFile;
 import org.drools.modelcompiler.builder.KieModuleModelMethod;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.ModelSourceClass;
@@ -50,15 +46,23 @@ import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.ProjectSourceClass;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
+import org.kie.kogito.conf.Clock;
+import org.kie.kogito.conf.EventProcessing;
+import org.kie.kogito.conf.SessionsPool;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -285,9 +289,17 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         if (sessionsPoolAnn != null && sessionsPoolAnn.value() > 0) {
             unitKieBaseModel.setSessionsPool( SessionsPoolOption.get( sessionsPoolAnn.value() ) );
         }
+        EventProcessing eventAnn = ruleUnit.getAnnotation( EventProcessing.class );
+        if (eventAnn != null && eventAnn.value() == EventProcessing.Type.STREAM) {
+            unitKieBaseModel.setEventProcessingMode( EventProcessingOption.STREAM );
+        }
 
         KieSessionModel unitKieSessionModel = unitKieBaseModel.newKieSessionModel( ruleUnit2KieSessionName(ruleUnit.getName()) );
-        unitKieSessionModel.setType( KieSessionModel.KieSessionType.STATEFUL);
+        unitKieSessionModel.setType( KieSessionModel.KieSessionType.STATEFUL );
+        Clock clockAnn = ruleUnit.getAnnotation( Clock.class );
+        if (clockAnn != null && clockAnn.value() == Clock.Type.PSEUDO) {
+            unitKieSessionModel.setClockType( ClockTypeOption.PSEUDO );
+        }
     }
 
     private String ruleUnit2KieBaseName(String ruleUnit) {
@@ -295,7 +307,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private String ruleUnit2KieSessionName(String ruleUnit) {
-        return ruleUnit.replace( '.', '$' )  + "KieBase";
+        return ruleUnit.replace( '.', '$' )  + "KieSession";
     }
 
     private void addGeneratedFiles( List<GeneratedFile> generatedFiles, List<org.drools.modelcompiler.builder.GeneratedFile> source ) {

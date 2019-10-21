@@ -29,4 +29,8 @@ public interface KieRuntimeBuilder {
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);
     KieSession newKieSession(String sessionName, RuleConfig ruleConfig);
+
+    default KieSession newKieSession(Class<? extends RuleUnitMemory> ruleUnit) {
+        return newKieSession(ruleUnit.getName().replace( '.', '$' ) + "KieSession");
+    }
 }

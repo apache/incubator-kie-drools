@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionClock;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
@@ -51,6 +52,11 @@ public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleU
     @Override
     public RuleUnit<T> unit() {
         return unit;
+    }
+
+    @Override
+    public <C extends SessionClock> C getClock() {
+        return runtime.getSessionClock();
     }
 
     public T workingMemory() {

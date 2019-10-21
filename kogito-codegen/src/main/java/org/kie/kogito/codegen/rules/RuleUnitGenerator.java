@@ -148,7 +148,6 @@ public class RuleUnitGenerator implements FileGenerator {
                 .filter(p -> p.getType().asString().equals("$ModelName$"))
                 .forEach(o -> o.setType(typeName));
         cls.findAll( MethodCallExpr.class).stream()
-                .filter( mCall -> mCall.getNameAsString().equals( "getKieBase" ) )
                 .flatMap( mCall -> mCall.getArguments().stream() )
                 .filter( e -> e.isNameExpr() && e.toNameExpr().get().getNameAsString().equals( "$ModelClass$" ) )
                 .forEach( e -> e.toNameExpr().get().setName( typeName + ".class" ) );
