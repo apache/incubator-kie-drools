@@ -39,7 +39,7 @@ public class PackageSources {
 
     private GeneratedFile reflectConfigSource;
 
-    private List<String> modelNames = new ArrayList<>();
+    private Map<String, String> modelsByUnit = new HashMap<>();
 
     private Collection<Class<?>> ruleUnits;
 
@@ -67,7 +67,7 @@ public class PackageSources {
 
         RuleWriter rules = packageModelWriter.getRules();
         sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
-        sources.modelNames.addAll( rules.getModels() );
+        sources.modelsByUnit.putAll( rules.getModelsByUnit() );
 
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
@@ -110,8 +110,8 @@ public class PackageSources {
         return ruleSources;
     }
 
-    public List<String> getModelNames() {
-        return modelNames;
+    public Map<String, String> getModelsByUnit() {
+        return modelsByUnit;
     }
 
     public GeneratedFile getMainSource() {

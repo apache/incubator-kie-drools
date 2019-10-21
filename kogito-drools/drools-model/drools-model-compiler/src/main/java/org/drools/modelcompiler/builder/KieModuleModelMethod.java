@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,25 +47,15 @@ public class KieModuleModelMethod {
         init();
     }
 
-    public String getConstructor() {
-        StringBuilder sb = new StringBuilder(
-                "    private java.util.Map<String, KieBase> kbases = new java.util.HashMap<>();\n" +
-                "\n" +
-                "    public ProjectRuntime() {\n" +
-                "        ProjectModel model = new ProjectModel();\n" +
-                "        java.util.Map<String, KieBaseModel> kBaseModelMap = model.getKieModuleModel().getKieBaseModels();\n"
-        );
-        kBaseModels.keySet().forEach( kBaseName ->
-                sb.append( "        kbases.put(\"" + kBaseName + "\", org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel( model.getModels(), kBaseModelMap.get( \"" + kBaseName + "\" ) ));\n" ));
-        sb.append( "    }\n" );
-        return sb.toString();
-    }
-
     public String toGetKieModuleModelMethod() {
         MethodDeclaration methodDeclaration = new MethodDeclaration(nodeList(publicModifier()), new ClassOrInterfaceType(null, kieModuleModelCanonicalName), "getKieModuleModel");
         methodDeclaration.setBody(stmt);
         methodDeclaration.addAnnotation( "Override" );
         return methodDeclaration.toString();
+    }
+
+    public Collection<String> getKieBaseNames() {
+        return kBaseModels.keySet();
     }
 
     public String toGetKieBaseMethods() {
@@ -78,7 +69,7 @@ public class KieModuleModelMethod {
                 "\n" +
                 "    @Override\n" +
                 "    public KieBase getKieBase(String name) {\n" +
-                "        return kbases.get(name);\n" +
+                "        return kbases.computeIfAbsent(name, n -> KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( n ), model.getKieModuleModel().getKieBaseModels().get( n ) ));\n" +
                 "    }\n";
     }
 
@@ -113,7 +104,7 @@ public class KieModuleModelMethod {
         );
 
         for (Map.Entry<String, String> entry : kSessionForkBase.entrySet()) {
-            sb.append( "            case \"" + entry.getKey() + "\": return kbases.get(\"" + entry.getValue() + "\");\n" );
+            sb.append( "            case \"" + entry.getKey() + "\": return getKieBase(\"" + entry.getValue() + "\");\n" );
         }
 
         sb.append(

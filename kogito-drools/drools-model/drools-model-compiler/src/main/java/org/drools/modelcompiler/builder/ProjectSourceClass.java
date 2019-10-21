@@ -27,12 +27,14 @@ public class ProjectSourceClass {
                         "import " + KieBase.class.getCanonicalName()  + ";\n" +
                         "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
                         "import " + KieSession.class.getCanonicalName()  + ";\n" +
+                        "import " + KieBaseBuilder.class.getCanonicalName()  + ";\n" +
                         "\n" +
                         dependencyInjection + "\n"+
                         "public class ProjectRuntime implements " + KieRuntimeBuilder.class.getCanonicalName() + " {\n" +
+                        "\n" +
+                        "    private final ProjectModel model = new ProjectModel();\n" +
+                        "    private final java.util.Map<String, KieBase> kbases = new java.util.HashMap<>();\n" +
                         "\n");
-        sb.append(modelMethod.getConstructor());
-        sb.append("\n");
         sb.append(modelMethod.toGetKieBaseMethods());
         sb.append("\n");
         sb.append(modelMethod.toNewKieSessionMethods());

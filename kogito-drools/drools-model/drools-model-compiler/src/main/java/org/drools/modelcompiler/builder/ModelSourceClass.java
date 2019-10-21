@@ -1,8 +1,7 @@
 package org.drools.modelcompiler.builder;
 
-import java.util.Collection;
+import java.util.Map;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.util.Drools;
 import org.drools.model.Model;
@@ -12,21 +11,17 @@ import static java.util.stream.Collectors.joining;
 
 public class ModelSourceClass {
 
-    private final Collection<String> modelSources;
+    private final Map<String, String> modelsByUnit;
     private final KieModuleModelMethod modelMethod;
     private final ReleaseId releaseId;
 
     public ModelSourceClass(
             ReleaseId releaseId,
             KieModuleModelMethod modelMethod,
-            Collection<String> modelSources) {
+            Map<String, String> modelsByUnit) {
         this.releaseId = releaseId;
-        this.modelSources = modelSources;
+        this.modelsByUnit = modelsByUnit;
         this.modelMethod = modelMethod;
-    }
-
-    public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(getName(), generate().getBytes());
     }
 
     public String getName() {
@@ -44,26 +39,67 @@ public class ModelSourceClass {
                         "\n" +
                         "public class ProjectModel implements org.drools.modelcompiler.CanonicalKieModuleModel {\n" +
                         "\n");
+
+        addGetVersionMethod(sb);
+        addGetModelsMethod(sb);
+        addGetModelForKieBaseMethod(sb);
+        addGetReleaseIdMethod(sb);
+        sb.append(modelMethod.toGetKieModuleModelMethod());
+        sb.append("\n}" );
+        return sb.toString();
+    }
+
+    private void addGetVersionMethod(StringBuilder sb) {
         sb.append(
                 "    @Override\n" +
-                        "    public String getVersion() {\n" +
-                        "        return \"" );
+                "    public String getVersion() {\n" +
+                "        return \"" );
         sb.append( Drools.getFullVersion() );
         sb.append(
                 "\";\n" +
                         "    }\n" +
-                        "\n" +
-                        "    @Override\n" +
-                        "    public java.util.List<Model> getModels() {\n" +
-                        "        return java.util.Arrays.asList(" );
-        sb.append( modelSources.isEmpty() ? "" : modelSources.stream().collect( joining("(), new ", "new ", "()") ) );
+                        "\n");
+    }
+
+    private void addGetModelsMethod(StringBuilder sb) {
+        sb.append(
+                "    @Override\n" +
+                "    public java.util.List<Model> getModels() {\n" +
+                "        return java.util.Arrays.asList(" );
+        sb.append( modelsByUnit.isEmpty() ? "" : modelsByUnit.values().stream().collect( joining("(), new ", "new ", "()") ) );
         sb.append(
                 ");\n" +
-                        "    }\n" +
-                        "\n" +
-                        "    @Override\n" +
-                        "    public ReleaseId getReleaseId() {\n" +
-                        "        return new ReleaseIdImpl(\"" );
+                "    }\n" +
+                "\n");
+    }
+
+    private void addGetModelForKieBaseMethod(StringBuilder sb) {
+        sb.append(
+                "    @Override\n" +
+                "    public java.util.List<Model> getModelsForKieBase(String kieBaseName) {\n" +
+                "        switch (kieBaseName) {\n"
+        );
+
+        for (String kBase : modelMethod.getKieBaseNames()) {
+            sb.append( "            case \"" + kBase + "\": " );
+            String model = modelsByUnit.get(kBase);
+            sb.append( model != null ?
+                    "return java.util.Arrays.asList(new " + model + "());\n" :
+                    "return getModels();\n" );
+        }
+
+        sb.append(
+                "        }\n" +
+                "        throw new IllegalArgumentException(\"Unknown KieBase: \" + kieBaseName);\n" +
+                "    }\n" +
+                "\n" );
+    }
+
+    private void addGetReleaseIdMethod(StringBuilder sb) {
+        sb.append(
+                "    @Override\n" +
+                "    public ReleaseId getReleaseId() {\n" +
+                "        return new ReleaseIdImpl(\"" );
         sb.append( releaseId.getGroupId() ).append( "\", \"" );
         sb.append( releaseId.getArtifactId() ).append( "\", \"" );
         sb.append( releaseId.getVersion() ).append( "\"" );
@@ -71,8 +107,7 @@ public class ModelSourceClass {
                 ");\n" +
                         "    }\n");
         sb.append("\n");
-        sb.append(modelMethod.toGetKieModuleModelMethod());
-        sb.append("\n}" );
-        return sb.toString();
     }
+
+
 }

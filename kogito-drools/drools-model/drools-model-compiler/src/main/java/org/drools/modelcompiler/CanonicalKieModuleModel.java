@@ -32,6 +32,8 @@ public interface CanonicalKieModuleModel {
 
     List<Model> getModels();
 
+    List<Model> getModelsForKieBase(String kieBaseName);
+
     default KieModuleModel getKieModuleModel() {
         KieModuleModel kModuleModel = new KieModuleModelImpl();
         KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );

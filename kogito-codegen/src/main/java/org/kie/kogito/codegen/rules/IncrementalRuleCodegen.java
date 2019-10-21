@@ -39,6 +39,9 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.SessionsPool;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.drools.modelcompiler.builder.KieModuleModelMethod;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -182,10 +185,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         Map<Class<?>, String> unitsMap = new HashMap<>();
 
         ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
-        List<String> fqn = new ArrayList<>();
+        Map<String, String> modelsByUnit = new HashMap<>();
 
         for (PackageSources pkgSources : modelBuilder.getPackageSources()) {
-            fqn.addAll( pkgSources.getModelNames() );
+            pkgSources.getModelsByUnit().forEach( (unit, model) -> modelsByUnit.put( ruleUnit2KieBaseName( unit ), model ) );
 
             addGeneratedFiles( generatedFiles, pkgSources.getPojoSources() );
             addGeneratedFiles( generatedFiles, pkgSources.getAccumulateSources() );
@@ -206,6 +209,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                             .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit ) );
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
+                    addUnitConfToKieModule(ruleUnit);
                 }
             }
         }
@@ -250,11 +254,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
 
         if (!hotReloadMode) {
-            KieModuleModelMethod modelMethod = new KieModuleModelMethod(kieModuleModel.getKieBaseModels());
-            ModelSourceClass modelSourceClass = new ModelSourceClass(
-                    dummyReleaseId,
-                    modelMethod,
-                    fqn);
+            KieModuleModelMethod modelMethod = new KieModuleModelMethod( kieModuleModel.getKieBaseModels() );
+            ModelSourceClass modelSourceClass = new ModelSourceClass( dummyReleaseId, modelMethod, modelsByUnit );
 
             generatedFiles.add(new GeneratedFile(
                     GeneratedFile.Type.RULE,
@@ -273,6 +274,28 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private void addUnitConfToKieModule( Class<?> ruleUnit ) {
+        KieBaseModel unitKieBaseModel = kieModuleModel.newKieBaseModel( ruleUnit2KieBaseName(ruleUnit.getName()) );
+        unitKieBaseModel.setEventProcessingMode(org.kie.api.conf.EventProcessingOption.CLOUD);
+        unitKieBaseModel.addPackage(ruleUnit.getPackage().getName());
+
+        SessionsPool sessionsPoolAnn = ruleUnit.getAnnotation( SessionsPool.class );
+        if (sessionsPoolAnn != null && sessionsPoolAnn.value() > 0) {
+            unitKieBaseModel.setSessionsPool( SessionsPoolOption.get( sessionsPoolAnn.value() ) );
+        }
+
+        KieSessionModel unitKieSessionModel = unitKieBaseModel.newKieSessionModel( ruleUnit2KieSessionName(ruleUnit.getName()) );
+        unitKieSessionModel.setType( KieSessionModel.KieSessionType.STATEFUL);
+    }
+
+    private String ruleUnit2KieBaseName(String ruleUnit) {
+        return ruleUnit.replace( '.', '$' )  + "KieBase";
+    }
+
+    private String ruleUnit2KieSessionName(String ruleUnit) {
+        return ruleUnit.replace( '.', '$' )  + "KieBase";
     }
 
     private void addGeneratedFiles( List<GeneratedFile> generatedFiles, List<org.drools.modelcompiler.builder.GeneratedFile> source ) {

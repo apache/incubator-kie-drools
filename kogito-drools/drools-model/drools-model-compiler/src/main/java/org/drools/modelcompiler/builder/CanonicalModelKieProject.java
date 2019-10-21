@@ -18,8 +18,10 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -88,25 +90,23 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
-        Collection<String> modelFiles = new HashSet<>();
+        Map<String, String> modelFiles = new HashMap<>();
         Collection<String> sourceFiles = new HashSet<>();
 
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
             final ModelWriter.Result result = modelWriter.writeModel(srcMfs, trgMfs, modelBuilder.getPackageSources());
-            modelFiles.addAll(result.getModelFiles());
+            modelFiles.putAll(result.getModelFiles());
             sourceFiles.addAll(result.getSources());
         }
 
         KieModuleModelMethod modelMethod = new KieModuleModelMethod(kBaseModels);
+        ModelSourceClass modelSourceClass = new ModelSourceClass( getInternalKieModule().getReleaseId(), modelMethod, modelFiles);
+        String modelSource = modelSourceClass.generate();
+        logger.debug(modelSource);
+        srcMfs.write(modelSourceClass.getName(), modelSource.getBytes());
+
         if (!sourceFiles.isEmpty()) {
             String[] sources = sourceFiles.toArray(new String[sourceFiles.size() + 2]);
-
-            new ModelSourceClass(
-                    getInternalKieModule().getReleaseId(),
-                    modelMethod,
-                    modelFiles)
-                    .write(srcMfs);
-
             sources[sources.length - 2] = PROJECT_MODEL_SOURCE;
 
             String projectSourceClass = new ProjectSourceClass(modelMethod).generate();
@@ -130,13 +130,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 messages.addMessage(problem);
             }
         } else {
-            new ModelSourceClass(getInternalKieModule().getReleaseId(), modelMethod, modelFiles)
-                    .write(srcMfs);
             CompilationResult res = getCompiler().compile(new String[]{PROJECT_MODEL_SOURCE}, srcMfs, trgMfs, getClassLoader());
             System.out.println(res.getErrors());
         }
 
-        writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
+        writeModelFile(modelFiles.values(), trgMfs, getInternalKieModule().getReleaseId());
     }
 
     public void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {

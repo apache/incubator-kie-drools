@@ -24,6 +24,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
@@ -146,6 +147,11 @@ public class RuleUnitGenerator implements FileGenerator {
                 .flatMap(m -> m.getParameters().stream())
                 .filter(p -> p.getType().asString().equals("$ModelName$"))
                 .forEach(o -> o.setType(typeName));
+        cls.findAll( MethodCallExpr.class).stream()
+                .filter( mCall -> mCall.getNameAsString().equals( "getKieBase" ) )
+                .flatMap( mCall -> mCall.getArguments().stream() )
+                .filter( e -> e.isNameExpr() && e.toNameExpr().get().getNameAsString().equals( "$ModelClass$" ) )
+                .forEach( e -> e.toNameExpr().get().setName( typeName + ".class" ) );
         cls.findAll(TypeParameter.class)
                 .forEach(tp -> tp.setName(typeName));
     }

@@ -18,8 +18,8 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -56,8 +56,8 @@ public class RuleWriter {
         return prettyPrinter.print(generatedPojo);
     }
 
-    public Collection<String> getModels() {
-        return rulesSource.getModels();
+    public Map<String, String> getModelsByUnit() {
+        return rulesSource.getModelsByUnit();
     }
 
     public List<RuleFileSource> getRuleSources() {

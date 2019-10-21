@@ -3,14 +3,14 @@ package $Package$;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.KieBase;
 
 public class $Name$ extends org.kie.kogito.rules.impl.AbstractRuleUnit<$ModelName$> {
 
-    private final InternalKnowledgeBase kbase;
+    private final KieBase kbase;
 
     public $Name$() {
         this(new $Application$());
@@ -28,15 +28,8 @@ public class $Name$ extends org.kie.kogito.rules.impl.AbstractRuleUnit<$ModelNam
                 createLegacySession());
     }
 
-    private InternalKnowledgeBase createKieBase() {
-        if (app.config() != null && app.config().rule() != null) {
-            org.kie.kogito.rules.RuleConfig ruleCfg = app.config().rule();
-            KieBaseConfiguration kieBaseConfiguration = new RuleBaseConfiguration();
-            kieBaseConfiguration.setOption(ruleCfg.eventProcessingMode());
-            return KieBaseBuilder.createKieBaseFromModel(new $RuleModelName$(), kieBaseConfiguration);
-        } else {
-            return KieBaseBuilder.createKieBaseFromModel(new $RuleModelName$());
-        }
+    private KieBase createKieBase() {
+        return app.ruleUnits().ruleRuntimeBuilder().getKieBase( $ModelClass$ );
     }
 
     private org.kie.api.runtime.KieSession createLegacySession() {

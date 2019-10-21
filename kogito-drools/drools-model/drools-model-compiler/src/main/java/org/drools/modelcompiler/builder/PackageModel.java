@@ -358,7 +358,7 @@ public class PackageModel {
 
         private final CompilationUnit mainRuleClass;
         private Collection<CompilationUnit> modelClasses = new ArrayList<>();
-        private Collection<String> models = new ArrayList<>();
+        private Map<String, String> modelsByUnit = new HashMap<>();
 
         public RuleSourceResult(CompilationUnit mainRuleClass) {
             this.mainRuleClass = mainRuleClass;
@@ -377,8 +377,8 @@ public class PackageModel {
             return this;
         }
 
-        public RuleSourceResult withModel( String model ) {
-            models.add(model);
+        public RuleSourceResult withModel( String unit, String model ) {
+            modelsByUnit.put(unit, model);
             return this;
         }
 
@@ -386,8 +386,8 @@ public class PackageModel {
             return Collections.unmodifiableCollection( modelClasses );
         }
 
-        public Collection<String> getModels() {
-            return models;
+        public Map<String, String> getModelsByUnit() {
+            return modelsByUnit;
         }
     }
 
@@ -556,7 +556,7 @@ public class PackageModel {
     private void generateRulesInUnit( String ruleUnitName, BlockStmt rulesListInitializerBody, RuleSourceResult results,
                                       ClassOrInterfaceDeclaration rulesClass, boolean oneClassPerRule ) {
 
-        results.withModel( name + "." + rulesClass.getNameAsString() );
+        results.withModel( name + "." + ruleUnitName, name + "." + rulesClass.getNameAsString() );
 
         List<MethodDeclaration> ruleMethodsInUnit = ruleMethods.get(ruleUnitName);
         if (ruleMethodsInUnit == null || ruleMethodsInUnit.isEmpty()) {

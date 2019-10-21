@@ -2,7 +2,9 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -28,7 +30,7 @@ public class ModelWriter {
 
     public Result writeModel(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, Collection<PackageSources> packageSources) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
-        List<String> modelFiles = new ArrayList<>();
+        Map<String, String> modelFiles = new HashMap<>();
 
         for (PackageSources pkgSources : packageSources) {
             generatedFiles.addAll( pkgSources.getPojoSources() );
@@ -36,7 +38,7 @@ public class ModelWriter {
             generatedFiles.add( pkgSources.getMainSource() );
             generatedFiles.addAll( pkgSources.getRuleSources() );
             generatedFiles.add( pkgSources.getDomainClassSource() );
-            modelFiles.addAll( pkgSources.getModelNames() );
+            modelFiles.putAll( pkgSources.getModelsByUnit() );
 
             if (pkgSources.getReflectConfigSource() != null) {
                 trgMfs.write( pkgSources.getReflectConfigSource().getPath(), pkgSources.getReflectConfigSource().getData() );
@@ -68,9 +70,9 @@ public class ModelWriter {
     public static class Result {
 
         private final List<String> sourceFiles;
-        private final List<String> modelFiles;
+        private final Map<String, String> modelFiles;
 
-        public Result(List<String> sourceFiles, List<String> modelFiles) {
+        public Result(List<String> sourceFiles, Map<String, String> modelFiles) {
             this.sourceFiles = sourceFiles;
             this.modelFiles = modelFiles;
         }
@@ -83,7 +85,7 @@ public class ModelWriter {
             return sourceFiles;
         }
 
-        public List<String> getModelFiles() {
+        public Map<String, String> getModelFiles() {
             return modelFiles;
         }
     }
