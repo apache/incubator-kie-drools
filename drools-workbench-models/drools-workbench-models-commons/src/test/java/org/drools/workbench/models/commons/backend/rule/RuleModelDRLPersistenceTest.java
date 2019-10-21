@@ -1376,6 +1376,34 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
+    public void testLHSExpressionLocalDate() {
+
+        RuleModel model = new RuleModel();
+        model.name = "test expressions LocalDate";
+        FactPattern personPattern = new FactPattern("Person");
+        SingleFieldConstraintEBLeftSide fieldIsEqualConstraint = new SingleFieldConstraintEBLeftSide();
+        fieldIsEqualConstraint.getExpressionLeftSide().appendPart(new ExpressionUnboundFact(personPattern.getFactType()));
+        fieldIsEqualConstraint.getExpressionLeftSide().appendPart(new ExpressionField("field1",
+                                                                                      "java.time.LocalDate",
+                                                                                      DataType.TYPE_LOCAL_DATE));
+        fieldIsEqualConstraint.setOperator("==");
+        fieldIsEqualConstraint.setValue("27-Jun-2011");
+        fieldIsEqualConstraint.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        personPattern.addConstraint(fieldIsEqualConstraint);
+
+        model.addLhsItem(personPattern);
+
+        String expected = "rule \"test expressions LocalDate\""
+                + "dialect \"mvel\""
+                + "when "
+                + "Person( field1 == \"27-Jun-2011\" )"
+                + "then "
+                + "end";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
     public void testLHSExpressionBoolean() {
 
         RuleModel m = new RuleModel();
@@ -2006,7 +2034,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
-    public void testRHSDateInsertAction() {
+    public void testRHSDatesInsertAction() {
 
         String oldValue = System.getProperty("drools.dateformat");
         try {
@@ -2014,33 +2042,40 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
             System.setProperty("drools.dateformat",
                                "dd-MMM-yyyy");
 
-            RuleModel m = new RuleModel();
-            m.name = "RHS Date";
+            RuleModel model = new RuleModel();
+            model.name = "RHS Date";
 
-            FactPattern p = new FactPattern("Person");
-            SingleFieldConstraint con = new SingleFieldConstraint();
-            con.setFieldType(DataType.TYPE_DATE);
-            con.setFieldName("dateOfBirth");
-            con.setOperator("==");
-            con.setValue("31-Jan-2000");
-            con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-            p.addConstraint(con);
+            FactPattern person = new FactPattern("Person");
+            SingleFieldConstraint bornOn = new SingleFieldConstraint();
+            bornOn.setFieldType(DataType.TYPE_DATE);
+            bornOn.setFieldName("dateOfBirth");
+            bornOn.setOperator("==");
+            bornOn.setValue("31-Jan-2000");
+            bornOn.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+            person.addConstraint(bornOn);
 
-            m.addLhsItem(p);
+            model.addLhsItem(person);
 
-            ActionInsertFact ai = new ActionInsertFact("Birthday");
-            ai.addFieldValue(new ActionFieldValue("dob",
+            ActionInsertFact celebrateOn = new ActionInsertFact("Birthday");
+            celebrateOn.addFieldValue(new ActionFieldValue("dob",
                                                   "31-Jan-2000",
                                                   DataType.TYPE_DATE));
-            m.addRhsItem(ai);
+            model.addRhsItem(celebrateOn);
+            ActionInsertFact celebrateOn1 = new ActionInsertFact("Birthday");
+            celebrateOn1.addFieldValue(new ActionFieldValue("dobPrecise",
+                                                           "31-Jan-2000",
+                                                           DataType.TYPE_LOCAL_DATE));
+            model.addRhsItem(celebrateOn1);
 
-            String result = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
 
             assertTrue(result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");") != -1);
             assertTrue(result.indexOf("fact0.setDob( sdf.parse(\"31-Jan-2000\"") != -1);
+            assertTrue(result.indexOf("java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(\"dd-MMM-yyyy\");") != -1);
+            assertTrue(result.indexOf("fact1.setDobPrecise( java.time.LocalDate.parse(\"31-Jan-2000\", dtf") != -1);
 
             checkMarshalling(null,
-                             m);
+                             model);
         } finally {
             if (oldValue == null) {
                 System.clearProperty("drools.dateformat");
