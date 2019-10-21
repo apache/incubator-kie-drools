@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,6 +111,20 @@ public class MVELExpressionEvaluatorTest {
                                                                      mvelExpression("1")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
+    }
+
+    @Ignore("https://issues.jboss.org/browse/DROOLS-4649")
+    @Test
+    public void evaluateLiteralExpression_Array() {
+        assertThat(evaluator.evaluateLiteralExpression(Object[].class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       mvelExpression("{\"Jim\", \"Michael\"}")))
+                .isEqualTo(new String[]{"Jim", "Michael"});
+
+        assertThat(evaluator.evaluateLiteralExpression(Object[].class.getCanonicalName(),
+                                                       Collections.emptyList(),
+                                                       mvelExpression("{ }")))
+                .isEqualTo(new String[]{});
     }
 
     @Test
