@@ -17,11 +17,14 @@ package org.kie.kogito.codegen;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import javax.lang.model.SourceVersion;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -60,16 +63,16 @@ public class ApplicationGenerator {
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
-    
+
     private final String packageName;
     private final String sourceFilePath;
     private final String targetCanonicalName;
     private final File targetDirectory;
 
     private String targetTypeName;
-    
+
     private DependencyInjectionAnnotator annotator;
-    
+
     private boolean hasRuleUnits;
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator;
@@ -82,6 +85,11 @@ public class ApplicationGenerator {
     public ApplicationGenerator(String packageName, File targetDirectory) {
         if (packageName == null) {
             throw new IllegalArgumentException("Package name cannot be undefined (null), please specify a package name!");
+        }
+        if (!SourceVersion.isName(packageName)) {
+            throw new IllegalArgumentException(
+                    MessageFormat.format(
+                            "Package name \"{0}\" is not valid. It should be a valid Java package name.", packageName));
         }
         this.packageName = packageName;
         this.targetDirectory = targetDirectory;
@@ -111,40 +119,40 @@ public class ApplicationGenerator {
         ClassOrInterfaceDeclaration cls = compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
-        
+
         VariableDeclarator eventPublishersDeclarator;
         FieldDeclaration eventPublishersFieldDeclaration = new FieldDeclaration();
-        
+
         FieldDeclaration kogitoServiceField = new FieldDeclaration().addVariable(new VariableDeclarator()
                                                                                 .setType(new ClassOrInterfaceType(null, String.class.getCanonicalName()))
                                                                                 .setName("kogitoService"));
-       
-        
+
+
         cls.addMember(eventPublishersFieldDeclaration);
         cls.addMember(kogitoServiceField);
-        if (useInjection()) {  
+        if (useInjection()) {
             annotator.withSingletonComponent(cls);
-            
+
             cls.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("setup")).
             orElseThrow(() -> new RuntimeException("setup method template not found"))
             .addAnnotation("javax.annotation.PostConstruct");
-            
+
             annotator.withOptionalInjection(eventPublishersFieldDeclaration);
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
-            
+
             annotator.withConfigInjection("kogito.service.url", "", kogitoServiceField);
         } else {
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(List.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
         }
-        
+
         eventPublishersFieldDeclaration.addVariable(eventPublishersDeclarator);
-        
+
         FieldDeclaration configField = null;
         if (useInjection()) {
-            configField = new FieldDeclaration()                    
+            configField = new FieldDeclaration()
                     .addVariable(new VariableDeclarator()
                                          .setType(Config.class.getCanonicalName())
-                                         .setName("config")); 
+                                         .setName("config"));
             annotator.withInjection(configField);
         } else {
             configField = new FieldDeclaration()
@@ -152,7 +160,7 @@ public class ApplicationGenerator {
                 .addVariable(new VariableDeclarator()
                                      .setType(Config.class.getCanonicalName())
                                      .setName("config")
-                                     .setInitializer(configGenerator.newInstance()));           
+                                     .setInitializer(configGenerator.newInstance()));
         }
         cls.addMember(configField);
 
@@ -161,7 +169,7 @@ public class ApplicationGenerator {
         for (Generator generator : generators) {
             ApplicationSection section = generator.section();
             cls.addMember(section.fieldDeclaration());
-            cls.addMember(section.factoryMethod());  
+            cls.addMember(section.factoryMethod());
             cls.addMember(section.classDeclaration());
         }
         cls.getMembers().sort(new BodyDeclarationComparator());
@@ -178,12 +186,12 @@ public class ApplicationGenerator {
         this.hasRuleUnits = hasRuleUnits;
         return this;
     }
-   
+
    public ApplicationGenerator withPersistence(boolean persistence) {
        this.persistence = persistence;
        return this;
    }
-   
+
    public ApplicationGenerator withMonitoring(boolean monitoring) {
        if (monitoring) {
            this.labelers.add(new PrometheusLabeler());
@@ -216,7 +224,7 @@ public class ApplicationGenerator {
                                  generatedFilePath(),
                                  log( compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
     }
-    
+
     public GeneratedFile generateApplicationConfigDescriptor() {
         return new GeneratedFile(GeneratedFile.Type.CLASS,
                                  configGenerator.generatedFilePath(),
@@ -224,7 +232,7 @@ public class ApplicationGenerator {
     }
     public void generateSectionClass(ApplicationSection section, List<GeneratedFile> generatedFiles) {
         CompilationUnit cp = section.injectableClass();
-        
+
         if (cp != null) {
             String packageName = cp.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
             String clazzName = packageName + "." + cp
@@ -244,7 +252,7 @@ public class ApplicationGenerator {
         generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
         generator.setContext(context);
         return generator;
-    } 
+    }
 
     public static String log(String source) {
         if ( logger.isDebugEnabled() ) {

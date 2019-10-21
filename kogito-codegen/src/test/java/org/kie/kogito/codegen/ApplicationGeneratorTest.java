@@ -66,6 +66,12 @@ public class ApplicationGeneratorTest {
     }
 
     @Test
+    public void packageNameInvalid() {
+        assertThatThrownBy(() -> new ApplicationGenerator("i.am.an-invalid.package-name.sorry", new File("")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void generatedFilePath() {
         final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File(""));
         assertThat(appGenerator.generatedFilePath()).isNotNull();
