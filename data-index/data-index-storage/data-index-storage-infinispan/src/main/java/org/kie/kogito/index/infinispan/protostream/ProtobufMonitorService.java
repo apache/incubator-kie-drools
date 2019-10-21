@@ -49,6 +49,7 @@ public class ProtobufMonitorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtobufMonitorService.class);
     private static final PathMatcher protoFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.proto");
+    private static final String KOGITO_APPLICATION_PROTO = "kogito-application.proto";
 
     @Inject
     @ConfigProperty(name = "kogito.protobuf.folder")
@@ -72,7 +73,7 @@ public class ProtobufMonitorService {
             }
 
             try (Stream<Path> stream = Files.find(protoFolder.toPath(), Integer.MAX_VALUE, (path, attrs) -> protoFileMatcher.matches(path))) {
-                stream.forEach(path -> registerProtoFile().accept(path));
+                stream.filter(path -> !KOGITO_APPLICATION_PROTO.equals(path.getFileName().toFile().getName())).forEach(path -> registerProtoFile().accept(path));
             } catch (IOException ex) {
                 throw new RuntimeException(format("Could not read content from proto file folder: %s", protoFolder), ex);
             }
@@ -124,7 +125,7 @@ public class ProtobufMonitorService {
                     for (WatchEvent<?> event : key.pollEvents()) {
                         LOGGER.debug("Event kind: {}. File affected: {}", event.kind(), event.context());
                         Path path = (Path) event.context();
-                        if (protoFileMatcher.matches(path)) {
+                        if (protoFileMatcher.matches(path) && !KOGITO_APPLICATION_PROTO.equals(path.getFileName().toFile().getName())) {
                             Path proto = folder.resolve(path);
                             consumer.accept(proto);
                         }
