@@ -454,7 +454,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_count() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -489,7 +488,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_countDistinct() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -534,7 +532,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_min() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -543,6 +540,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         entity1.setIntegerProperty(1_000_000);
         entity1.setEntityGroup(entityGroup1);
         solution.getEntityList().add(entity1);
+        // This entity group is not used in any entity and as such, must never show up in scoring.
+        TestdataLavishEntityGroup unusedEntityGroup = new TestdataLavishEntityGroup("UnusedEntityGroup");
+        solution.getEntityGroupList().add(unusedEntityGroup);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
@@ -564,7 +564,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_max() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -590,6 +589,44 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.setEntityList(Collections.emptyList());
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector);
+    }
+
+    @Test
+    public void groupBy_1Mapping1Collector_groupingOnPrimitives() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        entity1.setIntegerProperty(1);
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        entity2.setIntegerProperty(2);
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        entity3.setIntegerProperty(3);
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getIntegerProperty, count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-8, 1, 8),
+                assertMatchWithScore(-1, 2, 1),
+                assertMatchWithScore(-1, 3, 1));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-8, 1, 8),
+                assertMatchWithScore(-1, 2, 1));
     }
 
     @Test @Ignore("TODO implement it") // TODO

@@ -30,9 +30,11 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
+    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
     private final boolean noMatchWeigher;
     private final ToIntBiFunction<A, B> intMatchWeigher;
     private final ToLongBiFunction<A, B> longMatchWeigher;
@@ -72,7 +74,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean noMatchWeigher,
             ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
             BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
+        this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;
@@ -111,6 +114,11 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     @Override
     public DroolsBiCondition<A, B> createCondition() {
         throw new UnsupportedOperationException("Cannot create BiCondition from a scoring stream.");
+    }
+
+    @Override
+    protected DroolsAbstractConstraintStream<Solution_> getParent() {
+        return parent;
     }
 
     @Override

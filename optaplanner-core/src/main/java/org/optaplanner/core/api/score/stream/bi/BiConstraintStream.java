@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.stream.bi;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -197,7 +196,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping);
 
-    <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+    <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
 
@@ -205,7 +204,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
             BiFunction<A, B, GroupKeyB_> groupKeyBMapping);
 
-    <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
     TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
             BiFunction<A, B, GroupKeyB_> groupKeyBMapping,

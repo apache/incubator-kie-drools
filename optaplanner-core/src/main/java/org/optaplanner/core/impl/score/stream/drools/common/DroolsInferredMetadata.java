@@ -16,26 +16,27 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.function.Supplier;
+
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 
 public final class DroolsInferredMetadata<A> implements DroolsMetadata<DroolsLogicalTuple, A> {
 
     private final Declaration<DroolsLogicalTuple> variableDeclaration;
-    private final PatternDSL.PatternDef<DroolsLogicalTuple> pattern;
+    private final Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder;
+    private final int itemId;
 
-    DroolsInferredMetadata(Declaration<DroolsLogicalTuple> variableDeclaration, PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
+    DroolsInferredMetadata(Declaration<DroolsLogicalTuple> variableDeclaration,
+            Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder, int itemId) {
         this.variableDeclaration = variableDeclaration;
-        this.pattern = pattern;
-    }
-
-    public DroolsInferredMetadata<A> substitute(PatternDSL.PatternDef<DroolsLogicalTuple> newPattern) {
-        return DroolsMetadata.ofInferred(variableDeclaration, newPattern);
+        this.patternBuilder = patternBuilder;
+        this.itemId = itemId;
     }
 
     @Override
     public A extract(DroolsLogicalTuple container) {
-        return container.getItem(0);
+        return container.getItem(itemId);
     }
 
     @Override
@@ -44,7 +45,13 @@ public final class DroolsInferredMetadata<A> implements DroolsMetadata<DroolsLog
     }
 
     @Override
-    public PatternDSL.PatternDef<DroolsLogicalTuple> getPattern() {
-        return pattern;
+    public PatternDSL.PatternDef<DroolsLogicalTuple> buildPattern() {
+        return patternBuilder.get();
     }
+
+    @Override
+    public DroolsInferredMetadata<A> substitute(Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder) {
+        return new DroolsInferredMetadata<>(variableDeclaration, patternBuilder, itemId);
+    }
+
 }

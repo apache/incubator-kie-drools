@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +43,7 @@ public final class ConstraintCollectors {
     // count
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Integer> count() {
+    public static <A> UniConstraintCollector<A, ?, Integer> count() {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a) -> {
@@ -54,7 +53,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Long> countLong() {
+    public static <A> UniConstraintCollector<A, ?, Long> countLong() {
         return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
@@ -64,7 +63,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ? extends Serializable, Integer> countBi() {
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> countBi() {
         return new DefaultBiConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a, b) -> {
@@ -74,7 +73,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ? extends Serializable, Long> countLongBi() {
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> countLongBi() {
         return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a, b) -> {
@@ -88,9 +87,8 @@ public final class ConstraintCollectors {
     // countDistinct
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Integer> countDistinct(
-            Function<A, ?> groupValueMapping) {
-        class CountDistinctResultContainer implements Serializable {
+    public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
+        class CountDistinctResultContainer {
             int count = 0;
             Map<Object, int[]> objectCountMap = new HashMap<>();
         }
@@ -119,9 +117,8 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Long> countDistinctLong(
-            Function<A, ?> groupValueMapping) {
-        class CountDistinctResultContainer implements Serializable {
+    public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
+        class CountDistinctResultContainer {
             long count = 0L;
             Map<Object, long[]> objectCountMap = new HashMap<>();
         }
@@ -154,8 +151,7 @@ public final class ConstraintCollectors {
     // sum
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Integer> sum(
-            ToIntFunction<? super A> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a) -> {
@@ -166,8 +162,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, Long> sumLong(
-            ToLongFunction<? super A> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
@@ -178,7 +173,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ? extends Serializable, Integer> sum(
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(
             ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
                 () -> new int[1],
@@ -190,7 +185,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ? extends Serializable, Long> sumLong(
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> sumLong(
             ToLongBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
@@ -206,11 +201,11 @@ public final class ConstraintCollectors {
     // min
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, A> min(Comparator<A> comparator) {
+    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
         return minOrMax(comparator, true);
     }
 
-    public static <A extends Comparable<A>> UniConstraintCollector<A, ? extends Serializable, A> min() {
+    public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
         return min(Comparable::compareTo);
     }
 
@@ -218,15 +213,15 @@ public final class ConstraintCollectors {
     // max
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ? extends Serializable, A> max(Comparator<A> comparator) {
+    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
         return minOrMax(comparator, false);
     }
 
-    public static <A extends Comparable<A>> UniConstraintCollector<A, ? extends Serializable, A> max() {
+    public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
         return max(Comparable::compareTo);
     }
 
-    private static <A> UniConstraintCollector<A, TreeMap<A, Long>, A> minOrMax(Comparator<A> comparator,
+    private static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> minOrMax(Comparator<A> comparator,
             boolean min) {
         Function<SortedMap<A, Long>, A> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
         return new DefaultUniConstraintCollector<>(

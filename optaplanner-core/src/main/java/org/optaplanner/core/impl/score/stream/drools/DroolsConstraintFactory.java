@@ -142,7 +142,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
      * As long as rule creation calls this method in the same order, the rules will always receive the same ID.
      * @return A unique numeric ID of the rule.
      */
-    public int getRuleIdAndIncrement() {
+    public int getNextRuleId() {
         return createdRuleCounter.incrementAndGet();
     }
 

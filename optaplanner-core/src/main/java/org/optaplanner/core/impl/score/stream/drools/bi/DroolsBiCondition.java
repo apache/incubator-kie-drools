@@ -22,9 +22,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
@@ -34,8 +39,8 @@ import org.drools.model.functions.Block4;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsGenuineMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
@@ -53,6 +58,14 @@ public final class DroolsBiCondition<A, B> {
         this.bMetadata = bMetadata;
     }
 
+    public DroolsBiCondition(Declaration<DroolsLogicalTuple> aVariableDeclaration,
+            Function<Declaration<DroolsLogicalTuple>, PatternDSL.PatternDef<DroolsLogicalTuple>> patternProvider) {
+        // Share both the declaration and the pattern, as the data is all coming from the same DroolsLogicalTuple.
+        PatternDSL.PatternDef<DroolsLogicalTuple> pattern = patternProvider.apply(aVariableDeclaration);
+        this.aMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 0);
+        this.bMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 1);
+    }
+
     public DroolsMetadata<Object, A> getAMetadata() {
         return aMetadata;
     }
@@ -62,31 +75,22 @@ public final class DroolsBiCondition<A, B> {
     }
 
     public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
-        PatternDSL.PatternDef<Object> newPattern = bMetadata.getPattern()
+        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> bMetadata.buildPattern()
                 .expr(aMetadata.getVariableDeclaration(),
                         (b, a) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b)));
-        if (bMetadata instanceof DroolsInferredMetadata) {
-            return new DroolsBiCondition<>(aMetadata, ((DroolsInferredMetadata) bMetadata).substitute(newPattern));
-        } else {
-            return new DroolsBiCondition<>(aMetadata, ((DroolsGenuineMetadata) bMetadata).substitute(newPattern));
-        }
+        return new DroolsBiCondition<>(aMetadata, bMetadata.substitute(patternSupplier));
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsMetadata<Object, C> cMetadata = cCondition.getAMetadata();
-        PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
+        // The expression ID is required yet seemingly unused. A random UUID is generated.
+        Supplier<PatternDSL.PatternDef<Object>> newPattern = () -> cMetadata.buildPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),
                         (c, a, b) -> matches(triJoiner, aMetadata.extract(a), bMetadata.extract(b),
                                 cMetadata.extract(c)));
-        if (cMetadata instanceof DroolsInferredMetadata) {
-            return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsInferredMetadata) cMetadata).substitute(newPattern));
-        } else {
-            return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsGenuineMetadata) cMetadata).substitute(newPattern));
-        }
+        return new DroolsTriCondition<>(aMetadata, bMetadata, cMetadata.substitute(newPattern));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
@@ -128,7 +132,13 @@ public final class DroolsBiCondition<A, B> {
         ConsequenceBuilder._3<ScoreHolder, Object, Object> consequence =
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
-        return Arrays.asList(aMetadata.getPattern(), bMetadata.getPattern(), consequence);
+        if (aMetadata instanceof DroolsInferredMetadata && bMetadata instanceof DroolsInferredMetadata) {
+            // In case of logical tuples, both patterns will be the same logical tuple, and therefore we just add one.
+            return Stream.of(bMetadata.buildPattern(), consequence)
+                    .collect(Collectors.toList());
+        } else {
+            return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), consequence);
+        }
     }
 
     private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {

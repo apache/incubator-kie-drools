@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -31,69 +30,42 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-import static org.drools.model.PatternDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.PatternDSL.pattern;
 
-public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
-        extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
+public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContainer_, NewB>
+        extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final Function<A, NewA> groupKeyMapping;
-    private final UniConstraintCollector<A, ?, NewA> collector;
+    private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
     private int ruleId = -1;
 
-    public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping) {
+    public DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer_, NewB> collector) {
         super(constraintFactory);
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
-        this.collector = null;
-    }
-
-    public <ResultContainer_> DroolsGroupingUniConstraintStream(
-            DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            UniConstraintCollector<A, ResultContainer_, NewA> collector) {
-        super(constraintFactory);
-        this.parent = parent;
-        this.groupKeyMapping = null;
         this.collector = collector;
     }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         Object createdRuleId = createRuleIdIfAbsent(constraint.getConstraintFactory());
-        Rule rule;
-        if (groupKeyMapping != null) {
-            String ruleName = "Helper rule #" + createdRuleId + " (GroupBy collecting)";
-            rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
-                    .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, groupKeyMapping)
-                            .toArray(new RuleItemBuilder<?>[0]));
-        } else if (collector != null) {
-            String ruleName = "Helper rule #" + createdRuleId + " (GroupBy remapping)";
-            rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
-                    .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, collector)
-                            .toArray(new RuleItemBuilder<?>[0]));
-        } else {
-            throw new IllegalStateException();
-        }
+        String ruleName = "Helper rule #" + createdRuleId + " (GroupBy remapping+collecting)";
+        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
+                .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, groupKeyMapping, collector)
+                        .toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);
     }
 
     @Override
-    public DroolsUniCondition<NewA> createCondition() {
-        return new DroolsUniCondition<>(declarationOf(DroolsLogicalTuple.class), var -> {
+    public DroolsBiCondition<NewA, NewB> createCondition() {
+        return new DroolsBiCondition<>(declarationOf(DroolsLogicalTuple.class), var -> {
             Object createdRuleId = createRuleIdIfAbsent(getConstraintFactory());
             return pattern(var).expr(logicalTuple ->
                     Objects.equals(logicalTuple.getRuleId(), createdRuleId));
@@ -106,7 +78,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
      * the old rule.
      * The idea here is that rule creating ({@link DroolsAbstractConstraintStream#buildRule(DroolsConstraint, Global)})
      * would call this first, establishing the rule ID with which to insert all the {@link DroolsLogicalTuple}s.
-     * The later creation of the condition during {@link DroolsAbstractUniConstraintStream#createCondition()} would
+     * The later creation of the condition during {@link DroolsAbstractBiConstraintStream#createCondition()} would
      * just retrieve the value that already exists and query for all the {@link DroolsLogicalTuple}s having this value.
      * Even if the order of operations were switched (condition created before rule built), the ID would still be
      * correctly shared though.
@@ -121,7 +93,12 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
     }
 
     @Override
+    protected DroolsAbstractConstraintStream<Solution_> getParent() {
+        return parent;
+    }
+
+    @Override
     public String toString() {
-        return "GroupBy()";
+        return "BiGroup() with " + getChildStreams().size() + " children";
     }
 }

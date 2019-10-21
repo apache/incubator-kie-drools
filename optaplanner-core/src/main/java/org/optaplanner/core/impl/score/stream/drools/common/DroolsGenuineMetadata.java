@@ -16,21 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.function.Supplier;
+
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 
 public final class DroolsGenuineMetadata<A> implements DroolsMetadata<A, A> {
 
     private final Declaration<A> variableDeclaration;
-    private final PatternDSL.PatternDef<A> pattern;
+    private final Supplier<PatternDSL.PatternDef<A>> patternBuilder;
 
-    DroolsGenuineMetadata(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
+    DroolsGenuineMetadata(Declaration<A> variableDeclaration, Supplier<PatternDSL.PatternDef<A>> patternBuilder) {
         this.variableDeclaration = variableDeclaration;
-        this.pattern = pattern;
-    }
-
-    public DroolsGenuineMetadata<A> substitute(PatternDSL.PatternDef<A> newPattern) {
-        return DroolsMetadata.ofGenuine(variableDeclaration, newPattern);
+        this.patternBuilder = patternBuilder;
     }
 
     @Override
@@ -44,7 +42,13 @@ public final class DroolsGenuineMetadata<A> implements DroolsMetadata<A, A> {
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getPattern() {
-        return pattern;
+    public PatternDSL.PatternDef<A> buildPattern() {
+        return patternBuilder.get();
     }
+
+    @Override
+    public DroolsGenuineMetadata<A> substitute(Supplier<PatternDSL.PatternDef<A>> patternBuilder) {
+        return new DroolsGenuineMetadata<>(variableDeclaration, patternBuilder);
+    }
+
 }
