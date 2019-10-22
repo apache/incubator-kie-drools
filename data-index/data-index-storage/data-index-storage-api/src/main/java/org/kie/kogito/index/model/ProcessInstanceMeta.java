@@ -39,20 +39,14 @@ public class ProcessInstanceMeta {
     @JsonProperty("parentInstanceId")
     private String parentProcessInstanceId;
 
-    public ProcessInstanceMeta() {
-    }
-
-    public ProcessInstanceMeta(String id, String processId) {
-        this.id = id;
-        this.processId = processId;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        if (id != null && !id.trim().isEmpty()) {
+            this.id = id;
+        }
     }
 
     public String getProcessId() {
@@ -107,8 +101,10 @@ public class ProcessInstanceMeta {
         return rootProcessInstanceId;
     }
 
-    public void setRootProcessInstanceId(String rootProcessInstanceId) {
-        this.rootProcessInstanceId = rootProcessInstanceId;
+    public void setRootProcessInstanceId(String id) {
+        if (id != null && !id.trim().isEmpty()) {
+            this.rootProcessInstanceId = id;
+        }
     }
 
     public String getRootProcessId() {
@@ -123,8 +119,10 @@ public class ProcessInstanceMeta {
         return parentProcessInstanceId;
     }
 
-    public void setParentProcessInstanceId(String parentProcessInstanceId) {
-        this.parentProcessInstanceId = parentProcessInstanceId;
+    public void setParentProcessInstanceId(String id) {
+        if (id != null && !id.trim().isEmpty()) {
+            this.parentProcessInstanceId = id;
+        }
     }
 
     public String getProcessName() {

@@ -140,6 +140,11 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
             return this;
         }
 
+        public Builder kogitoReferenceId(String kogitoReferenceId) {
+            event.setKogitoReferenceId(kogitoReferenceId);
+            return this;
+        }
+
         public KogitoProcessCloudEvent build() {
             return event;
         }

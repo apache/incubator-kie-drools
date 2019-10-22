@@ -1,0 +1,18 @@
+{
+  "data": {
+    "id": " ",
+    "parentInstanceId": "",
+    "processId": "hotelBooking",
+    "processName": "HotelBooking",
+    "rootInstanceId": "          ",
+    "rootProcessId": "travels"
+  },
+  "id": "b50a3dd4-a955-49c4-a055-f30a4d768f87",
+  "kogitoParentProcessinstanceId": "  ",
+  "kogitoProcessId": "hotelBooking",
+  "kogitoProcessinstanceId": "",
+  "kogitoProcessinstanceState": "2",
+  "kogitoRootProcessId": "travels",
+  "kogitoRootProcessinstanceId": " ",
+  "type": "ProcessInstanceEvent"
+}

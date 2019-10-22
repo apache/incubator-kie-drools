@@ -66,7 +66,7 @@ public class CacheTest {
     }
 
     @Test
-    public void testObjecRemovedListener() throws Exception {
+    public void testObjectRemovedListener() throws Exception {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 

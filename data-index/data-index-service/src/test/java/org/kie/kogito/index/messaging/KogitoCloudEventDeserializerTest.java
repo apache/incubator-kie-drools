@@ -53,7 +53,11 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.rootProcessInstanceId", "f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee")
                 .hasFieldOrPropertyWithValue("data.rootProcessId", "travels")
                 .hasFieldOrPropertyWithValue("data.start", ZonedDateTime.parse("2019-08-20T19:26:02.091Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
-                .hasFieldOrPropertyWithValue("data.state", 2);
+                .hasFieldOrPropertyWithValue("data.state", 2)
+                .hasFieldOrPropertyWithValue("specVersion", "0.3")
+                .hasFieldOrPropertyWithValue("contentType", null)
+                .hasFieldOrPropertyWithValue("schemaURL", null)
+                .hasFieldOrPropertyWithValue("kogitoReferenceId", null);
         softly.assertThat(event.getData().getNodes().get(0))
                 .hasFieldOrPropertyWithValue("id", "54e66e2f-2acd-4d47-b8e6-991cb6372ad8")
                 .hasFieldOrPropertyWithValue("exit", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
@@ -62,6 +66,33 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("name", "End Event 1")
                 .hasFieldOrPropertyWithValue("type", "EndNode")
                 .hasFieldOrPropertyWithValue("enter", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+
+        softly.assertAll();
+    }
+
+    @Test
+    public void testProcessEmptyIdsDeserializer() throws Exception {
+        KogitoProcessCloudEvent event = new KogitoProcessCloudEventDeserializer().deserialize(null, getJsonEventBytes("process_instance_empty_event.json"));
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(event)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("id", "b50a3dd4-a955-49c4-a055-f30a4d768f87")
+                .hasFieldOrPropertyWithValue("parentProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("processId", "hotelBooking")
+                .hasFieldOrPropertyWithValue("processInstanceId", null)
+                .hasFieldOrPropertyWithValue("rootProcessId", "travels")
+                .hasFieldOrPropertyWithValue("rootProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("type", "ProcessInstanceEvent")
+                .hasFieldOrPropertyWithValue("data.id", null)
+                .hasFieldOrPropertyWithValue("data.processId", "hotelBooking")
+                .hasFieldOrPropertyWithValue("data.parentProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("data.processId", "hotelBooking")
+                .hasFieldOrPropertyWithValue("data.rootProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("data.rootProcessId", "travels")
+                .hasFieldOrPropertyWithValue("specVersion", "0.3")
+                .hasFieldOrPropertyWithValue("contentType", null)
+                .hasFieldOrPropertyWithValue("schemaURL", null)
+                .hasFieldOrPropertyWithValue("kogitoReferenceId", null);
 
         softly.assertAll();
     }
@@ -81,6 +112,10 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("rootProcessInstanceId", null)
                 .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-30T11:48:37.857915Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "UserTaskInstanceEvent")
+                .hasFieldOrPropertyWithValue("specVersion", "0.3")
+                .hasFieldOrPropertyWithValue("schemaURL", null)
+                .hasFieldOrPropertyWithValue("contentType", null)
+                .hasFieldOrPropertyWithValue("kogitoReferenceId", null)
                 .hasFieldOrPropertyWithValue("data.id", "228d5922-5e88-4bfa-8329-7116a5cbe58b")
                 .hasFieldOrPropertyWithValue("data.processId", "travels")
                 .hasFieldOrPropertyWithValue("data.processInstanceId", "f78fb147-ec22-4478-a592-3063add9f956")

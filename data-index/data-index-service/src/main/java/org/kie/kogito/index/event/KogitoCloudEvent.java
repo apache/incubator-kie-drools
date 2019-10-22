@@ -109,8 +109,10 @@ public abstract class KogitoCloudEvent<T> {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+    public void setProcessInstanceId(String id) {
+        if (id != null && !id.trim().isEmpty()) {
+            this.processInstanceId = id;
+        }
     }
 
     public String getProcessId() {

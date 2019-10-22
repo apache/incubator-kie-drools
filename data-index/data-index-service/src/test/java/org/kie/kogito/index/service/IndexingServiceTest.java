@@ -53,7 +53,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.kie.kogito.index.GraphQLUtils.toGraphQLString;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
@@ -181,11 +180,11 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[0].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].endpoint", is(startEvent.getSource().toString()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
@@ -211,14 +210,14 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[0].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].processInstances[1].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].processId", is(processId))
-                .body("data.Travels[0].processInstances[1].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[1].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[1].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[1].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[1].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[1].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].traveller.email", is("mail@mail.com"))
@@ -254,9 +253,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(2))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[1].id", is(subProcessInstanceId))
@@ -265,7 +264,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[1].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].processInstances[1].endpoint", is(endEvent.getSource().toString()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
@@ -300,9 +299,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(2))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[1].id", is(subProcessInstanceId))
@@ -311,7 +310,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[1].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
@@ -330,7 +329,7 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
                 .body("data.ProcessInstances[0].parentProcessInstanceId", is(event.getParentProcessInstanceId()))
                 .body("data.ProcessInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? isEmptyOrNullString() : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].childProcessInstanceId", childProcessInstances == null ? isA(Collection.class) : hasItems(childProcessInstances))
                 .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()));
     }
@@ -407,9 +406,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString());
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()));
     }
 
     @Test
@@ -440,9 +439,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString());
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()));
 
         KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         consumer.onUserTaskInstanceDomainEvent(userTaskEvent).toCompletableFuture().get();
@@ -465,9 +464,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString());
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()));
     }
 
     @Test
@@ -509,9 +508,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString());
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()));
     }
 
     @Test
@@ -542,12 +541,12 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.ACTIVE.name()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].processInstances[0].end", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
@@ -567,9 +566,9 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances.size()", is(1))
                 .body("data.Travels[0].processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].processInstances[0].processId", is(processId))
-                .body("data.Travels[0].processInstances[0].rootProcessId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", isEmptyOrNullString())
-                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", isEmptyOrNullString())
+                .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
+                .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.COMPLETED.name()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
