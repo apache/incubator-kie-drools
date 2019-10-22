@@ -488,7 +488,7 @@ A move is accepted if it does not decrease the score, or if it leads to a score 
 
 image::LocalSearch/lateAcceptance.png[align="center"]
 
-Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
+Scientific paper: http://www.cs.stir.ac.uk/~kjt/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
 
 
 [[lateAcceptanceConfiguration]]
@@ -552,7 +552,7 @@ Step Counting Hill Climbing also evaluates only a few moves per step.
 For a number of steps, it keeps the step score as a threshold.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the threshold score.
 
-Scientific paper: https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf[An initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri Bykov, Sanja Petrovic (2013)]
+Scientific paper: https://www.researchgate.net/profile/Sanja_Petrovic2/publication/299593956_A_Step_Counting_Hill_Climbing_Algorithm_applied_to_University_Examination_Timetabling/links/5729d02a08aef7c7e2c4103a/A-Step-Counting-Hill-Climbing-Algorithm-applied-to-University-Examination-Timetabling.pdf[An initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri Bykov, Sanja Petrovic (2013)]
 
 
 [[stepCountingHillClimbingConfiguration]]
