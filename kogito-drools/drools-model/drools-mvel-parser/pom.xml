@@ -23,8 +23,7 @@
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
+      <artifactId>javax.annotation-api</artifactId>
     </dependency>
 
     <dependency>
