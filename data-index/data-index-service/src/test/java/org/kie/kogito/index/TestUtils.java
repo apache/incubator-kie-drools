@@ -75,9 +75,9 @@ public final class TestUtils {
                 .contentType("application/json")
                 .processInstanceId(processInstanceId)
                 .type("ProcessInstanceEvent")
-                .source(URI.create("http://localhost:8080/"))
                 .time(ZonedDateTime.now())
                 .data(getProcessInstance(processId, processInstanceId, status.ordinal(), rootProcessInstanceId, rootProcessId))
+                .source(URI.create("http://localhost:8080/"))
                 .build();
     }
 
@@ -91,7 +91,6 @@ public final class TestUtils {
         pi.setRoles(singleton("admin"));
         pi.setVariables(getProcessInstanceVariables());
         pi.setNodes(getNodeInstances());
-        pi.setEndpoint("http://localhost:8080/");
         pi.setState(status);
         pi.setStart(ZonedDateTime.now());
         pi.setEnd(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);

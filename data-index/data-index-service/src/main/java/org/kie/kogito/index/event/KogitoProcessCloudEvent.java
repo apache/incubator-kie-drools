@@ -19,9 +19,8 @@ package org.kie.kogito.index.event;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
-import org.kie.kogito.index.model.ProcessInstance;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.kie.kogito.index.model.ProcessInstance;
 
 public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
 
@@ -29,7 +28,6 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
     private Integer state;
     @JsonProperty("kogitoParentProcessinstanceId")
     private String parentProcessInstanceId;
-   
 
     public static Builder builder() {
         return new Builder();
@@ -51,6 +49,14 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    @Override
+    public void setSource(URI source) {
+        super.setSource(source);
+        if (getData() != null && source != null) {
+            getData().setEndpoint(source.toString());
+        }
     }
 
     @Override
