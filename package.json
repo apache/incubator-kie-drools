@@ -1,0 +1,21 @@
+{
+  "name": "kogito-apps",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "init": "npx lerna bootstrap",
+    "build": "npx lerna run build --stream",
+    "build:fast": "npx lerna run build:fast --stream",
+    "build:prod": "npx lerna run build:prod --stream"
+  },
+  "devDependencies": {
+    "lerna": "3.18.1"
+  },
+  "dependencies": {
+    "yarn": "^1.19.1"
+  }
+}
