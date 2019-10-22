@@ -16,6 +16,7 @@
     <module>persistence</module>
     <module>events</module>
     <module>process-management-addon</module>
+    <module>jobs</module>
   </modules>
 
 </project>
