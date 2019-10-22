@@ -99,9 +99,11 @@
   <xsd:element name="listeners">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="ruleRuntimeEventListener" minOccurs="0" maxOccurs="unbounded"/>
-        <xsd:element ref="agendaEventListener" minOccurs="0" maxOccurs="unbounded"/>
-        <xsd:element ref="processEventListener" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element ref="ruleRuntimeEventListener" minOccurs="0"/>
+          <xsd:element ref="agendaEventListener" minOccurs="0"/>
+          <xsd:element ref="processEventListener" minOccurs="0"/>
+        </xsd:choice>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
@@ -120,7 +122,6 @@
       <xsd:attribute name="type" use="required" type="xsd:string"/>
     </xsd:complexType>
   </xsd:element>
-
   <xsd:element name="ruleRuntimeEventListener">
     <xsd:complexType>
       <xsd:attribute name="type" use="required" type="xsd:string"/>

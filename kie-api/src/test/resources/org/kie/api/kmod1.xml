@@ -63,4 +63,27 @@
             </listeners>
         </ksession>
     </kbase>
+
+
+    <kbase name="org.kie.example8" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud">
+        <ksession name="ksession10" type="stateful"  clockType="realtime">
+            <fileLogger name="logger4" file="...." threaded="true" interval="50" />
+            <workItemHandlers>
+                <workItemHandler name="name1" type="type1"/>
+                <workItemHandler name="name2" type="type3"/>
+                <workItemHandler name="name3" type="type4"/>
+            </workItemHandlers>
+            <listeners>
+                <processEventListener type="type4"/>
+                <ruleRuntimeEventListener type="type3"/>
+                <ruleRuntimeEventListener type="type4"/>
+                <agendaEventListener type="type4"/>
+                <processEventListener type="type4"/>
+                <agendaEventListener type="type2"/>
+                <ruleRuntimeEventListener type="type1"/>
+            </listeners>
+        </ksession>
+    </kbase>
 </kmodule>
+
+
