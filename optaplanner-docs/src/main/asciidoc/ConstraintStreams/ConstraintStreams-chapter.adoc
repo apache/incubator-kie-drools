@@ -52,7 +52,7 @@ and supports <<explainingTheScore,justifications>>:
     private Constraint speakerUnavailableTimeslot(ConstraintFactory factory) {
         return factory.from(Talk.class)
                 .filter(Talk::hasAnyUnavailableSpeaker)
-                .penalizeConfigurable("Speaker unavailable timeslot",
+                .penalize("Speaker unavailable timeslot",
                         HardSoftScore.ONE_SOFT,
                         Talk::getDurationInMinutes);
     }
