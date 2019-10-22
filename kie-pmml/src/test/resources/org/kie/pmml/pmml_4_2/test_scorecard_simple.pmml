@@ -9,7 +9,7 @@
     <DataField name="overallScore" optype="continuous" dataType="double" />
   </DataDictionary>
 
-  <Scorecard modelName="SimpleScorecard" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="14" initialScore="0.8">
+  <Scorecard modelName="simpleScorecard" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="14" initialScore="0.8">
     <MiningSchema>
       <MiningField name="param1" usageType="active" invalidValueTreatment="asMissing"></MiningField>
       <MiningField name="param2" usageType="active" invalidValueTreatment="asMissing"></MiningField>

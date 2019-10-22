@@ -16,7 +16,6 @@
 
 package org.drools.scorecards;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +24,10 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public final class TestUtil {
 
@@ -51,13 +52,20 @@ public final class TestUtil {
     public static List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
         String javaModelId = modelId.replaceAll("\\s", "");
+        String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
             for (String knownPkgName : knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
+                if (!javaModelId.equals(capJavaModelId)) {
+                    packageNames.add(knownPkgName + "." + capJavaModelId);
+                }
             }
         }
         String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
+        if (!javaModelId.equals(capJavaModelId)) {
+            packageNames.add(DEFAULT_ROOT_PACKAGE + "." + capJavaModelId);
+        }
         return packageNames;
     }
 

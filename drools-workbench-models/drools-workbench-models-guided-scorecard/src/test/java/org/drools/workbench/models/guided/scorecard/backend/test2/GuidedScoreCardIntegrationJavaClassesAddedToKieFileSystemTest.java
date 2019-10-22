@@ -28,6 +28,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
 import org.drools.workbench.models.guided.scorecard.backend.test1.ApplicantAttribute;
 import org.junit.Ignore;
@@ -239,13 +240,20 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
     protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
         String javaModelId = modelId.replaceAll("\\s", "");
+        String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
             for (String knownPkgName : knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
+                if (!javaModelId.equals(capJavaModelId)) {
+                    packageNames.add(knownPkgName+"."+capJavaModelId);
+                }
             }
         }
         String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
+        if (!javaModelId.equals(capJavaModelId)) {
+            packageNames.add(DEFAULT_ROOT_PACKAGE + "." + capJavaModelId);
+        }
         return packageNames;
     }
 }
