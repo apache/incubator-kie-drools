@@ -160,6 +160,10 @@ public interface InternalKieModule extends KieModule, Serializable {
         return null;
     }
 
+    default void updateKieModule(InternalKieModule newKM) {
+
+    }
+
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;
         // this is a { DIALECT -> ( RESOURCE, List<CompilationEntry> ) } cache

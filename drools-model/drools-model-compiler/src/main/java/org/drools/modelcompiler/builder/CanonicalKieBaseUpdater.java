@@ -57,7 +57,6 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
-        newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
         CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
 
         List<RuleImpl> rulesToBeRemoved;

@@ -34,7 +34,6 @@ import java.util.stream.Stream;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -515,7 +514,13 @@ public class CanonicalKieModule implements InternalKieModule {
         return new CanonicalKieBaseUpdater( context );
     }
 
-    private static KieBaseConfiguration getKieBaseConfiguration( KieBaseModelImpl kBaseModel, ClassLoader cl, KieBaseConfiguration conf ) {
+    @Override
+    public void updateKieModule(InternalKieModule newKM) {
+        CanonicalKieModule newCanonicalKieModule = (CanonicalKieModule) newKM;
+        newCanonicalKieModule.setModuleClassLoader(this.getModuleClassLoader());
+    }
+
+    private static KieBaseConfiguration getKieBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl, KieBaseConfiguration conf ) {
         if (conf == null) {
             conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
         } else if (conf instanceof RuleBaseConfiguration ) {
