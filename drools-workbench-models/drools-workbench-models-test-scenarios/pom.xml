@@ -21,11 +21,6 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>compile</scope>
