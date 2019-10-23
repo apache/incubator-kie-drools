@@ -81,23 +81,15 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
     // Navigate to the first parent that is a Binding Expression
     private static Optional<Node> findOldBinding(Node pattern) {
-        Optional<Node> parentNode = pattern.getParentNode();
 
-        Optional<Node> parentNodeBindExpression = parentNode.filter(parent -> {
+        Optional<Node> parentNodeBindExpression = pattern.getParentNode().filter(parent -> {
             boolean isMethodCallExpr = parent instanceof MethodCallExpr;
             return isMethodCallExpr && ((MethodCallExpr) parent).getNameAsString().equals(BIND_CALL);
         });
 
         return parentNodeBindExpression
                 .map(Optional::of)
-                .orElseGet(() -> {
-            Optional<Node> parent = pattern.getParentNode();
-            if(!parent.isPresent()) {
-                return Optional.empty();
-            } else {
-                return findOldBinding(parent.get());
-            }
-        });
+                .orElseGet(() -> pattern.getParentNode().flatMap(AccumulateVisitorPatternDSL::findOldBinding));
     }
 
 
