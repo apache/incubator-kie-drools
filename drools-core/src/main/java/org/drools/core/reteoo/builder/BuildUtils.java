@@ -173,8 +173,9 @@ public class BuildUtils {
             int i = 0;
             for (BetaNodeFieldConstraint betaConstraint : betaConstraints) {
                 if (betaConstraint instanceof MvelConstraint) {
-                    ((MvelConstraint) betaConstraint).addPackageNames(((MvelConstraint) ((BetaNode) duplicate).getConstraints()[i++]).getPackageNames());
+                    ((MvelConstraint) betaConstraint).addPackageNames(((MvelConstraint) ((BetaNode) duplicate).getConstraints()[i]).getPackageNames());
                 }
+                i++;
             }
         }
     }
