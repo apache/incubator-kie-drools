@@ -41,7 +41,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -51,6 +50,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
+import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -58,8 +58,6 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
-
-    protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
     protected RuleContext context;
 
@@ -159,7 +157,9 @@ public abstract class AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
-        return drlxParseResult.getDecodeConstraintType() != null && left.getFieldName() != null && !isThisExpression( left.getExpression() ) &&
+        return left != null && left.getFieldName() != null &&
+                drlxParseResult.getDecodeConstraintType() != null &&
+                !isThisExpression( left.getExpression() ) &&
                 ( isAlphaIndex( usedDeclarations ) || isBetaIndex( usedDeclarations, drlxParseResult.getRight() ) );
     }
 
@@ -264,5 +264,11 @@ public abstract class AbstractExpressionBuilder {
                 .filter(Objects::nonNull)
                 .map(ClassUtil::toRawClass)
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!")));
+    }
+
+    protected String getIndexIdArgument( SingleDrlxParseSuccess drlxParseResult, TypedExpression left ) {
+        return isAccessibleProperties( drlxParseResult.getPatternType(), left.getFieldName() ) ?
+                context.getPackageModel().getDomainClassName( drlxParseResult.getPatternType() ) + ".getPropertyIndex(\"" + left.getFieldName() + "\")" :
+                "-1";
     }
 }
