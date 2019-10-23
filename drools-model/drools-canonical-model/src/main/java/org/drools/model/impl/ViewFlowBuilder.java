@@ -21,6 +21,7 @@ import org.drools.model.Consequence;
 import org.drools.model.Declaration;
 import org.drools.model.DeclarationSource;
 import org.drools.model.From;
+import org.drools.model.Global;
 import org.drools.model.Pattern;
 import org.drools.model.RuleItem;
 import org.drools.model.RuleItemBuilder;
@@ -191,24 +192,24 @@ public class ViewFlowBuilder implements ViewBuilder {
                 continue;
             }
 
-            Variable<?> patterVariable = findPatterVariable( viewItem, scopedInputs.keySet() );
+            Variable<?> patternVariable = findPatternVariable(viewItem, scopedInputs.keySet() );
 
             if ( viewItem instanceof InputViewItemImpl ) {
-                scopedInputs.put( patterVariable, (InputViewItemImpl) viewItem );
-                PatternImpl condition = new PatternImpl( patterVariable );
+                scopedInputs.put( patternVariable, (InputViewItemImpl) viewItem );
+                PatternImpl condition = new PatternImpl( patternVariable );
                 condition.addWatchedProps( (( InputViewItemImpl ) viewItem).getWatchedProps() );
                 conditions.add( condition );
-                conditionMap.put( patterVariable, condition );
-                ctx.usedVars.add( patterVariable );
+                conditionMap.put( patternVariable, condition );
+                ctx.usedVars.add( patternVariable );
                 continue;
             }
 
             if ( viewItem instanceof ExistentialExprViewItem ) {
                 ExistentialExprViewItem existential = ( (ExistentialExprViewItem) viewItem );
-                if (patterVariable != null && !ctx.isQuery) {
-                    registerInputsFromViewItem( existential.getExpression(), conditionMap, scopedInputs, patterVariable );
+                if (patternVariable != null && !ctx.isQuery) {
+                    registerInputsFromViewItem( existential.getExpression(), conditionMap, scopedInputs, patternVariable );
                 }
-                Condition condition = new PatternImpl( patterVariable, SingleConstraint.TRUE, ctx.bindings.get(patterVariable) );
+                Condition condition = new PatternImpl( patternVariable, SingleConstraint.TRUE, ctx.bindings.get(patternVariable) );
                 Condition.Type existentialType = existential.getType();
                 ViewItem existentialExpr = existential.getExpression();
                 while (existentialExpr instanceof ExistentialExprViewItem) {
@@ -218,29 +219,31 @@ public class ViewFlowBuilder implements ViewBuilder {
                 continue;
             }
 
-            if ( ruleItem instanceof ExprViewItem && ctx.boundVars.contains( patterVariable ) ) {
+            boolean patternVariableIsGlobal = patternVariable instanceof Global;
+            boolean isPatternVariableBound = ctx.boundVars.contains(patternVariable);
+            if ( ruleItem instanceof ExprViewItem && (isPatternVariableBound || patternVariableIsGlobal)) {
                 conditions.add( new EvalImpl( createConstraint( (ExprViewItem) ruleItem ) ) );
                 continue;
             }
 
-            ctx.usedVars.add( patterVariable );
+            ctx.usedVars.add( patternVariable );
             Condition condition;
             if ( type == Type.AND ) {
-                condition = conditionMap.get( patterVariable );
+                condition = conditionMap.get( patternVariable );
                 if ( condition == null ) {
-                    condition = new PatternImpl( patterVariable, SingleConstraint.TRUE, ctx.bindings.get(patterVariable) );
+                    condition = new PatternImpl( patternVariable, SingleConstraint.TRUE, ctx.bindings.get(patternVariable) );
                     conditions.add( condition );
                     if (!(viewItem instanceof AccumulateExprViewItem)) {
-                        conditionMap.put( patterVariable, condition );
+                        conditionMap.put( patternVariable, condition );
                     }
-                    scopedInputs.putIfAbsent( patterVariable, (InputViewItemImpl) input( patterVariable ) );
+                    scopedInputs.putIfAbsent( patternVariable, (InputViewItemImpl) input( patternVariable ) );
                 }
             } else {
-                condition = new PatternImpl( patterVariable );
+                condition = new PatternImpl( patternVariable );
                 conditions.add( condition );
             }
 
-            addInputFromVariableSource( scopedInputs, patterVariable );
+            addInputFromVariableSource( scopedInputs, patternVariable );
 
             Condition modifiedPattern = viewItem2Condition( viewItem, condition, new BuildContext( ctx, scopedInputs ) );
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
@@ -251,7 +254,7 @@ public class ViewFlowBuilder implements ViewBuilder {
 
 
             if ( type == Type.AND && !(viewItem instanceof AccumulateExprViewItem) ) {
-                conditionMap.put( patterVariable, modifiedPattern );
+                conditionMap.put( patternVariable, modifiedPattern );
             }
         }
 
@@ -266,7 +269,7 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
     }
 
-    private static Variable<?> findPatterVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
+    private static Variable<?> findPatternVariable(ViewItem viewItem, Set<Variable<?>> vars ) {
         Variable<?> patternVariable = viewItem.getFirstVariable();
         if (!vars.contains( patternVariable )) {
             return patternVariable;
