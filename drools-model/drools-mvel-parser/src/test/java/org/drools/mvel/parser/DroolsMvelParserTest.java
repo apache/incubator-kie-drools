@@ -92,30 +92,29 @@ public class DroolsMvelParserTest {
 
     @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
-        Expression or = parseExpression(parser, "(" + System.lineSeparator() + "addresses == 2 || addresses == 3  )").getExpr();
+        Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
-        Expression and = parseExpression(parser, "(" + System.lineSeparator() + "addresses == 2 && addresses == 3  )").getExpr();
+        Expression and = parseExpression(parser, "(" + newLine() + "addresses == 2 && addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
     @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineEnd() {
-        Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + System.lineSeparator() + ")").getExpr();
+        Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
-        Expression and = parseExpression(parser, "(addresses == 2 && addresses == 3 " + System.lineSeparator() + ")").getExpr();
+        Expression and = parseExpression(parser, "(addresses == 2 && addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
-
 
     @Test
     @Ignore
     public void testBinaryWithNewLineBeforeOperator() {
-        Expression and2 = parseExpression(parser, "(addresses == 2" + System.lineSeparator() + "&& addresses == 3  )").getExpr();
+        Expression and2 = parseExpression(parser, "(addresses == 2" + newLine() + "&& addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
 
-        Expression or2 = parseExpression(parser, "(addresses == 2" + System.lineSeparator() + "|| addresses == 3  )").getExpr();
+        Expression or2 = parseExpression(parser, "(addresses == 2" + newLine() + "|| addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
 
@@ -535,8 +534,8 @@ public class DroolsMvelParserTest {
         String expr = "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($p) { name = \"Luca\", age = \"35\" };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { name = \"Luca\", age = \"35\" };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -551,8 +550,8 @@ public class DroolsMvelParserTest {
         String expr = "{ modify ( $p )  { name = \"Luca\"; }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($p) { name = \"Luca\" };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { name = \"Luca\" };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -561,18 +560,18 @@ public class DroolsMvelParserTest {
         String expr = "{ modify($p) { setAge(1); }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($p) { setAge(1) };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { setAge(1) };" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void testModifyMultiple() {
-        String expr = "{ modify($p) { setAge(1)," + System.lineSeparator() + " setAge(2);setAge(3)" + System.lineSeparator() + "setAge(4); }; }";
+        String expr = "{ modify($p) { setAge(1)," + newLine() + " setAge(2);setAge(3)" + newLine() + "setAge(4); }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($p) { setAge(1), setAge(2), setAge(3), setAge(4) };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { setAge(1), setAge(2), setAge(3), setAge(4) };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -581,8 +580,8 @@ public class DroolsMvelParserTest {
         String expr = "{ modify( $s ) { } }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($s) {  };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($s) {  };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -591,8 +590,8 @@ public class DroolsMvelParserTest {
         String expr = "{modify($p) { setAge($p.getAge()+1) } }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ($p) { setAge($p.getAge() + 1) };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ($p) { setAge($p.getAge() + 1) };" + newLine() +
                              "}"
                 , printConstraint(expression));
     }
@@ -603,8 +602,8 @@ public class DroolsMvelParserTest {
         String expr = "{modify( (BooleanEvent)$toEdit.get(0) ){  }}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    modify ((BooleanEvent) $toEdit.get(0)) {  };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    modify ((BooleanEvent) $toEdit.get(0)) {  };" + newLine() +
                              "}"
                 , printConstraint(expression));
     }
@@ -615,8 +614,8 @@ public class DroolsMvelParserTest {
         String expr = "{ with ( $p )  { name = \"Luca\", age = \"35\" }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ($p) { name = \"Luca\", age = \"35\" };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ($p) { name = \"Luca\", age = \"35\" };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -631,8 +630,8 @@ public class DroolsMvelParserTest {
         String expr = "{ with ( $p )  { name = \"Luca\"; }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ($p) { name = \"Luca\" };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ($p) { name = \"Luca\" };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -641,8 +640,8 @@ public class DroolsMvelParserTest {
         String expr = "{ with($p) { setAge(1); }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ($p) { setAge(1) };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ($p) { setAge(1) };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -651,8 +650,8 @@ public class DroolsMvelParserTest {
         String expr = "{ with( $s ) { } }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ($s) {  };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ($s) {  };" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -661,8 +660,8 @@ public class DroolsMvelParserTest {
         String expr = "{with($p) { setAge($p.getAge()+1) } }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ($p) { setAge($p.getAge() + 1) };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ($p) { setAge($p.getAge() + 1) };" + newLine() +
                              "}"
                 , printConstraint(expression));
     }
@@ -673,8 +672,8 @@ public class DroolsMvelParserTest {
         String expr = "{with( (BooleanEvent)$toEdit.get(0) ){  }}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with ((BooleanEvent) $toEdit.get(0)) {  };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with ((BooleanEvent) $toEdit.get(0)) {  };" + newLine() +
                              "}"
                 , printConstraint(expression));
     }
@@ -684,50 +683,50 @@ public class DroolsMvelParserTest {
         String expr = "{ with(s1 = new Some()) { }; }";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    with (s1 = new Some()) {  };" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    with (s1 = new Some()) {  };" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void testWithoutSemicolon() {
         String expr = "{             " +
-                        "a" + System.lineSeparator() +
-                        "b" + System.lineSeparator() +
+                        "a" + newLine() +
+                        "b" + newLine() +
                         "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    a;" + System.lineSeparator() +
-                             "    b;" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    a;" + newLine() +
+                             "    b;" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void testWithoutSemicolonMethod() {
         String expr = "{             " +
-                "delete($person)" + System.lineSeparator() +
-                "delete($pet)" + System.lineSeparator() +
+                "delete($person)" + newLine() +
+                "delete($pet)" + newLine() +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
-                             "    delete($pet);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
+                             "    delete($pet);" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void testWithoutSemicolonMethodComment() {
         String expr = "{             " +
-                "delete($person) // comment" + System.lineSeparator() +
-                "delete($pet) // comment " + System.lineSeparator() +
+                "delete($person) // comment" + newLine() +
+                "delete($pet) // comment " + newLine() +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
-                             "    delete($pet);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
+                             "    delete($pet);" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -740,23 +739,23 @@ public class DroolsMvelParserTest {
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
-                             "    delete($pet);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
+                             "    delete($pet);" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void statementsWithComments() {
         String expr = "{             " +
-                "delete($person); // comment" + System.lineSeparator() +
-                "delete($pet); // comment " + System.lineSeparator() +
+                "delete($person); // comment" + newLine() +
+                "delete($pet); // comment " + newLine() +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
-                             "    delete($pet);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
+                             "    delete($pet);" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -766,8 +765,8 @@ public class DroolsMvelParserTest {
         String expr = "{ delete($person); } // comment ";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -776,71 +775,71 @@ public class DroolsMvelParserTest {
         String expr = "{ delete($person) } // comment";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    delete($person);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    delete($person);" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void commentsWithEmptyStatements() {
         String expr = "{" +
-                "// modify ; something" + System.lineSeparator() +
-                "/* modify ; something */" + System.lineSeparator() +
-                "setAge(47)" + System.lineSeparator() +
+                "// modify ; something" + newLine() +
+                "/* modify ; something */" + newLine() +
+                "setAge(47)" + newLine() +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    ;" + System.lineSeparator() +
-                             "    ;" + System.lineSeparator() +
-                             "    setAge(47);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    ;" + newLine() +
+                             "    ;" + newLine() +
+                             "    setAge(47);" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void newLineInFunctionCall() {
         String expr = "{" +
-                "func(x " + System.lineSeparator() +
-                ")" + System.lineSeparator() +
+                "func(x " + newLine() +
+                ")" + newLine() +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    func(x);" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    func(x);" + newLine() +
                              "}", printConstraint(expression));
     }
 
     @Test
     public void newLineInFunctionCall2() {
-        Expression expression = MvelParser.parseExpression("func(x," + System.lineSeparator() + " 2)");
+        Expression expression = MvelParser.parseExpression("func(x," + newLine() + " 2)");
         assertEquals("func(x, 2)", printConstraint(expression));
     }
 
     @Test
     public void newLineInFunctionCall3() {
-        Expression expression = MvelParser.parseExpression("func(x" + System.lineSeparator() + ", 2)");
+        Expression expression = MvelParser.parseExpression("func(x" + newLine() + ", 2)");
         assertEquals("func(x, 2)", printConstraint(expression));
     }
 
     @Test
     public void commentsWithEmptyStatements2() {
         String expr = "{" +
-                "  globalA.add(\"A\");" + System.lineSeparator() +
-                "  modify( $p ) {" + System.lineSeparator() +
-                "    // modify ; something" + System.lineSeparator() +
-                "    /* modify ; something */" + System.lineSeparator() +
-                "    setAge(47)" + System.lineSeparator() +
-                "  }" + System.lineSeparator() +
-                "  globalB.add(\"B\");" + System.lineSeparator() +
-                "  // modify ; something" + System.lineSeparator() +
+                "  globalA.add(\"A\");" + newLine() +
+                "  modify( $p ) {" + newLine() +
+                "    // modify ; something" + newLine() +
+                "    /* modify ; something */" + newLine() +
+                "    setAge(47)" + newLine() +
+                "  }" + newLine() +
+                "  globalB.add(\"B\");" + newLine() +
+                "  // modify ; something" + newLine() +
                 "  /* modify ; something */" +
                 "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
-        assertEquals("{" + System.lineSeparator() +
-                             "    globalA.add(\"A\");" + System.lineSeparator() +
-                             "    modify ($p) { setAge(47) };" + System.lineSeparator() +
-                             "    globalB.add(\"B\");" + System.lineSeparator() +
+        assertEquals("{" + newLine() +
+                             "    globalA.add(\"A\");" + newLine() +
+                             "    modify ($p) { setAge(47) };" + newLine() +
+                             "    globalB.add(\"B\");" + newLine() +
                              "}", printConstraint(expression));
 
     }
@@ -885,5 +884,9 @@ public class DroolsMvelParserTest {
 
     private String toString(Node n) {
         return PrintUtil.printConstraint(n);
+    }
+
+    private String newLine() {
+        return System.lineSeparator();
     }
 }
