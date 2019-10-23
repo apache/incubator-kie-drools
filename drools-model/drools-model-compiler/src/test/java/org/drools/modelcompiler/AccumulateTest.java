@@ -1140,6 +1140,33 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithMaxCalendarAndConstraint() {
+        String str =
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                        "rule AccumulateMaxDate\n" +
+                        "  dialect \"java\"\n" +
+                        "  when\n" +
+                        "  $customer : Customer( code == \"RHT\" )\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick( company == $customer.code\n" +
+                        "    , $time : dueDate);\n" +
+                        "    max($time.getTime().getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setDueDate(Calendar.getInstance());
+        Customer c = new Customer();
+        c.setCode("RHT");
+        ksession.insert(st);
+        ksession.insert(c);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
     public void testNoBinding() {
 
         final String str = "rule foo\n" +
