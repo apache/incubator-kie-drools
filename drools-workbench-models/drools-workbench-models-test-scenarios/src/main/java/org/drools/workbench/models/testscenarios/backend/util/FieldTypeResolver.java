@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,11 +11,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.workbench.models.testscenarios.backend.util;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 
 public class FieldTypeResolver {
 
@@ -28,7 +29,20 @@ public class FieldTypeResolver {
         throw new IllegalArgumentException("No field named: " + fieldName);
     }
 
-    public static boolean isDate(String fieldName, Object factObject) {
+    public static boolean isLocalDate(final String fieldName,
+                                      final Object factObject) {
+        for (Method method : factObject.getClass().getDeclaredMethods()) {
+            if (hasMutator(fieldName, method)) {
+                if (LocalDate.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isDate(final String fieldName,
+                                 final Object factObject) {
         for (Method method : factObject.getClass().getDeclaredMethods()) {
             if (hasMutator(fieldName, method)) {
                 if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])) {
