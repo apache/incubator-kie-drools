@@ -61,7 +61,9 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        pattern.getParentNode().ifPresent(oldBindExpression -> {
+        Optional<Node> oldBinding = findOldBinding(pattern);
+
+        oldBinding.ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
             LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
@@ -76,6 +78,28 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             oldBind.replace(newBindingExpression);
         });
     }
+
+    // Navigate to the first parent that is a Binding Expression
+    private static Optional<Node> findOldBinding(Node pattern) {
+        Optional<Node> parentNode = pattern.getParentNode();
+
+        Optional<Node> parentNodeBindExpression = parentNode.filter(parent -> {
+            boolean isMethodCallExpr = parent instanceof MethodCallExpr;
+            return isMethodCallExpr && ((MethodCallExpr) parent).getNameAsString().equals(BIND_CALL);
+        });
+
+        return parentNodeBindExpression
+                .map(Optional::of)
+                .orElseGet(() -> {
+            Optional<Node> parent = pattern.getParentNode();
+            if(!parent.isPresent()) {
+                return Optional.empty();
+            } else {
+                return findOldBinding(parent.get());
+            }
+        });
+    }
+
 
     private void addBindAsLastChainCall(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         final Optional<Node> optParent = pattern.getParentNode();
