@@ -107,28 +107,23 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    private static <A, B> Object extractLeftMapping(AbstractBiJoiner<A, B> biJoiner, int index,
-            DroolsMetadata<Object, A> aMetadata, Object a) {
-        return biJoiner.getLeftMapping(index).apply(aMetadata.extract(a));
-    }
-
-    private static <A, B> Object extractRightMapping(AbstractBiJoiner<A, B> biJoiner, int index,
-            DroolsMetadata<Object, B> bMetadata, Object b) {
-        return biJoiner.getRightMapping(index).apply(bMetadata.extract(b));
+    private static <A> Object extract(Function<A, Object> mapping, DroolsMetadata<Object, A> metadata, Object b) {
+        return mapping.apply(metadata.extract(b));
     }
 
     private static <A, B> PatternDSL.PatternDef<B> index(PatternDSL.PatternDef<B> pattern,
             DroolsMetadata<Object, A> aMetadata, DroolsMetadata<Object, B> bMetadata, AbstractBiJoiner<A, B> biJoiner,
             int mappingIndex) {
         JoinerType joinerType = biJoiner.getJoinerTypes()[mappingIndex];
+        Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
+        Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
         Predicate2<B, A> predicate = (b, a) -> {
-            Object leftMapping = extractLeftMapping(biJoiner, mappingIndex, aMetadata, a);
-            Object rightMapping = extractRightMapping(biJoiner, mappingIndex, bMetadata, b);
-            return joinerType.matches(leftMapping, rightMapping);
+            Object left = extract(leftMapping, aMetadata, a);
+            Object right = extract(rightMapping, bMetadata, b);
+            return joinerType.matches(left, right);
         };
         BetaIndex<B, A, Object> betaIndex = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                b -> extractRightMapping(biJoiner, mappingIndex, bMetadata, b),
-                a -> extractLeftMapping(biJoiner, mappingIndex, aMetadata, a));
+                b -> extract(rightMapping, bMetadata, b), a -> extract(leftMapping, aMetadata, a));
         Declaration<A> aVariableDeclaration = (Declaration<A>) aMetadata.getVariableDeclaration();
         return pattern.expr(UUID.randomUUID().toString(), aVariableDeclaration, predicate, betaIndex);
     }
