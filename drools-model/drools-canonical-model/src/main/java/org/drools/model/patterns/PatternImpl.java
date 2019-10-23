@@ -91,6 +91,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         bindings.add(binding);
     }
 
+    @Override
     public Collection<Binding> getBindings() {
         return bindings != null ? bindings : Collections.emptyList();
     }
@@ -107,6 +108,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         }
     }
 
+    @Override
     public String[] getWatchedProps() {
         return watchedProps != null ? watchedProps.toArray( new String[watchedProps.size()] ) : new String[0];
     }

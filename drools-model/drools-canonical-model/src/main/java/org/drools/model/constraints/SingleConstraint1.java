@@ -27,7 +27,7 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
     public SingleConstraint1(Expr1ViewItemImpl<A> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getPredicate());
         setIndex( expr.getIndex() );
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override
