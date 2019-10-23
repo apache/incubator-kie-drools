@@ -71,7 +71,7 @@ public abstract class PlannerBenchmarkFactory {
             ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class PlannerBenchmarkFactory {
             File benchmarkDirectory, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig, benchmarkDirectory);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -189,7 +189,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlFile(benchmarkConfigFile, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -215,7 +215,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlInputStream(in, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -241,7 +241,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromXmlReader(Reader reader, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlReader(reader, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     // ************************************************************************
@@ -270,7 +270,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlResource(templateResource, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -294,7 +294,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlResource(templateResource, model, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -321,7 +321,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlFile(templateFile, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -345,7 +345,7 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlFile(templateFile, model, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -371,7 +371,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlInputStream(templateIn, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -399,7 +399,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlInputStream(templateIn, model, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -425,7 +425,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlReader(templateReader, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     /**
@@ -453,7 +453,7 @@ public abstract class PlannerBenchmarkFactory {
     @Deprecated
     public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model, ClassLoader classLoader) {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromFreemarkerXmlReader(templateReader, model, classLoader);
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
     }
 
     // ************************************************************************
@@ -469,17 +469,6 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory create(PlannerBenchmarkConfig benchmarkConfig) {
         return new DefaultPlannerBenchmarkFactory(benchmarkConfig);
-    }
-
-    /**
-     * As defined by {@link #create(PlannerBenchmarkConfig)}.
-     * @param benchmarkConfig never null
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
-     * @return never null
-     */
-    public static PlannerBenchmarkFactory create(PlannerBenchmarkConfig benchmarkConfig, ClassLoader classLoader) {
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(classLoader));
     }
 
     // ************************************************************************
@@ -521,10 +510,9 @@ public abstract class PlannerBenchmarkFactory {
      */
     public static PlannerBenchmarkFactory createFromKieContainerXmlResource(KieContainer kieContainer,
             String benchmarkConfigResource) {
-        SolverConfigContext solverConfigContext = new SolverConfigContext(kieContainer);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource,
-                solverConfigContext.determineActualClassLoader());
-        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, solverConfigContext);
+                kieContainer.getClassLoader());
+        return new DefaultPlannerBenchmarkFactory(benchmarkConfig, new SolverConfigContext(kieContainer));
     }
 
     // ************************************************************************

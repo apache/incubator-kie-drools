@@ -22,22 +22,14 @@ import java.util.stream.IntStream;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.testutil.MockThreadFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class SolverConfigMultiThreadedTest {
 
@@ -67,16 +59,11 @@ public class SolverConfigMultiThreadedTest {
         assertEquals(Integer.valueOf(2), solverConfig.resolveMoveThreadCount());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void moveThreadCountThrowsExceptionWhenValueIsNegative() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount("-6");
-        try {
-            solverConfig.resolveMoveThreadCount();
-            fail("IllegalArgumentException should have been thrown.");
-        } catch (IllegalArgumentException expectedException) {
-            //expected
-        }
+        solverConfig.resolveMoveThreadCount();
     }
 
     @Test

@@ -38,8 +38,9 @@ Configure the `SolverFactory` with a solver configuration XML file, provided as 
        Solver<NQueens> solver = solverFactory.buildSolver();
 ----
 
-In a typical project (following the Maven directory structure), that solverConfig XML file would be located at ``$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml``.
-Alternatively, a `SolverFactory` can be created from a ``File``, an `InputStream` or a `Reader` with methods such as ``SolverFactory.createFromXmlFile()``.
+In a typical project (following the Maven directory structure),
+that solverConfig XML file would be located at ``$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml``.
+Alternatively, a `SolverFactory` can be created from a ``File`` with ``SolverFactory.createFromXmlFile()``.
 However, for portability reasons, a classpath resource is recommended.
 
 [NOTE]

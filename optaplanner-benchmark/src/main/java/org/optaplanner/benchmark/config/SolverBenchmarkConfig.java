@@ -80,12 +80,15 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     // Builder methods
     // ************************************************************************
 
-    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, PlannerBenchmarkResult plannerBenchmark,
-            Solution_[] extraProblems) {
+    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, ClassLoader classLoader,
+            PlannerBenchmarkResult plannerBenchmark, Solution_[] extraProblems) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
         solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
+        if (solverConfig.getClassLoader() == null) {
+            solverConfig.setClassLoader(classLoader);
+        }
         solverBenchmarkResult.setSolverConfig(solverConfig);
         SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor(solverConfigContext);
         for (Solution_ extraProblem : extraProblems) {

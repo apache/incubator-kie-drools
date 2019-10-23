@@ -34,6 +34,7 @@ import java.util.concurrent.ThreadFactory;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
@@ -189,13 +190,15 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
         XStream xStream = XStreamConfigReader.buildXStream(classLoader);
-        Object solverConfig = xStream.fromXML(reader);
-        if (!(solverConfig instanceof SolverConfig)) {
+        Object solverConfigObject = xStream.fromXML(reader);
+        if (!(solverConfigObject instanceof SolverConfig)) {
             throw new IllegalArgumentException("The " + SolverConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("
-                    + (solverConfig == null ? null : solverConfig.getClass().getSimpleName()));
+                    + (solverConfigObject == null ? null : solverConfigObject.getClass().getSimpleName()));
         }
-        return (SolverConfig) solverConfig;
+        SolverConfig solverConfig = (SolverConfig) solverConfigObject;
+        solverConfig.setClassLoader(classLoader);
+        return solverConfig;
     }
 
     // ************************************************************************
@@ -207,6 +210,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected static final long DEFAULT_RANDOM_SEED = 0L;
 
     private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
+
+    @XStreamOmitField
+    private ClassLoader classLoader = null;
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -246,6 +252,13 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
+     * @param classLoader sometimes null
+     */
+    public SolverConfig(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    /**
      * Allows you to programmatically change the {@link SolverConfig} per concurrent request,
      * based on a template solver config,
      * by building a separate {@link SolverFactory} with {@link SolverFactory#create(SolverConfig)}
@@ -257,6 +270,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         if (environmentMode == EnvironmentMode.PRODUCTION) {
             environmentMode = EnvironmentMode.NON_REPRODUCIBLE;
         }
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -583,7 +604,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         return scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                configContext, environmentMode, solutionDescriptor);
+                configContext, classLoader, environmentMode, solutionDescriptor);
     }
 
     // TODO https://issues.jboss.org/browse/PLANNER-1688
@@ -591,7 +612,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Do not use this method, it is an internal method.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     * @param configContext never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
@@ -605,7 +625,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                         + ") or an entityClass (" + entityClassList + ").\n"
                         + "  Please decide between automatic scanning or manual referencing.");
             }
-            return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext, deprecatedScoreDefinition);
+            return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext, classLoader, deprecatedScoreDefinition);
         } else {
             if (solutionClass == null) {
                 throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass
@@ -646,6 +666,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      */
     @Override
     public void inherit(SolverConfig inheritedConfig) {
+        classLoader = ConfigUtils.inheritOverwritableProperty(classLoader, inheritedConfig.getClassLoader());
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
         daemon = ConfigUtils.inheritOverwritableProperty(daemon, inheritedConfig.getDaemon());
         randomType = ConfigUtils.inheritOverwritableProperty(randomType, inheritedConfig.getRandomType());

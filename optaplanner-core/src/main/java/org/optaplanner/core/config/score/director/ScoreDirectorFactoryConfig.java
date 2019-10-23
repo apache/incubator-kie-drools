@@ -184,7 +184,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return bendableSoftLevelsSize;
     }
 
-    /**
+    /**Anything tha
      * @param bendableSoftLevelsSize sometimes null
      * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
@@ -455,12 +455,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(
-            SolverConfigContext configContext, EnvironmentMode environmentMode,
+            SolverConfigContext configContext, ClassLoader classLoader, EnvironmentMode environmentMode,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory = buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext, solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext, classLoader, solutionDescriptor);
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
                 .filter(Objects::nonNull).count() > 1) {
@@ -511,7 +511,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
-                    assertionScoreDirectorFactory.buildScoreDirectorFactory(configContext,
+                    assertionScoreDirectorFactory.buildScoreDirectorFactory(configContext, classLoader,
                             EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
@@ -591,7 +591,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
-            SolverConfigContext configContext, SolutionDescriptor<Solution_> solutionDescriptor) {
+            SolverConfigContext configContext, ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
         KieContainer kieContainer = configContext.getKieContainer();
         if (kieContainer != null || ksessionName != null) {
             if (kieContainer == null) {
@@ -639,7 +639,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
             if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
-                ClassLoader actualClassLoader = configContext.determineActualClassLoader();
+                ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
                 for (String scoreDrl : scoreDrlList) {
                     if (scoreDrl == null) {
                         throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");

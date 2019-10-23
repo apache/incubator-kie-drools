@@ -54,15 +54,11 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     // Builder methods
     // ************************************************************************
 
-    public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext, ScoreDefinition deprecatedScoreDefinition) {
-        ClassLoader[] classLoaders;
-        if (configContext.getClassLoader() != null) {
-            classLoaders = new ClassLoader[] {configContext.getClassLoader()};
-        } else if (configContext.getKieContainer() != null) {
-            classLoaders = new ClassLoader[] {configContext.getKieContainer().getClassLoader()};
+    public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext,
+            ClassLoader classLoader, ScoreDefinition deprecatedScoreDefinition) {
+        ClassLoader[] classLoaders = (classLoader != null) ? new ClassLoader[]{classLoader} : new ClassLoader[0];
+        if (configContext.getKieContainer() != null) {
             ReflectionsKieVfsUrlType.register(configContext.getKieContainer());
-        } else {
-            classLoaders = new ClassLoader[0];
         }
         ConfigurationBuilder builder = new ConfigurationBuilder();
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {

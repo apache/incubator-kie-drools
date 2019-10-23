@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.ConversionException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -63,6 +64,10 @@ import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
 
+/**
+ * To read it from XML, use {@link #createFromXmlResource(String)}.
+ * To build a {@link PlannerBenchmarkFactory} with it, use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}.
+ */
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
 
@@ -128,7 +133,7 @@ public class PlannerBenchmarkConfig {
                 }
                 throw new IllegalArgumentException(errorMessage);
             }
-            return createFromXmlInputStream(in);
+            return createFromXmlInputStream(in, classLoader);
         } catch (ConversionException e) {
             String lineNumber = e.get("line number");
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
@@ -162,7 +167,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
         try (InputStream in = new FileInputStream(benchmarkConfigFile)) {
-            return createFromXmlInputStream(in);
+            return createFromXmlInputStream(in, classLoader);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
                     + ") was not found.", e);
@@ -187,7 +192,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
         try (Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-            return createFromXmlReader(reader);
+            return createFromXmlReader(reader, classLoader);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
@@ -211,16 +216,18 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
         XStream xStream = XStreamConfigReader.buildXStreamPortable(classLoader, PlannerBenchmarkConfig.class);
-        Object benchmarkConfig = xStream.fromXML(reader);
-        if (!(benchmarkConfig instanceof PlannerBenchmarkConfig)) {
+        Object benchmarkConfigObject = xStream.fromXML(reader);
+        if (!(benchmarkConfigObject instanceof PlannerBenchmarkConfig)) {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("
-                    + (benchmarkConfig == null ? null : benchmarkConfig.getClass().getSimpleName()) + ")."
-                    + (benchmarkConfig instanceof SolverConfig ?
+                    + (benchmarkConfigObject == null ? null : benchmarkConfigObject.getClass().getSimpleName()) + ")."
+                    + (benchmarkConfigObject instanceof SolverConfig ?
                     "\nMaybe use " + PlannerBenchmarkFactory.class.getSimpleName()
                     + ".createFromSolverConfigXmlResource() instead." : ""));
         }
-        return (PlannerBenchmarkConfig) benchmarkConfig;
+        PlannerBenchmarkConfig benchmarkConfig = (PlannerBenchmarkConfig) benchmarkConfigObject;
+        benchmarkConfig.setClassLoader(classLoader);
+        return benchmarkConfig;
     }
 
     // ************************************************************************
@@ -374,7 +381,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlInputStream(InputStream templateIn, Object model, ClassLoader classLoader) {
         try (Reader reader = new InputStreamReader(templateIn, StandardCharsets.UTF_8)) {
-            return createFromFreemarkerXmlReader(reader, model);
+            return createFromFreemarkerXmlReader(reader, model, classLoader);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
@@ -457,6 +464,9 @@ public class PlannerBenchmarkConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
+    @XStreamOmitField
+    private ClassLoader classLoader = null;
+
     private String name = null;
     private File benchmarkDirectory = null;
 
@@ -482,6 +492,27 @@ public class PlannerBenchmarkConfig {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    /**
+     * Create an empty benchmark config.
+     */
+    public PlannerBenchmarkConfig() {
+    }
+
+    /**
+     * @param classLoader sometimes null
+     */
+    public PlannerBenchmarkConfig(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     public String getName() {
         return name;
@@ -635,7 +666,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
-            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, plannerBenchmarkResult, extraProblems);
+            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, classLoader, plannerBenchmarkResult, extraProblems);
         }
 
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()

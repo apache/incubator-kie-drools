@@ -32,10 +32,7 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalc
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ScoreDirectorFactoryConfigTest {
@@ -68,8 +65,8 @@ public class ScoreDirectorFactoryConfigTest {
         customProperties.put("intProperty", "7");
         config.setEasyScoreCalculatorCustomProperties(customProperties);
         EasyScoreDirector<TestdataSolution> scoreDirector = (EasyScoreDirector<TestdataSolution>) config
-                .buildScoreDirectorFactory(new SolverConfigContext(), EnvironmentMode.REPRODUCIBLE,
-                        TestdataSolution.buildSolutionDescriptor())
+                .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
+                        EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
         TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator)
                 scoreDirector.getEasyScoreCalculator();
@@ -116,8 +113,8 @@ public class ScoreDirectorFactoryConfigTest {
         customProperties.put("intProperty", "7");
         config.setIncrementalScoreCalculatorCustomProperties(customProperties);
         IncrementalScoreDirector<TestdataSolution> scoreDirector = (IncrementalScoreDirector<TestdataSolution>) config
-                .buildScoreDirectorFactory(new SolverConfigContext(), EnvironmentMode.REPRODUCIBLE,
-                        TestdataSolution.buildSolutionDescriptor())
+                .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
+                        EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
         TestCustomPropertiesIncrementalScoreCalculator scoreCalculator = (TestCustomPropertiesIncrementalScoreCalculator)
                 scoreDirector.getIncrementalScoreCalculator();

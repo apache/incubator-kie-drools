@@ -26,23 +26,12 @@ import org.kie.api.runtime.KieContainer;
  */
 public class SolverConfigContext {
 
-    private final ClassLoader classLoader;
     private final KieContainer kieContainer;
 
     /**
      * Vanilla context.
      */
     public SolverConfigContext() {
-        classLoader = null;
-        kieContainer = null;
-    }
-
-    /**
-     * Useful for OSGi, JBoss modules, ... (without a kjar deployment).
-     * @param classLoader if null behaves as {@link #SolverConfigContext()}
-     */
-    public SolverConfigContext(ClassLoader classLoader) {
-        this.classLoader = classLoader;
         kieContainer = null;
     }
 
@@ -51,23 +40,10 @@ public class SolverConfigContext {
      * @param kieContainer if null behaves as {@link #SolverConfigContext()}
      */
     public SolverConfigContext(KieContainer kieContainer) {
-        classLoader = null;
         this.kieContainer = kieContainer;
     }
 
     /**
-     * Used to work with a {@link ClassLoader} provided by OSGi, JBoss modules, etc, but not {@link KieContainer}.
-     * <p>
-     * Must be null if {@link #getKieContainer()} is not null.
-     * @return sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      if this is null and {@link #getKieContainer()} is also null, then the default {@link ClassLoader} is used
-     */
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    /**
-     * Must be null if {@link #getClassLoader()} is not null.
      * @return sometimes null, affects the {@link ClassLoader} to use for loading all resources and {@link Class}es
      */
     public KieContainer getKieContainer() {
@@ -78,21 +54,7 @@ public class SolverConfigContext {
     // Complex methods
     // ************************************************************************
 
-    public ClassLoader determineActualClassLoader() {
-        if (classLoader != null) {
-            return classLoader;
-        } else if (kieContainer != null) {
-            return kieContainer.getClassLoader();
-        }
-        return getClass().getClassLoader();
-    }
-
     public void validate() {
-        if (classLoader != null && kieContainer != null) {
-            throw new IllegalStateException("The classLoader (" + classLoader + ") and kieContainer (" + kieContainer
-                    + ") cannot both be configured because the " + KieContainer.class.getSimpleName()
-                    + " already has a " + ClassLoader.class.getSimpleName() + ".");
-        }
     }
 
 }

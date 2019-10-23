@@ -122,9 +122,10 @@ public class SolverFactoryTest {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setClassLoader(classLoader);
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                 .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataScoreRules.drl"));
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig, classLoader);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
