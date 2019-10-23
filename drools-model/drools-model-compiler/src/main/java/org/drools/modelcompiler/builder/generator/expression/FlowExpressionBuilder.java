@@ -16,6 +16,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -39,6 +40,25 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
     public FlowExpressionBuilder(RuleContext context) {
         super(context);
+    }
+
+    @Override
+    public void processExpression(SingleDrlxParseSuccess drlxParseResult)  {
+        if (drlxParseResult.hasUnificationVariable()) {
+            Expression dslExpr = buildUnificationExpression(drlxParseResult);
+            context.addExpression(dslExpr);
+        } else if ( drlxParseResult.isValidExpression() ) {
+            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
+            context.addExpression(dslExpr);
+        }
+
+        if(DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
+            Expression inputExpr = createInputExpression(drlxParseResult.getExprBinding());
+            context.addExpression(inputExpr);
+        } else if (drlxParseResult.getExprBinding() != null) {
+            Expression dslExpr = buildBinding(drlxParseResult);
+            context.addExpression(dslExpr);
+        }
     }
 
     @Override
