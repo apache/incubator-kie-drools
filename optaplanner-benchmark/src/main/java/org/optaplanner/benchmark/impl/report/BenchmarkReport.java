@@ -564,7 +564,9 @@ public class BenchmarkReport {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     double worstScoreCalculationSpeedDifferencePercentage
                             = singleBenchmarkResult.getWorstScoreCalculationSpeedDifferencePercentage();
-                    dataset.addValue(worstScoreCalculationSpeedDifferencePercentage, solverLabel, problemLabel);
+                    if (isFinite(worstScoreCalculationSpeedDifferencePercentage)) {
+                        dataset.addValue(worstScoreCalculationSpeedDifferencePercentage, solverLabel, problemLabel);
+                    }
                 }
             }
         }
