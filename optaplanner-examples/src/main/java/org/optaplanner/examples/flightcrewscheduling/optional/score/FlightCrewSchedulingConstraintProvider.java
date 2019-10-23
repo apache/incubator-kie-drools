@@ -16,19 +16,13 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{
-                flightConflict(constraintFactory),
                 requiredSkill(constraintFactory),
-                employeeUnavailability(constraintFactory),
+                flightConflict(constraintFactory),
                 transferBetweenTwoFlights(constraintFactory),
+                employeeUnavailability(constraintFactory),
                 firstAssignmentDepartingFromHome(constraintFactory),
                 lastAssignmentArrivingAtHome(constraintFactory)
         };
-    }
-
-    private Constraint flightConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(FlightAssignment.class, Joiners.equal(FlightAssignment::getEmployee))
-                .filter((first, second) -> second.getFlight().overlaps(first.getFlight()))
-                .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
     }
 
     private Constraint requiredSkill(ConstraintFactory constraintFactory) {
@@ -40,6 +34,18 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
                 .penalize("Required skill", HardSoftLongScore.ofHard(100));
     }
 
+    private Constraint flightConflict(ConstraintFactory constraintFactory) {
+        return constraintFactory.fromUniquePair(FlightAssignment.class, Joiners.equal(FlightAssignment::getEmployee))
+                .filter((first, second) -> second.getFlight().overlaps(first.getFlight()))
+                .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
+    }
+
+    private Constraint transferBetweenTwoFlights(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Employee.class)
+                .filter(employee -> employee.countInvalidConnections() > 0)
+                .penalizeLong("Transfer between two flights", HardSoftLongScore.ofHard(1), Employee::countInvalidConnections);
+    }
+
     private Constraint employeeUnavailability(ConstraintFactory constraintFactory) {
         return constraintFactory.from(FlightAssignment.class)
                 .filter(flightAssignment -> {
@@ -47,12 +53,6 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
                     return !flightAssignment.getEmployee().isAvailable(departureUTCDate);
                 })
                 .penalize("Employee unavailable", HardSoftLongScore.ofHard(10));
-    }
-
-    private Constraint transferBetweenTwoFlights(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Employee.class)
-                .filter(employee -> employee.countInvalidConnections() > 0)
-                .penalizeLong("Transfer between two flights", HardSoftLongScore.ofHard(1), Employee::countInvalidConnections);
     }
 
     private Constraint firstAssignmentDepartingFromHome(ConstraintFactory constraintFactory) {
@@ -66,4 +66,5 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
                 .filter(employee -> !employee.isLastAssignmentArrivingAtHome())
                 .penalize("Last assignment arriving at home", HardSoftLongScore.ofSoft(1_000_000));
     }
+
 }
