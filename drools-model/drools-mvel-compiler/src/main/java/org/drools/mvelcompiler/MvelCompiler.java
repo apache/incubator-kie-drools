@@ -90,11 +90,10 @@ public class MvelCompiler {
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
 
-            Optional<TypedExpression> postProcessedRHS = new PostProcessRHSPhase().invoke(rhs, lhs);
+            Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase().invoke(rhs, lhs);
             TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(s)).orElse(lhs);
 
-            Statement expression = (Statement) postProcessedLHS.toJavaExpression();
-            statements.add(expression);
+            statements.add((Statement) postProcessedLHS.toJavaExpression());
         }
     }
 }
