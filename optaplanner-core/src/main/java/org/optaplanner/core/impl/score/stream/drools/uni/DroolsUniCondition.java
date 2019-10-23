@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -26,10 +27,12 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.model.BetaIndex;
 import org.drools.model.DSL;
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.Index;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
@@ -54,6 +57,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.from;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -86,11 +90,59 @@ public final class DroolsUniCondition<A> {
         return new DroolsUniCondition<>(aMetadata.substitute(patternSupplier));
     }
 
+    public static Index.ConstraintType getConstraintType(JoinerType type) {
+        switch (type) {
+            case EQUAL:
+                return Index.ConstraintType.EQUAL;
+            case LESS_THAN:
+                return Index.ConstraintType.LESS_THAN;
+            case LESS_THAN_OR_EQUAL:
+                return Index.ConstraintType.LESS_OR_EQUAL;
+            case GREATER_THAN:
+                return Index.ConstraintType.GREATER_THAN;
+            case GREATER_THAN_OR_EQUAL:
+                return Index.ConstraintType.GREATER_OR_EQUAL;
+            default:
+                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+        }
+    }
+
+    private static <A, B> Object extractLeftMapping(AbstractBiJoiner<A, B> biJoiner, int index,
+            DroolsMetadata<Object, A> aMetadata, Object a) {
+        return biJoiner.getLeftMapping(index).apply(aMetadata.extract(a));
+    }
+
+    private static <A, B> Object extractRightMapping(AbstractBiJoiner<A, B> biJoiner, int index,
+            DroolsMetadata<Object, B> bMetadata, Object b) {
+        return biJoiner.getRightMapping(index).apply(bMetadata.extract(b));
+    }
+
+    private static <A, B> PatternDSL.PatternDef<B> index(PatternDSL.PatternDef<B> pattern,
+            DroolsMetadata<Object, A> aMetadata, DroolsMetadata<Object, B> bMetadata, AbstractBiJoiner<A, B> biJoiner,
+            int mappingIndex) {
+        JoinerType joinerType = biJoiner.getJoinerTypes()[mappingIndex];
+        Predicate2<B, A> predicate = (b, a) -> {
+            Object leftMapping = extractLeftMapping(biJoiner, mappingIndex, aMetadata, a);
+            Object rightMapping = extractRightMapping(biJoiner, mappingIndex, bMetadata, b);
+            return joinerType.matches(leftMapping, rightMapping);
+        };
+        BetaIndex<B, A, Object> betaIndex = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+                b -> extractRightMapping(biJoiner, mappingIndex, bMetadata, b),
+                a -> extractLeftMapping(biJoiner, mappingIndex, aMetadata, a));
+        Declaration<A> aVariableDeclaration = (Declaration<A>) aMetadata.getVariableDeclaration();
+        return pattern.expr(UUID.randomUUID().toString(), aVariableDeclaration, predicate, betaIndex);
+    }
+
     public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
         DroolsMetadata<Object, B> bMetadata = bCondition.aMetadata;
-        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> bMetadata.buildPattern()
-                .expr(aMetadata.getVariableDeclaration(),
-                        (b, a) -> matches(biJoiner, aMetadata.extract(a), bMetadata.extract(b)));
+        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> {
+            PatternDSL.PatternDef pattern = bMetadata.buildPattern();
+            JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
+            for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+                pattern = index(pattern, aMetadata, bMetadata, biJoiner, mappingIndex);
+            }
+            return pattern;
+        };
         return new DroolsBiCondition<>(aMetadata, bMetadata.substitute(patternSupplier));
     }
 
@@ -221,19 +273,6 @@ public final class DroolsUniCondition<A> {
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
         return Arrays.asList(aMetadata.buildPattern(), consequence);
-    }
-
-    private static <A, B> boolean matches(AbstractBiJoiner<A, B> biJoiner, A left, B right) {
-        Object[] leftMappings = biJoiner.getLeftCombinedMapping().apply(left);
-        Object[] rightMappings = biJoiner.getRightCombinedMapping().apply(right);
-        JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

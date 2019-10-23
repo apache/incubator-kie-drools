@@ -48,7 +48,11 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
         return new CompositeTriJoiner<>(joinerList);
     }
 
+    public abstract BiFunction<A, B, Object> getLeftMapping(int joinerId);
+
     public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
+
+    public abstract Function<C, Object> getRightMapping(int joinerId);
 
     public abstract Function<C, Object[]> getRightCombinedMapping();
 

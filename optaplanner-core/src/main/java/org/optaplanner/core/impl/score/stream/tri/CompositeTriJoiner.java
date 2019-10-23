@@ -16,21 +16,31 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     private final List<SingleTriJoiner<A, B, C>> joinerList;
+    private final BiFunction<A, B, ?>[] leftMappings;
+    private final Function<C, ?>[] rightMappings;
 
     public CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
         this.joinerList = joinerList;
+        this.leftMappings = joinerList.stream()
+                .map(SingleTriJoiner::getLeftMapping)
+                .toArray(BiFunction[]::new);
+        this.rightMappings = joinerList.stream()
+                .map(SingleTriJoiner::getRightMapping)
+                .toArray(Function[]::new);
     }
 
     public List<SingleTriJoiner<A, B, C>> getJoinerList() {
@@ -42,8 +52,22 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     // ************************************************************************
 
     @Override
+    public BiFunction<A, B, Object> getLeftMapping(int joinerId) {
+        final int maxId = leftMappings.length - 1;
+        if (joinerId > maxId) {
+            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
+        }
+        return (BiFunction<A, B, Object>) leftMappings[joinerId];
+    }
+
+    @Override
     public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        return buildCombinedMappingBi(joinerList, SingleTriJoiner::getLeftMapping);
+        final BiFunction<A, B, Object>[] mappings = IntStream.range(0, joinerList.size())
+                .mapToObj(this::getLeftMapping)
+                .toArray(BiFunction[]::new);
+        return (A a, B b) -> Arrays.stream(mappings)
+                .map(f -> f.apply(a, b))
+                .toArray();
     }
 
     @Override
@@ -54,8 +78,22 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     }
 
     @Override
+    public Function<C, Object> getRightMapping(int joinerId) {
+        final int maxId = rightMappings.length - 1;
+        if (joinerId > maxId) {
+            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
+        }
+        return (Function<C, Object>) rightMappings[joinerId];
+    }
+
+    @Override
     public Function<C, Object[]> getRightCombinedMapping() {
-        return buildCombinedMappingUni(joinerList, SingleTriJoiner::getRightMapping);
+        final Function<C, Object>[] mappings = IntStream.range(0, joinerList.size())
+                .mapToObj(this::getRightMapping)
+                .toArray(Function[]::new);
+        return (C c) -> Arrays.stream(mappings)
+                .map(f -> f.apply(c))
+                .toArray();
     }
 
 }

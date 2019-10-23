@@ -22,23 +22,35 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static final JoinerType[] EMPTY_JOINER_ARRAY = new JoinerType[0];
+
     // ************************************************************************
     // Builders
     // ************************************************************************
 
     @Override
+    public Function<A, Object> getLeftMapping(int joinerIndex) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Function<A, Object[]> getLeftCombinedMapping() {
-        return (A a) -> new Object[]{};
+        return a -> EMPTY_OBJECT_ARRAY;
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        return new JoinerType[]{};
+        return EMPTY_JOINER_ARRAY;
+    }
+
+    @Override
+    public Function<B, Object> getRightMapping(int joinerIndex) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Function<B, Object[]> getRightCombinedMapping() {
-        return (B b) -> new Object[]{};
+        return b -> EMPTY_OBJECT_ARRAY;
     }
-
 }

@@ -47,7 +47,11 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
         return new CompositeBiJoiner<>(joinerList);
     }
 
+    public abstract Function<A, Object> getLeftMapping(int joinerId);
+
     public abstract Function<A, Object[]> getLeftCombinedMapping();
+
+    public abstract Function<B, Object> getRightMapping(int joinerId);
 
     public abstract Function<B, Object[]> getRightCombinedMapping();
 
