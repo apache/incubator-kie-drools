@@ -90,29 +90,8 @@ public final class DroolsUniCondition<A> {
         return new DroolsUniCondition<>(aMetadata.substitute(patternSupplier));
     }
 
-    public static Index.ConstraintType getConstraintType(JoinerType type) {
-        switch (type) {
-            case EQUAL:
-                return Index.ConstraintType.EQUAL;
-            case LESS_THAN:
-                return Index.ConstraintType.LESS_THAN;
-            case LESS_THAN_OR_EQUAL:
-                return Index.ConstraintType.LESS_OR_EQUAL;
-            case GREATER_THAN:
-                return Index.ConstraintType.GREATER_THAN;
-            case GREATER_THAN_OR_EQUAL:
-                return Index.ConstraintType.GREATER_OR_EQUAL;
-            default:
-                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
-        }
-    }
-
-    private static <A> Object extract(Function<A, Object> mapping, DroolsMetadata<Object, A> metadata, Object b) {
-        return mapping.apply(metadata.extract(b));
-    }
-
-    private static <A, B> PatternDSL.PatternDef<B> index(PatternDSL.PatternDef<B> pattern,
-            DroolsMetadata<Object, A> aMetadata, DroolsMetadata<Object, B> bMetadata, AbstractBiJoiner<A, B> biJoiner,
+    private <B> PatternDSL.PatternDef<B> index(PatternDSL.PatternDef<B> pattern, DroolsMetadata<Object, B> bMetadata,
+            AbstractBiJoiner<A, B> biJoiner,
             int mappingIndex) {
         JoinerType joinerType = biJoiner.getJoinerTypes()[mappingIndex];
         Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
@@ -128,13 +107,17 @@ public final class DroolsUniCondition<A> {
         return pattern.expr(UUID.randomUUID().toString(), aVariableDeclaration, predicate, betaIndex);
     }
 
+    private static <A> Object extract(Function<A, Object> mapping, DroolsMetadata<Object, A> metadata, Object a) {
+        return mapping.apply(metadata.extract(a));
+    }
+
     public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
         DroolsMetadata<Object, B> bMetadata = bCondition.aMetadata;
         Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> {
             PatternDSL.PatternDef pattern = bMetadata.buildPattern();
             JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
             for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-                pattern = index(pattern, aMetadata, bMetadata, biJoiner, mappingIndex);
+                pattern = index(pattern, bMetadata, biJoiner, mappingIndex);
             }
             return pattern;
         };
@@ -268,6 +251,23 @@ public final class DroolsUniCondition<A> {
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
         return Arrays.asList(aMetadata.buildPattern(), consequence);
+    }
+
+    public static Index.ConstraintType getConstraintType(JoinerType type) {
+        switch (type) {
+            case EQUAL:
+                return Index.ConstraintType.EQUAL;
+            case LESS_THAN:
+                return Index.ConstraintType.LESS_THAN;
+            case LESS_THAN_OR_EQUAL:
+                return Index.ConstraintType.LESS_OR_EQUAL;
+            case GREATER_THAN:
+                return Index.ConstraintType.GREATER_THAN;
+            case GREATER_THAN_OR_EQUAL:
+                return Index.ConstraintType.GREATER_OR_EQUAL;
+            default:
+                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+        }
     }
 
 }
