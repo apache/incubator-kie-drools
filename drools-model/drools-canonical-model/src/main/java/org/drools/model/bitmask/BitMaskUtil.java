@@ -37,17 +37,28 @@ public class BitMaskUtil {
 
     private static final Map<Class<?>, List<String>> accessiblePropertiesCache = new HashMap<>();
 
-    public static BitMask calculatePatternMask( DomainClassMetadata metadata, String... listenedProperties ) {
-        BitMask mask = getEmptyPropertyReactiveMask(metadata.getPropertiesSize());
+    public static BitMask calculatePatternMask(DomainClassMetadata metadata, boolean isPositive, String... listenedProperties) {
+        if (listenedProperties == null) {
+            return EmptyBitMask.get();
+        }
+
+        BitMask mask = getEmptyPropertyReactiveMask( metadata.getPropertiesSize() );
         for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*")) {
+            if (propertyName.equals(isPositive ? "*" : "!*")) {
                 return AllSetBitMask.get();
             }
-            if (propertyName.equals( TRAITSET_FIELD_NAME )) {
-                mask = mask.set(TRAITABLE_BIT);
-            } else {
-                mask = setPropertyOnMask( mask, metadata.getPropertyIndex( propertyName ) );
+            if (propertyName.startsWith("!") ^ !isPositive) {
+                continue;
             }
+            if (propertyName.equals( TRAITSET_FIELD_NAME )) {
+                mask = mask.set( TRAITABLE_BIT );
+                continue;
+            }
+            if (!isPositive) {
+                propertyName = propertyName.substring(1);
+            }
+
+            mask = setPropertyOnMask(mask, metadata.getPropertyIndex( propertyName ));
         }
         return mask;
     }

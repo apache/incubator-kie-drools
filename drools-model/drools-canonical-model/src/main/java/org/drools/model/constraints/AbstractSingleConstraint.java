@@ -3,6 +3,7 @@ package org.drools.model.constraints;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.model.BitMask;
 import org.drools.model.Constraint;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
@@ -17,7 +18,7 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
 
     private Index index;
 
-    private String[] reactiveProps;
+    private ReactivitySpecs reactivitySpecs = ReactivitySpecs.EMPTY;
 
     protected AbstractSingleConstraint(String exprId) {
         this.exprId = exprId;
@@ -39,11 +40,16 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
 
     @Override
     public String[] getReactiveProps() {
-        return reactiveProps;
+        return reactivitySpecs.getProps();
     }
 
-    public void setReactiveProps( String[] reactiveProps ) {
-        this.reactiveProps = reactiveProps;
+    @Override
+    public BitMask getReactivityBitMask() {
+        return reactivitySpecs.getBitMask();
+    }
+
+    public void setReactivitySpecs( ReactivitySpecs reactivitySpecs ) {
+        this.reactivitySpecs = reactivitySpecs;
     }
 
     @Override
