@@ -73,6 +73,15 @@
           "methodName": "getScoreDirectorFactory",
           "elementKind": "method",
           "justification": "Replaces Solver.getScoreDirectorFactory()"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.ClassLoader org.optaplanner.core.config.SolverConfigContext::getClassLoader()",
+          "package": "org.optaplanner.core.config",
+          "classSimpleName": "SolverConfigContext",
+          "methodName": "getClassLoader",
+          "elementKind": "method",
+          "justification": "Replaced by SolverConfig.getClassLoader(). SolverConfigContext isn't public API."
         }
       ]
     }
