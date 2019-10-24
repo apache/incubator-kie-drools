@@ -16,7 +16,7 @@
     "dev:server": "nodemon ./server/server.js",
     "dev": "concurrently 'yarn  start' 'yarn run dev:server'",
     "lint": "tslint -c ./tslint.json --project .",
-    "format": "prettier --check --write ./src/**/*.{tsx,ts,js}",
+    "format": "prettier --check --write ../../packages/management-console/src/**/*.{tsx,ts,js}",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist"

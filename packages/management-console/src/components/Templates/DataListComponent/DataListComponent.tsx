@@ -20,8 +20,8 @@ const DataListComponent: React.FC<IOwnProps> = () => {
   const [filterArray, setFilterArray] = useState<any>([]);
 
   const GET_INSTANCES = gql`
-    {
-      ProcessInstances(filter: { parentProcessInstanceId: null }) {
+    query getInstances($parentProcessId: [String]) {
+      ProcessInstances(filter: { parentProcessInstanceId: $parentProcessId }) {
         id
         processId
         parentProcessInstanceId
@@ -31,8 +31,14 @@ const DataListComponent: React.FC<IOwnProps> = () => {
     }
   `;
 
-  const { loading, error, data } = useQuery(GET_INSTANCES);
+  const { loading, error, data } = useQuery(GET_INSTANCES, {
+    variables: {
+      parentProcessId: [null]
+    },
+    fetchPolicy: 'network-only'
+  });
 
+  console.log(data);
   useEffect(() => {
     setInitData(data);
     setFilterArray(data);

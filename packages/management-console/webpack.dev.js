@@ -40,7 +40,7 @@ module.exports = merge(common, {
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    modules: [path.resolve('../../node_modules'), path.resolve('./node_modules'), path.resolve('./src')]
   }
 });

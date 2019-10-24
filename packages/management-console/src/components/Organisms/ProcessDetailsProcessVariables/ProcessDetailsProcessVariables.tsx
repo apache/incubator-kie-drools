@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Text, TextVariants, TextContent } from '@patternfly/react-core';
 import ReactJson from 'react-json-view';
-import JSONViewer from 'react-json-viewer';
 
 const ProcessDetailsProcessVariables = ({ loading, data }) => {
   return (
@@ -10,7 +9,7 @@ const ProcessDetailsProcessVariables = ({ loading, data }) => {
       <CardBody>
         <TextContent style={{ width: '30em' }}>
           {!loading ? (
-            data.ProcessId.map((item, index) => {
+            data.ProcessInstances.map((item, index) => {
               return (
                 <div key={index}>
                   <ReactJson src={JSON.parse(item.variables)}></ReactJson>

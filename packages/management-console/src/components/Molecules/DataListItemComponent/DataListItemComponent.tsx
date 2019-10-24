@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   DataListItem,
   DataListItemRow,
@@ -16,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { withApollo, useQuery, useApolloClient } from 'react-apollo';
+import { useApolloClient } from 'react-apollo';
 
 export interface IOwnProps {
   id: number;
@@ -33,17 +33,18 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
   const [isChecked, setisChecked] = useState(false);
   const [childList, setchildList] = useState([]);
   const client = useApolloClient();
+
   const GET_CHILD_INSTANCES = gql`
-  {
-    ProcessInstances(filter: { parentProcessInstanceId:"${instanceID}"}) {
-      id
-      processId
-      parentProcessInstanceId
-      roles
-      state
+    query getChildInstances($instanceId: [String!]) {
+      ProcessInstances(filter: { parentProcessInstanceId: $instanceId }) {
+        id
+        processId
+        parentProcessInstanceId
+        roles
+        state
       }
-        }
-`;
+    }
+  `;
   const onSelect = event => {
     setisOpen(isOpen ? false : true);
   };
@@ -63,7 +64,10 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
     if (isLoaded) {
     } else {
       const data = await client.query({
-        query: GET_CHILD_INSTANCES
+        query: GET_CHILD_INSTANCES,
+        variables: {
+          instanceId: [instanceID]
+        }
       });
       setchildList(data['data']);
       setisLoaded(true);
@@ -102,7 +106,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            <Link to={'/Details/' + instanceID}>
+            <Link to={'/ProcessInstances/' + instanceID}>
               <Button variant="secondary">Details</Button>
             </Link>
           </DataListAction>
