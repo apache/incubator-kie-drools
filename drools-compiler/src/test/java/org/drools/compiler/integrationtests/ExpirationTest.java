@@ -567,8 +567,9 @@ public class ExpirationTest {
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    public static class DummyEvent {
+    public interface ApplicationEvent { }
 
+    public static class DummyEvent implements ApplicationEvent {
         private int id;
 
         private long eventTimestamp;
@@ -638,6 +639,67 @@ public class ExpirationTest {
         @Override
         public String toString() {
             return "DummyEvent{" + "id=" + id + ", eventTimestamp=" + eventTimestamp + ", state=" + state + '}';
+        }
+    }
+
+    public static class OtherEvent implements ApplicationEvent {
+
+        private int id;
+
+        private long eventTimestamp;
+
+        private int dummyEventId;
+
+        public OtherEvent(int id, long eventTimestamp, int dummyEventId) {
+            this.id = id;
+            this.eventTimestamp = eventTimestamp;
+            this.dummyEventId = dummyEventId;
+        }
+
+        @Override
+        public String toString() {
+            return "OtherEvent{" + "id=" + id + ", eventTimestamp=" + eventTimestamp + ", dummyEventId=" + dummyEventId + '\'' + '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            OtherEvent that = (OtherEvent) o;
+            return id == that.id && eventTimestamp == that.eventTimestamp && dummyEventId == that.dummyEventId;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, eventTimestamp, dummyEventId);
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public long getEventTimestamp() {
+            return eventTimestamp;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setEventTimestamp(long eventTimestamp) {
+            this.eventTimestamp = eventTimestamp;
+        }
+
+        public int getDummyEventId() {
+            return dummyEventId;
+        }
+
+        public void setDummyEventId(int dummyEventId) {
+            this.dummyEventId = dummyEventId;
         }
     }
 
@@ -845,5 +907,91 @@ public class ExpirationTest {
 
         assertEquals(2, kieSession.fireAllRules());
         assertEquals(2 - expiredNumber, kieSession.getObjects().size());
+    }
+
+    @Test
+    public void testInstanceofExpired() {
+        // DROOLS-4660
+        testEvalExpiredEvent(true, false);
+    }
+
+    @Test
+    public void testInstanceofNotExpired() {
+        testEvalExpiredEvent(false, false);
+    }
+
+    @Test
+    public void testEvalExpired() {
+        // DROOLS-4660
+        testEvalExpiredEvent(true, true);
+    }
+
+    @Test
+    public void testEvalNotExpired() {
+        testEvalExpiredEvent(false, true);
+    }
+
+    private void testEvalExpiredEvent(boolean isExpired, boolean useEval) {
+
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                        " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                        " import " + OtherEvent.class.getCanonicalName() + ";\n" +
+                        " import " + ApplicationEvent.class.getCanonicalName() + ";\n" +
+                        " declare DummyEvent\n" +
+                        "     @role( event )\n" +
+                        "     @timestamp( eventTimestamp )\n" +
+                        "     @expires( 1s )\n" +
+                        " end\n" +
+                        " declare OtherEvent\n" +
+                        "     @role( event )\n" +
+                        "     @timestamp( eventTimestamp )\n" +
+                        "     @expires( 1s )\n" +
+                        " end\n" +
+                        " rule R1 when\n" +
+                        "     $dummyEvent : DummyEvent()\n" +
+                        "     $otherEvent : OtherEvent()\n" +
+                        " then\n"+
+                        "     System.out.println(\"R1 is fired\");\n"+
+                        " end\n" +
+                        " rule R2 when\n"+
+                        ( useEval ?
+                        "     $evt : ApplicationEvent() \n" +
+                        "     eval( !($evt.getClass().getSimpleName().equals(\"DummyEvent\"))) \n" :
+                        "     $evt : ApplicationEvent( !(this instanceof DummyEvent))\n" ) +
+                        " then\n"+
+                        "     System.out.println(\"R2 is fired\");\n"+
+                        " end";
+
+        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieSession kieSession = new KieHelper()
+                .addContent(drl, ResourceType.DRL)
+                .build(EventProcessingOption.STREAM)
+                .newKieSession(sessionConfig, null);
+
+        //clock init to current time
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime);
+
+        kieSession.fireAllRules();
+
+        long timestamp = currentTime;
+
+        //facts inserts
+        if(isExpired){
+            timestamp = currentTime - Duration.ofDays(8).toMillis();	//8 days in the past...
+        }
+
+        final DummyEvent dummyEvent = new DummyEvent(1, timestamp);
+        final OtherEvent otherEvent = new OtherEvent(2, timestamp, 1);
+
+        kieSession.insert(dummyEvent);
+        kieSession.insert(otherEvent);
+
+        assertEquals(2, kieSession.fireAllRules());
+        assertEquals(isExpired ? 0 : 2, kieSession.getObjects().size());
     }
 }

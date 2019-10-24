@@ -116,10 +116,9 @@ public class PhreakRuleTerminalNode {
         agenda.addItemToActivationGroup( rtnLeftTuple );
 
         executor.addLeftTuple(leftTuple);
-        if (rtnNode.getPreviousLeftTupleSinkNode() == null) {
-            leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
-        }
-        if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
+        leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
+
+        if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
             agenda.insertAndStageActivation(rtnLeftTuple);
         }
     }
