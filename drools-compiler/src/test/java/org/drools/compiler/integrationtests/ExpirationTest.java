@@ -637,4 +637,46 @@ public class ExpirationTest {
             return "DummyEvent{" + "id=" + id + ", eventTimestamp=" + eventTimestamp + ", state=" + state + '}';
         }
     }
+
+    @Test
+    public void testEventSameContraint() throws InterruptedException {
+        // DROOLS-4580
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                " declare DummyEvent\n" +
+                "     @role( event )\n" +
+                "     @timestamp( eventTimestamp )\n" +
+                " end\n" +
+                " \n" +
+                " rule R1 when\n" +
+                "     $dummyEvent : DummyEvent(state != \"release\")\n" +
+                "     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent, idA == $dummyEvent.idA)\n" +
+                " then \n" +
+                "     System.out.println(\"R1\");\n" +
+                " end\n" +
+                " rule R2 when\n" +
+                "     $dummyEvent : DummyEvent(state != \"release\")\n" +
+                "     $otherDummyEvent : DummyEvent(this != $dummyEvent, this before $dummyEvent, idA == $dummyEvent.idA)\n" +
+                " then \n" +
+                "     System.out.println(\"R2\");\n" +
+                " end\n";
+
+        final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        final KieBase kieBase = helper.build( EventProcessingOption.STREAM );
+        final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        final long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime - 1);
+
+        kieSession.insert(new DummyEvent(1, currentTime));
+        kieSession.insert(new DummyEvent(2, currentTime - Duration.ofHours(8).toMillis()));
+
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
+    }
 }
