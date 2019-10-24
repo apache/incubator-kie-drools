@@ -53,10 +53,6 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int joinerId) {
-        final int maxId = leftMappings.length - 1;
-        if (joinerId > maxId) {
-            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
-        }
         return (BiFunction<A, B, Object>) leftMappings[joinerId];
     }
 
@@ -79,10 +75,6 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public Function<C, Object> getRightMapping(int joinerId) {
-        final int maxId = rightMappings.length - 1;
-        if (joinerId > maxId) {
-            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
-        }
         return (Function<C, Object>) rightMappings[joinerId];
     }
 

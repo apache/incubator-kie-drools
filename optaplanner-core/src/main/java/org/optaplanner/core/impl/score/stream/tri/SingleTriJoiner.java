@@ -51,9 +51,6 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int joinerId) {
-        if (joinerId > 0) {
-            throw new IllegalArgumentException("Only joiner no. 0 is supported, was (" + joinerId + ").");
-        }
         return (BiFunction<A, B, Object>) leftMapping;
     }
 
@@ -69,9 +66,6 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public Function<C, Object> getRightMapping(int joinerId) {
-        if (joinerId > 0) {
-            throw new IllegalArgumentException("Only joiner no. 0 is supported, was (" + joinerId + ").");
-        }
         return (Function<C, Object>) rightMapping;
     }
 

@@ -52,10 +52,6 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int joinerId) {
-        final int maxId = leftMappings.length - 1;
-        if (joinerId > maxId) {
-            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
-        }
         return (Function<A, Object>) leftMappings[joinerId];
     }
 
@@ -78,10 +74,6 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object> getRightMapping(int joinerId) {
-        final int maxId = rightMappings.length - 1;
-        if (joinerId > maxId) {
-            throw new IllegalArgumentException("Only joiners up to no. (" + maxId + ") are supported, was (" + joinerId + ").");
-        }
         return (Function<B, Object>) rightMappings[joinerId];
     }
 
