@@ -109,10 +109,10 @@ const DataListComponent: React.FC<IOwnProps> = () => {
 
   return (
     <React.Fragment>
-      <PageSection className="pageSection" variant="light">
+      <PageSection variant="light">
         <DataListTitleComponent />
       </PageSection>
-      <PageSection className="pageSection">
+      <PageSection>
         <Card className="dataList">
           <DataListToolbarComponent
             isActive={isActiveChecked}
