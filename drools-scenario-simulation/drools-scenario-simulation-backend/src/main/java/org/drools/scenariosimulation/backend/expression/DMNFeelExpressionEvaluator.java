@@ -38,7 +38,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 
 import static java.util.Collections.singletonList;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.UNARY_EXPRESSION_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.UNARY_PARAMETER_IDENTIFIER;
 import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
@@ -107,11 +107,11 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         }
 
         Map<String, Type> variables = new HashMap<>();
-        variables.put(UNARY_EXPRESSION_IDENTIFIER, BuiltInType.UNKNOWN);
+        variables.put(UNARY_PARAMETER_IDENTIFIER, BuiltInType.UNKNOWN);
         List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression, variables));
 
         EvaluationContext evaluationContext = newEvaluationContext();
-        evaluationContext.setValue(UNARY_EXPRESSION_IDENTIFIER, resultValue);
+        evaluationContext.setValue(UNARY_PARAMETER_IDENTIFIER, resultValue);
         return unaryTests.stream()
                 .allMatch(unaryTest -> Optional
                         .ofNullable(unaryTest.apply(evaluationContext, resultValue))

@@ -25,7 +25,7 @@ public class ConstantsHolder {
     public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
 
     /* FEEL constants */
-    public static final String UNARY_EXPRESSION_IDENTIFIER = "?";
+    public static final String UNARY_PARAMETER_IDENTIFIER = "?";
 
     private ConstantsHolder() {
         // Not instantiable

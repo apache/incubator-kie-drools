@@ -51,6 +51,7 @@ public class DMNFeelExpressionEvaluatorTest {
         assertFalse(expressionEvaluator.evaluateUnaryExpression("max(1, ?) < 1", BigDecimal.valueOf(2), BigDecimal.class));
         assertTrue(expressionEvaluator.evaluateUnaryExpression("? = 2", BigDecimal.valueOf(2), BigDecimal.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression("? > 2", BigDecimal.valueOf(2), BigDecimal.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("? + 1 > ?", BigDecimal.valueOf(2), BigDecimal.class));
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -63,6 +64,9 @@ public class DMNFeelExpressionEvaluatorTest {
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Syntax error:");
+
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("? > 2", null, BigDecimal.class))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
