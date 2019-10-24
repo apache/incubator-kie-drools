@@ -37,11 +37,12 @@ public class ListContainsFunction
             if (element == null) {
                 return FEELFnResult.ofResult(list.contains(element));
             } else {
+                Object e = EvalHelper.coerceNumber(element);
                 boolean found = false;
                 ListIterator<?> it = list.listIterator();
                 while (it.hasNext() && !found) {
                     Object next = EvalHelper.coerceNumber(it.next());
-                    found = element.equals(next);
+                    found = e.equals(next);
                 }
                 return FEELFnResult.ofResult(found);
             }
