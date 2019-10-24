@@ -746,4 +746,104 @@ public class ExpirationTest {
 
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
+
+    @Test
+    public void testSameConstraintAllExpired() {
+        // DROOLS-4656
+        testMultipleExpiredEvent(2, false);
+    }
+
+    @Test
+    public void testSameConstraintOneExpired() {
+        testMultipleExpiredEvent(1, false);
+    }
+
+    @Test
+    public void testSameConstraintNoExpiration() {
+        testMultipleExpiredEvent(0, false);
+    }
+
+     @Test
+    public void testDifferentConstraintAllExpired() {
+        // DROOLS-4656
+         testMultipleExpiredEvent(2, true);
+    }
+
+    @Test
+    public void testDifferentConstraintOneExpired() {
+        testMultipleExpiredEvent(1, true);
+    }
+
+    @Test
+    public void testDifferentConstraintNoExpiration() {
+        testMultipleExpiredEvent(0, true);
+    }
+
+    private void testMultipleExpiredEvent(int expiredNumber, boolean differentConstraint) {
+
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                " declare DummyEvent\n" +
+                "     @role( event )\n" +
+                "     @timestamp( eventTimestamp )\n" +
+                "	  @expires( 2h )\n" +
+                " end\n" +
+                " rule R1 when\n" +
+                "     $dummyEvent : DummyEvent()\n" +
+                "     $otherDummyEvent : DummyEvent( this before $dummyEvent )\n" +
+                " then \n" +
+                "    System.out.println(\"R1 Fired\"); \n" +
+                " end\n" +
+                " rule R2 when\n" +
+                "     $dummyEvent : DummyEvent()\n" +
+                (differentConstraint ?
+                "     $otherDummyEvent : DummyEvent( state == \"initial\", this before $dummyEvent )\n" :
+                "     $otherDummyEvent : DummyEvent( this before $dummyEvent )\n" ) +
+                " then \n" +
+                "    System.out.println(\"R2 Fired\"); \n" +
+                " end\n";
+
+        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieSession kieSession = new KieHelper()
+                .addContent(drl, ResourceType.DRL)
+                .build(EventProcessingOption.STREAM)
+                .newKieSession(sessionConfig, null);
+
+        //clock init to current time
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+        long currentTime = System.currentTimeMillis();
+        clock.setStartupTime(currentTime);
+
+        kieSession.fireAllRules();
+
+        //facts inserts
+        long timeStampEvent1;
+        long timeStampEvent2 ;
+
+        switch (expiredNumber){
+            case 2:
+                timeStampEvent1 = currentTime - Duration.ofHours(9).toMillis();	// oldest, expired
+                timeStampEvent2 = currentTime - Duration.ofHours(8).toMillis(); // expired
+                break;
+            case 1:
+                timeStampEvent1 = currentTime - Duration.ofHours(8).toMillis(); //expired
+                timeStampEvent2 = currentTime;
+                break;
+            default:
+                timeStampEvent1 = currentTime - Duration.ofHours(1).toMillis(); //oldest, not expired
+                timeStampEvent2 = currentTime;
+        }
+
+        final DummyEvent event1 = new DummyEvent(1, timeStampEvent1);
+        final DummyEvent event2 = new DummyEvent(2, timeStampEvent2);
+
+        kieSession.insert(event1);
+        kieSession.insert(event2);
+
+        assertEquals(2, kieSession.fireAllRules());
+        assertEquals(2 - expiredNumber, kieSession.getObjects().size());
+    }
 }

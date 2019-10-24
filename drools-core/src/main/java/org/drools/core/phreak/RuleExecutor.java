@@ -27,6 +27,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -380,18 +381,20 @@ public class RuleExecutor {
                 innerFireActivation( wm, agenda, activation, activation.getConsequence() );
             } finally {
                 // if the tuple contains expired events
-                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getFactHandle() != null &&  tuple.getFactHandle().isEvent() ) {
-                        // can be null for eval, not and exists that have no right input
+                if ( (( LeftTupleSinkNode ) activation.getTuple().getTupleSink()).getNextLeftTupleSinkNode() == null ) {
+                    for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                        if ( tuple.getFactHandle() != null && tuple.getFactHandle().isEvent() ) {
+                            // can be null for eval, not and exists that have no right input
 
-                        EventFactHandle handle = (EventFactHandle) tuple.getFactHandle();
-                        // decrease the activation count for the event
-                        handle.decreaseActivationsCount();
-                        // handles "expire" only in stream mode.
-                        if ( handle.expirePartition() && handle.isExpired() ) {
-                            if ( handle.getActivationsCount() <= 0 ) {
-                                // and if no more activations, retract the handle
-                                handle.getEntryPoint(wm).delete( handle );
+                            EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();
+                            // decrease the activation count for the event
+                            handle.decreaseActivationsCount();
+                            // handles "expire" only in stream mode.
+                            if ( handle.expirePartition() && handle.isExpired() ) {
+                                if ( handle.getActivationsCount() <= 0 ) {
+                                    // and if no more activations, retract the handle
+                                    handle.getEntryPoint( wm ).delete( handle );
+                                }
                             }
                         }
                     }
