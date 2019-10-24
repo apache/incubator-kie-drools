@@ -248,6 +248,8 @@ public class KieContainerImpl
 
         final ResultsImpl results = new ResultsImpl();
 
+        currentKM.updateKieModule(newKM);
+
         List<String> kbasesToRemove = new ArrayList<String>();
         for ( Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
             String kbaseName = kBaseEntry.getKey();

@@ -4119,7 +4119,7 @@ public class RuleModelDRLPersistenceImpl
             } else if (value.startsWith("(")) {
                 if (operator != null && operator.contains("in")) {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-                    con.setValue(unwrapParenthesis(value));
+                    con.setValue(String.join(", ", ListSplitter.split("\"", true, unwrapParenthesis(value))));
                 } else {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                     con.setValue(unwrapParenthesis(value));

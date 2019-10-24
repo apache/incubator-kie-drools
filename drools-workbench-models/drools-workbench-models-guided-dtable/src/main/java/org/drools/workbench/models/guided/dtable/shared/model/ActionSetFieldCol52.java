@@ -16,10 +16,11 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ActionSetFieldCol52 extends ActionCol52 {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -165,22 +166,12 @@ public class ActionSetFieldCol52 extends ActionCol52 {
         if (!super.equals(o)) {
             return false;
         }
-
         ActionSetFieldCol52 that = (ActionSetFieldCol52) o;
-
-        if (update != that.update) {
-            return false;
-        }
-        if (boundName != null ? !boundName.equals(that.boundName) : that.boundName != null) {
-            return false;
-        }
-        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
-            return false;
-        }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
-            return false;
-        }
-        return valueList != null ? valueList.equals(that.valueList) : that.valueList == null;
+        return update == that.update &&
+                Objects.equals(boundName, that.boundName) &&
+                Objects.equals(factField, that.factField) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(valueList, that.valueList);
     }
 
     @Override

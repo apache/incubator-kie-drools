@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A column representing the retraction of a Fact on a Limited Entry decision
@@ -26,7 +27,7 @@ public class LimitedEntryActionRetractFactCol52 extends ActionRetractFactCol52
         implements
         LimitedEntryCol {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -74,10 +75,8 @@ public class LimitedEntryActionRetractFactCol52 extends ActionRetractFactCol52
         if (!super.equals(o)) {
             return false;
         }
-
         LimitedEntryActionRetractFactCol52 that = (LimitedEntryActionRetractFactCol52) o;
-
-        return value != null ? value.equals(that.value) : that.value == null;
+        return Objects.equals(value, that.value);
     }
 
     @Override

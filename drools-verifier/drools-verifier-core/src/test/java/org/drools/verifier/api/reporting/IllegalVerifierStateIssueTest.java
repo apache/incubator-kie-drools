@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.scenariosimulation.api.utils;
+package org.drools.verifier.api.reporting;
 
-/**
- * Class which contains shared Constants in Scenario Simulation module
- */
-public class ConstantsHolder {
+import org.junit.Test;
 
-    /* Constants for manage MVEL expressions */
-    public static final String MVEL_ESCAPE_SYMBOL = "#";
-    public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-    /* Simple types reserved field name */
-    public static final String VALUE = "value";
+public class IllegalVerifierStateIssueTest {
 
-    /* FEEL constants */
-    public static final String UNARY_PARAMETER_IDENTIFIER = "?";
+    @Test
+    public void defaults() {
 
-    private ConstantsHolder() {
-        // Not instantiable
+        final IllegalVerifierStateIssue issue = new IllegalVerifierStateIssue();
+
+        assertEquals(Severity.ERROR, issue.getSeverity());
+        assertEquals(CheckType.ILLEGAL_VERIFIER_STATE, issue.getCheckType());
+        assertTrue(issue.getRowNumbers().isEmpty());
     }
 }

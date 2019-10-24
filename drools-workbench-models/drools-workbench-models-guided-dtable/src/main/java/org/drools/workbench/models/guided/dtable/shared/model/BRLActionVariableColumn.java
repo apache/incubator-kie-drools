@@ -17,6 +17,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A column representing a single BRL fragment variable
@@ -25,7 +26,7 @@ public class BRLActionVariableColumn extends ActionCol52
         implements
         BRLVariableColumn {
 
-    private static final long serialVersionUID = 540l;
+    private static final long serialVersionUID = 729l;
 
     private String varName;
     private String fieldType;
@@ -133,19 +134,11 @@ public class BRLActionVariableColumn extends ActionCol52
         if (!super.equals(o)) {
             return false;
         }
-
         BRLActionVariableColumn that = (BRLActionVariableColumn) o;
-
-        if (varName != null ? !varName.equals(that.varName) : that.varName != null) {
-            return false;
-        }
-        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) {
-            return false;
-        }
-        if (factType != null ? !factType.equals(that.factType) : that.factType != null) {
-            return false;
-        }
-        return factField != null ? factField.equals(that.factField) : that.factField == null;
+        return Objects.equals(varName, that.varName) &&
+                Objects.equals(fieldType, that.fieldType) &&
+                Objects.equals(factType, that.factType) &&
+                Objects.equals(factField, that.factField);
     }
 
     @Override

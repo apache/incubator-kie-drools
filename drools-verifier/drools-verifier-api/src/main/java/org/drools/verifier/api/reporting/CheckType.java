@@ -33,7 +33,8 @@ public enum CheckType {
     SUBSUMPTANT_ROWS,
     MISSING_RANGE,
     SINGLE_HIT_LOST,
-    EMPTY_RULE;
+    EMPTY_RULE,
+    ILLEGAL_VERIFIER_STATE;
 
     public static Set<CheckType> getRowLevelCheckTypes() {
         return EnumSet.of(

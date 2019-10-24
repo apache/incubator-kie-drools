@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Objects;
+
 /**
  * This is used to specify that the bound fact should be retracted
  * when the rule fires.
@@ -23,6 +25,8 @@ package org.drools.workbench.models.datamodel.rule;
 public class ActionRetractFact
         implements
         IAction {
+
+    private static final long serialVersionUID = 729l;
 
     public ActionRetractFact() {
     }
@@ -43,14 +47,14 @@ public class ActionRetractFact
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ActionRetractFact)) {
+            return false;
+        }
         ActionRetractFact that = (ActionRetractFact) o;
-
-        if (variableName != null ? !variableName.equals(that.variableName) : that.variableName != null) return false;
-
-        return true;
+        return Objects.equals(variableName, that.variableName);
     }
 
     @Override
