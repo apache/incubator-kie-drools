@@ -46,6 +46,7 @@ public final class Msg {
     public static final Message1 MISSING_EXPRESSION_FOR_DECISION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Decision Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_NODE                         = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_INVOCATION                   = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for invocation node '%s'" );
+    public static final Message3 EXPRESSION_FOR_INVOCATION_NOT_RESOLVED              = new Message3( DMNMessageType.REQ_NOT_FOUND, "The expression '%s' for invocation node '%s' did not resolve during compile time. In this DMN scope: %s" );
     public static final Message2 MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION          = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing expression for parameter %s on node '%s'");
     public static final Message1 MISSING_PARAMETER_FOR_INVOCATION                    = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing parameter for invocation node '%s'" );
     public static final Message2 MISSING_EXPRESSION_FOR_NAME                         = new Message2( DMNMessageType.MISSING_EXPRESSION, "No expression defined for name '%s' on node '%s'" );

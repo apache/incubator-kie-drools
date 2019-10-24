@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELValuesComparisonTest extends BaseFEELTest {
 
@@ -95,7 +96,14 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "12 = null", Boolean.FALSE, null},
                 { "12 != null", Boolean.TRUE, null},
                 { "null = null", Boolean.TRUE , null},
-                { "null != null", Boolean.FALSE , null}
+                { "null != null", Boolean.FALSE , null},
+
+                // RHDM-1119 
+                { "1 >> 2", null, FEELEvent.Severity.WARN},
+                { "1 >>> 2", null, FEELEvent.Severity.WARN},
+                { "1 == 2", null, FEELEvent.Severity.WARN},
+                { "{ m: <18 }.m(16)", true, null},
+                { "{ m: <<18 }.m(16)", null, FEELEvent.Severity.WARN},
         };
         return addAdditionalParameters(cases, false);
     }

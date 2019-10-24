@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.antlr.v4.runtime.CommonToken;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
@@ -32,6 +32,7 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.ASTHeuristicCheckEvent;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -164,11 +165,12 @@ public class DMNFEELHelper {
         while ( !feelEvents.isEmpty() ) {
             FEELEvent event = feelEvents.remove();
             if ( !isDuplicateEvent( model, msg, element ) ) {
-                if ( event instanceof SyntaxErrorEvent || event.getSeverity() == FEELEvent.Severity.ERROR ) {
+                if (event instanceof SyntaxErrorEvent || event instanceof ASTHeuristicCheckEvent || event.getSeverity() == FEELEvent.Severity.ERROR) {
+                    DMNMessage.Severity severity = event instanceof ASTHeuristicCheckEvent ? DMNMessage.Severity.WARN : DMNMessage.Severity.ERROR;
                     if ( msg instanceof Msg.Message2 ) {
                         MsgUtil.reportMessage(
                                 logger,
-                                DMNMessage.Severity.ERROR,
+                                severity,
                                 element,
                                 model,
                                 null,
@@ -185,7 +187,7 @@ public class DMNFEELHelper {
                         }
                         MsgUtil.reportMessage(
                                 logger,
-                                DMNMessage.Severity.ERROR,
+                                severity,
                                 element,
                                 model,
                                 null,
@@ -196,7 +198,9 @@ public class DMNFEELHelper {
                                 message3 );
                     } else if ( msg instanceof Msg.Message4 ) {
                         String message = null;
-                        if( event.getOffendingSymbol() == null ) {
+                        if (event instanceof ASTHeuristicCheckEvent) {
+                            message = event.getMessage();
+                        } else if (event.getOffendingSymbol() == null) {
                             message = "";
                         } else if( event instanceof UnknownVariableErrorEvent ) {
                             message = event.getMessage();
@@ -207,7 +211,7 @@ public class DMNFEELHelper {
                         }
                         MsgUtil.reportMessage(
                                 logger,
-                                DMNMessage.Severity.ERROR,
+                                severity,
                                 element,
                                 model,
                                 null,

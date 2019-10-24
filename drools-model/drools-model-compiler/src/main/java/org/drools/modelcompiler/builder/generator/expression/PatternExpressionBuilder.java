@@ -17,16 +17,15 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-
-import static java.util.Optional.of;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
@@ -95,7 +94,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
 
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !isNameExpr(drlxParseResult.getLeft().getExpression())) {
+        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
             exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
         }
 
@@ -107,7 +106,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         } else {
-            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !isNameExpr(drlxParseResult.getRight().getExpression())) {
+            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
                 exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
             }
         }
@@ -116,12 +115,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         return exprDSL;
     }
 
-    private boolean isNameExpr(Expression leftExpression) {
-        return leftExpression instanceof DrlNameExpr || leftExpression instanceof NameExpr;
-    }
-
     private Optional<MethodCallExpr> buildReactOn(SingleDrlxParseSuccess drlxParseResult) {
-        if (!drlxParseResult.isTemporal() && !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
+        if (shouldBuildReactOn(drlxParseResult)) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)

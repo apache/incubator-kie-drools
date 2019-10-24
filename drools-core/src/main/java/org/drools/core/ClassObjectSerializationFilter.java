@@ -17,6 +17,8 @@ public class ClassObjectSerializationFilter implements ObjectFilter {
 
     private transient Class filteredClass;
 
+    private transient boolean skipLoadClass;
+
     public ClassObjectSerializationFilter() {
         // JAXB constructor
     }
@@ -45,14 +47,15 @@ public class ClassObjectSerializationFilter implements ObjectFilter {
      */
     @Override
     public boolean accept(Object object) {
-        if( this.filteredClass == null ) {
+        if ( !skipLoadClass && filteredClass == null ) {
             try {
-                Class filteredClass = Class.forName(this.className);
-                this.filteredClass = filteredClass;
+                filteredClass = Class.forName(this.className);
             } catch( ClassNotFoundException e ) {
-                throw new RuntimeException("Unable to instantiate filter class: " + e.getMessage(), e);
+                skipLoadClass = true;
             }
         }
-        return this.filteredClass.isAssignableFrom( object.getClass() );
+        return skipLoadClass ?
+                className.equals( object.getClass().getCanonicalName() ) :
+                filteredClass.isAssignableFrom( object.getClass() );
     }
 }

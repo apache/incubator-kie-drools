@@ -17,17 +17,17 @@
 package org.kie.dmn.feel.runtime.events;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 
 /**
  * A base class with common functionality to all events
  */
 public class ASTEventBase implements FEELEvent {
-    private final Severity severity;
-    private final String message;
-    private final ASTNode astNode;
-    private Throwable sourceException;
+
+    protected final Severity severity;
+    protected final String message;
+    protected final ASTNode astNode;
+    protected Throwable sourceException;
     
     public ASTEventBase(Severity severity, String message, ASTNode astNode, Throwable sourceException) {
         this(severity, message, astNode);
