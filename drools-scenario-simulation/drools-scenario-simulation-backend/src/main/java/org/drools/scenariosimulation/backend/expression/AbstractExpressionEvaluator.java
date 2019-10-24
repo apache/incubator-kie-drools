@@ -28,9 +28,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
+
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-    public static final String VALUE = "value";
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName())) {

@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public class FactMappingValueTest {
 
@@ -45,7 +46,7 @@ public class FactMappingValueTest {
 
     @Test
     public void setErrorValue() {
-        String errorValue = "value";
+        String errorValue = VALUE;
         FactMappingValue value = new FactMappingValue();
         value.setErrorValue(errorValue);
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -44,7 +45,7 @@ public class AbstractExpressionEvaluatorTest {
         // Test simple list
         ArrayNode jsonNodes = new ArrayNode(factory);
         ObjectNode objectNode = new ObjectNode(factory);
-        objectNode.put("value", "data");
+        objectNode.put(VALUE, "data");
         jsonNodes.add(objectNode);
 
         List<Object> objects = expressionEvaluatorMock.createAndFillList(jsonNodes,
@@ -116,7 +117,7 @@ public class AbstractExpressionEvaluatorTest {
 
         ObjectNode jsonNode = new ObjectNode(factory);
 
-        jsonNode.set("value", new TextNode("test"));
+        jsonNode.set(VALUE, new TextNode("test"));
         assertTrue(expressionEvaluatorMock.isSimpleTypeNode(jsonNode));
 
         jsonNode.set("otherField", new TextNode("testValue"));
@@ -132,10 +133,10 @@ public class AbstractExpressionEvaluatorTest {
 
         ObjectNode jsonNode = new ObjectNode(factory);
 
-        jsonNode.set("value", new TextNode("testValue"));
+        jsonNode.set(VALUE, new TextNode("testValue"));
         assertEquals("testValue", expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
 
-        jsonNode.set("value", new IntNode(10));
+        jsonNode.set(VALUE, new IntNode(10));
         assertNull(expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
     }
 
@@ -145,17 +146,17 @@ public class AbstractExpressionEvaluatorTest {
         assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
         objectNode.set("empty array", new ArrayNode(factory));
         assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
-        objectNode.set("key", new TextNode("value"));
+        objectNode.set("key", new TextNode(VALUE));
         assertFalse(expressionEvaluatorMock.isNodeEmpty(objectNode));
 
         ArrayNode arrayNode = new ArrayNode(factory);
         assertTrue(expressionEvaluatorMock.isNodeEmpty(arrayNode));
-        arrayNode.add(new TextNode("value"));
+        arrayNode.add(new TextNode(VALUE));
         assertFalse(expressionEvaluatorMock.isNodeEmpty(arrayNode));
 
         assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode("")));
         assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode(null)));
-        assertFalse(expressionEvaluatorMock.isNodeEmpty(new TextNode("value")));
+        assertFalse(expressionEvaluatorMock.isNodeEmpty(new TextNode(VALUE)));
     }
 
     @Test
@@ -185,7 +186,7 @@ public class AbstractExpressionEvaluatorTest {
     @Test
     public void isEmptyText() {
         assertTrue(expressionEvaluatorMock.isEmptyText(new TextNode("")));
-        assertFalse(expressionEvaluatorMock.isEmptyText(new TextNode("value")));
+        assertFalse(expressionEvaluatorMock.isEmptyText(new TextNode(VALUE)));
         assertTrue(expressionEvaluatorMock.isEmptyText(new ObjectNode(factory)));
     }
 

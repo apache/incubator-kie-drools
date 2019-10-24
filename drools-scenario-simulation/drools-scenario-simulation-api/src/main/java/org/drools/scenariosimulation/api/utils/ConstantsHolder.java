@@ -24,6 +24,9 @@ public class ConstantsHolder {
     public static final String MVEL_ESCAPE_SYMBOL = "#";
     public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
 
+    /* Simple types reserved field name */
+    public static final String VALUE = "value";
+
     /* FEEL constants */
     public static final String UNARY_PARAMETER_IDENTIFIER = "?";
 
