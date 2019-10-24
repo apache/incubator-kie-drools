@@ -17,12 +17,13 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DTColumnConfig52
         implements BaseColumn,
                    DiffColumn {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -174,25 +175,12 @@ public class DTColumnConfig52
         if (!(o instanceof DTColumnConfig52)) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
-
         DTColumnConfig52 that = (DTColumnConfig52) o;
-
-        if (hideColumn != that.hideColumn) {
-            return false;
-        }
-        if (width != that.width) {
-            return false;
-        }
-        if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
-            return false;
-        }
-        if (typedDefaultValue != null ? !typedDefaultValue.equals(that.typedDefaultValue) : that.typedDefaultValue != null) {
-            return false;
-        }
-        return header != null ? header.equals(that.header) : that.header == null;
+        return hideColumn == that.hideColumn &&
+                width == that.width &&
+                Objects.equals(defaultValue, that.defaultValue) &&
+                Objects.equals(typedDefaultValue, that.typedDefaultValue) &&
+                Objects.equals(header, that.header);
     }
 
     @Override

@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A column representing a single BRL fragment variable
@@ -29,7 +30,7 @@ public class BRLConditionVariableColumn extends ConditionCol52
      */
     public static final String FIELD_VAR_NAME = "varName";
     public static final String FIELD_FACT_TYPE = "factType";
-    private static final long serialVersionUID = 540l;
+    private static final long serialVersionUID = 729l;
     private String varName;
     private String factType;
 
@@ -111,13 +112,9 @@ public class BRLConditionVariableColumn extends ConditionCol52
         if (!super.equals(o)) {
             return false;
         }
-
         BRLConditionVariableColumn that = (BRLConditionVariableColumn) o;
-
-        if (varName != null ? !varName.equals(that.varName) : that.varName != null) {
-            return false;
-        }
-        return factType != null ? factType.equals(that.factType) : that.factType == null;
+        return Objects.equals(varName, that.varName) &&
+                Objects.equals(factType, that.factType);
     }
 
     @Override
