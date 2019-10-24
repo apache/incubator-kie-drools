@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
@@ -30,10 +31,12 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     public static final String DMO_SESSION_NODE = "dmoSession";
     public static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
-    public static final String FACT_IDENTIFIER = "factIdentifier";
+    public static final String EXPRESSION_ELEMENTS_NODE = "expressionElements";
+    public static final String FACT_IDENTIFIER_NODE = "factIdentifier";
     public static final String FACT_MAPPING_NODE = "FactMapping";
     public static final String FACT_MAPPINGS_NODE = "factMappings";
     public static final String SIMULATION_NODE = "simulation";
+    public static final String BACKGROUND_NODE = "background";
     public static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
     public static final String SCENARIO_SIMULATION_MODEL_NODE = "ScenarioSimulationModel";
     public static final String SETTINGS_NODE = "settings";
@@ -72,7 +75,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
         return document -> {
             List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
             Node factMappingsNode = factMappingsNodes.get(0);
-            final List<Node> factIdentifierNodeList = DOMParserUtil.getNestedChildrenNodesList(factMappingsNode, FACT_MAPPING_NODE, FACT_IDENTIFIER);
+            final List<Node> factIdentifierNodeList = DOMParserUtil.getNestedChildrenNodesList(factMappingsNode, FACT_MAPPING_NODE, FACT_IDENTIFIER_NODE);
             factIdentifierNodeList.forEach(factIdentifierNode -> {
                 List<Node> factIdentifierNameList = DOMParserUtil.getChildrenNodesList(factIdentifierNode, "name");
                 if (!factIdentifierNameList.isEmpty()) {
@@ -157,11 +160,11 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             DOMParserUtil.cleanupNodes(document, "Scenario", SIMULATION_DESCRIPTOR_NODE);
             List<Node> simulationFactMappingNodeList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
             for (Node simulationFactMapping : simulationFactMappingNodeList) {
-                replaceReference(simulationFactMappingNodeList, simulationFactMapping, FACT_IDENTIFIER);
+                replaceReference(simulationFactMappingNodeList, simulationFactMapping, FACT_IDENTIFIER_NODE);
             }
             List<Node> scenarioFactMappingValueNodeList = DOMParserUtil.getNestedChildrenNodesList(document, "Scenario", "factMappingValues", "FactMappingValue");
             scenarioFactMappingValueNodeList.forEach(scenarioFactMappingValue -> {
-                replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, FACT_IDENTIFIER);
+                replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, FACT_IDENTIFIER_NODE);
                 replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, EXPRESSION_IDENTIFIER_NODE);
             });
             updateVersion(document, "1.6");
@@ -184,7 +187,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     @Override
     public ThrowingConsumer<Document> from1_7to1_8() {
         return document -> {
-            final Node settings = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null, null);
+            final Node settingsNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null, null);
             for (String setting : SETTINGS) {
                 final Map<Node, List<Node>> childrenNodesMap = DOMParserUtil.getChildrenNodesMap(document, SIMULATION_DESCRIPTOR_NODE, setting);
                 childrenNodesMap.values().stream()
@@ -192,10 +195,25 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                         .findFirst()
                         .ifPresent(childNodeList -> {
                             final Node node = childNodeList.get(0);
-                            DOMParserUtil.createNodeAtPosition(settings, node.getNodeName(), node.getTextContent(), null);
+                            DOMParserUtil.createNodeAtPosition(settingsNode, node.getNodeName(), node.getTextContent(), null);
                             node.getParentNode().removeChild(node);
                         });
             }
+            final Node backgroundNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null, null);
+            final Node simulationDescriptorNode = DOMParserUtil.createNodeAtPosition(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null, null);
+            final Node factMappingsNode = DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, FACT_MAPPINGS_NODE, null, null);
+            final Node factMappingNode = DOMParserUtil.createNodeAtPosition(factMappingsNode, FACT_MAPPING_NODE, null, null);
+            final Node expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_ELEMENTS_NODE, null, null);
+            ((Element)expressionElementsNode).setAttribute("class", "linked-list");
+            final Node expressionIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "0|1", null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "type", "GIVEN", null);
+            final Node factIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "name", "Empty", null);
+            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "className", "java.lang.Void", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "className", "java.lang.Void", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "factAlias", "Instance 1", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "expressionAlias", "PROPERTY 1", null);
             updateVersion(document, "1.8");
         };
     }

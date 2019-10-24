@@ -226,6 +226,7 @@ public class ScenarioSimulationXMLPersistenceTest {
             assertTrue(retrieved.values().iterator().next().isEmpty());
         }
         commonCheck(toMigrate, document, "1.8");
+        commonCheckBackground(document);
         toMigrate = getFileContent("scesim-1-7-rule.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_7to1_8().accept(document);
@@ -240,6 +241,7 @@ public class ScenarioSimulationXMLPersistenceTest {
             assertTrue(retrieved.values().iterator().next().isEmpty());
         }
         commonCheck(toMigrate, document, "1.8");
+        commonCheckBackground(document);
     }
 
     @Test
@@ -266,7 +268,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(ScenarioSimulationModel.Type.RULE, retrieved.getSettings().getType());
-        commonCheckScenarioSimulationModel(retrieved);
+        commonCheckSimulation(retrieved);
     }
 
     @Test
@@ -274,7 +276,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getSettings().getType());
-        commonCheckScenarioSimulationModel(retrieved);
+        commonCheckSimulation(retrieved);
     }
 
     /**
@@ -295,7 +297,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     private void commonCheck(String toMigrate, Document document, String expectedVersion) throws Exception {
         commonCheckVersion(document, expectedVersion);
-        commonCheckScenarioSimulationModel(document);
+        commonCheckSimulation(document);
         instance.migrateIfNecessary(toMigrate);
     }
 
@@ -303,20 +305,34 @@ public class ScenarioSimulationXMLPersistenceTest {
         final Map<Node, String> attributeValues = DOMParserUtil.getAttributeValues(document, "ScenarioSimulationModel", "version");
         assertNotNull(attributeValues);
         assertEquals(1, attributeValues.size());
-        assertEquals(expectedVersion, (String) attributeValues.values().toArray()[0]);
+        assertEquals(expectedVersion, attributeValues.values().toArray()[0]);
     }
 
-    private void commonCheckScenarioSimulationModel(Document toCheck) throws Exception {
+    private void commonCheckSimulation(Document toCheck) throws Exception {
         String migrated = DOMParserUtil.getString(toCheck);
         ScenarioSimulationModel scenarioSimulationModel = instance.internalUnmarshal(migrated);
-        commonCheckScenarioSimulationModel(scenarioSimulationModel);
+        commonCheckSimulation(scenarioSimulationModel);
     }
 
-    private void commonCheckScenarioSimulationModel(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckSimulation(ScenarioSimulationModel toCheck) throws Exception {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
         assertNotNull(toCheck.getSimulation().getSimulationDescriptor());
         toCheck.getSimulation().getUnmodifiableScesimData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        }));
+    }
+
+    private void commonCheckBackground(Document toCheck) throws Exception {
+        String migrated = DOMParserUtil.getString(toCheck);
+        ScenarioSimulationModel scenarioSimulationModel = instance.internalUnmarshal(migrated);
+        commonCheckBackground(scenarioSimulationModel);
+    }
+
+    private void commonCheckBackground(ScenarioSimulationModel toCheck) throws Exception {
+        assertNotNull(toCheck);
+        assertNotNull(toCheck.getBackground());
+        assertNotNull(toCheck.getBackground().getSimulationDescriptor());
+        toCheck.getSimulation().getUnmodifiableScesimData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 }
