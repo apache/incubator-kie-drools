@@ -20,8 +20,6 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon'/>
-
   <source path="shared"/>
 
 </module>
