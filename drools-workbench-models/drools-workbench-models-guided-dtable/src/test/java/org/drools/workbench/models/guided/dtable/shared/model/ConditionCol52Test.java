@@ -17,6 +17,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.junit.Before;
@@ -56,6 +57,18 @@ public class ConditionCol52Test extends ColumnTestBase {
         column2.setHeader( "header" );
         column2.setHideColumn( false );
         column2.setDefaultValue( new DTCellValue52( "default" ) );
+    }
+
+    @Test
+    public void testEquals() {
+        assertTrue(Objects.equals(column1, column2));
+    }
+
+    @Test
+    public void testEqualsWithParametersCall() {
+        column1.getParameters();
+
+        assertTrue(Objects.equals(column1, column2));
     }
 
     @Test
