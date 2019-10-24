@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -1101,6 +1102,7 @@ public class AccumulateTest extends BaseModelTest {
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";" +
                         "import " + StockTick.class.getCanonicalName() + ";" +
+                        "import " + StockTick.class.getCanonicalName() + ";" +
                         "rule AccumulateMaxDate when\n" +
                         "  $max1 : Number() from accumulate(\n" +
                         "    StockTick($time : getTimeFieldAsDate());\n" +
@@ -1113,6 +1115,27 @@ public class AccumulateTest extends BaseModelTest {
 
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
+        ksession.insert(st);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAccumulateWithMaxCalendar() {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                        "rule AccumulateMaxDate\n" +
+                        "  dialect \"java\"\n" +
+                        "  when\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick($time : dueDate);\n" +
+                        "    max($time.getTime().getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setDueDate(Calendar.getInstance());
         ksession.insert(st);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -1464,5 +1487,4 @@ public class AccumulateTest extends BaseModelTest {
 
         getKieSession(str);
     }
-
 }

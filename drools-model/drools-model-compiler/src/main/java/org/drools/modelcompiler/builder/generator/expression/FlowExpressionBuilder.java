@@ -134,7 +134,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildReactOn(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
-        if ( !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() ) ) {
+        if (shouldBuildReactOn(drlxParseResult)) {
             exprDSL = new MethodCallExpr(exprDSL, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map( StringLiteralExpr::new )
