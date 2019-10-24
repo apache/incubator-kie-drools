@@ -34,7 +34,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.util.ClassUtils;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 /**
  * A context for the current build
@@ -190,7 +190,7 @@ public class RuleBuildContext extends PackageBuildContext {
             boolean unitFound = false;
             Class<?> ruleUnitClass = ClassUtils.safeLoadClass(typeResolver.getClassLoader(), ruleUnitClassName);
             if (ruleUnitClass != null) {
-                unitFound = RuleUnitMemory.class.isAssignableFrom(ruleUnitClass);
+                unitFound = RuleUnitData.class.isAssignableFrom(ruleUnitClass);
                 if (unitFound && nameInferredFromResource) {
                     rule.setRuleUnitClassName(ruleUnitClassName);
                 }

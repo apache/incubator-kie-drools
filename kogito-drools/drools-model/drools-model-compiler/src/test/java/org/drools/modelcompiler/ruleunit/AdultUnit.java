@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class AdultUnit implements RuleUnitMemory {
+public class AdultUnit implements RuleUnitData {
     private List<String> results = new ArrayList<>();
     private int adultAge = 18;
     private DataSource<Person> persons;

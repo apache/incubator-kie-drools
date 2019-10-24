@@ -39,10 +39,6 @@ public class EntryPointDataProcessor implements DataProcessor {
         this.entryPoint = entryPoint;
     }
 
-    public String getId() {
-        return entryPoint.getEntryPointId();
-    }
-
     @Override
     public FactHandle insert(DataHandle handle, Object object) {
         InternalFactHandle fh = (InternalFactHandle)entryPoint.insert( object );

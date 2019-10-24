@@ -211,6 +211,11 @@ public class SequentialKnowledgeHelper
         return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
     }
 
+    @Override
+    public void run( String ruleUnitName ) {
+        throw new UnsupportedOperationException();
+    }
+
     public void cancelRemainingPreviousLogicalDependencies() {
     }
 

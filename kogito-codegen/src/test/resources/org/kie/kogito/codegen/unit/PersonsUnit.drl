@@ -1,0 +1,14 @@
+package org.kie.kogito.codegen.unit;
+unit PersonsUnit;
+
+rule Birthday no-loop when
+    $p: /persons[ $age : age ]
+then
+    modify($p) { setAge($age+1); }
+end
+
+rule CheckAdult when
+then
+    drools.run("adult18");
+    drools.run("adult21");
+end

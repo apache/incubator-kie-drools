@@ -36,20 +36,27 @@ public class AbstractApplicationSection implements ApplicationSection {
 
     private final String innerClassName;
     private final String methodName;
-    private final String classType;
+    private final Class<?> classType;
 
     public AbstractApplicationSection(String innerClassName, String methodName, Class<?> classType) {
         this.innerClassName = innerClassName;
         this.methodName = methodName;
-        this.classType = classType.getCanonicalName();
+        this.classType = classType;
     }
 
     @Override
     public ClassOrInterfaceDeclaration classDeclaration() {
-        return new ClassOrInterfaceDeclaration()
+        ClassOrInterfaceDeclaration classDeclaration = new ClassOrInterfaceDeclaration()
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .setName(innerClassName)
-                .addImplementedType(classType);
+                .setName(innerClassName);
+
+        if (classType.isInterface()) {
+            classDeclaration.addImplementedType( classType.getCanonicalName() );
+        } else {
+            classDeclaration.addExtendedType( classType.getCanonicalName() );
+        }
+
+        return classDeclaration;
     }
 
     @Override

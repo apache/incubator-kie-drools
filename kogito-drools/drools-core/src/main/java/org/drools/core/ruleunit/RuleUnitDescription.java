@@ -29,25 +29,25 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.EntryPointId;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.reflective.util.ClassUtils.getter2property;
 
 public class RuleUnitDescription {
-    private final Class<? extends RuleUnitMemory> ruleUnitClass;
+    private final Class<? extends RuleUnitData> ruleUnitClass;
 
     private final Map<String, String> datasources = new HashMap<>();
     private final Map<String, Class<?>> datasourceTypes = new HashMap<>();
 
     private final Map<String, Method> varAccessors = new HashMap<>();
 
-    public RuleUnitDescription( InternalKnowledgePackage pkg, Class<? extends RuleUnitMemory> ruleUnitClass ) {
+    public RuleUnitDescription( InternalKnowledgePackage pkg, Class<? extends RuleUnitData> ruleUnitClass ) {
         this.ruleUnitClass = ruleUnitClass;
         indexUnitVars(pkg);
     }
 
-    public Class<? extends RuleUnitMemory> getRuleUnitClass() {
+    public Class<? extends RuleUnitData> getRuleUnitClass() {
         return ruleUnitClass;
     }
 
@@ -83,7 +83,7 @@ public class RuleUnitDescription {
         return datasources.containsKey( name );
     }
 
-    public Object getValue(RuleUnitMemory ruleUnit, String identifier) {
+    public Object getValue( RuleUnitData ruleUnit, String identifier) {
         Method m = varAccessors.get(identifier);
         if (m != null) {
             try {

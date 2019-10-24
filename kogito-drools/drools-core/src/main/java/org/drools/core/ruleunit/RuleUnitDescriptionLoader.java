@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 public class RuleUnitDescriptionLoader {
 
@@ -62,7 +62,7 @@ public class RuleUnitDescriptionLoader {
             return null;
         }
         try {
-            return new RuleUnitDescription(pkg, (Class<? extends RuleUnitMemory>) pkg.getTypeResolver().resolveType(ruleUnit));
+            return new RuleUnitDescription(pkg, (Class<? extends RuleUnitData>) pkg.getTypeResolver().resolveType(ruleUnit));
         } catch (final ClassNotFoundException e) {
             nonExistingUnits.add(ruleUnit);
             return null;

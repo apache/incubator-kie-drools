@@ -20,15 +20,15 @@ import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.RuleUnit;
 import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
-import org.kie.kogito.rules.impl.SessionMemory;
+import org.kie.kogito.rules.impl.SessionData;
 
-public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionMemory> {
+public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionData> {
 
-    public SessionRuleUnitInstance( RuleUnit<SessionMemory> unit, SessionMemory memory, KieSession kieSession ) {
+    public SessionRuleUnitInstance( RuleUnit<SessionData> unit, SessionData memory, KieSession kieSession ) {
         super( unit, memory, kieSession );
     }
 
-    protected void bind( KieSession runtime, SessionMemory memory ) {
+    protected void bind( KieSession runtime, SessionData memory ) {
         memory.getDataSource().subscribe(new EntryPointDataProcessor( runtime ));
     }
 }

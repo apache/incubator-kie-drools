@@ -16,7 +16,7 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleUnitMemory {
+public interface RuleUnitData {
 
 
 }

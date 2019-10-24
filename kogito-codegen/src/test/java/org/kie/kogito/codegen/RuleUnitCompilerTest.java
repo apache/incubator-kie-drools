@@ -17,15 +17,16 @@
 package org.kie.kogito.codegen;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
-import org.kie.kogito.Executor;
-import org.kie.kogito.codegen.unit.AdultUnit;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.unit.AdultUnit;
+import org.kie.kogito.codegen.unit.PersonsUnit;
 import org.kie.kogito.rules.DataHandle;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 
@@ -148,21 +149,29 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
     @Test
     public void testRuleUnitExecutor() throws Exception {
-        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnit.drl");
+        Application application = generateCodeRulesOnly(
+                "org/kie/kogito/codegen/unit/RuleUnit.drl",
+                "org/kie/kogito/codegen/unit/PersonsUnit.drl");
 
-        AdultUnit adults = new AdultUnit();
+        DataStore<Person> persons = DataSource.createStore();
+        persons.add(new Person( "Mario", 45 ));
+        persons.add(new Person( "Marilena", 17 ));
+        persons.add(new Person( "Sofia", 7 ));
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
-        adults.getPersons().add(new Person( "Sofia", 7 ));
+        RuleUnit<AdultUnit> adultUnit = application.ruleUnits().create(AdultUnit.class);
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
-        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
-        Executor executor = Executor.create();
-        Future<Integer> done = executor.submit(instance);
+        AdultUnit adultData18 = new AdultUnit(persons, 18);
+        RuleUnitInstance<AdultUnit> adultUnitInstance18 = adultUnit.createInstance(adultData18, "adult18");
 
-        assertEquals(2, done.get().intValue() );
+        AdultUnit adultData21 = new AdultUnit(persons, 21);
+        RuleUnitInstance<AdultUnit> adultUnitInstance21 = adultUnit.createInstance(adultData21, "adult21");
 
-        assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
+        RuleUnit<PersonsUnit> personsUnit = application.ruleUnits().create(PersonsUnit.class);
+        personsUnit.createInstance( new PersonsUnit(persons) ).fire();
+
+        assertEquals( 2, adultData18.getResults().getResults().size() );
+        assertTrue( adultData18.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
+        assertEquals( 1, adultData21.getResults().getResults().size() );
+        assertTrue( adultData21.getResults().getResults().containsAll( asList("Mario") ) );
     }
 }

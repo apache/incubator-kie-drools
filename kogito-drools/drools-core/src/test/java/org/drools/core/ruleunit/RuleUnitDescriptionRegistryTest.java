@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -94,14 +94,14 @@ public class RuleUnitDescriptionRegistryTest {
         assertThat(registry.hasUnits()).isTrue();
     }
 
-    private void loadDescriptionIntoRegistry(final Class<? extends RuleUnitMemory> ruleUnitClass) {
+    private void loadDescriptionIntoRegistry(final Class<? extends RuleUnitData> ruleUnitClass) {
         final RuleUnitDescriptionLoader loader = RuleUnitTestUtil.createRuleUnitDescriptionLoader();
         loader.getDescription(ruleUnitClass.getName());
         assertThat(loader.getDescriptions()).hasSize(1);
         registry.add(loader);
     }
 
-    private void assertDescriptionIsLoaded(final Class<? extends RuleUnitMemory> ruleUnitClass) {
+    private void assertDescriptionIsLoaded(final Class<? extends RuleUnitData> ruleUnitClass) {
         final Optional<RuleUnitDescription> description = registry.getDescription(ruleUnitClass.getName());
         assertThat(description).isPresent();
         assertThat(description.get().getRuleUnitClass()).isEqualTo(ruleUnitClass);

@@ -630,4 +630,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public ClassLoader getProjectClassLoader() {
         return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
     }
+
+    public void run(String ruleUnitName) {
+        workingMemory.getApplication().ruleUnits().getRegisteredInstance( ruleUnitName ).fire();
+    }
 }

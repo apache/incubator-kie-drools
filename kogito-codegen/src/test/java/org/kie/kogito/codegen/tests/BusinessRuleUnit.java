@@ -18,9 +18,9 @@ import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class BusinessRuleUnit implements RuleUnitMemory {
+public class BusinessRuleUnit implements RuleUnitData {
 
     private DataStore<Person> persons = DataSource.createStore();
     private DataStream<String> strings = DataSource.createStream();

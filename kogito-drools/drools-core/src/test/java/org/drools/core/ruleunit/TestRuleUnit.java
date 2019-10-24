@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.definition.rule.UnitVar;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class TestRuleUnit implements RuleUnitMemory {
+public class TestRuleUnit implements RuleUnitData {
 
     private final Integer[] numbersArray;
 

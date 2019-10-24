@@ -74,6 +74,7 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.kogito.Application;
 import org.kie.services.time.TimerService;
 
 /**
@@ -777,5 +778,9 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
     public SessionClock getSessionClock() {
         return delegate.getSessionClock();
+    }
+
+    public Application getApplication() {
+        return delegate.getApplication();
     }
 }

@@ -19,9 +19,9 @@ package org.kie.kogito.rules.impl;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class SessionMemory implements RuleUnitMemory {
+public class SessionData implements RuleUnitData {
     private final DataStore<Object> dataSource = DataSource.createStore();
 
     public DataSource<Object> getDataSource() {

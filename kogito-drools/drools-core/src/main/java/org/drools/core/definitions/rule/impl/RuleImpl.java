@@ -42,7 +42,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Dialectable;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
-import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
@@ -60,7 +59,7 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
@@ -858,7 +857,7 @@ public class RuleImpl implements Externalizable,
         return ruleUnitClassName;
     }
 
-    public void setRuleUnitClass( Class<? extends RuleUnitMemory> ruleUnit ) {
+    public void setRuleUnitClass( Class<? extends RuleUnitData> ruleUnit ) {
         setRuleUnitClassName( ruleUnit.getName() );
     }
 

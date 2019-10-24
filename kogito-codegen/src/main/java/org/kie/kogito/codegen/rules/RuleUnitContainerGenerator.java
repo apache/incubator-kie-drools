@@ -25,9 +25,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -38,16 +36,14 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.type.WildcardType;
+import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitMemory;
-import org.kie.kogito.rules.RuleUnits;
+import org.kie.kogito.rules.impl.AbstractRuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
@@ -57,7 +53,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
     public RuleUnitContainerGenerator() {
-        super("RuleUnits", "ruleUnits", RuleUnits.class);
+        super("RuleUnits", "ruleUnits", AbstractRuleUnits.class);
         this.targetTypeName = "Module";
         this.ruleUnits = new ArrayList<>();
     }
@@ -88,27 +84,11 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         switchStmt.getEntries().add(defaultEntry);
 
         return new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PUBLIC)
+                .addModifier(Modifier.Keyword.PROTECTED)
                 .setType(returnType)
-                .setName("findById")
+                .setName("create")
                 .addParameter(String.class, "fqcn")
                 .setBody(new BlockStmt().addStatement(switchStmt));
-    }
-
-    private MethodDeclaration genericFactoryByClass() {
-        ClassOrInterfaceType returnType = new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
-                .setTypeArguments(new ClassOrInterfaceType(null, "T"));
-
-        return new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PUBLIC)
-                .setType(returnType)
-                .addTypeParameter(new TypeParameter("T").setTypeBound(NodeList.nodeList(new ClassOrInterfaceType(null, RuleUnitMemory.class.getCanonicalName()))))
-                .setName("create")
-                .addParameter(new ClassOrInterfaceType(null, "Class")
-                                      .setTypeArguments(new ClassOrInterfaceType(null, "T")), "clazz")
-                .setBody(new BlockStmt().addStatement(
-                        new ReturnStmt(new CastExpr(returnType, new MethodCallExpr().setName("findById").addArgument(
-                                new MethodCallExpr().setScope(new NameExpr("clazz")).setName("getCanonicalName"))))));
     }
 
     @Override
@@ -136,7 +116,6 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         declarations.add(methodDeclaration);
 
         declarations.addAll(factoryMethods);
-        declarations.add(genericFactoryByClass());
         declarations.add(genericFactoryById());
 
         ClassOrInterfaceDeclaration cls = super.classDeclaration()

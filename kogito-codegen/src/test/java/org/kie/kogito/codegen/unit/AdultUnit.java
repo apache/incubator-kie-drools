@@ -22,11 +22,11 @@ import org.kie.kogito.conf.Clock;
 import org.kie.kogito.conf.SessionsPool;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 @SessionsPool(1)
 @Clock( Clock.Type.PSEUDO )
-public class AdultUnit implements RuleUnitMemory {
+public class AdultUnit implements RuleUnitData {
     private int adultAge = 18;
     private DataStore<Person> persons = DataSource.createStore();
     private Results results = new Results();
@@ -37,6 +37,11 @@ public class AdultUnit implements RuleUnitMemory {
 
     public AdultUnit( DataStore<Person> persons ) {
         this.persons = persons;
+    }
+
+    public AdultUnit( DataStore<Person> persons, int adultAge ) {
+        this.persons = persons;
+        this.adultAge = adultAge;
     }
 
     public DataStore<Person> getPersons() {
@@ -53,5 +58,10 @@ public class AdultUnit implements RuleUnitMemory {
 
     public Results getResults() {
         return results;
+    }
+
+    @Override
+    public String toString() {
+        return "AdultUnit(" + adultAge + ")";
     }
 }

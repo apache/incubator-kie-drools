@@ -150,6 +150,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.Application;
 import org.kie.services.time.TimerService;
 
 import static java.util.stream.Collectors.toList;
@@ -254,6 +255,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private transient StatefulSessionPool pool;
     private transient boolean alive = true;
 
+    private transient Application application;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -340,7 +343,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this;
     }
 
-    protected void init(SessionConfiguration config, Environment environment) {
+    public void setApplication( Application application ) {
+        this.application = application;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    protected void init( SessionConfiguration config, Environment environment) {
         init( config, environment, 1 );
     }
 

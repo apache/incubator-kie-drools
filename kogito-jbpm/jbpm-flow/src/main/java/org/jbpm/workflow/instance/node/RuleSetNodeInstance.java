@@ -63,7 +63,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.rules.RuleUnitInstance;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,11 +187,11 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     triggerCompleted();
                 }
             } else if (ruleType.isRuleUnit()) {
-                RuleUnitFactory<RuleUnitMemory> factory = ruleSetNode.getRuleUnitFactory();
+                RuleUnitFactory<RuleUnitData> factory = ruleSetNode.getRuleUnitFactory();
                 ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
                 context.setNodeInstance(this);
-                RuleUnitMemory model = factory.bind(context);
-                RuleUnitInstance<RuleUnitMemory> instance = factory.unit().createInstance(model);
+                RuleUnitData model = factory.bind(context);
+                RuleUnitInstance<RuleUnitData> instance = factory.unit().createInstance(model);
                 instance.fire();
                 factory.unbind(context, model);
                 triggerCompleted();

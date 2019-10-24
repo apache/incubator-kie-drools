@@ -32,7 +32,7 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 /**
  * Default implementation of a RuleSet node.
@@ -194,7 +194,7 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     
     private Supplier<DMNRuntime> dmnRuntime;
     private Supplier<KieRuntime> kieRuntime;
-    private RuleUnitFactory<RuleUnitMemory> ruleUnitFactory;
+    private RuleUnitFactory<RuleUnitData> ruleUnitFactory;
 
     public void setRuleType(RuleType ruleType) {
         this.ruleType = ruleType;
@@ -224,12 +224,12 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
         return kieRuntime;
     }
 
-    public RuleUnitFactory<RuleUnitMemory> getRuleUnitFactory() {
+    public RuleUnitFactory<RuleUnitData> getRuleUnitFactory() {
         return ruleUnitFactory;
     }
 
     public void setRuleUnitFactory(RuleUnitFactory<?> ruleUnitFactory) {
-        this.ruleUnitFactory = (RuleUnitFactory<RuleUnitMemory>) ruleUnitFactory;
+        this.ruleUnitFactory = (RuleUnitFactory<RuleUnitData>) ruleUnitFactory;
     }
 
     public void setKieRuntime(Supplier<KieRuntime> kieRuntime) {

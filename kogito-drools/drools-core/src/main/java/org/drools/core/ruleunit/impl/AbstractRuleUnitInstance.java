@@ -25,9 +25,9 @@ import org.kie.api.time.SessionClock;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleUnitInstance<T> {
+public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUnitInstance<T> {
 
     private final T unitMemory;
     private final RuleUnit<T> unit;

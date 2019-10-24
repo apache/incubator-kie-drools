@@ -63,7 +63,7 @@ import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
 import static java.util.stream.Collectors.toList;
 
@@ -161,7 +161,7 @@ public class ModelGenerator {
 
 
         for (RuleUnitDescription rud : ruleUnitDescriptions) {
-            Class<? extends RuleUnitMemory> ruc = rud.getRuleUnitClass();
+            Class<? extends RuleUnitData> ruc = rud.getRuleUnitClass();
             packageModel.addRuleUnit(ruc);
         }
     }

@@ -17,13 +17,23 @@ package org.kie.kogito.rules.impl;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
+import org.kie.kogito.rules.RuleUnitInstance;
 
-public abstract class AbstractRuleUnit<T extends RuleUnitMemory> implements RuleUnit<T> {
+public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUnit<T> {
 
     protected final Application app;
 
     public AbstractRuleUnit(Application app) {
         this.app = app;
+    }
+
+    protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data, String name) {
+        RuleUnitInstance<T> instance = internalCreateInstance(data);
+        app.ruleUnits().register( name, instance );
+        return instance;
     }
 }

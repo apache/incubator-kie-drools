@@ -1,8 +1,9 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,20 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules;
+package org.kie.kogito.rules.impl;
 
-import java.util.List;
-import java.util.Map;
+import org.kie.kogito.rules.RuleUnit;
 
-import org.kie.api.time.SessionClock;
+public abstract class SessionUnit implements RuleUnit<SessionData> {
 
-public interface RuleUnitInstance<T extends RuleUnitData> {
-
-    RuleUnit<T> unit();
-
-    int fire();
-
-    List<Map<String, Object>> executeQuery(String query, Object... arguments);
-
-    <T extends SessionClock> T getClock();
+    public void evaluate(SessionData data) {
+        createInstance(data).fire();
+    }
 }

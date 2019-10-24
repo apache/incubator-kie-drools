@@ -16,9 +16,9 @@
 package org.kie.kogito.codegen.rules.myunit;
 
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.RuleUnitMemory;
+import org.kie.kogito.rules.RuleUnitData;
 
-public class MyUnit implements RuleUnitMemory {
+public class MyUnit implements RuleUnitData {
     DataSource<Object> values;
 
     public DataSource<Object> getValues() {

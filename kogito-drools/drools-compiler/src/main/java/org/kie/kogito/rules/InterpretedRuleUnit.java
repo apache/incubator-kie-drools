@@ -9,25 +9,28 @@ import org.drools.core.io.impl.InputStreamResource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.kogito.Config;
 import org.kie.kogito.rules.impl.AbstractRuleUnit;
+import org.kie.kogito.rules.impl.AbstractRuleUnits;
+import org.kie.kogito.uow.UnitOfWorkManager;
 
 /**
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
  */
-public class InterpretedRuleUnit<T extends RuleUnitMemory> extends AbstractRuleUnit<T> {
+public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
-    public static <T extends RuleUnitMemory> RuleUnit<T> of(Class<T> type) {
+    public static <T extends RuleUnitData> RuleUnit<T> of( Class<T> type) {
         return new InterpretedRuleUnit<>();
     }
 
     private InterpretedRuleUnit() {
-        super(null);
+        super(DummyApplication.INSTANCE);
     }
 
     @Override
-    public RuleUnitInstance<T> createInstance(T workingMemory) {
+    public RuleUnitInstance<T> internalCreateInstance(T data) {
         KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl();
-        Class<? extends RuleUnitMemory> wmClass = workingMemory.getClass();
+        Class<? extends RuleUnitData> wmClass = data.getClass();
         String canonicalName = wmClass.getCanonicalName();
 
         // transform foo.bar.Baz to /foo/bar/Baz.drl
@@ -40,6 +43,37 @@ public class InterpretedRuleUnit<T extends RuleUnitMemory> extends AbstractRuleU
         kBase.addPackages(kBuilder.getKnowledgePackages());
         KieSession kSession = kBase.newKieSession();
 
-        return new InterpretedRuleUnitInstance<>(this, workingMemory, kSession);
+        return new InterpretedRuleUnitInstance<>(this, data, kSession);
+    }
+
+    public static class DummyApplication implements org.kie.kogito.Application {
+
+        static final DummyApplication INSTANCE = new DummyApplication();
+
+        RuleUnits ruleUnits = new RuleUnits();
+
+        public Config config() {
+            return null;
+        }
+
+        public UnitOfWorkManager unitOfWorkManager() {
+            return null;
+        }
+
+        public RuleUnits ruleUnits() {
+            return ruleUnits;
+        }
+
+        public class RuleUnits extends AbstractRuleUnits {
+            @Override
+            protected RuleUnit<?> create( String fqcn ) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public KieRuntimeBuilder ruleRuntimeBuilder() {
+                throw new UnsupportedOperationException();
+            }
+        }
     }
 }

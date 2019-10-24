@@ -15,12 +15,13 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleUnit<T extends RuleUnitMemory> {
-    RuleUnitInstance<T> createInstance(T workingMemory);
+import java.util.UUID;
 
-    default RuleUnitInstance<T> evaluate(T workingMemory) {
-        RuleUnitInstance<T> instance = createInstance(workingMemory);
-        instance.fire();
-        return instance;
+public interface RuleUnit<T extends RuleUnitData> {
+
+    default RuleUnitInstance<T> createInstance(T data) {
+        return createInstance( data, UUID.randomUUID().toString() );
     }
+
+    RuleUnitInstance<T> createInstance(T data, String name);
 }

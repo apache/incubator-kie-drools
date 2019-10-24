@@ -164,4 +164,6 @@ public interface KnowledgeHelper
     InternalFactHandle bolster( Object object, Object value );
 
     ClassLoader getProjectClassLoader();
+
+    void run(String ruleUnitName);
 }
