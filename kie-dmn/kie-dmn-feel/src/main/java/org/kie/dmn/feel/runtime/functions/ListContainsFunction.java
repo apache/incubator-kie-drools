@@ -17,11 +17,11 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.List;
+import java.util.ListIterator;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class ListContainsFunction
         extends BaseFEELFunction {
@@ -34,7 +34,18 @@ public class ListContainsFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else {
-            return FEELFnResult.ofResult( list.contains( element ) );
+            if (element == null) {
+                return FEELFnResult.ofResult(list.contains(element));
+            } else {
+                Object e = EvalHelper.coerceNumber(element);
+                boolean found = false;
+                ListIterator<?> it = list.listIterator();
+                while (it.hasNext() && !found) {
+                    Object next = EvalHelper.coerceNumber(it.next());
+                    found = e.equals(next);
+                }
+                return FEELFnResult.ofResult(found);
+            }
         }
     }
 

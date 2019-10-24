@@ -1,0 +1,52 @@
+<definitions name="DecisionNumberInList" id="def_7e2582e9-cffe-e465-314a-5755eb893319" 
+xmlns:ns="http://sample.dmn" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" 
+namespace="http://sample.dmn" exporter="ex" exporterVersion="11" 
+xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/">
+  <itemDefinition name="numberList" id="_75a6eab3-9165-ca7d-c0a9-29c30e583885" isCollection="true">
+    <typeRef>number</typeRef>
+  </itemDefinition>
+  <itemDefinition name="number" id="_92359cdd-befb-b008-9236-57e6da17ec68">
+    <typeRef>number</typeRef>
+  </itemDefinition>
+  <inputData name="inputNumberList" id="_2fb55907-539e-9287-4815-1b08f4139fe5">
+    <variable name="inputNumberList" id="_90c33802-4b79-0947-9bd3-335773972551" typeRef="numberList" />
+  </inputData>
+  <inputData name="inputNumber" id="_e0303644-6ce2-cc1e-7865-f9e4e17d4953">
+    <variable name="inputNumber" id="_675cabff-9aee-b0bb-4c2d-30ebbc8c1d0a" typeRef="number" />
+  </inputData>
+  <decision name="DecisionNumberInList" id="_7e2582e9-cffe-e465-314a-5755eb893319">
+    <variable name="DecisionNumberInList" id="_8c8d7a07-d84f-e92a-55b9-6feaea4cfefd" />
+    <informationRequirement>
+      <requiredInput href="#_2fb55907-539e-9287-4815-1b08f4139fe5" />
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#_e0303644-6ce2-cc1e-7865-f9e4e17d4953" />
+    </informationRequirement>
+    <context id="_a62eebec-1312-fda3-f1ec-83bc8d9dc62e">
+      <contextEntry>
+        <variable name="Result_1_OK" id="_6cf1769c-80d3-3f14-2347-01b7a9844cb3" typeRef="boolean" />
+        <literalExpression id="_a724ac61-6930-fecf-900a-f682aba55a79">
+          <text>if list contains([0, 1], inputNumber) then true else false</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry>
+        <variable name="Result_2_OK" id="_ece83e23-fb7c-091a-ad89-54d25458962f" typeRef="boolean" />
+        <literalExpression id="_fe8ecb9e-85c1-120d-66b2-84341b46075c">
+          <text>if list contains([0, 1], 1) then true else false</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry>
+        <variable name="Result_3" id="_6243a937-748b-5425-e3a0-7df6c688fbe3" typeRef="boolean" />
+        <literalExpression id="_2cf7169f-d6d3-1752-0767-51503cb0a58f">
+          <text>if list contains(inputNumberList, inputNumber) then true else false</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry>
+        <variable name="Result_4" id="_ebc9632c-add4-c133-60e8-aa7ca061121c" typeRef="boolean" />
+        <literalExpression id="_1b4a6cbb-340f-6e7f-caf9-70551916d983">
+          <text>if list contains(inputNumberList, 1) then true else false</text>
+        </literalExpression>
+      </contextEntry>
+    </context>
+  </decision>
+</definitions>
