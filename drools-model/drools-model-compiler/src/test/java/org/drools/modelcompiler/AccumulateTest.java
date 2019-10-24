@@ -24,13 +24,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Ignore;
@@ -1013,6 +1016,105 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Person> results = getObjectsIntoList(ksession, Person.class);
         assertEquals(1, results.size());
         assertEquals(3, results.iterator().next().getAge());
+    }
+
+    @Test
+    public void testExtractorInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person( $a : age ); \n" +
+                        "                $max : max($a)  \n" +
+                        "              ) \n" +
+                        "then\n" +
+                        "  insert(new Result($max));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("a", 23));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(23, results.iterator().next().getValue());
+    }
+
+
+    @Test
+    public void testThisInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Integer( $i : this ); \n" +
+                        "                $max : max($i)  \n" +
+                        "              ) \n" +
+                        "then\n" +
+                        "  insert(new Result($max));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(2);
+        ksession.insert(10);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(10, results.iterator().next().getValue());
+    }
+
+
+
+    @Test
+    public void testExtractorInFunction() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( Person( $p : this ); \n" +
+                "                $max : max($p.getAge())  \n" +
+                "              ) \n" +
+                "then\n" +
+                "  insert(new Result($max));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("a", 23));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(23, results.iterator().next().getValue());
+    }
+
+
+    // do also the test with two functions
+    @Test
+    public void testAccumulateWithMax() {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                        "import " + StockTick.class.getCanonicalName() + ";" +
+                        "rule AccumulateMaxDate when\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick($time : getTimeFieldAsDate());\n" +
+                        "    max($time.getTime())" +
+                        " )" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setTimeField(new Date().getTime());
+        ksession.insert(st);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
