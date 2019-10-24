@@ -1,0 +1,18 @@
+:root {
+  --pf-c-FontColor: black;
+  --p-c-FontWeight: 400;
+}
+.pf-c-button pf-m-primary {
+  display: block;
+  width: 100%;
+  padding: var(--pf-c-dropdown__menu-item--PaddingTop) var(--pf-c-dropdown__menu-item--PaddingRight)
+    var(--pf-c-dropdown__menu-item--PaddingBottom) var(--pf-c-dropdown__menu-item--PaddingLeft);
+  font-size: var(--pf-c-dropdown__menu-item--FontSize);
+  font-weight: var(--p-c-FontWeight);
+  line-height: var(--pf-c-dropdown__menu-item--LineHeight);
+  color: var(--pf-c-FontColor);
+  text-align: left;
+  white-space: nowrap;
+  background-color: var(--pf-c-dropdown__menu-item--BackgroundColor);
+  border: none;
+}

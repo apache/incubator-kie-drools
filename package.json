@@ -16,6 +16,7 @@
     "lerna": "3.18.1"
   },
   "dependencies": {
+    "strip-ansi": "^5.2.0",
     "yarn": "^1.19.1"
   }
 }
