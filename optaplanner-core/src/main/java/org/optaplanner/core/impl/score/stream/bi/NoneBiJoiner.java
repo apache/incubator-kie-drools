@@ -31,7 +31,7 @@ public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int joinerIndex) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible state: getLeftMapping() is never called on a NoneBiJoiner.");
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object> getRightMapping(int joinerIndex) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible state: getRightMapping() is never called on a NoneBiJoiner.");
     }
 
     @Override

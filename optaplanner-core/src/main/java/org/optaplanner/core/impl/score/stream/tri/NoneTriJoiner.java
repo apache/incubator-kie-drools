@@ -32,7 +32,7 @@ public final class NoneTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int joinerId) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible state: getLeftMapping() is never called on a NoneTriJoiner.");
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class NoneTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public Function<C, Object> getRightMapping(int joinerId) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible state: getRightMapping() is never called on a NoneTriJoiner.");
     }
 
     @Override
