@@ -272,8 +272,7 @@ public abstract class SolverFactory<Solution_> {
      */
     public static <Solution_> SolverFactory<Solution_> createEmptyFromKieContainer(KieContainer kieContainer) {
         SolverConfig solverConfig = new SolverConfig(kieContainer.getClassLoader());
-        return new DefaultSolverFactory<>(solverConfig,
-                new SolverConfigContext(kieContainer));
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(kieContainer));
     }
 
     // ************************************************************************

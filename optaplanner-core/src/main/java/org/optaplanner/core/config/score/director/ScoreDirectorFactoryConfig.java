@@ -184,7 +184,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return bendableSoftLevelsSize;
     }
 
-    /**Anything tha
+    /**
      * @param bendableSoftLevelsSize sometimes null
      * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
