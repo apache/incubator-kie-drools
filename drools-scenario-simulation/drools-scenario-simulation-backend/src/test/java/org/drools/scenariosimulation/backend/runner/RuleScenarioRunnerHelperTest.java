@@ -119,12 +119,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         amountNameExpectedFactMapping.addExpressionElement("Fact 2", Double.class.getCanonicalName());
         amountNameExpectedFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
 
-        scenario1 = simulation.addScenario();
+        scenario1 = simulation.addScesimData();
         scenario1.setDescription(TEST_DESCRIPTION);
         scenario1.addMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, NAME);
         scenario1.addMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
 
-        scenario2 = simulation.addScenario();
+        scenario2 = simulation.addScesimData();
         scenario2.setDescription(TEST_DESCRIPTION);
         scenario2.addMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, NAME);
         scenario2.addMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
@@ -380,7 +380,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ScenarioWithIndex scenarioWithIndexMock = mock(ScenarioWithIndex.class);
         Scenario scenarioMock = mock(Scenario.class);
         when(scenarioMock.getDescription()).thenReturn("DESCRIPTION");
-        when(scenarioWithIndexMock.getScenario()).thenReturn(scenarioMock);
+        when(scenarioWithIndexMock.getScesimData()).thenReturn(scenarioMock);
 
         Map<String, Object> requestContext = new LinkedHashMap<>();
         requestContext.put(COVERAGE_LISTENER, coverageAgendaListenerMock);

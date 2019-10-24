@@ -79,7 +79,7 @@ public abstract class AbstractScenarioRunner extends Runner {
     public static Description getDescriptionForSimulation(Optional<String> filename, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios) {
         Description suiteDescription = Description.createSuiteDescription("Test Scenarios (Preview) tests");
         scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
-                getDescriptionForScenario(filename, scenarioWithIndex.getIndex(), scenarioWithIndex.getScenario())));
+                getDescriptionForScenario(filename, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
         return suiteDescription;
     }
 
@@ -119,7 +119,7 @@ public abstract class AbstractScenarioRunner extends Runner {
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
 
         int index = scenarioWithIndex.getIndex();
-        Description descriptionForScenario = getDescriptionForScenario(getFileName(), index, scenarioWithIndex.getScenario());
+        Description descriptionForScenario = getDescriptionForScenario(getFileName(), index, scenarioWithIndex.getScesimData());
         runNotifier.fireTestStarted(descriptionForScenario);
 
         try {
@@ -130,7 +130,7 @@ public abstract class AbstractScenarioRunner extends Runner {
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         } catch (Throwable e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
-                    scenarioWithIndex.getScenario().getDescription() + "'", e);
+                    scenarioWithIndex.getScesimData().getDescription() + "'", e);
             indexedScenarioException.setFileName(fileName);
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         }

@@ -55,7 +55,7 @@ public abstract class AbstractRunnerHelper {
 
     public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData, Settings settings) {
 
-        Scenario scenario = scenarioWithIndex.getScenario();
+        Scenario scenario = scenarioWithIndex.getScesimData();
 
         extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluatorFactory)
                 .forEach(scenarioRunnerData::addGiven);

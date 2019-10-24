@@ -316,7 +316,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
         assertNotNull(toCheck.getSimulation().getSimulationDescriptor());
-        toCheck.getSimulation().getUnmodifiableScenarios().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        toCheck.getSimulation().getUnmodifiableScesimData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 }

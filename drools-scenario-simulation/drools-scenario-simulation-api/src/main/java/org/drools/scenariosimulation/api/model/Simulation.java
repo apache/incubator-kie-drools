@@ -15,8 +15,6 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.toScenarioWithIndex;
@@ -24,110 +22,31 @@ import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUt
 /**
  * Envelop class that wrap the definition of the simulation and the values of the scenarios
  */
-public class Simulation {
-
-    /**
-     * Describes structure of the simulation
-     */
-    private final SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
-    /**
-     * Contains list of scenarios to test
-     */
-    private final List<Scenario> scenarios = new LinkedList<>();
-
-    /**
-     * Returns an <b>unmodifiable</b> list wrapping the backed one
-     * @return
-     */
-    public List<Scenario> getUnmodifiableScenarios() {
-        return Collections.unmodifiableList(scenarios);
-    }
+public class Simulation extends AbstractScesimModel<Scenario> {
 
     public List<ScenarioWithIndex> getScenarioWithIndex() {
         return toScenarioWithIndex(this);
     }
 
-    public void removeScenarioByIndex(int index) {
-        scenarios.remove(index);
-    }
-
-    public void removeScenario(Scenario toRemove) {
-        scenarios.remove(toRemove);
-    }
-
-    public SimulationDescriptor getSimulationDescriptor() {
-        return simulationDescriptor;
-    }
-
-    public Scenario getScenarioByIndex(int index) {
-        return scenarios.get(index);
-    }
-
-    public Scenario addScenario() {
-        return addScenario(scenarios.size());
-    }
-
-    public Scenario addScenario(int index) {
-        if (index < 0 || index > scenarios.size()) {
+    @Override
+    public Scenario addScesimData(int index) {
+        if (index < 0 || index > scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
         Scenario scenario = new Scenario();
-        scenarios.add(index, scenario);
+        scesimData.add(index, scenario);
         return scenario;
     }
 
-    public void replaceScenario(int index, Scenario newScenario) {
-        scenarios.set(index, newScenario);
-    }
-
-    public void removeFactMappingByIndex(int index) {
-        clearScenarios(simulationDescriptor.getFactMappingByIndex(index));
-        simulationDescriptor.removeFactMappingByIndex(index);
-    }
-
-    public void removeFactMapping(FactMapping toRemove) {
-        clearScenarios(toRemove);
-        simulationDescriptor.removeFactMapping(toRemove);
-    }
-
-    public Scenario cloneScenario(int sourceIndex, int targetIndex) {
-        if (sourceIndex < 0 || sourceIndex >= scenarios.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("SourceIndex out of range ").append(sourceIndex).toString());
-        }
-        if (targetIndex < 0 || targetIndex > scenarios.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("TargetIndex out of range ").append(targetIndex).toString());
-        }
-        Scenario scenarioByIndex = getScenarioByIndex(sourceIndex);
-        Scenario clonedScenario = scenarioByIndex.cloneScenario();
-        scenarios.add(targetIndex, clonedScenario);
-        return clonedScenario;
-    }
-
-    public void clear() {
-        simulationDescriptor.clear();
-        clearScenarios();
-    }
-
-    public void clearScenarios() {
-        scenarios.clear();
-    }
-
-    public void resetErrors() {
-        scenarios.forEach(Scenario::resetErrors);
-    }
-
-    public Simulation cloneSimulation() {
+    @Override
+    public Simulation cloneScesimModel() {
         Simulation toReturn = new Simulation();
         final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
             toReturn.simulationDescriptor.addFactMapping(i, originalFactMapping);
         }
-        this.scenarios.forEach(scenario -> toReturn.scenarios.add(scenario.cloneScenario()));
+        this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneScesimData()));
         return toReturn;
-    }
-
-    private void clearScenarios(FactMapping toRemove) {
-        scenarios.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }
 }

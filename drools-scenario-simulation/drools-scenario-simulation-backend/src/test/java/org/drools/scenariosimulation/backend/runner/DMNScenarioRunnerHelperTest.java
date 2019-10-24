@@ -133,12 +133,12 @@ public class DMNScenarioRunnerHelperTest {
         amountNameExpectedFactMapping.addExpressionElement("Fact 2", Double.class.getCanonicalName());
         amountNameExpectedFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
 
-        scenario1 = simulation.addScenario();
+        scenario1 = simulation.addScesimData();
         scenario1.setDescription(TEST_DESCRIPTION);
         scenario1.addMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, FEEL_EXPRESSION_NAME);
         firstNameExpectedValue = scenario1.addMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, FEEL_EXPRESSION_NAME);
 
-        scenario2 = simulation.addScenario();
+        scenario2 = simulation.addScesimData();
         scenario2.setDescription(TEST_DESCRIPTION);
         scenario2.addMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, FEEL_EXPRESSION_NAME);
         scenario2.addMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, FEEL_EXPRESSION_NAME);

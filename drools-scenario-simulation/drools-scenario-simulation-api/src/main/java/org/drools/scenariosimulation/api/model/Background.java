@@ -18,36 +18,47 @@ package org.drools.scenariosimulation.api.model;
 import java.util.List;
 
 /**
- * Envelop class that wrap the definition of the simulation and the values of the scenarios
+ * Envelop class that wrap the definition of the <b>Background</b> grid and its data
  */
-public class Background {
+public class Background extends AbstractScesimModel<BackgroundData> {
 
-    /**
-     * Describes structure of the simulation
-     */
-    private final SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
-
-
-
-    public SimulationDescriptor getSimulationDescriptor() {
-        return simulationDescriptor;
+    @Override
+    public BackgroundData addScesimData(int index) {
+        if (index < 0 || index > scesimData.size()) {
+            throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
+        }
+        BackgroundData backgroundData = new BackgroundData();
+        scesimData.add(index, backgroundData);
+        return backgroundData;
     }
 
+    //    /**
+//     * Describes structure of the simulation
+//     */
+//    private final SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
+//
+//
+//
+//    public SimulationDescriptor getSimulationDescriptor() {
+//        return simulationDescriptor;
+//    }
+//
+//
+//
+//    public void removeFactMappingByIndex(int index) {
+//        simulationDescriptor.removeFactMappingByIndex(index);
+//    }
+//
+//    public void removeFactMapping(FactMapping toRemove) {
+//        simulationDescriptor.removeFactMapping(toRemove);
+//    }
+//
+//    public void clear() {
+//        simulationDescriptor.clear();
+//    }
 
-
-    public void removeFactMappingByIndex(int index) {
-        simulationDescriptor.removeFactMappingByIndex(index);
-    }
-
-    public void removeFactMapping(FactMapping toRemove) {
-        simulationDescriptor.removeFactMapping(toRemove);
-    }
-
-    public void clear() {
-        simulationDescriptor.clear();
-    }
-
-    public Background cloneBackground() {
+    @Override
+    public Background cloneScesimModel() {
         Background toReturn = new Background();
         final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {

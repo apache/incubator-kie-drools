@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import static java.util.stream.Collectors.toList;
-
 /**
- * Scenario contains description and values to test in the defined scenario
+ * Tuple with <code>BackgroundData</code>> and its index
  */
-public class Scenario extends AbstractScesimData {
-
-    Scenario cloneScesimData() {
-        Scenario cloned = new Scenario();
-        cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));
-        return cloned;
+public class BackgroundDataWithIndex extends ScesimDataWithIndex<BackgroundData> {
+    
+    public BackgroundDataWithIndex() {
+        // CDI
     }
+
+    public BackgroundDataWithIndex(int index, BackgroundData backgroundData) {
+        super(index, backgroundData);
+    }
+
 }

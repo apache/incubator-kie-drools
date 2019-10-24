@@ -88,6 +88,7 @@ public class ScenarioSimulationXMLPersistence {
         for (String setting : SETTINGS) {
             toReturn = DOMParserUtil.cleanupNodes(toReturn, "simulationDescriptor", setting);
         }
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), "simulation", "scenarios", "scesimData");
         return toReturn;
     }
 
