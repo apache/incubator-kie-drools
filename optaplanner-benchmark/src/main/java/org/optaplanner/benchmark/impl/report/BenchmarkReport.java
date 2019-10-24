@@ -356,7 +356,7 @@ public class BenchmarkReport {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (isFinite(levelValues[i])) {
-                            if (i >= datasetList.size()) {
+                            while (i >= datasetList.size()) {
                                 datasetList.add(new DefaultCategoryDataset());
                             }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
@@ -474,7 +474,7 @@ public class BenchmarkReport {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getWinningScoreDifference());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (isFinite(levelValues[i])) {
-                            if (i >= datasetList.size()) {
+                            while (i >= datasetList.size()) {
                                 datasetList.add(new DefaultCategoryDataset());
                             }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
@@ -508,7 +508,7 @@ public class BenchmarkReport {
                     double[] levelValues = singleBenchmarkResult.getWorstScoreDifferencePercentage().getPercentageLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (isFinite(levelValues[i])) {
-                            if (i >= datasetList.size()) {
+                            while (i >= datasetList.size()) {
                                 datasetList.add(new DefaultCategoryDataset());
                             }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
