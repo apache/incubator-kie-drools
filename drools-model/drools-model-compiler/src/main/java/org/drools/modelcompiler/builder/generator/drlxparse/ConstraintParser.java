@@ -453,6 +453,9 @@ public class ConstraintParser {
     private static Expression toBigDecimalExpression( TypedExpression typedExpression ) {
         MethodCallExpr toBigDecimalMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal" );
         Expression arg = typedExpression.getExpression();
+        if(arg.isEnclosedExpr()) {
+            arg = arg.asEnclosedExpr().getInner();
+        }
         if (arg instanceof BigIntegerLiteralExpr) {
             arg = new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class), NodeList.nodeList( new StringLiteralExpr(((BigIntegerLiteralExpr) arg).asBigInteger().toString()) ));
         } else if (arg instanceof BigDecimalLiteralExpr ) {
