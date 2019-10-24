@@ -16,10 +16,11 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ActionInsertFactCol52 extends ActionCol52 {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -183,25 +184,13 @@ public class ActionInsertFactCol52 extends ActionCol52 {
         if (!super.equals(o)) {
             return false;
         }
-
         ActionInsertFactCol52 that = (ActionInsertFactCol52) o;
-
-        if (isInsertLogical != that.isInsertLogical) {
-            return false;
-        }
-        if (factType != null ? !factType.equals(that.factType) : that.factType != null) {
-            return false;
-        }
-        if (boundName != null ? !boundName.equals(that.boundName) : that.boundName != null) {
-            return false;
-        }
-        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
-            return false;
-        }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
-            return false;
-        }
-        return valueList != null ? valueList.equals(that.valueList) : that.valueList == null;
+        return isInsertLogical == that.isInsertLogical &&
+                Objects.equals(factType, that.factType) &&
+                Objects.equals(boundName, that.boundName) &&
+                Objects.equals(factField, that.factField) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(valueList, that.valueList);
     }
 
     @Override
