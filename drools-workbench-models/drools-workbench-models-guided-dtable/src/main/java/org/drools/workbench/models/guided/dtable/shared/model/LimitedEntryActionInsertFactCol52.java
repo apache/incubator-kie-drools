@@ -16,7 +16,6 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A column that sets a field on a new fact.
@@ -25,7 +24,7 @@ public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52
         implements
         LimitedEntryCol {
 
-    private static final long serialVersionUID = 729l;
+    private static final long serialVersionUID = 510l;
 
     /**
      * Available fields for this type of column.
@@ -73,8 +72,10 @@ public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52
         if (!super.equals(o)) {
             return false;
         }
+
         LimitedEntryActionInsertFactCol52 that = (LimitedEntryActionInsertFactCol52) o;
-        return Objects.equals(value, that.value);
+
+        return value != null ? value.equals(that.value) : that.value == null;
     }
 
     @Override

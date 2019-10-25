@@ -16,18 +16,16 @@
 
 package org.drools.workbench.models.guided.dtable.shared.model;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_DEFAULT_VALUE;
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_HEADER;
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_HIDE_COLUMN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class DTColumnConfig52Test extends ColumnTestBase {
 
@@ -45,11 +43,6 @@ public class DTColumnConfig52Test extends ColumnTestBase {
         column2.setHeader("header");
         column2.setHideColumn(false);
         column2.setDefaultValue(new DTCellValue52("default"));
-    }
-
-    @Test
-    public void testEquals() {
-        assertTrue(Objects.equals(column1, column2));
     }
 
     @Test

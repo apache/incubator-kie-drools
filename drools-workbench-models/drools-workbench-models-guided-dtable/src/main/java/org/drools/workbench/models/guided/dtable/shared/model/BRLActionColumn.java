@@ -17,7 +17,6 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.IAction;
 
@@ -30,7 +29,7 @@ public class BRLActionColumn extends ActionCol52
         implements
         BRLColumn<IAction, BRLActionVariableColumn> {
 
-    private static final long serialVersionUID = 729l;
+    private static final long serialVersionUID = 540l;
 
     private List<IAction> definition = new ArrayList<IAction>();
 
@@ -129,9 +128,13 @@ public class BRLActionColumn extends ActionCol52
         if (!super.equals(o)) {
             return false;
         }
+
         BRLActionColumn that = (BRLActionColumn) o;
-        return Objects.equals(definition, that.definition) &&
-                Objects.equals(childColumns, that.childColumns);
+
+        if (definition != null ? !definition.equals(that.definition) : that.definition != null) {
+            return false;
+        }
+        return childColumns != null ? childColumns.equals(that.childColumns) : that.childColumns == null;
     }
 
     @Override

@@ -18,7 +18,6 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
@@ -277,7 +276,7 @@ public class BRLRuleModel extends RuleModel {
                     final int colIndex = dtable.getExpandedColumns().indexOf(col);
                     for (List<DTCellValue52> row : dtable.getData()) {
                         DTCellValue52 cell = row.get(colIndex);
-                        if (cell != null && Objects.equals(cell.getStringValue(), binding)) {
+                        if (cell != null && cell.getStringValue().equals(binding)) {
                             return true;
                         }
                     }
