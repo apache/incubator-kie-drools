@@ -16,13 +16,17 @@
 package org.kie.kogito.codegen.tests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,7 +43,10 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BusinessRuleUnitTest extends AbstractCodegenTest {
@@ -140,6 +147,101 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         uow.end();
         // after unit of work has been ended listeners are invoked
         assertThat(startedProcesses).hasSize(1);
+    }
+
+    @Test
+    public void ioMapping() throws Exception {
+        Application app = generateCode(Collections.singletonList("ruletask/ExampleP.bpmn"),
+                                       Collections.singletonList("ruletask/Example.drl"));
+        Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("singleString", "hello");
+        map.put("singlePerson", new Person("Yoko", 86));
+        map.put("manyPersons", asList(new Person("Paul", 77), new Person("Ringo", 79)));
+        map.put("emptyList", new ArrayList<>());
+
+        Model model = process.createModel();
+        model.fromMap(map);
+        ProcessInstance<? extends Model> instance = process.createInstance(model);
+        Model variables = instance.variables();
+        Map<String, Object> result = variables.toMap();
+
+        assertNull(result.get("emptyString"));
+        assertNull(result.get("emptyPerson"));
+        assertThat((Collection) result.get("emptyList")).isEmpty();
+
+        instance.start();
+
+        result = instance.variables().toMap();
+        assertEquals("hello", result.get("emptyString"));
+
+        Person yoko = new Person("Yoko", 86);
+        yoko.setAdult(true);
+        assertEquals(yoko, result.get("emptyPerson"));
+
+        Person paul = new Person("Paul", 77);
+        paul.setAdult(true);
+        Person ringo = new Person("Ringo", 79);
+        ringo.setAdult(true);
+        assertEquals(asList(paul, ringo), result.get("emptyList"));
+
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when a null collection variable is mapped as input of a datasource")
+    public void inputMappingNullCollection() throws Exception {
+        Application app = generateCode(Collections.singletonList("ruletask/ExampleP.bpmn"),
+                                       Collections.singletonList("ruletask/Example.drl"));
+        Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("singleString", "hello");
+        map.put("singlePerson", new Person("Yoko", 86));
+        map.put("manyPersons", null);
+
+        Model model = process.createModel();
+        model.fromMap(map);
+        ProcessInstance<? extends Model> instance = process.createInstance(model);
+        Model variables = instance.variables();
+        Map<String, Object> result = variables.toMap();
+
+        assertNull(result.get("emptyString"));
+        assertNull(result.get("emptyPerson"));
+        assertNull(result.get("emptyList"));
+
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ERROR);
+        assertThat(instance.error().get().errorMessage()).contains("The input collection variable of a data source cannot be null");
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when a null collection variable is mapped as output of a datasource")
+    public void outputMappingNullCollection() throws Exception {
+        Application app = generateCode(Collections.singletonList("ruletask/ExampleP.bpmn"),
+                                       Collections.singletonList("ruletask/Example.drl"));
+        Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("singleString", "hello");
+        map.put("singlePerson", new Person("Yoko", 86));
+        map.put("manyPersons", asList(new Person("Paul", 77), new Person("Ringo", 79)));
+
+        Model model = process.createModel();
+        model.fromMap(map);
+        ProcessInstance<? extends Model> instance = process.createInstance(model);
+        Model variables = instance.variables();
+        Map<String, Object> result = variables.toMap();
+
+        assertNull(result.get("emptyString"));
+        assertNull(result.get("emptyPerson"));
+        assertNull(result.get("emptyList"));
+
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ERROR);
+        assertThat(instance.error().get().errorMessage()).contains("Null collection variable used as an output variable");
     }
 
     @Test

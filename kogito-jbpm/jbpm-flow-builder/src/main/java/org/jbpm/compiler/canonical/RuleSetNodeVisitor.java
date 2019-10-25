@@ -19,6 +19,7 @@ package org.jbpm.compiler.canonical;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -59,7 +61,21 @@ import org.kie.kogito.rules.DataStream;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.StaticJavaParser.parseStatement;
 
+/*
+ *
+ * Input/Output mapping with Rule Units:
+ *
+ * | Mapping | Process Variable | Rule Unit field   | Action
+ * | IN      | scalar           | scalar            | Assignment
+ * | IN      | scalar           | data source 	    | Add to (i.e. insert into) data source
+ * | IN      | collection       | data source 	    | Add all contents from data source
+ * | OUT     | scalar           | scalar 	        | Assignment
+ * | OUT     | scalar           | data source 	    | get 1 value off the data source
+ * | OUT     | collection       | data source 	    | Add all contents to the data source
+ *
+ */
 public class RuleSetNodeVisitor extends AbstractVisitor {
 
     private final ClassLoader contextClassLoader;
@@ -174,7 +190,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             Variable v = variableScope.findVariable(extractVariableFromExpression(e.getValue()));
             if (v != null) {
                 actionBody.addStatement(makeAssignment(v));
-                actionBody.addStatement(callSetter(unitClass, "model", e.getKey(), e.getValue()));
+                actionBody.addStatement(callSetter(unitClass, "model", e.getKey(), e.getValue(), isCollectionType(v)));
             }
         }
 
@@ -182,15 +198,26 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         return actionBody;
     }
 
-    private MethodCallExpr callSetter(Class<?> variableDeclarations, String targetVar, String destField, String value) {
-        if (value.startsWith("#{")) {
-            value = value.substring(2, value.length() -1);
+    private boolean isCollectionType(Variable v) {
+        String stringType = v.getType().getStringType();
+        Class<?> type;
+        try {
+            type = contextClassLoader.loadClass(stringType);
+            return Collection.class.isAssignableFrom(type);
+        } catch (ClassNotFoundException ex) {
+            return false;
         }
-
-        return callSetter(variableDeclarations, targetVar, destField, new NameExpr(value));
     }
 
-    private MethodCallExpr callSetter(Class<?> unitClass, String targetVar, String destField, Expression value) {
+    private Statement callSetter(Class<?> variableDeclarations, String targetVar, String destField, String expression, boolean isCollection) {
+        if (expression.startsWith("#{")) {
+            expression = expression.substring(2, expression.length() -1);
+        }
+
+        return callSetter(variableDeclarations, targetVar, destField, new NameExpr(expression), isCollection);
+    }
+
+    private Statement callSetter(Class<?> unitClass, String targetVar, String destField, Expression expression, boolean isCollection) {
         String methodName = "get" + StringUtils.capitalize(destField);
         Method m;
         try {
@@ -198,11 +225,9 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             Expression fieldAccessor =
                     new MethodCallExpr(new NameExpr("model"), methodName);
             if ( DataStore.class.isAssignableFrom(m.getReturnType() ) ) {
-                return new MethodCallExpr(fieldAccessor, "add")
-                        .addArgument(value);
+                return injectData(isCollection, destField, fieldAccessor, "add", expression);
             } else if ( DataStream.class.isAssignableFrom(m.getReturnType() ) ) {
-                return new MethodCallExpr(fieldAccessor, "append")
-                        .addArgument(value);
+                return injectData(isCollection, destField, fieldAccessor, "append", expression);
             } // else fallback to the following
         } catch (NoSuchMethodException e) {
             // fallback to the following
@@ -215,11 +240,38 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             throw new RuntimeException(e);
         }
         Class<?> returnType = m.getReturnType();
-        return new MethodCallExpr(new NameExpr(targetVar), setter).addArgument(
+        return new ExpressionStmt(new MethodCallExpr(new NameExpr(targetVar), setter).addArgument(
                 new CastExpr(
                         new ClassOrInterfaceType(null, returnType.getCanonicalName()),
-                        new EnclosedExpr(value)));
+                        new EnclosedExpr(expression))));
 
+    }
+
+    private Statement injectData(boolean isCollection, String destField, Expression fieldAccessor, String acceptorMethodName, Expression expression) {
+        if (isCollection) {
+            return drainIntoDS(fieldAccessor, destField, acceptorMethodName, expression);
+        } else {
+            return invoke(fieldAccessor, acceptorMethodName, expression);
+        }
+    }
+
+    private Statement drainIntoDS(Expression fieldAccessor, String destField, String acceptorMethodName, Expression expression) {
+        VariableDeclarationExpr varDecl = declareErasedDataSource(fieldAccessor);
+
+        MethodCallExpr methodCallExpr = new MethodCallExpr(new MethodCallExpr(expression, "stream"), "forEach").addArgument(
+                new LambdaExpr().addParameter(new UnknownType(), "o")
+                        .setBody(new BlockStmt()
+                                         .addStatement(varDecl)
+                                         .addStatement(new MethodCallExpr(new NameExpr("ds"), acceptorMethodName)
+                                                               .addArgument((new NameExpr("o"))))));
+
+        return new BlockStmt()
+                .addStatement(parseStatement("java.util.Objects.requireNonNull("+expression+", \"The input collection variable of a data source cannot be null: "+expression+"\");"))
+                .addStatement(methodCallExpr);
+    }
+
+    private ExpressionStmt invoke(Expression scope, String methodName, Expression arg) {
+        return new ExpressionStmt(new MethodCallExpr(scope, methodName).addArgument(arg));
     }
 
     private BlockStmt unit(String unitName) {
@@ -251,10 +303,29 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
                 Expression fieldAccessor =
                         new MethodCallExpr(new NameExpr("model"), methodName);
 
-                return new ExpressionStmt(new MethodCallExpr(fieldAccessor, "subscribe")
-                                                  .addArgument(new MethodCallExpr(
-                                                          new NameExpr(DataObserver.class.getCanonicalName()), "of")
-                                                                       .addArgument(parseExpression("o -> kcontext.setVariable(\"" + vname + "\", o)"))));
+                if (isCollectionType(v)) {
+                    VariableDeclarationExpr varDecl = declareErasedDataSource(fieldAccessor);
+
+                    return new BlockStmt()
+                            .addStatement(varDecl)
+                            .addStatement(parseStatement("java.util.Collection c = (java.util.Collection) kcontext.getVariable(\"" + vname + "\");"))
+                            .addStatement(parseStatement("java.util.Objects.requireNonNull(c, \"Null collection variable used as an output variable: "
+                                                                 + vname + ". Initialize this variable to get the contents or the data source, " +
+                                                                 "or use a non-collection data type to extract one value.\");"))
+                            .addStatement(new ExpressionStmt(
+                                    new MethodCallExpr(new NameExpr("ds"), "subscribe")
+                                            .addArgument(new MethodCallExpr(
+                                                    new NameExpr(DataObserver.class.getCanonicalName()), "of")
+                                                                 .addArgument(parseExpression("c::add")))));
+
+                } else {
+                    return new ExpressionStmt(
+                            new MethodCallExpr(fieldAccessor, "subscribe")
+                                    .addArgument(new MethodCallExpr(
+                                            new NameExpr(DataObserver.class.getCanonicalName()), "of")
+                                                         .addArgument(parseExpression("o -> kcontext.setVariable(\"" + vname + "\", o)"))));
+                }
+
             } // else fallback to the following
         } catch (NoSuchMethodException e) {
             // fallback to the following
@@ -282,4 +353,10 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         return blockStmt;
     }
 
+    private VariableDeclarationExpr declareErasedDataSource(Expression fieldAccessor) {
+        return new VariableDeclarationExpr(new VariableDeclarator()
+                                                   .setType(DataStream.class.getCanonicalName())
+                                                   .setName("ds")
+                                                   .setInitializer(fieldAccessor));
+    }
 }

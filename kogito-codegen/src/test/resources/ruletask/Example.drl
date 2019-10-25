@@ -1,0 +1,11 @@
+package ruletask
+unit Example
+
+import org.kie.kogito.codegen.data.Person;
+
+rule singlePerson when
+    p: /persons[ age >= 18 ]
+then
+    p.setAdult(true);
+
+end
