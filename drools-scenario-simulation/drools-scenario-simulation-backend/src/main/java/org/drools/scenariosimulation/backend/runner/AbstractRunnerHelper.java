@@ -118,9 +118,9 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected ResultWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {
-        /* if a direct mapping exists (no steps to reach the field) or one step of PROPERTY_EXPRESSION is present
-           (i.e. it's an expression type FactMapping), the value itself is the object (just converted) */
         for (Map.Entry<List<String>, Object> entry : params.entrySet()) {
+            /* if a direct mapping exists (no steps to reach the field) or a step of PROPERTY_EXPRESSION is present
+               (i.e. it's an expression type FactMapping), the value itself is the object (just converted) */
             if (entry.getKey().isEmpty() || entry.getKey().contains(ConstantsHolder.PROPERTY_EXPRESSION)) {
                 return ResultWrapper.createResult(entry.getValue());
             }

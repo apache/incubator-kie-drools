@@ -70,9 +70,7 @@ public class ScenarioBeanUtil {
         String lastStep = steps.get(steps.size() - 1);
 
         Object currentObject = beanToFill;
-        /* if a direct mapping exists (no steps to reach the field) or last step is an PROPERTY_EXPRESSION
-           (i.e. it's an expression type FactMapping), the value itself is the object (just converted) */
-        if (!pathToProperty.isEmpty() || Objects.equals(ConstantsHolder.PROPERTY_EXPRESSION, lastStep)) {
+        if (!pathToProperty.isEmpty()) {
             ScenarioBeanWrapper<?> scenarioBeanWrapper = navigateToObject(beanToFill, pathToProperty, true);
             currentObject = scenarioBeanWrapper.getBean();
         }
