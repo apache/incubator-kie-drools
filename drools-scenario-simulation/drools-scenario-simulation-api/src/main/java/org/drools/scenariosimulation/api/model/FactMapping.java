@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
+
 /**
  * It describes how to reach a single property of a fact
  */
@@ -168,6 +170,16 @@ public class FactMapping {
 
     public static String getPropertyPlaceHolder(int index) {
         return "PROPERTY " + index;
+    }
+
+    /**
+     * It evaluates if the FactMapping is of expression type, i.e. it contains an Java expression
+     * @return A boolean which is TRUE if contains a <code>ConstantsHolder.PROPERTY_EXPRESSION</code> in its
+     *         <code>expressionElements</code>
+     */
+    public boolean isExpressionType() {
+        return getExpressionElements().stream().anyMatch(
+                element -> ConstantsHolder.PROPERTY_EXPRESSION.equals(element.getStep()));
     }
 
     @Override
