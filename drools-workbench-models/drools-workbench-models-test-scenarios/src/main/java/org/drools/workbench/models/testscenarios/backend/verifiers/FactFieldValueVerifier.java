@@ -16,6 +16,13 @@
 
 package org.drools.workbench.models.testscenarios.backend.verifiers;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.workbench.models.testscenarios.backend.util.FieldTypeResolver;
@@ -26,13 +33,6 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class FactFieldValueVerifier {
 
@@ -108,13 +108,19 @@ public class FactFieldValueVerifier {
                 //Do nothing.
             }
         } else if (isFieldDate()) {
-            return DateObjectFactory.createTimeObject(FieldTypeResolver.getFieldType(currentField.getFieldName(), factObject), currentField.getExpected());
+            return DateObjectFactory.createDateObject(FieldTypeResolver.getFieldType(currentField.getFieldName(), factObject), currentField.getExpected());
+        } else if (isFieldLocalDate()) {
+            return DateObjectFactory.createLocalDateObject(currentField.getExpected());
         }
         return expectedResult;
     }
 
     private boolean isFieldDate() {
         return FieldTypeResolver.isDate(currentField.getFieldName(), factObject);
+    }
+
+    private boolean isFieldLocalDate() {
+        return FieldTypeResolver.isLocalDate(currentField.getFieldName(), factObject);
     }
 
     private String getSuccessfulExplanation() {

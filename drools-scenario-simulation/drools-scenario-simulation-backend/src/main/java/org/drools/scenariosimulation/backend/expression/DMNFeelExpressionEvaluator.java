@@ -28,14 +28,17 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 
 import static java.util.Collections.singletonList;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.UNARY_PARAMETER_IDENTIFIER;
 import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
@@ -102,8 +105,13 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
             return true;
         }
+
+        Map<String, Type> variables = new HashMap<>();
+        variables.put(UNARY_PARAMETER_IDENTIFIER, BuiltInType.UNKNOWN);
+        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression, variables));
+
         EvaluationContext evaluationContext = newEvaluationContext();
-        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression));
+        evaluationContext.setValue(UNARY_PARAMETER_IDENTIFIER, resultValue);
         return unaryTests.stream()
                 .allMatch(unaryTest -> Optional
                         .ofNullable(unaryTest.apply(evaluationContext, resultValue))

@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An Action to set an existing Fact's field value with the value of a Work Item
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public class ActionWorkItemSetFieldCol52 extends ActionSetFieldCol52 {
 
-    private static final long serialVersionUID = 540l;
+    private static final long serialVersionUID = 729l;
 
     /**
      * Available fields for this type of column.
@@ -105,16 +106,10 @@ public class ActionWorkItemSetFieldCol52 extends ActionSetFieldCol52 {
         if (!super.equals(o)) {
             return false;
         }
-
         ActionWorkItemSetFieldCol52 that = (ActionWorkItemSetFieldCol52) o;
-
-        if (workItemName != null ? !workItemName.equals(that.workItemName) : that.workItemName != null) {
-            return false;
-        }
-        if (workItemResultParameterName != null ? !workItemResultParameterName.equals(that.workItemResultParameterName) : that.workItemResultParameterName != null) {
-            return false;
-        }
-        return parameterClassName != null ? parameterClassName.equals(that.parameterClassName) : that.parameterClassName == null;
+        return Objects.equals(workItemName, that.workItemName) &&
+                Objects.equals(workItemResultParameterName, that.workItemResultParameterName) &&
+                Objects.equals(parameterClassName, that.parameterClassName);
     }
 
     @Override

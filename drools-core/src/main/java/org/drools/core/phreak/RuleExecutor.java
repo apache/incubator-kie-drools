@@ -381,18 +381,17 @@ public class RuleExecutor {
             } finally {
                 // if the tuple contains expired events
                 for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getFactHandle() != null &&  tuple.getFactHandle().isEvent() ) {
+                    if ( tuple.getFactHandle() != null && tuple.getFactHandle().isEvent() ) {
                         // can be null for eval, not and exists that have no right input
 
-                        EventFactHandle handle = (EventFactHandle) tuple.getFactHandle();
+                        EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();
                         // decrease the activation count for the event
                         handle.decreaseActivationsCount();
                         // handles "expire" only in stream mode.
-                        if ( handle.expirePartition() && handle.isExpired() ) {
-                            if ( handle.getActivationsCount() <= 0 ) {
-                                // and if no more activations, retract the handle
-                                handle.getEntryPoint(wm).delete( handle );
-                            }
+                        if ( handle.expirePartition() && handle.isExpired() &&
+                             handle.getFirstRightTuple() == null && handle.getActivationsCount() <= 0 ) {
+                            // and if no more activations, retract the handle
+                            handle.getEntryPoint( wm ).delete( handle );
                         }
                     }
                 }

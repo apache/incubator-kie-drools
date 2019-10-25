@@ -231,7 +231,6 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         }  else {
             this.activationsCount = activationsCount;
         }
-
     }
 
     public void increaseActivationsCount() {

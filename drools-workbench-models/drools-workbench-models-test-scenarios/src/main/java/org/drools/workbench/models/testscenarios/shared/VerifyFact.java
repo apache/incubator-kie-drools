@@ -57,7 +57,7 @@ public class VerifyFact
 
     public boolean wasSuccessful() {
         for ( VerifyField verifyField : fieldValues ) {
-            if ( !verifyField.getSuccessResult().booleanValue() ) {
+            if ( verifyField.getSuccessResult() == null || !verifyField.getSuccessResult().booleanValue() ) {
                 return false;
             }
         }
