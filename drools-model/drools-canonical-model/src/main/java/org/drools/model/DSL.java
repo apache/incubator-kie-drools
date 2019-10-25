@@ -727,6 +727,11 @@ public class DSL {
         return new ConsequenceBuilder._12(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11, decl12);
     }
 
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M> ConsequenceBuilder._13<A, B, C, D, E, F, G, H, I, J, K, L, M> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                                                     Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11, Variable<L> decl12, Variable<M> decl13) {
+        return new ConsequenceBuilder._13(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11, decl12, decl13);
+    }
+
     public static ConsequenceBuilder._N on(Variable... declarations) {
         return new ConsequenceBuilder._N(declarations);
     }
