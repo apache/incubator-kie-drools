@@ -94,10 +94,6 @@ public class ScenarioBeanUtil {
                                                     .append(step).append(" because a step is not instantiated")
                                                     .toString());
             }
-            /* Expression properties are not a real Object property, skip it. */
-            if (Objects.equals(ConstantsHolder.PROPERTY_EXPRESSION, step)) {
-                break;
-            }
             Field declaredField = getField(currentClass, step);
             declaredField.setAccessible(true);
             currentClass = declaredField.getType();
