@@ -140,6 +140,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
@@ -1075,7 +1076,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected void initDefaultEntryPoint() {
         this.defaultEntryPoint = createDefaultEntryPoint();
         this.entryPoints.clear();
-        this.entryPoints.put("DEFAULT", this.defaultEntryPoint);
+        this.entryPoints.put( EntryPoint.DEFAULT_NAME, this.defaultEntryPoint);
     }
 
     protected InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {

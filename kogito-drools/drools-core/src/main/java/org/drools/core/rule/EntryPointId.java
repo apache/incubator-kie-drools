@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.api.runtime.rule.EntryPoint;
+
 /**
  * This class defines a Rete "Entry Point".
  * An entry point is used as a source of facts that
@@ -36,7 +38,7 @@ public class EntryPointId extends ConditionalElement
     implements
     PatternSource, Externalizable {
 
-    public static final EntryPointId DEFAULT = new EntryPointId("DEFAULT");
+    public static final EntryPointId DEFAULT = new EntryPointId( EntryPoint.DEFAULT_NAME );
 
     private static final long serialVersionUID = 510l;
 

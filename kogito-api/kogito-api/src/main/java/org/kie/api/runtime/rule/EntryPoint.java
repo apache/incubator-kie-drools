@@ -46,6 +46,8 @@ import org.kie.api.runtime.ObjectFilter;
  */
 public interface EntryPoint {
 
+    String DEFAULT_NAME = "DEFAULT";
+
     /**
      * @return the String Id of this entry point
      */

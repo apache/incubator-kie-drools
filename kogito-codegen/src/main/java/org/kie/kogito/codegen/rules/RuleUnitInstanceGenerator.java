@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.rules;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.github.javaparser.StaticJavaParser;
@@ -33,9 +34,11 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
 import org.drools.core.util.ClassUtils;
-import org.kie.api.runtime.KieSession;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.api.runtime.KieSession;
 import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.conf.EntryPoint;
+import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.rules.DataSource;
 
 public class RuleUnitInstanceGenerator implements FileGenerator {
@@ -108,14 +111,15 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
         try {
 
 
-            for (Method m : typeClass.getDeclaredMethods()) {
+            for (Method m : typeClass.getMethods()) {
                 String methodName = m.getName();
                 String propertyName = ClassUtils.getter2property(methodName);
-                if (propertyName == null) {
+                if (propertyName == null || propertyName.equals( "class" )) {
                     continue;
                 }
 
                 if ( DataSource.class.isAssignableFrom( m.getReturnType() ) ) {
+
                     //  value.$method())
                     Expression fieldAccessor =
                             new MethodCallExpr(new NameExpr("value"), methodName);
@@ -125,7 +129,7 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
                             .addArgument(new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType( EntryPointDataProcessor.class.getName() ), NodeList.nodeList(
                                     new MethodCallExpr(
                                     new NameExpr("runtime"), "getEntryPoint",
-                                    NodeList.nodeList(new StringLiteralExpr(propertyName))))));
+                                    NodeList.nodeList(new StringLiteralExpr( getEntryPointName( typeClass, propertyName ) ))))));
 //                            new MethodReferenceExpr().setScope(new NameExpr("runtime")).setIdentifier("insert"));
 
                     methodBlock.addStatement(drainInto);
@@ -142,6 +146,20 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
         }
 
         return methodDeclaration;
+    }
+
+    private String getEntryPointName( Class<?> typeClass, String propertyName ) {
+        try {
+            Field dataSourceField = typeClass.getDeclaredField( propertyName );
+            if (dataSourceField.getAnnotation( DefaultEntryPoint.class ) != null) {
+                return org.kie.api.runtime.rule.EntryPoint.DEFAULT_NAME;
+            }
+            EntryPoint epAnn = dataSourceField.getAnnotation( EntryPoint.class );
+            if (epAnn != null) {
+                return epAnn.value();
+            }
+        } catch (NoSuchFieldException e) { }
+        return propertyName;
     }
 
     public ClassOrInterfaceDeclaration classDeclaration() {

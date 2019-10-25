@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.xml.bind.JAXBContext;
 
+import javax.xml.bind.JAXBContext;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -59,6 +59,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
@@ -487,7 +488,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         EntryPointNode defaultEntryPointNode = null;
         for ( EntryPointNode epNode : entryPointNodes ) {
-            if ( epNode.getEntryPoint().getEntryPointId().equals( "DEFAULT" ) ) {
+            if ( epNode.getEntryPoint().getEntryPointId().equals( EntryPoint.DEFAULT_NAME ) ) {
                 defaultEntryPointNode = epNode;
                 break;
             }

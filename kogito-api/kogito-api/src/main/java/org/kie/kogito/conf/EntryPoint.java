@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.unit;
+package org.kie.kogito.conf;
 
-import org.kie.kogito.codegen.data.Person;
-import org.kie.kogito.conf.DefaultEntryPoint;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class PersonsUnit implements RuleUnitData {
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value = ElementType.FIELD)
+public @interface EntryPoint {
 
-    @DefaultEntryPoint
-    private DataStore<Person> persons;
-
-    public PersonsUnit( DataStore<Person> persons ) {
-        this.persons = persons;
-    }
-
-    public DataStore<Person> getPersons() {
-        return persons;
-    }
+    String value();
 }

@@ -2,7 +2,7 @@ package org.kie.kogito.codegen.unit;
 unit PersonsUnit;
 
 rule Birthday no-loop when
-    $p: /persons[ $age : age ]
+    $p: Person( $age : age )
 then
     modify($p) { setAge($age+1); }
 end
