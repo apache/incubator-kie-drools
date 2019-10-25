@@ -16,17 +16,22 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -45,11 +50,7 @@ class ConsequenceGenerator {
     public static void main(String[] args) throws Exception {
         arity = 12;
 
-        try {
-            templateCU = StaticJavaParser.parseResource("ConsequenceBuilder.java");
-        } catch (IOException e) {
-            throw e;
-        }
+        templateCU = StaticJavaParser.parseResource("ConsequenceBuilder.java");
 
         consequenceBuilder = templateCU.getClassByName("ConsequenceBuilder")
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
@@ -79,17 +80,6 @@ class ConsequenceGenerator {
         consequenceBuilder.addMember(clone);
     }
 
-    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone) {
-        NodeList<TypeParameter> genericTypes = NodeList.nodeList();
-
-        IntStream.range(1, arity + 1)
-                .forEach(genericTypeIndex -> {
-                    genericTypes.add(new TypeParameter("T" + genericTypeIndex));
-                });
-
-        clone.setTypeParameters(genericTypes);
-    }
-
     private static void replaceName(int arity, ClassOrInterfaceDeclaration clone) {
         String arityName = "_" + arity;
         ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName);
@@ -110,10 +100,38 @@ class ConsequenceGenerator {
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK_PLUS_ONE))
                 .forEach(oldType -> oldType.replace(arityBlockTypePlusOne));
-
     }
 
-    static <N extends NodeWithSimpleName> Predicate<N> findNodeWithNameArityClassName(String name) {
+    private static <N extends NodeWithSimpleName> Predicate<N> findNodeWithNameArityClassName(String name) {
         return c -> name.equals(c.getName().asString());
+    }
+
+    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone) {
+
+        List<TypeParameter> genericTypeParameterList =
+                genericTypeStream(arity, ConsequenceGenerator::createTypeParameter)
+                        .collect(Collectors.toList());
+        clone.setTypeParameters(NodeList.nodeList(genericTypeParameterList));
+
+        List<Type> genericTypeList =
+                genericTypeStream(arity, ConsequenceGenerator::parseType)
+                        .collect(Collectors.toList());
+
+        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(genericTypeList));
+
+        clone.setExtendedTypes(NodeList.nodeList(extendedType));
+    }
+
+    private static <T> Stream<T> genericTypeStream(int arity, IntFunction<T> parseType) {
+        return IntStream.range(1, arity + 1)
+                .mapToObj(parseType);
+    }
+
+    private static ClassOrInterfaceType parseType(int genericTypeIndex) {
+        return parseClassOrInterfaceType("T" + genericTypeIndex);
+    }
+
+    private static TypeParameter createTypeParameter(int genericTypeIndex) {
+        return new TypeParameter("T" + genericTypeIndex);
     }
 }
