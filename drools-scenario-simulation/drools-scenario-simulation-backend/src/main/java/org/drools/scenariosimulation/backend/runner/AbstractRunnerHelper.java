@@ -34,6 +34,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
@@ -117,9 +118,10 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected ResultWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {
-        // if a direct mapping exists (no steps to reach the field) the value itself is the object (just converted)
+        /* if a direct mapping exists (no steps to reach the field) or one step of PROPERTY_EXPRESSION is present
+           (i.e. it's an expression type FactMapping), the value itself is the object (just converted) */
         for (Map.Entry<List<String>, Object> entry : params.entrySet()) {
-            if (entry.getKey().isEmpty()) {
+            if (entry.getKey().isEmpty() || entry.getKey().contains(ConstantsHolder.PROPERTY_EXPRESSION)) {
                 return ResultWrapper.createResult(entry.getValue());
             }
         }

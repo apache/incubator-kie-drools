@@ -22,7 +22,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 
 public class ScenarioBeanUtil {
@@ -91,6 +93,10 @@ public class ScenarioBeanUtil {
                 throw new ScenarioException(new StringBuilder().append("Impossible to reach field ")
                                                     .append(step).append(" because a step is not instantiated")
                                                     .toString());
+            }
+            /* Expression properties are not a real Object property, skip it. */
+            if (Objects.equals(ConstantsHolder.PROPERTY_EXPRESSION, step)) {
+                break;
             }
             Field declaredField = getField(currentClass, step);
             declaredField.setAccessible(true);
