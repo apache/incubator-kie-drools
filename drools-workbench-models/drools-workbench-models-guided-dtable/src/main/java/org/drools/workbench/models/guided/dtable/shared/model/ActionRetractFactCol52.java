@@ -35,6 +35,9 @@ public class ActionRetractFactCol52 extends ActionCol52 {
         if (!(o instanceof ActionRetractFactCol52)) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         return true;
     }
 }
