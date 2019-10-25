@@ -29,8 +29,13 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
@@ -135,6 +140,15 @@ class ConsequenceGenerator {
         }).collect(Collectors.toList());
 
         constructor.setParameters(NodeList.nodeList(parameters));
+        constructorBody(arity, constructor);
+    }
+
+    private static void constructorBody(int arity, ConstructorDeclaration constructor) {
+        List<Expression> constructorArgument = genericTypeStream(arity,
+                                                      genericTypeIndex -> new NameExpr(argName(genericTypeIndex))).collect(Collectors.toList());
+
+        MethodCallExpr superCall = new MethodCallExpr(null, "super", NodeList.nodeList(constructorArgument));
+        constructor.setBody(new BlockStmt(NodeList.nodeList(new ExpressionStmt(superCall))));
     }
 
     private static String argName(int genericTypeIndex) {
