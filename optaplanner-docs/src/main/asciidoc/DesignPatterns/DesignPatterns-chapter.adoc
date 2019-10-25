@@ -22,9 +22,9 @@ Follow the guidelines listed in this section to create a well thought-out model 
 . *Draw a class diagram of your domain model.*
 .. Make sure there are no duplications in your data model and that relationships between objects are clearly defined.
 
-.. Create sample instances for each class. For example, in the Employee Rostering starter application, the samples for the `Employee` class are `Ann`, `Bert`, and `Carl`.
+.. Create sample instances for each class. For example, in the employee rostering `Employee` class, create `Ann`, `Bert`, and `Carl`.
 
-. *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in the Employee Rostering starter application, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
+. *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in employee rostering, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
 because Optaplanner cannot assign an extra skill to an employee.
 
 . *If there are multiple relationships (or fields), check for <<shadowVariable,shadow variables>>*.
@@ -32,7 +32,7 @@ A shadow variable changes during planning, but its value can be calculated based
 +
 [NOTE]
 ====
-Only one side of a bidirectional relationship can be a genuine planning variable.The other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on. Keep bidirectional relationships orange.
+Only one side of a bi-directional relationship can be a genuine planning variable. The other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on. Keep bi-directional relationships orange.
 ====
 
 . *Check for <<chainedPlanningVariable,chained planning variables>>*.
@@ -53,16 +53,16 @@ For example, in the Employee Rostering starter applicaion the `ShiftAssignment` 
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 
-. *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bidirectional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in the Employee Rostering starter application, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
+. *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bi-directional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
 . *Make sure that the planning entity class has at least one problem property*. A planning entity class cannot consist of only planning variables or an ID and only planning variables.
-.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases <<searchSpaceSize,the search space size>> and significantly increases solving efficiency. For example, in the Employee Rostering starter application, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
+.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases <<searchSpaceSize,the search space size>> and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
 .. Make sure that when all planning variables have a value of `null`, the planning entity instance is describable to the business people. Planning variables have a value of `null` when the planning solution is uninitialized.
 ** A surrogate ID does not suffice as the required minimum of one problem property.
 ** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
-** In some cases, multiple planning entity instances have the same set of problem properties. In such cases, it can be useful to create an extra problem property to distinguish them. For example, in the Employee Rostering starter application, the `ShiftAssignment` class has the problem property `Shift` as well as the problem property `indexInShift` which is an `int` class.
+** In some cases, multiple planning entity instances have the same set of problem properties. In such cases, it can be useful to create an extra problem property to distinguish them. For example, in employee rostering, the `ShiftAssignment` class has the problem property `Shift` as well as the problem property `indexInShift` which is an `int` class.
 
-. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the Employee Rostering starter application, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
+. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the employee rostering, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
 On the other hand, the number of employees per shift is known in advance,
 so it is better to make the `Shift` relationship a problem property
 and the `Employee` relationship a planning variable as shown in the following examples.
