@@ -1,26 +1,13 @@
-import React from 'react';
-import { Card, CardHeader, CardBody, CardFooter, Button } from '@patternfly/react-core';
 import { TimeAgo } from '@n1ru4l/react-time-ago';
-import { UserIcon } from '@patternfly/react-icons';
-import { ServicesIcon } from '@patternfly/react-icons';
+import { Button, Card, CardBody, CardFooter, CardHeader } from '@patternfly/react-core';
+import { ServicesIcon, UserIcon } from '@patternfly/react-icons'
+import React from 'react';
+import './ProcessDetailsTimeline.css';
 
 const ProcessDetailsTimeline = ({ loading, data }) => {
-  const TimelineStyle = {
-    marginLeft: '2em',
-    height: '40em',
-    position: 'relative',
-    bottom: '3em',
-    overflowY: 'scroll',
-    marginTop: '3em'
-  };
 
-  const IconStyle = {
-    position: 'relative',
-    top: '3px',
-    left: '3px'
-  };
   return (
-    <Card style={TimelineStyle}>
+    <Card className="processdetailstimetine-timelinestyle">
       <CardHeader>Timeline</CardHeader>
       <CardBody>
         <div className="timeline-container">
@@ -33,9 +20,9 @@ const ProcessDetailsTimeline = ({ loading, data }) => {
                     <p>{content.name}</p>
                     <span className="circle">
                       {content.type === 'HumanTaskNode' ? (
-                        <UserIcon style={IconStyle} />
+                        <UserIcon className="processdetailstimetine-iconstyle" />
                       ) : (
-                        <ServicesIcon style={IconStyle} />
+                        <ServicesIcon className="processdetailstimetine-iconstyle" />
                       )}{' '}
                     </span>
                   </div>

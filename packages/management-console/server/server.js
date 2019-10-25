@@ -68,8 +68,8 @@ const typeDefs = gql`
   input ProcessInstanceFilter {
     state: [ProcessInstanceState!]
     id: [String!]
-    parentProcessInstanceId: [String!]
-    rootProcessInstanceId: [String!]
+    parentProcessInstanceId: [String]
+    rootProcessInstanceId: [String]
     processId: [String!]
     limit: Int
     offset: Int
@@ -651,7 +651,7 @@ const resolvers = {
         console.log("data", datum.parentProcessInstanceId);
         return (
           datum.parentProcessInstanceId ==
-          args["filter"].parentProcessInstanceId
+          args["filter"].parentProcessInstanceId[0]
         );
       });
       console.log();

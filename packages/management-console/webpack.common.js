@@ -22,8 +22,7 @@ module.exports = {
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true,
-              experimentalWatchApi: true
+              configFile: path.resolve("./tsconfig.json")
             }
           }
         ]

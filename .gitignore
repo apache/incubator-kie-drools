@@ -7,4 +7,5 @@ out/
 **/.DS_Store
 *.log
 **/yarn.lock
+**/stats.json
 package-lock.json

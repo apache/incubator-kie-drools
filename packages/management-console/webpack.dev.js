@@ -2,7 +2,6 @@ const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || '9000';
 
@@ -20,7 +19,6 @@ module.exports = merge(common, {
     overlay: true,
     open: true
   },
-  plugins: [new BundleAnalyzerPlugin()],
   module: {
     rules: [
       {

@@ -1,25 +1,25 @@
+import {Page, SkipToContent} from '@patternfly/react-core';
 import React from 'react';
-import { Page, SkipToContent } from '@patternfly/react-core';
-import { Route } from 'react-router-dom';
-import './Dashboard.css';
+import {Redirect, Route} from 'react-router-dom';
 import HeaderComponent from '../../Organisms/PageHeaderComponent/HeaderComponent';
 import DataListComponent from '../DataListComponent/DataListComponent';
-import ProcesssDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
+import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
+import './Dashboard.css';
 
-interface IOwnProps {}
+const Dashboard: React.FC<{}> = () => {
+    const pageId = 'main-content-page-layout-default-nav';
+    const PageSkipToContent = <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>;
 
-const Dashboard: React.FC<IOwnProps> = () => {
-  const pageId = 'main-content-page-layout-default-nav';
-  const PageSkipToContent = <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>;
-
-  return (
-    <React.Fragment>
-      <Page header={<HeaderComponent />} skipToContent={PageSkipToContent} mainContainerId={pageId} className="page">
-        <Route exact path="/ProcessInstances" component={DataListComponent} />
-        <Route exact path="/ProcessInstances/:instanceID" component={ProcesssDetailsPage} />
-      </Page>
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <Page header={
+                <HeaderComponent/>} skipToContent={PageSkipToContent} mainContainerId={pageId} className="page">
+                <Route exact path="/" render={() => <Redirect to="/ProcessInstances"/>}/>
+                <Route exact path="/ProcessInstances" component={DataListComponent}/>
+                <Route exact path="/ProcessInstances/:instanceID" component={ProcessDetailsPage}/>
+            </Page>
+        </React.Fragment>
+    );
 };
 
 export default Dashboard;

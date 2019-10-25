@@ -1,11 +1,9 @@
 import * as React from 'react';
-import Dashboard from '../DashboardComponent/Dashboard';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Dashboard from '../DashboardComponent/Dashboard';
 import './BaseLayout.css';
 
-interface IOwnProps {}
-
-const BaseLayout: React.FC<IOwnProps> = () => {
+const BaseLayout: React.FC<{}> = () => {
   return (
     <div>
       <BrowserRouter>
