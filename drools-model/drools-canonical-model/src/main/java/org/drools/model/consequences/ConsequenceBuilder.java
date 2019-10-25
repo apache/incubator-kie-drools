@@ -89,6 +89,20 @@ public class ConsequenceBuilder {
         }
     }
 
+    public static class _N extends AbstractValidBuilder<_N> {
+
+        public _N(Variable... declarations) {
+            super(declarations);
+        }
+
+        public _N executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
     public static class _1<A> extends AbstractValidBuilder<_1<A>> {
         public _1(Variable<A> declaration) {
             super(declaration);
@@ -401,20 +415,6 @@ public class ConsequenceBuilder {
         }
 
         public _13<A, B, C, D, E, F, G, H, I, J, K, L, M> executeScript(String language, Class<?> ruleClass, String script) {
-            this.usingDrools = true;
-            this.language = language;
-            this.block = new ScriptBlock(ruleClass, script);
-            return this;
-        }
-    }
-
-    public static class _N extends AbstractValidBuilder<_N> {
-
-        public _N(Variable... declarations) {
-            super(declarations);
-        }
-
-        public _N executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
