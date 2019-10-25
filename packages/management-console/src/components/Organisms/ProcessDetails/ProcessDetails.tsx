@@ -33,7 +33,7 @@ const ProcessDetails = ({ loading, data }) => {
           <GridItem span={6}>
             <TextContent>
               {!loading ? (
-                data.ProcessId.map(item => {
+                data.ProcessInstances.map(item => {
                   return (
                     <div key={item.id}>
                       <Text component={TextVariants.h4}>{item.processId}</Text>

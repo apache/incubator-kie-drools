@@ -12,8 +12,8 @@ import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/Proce
 const ProcessDetailsPage = ({ match }) => {
   const id = match.params['instanceID'];
   const GET_QUERY = gql`
-    query getQuery($id: String!) {
-      ProcessId(filter: { id: $id }) {
+    query getQuery($id: [String!]) {
+      ProcessInstances(filter: { id: $id }) {
         id
         processId
         parentProcessInstanceId
@@ -31,9 +31,9 @@ const ProcessDetailsPage = ({ match }) => {
     }
   `;
   const { data, loading, error } = useQuery(GET_QUERY, {
-    variables: { id }
+    variables: { id: [id] }
   });
-  
+
   const PageSectionstyle = {
     height: '100%'
   };
@@ -56,7 +56,7 @@ const ProcessDetailsPage = ({ match }) => {
               <ProcessDetailsProcessVariables loading={loading} data={data} />
             </GridItem>
             <GridItem span={4} rowSpan={3}>
-              <ProcessDetailsTimeline loading={loading} data={data.ProcessId} />
+              <ProcessDetailsTimeline loading={loading} data={data.ProcessInstances} />
             </GridItem>
           </Grid>
         </PageSection>
@@ -65,4 +65,4 @@ const ProcessDetailsPage = ({ match }) => {
   );
 };
 
-export default withApollo(ProcessDetailsPage as any);
+export default ProcessDetailsPage;

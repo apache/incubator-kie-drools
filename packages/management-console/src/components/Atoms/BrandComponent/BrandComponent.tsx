@@ -9,7 +9,7 @@ interface IOwnProps {}
 const BrandComponent: React.FC<combinedProps> = ({ history }) => {
   const logo = require('../../../static/kogito_logo_rgb.png');
   const onLogoClick = () => {
-    history.push('/');
+    history.push('/ProcessInstances');
   };
   return <Brand src={logo} alt="Kogito Logo" onClick={onLogoClick}></Brand>;
 };
