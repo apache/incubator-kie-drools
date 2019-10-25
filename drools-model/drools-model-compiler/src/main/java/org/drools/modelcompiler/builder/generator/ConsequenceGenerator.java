@@ -135,7 +135,7 @@ class ConsequenceGenerator {
         clone.setExtendedTypes(NodeList.nodeList(extendedType));
 
         List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
-            ClassOrInterfaceType type = parseType(genericTypeIndex);
+            ClassOrInterfaceType type = parseClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
             return new Parameter(type, argName(genericTypeIndex));
         }).collect(Collectors.toList());
 
@@ -161,10 +161,14 @@ class ConsequenceGenerator {
     }
 
     private static ClassOrInterfaceType parseType(int genericTypeIndex) {
-        return parseClassOrInterfaceType("T" + genericTypeIndex);
+        return parseClassOrInterfaceType(argumentTypeName(genericTypeIndex));
+    }
+
+    private static String argumentTypeName(int genericTypeIndex) {
+        return "T" + genericTypeIndex;
     }
 
     private static TypeParameter createTypeParameter(int genericTypeIndex) {
-        return new TypeParameter("T" + genericTypeIndex);
+        return new TypeParameter(argumentTypeName(genericTypeIndex));
     }
 }
