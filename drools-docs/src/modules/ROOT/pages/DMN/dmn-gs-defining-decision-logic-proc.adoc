@@ -6,7 +6,7 @@ To calculate the fine and to decide whether the driver is to be suspended or not
 .Fine decision table
 image::dmn/dmn-gs-fine-decision-table.png[]
 
-.Should the driver be suspended? context boxed expression
+.Should the driver be suspended?
 image::dmn/dmn-gs-context-table.png[]
 
 .Prerequisites
