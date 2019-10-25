@@ -93,12 +93,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
                 Instance {id} ({processID})
               </DataListCell>,
               <DataListCell key="secondary content">Chart to be added</DataListCell>,
-              // this should be removed in favor of the action below... but I can't get the link to work on the action
-              <DataListCell key="secondary content 2">
-                <Link to={'/instanceDetail/' + id}>
-                  <Button variant="secondary">Old Details</Button>
-                </Link>
-              </DataListCell>,
               <DataListCell key="secondary content 3">{instanceState}</DataListCell>
             ]}
           />
