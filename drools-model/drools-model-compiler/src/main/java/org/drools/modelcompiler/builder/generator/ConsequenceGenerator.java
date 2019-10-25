@@ -28,6 +28,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -74,13 +75,22 @@ class ConsequenceGenerator {
         ClassOrInterfaceDeclaration clone = templateInnerClass.clone();
         clone.setComment(null);
 
-        replaceName(arity, clone);
-        replaceGenericType(arity, clone);
+        ConstructorDeclaration constructor = findConstructor(clone);
+
+        replaceName(arity, clone, constructor);
+        replaceGenericType(arity, clone, constructor);
 
         consequenceBuilder.addMember(clone);
     }
 
-    private static void replaceName(int arity, ClassOrInterfaceDeclaration clone) {
+    private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
+        return (ConstructorDeclaration) clone.findAll(ConstructorDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Constructor not found"));
+    }
+
+    private static void replaceName(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
         String arityName = "_" + arity;
         ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName);
         ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
@@ -92,8 +102,7 @@ class ConsequenceGenerator {
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
                 .forEach(oldType -> oldType.replace(arityType));
 
-        clone.findAll(ConstructorDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
-                .forEach(ctor -> ctor.setName(arityName));
+        constructor.setName(arityName);
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK))
                 .forEach(oldType -> oldType.replace(arityBlockType));
@@ -106,8 +115,7 @@ class ConsequenceGenerator {
         return c -> name.equals(c.getName().asString());
     }
 
-    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone) {
-
+    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
         List<TypeParameter> genericTypeParameterList =
                 genericTypeStream(arity, ConsequenceGenerator::createTypeParameter)
                         .collect(Collectors.toList());
@@ -120,6 +128,17 @@ class ConsequenceGenerator {
         ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(genericTypeList));
 
         clone.setExtendedTypes(NodeList.nodeList(extendedType));
+
+        List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
+            ClassOrInterfaceType type = parseType(genericTypeIndex);
+            return new Parameter(type, argName(genericTypeIndex));
+        }).collect(Collectors.toList());
+
+        constructor.setParameters(NodeList.nodeList(parameters));
+    }
+
+    private static String argName(int genericTypeIndex) {
+        return "arg" + genericTypeIndex;
     }
 
     private static <T> Stream<T> genericTypeStream(int arity, IntFunction<T> parseType) {
