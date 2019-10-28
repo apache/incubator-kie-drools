@@ -56,7 +56,7 @@ class BlockGenerator {
     private static String ARITY_CLASS_BLOCK_PLUS_ONE = "_ARITY_BLOCK_PLUS_ONE";
     private static ClassOrInterfaceDeclaration templateInnerClass;
     private static CompilationUnit templateCU;
-    private static ClassOrInterfaceDeclaration blockClass;
+    private static ClassOrInterfaceDeclaration blockClassClone;
     private static int arity;
 
     public static void main(String[] args) throws Exception {
@@ -65,38 +65,32 @@ class BlockGenerator {
         templateCU = StaticJavaParser.parseResource("BlockTemplate.java");
 
         for (int i = 1; i <= arity; i++) {
-            generateInnerClass(i);
+            generateClass(i);
         }
 
     }
 
-    private static void generateInnerClass(int arity) throws IOException {
+    private static void generateClass(int arity) throws IOException {
         ClassOrInterfaceDeclaration blockClass = templateCU.getInterfaceByName("BlockTemplate")
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
 
-        BlockGenerator.blockClass = blockClass.clone();
+        BlockGenerator.blockClassClone = blockClass.clone();
 
-        changeInnerClass(arity);
-    }
-
-    private static void changeInnerClass(int arity) throws IOException {
-        templateInnerClass = BlockGenerator.blockClass
+        templateInnerClass = BlockGenerator.blockClassClone
                 .findAll(ClassOrInterfaceDeclaration.class, c -> "Impl".equals(c.getNameAsString()))
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Inner class not found"));
 
-        BlockGenerator.blockClass.remove(templateInnerClass);
+        BlockGenerator.blockClassClone.setName(arityName(arity));
 
         ClassOrInterfaceDeclaration clone = templateInnerClass.clone();
         clone.setComment(null);
 
         ConstructorDeclaration constructor = findConstructor(clone);
 
-        replaceName(arity, clone, constructor);
         replaceGenericType(arity, clone, constructor);
 
-        System.out.println(templateCU);
 
         Path newFilePath = Paths.get(String.format("/tmp/block-classes/Block%d.java", arity));
         Path parent = newFilePath.getParent();
@@ -108,7 +102,6 @@ class BlockGenerator {
         Files.write(newFilePath, templateCU.toString().getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING );
-
     }
 
     private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
@@ -118,28 +111,8 @@ class BlockGenerator {
                     .orElseThrow(() -> new RuntimeException("Constructor not found"));
     }
 
-    private static void replaceName(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
-        ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName(arity));
-        ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
-        ClassOrInterfaceType arityBlockTypePlusOne = parseClassOrInterfaceType("Block" + (arity + 1));
-
-        clone.findAll(ClassOrInterfaceDeclaration.class, findClassWithName(ARITY_CLASS_NAME))
-                .forEach(c -> c.setName(arityName(arity)));
-
-        clone.findAll(ClassOrInterfaceType.class, findClassWithName(ARITY_CLASS_NAME))
-                .forEach(oldType -> oldType.replace(arityType));
-
-        constructor.setName(arityName(arity));
-
-        clone.findAll(ClassOrInterfaceType.class, findClassWithName(ARITY_CLASS_BLOCK))
-                .forEach(oldType -> oldType.replace(arityBlockType));
-
-        clone.findAll(ClassOrInterfaceType.class, findClassWithName(ARITY_CLASS_BLOCK_PLUS_ONE))
-                .forEach(oldType -> oldType.replace(arityBlockTypePlusOne));
-    }
-
     private static String arityName(int arity) {
-        return "_" + arity;
+        return "Block" + arity;
     }
 
     private static <N extends NodeWithSimpleName> Predicate<N> findClassWithName(String name) {
