@@ -37,6 +37,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -362,6 +363,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         paramsToSet.put(Collections.emptyList(), null);
 
         assertNull(runnerHelper.getDirectMapping(paramsToSet).getResult());
+
+        paramsToSet.clear();
+
+        paramsToSet.put(Arrays.asList("Test", ConstantsHolder.PROPERTY_EXPRESSION), "Test");
+
+        assertEquals("Test", runnerHelper.getDirectMapping(paramsToSet).getResult());
 
         paramsToSet.clear();
 

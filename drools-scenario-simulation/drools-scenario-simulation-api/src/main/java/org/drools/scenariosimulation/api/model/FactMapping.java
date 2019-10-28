@@ -173,13 +173,13 @@ public class FactMapping {
     }
 
     /**
-     * It evaluates if the FactMapping is of expression type, i.e. it contains an Java expression
+     * It evaluates if the FactMapping is of expression type, i.e. it contains a Java expression.
      * @return A boolean which is TRUE if contains a <code>ConstantsHolder.PROPERTY_EXPRESSION</code> in its
-     *         <code>expressionElements</code>
+     *         <code>expressionElements</code> last step.
      */
     public boolean isExpressionType() {
-        return getExpressionElements().stream().anyMatch(
-                element -> ConstantsHolder.PROPERTY_EXPRESSION.equals(element.getStep()));
+        return ConstantsHolder.PROPERTY_EXPRESSION.equals(
+                expressionElements.get(expressionElements.size() - 1).getStep());
     }
 
     @Override
