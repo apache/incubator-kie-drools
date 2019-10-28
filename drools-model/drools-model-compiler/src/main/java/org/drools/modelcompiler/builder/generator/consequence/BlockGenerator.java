@@ -34,6 +34,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -45,19 +46,17 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
+import sun.reflect.generics.tree.TypeArgument;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 /* Used to generate Block DSL */
 class BlockGenerator {
 
-    private static String ARITY_CLASS_NAME = "_ARITY_CLASS_NAME";
-    private static String ARITY_CLASS_BLOCK = "_ARITY_BLOCK";
-    private static String ARITY_CLASS_BLOCK_PLUS_ONE = "_ARITY_BLOCK_PLUS_ONE";
     private static ClassOrInterfaceDeclaration templateInnerClass;
     private static CompilationUnit templateCU;
-    private static ClassOrInterfaceDeclaration blockClassClone;
     private static int arity;
+    private static CompilationUnit cloneCU;
 
     public static void main(String[] args) throws Exception {
         arity = 3;
@@ -67,30 +66,25 @@ class BlockGenerator {
         for (int i = 1; i <= arity; i++) {
             generateClass(i);
         }
-
     }
 
     private static void generateClass(int arity) throws IOException {
-        ClassOrInterfaceDeclaration blockClass = templateCU.getInterfaceByName("BlockTemplate")
+        cloneCU = templateCU.clone();
+
+        ClassOrInterfaceDeclaration blockClass = cloneCU.getInterfaceByName("BlockTemplate")
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
 
-        BlockGenerator.blockClassClone = blockClass.clone();
+        blockClass.setName(arityName(arity));
+        replaceGenericType(arity, blockClass);
 
-        templateInnerClass = BlockGenerator.blockClassClone
-                .findAll(ClassOrInterfaceDeclaration.class, c -> "Impl".equals(c.getNameAsString()))
-                .stream()
-                .findFirst()
+        templateInnerClass = blockClass
+                .findFirst(ClassOrInterfaceDeclaration.class, c -> "Impl".equals(c.getNameAsString()))
                 .orElseThrow(() -> new RuntimeException("Inner class not found"));
-
-        BlockGenerator.blockClassClone.setName(arityName(arity));
 
         ClassOrInterfaceDeclaration clone = templateInnerClass.clone();
         clone.setComment(null);
 
         ConstructorDeclaration constructor = findConstructor(clone);
-
-        replaceGenericType(arity, clone, constructor);
-
 
         Path newFilePath = Paths.get(String.format("/tmp/block-classes/Block%d.java", arity));
         Path parent = newFilePath.getParent();
@@ -99,16 +93,17 @@ class BlockGenerator {
         } catch (FileAlreadyExistsException e) {
 
         }
-        Files.write(newFilePath, templateCU.toString().getBytes(),
+        Files.write(newFilePath, cloneCU.toString().getBytes(),
                     StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING );
+                    StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
         return clone.findAll(ConstructorDeclaration.class, findClassWithName("Impl"))
-                    .stream()
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Constructor not found"));
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Constructor not found"));
+
     }
 
     private static String arityName(int arity) {
@@ -119,37 +114,21 @@ class BlockGenerator {
         return c -> name.equals(c.getName().asString());
     }
 
-    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
+    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone) {
         List<TypeParameter> genericTypeParameterList =
                 genericTypeStream(arity, BlockGenerator::createTypeParameter)
                         .collect(Collectors.toList());
         clone.setTypeParameters(NodeList.nodeList(genericTypeParameterList));
 
-        List<Type> genericTypeList =
-                genericTypeStream(arity, BlockGenerator::parseType)
-                        .collect(Collectors.toList());
+        MethodDeclaration executeMethod = clone.findFirst(MethodDeclaration.class, mc -> "execute".equals(mc.getNameAsString()))
+                .orElseThrow(() -> new RuntimeException("Execute method not found"));
 
-        ClassOrInterfaceType extendTypeParameter = parseClassOrInterfaceType(arityName(arity));
-        extendTypeParameter.setTypeArguments(NodeList.nodeList(genericTypeList));
-        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(extendTypeParameter));
-
-        clone.setExtendedTypes(NodeList.nodeList(extendedType));
-
-        List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
-            ClassOrInterfaceType type = parseClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
-            return new Parameter(type, argName(genericTypeIndex));
+        List<Parameter> params = genericTypeStream(arity, i -> {
+            Type t = parseType(i);
+            return new Parameter(t, argName(i));
         }).collect(Collectors.toList());
 
-        constructor.setParameters(NodeList.nodeList(parameters));
-        constructorBody(arity, constructor);
-    }
-
-    private static void constructorBody(int arity, ConstructorDeclaration constructor) {
-        List<Expression> constructorArgument = genericTypeStream(arity,
-                                                      genericTypeIndex -> new NameExpr(argName(genericTypeIndex))).collect(Collectors.toList());
-
-        MethodCallExpr superCall = new MethodCallExpr(null, "super", NodeList.nodeList(constructorArgument));
-        constructor.setBody(new BlockStmt(NodeList.nodeList(new ExpressionStmt(superCall))));
+        executeMethod.setParameters(NodeList.nodeList(params));
     }
 
     private static String argName(int genericTypeIndex) {

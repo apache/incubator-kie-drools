@@ -62,9 +62,7 @@ class ConsequenceGenerator {
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
 
         templateInnerClass = consequenceBuilder
-                .findAll(ClassOrInterfaceDeclaration.class, c -> ARITY_CLASS_NAME.equals(c.getNameAsString()))
-                .stream()
-                .findFirst()
+                .findFirst(ClassOrInterfaceDeclaration.class, c -> ARITY_CLASS_NAME.equals(c.getNameAsString()))
                 .orElseThrow(() -> new RuntimeException("Inner class not found"));
 
         consequenceBuilder.remove(templateInnerClass);
@@ -89,9 +87,7 @@ class ConsequenceGenerator {
     }
 
     private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
-        return (ConstructorDeclaration) clone.findAll(ConstructorDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
-                    .stream()
-                    .findFirst()
+        return clone.findFirst(ConstructorDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
                     .orElseThrow(() -> new RuntimeException("Constructor not found"));
     }
 
