@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.optaplanner.spring.boot.autoconfigure.OptaPlannerAutoConfiguration
