@@ -54,7 +54,7 @@ class ConsequenceGenerator {
     private static int arity;
 
     public static void main(String[] args) throws Exception {
-        arity = 12;
+        arity = 24;
 
         templateCU = StaticJavaParser.parseResource("ConsequenceBuilder.java");
 
@@ -96,24 +96,27 @@ class ConsequenceGenerator {
     }
 
     private static void replaceName(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
-        String arityName = "_" + arity;
-        ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName);
+        ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName(arity));
         ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
         ClassOrInterfaceType arityBlockTypePlusOne = parseClassOrInterfaceType("Block" + (arity + 1));
 
         clone.findAll(ClassOrInterfaceDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
-                .forEach(c -> c.setName(arityName));
+                .forEach(c -> c.setName(arityName(arity)));
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
                 .forEach(oldType -> oldType.replace(arityType));
 
-        constructor.setName(arityName);
+        constructor.setName(arityName(arity));
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK))
                 .forEach(oldType -> oldType.replace(arityBlockType));
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK_PLUS_ONE))
                 .forEach(oldType -> oldType.replace(arityBlockTypePlusOne));
+    }
+
+    private static String arityName(int arity) {
+        return "_" + arity;
     }
 
     private static <N extends NodeWithSimpleName> Predicate<N> findNodeWithNameArityClassName(String name) {
@@ -130,7 +133,9 @@ class ConsequenceGenerator {
                 genericTypeStream(arity, ConsequenceGenerator::parseType)
                         .collect(Collectors.toList());
 
-        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(genericTypeList));
+        ClassOrInterfaceType extendTypeParameter = parseClassOrInterfaceType(arityName(arity));
+        extendTypeParameter.setTypeArguments(NodeList.nodeList(genericTypeList));
+        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(extendTypeParameter));
 
         clone.setExtendedTypes(NodeList.nodeList(extendedType));
 
