@@ -11,9 +11,9 @@ public interface BlockTemplate<A, B, C, D, E, F, G, H, I, J, K, L, M, O> extends
 
     class Impl extends IntrospectableLambda implements BlockN {
 
-        private final Block14 block;
+        private final BlockTemplate block;
 
-        public Impl(Block14 block) {
+        public Impl(BlockTemplate block) {
             this.block = block;
         }
 

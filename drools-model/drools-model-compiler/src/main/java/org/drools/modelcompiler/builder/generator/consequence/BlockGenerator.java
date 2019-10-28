@@ -36,7 +36,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -59,7 +61,7 @@ class BlockGenerator {
     private static CompilationUnit cloneCU;
 
     public static void main(String[] args) throws Exception {
-        arity = 3;
+        arity = 25;
 
         templateCU = StaticJavaParser.parseResource("BlockTemplate.java");
 
@@ -75,16 +77,15 @@ class BlockGenerator {
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
 
         blockClass.setName(arityName(arity));
-        replaceGenericType(arity, blockClass);
 
         templateInnerClass = blockClass
                 .findFirst(ClassOrInterfaceDeclaration.class, c -> "Impl".equals(c.getNameAsString()))
                 .orElseThrow(() -> new RuntimeException("Inner class not found"));
 
-        ClassOrInterfaceDeclaration clone = templateInnerClass.clone();
-        clone.setComment(null);
+        cloneCU.findAll(Type.class, t -> "BlockTemplate".equals(t.asString()))
+                .forEach(t -> t.replace(parseClassOrInterfaceType(arityName(arity))));
 
-        ConstructorDeclaration constructor = findConstructor(clone);
+        replaceGenericType(arity, blockClass, templateInnerClass);
 
         Path newFilePath = Paths.get(String.format("/tmp/block-classes/Block%d.java", arity));
         Path parent = newFilePath.getParent();
@@ -98,37 +99,39 @@ class BlockGenerator {
                     StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
-        return clone.findAll(ConstructorDeclaration.class, findClassWithName("Impl"))
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Constructor not found"));
-
-    }
-
     private static String arityName(int arity) {
         return "Block" + arity;
     }
 
-    private static <N extends NodeWithSimpleName> Predicate<N> findClassWithName(String name) {
-        return c -> name.equals(c.getName().asString());
-    }
-
-    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration clone) {
+    private static void replaceGenericType(int arity, ClassOrInterfaceDeclaration containerClass, ClassOrInterfaceDeclaration innerClass) {
         List<TypeParameter> genericTypeParameterList =
                 genericTypeStream(arity, BlockGenerator::createTypeParameter)
                         .collect(Collectors.toList());
-        clone.setTypeParameters(NodeList.nodeList(genericTypeParameterList));
+        containerClass.setTypeParameters(NodeList.nodeList(genericTypeParameterList));
 
-        MethodDeclaration executeMethod = clone.findFirst(MethodDeclaration.class, mc -> "execute".equals(mc.getNameAsString()))
+        MethodDeclaration executeMethod = containerClass.findFirst(MethodDeclaration.class, mc -> "execute".equals(mc.getNameAsString()))
                 .orElseThrow(() -> new RuntimeException("Execute method not found"));
 
         List<Parameter> params = genericTypeStream(arity, i -> {
             Type t = parseType(i);
             return new Parameter(t, argName(i));
         }).collect(Collectors.toList());
-
         executeMethod.setParameters(NodeList.nodeList(params));
+
+        List<Expression> executParams = genericTypeStream(arity, i -> {
+            NameExpr nameExpr = new NameExpr("objs");
+            return new ArrayAccessExpr(nameExpr, new IntegerLiteralExpr(i - 1));
+        }).collect(Collectors.toList());
+
+        innerClass.findFirst(MethodDeclaration.class, mc -> "execute".equals(mc.getNameAsString()))
+                .ifPresent(m -> {
+                    BlockStmt blockStmt = new BlockStmt();
+                    NodeList<Expression> expressions = NodeList.nodeList(executParams);
+                    MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("block"), "execute", expressions);
+                    blockStmt.setStatements(NodeList.nodeList(new ExpressionStmt(methodCallExpr)));
+                    m.setBody(blockStmt);
+                });
+
     }
 
     private static String argName(int genericTypeIndex) {
