@@ -16,6 +16,12 @@
 
 package org.drools.modelcompiler.builder.generator.consequence;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -64,7 +70,7 @@ class BlockGenerator {
 
     }
 
-    private static void generateInnerClass(int arity) {
+    private static void generateInnerClass(int arity) throws IOException {
         ClassOrInterfaceDeclaration blockClass = templateCU.getInterfaceByName("BlockTemplate")
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
 
@@ -73,7 +79,7 @@ class BlockGenerator {
         changeInnerClass(arity);
     }
 
-    private static void changeInnerClass(int arity) {
+    private static void changeInnerClass(int arity) throws IOException {
         templateInnerClass = BlockGenerator.blockClass
                 .findAll(ClassOrInterfaceDeclaration.class, c -> "Impl".equals(c.getNameAsString()))
                 .stream()
@@ -91,6 +97,18 @@ class BlockGenerator {
         replaceGenericType(arity, clone, constructor);
 
         System.out.println(templateCU);
+
+        Path newFilePath = Paths.get(String.format("/tmp/block-classes/Block%d.java", arity));
+        Path parent = newFilePath.getParent();
+        try {
+            Files.createDirectories(parent);
+        } catch (FileAlreadyExistsException e) {
+
+        }
+        Files.write(newFilePath, templateCU.toString().getBytes(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING );
+
     }
 
     private static ConstructorDeclaration findConstructor(ClassOrInterfaceDeclaration clone) {
