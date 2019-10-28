@@ -16,13 +16,16 @@
 
 package org.optaplanner.spring.boot.example.solver;
 
+import java.time.Duration;
+import java.util.function.Function;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 import org.optaplanner.spring.boot.example.domain.Investigation;
-
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 
 public class PoliceConstraintProvider implements ConstraintProvider {
 
@@ -39,6 +42,18 @@ public class PoliceConstraintProvider implements ConstraintProvider {
                 .groupBy(Investigation::getDetective, sumDuration(Investigation::getEstimatedDuration))
                 .filter((detective, durationTotal) -> detective.getWorkDuration().compareTo(durationTotal) < 0)
                 .penalize("Work duration", HardSoftScore.ONE_HARD);
+    }
+
+    // WORKAROUND
+    public static <A> UniConstraintCollector<A, ?, Duration> sumDuration(Function<? super A, Duration> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new Duration[]{Duration.ZERO},
+                (resultContainer, a) -> {
+                    Duration value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
     }
 
 }
