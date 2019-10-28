@@ -16,7 +16,6 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * An Action to insert and set a field value on a new Fact with the value of a
@@ -24,7 +23,7 @@ import java.util.Objects;
  */
 public class ActionWorkItemInsertFactCol52 extends ActionInsertFactCol52 {
 
-    private static final long serialVersionUID = 729L;
+    private static final long serialVersionUID = 540L;
 
     private String workItemName;
 
@@ -112,10 +111,16 @@ public class ActionWorkItemInsertFactCol52 extends ActionInsertFactCol52 {
         if (!super.equals(o)) {
             return false;
         }
+
         ActionWorkItemInsertFactCol52 that = (ActionWorkItemInsertFactCol52) o;
-        return Objects.equals(workItemName, that.workItemName) &&
-                Objects.equals(workItemResultParameterName, that.workItemResultParameterName) &&
-                Objects.equals(parameterClassName, that.parameterClassName);
+
+        if (workItemName != null ? !workItemName.equals(that.workItemName) : that.workItemName != null) {
+            return false;
+        }
+        if (workItemResultParameterName != null ? !workItemResultParameterName.equals(that.workItemResultParameterName) : that.workItemResultParameterName != null) {
+            return false;
+        }
+        return parameterClassName != null ? parameterClassName.equals(that.parameterClassName) : that.parameterClassName == null;
     }
 
     @Override

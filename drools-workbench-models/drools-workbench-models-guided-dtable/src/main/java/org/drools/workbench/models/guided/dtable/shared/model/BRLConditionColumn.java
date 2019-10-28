@@ -17,7 +17,6 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.IPattern;
 
@@ -30,7 +29,7 @@ public class BRLConditionColumn extends ConditionCol52
         implements
         BRLColumn<IPattern, BRLConditionVariableColumn> {
 
-    private static final long serialVersionUID = 729l;
+    private static final long serialVersionUID = 540l;
 
     private List<IPattern> definition = new ArrayList<IPattern>();
 
@@ -129,9 +128,13 @@ public class BRLConditionColumn extends ConditionCol52
         if (!super.equals(o)) {
             return false;
         }
+
         BRLConditionColumn that = (BRLConditionColumn) o;
-        return Objects.equals(definition, that.definition) &&
-                Objects.equals(childColumns, that.childColumns);
+
+        if (definition != null ? !definition.equals(that.definition) : that.definition != null) {
+            return false;
+        }
+        return childColumns != null ? childColumns.equals(that.childColumns) : that.childColumns == null;
     }
 
     @Override

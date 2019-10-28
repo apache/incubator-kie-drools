@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
@@ -34,7 +33,7 @@ public class ConditionCol52 extends DTColumnConfig52
         HasParameterizedOperator,
         HasBinding {
 
-    private static final long serialVersionUID = 729l;
+    private static final long serialVersionUID = 510l;
 
     // The type of the value that is in the cell, eg if it is a formula, or
     // literal value etc. The valid types are from ISingleFieldConstraint:
@@ -57,7 +56,7 @@ public class ConditionCol52 extends DTColumnConfig52
     private String valueList;
 
     //CEP operators' parameters
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> parameters;
 
     //Binding for the field
     private String binding;
@@ -188,11 +187,11 @@ public class ConditionCol52 extends DTColumnConfig52
     }
 
     public void clearParameters() {
-        this.parameters.clear();
+        this.parameters = null;
     }
 
     public String getParameter( String key ) {
-        if ( parameters.isEmpty() ) {
+        if ( parameters == null ) {
             return null;
         }
         String parameter = parameters.get( key );
@@ -201,15 +200,24 @@ public class ConditionCol52 extends DTColumnConfig52
 
     public void setParameter( String key,
                               String parameter ) {
+        if ( parameters == null ) {
+            parameters = new HashMap<String, String>();
+        }
         parameters.put( key,
                         parameter );
     }
 
     public void deleteParameter( String key ) {
+        if ( this.parameters == null ) {
+            return;
+        }
         parameters.remove( key );
     }
 
     public Map<String, String> getParameters() {
+        if ( this.parameters == null ) {
+            this.parameters = new HashMap<String, String>();
+        }
         return this.parameters;
     }
 
@@ -240,14 +248,28 @@ public class ConditionCol52 extends DTColumnConfig52
         if (!super.equals(o)) {
             return false;
         }
+
         ConditionCol52 that = (ConditionCol52) o;
-        return constraintValueType == that.constraintValueType &&
-                Objects.equals(factField, that.factField) &&
-                Objects.equals(fieldType, that.fieldType) &&
-                Objects.equals(operator, that.operator) &&
-                Objects.equals(valueList, that.valueList) &&
-                Objects.equals(parameters, that.parameters) &&
-                Objects.equals(binding, that.binding);
+
+        if (constraintValueType != that.constraintValueType) {
+            return false;
+        }
+        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
+            return false;
+        }
+        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) {
+            return false;
+        }
+        if (operator != null ? !operator.equals(that.operator) : that.operator != null) {
+            return false;
+        }
+        if (valueList != null ? !valueList.equals(that.valueList) : that.valueList != null) {
+            return false;
+        }
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
+            return false;
+        }
+        return binding != null ? binding.equals(that.binding) : that.binding == null;
     }
 
     @Override

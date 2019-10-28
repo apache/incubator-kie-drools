@@ -10,6 +10,7 @@ import org.drools.model.functions.Block10;
 import org.drools.model.functions.Block11;
 import org.drools.model.functions.Block12;
 import org.drools.model.functions.Block13;
+import org.drools.model.functions.Block14;
 import org.drools.model.functions.Block2;
 import org.drools.model.functions.Block3;
 import org.drools.model.functions.Block4;
@@ -374,6 +375,31 @@ public class ConsequenceBuilder {
         }
 
         public _12<A, B, C, D, E, F, G, H, I, J, K, L> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _13<A, B, C, D, E, F, G, H, I, J, K, L, M> extends AbstractValidBuilder<_13<A,B,C,D,E,F,G,H,I,J,K,L, M>> {
+        public _13(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11, Variable<L> decl12, Variable<M> decl13) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11, decl12, decl13);
+        }
+
+        public _13<A, B, C, D, E, F, G, H, I, J, K, L, M> execute(final Block13<A, B, C, D, E, F, G, H, I, J, K, L, M> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _13<A, B, C, D, E, F, G, H, I, J, K, L, M> execute(final Block14<Drools, A, B, C, D, E, F, G, H, I, J, K, L, M> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _13<A, B, C, D, E, F, G, H, I, J, K, L, M> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
