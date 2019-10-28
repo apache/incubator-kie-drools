@@ -14,7 +14,7 @@
  *
  */
 
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.consequence;
 
 import java.util.List;
 import java.util.function.IntFunction;
