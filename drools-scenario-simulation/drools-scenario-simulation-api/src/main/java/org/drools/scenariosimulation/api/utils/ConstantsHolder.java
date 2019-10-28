@@ -23,7 +23,6 @@ public class ConstantsHolder {
     /* Constants for manage MVEL expressions */
     public static final String MVEL_ESCAPE_SYMBOL = "#";
     public static final String ACTUAL_VALUE_IDENTIFIER = "actualValue";
-    public static final String PROPERTY_EXPRESSION = "scesimExpression";
 
     /* Simple types reserved field name */
     public static final String VALUE = "value";

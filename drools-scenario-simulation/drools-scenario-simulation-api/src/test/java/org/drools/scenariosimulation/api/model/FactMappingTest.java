@@ -50,20 +50,4 @@ public class FactMappingTest {
         assertEquals(0, original.getExpressionElementsWithoutClass().size());
         assertEquals(1, original.getExpressionElements().size());
     }
-
-    @Test
-    public void isExpressionType_NoExpression() {
-        FactMapping factMapping = new FactMapping();
-        factMapping.addExpressionElement("Foo", "com.test.Foo");
-        factMapping.addExpressionElement("num", "java.lang.Double");
-        assertFalse(factMapping.isExpressionType());
-    }
-
-    @Test
-    public void isExpressionType_Expression() {
-        FactMapping factMapping = new FactMapping();
-        factMapping.addExpressionElement("Foo", "com.test.Foo");
-        factMapping.addExpressionElement(ConstantsHolder.PROPERTY_EXPRESSION, "com.test.Foo");
-        assertTrue(factMapping.isExpressionType());
-    }
 }

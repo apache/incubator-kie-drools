@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.drools.scenariosimulation.api.utils.ConstantsHolder;
-
 /**
  * It describes how to reach a single property of a fact
  */
@@ -62,6 +60,14 @@ public class FactMapping {
      */
     private List<String> genericTypes;
 
+    /**
+     * It defines if the FactMapping is of ExpressionType (i.e. it manages a MVEL/FEEL Expression). FrontEnd scoped
+     */
+    private boolean expressionType = false;
+
+    /**
+     * The <b>width</b> of the FactMapping column. FrontEnd scoped
+     */
     private Double columnWidth;
 
     public FactMapping() {
@@ -172,14 +178,12 @@ public class FactMapping {
         return "PROPERTY " + index;
     }
 
-    /**
-     * It evaluates if the FactMapping is of expression type, i.e. it contains a Java expression.
-     * @return A boolean which is TRUE if contains a <code>ConstantsHolder.PROPERTY_EXPRESSION</code> in its
-     *         <code>expressionElements</code> last step.
-     */
     public boolean isExpressionType() {
-        return ConstantsHolder.PROPERTY_EXPRESSION.equals(
-                expressionElements.get(expressionElements.size() - 1).getStep());
+        return expressionType;
+    }
+
+    public void setExpressionType(boolean expressionType) {
+        this.expressionType = expressionType;
     }
 
     @Override
