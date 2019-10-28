@@ -34,9 +34,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-
 import javax.imageio.ImageIO;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -72,11 +74,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-
-import static java.lang.Double.isFinite;
+import static java.lang.Double.*;
 
 public class BenchmarkReport {
 
@@ -355,10 +353,10 @@ public class BenchmarkReport {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultCategoryDataset());
+                        }
                         if (isFinite(levelValues[i])) {
-                            while (i >= datasetList.size()) {
-                                datasetList.add(new DefaultCategoryDataset());
-                            }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
                         }
                     }
@@ -473,10 +471,10 @@ public class BenchmarkReport {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getWinningScoreDifference());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultCategoryDataset());
+                        }
                         if (isFinite(levelValues[i])) {
-                            while (i >= datasetList.size()) {
-                                datasetList.add(new DefaultCategoryDataset());
-                            }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
                         }
                     }
@@ -507,10 +505,10 @@ public class BenchmarkReport {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     double[] levelValues = singleBenchmarkResult.getWorstScoreDifferencePercentage().getPercentageLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultCategoryDataset());
+                        }
                         if (isFinite(levelValues[i])) {
-                            while (i >= datasetList.size()) {
-                                datasetList.add(new DefaultCategoryDataset());
-                            }
                             datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
                         }
                     }
