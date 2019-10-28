@@ -45,4 +45,18 @@ public class ProcessInstanceFilterMapperTest {
 
         softly.assertAll();
     }
+
+    @Test
+    public void testProcessInstanceFilterWithNullValuesMapper() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("parentProcessInstanceId", singletonList(null));
+        params.put("rootProcessInstanceId", singletonList(null));
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(new ProcessInstanceFilterMapper().apply(params))
+                .hasFieldOrPropertyWithValue("parentProcessInstanceId", singletonList(null))
+                .hasFieldOrPropertyWithValue("rootProcessInstanceId", singletonList(null));
+
+        softly.assertAll();
+    }
 }

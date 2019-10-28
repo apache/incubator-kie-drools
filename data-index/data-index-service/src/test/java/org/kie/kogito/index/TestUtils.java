@@ -77,9 +77,9 @@ public final class TestUtils {
                 .type("ProcessInstanceEvent")
                 .time(ZonedDateTime.now())
                 .data(getProcessInstance(processId, processInstanceId, status.ordinal(), rootProcessInstanceId, rootProcessId))
-                .source(URI.create("http://localhost:8080/"))
                 .kogitoReferenceId(UUID.randomUUID().toString())
                 .schemaURL(URI.create("kogito"))
+                .source(URI.create("http://localhost:8080/" + processId))
                 .build();
     }
 

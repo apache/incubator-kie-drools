@@ -18,6 +18,7 @@ package org.kie.kogito.index.infinispan.query;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.FilterConditionContextQueryBuilder;
+import org.infinispan.query.dsl.FilterConditionEndContext;
 import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryBuilder;
 import org.infinispan.query.dsl.QueryFactory;
@@ -116,10 +118,17 @@ public class InfinispanQueryService implements QueryService {
         if (values == null || values.isEmpty()) {
             return filter;
         }
-        if (filter == null) {
-            return qb.having(attribute).in(values);
+
+        FilterConditionEndContext having = filter == null ? qb.having(attribute) : filter.and().having(attribute);
+        if (values.contains(null)) {
+            if (values.size() == 1) {
+                return having.isNull();
+            } else {
+                values.removeAll(Collections.singletonList(null));
+                return having.isNull().or().having(attribute).in(values);
+            }
         } else {
-            return filter.and().having(attribute).in(values);
+            return having.in(values);
         }
     }
 }

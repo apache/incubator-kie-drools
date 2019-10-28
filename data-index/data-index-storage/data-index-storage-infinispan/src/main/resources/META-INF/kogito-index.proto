@@ -16,11 +16,9 @@ message ProcessInstanceMeta {
     optional int32 state = 5;
     optional int64 start = 6;
     optional int64 end = 7;
-    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string rootProcessInstanceId = 8;
     /* @Field(store = Store.YES, analyze = Analyze.YES) */
     optional string rootProcessId = 9;
-    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string parentProcessInstanceId = 10;
     /* @Field(store = Store.YES, analyze = Analyze.YES) */
     optional string processName = 11;
@@ -42,11 +40,9 @@ message ProcessInstance {
     optional int32 state = 7;
     optional int64 start = 8;
     optional int64 end = 9;
-    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string rootProcessInstanceId = 10;
     /* @Field(store = Store.YES, analyze = Analyze.YES) */
     optional string rootProcessId = 11;
-    /* @Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "keyword")) */
     optional string parentProcessInstanceId = 12;
     /* @Field(store = Store.YES, analyze = Analyze.YES) */
     optional string processName = 13;

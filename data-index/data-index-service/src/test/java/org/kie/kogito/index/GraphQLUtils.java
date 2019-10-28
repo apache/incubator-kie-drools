@@ -114,13 +114,13 @@ public class GraphQLUtils {
     }
 
     private static String getObjectString(Object object) {
-        return object instanceof String ? "\\\"" + object + "\\\"" : object.toString();
+        return object == null ? "null" : object instanceof String ? "\\\"" + object + "\\\"" : object.toString();
     }
 
     private static Function<Object, String> getObjectString() {
         return object -> {
             if (object instanceof Collection) {
-                return ((Collection) object).stream().map(o -> getObjectString(o)).collect(joining(", ")).toString();
+                return "[ " + ((Collection) object).stream().map(o -> getObjectString(o)).collect(joining(", ")).toString() + " ] ";
             } else {
                 return getObjectString(object);
             }

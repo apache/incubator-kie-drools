@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,6 +47,8 @@ import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -218,7 +221,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[1].end", is(nullValue()))
-                .body("data.Travels[0].processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
+                .body("data.Travels[0].processInstances[1].endpoint", is(startEvent.getSource().toString()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].traveller.email", is("mail@mail.com"))
                 .body("data.Travels[0].traveller.nationality", is("Polish"))
@@ -265,7 +268,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[1].parentProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[1].end", is(nullValue()))
-                .body("data.Travels[0].processInstances[1].endpoint", is(endEvent.getSource().toString()))
+                .body("data.Travels[0].processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
@@ -526,12 +529,12 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
-        indexProcessCloudEvent(event);
+        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        indexProcessCloudEvent(startEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), event);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), event);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).processId(singletonList(processId)).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), startEvent);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), startEvent);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).processId(singletonList(processId)).build()), startEvent);
 
         given().contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
@@ -545,7 +548,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.ACTIVE.name()))
-                .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
@@ -576,12 +579,16 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
+        KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
         indexProcessCloudEvent(event);
 
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(processInstanceId)).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).parentProcessInstanceId(singletonList(null)).build()), endEvent);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).parentProcessInstanceId(emptyList()).build()), endEvent);
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().rootProcessInstanceId(singletonList(processInstanceId)).build()), event);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).rootProcessInstanceId(singletonList(null)).build()), endEvent);
         validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), endEvent, subProcessInstanceId);
+        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(subProcessInstanceId)).parentProcessInstanceId(asList(processInstanceId, null)).build()), event);
     }
 
     @Test
