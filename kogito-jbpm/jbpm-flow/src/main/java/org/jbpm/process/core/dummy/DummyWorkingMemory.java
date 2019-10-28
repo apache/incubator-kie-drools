@@ -58,6 +58,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.JDKTimerService;
 
@@ -737,6 +738,11 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
 
     @Override
     public Collection<ProcessEventListener> getProcessEventListeners() {
+        return null;
+    }
+
+    @Override
+    public JobsService getJobsService() {
         return null;
     }
 }

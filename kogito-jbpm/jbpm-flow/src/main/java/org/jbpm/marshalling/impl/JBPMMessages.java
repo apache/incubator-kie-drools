@@ -163,13 +163,18 @@ public final class JBPMMessages {
         getCorrelationKeyBytes();
 
     /**
-     * <code>optional int64 sla_timer_id = 19;</code>
+     * <code>optional string sla_timer_id = 19;</code>
      */
     boolean hasSlaTimerId();
     /**
-     * <code>optional int64 sla_timer_id = 19;</code>
+     * <code>optional string sla_timer_id = 19;</code>
      */
-    long getSlaTimerId();
+    java.lang.String getSlaTimerId();
+    /**
+     * <code>optional string sla_timer_id = 19;</code>
+     */
+    com.google.protobuf.ByteString
+        getSlaTimerIdBytes();
 
     /**
      * <code>optional int64 sla_due_date = 20;</code>
@@ -431,7 +436,7 @@ public final class JBPMMessages {
       signalCompletion_ = true;
       deploymentId_ = "";
       correlationKey_ = "";
-      slaTimerId_ = 0L;
+      slaTimerId_ = "";
       slaDueDate_ = 0L;
       slaCompliance_ = 0;
       rootProcessInstanceId_ = "";
@@ -589,9 +594,10 @@ public final class JBPMMessages {
               correlationKey_ = bs;
               break;
             }
-            case 152: {
+            case 154: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000800;
-              slaTimerId_ = input.readInt64();
+              slaTimerId_ = bs;
               break;
             }
             case 160: {
@@ -1694,13 +1700,18 @@ public final class JBPMMessages {
       int getLevel();
 
       /**
-       * <code>optional int64 sla_timer_id = 6;</code>
+       * <code>optional string sla_timer_id = 6;</code>
        */
       boolean hasSlaTimerId();
       /**
-       * <code>optional int64 sla_timer_id = 6;</code>
+       * <code>optional string sla_timer_id = 6;</code>
        */
-      long getSlaTimerId();
+      java.lang.String getSlaTimerId();
+      /**
+       * <code>optional string sla_timer_id = 6;</code>
+       */
+      com.google.protobuf.ByteString
+          getSlaTimerIdBytes();
 
       /**
        * <code>optional int64 sla_due_date = 7;</code>
@@ -1745,7 +1756,7 @@ public final class JBPMMessages {
         id_ = "";
         nodeId_ = 0L;
         level_ = 0;
-        slaTimerId_ = 0L;
+        slaTimerId_ = "";
         slaDueDate_ = 0L;
         slaCompliance_ = 0;
         triggerDate_ = 0L;
@@ -1804,9 +1815,10 @@ public final class JBPMMessages {
                 level_ = input.readInt32();
                 break;
               }
-              case 48: {
+              case 50: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000010;
-                slaTimerId_ = input.readInt64();
+                slaTimerId_ = bs;
                 break;
               }
               case 56: {
@@ -1951,18 +1963,45 @@ public final class JBPMMessages {
       }
 
       public static final int SLA_TIMER_ID_FIELD_NUMBER = 6;
-      private long slaTimerId_;
+      private volatile java.lang.Object slaTimerId_;
       /**
-       * <code>optional int64 sla_timer_id = 6;</code>
+       * <code>optional string sla_timer_id = 6;</code>
        */
       public boolean hasSlaTimerId() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional int64 sla_timer_id = 6;</code>
+       * <code>optional string sla_timer_id = 6;</code>
        */
-      public long getSlaTimerId() {
-        return slaTimerId_;
+      public java.lang.String getSlaTimerId() {
+        java.lang.Object ref = slaTimerId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            slaTimerId_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string sla_timer_id = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSlaTimerIdBytes() {
+        java.lang.Object ref = slaTimerId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          slaTimerId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
 
       public static final int SLA_DUE_DATE_FIELD_NUMBER = 7;
@@ -2037,7 +2076,7 @@ public final class JBPMMessages {
           output.writeInt32(5, level_);
         }
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
-          output.writeInt64(6, slaTimerId_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 6, slaTimerId_);
         }
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           output.writeInt64(7, slaDueDate_);
@@ -2073,8 +2112,7 @@ public final class JBPMMessages {
             .computeInt32Size(5, level_);
         }
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt64Size(6, slaTimerId_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, slaTimerId_);
         }
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           size += com.google.protobuf.CodedOutputStream
@@ -2126,8 +2164,8 @@ public final class JBPMMessages {
         }
         result = result && (hasSlaTimerId() == other.hasSlaTimerId());
         if (hasSlaTimerId()) {
-          result = result && (getSlaTimerId()
-              == other.getSlaTimerId());
+          result = result && getSlaTimerId()
+              .equals(other.getSlaTimerId());
         }
         result = result && (hasSlaDueDate() == other.hasSlaDueDate());
         if (hasSlaDueDate()) {
@@ -2174,8 +2212,7 @@ public final class JBPMMessages {
         }
         if (hasSlaTimerId()) {
           hash = (37 * hash) + SLA_TIMER_ID_FIELD_NUMBER;
-          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getSlaTimerId());
+          hash = (53 * hash) + getSlaTimerId().hashCode();
         }
         if (hasSlaDueDate()) {
           hash = (37 * hash) + SLA_DUE_DATE_FIELD_NUMBER;
@@ -2337,7 +2374,7 @@ public final class JBPMMessages {
           bitField0_ = (bitField0_ & ~0x00000004);
           level_ = 0;
           bitField0_ = (bitField0_ & ~0x00000008);
-          slaTimerId_ = 0L;
+          slaTimerId_ = "";
           bitField0_ = (bitField0_ & ~0x00000010);
           slaDueDate_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000020);
@@ -2473,7 +2510,9 @@ public final class JBPMMessages {
             setLevel(other.getLevel());
           }
           if (other.hasSlaTimerId()) {
-            setSlaTimerId(other.getSlaTimerId());
+            bitField0_ |= 0x00000010;
+            slaTimerId_ = other.slaTimerId_;
+            onChanged();
           }
           if (other.hasSlaDueDate()) {
             setSlaDueDate(other.getSlaDueDate());
@@ -2772,34 +2811,78 @@ public final class JBPMMessages {
           return this;
         }
 
-        private long slaTimerId_ ;
+        private java.lang.Object slaTimerId_ = "";
         /**
-         * <code>optional int64 sla_timer_id = 6;</code>
+         * <code>optional string sla_timer_id = 6;</code>
          */
         public boolean hasSlaTimerId() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         /**
-         * <code>optional int64 sla_timer_id = 6;</code>
+         * <code>optional string sla_timer_id = 6;</code>
          */
-        public long getSlaTimerId() {
-          return slaTimerId_;
+        public java.lang.String getSlaTimerId() {
+          java.lang.Object ref = slaTimerId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              slaTimerId_ = s;
+            }
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
         }
         /**
-         * <code>optional int64 sla_timer_id = 6;</code>
+         * <code>optional string sla_timer_id = 6;</code>
          */
-        public Builder setSlaTimerId(long value) {
-          bitField0_ |= 0x00000010;
+        public com.google.protobuf.ByteString
+            getSlaTimerIdBytes() {
+          java.lang.Object ref = slaTimerId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            slaTimerId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string sla_timer_id = 6;</code>
+         */
+        public Builder setSlaTimerId(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
           slaTimerId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int64 sla_timer_id = 6;</code>
+         * <code>optional string sla_timer_id = 6;</code>
          */
         public Builder clearSlaTimerId() {
           bitField0_ = (bitField0_ & ~0x00000010);
-          slaTimerId_ = 0L;
+          slaTimerId_ = getDefaultInstance().getSlaTimerId();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string sla_timer_id = 6;</code>
+         */
+        public Builder setSlaTimerIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          slaTimerId_ = value;
           onChanged();
           return this;
         }
@@ -3969,17 +4052,23 @@ public final class JBPMMessages {
           com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
 
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
@@ -4032,7 +4121,7 @@ public final class JBPMMessages {
           super(builder);
         }
         private RuleSetNode() {
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           mapEntry_ = java.util.Collections.emptyList();
           ruleFlowGroup_ = "";
         }
@@ -4061,25 +4150,13 @@ public final class JBPMMessages {
                 case 0:
                   done = true;
                   break;
-                case 8: {
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000001;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 10: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000001;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 case 18: {
@@ -4113,7 +4190,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               mapEntry_ = java.util.Collections.unmodifiableList(mapEntry_);
@@ -4885,25 +4962,32 @@ public final class JBPMMessages {
 
         private int bitField0_;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         public static final int MAPENTRY_FIELD_NUMBER = 2;
@@ -4998,7 +5082,7 @@ public final class JBPMMessages {
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(1, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerInstanceId_.getRaw(i));
           }
           for (int i = 0; i < mapEntry_.size(); i++) {
             output.writeMessage(2, mapEntry_.get(i));
@@ -5018,8 +5102,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -5213,7 +5296,7 @@ public final class JBPMMessages {
           @java.lang.Override
           public Builder clear() {
             super.clear();
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
             if (mapEntryBuilder_ == null) {
               mapEntry_ = java.util.Collections.emptyList();
@@ -5252,7 +5335,7 @@ public final class JBPMMessages {
             int from_bitField0_ = bitField0_;
             int to_bitField0_ = 0;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000001);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -5389,56 +5472,70 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000001;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -5446,11 +5543,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -5842,17 +5952,23 @@ public final class JBPMMessages {
             getWorkItemIdBytes();
 
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
 
         /**
          * <code>optional string error_handling_process_instance_id = 3;</code>
@@ -5895,7 +6011,7 @@ public final class JBPMMessages {
         }
         private HumanTaskNode() {
           workItemId_ = "";
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           errorHandlingProcessInstanceId_ = "";
         }
 
@@ -5929,25 +6045,13 @@ public final class JBPMMessages {
                   workItemId_ = bs;
                   break;
                 }
-                case 16: {
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000002;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 18: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000002;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 case 26: {
@@ -5985,7 +6089,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -6048,25 +6152,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         public static final int ERROR_HANDLING_PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
@@ -6150,7 +6261,7 @@ public final class JBPMMessages {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 1, workItemId_);
           }
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(2, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
           }
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 3, errorHandlingProcessInstanceId_);
@@ -6173,8 +6284,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -6382,7 +6492,7 @@ public final class JBPMMessages {
             super.clear();
             workItemId_ = "";
             bitField0_ = (bitField0_ & ~0x00000001);
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
             errorHandlingProcessInstanceId_ = "";
             bitField0_ = (bitField0_ & ~0x00000004);
@@ -6425,7 +6535,7 @@ public final class JBPMMessages {
             }
             result.workItemId_ = workItemId_;
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000002);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -6619,56 +6729,70 @@ public final class JBPMMessages {
             return this;
           }
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000002;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -6676,11 +6800,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -6950,17 +7087,23 @@ public final class JBPMMessages {
             getWorkItemIdBytes();
 
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
 
         /**
          * <code>optional string error_handling_process_instance_id = 3;</code>
@@ -7003,7 +7146,7 @@ public final class JBPMMessages {
         }
         private WorkItemNode() {
           workItemId_ = "";
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           errorHandlingProcessInstanceId_ = "";
         }
 
@@ -7037,25 +7180,13 @@ public final class JBPMMessages {
                   workItemId_ = bs;
                   break;
                 }
-                case 16: {
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000002;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 18: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000002;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 case 26: {
@@ -7093,7 +7224,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -7156,25 +7287,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         public static final int ERROR_HANDLING_PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
@@ -7258,7 +7396,7 @@ public final class JBPMMessages {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 1, workItemId_);
           }
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(2, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
           }
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 3, errorHandlingProcessInstanceId_);
@@ -7281,8 +7419,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -7490,7 +7627,7 @@ public final class JBPMMessages {
             super.clear();
             workItemId_ = "";
             bitField0_ = (bitField0_ & ~0x00000001);
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
             errorHandlingProcessInstanceId_ = "";
             bitField0_ = (bitField0_ & ~0x00000004);
@@ -7533,7 +7670,7 @@ public final class JBPMMessages {
             }
             result.workItemId_ = workItemId_;
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000002);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -7727,56 +7864,70 @@ public final class JBPMMessages {
             return this;
           }
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000002;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -7784,11 +7935,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -8058,17 +8222,23 @@ public final class JBPMMessages {
             getProcessInstanceIdBytes();
 
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode}
@@ -8084,7 +8254,7 @@ public final class JBPMMessages {
         }
         private SubProcessNode() {
           processInstanceId_ = "";
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         }
 
         @java.lang.Override
@@ -8117,25 +8287,13 @@ public final class JBPMMessages {
                   processInstanceId_ = bs;
                   break;
                 }
-                case 16: {
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000002;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 18: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000002;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 default: {
@@ -8154,7 +8312,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -8217,25 +8375,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         private byte memoizedIsInitialized = -1;
@@ -8256,7 +8421,7 @@ public final class JBPMMessages {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 1, processInstanceId_);
           }
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(2, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
           }
           unknownFields.writeTo(output);
         }
@@ -8273,8 +8438,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -8456,7 +8620,7 @@ public final class JBPMMessages {
             super.clear();
             processInstanceId_ = "";
             bitField0_ = (bitField0_ & ~0x00000001);
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
             return this;
           }
@@ -8491,7 +8655,7 @@ public final class JBPMMessages {
             }
             result.processInstanceId_ = processInstanceId_;
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000002);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -8665,56 +8829,70 @@ public final class JBPMMessages {
             return this;
           }
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000002;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -8722,11 +8900,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -8788,17 +8979,23 @@ public final class JBPMMessages {
           com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode}
@@ -8813,7 +9010,7 @@ public final class JBPMMessages {
           super(builder);
         }
         private MilestoneNode() {
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         }
 
         @java.lang.Override
@@ -8840,25 +9037,13 @@ public final class JBPMMessages {
                 case 0:
                   done = true;
                   break;
-                case 8: {
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000001;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 10: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000001;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 default: {
@@ -8877,7 +9062,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -8897,25 +9082,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         private byte memoizedIsInitialized = -1;
@@ -8933,7 +9125,7 @@ public final class JBPMMessages {
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(1, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerInstanceId_.getRaw(i));
           }
           unknownFields.writeTo(output);
         }
@@ -8947,8 +9139,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -9119,7 +9310,7 @@ public final class JBPMMessages {
           @java.lang.Override
           public Builder clear() {
             super.clear();
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
             return this;
           }
@@ -9149,7 +9340,7 @@ public final class JBPMMessages {
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode(this);
             int from_bitField0_ = bitField0_;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000001);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -9241,56 +9432,70 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000001;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -9298,11 +9503,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -9776,13 +9994,18 @@ public final class JBPMMessages {
           com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>optional int64 timer_id = 1;</code>
+         * <code>optional string timer_id = 1;</code>
          */
         boolean hasTimerId();
         /**
-         * <code>optional int64 timer_id = 1;</code>
+         * <code>optional string timer_id = 1;</code>
          */
-        long getTimerId();
+        java.lang.String getTimerId();
+        /**
+         * <code>optional string timer_id = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerIdBytes();
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode}
@@ -9797,7 +10020,7 @@ public final class JBPMMessages {
           super(builder);
         }
         private TimerNode() {
-          timerId_ = 0L;
+          timerId_ = "";
         }
 
         @java.lang.Override
@@ -9824,9 +10047,10 @@ public final class JBPMMessages {
                 case 0:
                   done = true;
                   break;
-                case 8: {
+                case 10: {
+                  com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000001;
-                  timerId_ = input.readInt64();
+                  timerId_ = bs;
                   break;
                 }
                 default: {
@@ -9863,18 +10087,45 @@ public final class JBPMMessages {
 
         private int bitField0_;
         public static final int TIMER_ID_FIELD_NUMBER = 1;
-        private long timerId_;
+        private volatile java.lang.Object timerId_;
         /**
-         * <code>optional int64 timer_id = 1;</code>
+         * <code>optional string timer_id = 1;</code>
          */
         public boolean hasTimerId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional int64 timer_id = 1;</code>
+         * <code>optional string timer_id = 1;</code>
          */
-        public long getTimerId() {
-          return timerId_;
+        public java.lang.String getTimerId() {
+          java.lang.Object ref = timerId_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              timerId_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>optional string timer_id = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerIdBytes() {
+          java.lang.Object ref = timerId_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            timerId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
         }
 
         private byte memoizedIsInitialized = -1;
@@ -9892,7 +10143,7 @@ public final class JBPMMessages {
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            output.writeInt64(1, timerId_);
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerId_);
           }
           unknownFields.writeTo(output);
         }
@@ -9904,8 +10155,7 @@ public final class JBPMMessages {
 
           size = 0;
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            size += com.google.protobuf.CodedOutputStream
-              .computeInt64Size(1, timerId_);
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, timerId_);
           }
           size += unknownFields.getSerializedSize();
           memoizedSize = size;
@@ -9925,8 +10175,8 @@ public final class JBPMMessages {
           boolean result = true;
           result = result && (hasTimerId() == other.hasTimerId());
           if (hasTimerId()) {
-            result = result && (getTimerId()
-                == other.getTimerId());
+            result = result && getTimerId()
+                .equals(other.getTimerId());
           }
           result = result && unknownFields.equals(other.unknownFields);
           return result;
@@ -9941,8 +10191,7 @@ public final class JBPMMessages {
           hash = (19 * hash) + getDescriptor().hashCode();
           if (hasTimerId()) {
             hash = (37 * hash) + TIMER_ID_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                getTimerId());
+            hash = (53 * hash) + getTimerId().hashCode();
           }
           hash = (29 * hash) + unknownFields.hashCode();
           memoizedHashCode = hash;
@@ -10077,7 +10326,7 @@ public final class JBPMMessages {
           @java.lang.Override
           public Builder clear() {
             super.clear();
-            timerId_ = 0L;
+            timerId_ = "";
             bitField0_ = (bitField0_ & ~0x00000001);
             return this;
           }
@@ -10161,7 +10410,9 @@ public final class JBPMMessages {
           public Builder mergeFrom(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode other) {
             if (other == org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.getDefaultInstance()) return this;
             if (other.hasTimerId()) {
-              setTimerId(other.getTimerId());
+              bitField0_ |= 0x00000001;
+              timerId_ = other.timerId_;
+              onChanged();
             }
             this.mergeUnknownFields(other.unknownFields);
             onChanged();
@@ -10193,34 +10444,78 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          private long timerId_ ;
+          private java.lang.Object timerId_ = "";
           /**
-           * <code>optional int64 timer_id = 1;</code>
+           * <code>optional string timer_id = 1;</code>
            */
           public boolean hasTimerId() {
             return ((bitField0_ & 0x00000001) == 0x00000001);
           }
           /**
-           * <code>optional int64 timer_id = 1;</code>
+           * <code>optional string timer_id = 1;</code>
            */
-          public long getTimerId() {
-            return timerId_;
+          public java.lang.String getTimerId() {
+            java.lang.Object ref = timerId_;
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                timerId_ = s;
+              }
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
           }
           /**
-           * <code>optional int64 timer_id = 1;</code>
+           * <code>optional string timer_id = 1;</code>
            */
-          public Builder setTimerId(long value) {
-            bitField0_ |= 0x00000001;
+          public com.google.protobuf.ByteString
+              getTimerIdBytes() {
+            java.lang.Object ref = timerId_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              timerId_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>optional string timer_id = 1;</code>
+           */
+          public Builder setTimerId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
             timerId_ = value;
             onChanged();
             return this;
           }
           /**
-           * <code>optional int64 timer_id = 1;</code>
+           * <code>optional string timer_id = 1;</code>
            */
           public Builder clearTimerId() {
             bitField0_ = (bitField0_ & ~0x00000001);
-            timerId_ = 0L;
+            timerId_ = getDefaultInstance().getTimerId();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional string timer_id = 1;</code>
+           */
+          public Builder setTimerIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            timerId_ = value;
             onChanged();
             return this;
           }
@@ -11657,17 +11952,23 @@ public final class JBPMMessages {
           com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode}
@@ -11682,7 +11983,7 @@ public final class JBPMMessages {
           super(builder);
         }
         private StateNode() {
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         }
 
         @java.lang.Override
@@ -11709,25 +12010,13 @@ public final class JBPMMessages {
                 case 0:
                   done = true;
                   break;
-                case 8: {
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000001;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 10: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000001;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 default: {
@@ -11746,7 +12035,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -11766,25 +12055,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 1;</code>
+         * <code>repeated string timer_instance_id = 1;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         private byte memoizedIsInitialized = -1;
@@ -11802,7 +12098,7 @@ public final class JBPMMessages {
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(1, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerInstanceId_.getRaw(i));
           }
           unknownFields.writeTo(output);
         }
@@ -11816,8 +12112,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -11988,7 +12283,7 @@ public final class JBPMMessages {
           @java.lang.Override
           public Builder clear() {
             super.clear();
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
             return this;
           }
@@ -12018,7 +12313,7 @@ public final class JBPMMessages {
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode(this);
             int from_bitField0_ = bitField0_;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000001);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -12110,56 +12405,70 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000001;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -12167,11 +12476,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 1;</code>
+           * <code>repeated string timer_instance_id = 1;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 1;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -12233,17 +12555,23 @@ public final class JBPMMessages {
           com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        java.util.List<java.lang.Long> getTimerInstanceIdList();
+        java.util.List<java.lang.String>
+            getTimerInstanceIdList();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         int getTimerInstanceIdCount();
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        long getTimerInstanceId(int index);
+        java.lang.String getTimerInstanceId(int index);
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index);
 
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
@@ -12354,7 +12682,7 @@ public final class JBPMMessages {
           super(builder);
         }
         private CompositeContextNode() {
-          timerInstanceId_ = java.util.Collections.emptyList();
+          timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           variable_ = java.util.Collections.emptyList();
           nodeInstance_ = java.util.Collections.emptyList();
           exclusiveGroup_ = java.util.Collections.emptyList();
@@ -12385,25 +12713,13 @@ public final class JBPMMessages {
                 case 0:
                   done = true;
                   break;
-                case 16: {
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
-                    mutable_bitField0_ |= 0x00000001;
-                  }
-                  timerInstanceId_.add(input.readInt64());
-                  break;
-                }
                 case 18: {
-                  int length = input.readRawVarint32();
-                  int limit = input.pushLimit(length);
-                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_ = new java.util.ArrayList<java.lang.Long>();
+                  com.google.protobuf.ByteString bs = input.readBytes();
+                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                    timerInstanceId_ = new com.google.protobuf.LazyStringArrayList();
                     mutable_bitField0_ |= 0x00000001;
                   }
-                  while (input.getBytesUntilLimit() > 0) {
-                    timerInstanceId_.add(input.readInt64());
-                  }
-                  input.popLimit(limit);
+                  timerInstanceId_.add(bs);
                   break;
                 }
                 case 26: {
@@ -12458,7 +12774,7 @@ public final class JBPMMessages {
                 e).setUnfinishedMessage(this);
           } finally {
             if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
             }
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               variable_ = java.util.Collections.unmodifiableList(variable_);
@@ -12490,25 +12806,32 @@ public final class JBPMMessages {
         }
 
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
-        private java.util.List<java.lang.Long> timerInstanceId_;
+        private com.google.protobuf.LazyStringList timerInstanceId_;
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public java.util.List<java.lang.Long>
+        public com.google.protobuf.ProtocolStringList
             getTimerInstanceIdList() {
           return timerInstanceId_;
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
         public int getTimerInstanceIdCount() {
           return timerInstanceId_.size();
         }
         /**
-         * <code>repeated int64 timer_instance_id = 2;</code>
+         * <code>repeated string timer_instance_id = 2;</code>
          */
-        public long getTimerInstanceId(int index) {
+        public java.lang.String getTimerInstanceId(int index) {
           return timerInstanceId_.get(index);
+        }
+        /**
+         * <code>repeated string timer_instance_id = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTimerInstanceIdBytes(int index) {
+          return timerInstanceId_.getByteString(index);
         }
 
         public static final int VARIABLE_FIELD_NUMBER = 3;
@@ -12666,7 +12989,7 @@ public final class JBPMMessages {
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           for (int i = 0; i < timerInstanceId_.size(); i++) {
-            output.writeInt64(2, timerInstanceId_.get(i));
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
           }
           for (int i = 0; i < variable_.size(); i++) {
             output.writeMessage(3, variable_.get(i));
@@ -12692,8 +13015,7 @@ public final class JBPMMessages {
           {
             int dataSize = 0;
             for (int i = 0; i < timerInstanceId_.size(); i++) {
-              dataSize += com.google.protobuf.CodedOutputStream
-                .computeInt64SizeNoTag(timerInstanceId_.get(i));
+              dataSize += computeStringSizeNoTag(timerInstanceId_.getRaw(i));
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
@@ -12908,7 +13230,7 @@ public final class JBPMMessages {
           @java.lang.Override
           public Builder clear() {
             super.clear();
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
             if (variableBuilder_ == null) {
               variable_ = java.util.Collections.emptyList();
@@ -12962,7 +13284,7 @@ public final class JBPMMessages {
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode(this);
             int from_bitField0_ = bitField0_;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
+              timerInstanceId_ = timerInstanceId_.getUnmodifiableView();
               bitField0_ = (bitField0_ & ~0x00000001);
             }
             result.timerInstanceId_ = timerInstanceId_;
@@ -13194,56 +13516,70 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
+          private com.google.protobuf.LazyStringList timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-              timerInstanceId_ = new java.util.ArrayList<java.lang.Long>(timerInstanceId_);
+              timerInstanceId_ = new com.google.protobuf.LazyStringArrayList(timerInstanceId_);
               bitField0_ |= 0x00000001;
              }
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public java.util.List<java.lang.Long>
+          public com.google.protobuf.ProtocolStringList
               getTimerInstanceIdList() {
-            return java.util.Collections.unmodifiableList(timerInstanceId_);
+            return timerInstanceId_.getUnmodifiableView();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public int getTimerInstanceIdCount() {
             return timerInstanceId_.size();
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public long getTimerInstanceId(int index) {
+          public java.lang.String getTimerInstanceId(int index) {
             return timerInstanceId_.get(index);
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getTimerInstanceIdBytes(int index) {
+            return timerInstanceId_.getByteString(index);
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder setTimerInstanceId(
-              int index, long value) {
-            ensureTimerInstanceIdIsMutable();
+              int index, java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.set(index, value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
-          public Builder addTimerInstanceId(long value) {
-            ensureTimerInstanceIdIsMutable();
+          public Builder addTimerInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
             timerInstanceId_.add(value);
             onChanged();
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder addAllTimerInstanceId(
-              java.lang.Iterable<? extends java.lang.Long> values) {
+              java.lang.Iterable<java.lang.String> values) {
             ensureTimerInstanceIdIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
                 values, timerInstanceId_);
@@ -13251,11 +13587,24 @@ public final class JBPMMessages {
             return this;
           }
           /**
-           * <code>repeated int64 timer_instance_id = 2;</code>
+           * <code>repeated string timer_instance_id = 2;</code>
            */
           public Builder clearTimerInstanceId() {
-            timerInstanceId_ = java.util.Collections.emptyList();
+            timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated string timer_instance_id = 2;</code>
+           */
+          public Builder addTimerInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTimerInstanceIdIsMutable();
+            timerInstanceId_.add(value);
             onChanged();
             return this;
           }
@@ -19251,18 +19600,45 @@ public final class JBPMMessages {
     }
 
     public static final int SLA_TIMER_ID_FIELD_NUMBER = 19;
-    private long slaTimerId_;
+    private volatile java.lang.Object slaTimerId_;
     /**
-     * <code>optional int64 sla_timer_id = 19;</code>
+     * <code>optional string sla_timer_id = 19;</code>
      */
     public boolean hasSlaTimerId() {
       return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional int64 sla_timer_id = 19;</code>
+     * <code>optional string sla_timer_id = 19;</code>
      */
-    public long getSlaTimerId() {
-      return slaTimerId_;
+    public java.lang.String getSlaTimerId() {
+      java.lang.Object ref = slaTimerId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          slaTimerId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string sla_timer_id = 19;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSlaTimerIdBytes() {
+      java.lang.Object ref = slaTimerId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        slaTimerId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int SLA_DUE_DATE_FIELD_NUMBER = 20;
@@ -19790,7 +20166,7 @@ public final class JBPMMessages {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 18, correlationKey_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeInt64(19, slaTimerId_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 19, slaTimerId_);
       }
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         output.writeInt64(20, slaDueDate_);
@@ -19890,8 +20266,7 @@ public final class JBPMMessages {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, correlationKey_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(19, slaTimerId_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(19, slaTimerId_);
       }
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         size += com.google.protobuf.CodedOutputStream
@@ -19993,8 +20368,8 @@ public final class JBPMMessages {
       }
       result = result && (hasSlaTimerId() == other.hasSlaTimerId());
       if (hasSlaTimerId()) {
-        result = result && (getSlaTimerId()
-            == other.getSlaTimerId());
+        result = result && getSlaTimerId()
+            .equals(other.getSlaTimerId());
       }
       result = result && (hasSlaDueDate() == other.hasSlaDueDate());
       if (hasSlaDueDate()) {
@@ -20107,8 +20482,7 @@ public final class JBPMMessages {
       }
       if (hasSlaTimerId()) {
         hash = (37 * hash) + SLA_TIMER_ID_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getSlaTimerId());
+        hash = (53 * hash) + getSlaTimerId().hashCode();
       }
       if (hasSlaDueDate()) {
         hash = (37 * hash) + SLA_DUE_DATE_FIELD_NUMBER;
@@ -20328,7 +20702,7 @@ public final class JBPMMessages {
         bitField0_ = (bitField0_ & ~0x00000200);
         correlationKey_ = "";
         bitField0_ = (bitField0_ & ~0x00000400);
-        slaTimerId_ = 0L;
+        slaTimerId_ = "";
         bitField0_ = (bitField0_ & ~0x00000800);
         slaDueDate_ = 0L;
         bitField0_ = (bitField0_ & ~0x00001000);
@@ -20635,7 +21009,9 @@ public final class JBPMMessages {
           onChanged();
         }
         if (other.hasSlaTimerId()) {
-          setSlaTimerId(other.getSlaTimerId());
+          bitField0_ |= 0x00000800;
+          slaTimerId_ = other.slaTimerId_;
+          onChanged();
         }
         if (other.hasSlaDueDate()) {
           setSlaDueDate(other.getSlaDueDate());
@@ -21545,34 +21921,78 @@ public final class JBPMMessages {
         return this;
       }
 
-      private long slaTimerId_ ;
+      private java.lang.Object slaTimerId_ = "";
       /**
-       * <code>optional int64 sla_timer_id = 19;</code>
+       * <code>optional string sla_timer_id = 19;</code>
        */
       public boolean hasSlaTimerId() {
         return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
-       * <code>optional int64 sla_timer_id = 19;</code>
+       * <code>optional string sla_timer_id = 19;</code>
        */
-      public long getSlaTimerId() {
-        return slaTimerId_;
+      public java.lang.String getSlaTimerId() {
+        java.lang.Object ref = slaTimerId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            slaTimerId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>optional int64 sla_timer_id = 19;</code>
+       * <code>optional string sla_timer_id = 19;</code>
        */
-      public Builder setSlaTimerId(long value) {
-        bitField0_ |= 0x00000800;
+      public com.google.protobuf.ByteString
+          getSlaTimerIdBytes() {
+        java.lang.Object ref = slaTimerId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          slaTimerId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string sla_timer_id = 19;</code>
+       */
+      public Builder setSlaTimerId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000800;
         slaTimerId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 sla_timer_id = 19;</code>
+       * <code>optional string sla_timer_id = 19;</code>
        */
       public Builder clearSlaTimerId() {
         bitField0_ = (bitField0_ & ~0x00000800);
-        slaTimerId_ = 0L;
+        slaTimerId_ = getDefaultInstance().getSlaTimerId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string sla_timer_id = 19;</code>
+       */
+      public Builder setSlaTimerIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000800;
+        slaTimerId_ = value;
         onChanged();
         return this;
       }
@@ -30843,13 +31263,18 @@ public final class JBPMMessages {
       long getId();
 
       /**
-       * <code>optional int64 timer_id = 2;</code>
+       * <code>optional string timer_id = 2;</code>
        */
       boolean hasTimerId();
       /**
-       * <code>optional int64 timer_id = 2;</code>
+       * <code>optional string timer_id = 2;</code>
        */
-      long getTimerId();
+      java.lang.String getTimerId();
+      /**
+       * <code>optional string timer_id = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getTimerIdBytes();
 
       /**
        * <code>optional int64 delay = 3;</code>
@@ -30942,7 +31367,7 @@ public final class JBPMMessages {
       }
       private TimerInstance() {
         id_ = 0L;
-        timerId_ = 0L;
+        timerId_ = "";
         delay_ = 0L;
         period_ = 0L;
         processInstanceId_ = "";
@@ -30982,9 +31407,10 @@ public final class JBPMMessages {
                 id_ = input.readInt64();
                 break;
               }
-              case 16: {
+              case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                timerId_ = input.readInt64();
+                timerId_ = bs;
                 break;
               }
               case 24: {
@@ -31077,18 +31503,45 @@ public final class JBPMMessages {
       }
 
       public static final int TIMER_ID_FIELD_NUMBER = 2;
-      private long timerId_;
+      private volatile java.lang.Object timerId_;
       /**
-       * <code>optional int64 timer_id = 2;</code>
+       * <code>optional string timer_id = 2;</code>
        */
       public boolean hasTimerId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int64 timer_id = 2;</code>
+       * <code>optional string timer_id = 2;</code>
        */
-      public long getTimerId() {
-        return timerId_;
+      public java.lang.String getTimerId() {
+        java.lang.Object ref = timerId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            timerId_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string timer_id = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTimerIdBytes() {
+        java.lang.Object ref = timerId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          timerId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
 
       public static final int DELAY_FIELD_NUMBER = 3;
@@ -31256,7 +31709,7 @@ public final class JBPMMessages {
           output.writeInt64(1, id_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeInt64(2, timerId_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerId_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeInt64(3, delay_);
@@ -31296,8 +31749,7 @@ public final class JBPMMessages {
             .computeInt64Size(1, id_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt64Size(2, timerId_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, timerId_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
@@ -31353,8 +31805,8 @@ public final class JBPMMessages {
         }
         result = result && (hasTimerId() == other.hasTimerId());
         if (hasTimerId()) {
-          result = result && (getTimerId()
-              == other.getTimerId());
+          result = result && getTimerId()
+              .equals(other.getTimerId());
         }
         result = result && (hasDelay() == other.hasDelay());
         if (hasDelay()) {
@@ -31414,8 +31866,7 @@ public final class JBPMMessages {
         }
         if (hasTimerId()) {
           hash = (37 * hash) + TIMER_ID_FIELD_NUMBER;
-          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getTimerId());
+          hash = (53 * hash) + getTimerId().hashCode();
         }
         if (hasDelay()) {
           hash = (37 * hash) + DELAY_FIELD_NUMBER;
@@ -31589,7 +32040,7 @@ public final class JBPMMessages {
           super.clear();
           id_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
-          timerId_ = 0L;
+          timerId_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
           delay_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000004);
@@ -31728,7 +32179,9 @@ public final class JBPMMessages {
             setId(other.getId());
           }
           if (other.hasTimerId()) {
-            setTimerId(other.getTimerId());
+            bitField0_ |= 0x00000002;
+            timerId_ = other.timerId_;
+            onChanged();
           }
           if (other.hasDelay()) {
             setDelay(other.getDelay());
@@ -31818,34 +32271,78 @@ public final class JBPMMessages {
           return this;
         }
 
-        private long timerId_ ;
+        private java.lang.Object timerId_ = "";
         /**
-         * <code>optional int64 timer_id = 2;</code>
+         * <code>optional string timer_id = 2;</code>
          */
         public boolean hasTimerId() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
-         * <code>optional int64 timer_id = 2;</code>
+         * <code>optional string timer_id = 2;</code>
          */
-        public long getTimerId() {
-          return timerId_;
+        public java.lang.String getTimerId() {
+          java.lang.Object ref = timerId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              timerId_ = s;
+            }
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
         }
         /**
-         * <code>optional int64 timer_id = 2;</code>
+         * <code>optional string timer_id = 2;</code>
          */
-        public Builder setTimerId(long value) {
-          bitField0_ |= 0x00000002;
+        public com.google.protobuf.ByteString
+            getTimerIdBytes() {
+          java.lang.Object ref = timerId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            timerId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string timer_id = 2;</code>
+         */
+        public Builder setTimerId(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
           timerId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int64 timer_id = 2;</code>
+         * <code>optional string timer_id = 2;</code>
          */
         public Builder clearTimerId() {
           bitField0_ = (bitField0_ & ~0x00000002);
-          timerId_ = 0L;
+          timerId_ = getDefaultInstance().getTimerId();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string timer_id = 2;</code>
+         */
+        public Builder setTimerIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          timerId_ = value;
           onChanged();
           return this;
         }
@@ -34547,7 +35044,7 @@ public final class JBPMMessages {
       "e_id\030\014 \001(\t\022\023\n\013description\030\017 \001(\t\022\037\n\021signa" +
       "l_completion\030\020 \001(\010:\004true\022\024\n\014deploymentId" +
       "\030\021 \001(\t\022\027\n\017correlation_key\030\022 \001(\t\022\024\n\014sla_t" +
-      "imer_id\030\023 \001(\003\022\024\n\014sla_due_date\030\024 \001(\003\022\026\n\016s" +
+      "imer_id\030\023 \001(\t\022\024\n\014sla_due_date\030\024 \001(\003\022\026\n\016s" +
       "la_compliance\030\025 \001(\005\022 \n\030root_process_inst" +
       "ance_id\030\026 \001(\t\022\022\n\nstart_date\030\027 \001(\003\022\027\n\017roo" +
       "t_process_id\030\030 \001(\t\022\025\n\rerror_node_id\030\031 \001(" +
@@ -34567,7 +35064,7 @@ public final class JBPMMessages {
       "id\030\001 \001(\t\022\017\n\007node_id\030\002 \001(\003\022J\n\007content\030\004 \001" +
       "(\01329.org.jbpm.marshalling.ProcessInstanc" +
       "e.NodeInstanceContent\022\r\n\005level\030\005 \001(\005\022\024\n\014" +
-      "sla_timer_id\030\006 \001(\003\022\024\n\014sla_due_date\030\007 \001(\003" +
+      "sla_timer_id\030\006 \001(\t\022\024\n\014sla_due_date\030\007 \001(\003" +
       "\022\026\n\016sla_compliance\030\010 \001(\005\022\024\n\014trigger_date" +
       "\030\t \001(\003\0328\n\026ExclusiveGroupInstance\022\036\n\026grou" +
       "p_node_instance_id\030\001 \003(\t\032\323\024\n\023NodeInstanc" +
@@ -34600,30 +35097,30 @@ public final class JBPMMessages {
       "eContent.ForEachNode\022]\n\013async_event\030\r \001(" +
       "\0132H.org.jbpm.marshalling.ProcessInstance" +
       ".NodeInstanceContent.AsyncEventNode\032\324\001\n\013" +
-      "RuleSetNode\022\031\n\021timer_instance_id\030\001 \003(\003\022d" +
+      "RuleSetNode\022\031\n\021timer_instance_id\030\001 \003(\t\022d" +
       "\n\010mapEntry\030\002 \003(\0132R.org.jbpm.marshalling." +
       "ProcessInstance.NodeInstanceContent.Rule" +
       "SetNode.TextMapEntry\022\027\n\017rule_flow_group\030" +
       "\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005v" +
       "alue\030\002 \001(\t\032\247\001\n\rHumanTaskNode\022\024\n\014work_ite" +
-      "m_id\030\001 \001(\t\022\031\n\021timer_instance_id\030\002 \003(\003\022*\n" +
+      "m_id\030\001 \001(\t\022\031\n\021timer_instance_id\030\002 \003(\t\022*\n" +
       "\"error_handling_process_instance_id\030\003 \001(" +
       "\t\0229\n\010workitem\030\004 \001(\0132\'.org.jbpm.marshalli" +
       "ng.HumanTaskWorkItem\032\235\001\n\014WorkItemNode\022\024\n" +
       "\014work_item_id\030\001 \001(\t\022\031\n\021timer_instance_id" +
-      "\030\002 \003(\003\022*\n\"error_handling_process_instanc" +
+      "\030\002 \003(\t\022*\n\"error_handling_process_instanc" +
       "e_id\030\003 \001(\t\0220\n\010workitem\030\004 \001(\0132\036.org.jbpm." +
       "marshalling.WorkItem\032H\n\016SubProcessNode\022\033" +
       "\n\023process_instance_id\030\001 \001(\t\022\031\n\021timer_ins" +
-      "tance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer" +
-      "_instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimer" +
-      "Node\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007t" +
+      "tance_id\030\002 \003(\t\032*\n\rMilestoneNode\022\031\n\021timer" +
+      "_instance_id\030\001 \003(\t\032\013\n\tEventNode\032\035\n\tTimer" +
+      "Node\022\020\n\010timer_id\030\001 \001(\t\032\234\001\n\010JoinNode\022_\n\007t" +
       "rigger\030\001 \003(\0132N.org.jbpm.marshalling.Proc" +
       "essInstance.NodeInstanceContent.JoinNode" +
       ".JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001" +
       " \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021ti" +
-      "mer_instance_id\030\001 \003(\003\032\304\002\n\024CompositeConte" +
-      "xtNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010var" +
+      "mer_instance_id\030\001 \003(\t\032\304\002\n\024CompositeConte" +
+      "xtNode\022\031\n\021timer_instance_id\030\002 \003(\t\0220\n\010var" +
       "iable\030\003 \003(\0132\036.org.jbpm.marshalling.Varia" +
       "ble\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm.ma" +
       "rshalling.ProcessInstance.NodeInstance\022U" +
@@ -34671,7 +35168,7 @@ public final class JBPMMessages {
       "arshalling.ProcessTimer.TimerInstance\0225\n" +
       "\007trigger\030\002 \001(\0132$.org.drools.core.marshal" +
       "ling.Trigger\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001" +
-      "(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006p" +
+      "(\003\022\020\n\010timer_id\030\002 \001(\t\022\r\n\005delay\030\003 \001(\003\022\016\n\006p" +
       "eriod\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\t" +
       "\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016last_trigger" +
       "ed\030\007 \001(\003\022\034\n\024DEPRECATED_sessionId\030\010 \001(\005\022\021" +

@@ -17,20 +17,14 @@
 package org.kie.kogito.jobs.service.scheduler;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.executor.JobExecutor;
@@ -49,10 +43,10 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     private Logger logger = LoggerFactory.getLogger(BaseTimerJobScheduler.class);
 
     @Inject
-    private JobExecutor jobExecutor;
+    JobExecutor jobExecutor;
 
     @Inject
-    private ReactiveJobRepository jobRepository;
+    ReactiveJobRepository jobRepository;
 
     @Override
     public Publisher<ScheduledJob> schedule(Job job) {

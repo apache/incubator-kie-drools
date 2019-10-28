@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,8 +29,6 @@ import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -36,8 +36,8 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.services.time.TimerInstance;
 
 /**
  * Runtime counterpart of an event node.
@@ -50,7 +50,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     public void signalEvent(String type, Object event) {
         if ("timerTriggered".equals(type)) {
             TimerInstance timerInstance = (TimerInstance) event;
-            if (timerInstance.getId() == slaTimerId) {                
+            if (timerInstance.getId().equals(slaTimerId)) {                
                 handleSLAViolation();        
             }
         } else if (("slaViolation:" + getId()).equals(type)) {
@@ -105,16 +105,16 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
             processRuntime.getProcessEventSupport().fireBeforeSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
             logger.debug("SLA violated on node instance {}", getId());                   
             this.slaCompliance = ProcessInstance.SLA_VIOLATED;
-            this.slaTimerId = -1;
+            this.slaTimerId = null;
             processRuntime.getProcessEventSupport().fireAfterSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
         }
     }
     
     private void cancelSlaTimer() {
-        if (this.slaTimerId > -1) {
-            TimerManager timerManager = ((InternalProcessRuntime)
-                    getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
-            timerManager.cancelTimer(this.slaTimerId);
+        if (this.slaTimerId != null && !this.slaTimerId.trim().isEmpty()) {
+            JobsService jobService = ((InternalProcessRuntime)
+                    getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
+            jobService.cancelJob(this.slaTimerId);
             logger.debug("SLA Timer {} has been canceled", this.slaTimerId);
         }
     }
@@ -225,7 +225,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 	    } else {
 	        getProcessInstance().addEventListener(eventType, getEventListener(), true);
 	    }
-	    if (slaTimerId > -1) {
+	    if (this.slaTimerId != null && !this.slaTimerId.trim().isEmpty()) {
 	        addTimerListener();
 	    }
 	}

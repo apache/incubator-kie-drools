@@ -16,6 +16,9 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -30,7 +33,6 @@ import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -41,14 +43,9 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.io.ResourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.*;
 
 public class StartEventTest extends JbpmBpmn2TestCase {
 
@@ -190,25 +187,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
-    @Timeout(10)
-    public void testTimerStartCron() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);
-        KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        final List<String> list = new ArrayList<>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-
-        // Timer in the process takes 1s, so after 5 seconds, there should be 5 process IDs in the list.
-        countDownListener.waitTillCompleted();
-        assertThat(getNumberOfProcessInstances("Minimal")).isEqualTo(5);
-
-    }
 
     @Test
     public void testSignalToStartProcess() throws Exception {

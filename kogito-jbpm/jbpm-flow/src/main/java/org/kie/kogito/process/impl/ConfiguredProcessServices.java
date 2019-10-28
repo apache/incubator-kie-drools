@@ -17,12 +17,11 @@ package org.kie.kogito.process.impl;
 
 import org.jbpm.process.instance.AbstractProcessRuntimeServiceProvider;
 import org.kie.kogito.process.ProcessConfig;
-import org.kie.services.time.impl.JDKTimerService;
 
 public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProvider {
 
     public ConfiguredProcessServices(ProcessConfig config) {
-        super(new JDKTimerService(),
+        super(config.jobsService(),
               config.workItemHandlers(),
               config.processEventListeners(),
               config.signalManagerHub(),

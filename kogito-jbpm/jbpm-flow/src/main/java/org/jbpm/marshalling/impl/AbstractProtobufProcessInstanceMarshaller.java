@@ -235,13 +235,13 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if ( nodeInstance instanceof RuleSetNodeInstance ) {
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.RULE_SET_NODE );
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((RuleSetNodeInstance) nodeInstance).getTimerInstances();
             JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder _ruleSet = JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.newBuilder();
             _ruleSet.setRuleFlowGroup(((RuleSetNodeInstance) nodeInstance).getRuleFlowGroup());
             if ( timerInstances != null ) {
                 
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _ruleSet.addTimerInstanceId( id );
                 }
             }
@@ -262,10 +262,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder _task = JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
                     .setWorkItemId( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() )
                     .setWorkitem(writeHumanTaskWorkItem(context, (HumanTaskWorkItem)((HumanTaskNodeInstance) nodeInstance).getWorkItem()));
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _task.addTimerInstanceId( id );
                 }
             }
@@ -280,10 +280,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     .setWorkItemId( ((WorkItemNodeInstance) nodeInstance).getWorkItemId() )
                     .setWorkitem(writeWorkItem(context, ((WorkItemNodeInstance) nodeInstance).getWorkItem()));
             
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((WorkItemNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _wi.addTimerInstanceId( id );
                 }
             }
@@ -296,10 +296,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         } else if ( nodeInstance instanceof LambdaSubProcessNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder _sp = JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.newBuilder()
                     .setProcessInstanceId( ((LambdaSubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((LambdaSubProcessNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _sp.addTimerInstanceId( id );
                 }
             }
@@ -309,10 +309,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         } else if ( nodeInstance instanceof SubProcessNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder _sp = JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.newBuilder()
                     .setProcessInstanceId( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((SubProcessNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _sp.addTimerInstanceId( id );
                 }
             }
@@ -321,10 +321,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     .setSubProcess( _sp.build() );
         } else if ( nodeInstance instanceof MilestoneNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder _ms = JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.newBuilder();
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((MilestoneNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _ms.addTimerInstanceId( id );
                 }
             }
@@ -362,10 +362,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     .setJoin( _join.build() );
         } else if ( nodeInstance instanceof StateNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder _state = JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.newBuilder();
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((StateNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _state.addTimerInstanceId( id );
                 }
             }
@@ -439,10 +439,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             }
 
             CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((CompositeContextNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
-                for ( Long id : timerInstances ) {
+                for ( String id : timerInstances ) {
                     _composite.addTimerInstanceId( id );
                 }
             }
@@ -939,8 +939,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new RuleSetNodeInstance();
                 ((RuleSetNodeInstance) nodeInstance).setRuleFlowGroup(_content.getRuleSet().getRuleFlowGroup());
                 if ( _content.getRuleSet().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getRuleSet().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getRuleSet().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((RuleSetNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -961,8 +961,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId( _content.getHumanTask().getWorkItemId() );
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readHumanTaskWorkItem(context, _content.getHumanTask().getWorkitem()) );
                 if ( _content.getHumanTask().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((HumanTaskNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );                    
@@ -974,8 +974,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId( _content.getWorkItem().getWorkItemId() );
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getWorkItem().getWorkitem()) );
                 if ( _content.getWorkItem().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getWorkItem().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getWorkItem().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((WorkItemNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -986,8 +986,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new SubProcessNodeInstance();
                 ((SubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId( _content.getSubProcess().getProcessInstanceId() );
                 if ( _content.getSubProcess().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getSubProcess().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getSubProcess().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((SubProcessNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -997,8 +997,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new LambdaSubProcessNodeInstance();
                 ((LambdaSubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId( _content.getSubProcess().getProcessInstanceId() );
                 if ( _content.getSubProcess().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getSubProcess().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getSubProcess().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((LambdaSubProcessNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -1007,8 +1007,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case MILESTONE_NODE :
                 nodeInstance = new MilestoneNodeInstance();
                 if ( _content.getMilestone().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getMilestone().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getMilestone().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((MilestoneNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -1039,8 +1039,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new CompositeContextNodeInstance();
                 
                 if ( _content.getComposite().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getComposite().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getComposite().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -1049,8 +1049,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case DYNAMIC_NODE :
                 nodeInstance = new DynamicNodeInstance();
                 if ( _content.getComposite().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getComposite().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getComposite().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -1059,8 +1059,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case STATE_NODE :
                 nodeInstance = new StateNodeInstance();
                 if ( _content.getState().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getState().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getState().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
@@ -1070,8 +1070,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new EventSubProcessNodeInstance();
                 
                 if ( _content.getComposite().getTimerInstanceIdCount() > 0 ) {
-                    List<Long> timerInstances = new ArrayList<Long>();
-                    for ( Long _timerId : _content.getComposite().getTimerInstanceIdList() ) {
+                    List<String> timerInstances = new ArrayList<>();
+                    for ( String _timerId : _content.getComposite().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );

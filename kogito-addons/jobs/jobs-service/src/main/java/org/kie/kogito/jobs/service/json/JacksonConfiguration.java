@@ -16,38 +16,23 @@
 
 package org.kie.kogito.jobs.service.json;
 
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Specializes;
-import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.quarkus.resteasy.jackson.runtime.ObjectMapperProducer;
+
+import io.quarkus.jackson.ObjectMapperCustomizer;
 
 @ApplicationScoped
-@Specializes
-public class JacksonConfiguration extends ObjectMapperProducer {
+public class JacksonConfiguration implements ObjectMapperCustomizer {
 
-    private ObjectMapper objectMapper;
 
-    @PostConstruct
-    private ObjectMapper init() {
-        objectMapper = new ObjectMapper();
+    @Override
+    public void customize(ObjectMapper objectMapper) {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.findAndRegisterModules();
         objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        return objectMapper;
     }
 
-    @Singleton
-    @Produces
-    @Override
-    public ObjectMapper objectMapper() {
-        return Optional.ofNullable(objectMapper).orElse(init());
-    }
 }

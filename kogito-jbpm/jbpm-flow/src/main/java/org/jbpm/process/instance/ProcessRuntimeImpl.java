@@ -42,7 +42,6 @@ import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-import org.jbpm.process.instance.timer.TimerManagerRuntimeAdaptor;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
@@ -64,15 +63,19 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.services.jobs.impl.InMemoryJobService;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
 import org.kie.services.time.impl.CronExpression;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -80,7 +83,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
 	private ProcessInstanceManager processInstanceManager;
 	private SignalManager signalManager;
-	private TimerManager timerManager;
+	private JobsService jobService;
 	private ProcessEventSupport processEventSupport;
 	private UnitOfWorkManager unitOfWorkManager;
 
@@ -94,9 +97,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(
-		        new TimerManagerRuntimeAdaptor(kruntime),
-                kruntime.getTimerService());
+		jobService = new InMemoryJobService(this);
 		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
         processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
@@ -113,7 +114,18 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             RuleFlowProcess p = (RuleFlowProcess) process;
             List<StartNode> startNodes = p.getTimerStart();
             if (startNodes != null && !startNodes.isEmpty()) {
-                kruntime.queueWorkingMemoryAction(new RegisterStartTimerAction(p.getId(), startNodes, this.timerManager));
+                
+                for (StartNode startNode : startNodes) {
+                    if (startNode != null && startNode.getTimer() != null) {
+                        
+                        if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
+                            
+                        } else {
+                            jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));
+                        }
+                        
+                    }
+                }
             }
         }
     }
@@ -127,9 +139,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(
-		        new TimerManagerRuntimeAdaptor(kruntime),
-                kruntime.getTimerService());
+		jobService = new InMemoryJobService(this);
 		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
         processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
@@ -250,8 +260,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         return processInstanceManager;
     }
     
-    public TimerManager getTimerManager() {
-    	return timerManager;
+    public JobsService getJobsService() {
+    	return jobService;
     }
     
     public SignalManager getSignalManager() {
@@ -508,7 +518,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
 	public void dispose() {
         this.processEventSupport.reset();
-        this.timerManager.dispose();
         kruntime = null;
         
 	}
@@ -531,124 +540,60 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         return active.booleanValue();
     }
 
-    public static class RegisterStartTimerAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
-
-        private List<StartNode> startNodes;
-        private String processId;
-        private TimerManager timerManager;
+    protected ExpirationTime createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
         
-        public RegisterStartTimerAction(String processId, List<StartNode> startNodes, TimerManager timerManager) {
-            this.processId = processId;
-            this.startNodes = startNodes;
-            this.timerManager = timerManager;
-        }
-        
-        public RegisterStartTimerAction(MarshallerReaderContext context) {
+        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
             
-        }
-        
-        @Override
-        public void execute(InternalWorkingMemory workingMemory) {
-            initTimer(workingMemory.getKnowledgeRuntime());
-        }
-
-        @Override
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            initTimer(kruntime);
-        }
-
-        @Override
-        public Action serialize(MarshallerWriteContext context)
-                throws IOException {
-            return null;
-        }
-        
-        
-        private void initTimer(InternalKnowledgeRuntime kruntime) {
+            long delay = businessCalendar.calculateBusinessTimeAsDuration(timer.getDelay());
             
-            for (StartNode startNode : startNodes) {
-                if (startNode != null && startNode.getTimer() != null) {
-                    TimerInstance timerInstance = null;
-                    if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
-                        timerInstance = new TimerInstance();
-                        timerInstance.setCronExpression(startNode.getTimer().getDelay());
-                        
-                    } else {
-                        timerInstance = createTimerInstance(startNode.getTimer(), kruntime);    
-                    }
-                                        
-                    timerManager.registerTimer(timerInstance, processId, null);
-                }
-            }
-        }
-        
-        protected TimerInstance createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
-            TimerInstance timerInstance = new TimerInstance();
-
-            if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
-                BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-                
-                String delay = timer.getDelay();
-                
-                timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
-                
-                if (timer.getPeriod() == null) {
-                    timerInstance.setPeriod(0);
-                } else {
-                    String period = timer.getPeriod();
-                    timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
-                }
+            if (timer.getPeriod() == null) {
+                return DurationExpirationTime.repeat(delay);
             } else {
-                configureTimerInstance(timer, timerInstance);
+                long period = businessCalendar.calculateBusinessTimeAsDuration(timer.getPeriod());
+                
+                return DurationExpirationTime.repeat(delay, period);
             }
-            timerInstance.setTimerId(timer.getId());
-            return timerInstance;
-        }
-        
-        private void configureTimerInstance(Timer timer, TimerInstance timerInstance) {
-            long duration = -1;
-            switch (timer.getTimeType()) {
-            case Timer.TIME_CYCLE:
-                // when using ISO date/time period is not set
-                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                if (repeatValues.length == 3) {
-                    int parsedReapedCount = (int)repeatValues[0];
-                    if (parsedReapedCount > -1) {
-                        timerInstance.setRepeatLimit(parsedReapedCount+1);
-                    }
-                    timerInstance.setDelay(repeatValues[1]);
-                    timerInstance.setPeriod(repeatValues[2]);
-                } else {
-                    timerInstance.setDelay(repeatValues[0]);
-                    try {
-                    	long period = DateTimeUtils.parseTimeString(timer.getPeriod());
-                    	timerInstance.setPeriod(period);
-                    } catch (RuntimeException e) {
-                    	timerInstance.setPeriod(repeatValues[0]);
-                    }
+        } else {
+            return configureTimerInstance(timer);
+        }            
+    }
+    
+    private ExpirationTime configureTimerInstance(Timer timer) {
+        long duration = -1;
+        switch (timer.getTimeType()) {
+        case Timer.TIME_CYCLE:
+            // when using ISO date/time period is not set
+            long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+            if (repeatValues.length == 3) {
+                int parsedReapedCount = (int)repeatValues[0];
+                
+                return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], parsedReapedCount);
+            } else {
+                long delay = repeatValues[0];
+                long period = -1;
+                try {
+                    period = DateTimeUtils.parseTimeString(timer.getPeriod());
+                    
+                } catch (RuntimeException e) {
+                    period = repeatValues[0];
                 }
                 
-                break;
-            case Timer.TIME_DURATION:
-
-                duration = DateTimeUtils.parseDuration(timer.getDelay());
-                timerInstance.setDelay(duration);
-                timerInstance.setPeriod(0);
-                break;
-            case Timer.TIME_DATE:
-                duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
-                timerInstance.setDelay(duration);
-                timerInstance.setPeriod(0);
-                break;
-
-            default:
-                break;
+                return DurationExpirationTime.repeat(delay, period);
             }
+            
+        case Timer.TIME_DURATION:
 
+            duration = DateTimeUtils.parseDuration(timer.getDelay());
+            return DurationExpirationTime.after(duration);
+
+        case Timer.TIME_DATE:
+            
+            return ExactExpirationTime.of(timer.getDate());
         }
-        private long resolveValue(String s) {
-            return TimeUtils.parseTimeString(s);
-        }
+        
+        throw new UnsupportedOperationException("Not supported timer definition");
+
     }
 
     public class SignalManagerSignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {

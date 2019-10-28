@@ -170,12 +170,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
             throws IOException {
         if (nodeInstance instanceof RuleSetNodeInstance) {
             stream.writeShort(PersisterEnums.RULE_SET_NODE_INSTANCE);
-            List<Long> timerInstances =
+            List<String> timerInstances =
                 ((RuleSetNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
 	            stream.writeInt(timerInstances.size());
-	            for (Long id : timerInstances) {
-	                stream.writeLong(id);
+	            for (String id : timerInstances) {
+	                stream.writeUTF(id);
 	            }
 	        } else {
 	            stream.writeInt(0);
@@ -183,12 +183,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
         } else if (nodeInstance instanceof HumanTaskNodeInstance) {
             stream.writeShort(PersisterEnums.HUMAN_TASK_NODE_INSTANCE);
             stream.writeUTF(((HumanTaskNodeInstance) nodeInstance).getWorkItemId());
-            List<Long> timerInstances =
+            List<String> timerInstances =
                 ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
 	            stream.writeInt(timerInstances.size());
-	            for (Long id : timerInstances) {
-	                stream.writeLong(id);
+	            for (String id : timerInstances) {
+	                stream.writeUTF(id);
 	            }
 	        } else {
 	            stream.writeInt(0);
@@ -196,12 +196,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
         } else if (nodeInstance instanceof WorkItemNodeInstance) {
             stream.writeShort(PersisterEnums.WORK_ITEM_NODE_INSTANCE);
             stream.writeUTF(((WorkItemNodeInstance) nodeInstance).getWorkItemId());
-            List<Long> timerInstances =
+            List<String> timerInstances =
                 ((WorkItemNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
 	            stream.writeInt(timerInstances.size());
-	            for (Long id : timerInstances) {
-	                stream.writeLong(id);
+	            for (String id : timerInstances) {
+	                stream.writeUTF(id);
 	            }
 	        } else {
 	            stream.writeInt(0);
@@ -209,24 +209,24 @@ public abstract class AbstractProcessInstanceMarshaller implements
         } else if (nodeInstance instanceof SubProcessNodeInstance) {
             stream.writeShort(PersisterEnums.SUB_PROCESS_NODE_INSTANCE);
             stream.writeUTF(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
-            List<Long> timerInstances =
+            List<String> timerInstances =
                 ((SubProcessNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
 	            stream.writeInt(timerInstances.size());
-	            for (Long id : timerInstances) {
-	                stream.writeLong(id);
+	            for (String id : timerInstances) {
+	                stream.writeUTF(id);
 	            }
 	        } else {
 	            stream.writeInt(0);
 	        }
         } else if (nodeInstance instanceof MilestoneNodeInstance) {
             stream.writeShort(PersisterEnums.MILESTONE_NODE_INSTANCE);
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((MilestoneNodeInstance) nodeInstance).getTimerInstances();
             if (timerInstances != null) {
                 stream.writeInt(timerInstances.size());
-                for (Long id : timerInstances) {
-                    stream.writeLong(id);
+                for (String id : timerInstances) {
+                    stream.writeUTF(id);
                 }
             } else {
                 stream.writeInt(0);
@@ -235,7 +235,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         	stream.writeShort(PersisterEnums.EVENT_NODE_INSTANCE);
     	} else if (nodeInstance instanceof TimerNodeInstance) {
             stream.writeShort(PersisterEnums.TIMER_NODE_INSTANCE);
-            stream.writeLong(((TimerNodeInstance) nodeInstance).getTimerId());
+            stream.writeUTF(((TimerNodeInstance) nodeInstance).getTimerId());
         } else if (nodeInstance instanceof JoinInstance) {
             stream.writeShort(PersisterEnums.JOIN_NODE_INSTANCE);
             Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
@@ -255,12 +255,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
             }
         } else if (nodeInstance instanceof StateNodeInstance) {
             stream.writeShort(PersisterEnums.STATE_NODE_INSTANCE);
-            List<Long> timerInstances =
+            List<String> timerInstances =
                     ((StateNodeInstance) nodeInstance).getTimerInstances();
             if (timerInstances != null) {
                 stream.writeInt(timerInstances.size());
-                for (Long id : timerInstances) {
-                    stream.writeLong(id);
+                for (String id : timerInstances) {
+                    stream.writeUTF(id);
                 }
             } else {
                 stream.writeInt(0);
@@ -272,12 +272,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
         		stream.writeShort(PersisterEnums.COMPOSITE_NODE_INSTANCE);
         	}
             CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
-            List<Long> timerInstances =
+            List<String> timerInstances =
                 ((CompositeContextNodeInstance) nodeInstance).getTimerInstances();
             if (timerInstances != null) {
                 stream.writeInt(timerInstances.size());
-                for (Long id : timerInstances) {
-                    stream.writeLong(id);
+                for (String id : timerInstances) {
+                    stream.writeUTF(id);
                 }
             } else {
                 stream.writeInt(0);
@@ -532,9 +532,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new RuleSetNodeInstance();
                 int nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((RuleSetNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -544,9 +544,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((HumanTaskNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -556,9 +556,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((WorkItemNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -568,9 +568,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 ((SubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((SubProcessNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -579,16 +579,16 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new MilestoneNodeInstance();
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((MilestoneNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
                 break;
             case PersisterEnums.TIMER_NODE_INSTANCE:
                 nodeInstance = new TimerNodeInstance();
-                ((TimerNodeInstance) nodeInstance).internalSetTimerId(stream.readLong());
+                ((TimerNodeInstance) nodeInstance).internalSetTimerId(stream.readUTF());
                 break;
             case PersisterEnums.EVENT_NODE_INSTANCE:
                 nodeInstance = new EventNodeInstance();
@@ -611,9 +611,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new CompositeContextNodeInstance();
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -625,9 +625,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new DynamicNodeInstance();
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }
@@ -636,9 +636,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new StateNodeInstance();
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
-                    List<Long> timerInstances = new ArrayList<Long>();
+                    List<String> timerInstances = new ArrayList<>();
                     for (int i = 0; i < nbTimerInstances; i++) {
-                        timerInstances.add(stream.readLong());
+                        timerInstances.add(stream.readUTF());
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
                 }

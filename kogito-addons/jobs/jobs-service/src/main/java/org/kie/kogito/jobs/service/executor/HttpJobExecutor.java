@@ -39,15 +39,15 @@ public class HttpJobExecutor implements JobExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpJobExecutor.class);
 
     @Inject
-    private Vertx vertx;
+    Vertx vertx;
 
     private WebClient client;
 
     @Inject
-    private HttpConverters httpConverters;
+    HttpConverters httpConverters;
 
     @Inject
-    private ReactiveJobRepository jobRepository;
+    ReactiveJobRepository jobRepository;
 
     @PostConstruct
     void initialize() {

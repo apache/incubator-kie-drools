@@ -438,7 +438,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
+    @Timeout(10000)
     public void testInclusiveSplitAndJoinWithTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");

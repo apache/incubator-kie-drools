@@ -199,7 +199,6 @@ public class ProtobufOutputMarshaller {
 
                 // this now just assigns the writer, it will not write out any timer information
                 context.parameterObject = _pdata;
-                processMarshaller.writeProcessTimers( context );
 
                 _session.setProcessData( _pdata.build() );
             }

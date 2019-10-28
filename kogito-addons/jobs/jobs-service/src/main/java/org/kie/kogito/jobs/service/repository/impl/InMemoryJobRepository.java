@@ -43,7 +43,7 @@ public class InMemoryJobRepository implements ReactiveJobRepository {
     private final Map<ZonedDateTime, List<String>> jobTimeMap = new ConcurrentHashMap<>();
 
     @Inject
-    private Vertx vertx;
+    Vertx vertx;
 
     @Override
     public CompletionStage<ScheduledJob> save(ScheduledJob job) {

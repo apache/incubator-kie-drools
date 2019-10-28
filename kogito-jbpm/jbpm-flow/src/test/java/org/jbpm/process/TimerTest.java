@@ -16,6 +16,9 @@
 
 package org.jbpm.process;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
@@ -27,12 +30,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
+import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.services.jobs.impl.InMemoryJobService;
+import org.kie.services.time.TimerInstance;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimerTest extends AbstractBaseTest  {
 
@@ -49,10 +53,6 @@ public class TimerTest extends AbstractBaseTest  {
     @Test
     @Disabled
 	public void testTimer() {
-//        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-//        ExecutorService executorService = new DefaultExecutorService();
-//        final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
-//        executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         final KieSession workingMemory = kbase.newKieSession();
 
@@ -76,10 +76,12 @@ public class TimerTest extends AbstractBaseTest  {
 	        	workingMemory.fireUntilHalt();       	
 			}
         }).start();
-
-        TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime()).getTimerManager();
-        TimerInstance timer = new TimerInstance();
-        timerManager.registerTimer(timer, processInstance);
+        
+        JobsService jobService = new InMemoryJobService(processRuntime);
+        
+        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getId(), "test");
+        String jobId = jobService.scheduleProcessInstanceJob(desc);
+        
         try {
         	Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -88,9 +90,8 @@ public class TimerTest extends AbstractBaseTest  {
         assertEquals(1, counter);
         
         counter = 0;
-        timer = new TimerInstance();
-        timer.setDelay(500);
-        timerManager.registerTimer(timer, processInstance);
+        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.after(500), processInstance.getId(), "test");
+        jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {
         	Thread.sleep(1000);
@@ -100,10 +101,8 @@ public class TimerTest extends AbstractBaseTest  {
         assertEquals(1, counter);
         
         counter = 0;
-        timer = new TimerInstance();
-        timer.setDelay(500);
-        timer.setPeriod(300);
-        timerManager.registerTimer(timer, processInstance);
+        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.repeat(500, 300L), processInstance.getId(), "test");
+        jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {
         	Thread.sleep(700);
@@ -117,10 +116,10 @@ public class TimerTest extends AbstractBaseTest  {
         } catch (InterruptedException e) {
             // do nothing
         }
-        // we can't know exactly how many times this will fire as timers are not precise, but should be atleast 4
+        // we can't know exactly how many times this will fire as timers are not precise, but should be at least 4
         assertTrue( counter >= 4 );
         
-        timerManager.cancelTimer(timer.getId());
+        jobService.cancelJob(jobId);
         int lastCount = counter;
         try {            
         	Thread.sleep(1000);

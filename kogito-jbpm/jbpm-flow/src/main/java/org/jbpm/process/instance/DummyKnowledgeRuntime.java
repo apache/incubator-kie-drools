@@ -29,6 +29,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.services.time.TimerService;
 
 /**
@@ -83,7 +84,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     }
 
     @Override
-    public TimerService getTimerService() {
+    public JobsService getJobsService() {
         return null;
     }
 
@@ -355,5 +356,10 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     @Override
     public long getFactCount() {
         return 0;
+    }
+
+    @Override
+    public TimerService getTimerService() {
+        return null;
     }
 }

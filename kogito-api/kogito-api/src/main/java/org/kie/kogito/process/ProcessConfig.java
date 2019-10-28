@@ -15,6 +15,7 @@
 
 package org.kie.kogito.process;
 
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
@@ -26,4 +27,6 @@ public interface ProcessConfig {
     SignalManagerHub signalManagerHub();
     
     UnitOfWorkManager unitOfWorkManager();
+    
+    JobsService jobsService();
 }

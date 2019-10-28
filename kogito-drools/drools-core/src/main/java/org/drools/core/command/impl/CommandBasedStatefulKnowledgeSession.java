@@ -106,6 +106,7 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.workitem.Policy;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
@@ -592,5 +593,10 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         
         return this.runner.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
+    }
+
+    @Override
+    public JobsService getJobsService() {
+        return null;
     }
 }

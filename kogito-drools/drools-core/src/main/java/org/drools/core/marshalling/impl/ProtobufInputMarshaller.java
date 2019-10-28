@@ -271,7 +271,6 @@ public class ProtobufInputMarshaller {
                 // This actually does ALL timers, due to backwards compatability issues
                 // It will read in old JBPM binaries, but always write to the new binary format.
                 context.parameterObject = _session.getProcessData();
-                processMarshaller.readProcessTimers( context );
             }
         } else {
             if ( _session.hasProcessData() ) {

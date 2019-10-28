@@ -25,13 +25,9 @@ public interface ProcessMarshaller {
 
     void writeProcessInstances( MarshallerWriteContext context ) throws IOException;
 
-    void writeProcessTimers( MarshallerWriteContext context ) throws IOException;
-
     void writeWorkItems( MarshallerWriteContext context ) throws IOException;
 
     List<ProcessInstance> readProcessInstances( MarshallerReaderContext context ) throws IOException;
-
-    void readProcessTimers( MarshallerReaderContext context ) throws IOException, ClassNotFoundException;
 
     void readWorkItems( MarshallerReaderContext context ) throws IOException;
 

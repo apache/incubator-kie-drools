@@ -19,6 +19,8 @@ package org.kie.api.runtime.process;
 import java.util.Collection;
 import java.util.Map;
 
+import org.kie.kogito.jobs.JobsService;
+
 /**
  * The {@link ProcessRuntime} is a super-interface for all {@link org.kie.api.runtime.KieSession}s.
  *
@@ -168,5 +170,12 @@ public interface ProcessRuntime {
      * @return the <code>WorkItemManager</code> related to this session
      */
     WorkItemManager getWorkItemManager();
+    
+    
+    /**
+     * Returns <code>JobsService</code> responsible for scheduling tasks such as timers.
+     * @return the <code>JobsService</code>
+     */
+    JobsService getJobsService();
 
 }

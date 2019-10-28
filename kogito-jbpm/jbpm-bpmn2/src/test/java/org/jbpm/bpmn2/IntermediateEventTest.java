@@ -30,17 +30,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.core.command.SingleSessionCommandService;
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
-import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -66,8 +62,6 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -94,19 +88,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         }
 
     };
-
-    /*
-     * helper methods
-     */
-
-    private TimerManager getTimerManager(KieSession ksession) {
-        KieSession internal = ksession;
-        if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal = ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession();;
-        }
-
-        return ((InternalProcessRuntime)((StatefulKnowledgeSessionImpl)internal).getProcessRuntime()).getTimerManager();
-    }
 
     /*
      * TESTS!
@@ -1166,19 +1147,13 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertProcessInstanceActive(processInstance);
-        Collection<TimerInstance> timers = getTimerManager(ksession).getTimers();
-        assertThat(timers.size()).isEqualTo(1);
 
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        timers = getTimerManager(ksession).getTimers();
-        assertThat(timers.size()).isEqualTo(1);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);        
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
 
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        timers = getTimerManager(ksession).getTimers();
-        assertThat(timers).isNullOrEmpty();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);        
         WorkItem workItem = handler.getWorkItem();
         if (workItem != null) {
             ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
@@ -1996,70 +1971,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
-    @Test
-    @Timeout(10)
-    public void testIntermediateCatchEventTimerCycleCron() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
-        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleCron.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-
-        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        assertProcessInstanceActive(processInstance);
-
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceActive(processInstance);
-
-        ksession.abortProcessInstance(processInstance.getId());
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    @Timeout(10)
-    public void testIntermediateCatchEventTimerDurationValueFromGlobal() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        KieBase kbase = createKnowledgeBase("BPMN2-GlobalTimerInterrupted.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        ksession.setGlobal("time", "2s");
-
-        ProcessInstance processInstance = ksession.startProcess("interruptedTimer");
-
-        assertProcessInstanceActive(processInstance);
-        // now wait for 1 second for timer to trigger
-        countDownListener.waitTillCompleted();
-
-        assertProcessInstanceFinished(processInstance, ksession);
-
-    }
-
-    @Test
-    @Timeout(10)
-    public void testTimerBoundaryEventCronCycle() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
-        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCron.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron");
-        assertProcessInstanceActive(processInstance);
-
-        List<WorkItem> workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(1);
-
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceActive(processInstance);
-        workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(3);
-
-        ksession.abortProcessInstance(processInstance.getId());
-
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
+   
 
     @Test
     @Timeout(10)
@@ -2393,70 +2305,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(processInstances.size()).isEqualTo(0);
     }
 
-    @Test
-    @Timeout(10)
-    public void testTimerBoundaryEventCronCycleVariable() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
-        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCronVariable.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("cronStr", "0/1 * * * * ?");
-
-        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron", parameters);
-        assertProcessInstanceActive(processInstance);
-
-        List<WorkItem> workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(1);
-
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceActive(processInstance);
-        workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(3);
-
-        ksession.abortProcessInstance(processInstance.getId());
-
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    @Timeout(10)
-    public void testMultipleTimerBoundaryEventCronCycleVariable() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 2);
-        KieBase kbase = createKnowledgeBase("BPMN2-MultipleBoundaryTimerCycleCronVariable.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("cronStr", "0/1 * * * * ?");
-
-        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron", parameters);
-        assertProcessInstanceActive(processInstance);
-
-        List<WorkItem> workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(1);
-
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceActive(processInstance);
-
-        workItems = handler.getWorkItems();
-        assertThat(workItems).isNotNull();
-        assertThat(workItems.size()).isEqualTo(2);
-
-        ksession.abortProcessInstance(processInstance.getId());
-
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
+    
 
     @Test
     @Timeout(10)

@@ -21,17 +21,17 @@ import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.signal.LightSignalManager;
-import org.kie.services.time.TimerService;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
 
-    private final TimerService timerService;
+    private final JobsService jobsService;
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
     private final WorkItemManager workItemManager;
@@ -39,7 +39,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final UnitOfWorkManager unitOfWorkManager;
 
     public AbstractProcessRuntimeServiceProvider(
-            TimerService timerService,
+            JobsService jobsService,
             WorkItemHandlerConfig workItemHandlerProvider,
             ProcessEventListenerConfig processEventListenerProvider,
             SignalManagerHub compositeSignalManager,
@@ -51,7 +51,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
         this.eventSupport = new ProcessEventSupport(this.unitOfWorkManager);
-        this.timerService = timerService;
+        this.jobsService = jobsService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 
         for (String workItem : workItemHandlerProvider.names()) {
@@ -67,8 +67,8 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     }
 
     @Override
-    public TimerService getTimerService() {
-        return timerService;
+    public JobsService getJobsService() {
+        return jobsService;
     }
 
     @Override

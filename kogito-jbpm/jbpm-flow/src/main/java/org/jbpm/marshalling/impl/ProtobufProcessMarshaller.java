@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +33,9 @@ import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.JBPMMessages.VariableContainer;
-import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
-import org.kie.services.time.manager.TimerManager.ProcessJobContext;
-import org.kie.services.time.manager.TimerManager.StartProcessJobContext;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
@@ -80,17 +72,6 @@ public class ProtobufProcessMarshaller
                                            processInstance );
             _pdata.addExtension( JBPMMessages.processInstance, _instance );
         }
-    }
-
-    public void writeProcessTimers(MarshallerWriteContext outCtx) throws IOException {
-        outCtx.writersByClass.put( ProcessJobContext.class, new TimerManagerMarshallers.ProcessTimerOutputMarshaller() );
-        outCtx.writersByClass.put( StartProcessJobContext.class, new TimerManagerMarshallers.ProcessTimerOutputMarshaller() );
-        ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) outCtx.parameterObject;
-
-        TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) outCtx.wm).getProcessRuntime()).getTimerManager();
-        long timerId = timerManager.internalGetTimerId();
-
-        _pdata.setExtension( JBPMMessages.timerId, timerId );
     }
 
     public void writeWorkItems(MarshallerWriteContext context) throws IOException {
@@ -136,69 +117,6 @@ public class ProtobufProcessMarshaller
                                               _workItem );
             ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( (org.drools.core.process.instance.WorkItem) workItem );
         }
-    }
-
-    public void readProcessTimers(MarshallerReaderContext inCtx) throws IOException,
-                                                                ClassNotFoundException {
-        inCtx.readersByInt.put( ProtobufMessages.Timers.TimerType.PROCESS_VALUE, new TimerManagerMarshallers.ProcessTimerInputMarshaller() );
-        ProtobufMessages.ProcessData _pdata = (ProtobufMessages.ProcessData) inCtx.parameterObject;
-
-        TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) inCtx.wm).getProcessRuntime()).getTimerManager();
-        timerManager.internalSetTimerId( _pdata.getExtension( JBPMMessages.timerId ) );
-//
-//        int token;
-//        while ( (token = inCtx.readShort()) != PersisterEnums.END ) {
-//            switch ( token ) {
-//                case PersisterEnums.TIMER : {
-//                    TimerInstance timer = readTimer( inCtx );
-//                    timerManager.internalAddTimer( timer );
-//                    break;
-//                }
-//                case PersisterEnums.DEFAULT_TIMER : {
-//                    InputMarshaller.readTimer( inCtx );
-//                    break;
-//                }
-//            }
-//        }
-    }
-
-    public static JBPMMessages.ProcessTimer.TimerInstance writeTimer(MarshallerWriteContext context,
-                                                                     TimerInstance timer) {
-        Builder _timer = JBPMMessages.ProcessTimer.TimerInstance.newBuilder()
-                .setId( timer.getId() )
-                .setTimerId( timer.getTimerId() )
-                .setSessionId( timer.getSessionId() )
-                .setDelay( timer.getDelay() )
-                .setPeriod( timer.getPeriod() )
-                .setProcessInstanceId( timer.getProcessInstanceId() )
-                .setActivatedTime( timer.getActivated().getTime() )
-                .setRepeatLimit(timer.getRepeatLimit());
-        Date lastTriggered = timer.getLastTriggered();
-        if ( lastTriggered != null ) {
-            _timer.setLastTriggered( lastTriggered.getTime() );
-        }
-        return _timer.build();
-    }
-
-    public static TimerInstance readTimer(MarshallerReaderContext context,
-                                          JBPMMessages.ProcessTimer.TimerInstance _timer) {
-        TimerInstance timer = new TimerInstance();
-        timer.setId( _timer.getId());
-        timer.setTimerId( _timer.getTimerId() );
-        timer.setDelay( _timer.getDelay() );
-        timer.setPeriod( _timer.getPeriod() );
-        timer.setProcessInstanceId( _timer.getProcessInstanceId() );
-        if (_timer.hasDEPRECATEDSessionId()) {
-        	timer.setSessionId( _timer.getDEPRECATEDSessionId() );
-        } else {
-        	timer.setSessionId( _timer.getSessionId() );
-        }
-        timer.setActivated( new Date( _timer.getActivatedTime() ) );
-        if ( _timer.hasLastTriggered() ) {
-            timer.setLastTriggered( new Date( _timer.getLastTriggered() ) );
-        }
-        timer.setRepeatLimit(_timer.getRepeatLimit());
-        return timer;
     }
 
     public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,

@@ -32,8 +32,6 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.TimeUtils;
-import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -44,29 +42,26 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
-import org.kie.api.command.ExecutableCommand;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.api.runtime.Context;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
+import org.kie.services.jobs.impl.InMemoryJobService;
 import org.kie.services.time.impl.CronExpression;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
-import org.kie.services.time.manager.TimerManagerRuntime;
 
 public class LightProcessRuntime implements InternalProcessRuntime {
 
@@ -75,7 +70,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
 
     private ProcessInstanceManager processInstanceManager;
     private SignalManager signalManager;
-    private TimerManager timerManager;
+    private JobsService jobService;
     private ProcessEventSupport processEventSupport;
     private final WorkItemManager workItemManager;
     private UnitOfWorkManager unitOfWorkManager;
@@ -94,18 +89,10 @@ public class LightProcessRuntime implements InternalProcessRuntime {
             ProcessRuntimeContext runtimeContext,
             ProcessRuntimeServiceProvider services) {
         this.knowledgeRuntime = new DummyKnowledgeRuntime(this);
-        TimerService timerService = services.getTimerService();
-        if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
-            timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
-        }
-
-        TimerManagerRuntime timerManagerRuntime =
-                new LightTimerManagerRuntime(this);
-
         this.runtimeContext = runtimeContext;
         this.processInstanceManager = services.getProcessInstanceManager();
         this.signalManager = services.getSignalManager();
-        this.timerManager = new TimerManager(timerManagerRuntime, timerService);
+        this.jobService = services.getJobsService() == null ? new InMemoryJobService(this) : services.getJobsService();
         this.processEventSupport = services.getEventSupport();
         this.workItemManager = services.getWorkItemManager();
         this.unitOfWorkManager = services.getUnitOfWorkManager();
@@ -122,7 +109,17 @@ public class LightProcessRuntime implements InternalProcessRuntime {
             RuleFlowProcess p = (RuleFlowProcess) process;
             List<StartNode> startNodes = p.getTimerStart();
             if (startNodes != null && !startNodes.isEmpty()) {
-                runtimeContext.queueWorkingMemoryAction(new RegisterStartTimerAction(p.getId(), startNodes, this.timerManager));
+                for (StartNode startNode : startNodes) {
+                    if (startNode != null && startNode.getTimer() != null) {
+                        
+                        if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
+                            
+                        } else {
+                            jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));
+                        }
+                        
+                    }
+                }
             }
         }
     }
@@ -220,8 +217,8 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         return processInstanceManager;
     }
 
-    public TimerManager getTimerManager() {
-        return timerManager;
+    public JobsService getJobsService() {
+        return jobService;
     }
 
     public SignalManager getSignalManager() {
@@ -423,29 +420,6 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         startProcess(processId, params, type);
     }
 
-    private class StartProcessWithTypeCommand implements ExecutableCommand<Void> {
-
-        private static final long serialVersionUID = -8890906804846111698L;
-
-        private String processId;
-        private Map<String, Object> params;
-        private String type;
-
-        private StartProcessWithTypeCommand(String processId, Map<String, Object> params, String type) {
-            this.processId = processId;
-            this.params = params;
-            this.type = type;
-        }
-
-        @Override
-        public Void execute(Context context) {
-            KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
-            ((LightProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).startProcess(processId,
-                                                                                                           params, type);
-
-            return null;
-        }
-    }
 
     public void abortProcessInstance(String processInstanceId) {
         ProcessInstance processInstance = getProcessInstance(processInstanceId);
@@ -478,7 +452,6 @@ public class LightProcessRuntime implements InternalProcessRuntime {
 
     public void dispose() {
         this.processEventSupport.reset();
-        this.timerManager.dispose();
         runtimeContext = null;
     }
 
@@ -494,123 +467,63 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         // originally: kruntime.getEnvironment().get("Active");
         return runtimeContext.isActive();
     }
-
-    public static class RegisterStartTimerAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
-
-        private List<StartNode> startNodes;
-        private String processId;
-        private TimerManager timerManager;
-
-        public RegisterStartTimerAction(String processId, List<StartNode> startNodes, TimerManager timerManager) {
-            this.processId = processId;
-            this.startNodes = startNodes;
-            this.timerManager = timerManager;
-        }
-
-        public RegisterStartTimerAction(MarshallerReaderContext context) {
-
-        }
-
-        @Override
-        public void execute(InternalWorkingMemory workingMemory) {
-            initTimer(workingMemory.getKnowledgeRuntime());
-        }
-
-        @Override
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            initTimer(kruntime);
-        }
-
-        @Override
-        public Action serialize(MarshallerWriteContext context)
-                throws IOException {
-            return null;
-        }
-
-        private void initTimer(InternalKnowledgeRuntime kruntime) {
-
-            for (StartNode startNode : startNodes) {
-                if (startNode != null && startNode.getTimer() != null) {
-                    TimerInstance timerInstance = null;
-                    if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
-                        timerInstance = new TimerInstance();
-                        timerInstance.setCronExpression(startNode.getTimer().getDelay());
-                    } else {
-                        timerInstance = createTimerInstance(startNode.getTimer(), kruntime);
-                    }
-
-                    timerManager.registerTimer(timerInstance, processId, null);
-                }
-            }
-        }
-
-        protected TimerInstance createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
-            TimerInstance timerInstance = new TimerInstance();
-
-            if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
-                BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-
-                String delay = timer.getDelay();
-
-                timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
-
-                if (timer.getPeriod() == null) {
-                    timerInstance.setPeriod(0);
-                } else {
-                    String period = timer.getPeriod();
-                    timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
-                }
+    
+    protected ExpirationTime createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
+        
+        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+            
+            long delay = businessCalendar.calculateBusinessTimeAsDuration(timer.getDelay());
+            
+            if (timer.getPeriod() == null) {
+                return DurationExpirationTime.repeat(delay);
             } else {
-                configureTimerInstance(timer, timerInstance);
+                long period = businessCalendar.calculateBusinessTimeAsDuration(timer.getPeriod());
+                
+                return DurationExpirationTime.repeat(delay, period);
             }
-            timerInstance.setTimerId(timer.getId());
-            return timerInstance;
-        }
-
-        private void configureTimerInstance(Timer timer, TimerInstance timerInstance) {
-            long duration = -1;
-            switch (timer.getTimeType()) {
-                case Timer.TIME_CYCLE:
-                    // when using ISO date/time period is not set
-                    long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                    if (repeatValues.length == 3) {
-                        int parsedReapedCount = (int) repeatValues[0];
-                        if (parsedReapedCount > -1) {
-                            timerInstance.setRepeatLimit(parsedReapedCount + 1);
-                        }
-                        timerInstance.setDelay(repeatValues[1]);
-                        timerInstance.setPeriod(repeatValues[2]);
-                    } else {
-                        timerInstance.setDelay(repeatValues[0]);
-                        try {
-                            long period = DateTimeUtils.parseTimeString(timer.getPeriod());
-                            timerInstance.setPeriod(period);
-                        } catch (RuntimeException e) {
-                            timerInstance.setPeriod(repeatValues[0]);
-                        }
-                    }
-
-                    break;
-                case Timer.TIME_DURATION:
-
-                    duration = DateTimeUtils.parseDuration(timer.getDelay());
-                    timerInstance.setDelay(duration);
-                    timerInstance.setPeriod(0);
-                    break;
-                case Timer.TIME_DATE:
-                    duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
-                    timerInstance.setDelay(duration);
-                    timerInstance.setPeriod(0);
-                    break;
-
-                default:
-                    break;
+        } else {
+            return configureTimerInstance(timer);
+        }            
+    }
+    
+    private ExpirationTime configureTimerInstance(Timer timer) {
+        long duration = -1;
+        switch (timer.getTimeType()) {
+        case Timer.TIME_CYCLE:
+            // when using ISO date/time period is not set
+            long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+            if (repeatValues.length == 3) {
+                int parsedReapedCount = (int)repeatValues[0];
+                if (parsedReapedCount > -1) {
+//                    timerInstance.setRepeatLimit(parsedReapedCount+1);
+                }
+                return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
+            } else {
+                long delay = repeatValues[0];
+                long period = -1;
+                try {
+                    period = DateTimeUtils.parseTimeString(timer.getPeriod());
+                    
+                } catch (RuntimeException e) {
+                    period = repeatValues[0];
+                }
+                
+                return DurationExpirationTime.repeat(delay, period);
             }
-        }
+            
+        case Timer.TIME_DURATION:
 
-        private long resolveValue(String s) {
-            return TimeUtils.parseTimeString(s);
+            duration = DateTimeUtils.parseDuration(timer.getDelay());
+            return DurationExpirationTime.repeat(duration);
+
+        case Timer.TIME_DATE:
+            
+            return ExactExpirationTime.of(timer.getDate());
         }
+        
+        throw new UnsupportedOperationException("Not supported timer definition");
+
     }
 
     public class SignalManagerSignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {

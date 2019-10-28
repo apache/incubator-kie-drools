@@ -18,13 +18,13 @@ package org.jbpm.process.instance;
 
 import org.drools.core.event.ProcessEventSupport;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.time.TimerService;
 
 public interface ProcessRuntimeServiceProvider {
 
-    TimerService getTimerService();
+    JobsService getJobsService();
 
     ProcessInstanceManager getProcessInstanceManager();
 

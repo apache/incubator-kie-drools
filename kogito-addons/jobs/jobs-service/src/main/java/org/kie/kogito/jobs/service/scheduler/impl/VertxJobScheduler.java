@@ -39,7 +39,7 @@ public class VertxJobScheduler extends BaseTimerJobScheduler {
     private Logger logger = LoggerFactory.getLogger(VertxJobScheduler.class);
 
     @Inject
-    private Vertx vertx;
+    Vertx vertx;
 
     @Override
     public Publisher<ScheduledJob> doSchedule(Duration delay, Job job) {

@@ -152,6 +152,7 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.Application;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.services.time.TimerService;
 
 import static java.util.stream.Collectors.toList;
@@ -769,14 +770,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public String getEntryPointId() {
         return EntryPointId.DEFAULT.getEntryPointId();
     }
-    
+
     /**
-     * (This shall NOT be exposed on public API)  
+     * (This shall NOT be exposed on public API)
      */
     public QueryResultsImpl getQueryResultsFromRHS(String queryName, Object... arguments) {
     	return internalGetQueryResult(true, queryName, arguments);
     }
-    
+
     public QueryResultsImpl getQueryResults(String queryName, Object... arguments) {
     	return internalGetQueryResult(false, queryName, arguments);
     }
@@ -943,7 +944,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             done(tnodes);
         }
-        
+
         @Override
         public boolean isCalledFromRHS() {
         	return calledFromRHS;
@@ -1881,7 +1882,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public ProcessInstance startProcessInstance(String processInstanceId) {
         return getProcessRuntime().startProcessInstance( processInstanceId );
     }
-    
+
     public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
         return getProcessRuntime().startProcessInstance( processInstanceId, trigger );
     }
@@ -2190,7 +2191,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         public ProcessInstance startProcessInstance( String processInstanceId ) {
             throw new UnsupportedOperationException( );
         }
-        
+
         @Override
         public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
             return null;
@@ -2228,6 +2229,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public WorkItemManager getWorkItemManager() {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public JobsService getJobsService() {
             throw new UnsupportedOperationException( );
         }
     }
@@ -2308,6 +2314,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
         return result;
+    }
+
+
+    @Override
+    public JobsService getJobsService() {
+        return null;
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,7 @@ message ProcessInstance {
     optional bool signal_completion = 16 [default = true];
     optional string deploymentId = 17;
     optional string correlation_key = 18;
-    optional int64 sla_timer_id = 19;
+    optional string sla_timer_id = 19;
     optional int64 sla_due_date = 20;
     optional int32 sla_compliance = 21;
     optional string root_process_instance_id = 22;
@@ -74,7 +74,7 @@ message ProcessInstance {
         optional int64 node_id = 2;
         optional NodeInstanceContent content = 4;
         optional int32 level = 5;
-        optional int64 sla_timer_id = 6;
+        optional string sla_timer_id = 6;
         optional int64 sla_due_date = 7;
         optional int32 sla_compliance = 8;
         optional int64 trigger_date = 9;
@@ -101,7 +101,7 @@ message ProcessInstance {
         optional AsyncEventNode async_event = 13;
 
         message RuleSetNode {
-            repeated int64 timer_instance_id = 1;
+            repeated string timer_instance_id = 1;
             repeated TextMapEntry mapEntry = 2;
             optional string rule_flow_group = 3;
             message TextMapEntry {
@@ -111,23 +111,23 @@ message ProcessInstance {
         }
         message HumanTaskNode {
             optional string work_item_id = 1;
-            repeated int64 timer_instance_id = 2;
+            repeated string timer_instance_id = 2;
             optional string error_handling_process_instance_id = 3;
             optional HumanTaskWorkItem workitem = 4;
         }
         message WorkItemNode {
             optional string work_item_id = 1;
-            repeated int64 timer_instance_id = 2;
+            repeated string timer_instance_id = 2;
             optional string error_handling_process_instance_id = 3;
             optional WorkItem workitem = 4;
         }
         message SubProcessNode {
             optional string process_instance_id = 1;
-            repeated int64 timer_instance_id = 2;
+            repeated string timer_instance_id = 2;
         }
-        message MilestoneNode { repeated int64 timer_instance_id = 1; }
+        message MilestoneNode { repeated string timer_instance_id = 1; }
         message EventNode {}
-        message TimerNode { optional int64 timer_id = 1; }
+        message TimerNode { optional string timer_id = 1; }
         message JoinNode {
             repeated JoinTrigger trigger = 1;
             message JoinTrigger {
@@ -135,9 +135,9 @@ message ProcessInstance {
                 optional int32 counter = 2;
             }
         }
-        message StateNode { repeated int64 timer_instance_id = 1; }
+        message StateNode { repeated string timer_instance_id = 1; }
         message CompositeContextNode {
-            repeated int64 timer_instance_id = 2;
+            repeated string timer_instance_id = 2;
             repeated Variable variable = 3;
             repeated NodeInstance node_instance = 4;
             repeated ExclusiveGroupInstance exclusive_group = 5;
@@ -242,7 +242,7 @@ message ProcessTimer {
 
     message TimerInstance {
         optional int64 id = 1;
-        optional int64 timer_id = 2;
+        optional string timer_id = 2;
         optional int64 delay = 3;
         optional int64 period = 4;
         optional string process_instance_id = 5;

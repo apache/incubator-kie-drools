@@ -18,9 +18,10 @@ package org.jbpm.workflow.instance.node;
 import java.util.Collection;
 
 import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.api.runtime.process.NodeInstance;
+
 
 public class BoundaryEventNodeInstance extends EventNodeInstance {
 
@@ -31,7 +32,7 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         BoundaryEventNode boundaryNode = (BoundaryEventNode) getEventNode();
         
         String attachedTo = boundaryNode.getAttachedToNodeId();
-        Collection<NodeInstance> nodeInstances = ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstances();
+        Collection<NodeInstance> nodeInstances = ((NodeInstanceContainer) getProcessInstance()).getNodeInstances(true);
         if( type != null && type.startsWith("Compensation") ) { 
             // if not active && completed, signal
             if( ! isAttachedToNodeActive(nodeInstances, attachedTo, type, event) && isAttachedToNodeCompleted(attachedTo)) {
@@ -61,12 +62,6 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
                             return true;
                         }
                     } else {
-                        return true;
-                    }
-                }
-                if (nInstance instanceof CompositeNodeInstance) {
-                    boolean hasActive = isAttachedToNodeActive(((CompositeNodeInstance) nInstance).getNodeInstances(), attachedTo, type, event);
-                    if (hasActive) {
                         return true;
                     }
                 }

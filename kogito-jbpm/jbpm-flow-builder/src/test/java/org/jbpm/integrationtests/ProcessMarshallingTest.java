@@ -529,67 +529,6 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         
         session2.halt();
     }
-    
-    @Test
-    public void testTimerOnUnmarshalledSession() throws Exception {
-        String process = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-        	"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-            "  xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "  xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "  type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
-            "\n" +
-            "    <header>\n" +
-    		"    </header>\n" +
-    		"\n" +
-    		"    <nodes>\n" +
-    		"      <start id=\"1\" name=\"Start\" />\n" +
-    		"      <timerNode id=\"4\" name=\"Timer\" delay=\"1000\" />\n" +
-    		"      <end id=\"3\" name=\"End\" />\n" +
-    		"    </nodes>\n" +
-    		"\n" +
-    		"    <connections>\n" +
-    		"      <connection from=\"1\" to=\"4\" />\n" +
-    		"      <connection from=\"4\" to=\"3\" />\n" +
-    		"    </connections>\n" +
-            "\n" +
-            "</process>\n";
-        builder.addProcessFromXml( new StringReader( process ));
-
-        KieSession session = createKieSession(builder.getPackages());
-        
-        session.startProcess("com.sample.ruleflow", null);
-        
-        // serialize session
-        Marshaller marshaller = MarshallerFactory.newMarshaller( session.getKieBase() );
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        marshaller.marshall( baos, session );
-        byte[] b1 = baos.toByteArray();
-        baos.close();
-       
-        // hope that timer hasn't fired yet?
-        assertEquals(1, session.getProcessInstances().size());
-       
-        // dispose of session
-        session.dispose();
-        
-        // deserialize session
-        ByteArrayInputStream bais = new ByteArrayInputStream( b1 );        
-        StatefulKnowledgeSession session2 = (StatefulKnowledgeSession) marshaller.unmarshall( bais );
-
-        // make sure time job runs
-        int sleeps = 3;
-        int procInstsAlive = session2.getProcessInstances().size();
-        while( procInstsAlive > 0 && sleeps > 0 ) { 
-            Thread.yield();
-            Thread.sleep(1000);
-            --sleeps;
-            procInstsAlive = session2.getProcessInstances().size();
-        }
-       
-        // verify
-        assertEquals(0, session2.getProcessInstances().size());
-    }
   
     private static class TestListWorkItemHandler implements WorkItemHandler {
     	private List<WorkItem> workItems = new ArrayList<WorkItem>();

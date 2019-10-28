@@ -20,15 +20,12 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.ProcessEventSupport;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.time.manager.TimerManager;
 
 public interface InternalProcessRuntime extends org.drools.core.runtime.process.InternalProcessRuntime {
 	
 	ProcessInstanceManager getProcessInstanceManager();
 	
 	SignalManager getSignalManager();
-	
-	TimerManager getTimerManager();
 	
 	ProcessEventSupport getProcessEventSupport();
 	

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.CodegenUtils;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
@@ -36,6 +37,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -45,6 +47,7 @@ public class ProcessConfigGenerator {
     private static final String DEFAULT_WORKITEM_HANDLER_CONFIG = "defaultWorkItemHandlerConfig";
     private static final String DEFAULT_PROCESS_EVENT_LISTENER_CONFIG = "defaultProcessEventListenerConfig";
     private static final String DEFAULT_UNIT_OF_WORK_MANAGER = "defaultUnitOfWorkManager";
+    private static final String DEFAULT_JOBS_SEVICE = "defaultJobsService";
 
     private DependencyInjectionAnnotator annotator;
     
@@ -56,13 +59,15 @@ public class ProcessConfigGenerator {
                     .setType(StaticProcessConfig.class.getCanonicalName())
                     .addArgument(new MethodCallExpr("extract_workItemHandlerConfig"))
                     .addArgument(new MethodCallExpr("extract_processEventListenerConfig"))
-                    .addArgument(new MethodCallExpr("extract_unitOfWorkManager"));
+                    .addArgument(new MethodCallExpr("extract_unitOfWorkManager"))
+                    .addArgument(new MethodCallExpr("extract_jobsService"));
         } else {
             return new ObjectCreationExpr()
                 .setType(StaticProcessConfig.class.getCanonicalName())
                 .addArgument(new NameExpr(DEFAULT_WORKITEM_HANDLER_CONFIG))
                 .addArgument(new NameExpr(DEFAULT_PROCESS_EVENT_LISTENER_CONFIG))
-                .addArgument(new NameExpr(DEFAULT_UNIT_OF_WORK_MANAGER));
+                .addArgument(new NameExpr(DEFAULT_UNIT_OF_WORK_MANAGER))
+                .addArgument(new NameExpr(DEFAULT_JOBS_SEVICE));
         }
     }
     
@@ -90,6 +95,12 @@ public class ProcessConfigGenerator {
                                                                            NodeList.nodeList(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, CollectingUnitOfWorkFactory.class.getCanonicalName()), NodeList.nodeList())))));
         members.add(defaultUowFieldDeclaration);
         
+        FieldDeclaration defaultJobsServiceFieldDeclaration = new FieldDeclaration()
+                .setModifiers(Keyword.PRIVATE)
+                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, JobsService.class.getCanonicalName()), 
+                                                    DEFAULT_JOBS_SEVICE,new NullLiteralExpr()));
+        members.add(defaultJobsServiceFieldDeclaration);
+        
         if (annotator != null) {
             FieldDeclaration pelcFieldDeclaration = new FieldDeclaration()
                     .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.optionalInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, ProcessEventListenerConfig.class.getCanonicalName()))), "processEventListenerConfig"));
@@ -108,9 +119,17 @@ public class ProcessConfigGenerator {
             annotator.withInjection(uowmFieldDeclaration);
             
             members.add(uowmFieldDeclaration);
+            
+            FieldDeclaration jobsServiceFieldDeclaration = new FieldDeclaration()
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.optionalInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, JobsService.class.getCanonicalName()))), "jobsService"));
+            annotator.withInjection(jobsServiceFieldDeclaration);
+            
+            members.add(jobsServiceFieldDeclaration);
+            
             members.add(CodegenUtils.extractOptionalInjection(WorkItemHandlerConfig.class.getCanonicalName(), "workItemHandlerConfig", DEFAULT_WORKITEM_HANDLER_CONFIG, annotator));
             members.add(CodegenUtils.extractOptionalInjection(ProcessEventListenerConfig.class.getCanonicalName(), "processEventListenerConfig", DEFAULT_PROCESS_EVENT_LISTENER_CONFIG, annotator));
             members.add(CodegenUtils.extractOptionalInjection(UnitOfWorkManager.class.getCanonicalName(), "unitOfWorkManager", DEFAULT_UNIT_OF_WORK_MANAGER, annotator));
+            members.add(CodegenUtils.extractOptionalInjection(JobsService.class.getCanonicalName(), "jobsService", DEFAULT_JOBS_SEVICE, annotator));
         }
         
         return members;

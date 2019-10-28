@@ -20,12 +20,11 @@ import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.services.signal.DefaultSignalManagerHub;
-import org.kie.services.time.impl.JDKTimerService;
 
 public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeServiceProvider {
 
     public LightProcessRuntimeServiceProvider() {
-        super(new JDKTimerService(),
+        super(null,
               new DefaultWorkItemHandlerConfig(),
               new DefaultProcessEventListenerConfig(),
               new DefaultSignalManagerHub(),
