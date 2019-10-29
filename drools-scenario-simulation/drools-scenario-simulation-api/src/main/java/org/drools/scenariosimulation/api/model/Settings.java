@@ -16,7 +16,7 @@
 package org.drools.scenariosimulation.api.model;
 
 /**
- * SimulationDescriptor describes a template of a simulation
+ * <code>Settings</code> to be used inside scenario simulation asset
  */
 public class Settings {
 
