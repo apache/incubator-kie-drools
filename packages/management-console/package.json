@@ -9,7 +9,7 @@
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
+    "build:prod": "yarn run lint && webpack --config webpack.prod.js && yarn run test",
     "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
     "test": "./node_modules/.bin/jest",
     "test:coverage": "jest --coverage",
