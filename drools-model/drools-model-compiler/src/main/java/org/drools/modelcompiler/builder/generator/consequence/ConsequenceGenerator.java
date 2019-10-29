@@ -44,7 +44,7 @@ import com.github.javaparser.ast.type.TypeParameter;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-/* Used to generate Consequence DSL */
+/* Used to generate ConsequenceBuilder File */
 class ConsequenceGenerator {
 
     private static String ARITY_CLASS_NAME = "_ARITY_CLASS_NAME";
