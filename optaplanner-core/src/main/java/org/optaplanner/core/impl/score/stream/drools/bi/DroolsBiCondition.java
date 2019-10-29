@@ -19,15 +19,12 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
@@ -36,6 +33,7 @@ import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
+import org.drools.model.functions.Predicate2;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -75,18 +73,17 @@ public final class DroolsBiCondition<A, B> {
     }
 
     public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
+        Predicate2<Object, Object> filter = (b, a) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b));
         Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> bMetadata.buildPattern()
-                .expr(aMetadata.getVariableDeclaration(),
-                        (b, a) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b)));
+                .expr("Filter using " + predicate, aMetadata.getVariableDeclaration(), filter);
         return new DroolsBiCondition<>(aMetadata, bMetadata.substitute(patternSupplier));
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsMetadata<Object, C> cMetadata = cCondition.getAMetadata();
-        // The expression ID is required yet seemingly unused. A random UUID is generated.
         Supplier<PatternDSL.PatternDef<Object>> newPattern = () -> cMetadata.buildPattern()
-                .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
+                .expr("Filter using " + triJoiner, aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),
                         (c, a, b) -> matches(triJoiner, aMetadata.extract(a), bMetadata.extract(b),
                                 cMetadata.extract(c)));
@@ -102,28 +99,31 @@ public final class DroolsBiCondition<A, B> {
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToIntBiFunction<A, B> matchWeighter) {
+        ToIntBiFunction<Object, Object> weightMultiplier = (a, b) -> matchWeighter.applyAsInt(aMetadata.extract(a),
+                bMetadata.extract(b));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
-            int weightMultiplier = matchWeighter.applyAsInt(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsInt(a, b));
         });
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToLongBiFunction<A, B> matchWeighter) {
+        ToLongBiFunction<Object, Object> weightMultiplier = (a, b) -> matchWeighter.applyAsLong(aMetadata.extract(a),
+                bMetadata.extract(b));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
-            long weightMultiplier = matchWeighter.applyAsLong(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsLong(a, b));
         });
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             BiFunction<A, B, BigDecimal> matchWeighter) {
+        BiFunction<Object, Object, BigDecimal> weightMultiplier = (a, b) -> matchWeighter.apply(aMetadata.extract(a),
+                bMetadata.extract(b));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
-            BigDecimal weightMultiplier = matchWeighter.apply(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.apply(a, b));
         });
     }
 
@@ -134,20 +134,19 @@ public final class DroolsBiCondition<A, B> {
                         .execute(consequenceImpl);
         if (aMetadata instanceof DroolsInferredMetadata && bMetadata instanceof DroolsInferredMetadata) {
             // In case of logical tuples, both patterns will be the same logical tuple, and therefore we just add one.
-            return Stream.of(bMetadata.buildPattern(), consequence)
-                    .collect(Collectors.toList());
+            return Arrays.asList(bMetadata.buildPattern(), consequence);
         } else {
             return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), consequence);
         }
     }
 
     private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {
-        Object[] leftMappings = triJoiner.getLeftCombinedMapping().apply(a, b);
-        Object[] rightMappings = triJoiner.getRightCombinedMapping().apply(c);
         JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
         for (int i = 0; i < joinerTypes.length; i++) {
             JoinerType joinerType = joinerTypes[i];
-            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
+            Object leftMapping = triJoiner.getLeftMapping(i).apply(a, b);
+            Object rightMapping = triJoiner.getRightMapping(i).apply(c);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
                 return false;
             }
         }

@@ -155,7 +155,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
 
-
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishValueGroup.class)
                     .join(TestdataLavishEntityGroup.class)
@@ -648,10 +647,12 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", entityGroup1, value1);
         solution.getEntityList().add(entity3);
 
+
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
-            return factory.from(TestdataLavishEntity.class)
-                    .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue, count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, value, count) -> count);
+            throw new UnsupportedOperationException("Not yet implemented.");
+            //return factory.from(TestdataLavishEntity.class)
+            //        .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue, count())
+            //        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, value, count) -> count);
         });
 
         // From scratch

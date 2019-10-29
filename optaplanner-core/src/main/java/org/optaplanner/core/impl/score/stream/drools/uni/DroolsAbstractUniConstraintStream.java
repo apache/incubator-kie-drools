@@ -26,7 +26,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
@@ -97,20 +96,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
-    }
-
-    @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
-            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-    TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
-            Function<A, GroupKeyB_> groupKeyBMapping,
-            UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

@@ -68,9 +68,18 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
+    <name>ConstraintStreams (Drools)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
     <name>ConstraintStreams (Bavet)</name>
     <solver>
       <scoreDirectorFactory>
+        <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>

@@ -26,10 +26,6 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 
 public class CloudBalancingConstraintProvider implements ConstraintProvider {
 
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
-
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,15 @@ package org.optaplanner.examples.machinereassignment.solver.score;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.ConstraintCollectors;
-import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
-
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
@@ -59,19 +53,20 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.
      */
     private Constraint maximumCapacity(ConstraintFactory factory) {
-        return factory.from(MrMachineCapacity.class)
-                .join(MrProcessAssignment.class,
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
-                )
-                .groupBy(
-                        (machineCapacity, processAssignment) -> machineCapacity, sumLong(
-                                (machineCapacity, processAssignment) -> processAssignment.getUsage(machineCapacity.getResource())
-                        )
-                )
-                .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
-                .penalizeLong(MrConstraints.MAXIMUM_CAPACITY,
-                        HardSoftLongScore.ofHard(1L),
-                        (machineCapacity, usage) -> machineCapacity.getMaximumCapacity() - usage);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
+//        return factory.from(MrMachineCapacity.class)
+//                .join(MrProcessAssignment.class,
+//                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+//                )
+//                .groupBy(
+//                        (machineCapacity, processAssignment) -> machineCapacity, sumLong(
+//                                (machineCapacity, processAssignment) -> processAssignment.getUsage(machineCapacity.getResource())
+//                        )
+//                )
+//                .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
+//                .penalizeLong(MrConstraints.MAXIMUM_CAPACITY,
+//                        HardSoftLongScore.ofHard(1L),
+//                        (machineCapacity, usage) -> machineCapacity.getMaximumCapacity() - usage);
     }
 
     /**
@@ -119,20 +114,21 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * machine as the newly assigned machine.
      */
     private Constraint transientUsage(ConstraintFactory factory) {
-        return factory.from(MrMachineCapacity.class)
-                .filter(MrMachineCapacity::isTransientlyConsumed)
-                .join(factory.from(MrProcessAssignment.class).filter(MrProcessAssignment::isMoved),
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
-                )
-                .groupBy((machineCapacity, processAssignment) -> machineCapacity,
-                        sumLong((machineCapacity, processAssignment)
-                                -> processAssignment.getUsage(machineCapacity.getResource())
-                        )
-                )
-                .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
-                .penalizeLong(MrConstraints.TRANSIENT_USAGE,
-                        HardSoftLongScore.ofHard(1L),
-                        (machineCapacity, usage) -> machineCapacity.getMaximumCapacity() - usage);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
+//        return factory.from(MrMachineCapacity.class)
+//                .filter(MrMachineCapacity::isTransientlyConsumed)
+//                .join(factory.from(MrProcessAssignment.class).filter(MrProcessAssignment::isMoved),
+//                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
+//                )
+//                .groupBy((machineCapacity, processAssignment) -> machineCapacity,
+//                        sumLong((machineCapacity, processAssignment)
+//                                -> processAssignment.getUsage(machineCapacity.getResource())
+//                        )
+//                )
+//                .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
+//                .penalizeLong(MrConstraints.TRANSIENT_USAGE,
+//                        HardSoftLongScore.ofHard(1L),
+//                        (machineCapacity, usage) -> machineCapacity.getMaximumCapacity() - usage);
     }
 
     // ************************************************************************
@@ -143,19 +139,20 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Load: The safety capacity for each resource for each machine should not be exceeded.
      */
     private Constraint loadCost(ConstraintFactory factory) {
-        return factory.from(MrMachineCapacity.class)
-                .join(MrProcessAssignment.class,
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
-                )
-                .groupBy(
-                        (machineCapacity, processAssignment) -> machineCapacity, sumLong(
-                                (machineCapacity, processAssignment) -> processAssignment.getUsage(machineCapacity.getResource())
-                        )
-                )
-                .filter(((machineCapacity, usage) -> machineCapacity.getSafetyCapacity() < usage))
-                .penalizeLong(MrConstraints.LOAD_COST,
-                        HardSoftLongScore.ofSoft(1L),
-                        (machineCapacity, usage) -> machineCapacity.getSafetyCapacity() - usage);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
+//        return factory.from(MrMachineCapacity.class)
+//                .join(MrProcessAssignment.class,
+//                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+//                )
+//                .groupBy(
+//                        (machineCapacity, processAssignment) -> machineCapacity, sumLong(
+//                                (machineCapacity, processAssignment) -> processAssignment.getUsage(machineCapacity.getResource())
+//                        )
+//                )
+//                .filter(((machineCapacity, usage) -> machineCapacity.getSafetyCapacity() < usage))
+//                .penalizeLong(MrConstraints.LOAD_COST,
+//                        HardSoftLongScore.ofSoft(1L),
+//                        (machineCapacity, usage) -> machineCapacity.getSafetyCapacity() - usage);
     }
 
     /**

@@ -73,15 +73,10 @@ public final class DroolsLogicalTuple {
      * Return a fact on n-th position in the tuple.
      * @param index required position in the tuple. Must be between 0 (incl.) and {@link #getCardinality()} (excl.)
      * @param <T> type that we're expecting to see. Method may throw an exception if the cast can not be made.
-     * @throws IllegalArgumentException When index out of range.
+     * @throws ArrayIndexOutOfBoundsException when index not between 0 (incl.) and {@link #getCardinality()} (excl.)
      * @return never null.
      */
     public <T> T getItem(final int index) {
-        int cardinality = getCardinality();
-        if (index < 0 || index >= cardinality) {
-            throw new IllegalArgumentException("Logical tuple of cardinality (" + cardinality + ") has no element no. ("
-                    + index + ").");
-        }
         return (T) items[index];
     }
 

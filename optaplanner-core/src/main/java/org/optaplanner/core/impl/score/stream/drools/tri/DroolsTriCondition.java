@@ -19,10 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -30,6 +27,7 @@ import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block5;
+import org.drools.model.functions.Predicate3;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -67,11 +65,11 @@ public final class DroolsTriCondition<A, B, C> {
     }
 
     public DroolsTriCondition<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
-        // The expression ID is required yet seemingly unused. A random UUID is generated.
+        Predicate3<Object, Object, Object> filter = (c, a, b) -> predicate.test(aMetadata.extract(a),
+                bMetadata.extract(b), cMetadata.extract(c));
         Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> cMetadata.buildPattern()
-                .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
-                        bMetadata.getVariableDeclaration(),
-                        (c, a, b) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c)));
+                .expr("Filter using " + predicate, aMetadata.getVariableDeclaration(),
+                        bMetadata.getVariableDeclaration(), filter);
         return new DroolsTriCondition<>(aMetadata, bMetadata, cMetadata.substitute(patternSupplier));
     }
 
@@ -84,32 +82,32 @@ public final class DroolsTriCondition<A, B, C> {
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToIntTriFunction<A, B, C> matchWeighter) {
+        ToIntTriFunction<Object, Object, Object> weightMultiplier = (a, b, c) -> matchWeighter.applyAsInt(
+                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            int weightMultiplier = matchWeighter.applyAsInt(aMetadata.extract(a), bMetadata.extract(b),
-                    cMetadata.extract(c));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsInt(a, b, c));
         });
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToLongTriFunction<A, B, C> matchWeighter) {
+        ToLongTriFunction<Object, Object, Object> weightMultiplier = (a, b, c) -> matchWeighter.applyAsLong(
+                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            long weightMultiplier = matchWeighter.applyAsLong(aMetadata.extract(a), bMetadata.extract(b),
-                    cMetadata.extract(c));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsLong(a, b, c));
         });
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
+        TriFunction<Object, Object, Object, BigDecimal> weightMultiplier = (a, b, c) -> matchWeighter.apply(
+                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c));
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            BigDecimal weightMultiplier = matchWeighter.apply(aMetadata.extract(a), bMetadata.extract(b),
-                    cMetadata.extract(c));
             RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier);
+            scoreHolder.impactScore(kcontext, weightMultiplier.apply(a, b, c));
         });
     }
 
@@ -123,8 +121,7 @@ public final class DroolsTriCondition<A, B, C> {
         if (aMetadata instanceof DroolsInferredMetadata && bMetadata instanceof DroolsInferredMetadata &&
                 cMetadata instanceof DroolsInferredMetadata) {
             // In case of logical tuples, all patterns will be the same logical tuple, and therefore we just add one.
-            return Stream.of(cMetadata.buildPattern(), consequence)
-                    .collect(Collectors.toList());
+            return Arrays.asList(cMetadata.buildPattern(), consequence);
         } else {
             return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(),
                     consequence);

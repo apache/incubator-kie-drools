@@ -82,6 +82,138 @@
           "methodName": "getClassLoader",
           "elementKind": "method",
           "justification": "Replaced by SolverConfig.getClassLoader(). SolverConfigContext isn't public API."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <A, B, Property_> org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B> org.optaplanner.core.api.score.stream.Joiners::containing(java.util.function.Function<A, ? extends java.util.Collection<Property_>>, java.util.function.Function<B, Property_>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "Joiners",
+          "methodName": "containing",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <A, Property_> org.optaplanner.core.api.score.stream.bi.BiJoiner<A, A> org.optaplanner.core.api.score.stream.Joiners::disjoint(java.util.function.Function<A, ? extends java.util.Collection<Property_>>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "Joiners",
+          "methodName": "disjoint",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <A, B, Property_> org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B> org.optaplanner.core.api.score.stream.Joiners::disjoint(java.util.function.Function<A, ? extends java.util.Collection<Property_>>, java.util.function.Function<B, ? extends java.util.Collection<Property_>>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "Joiners",
+          "methodName": "disjoint",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <A, Property_> org.optaplanner.core.api.score.stream.bi.BiJoiner<A, A> org.optaplanner.core.api.score.stream.Joiners::intersecting(java.util.function.Function<A, ? extends java.util.Collection<Property_>>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "Joiners",
+          "methodName": "intersecting",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <A, B, Property_> org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B> org.optaplanner.core.api.score.stream.Joiners::intersecting(java.util.function.Function<A, ? extends java.util.Collection<Property_>>, java.util.function.Function<B, ? extends java.util.Collection<Property_>>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "Joiners",
+          "methodName": "intersecting",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <GroupKey_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<GroupKey_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKey_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKeyA_>, java.util.function.BiFunction<A, B, GroupKeyB_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKeyA_>, java.util.function.BiFunction<A, B, GroupKeyB_>, org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKey_>, org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "oldType": "org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_ extends java.lang.Object, GroupKeyB_ extends java.lang.Object, Result_ extends java.lang.Object>",
+          "newType": "org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.generics.formalTypeParameterRemoved",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.generics.formalTypeParameterRemoved",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Temporarily removed until actually implemented."
         }
       ]
     }

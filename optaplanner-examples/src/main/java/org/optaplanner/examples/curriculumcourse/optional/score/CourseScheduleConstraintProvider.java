@@ -29,10 +29,6 @@ import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
-
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[]{
@@ -103,12 +99,13 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint roomOccupancy(ConstraintFactory factory) {
-        return factory.from(Lecture.class)
-                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
-                .filter((period, room, count) -> count > 1)
-                .penalize("roomOccupancy",
-                        HardSoftScore.ofHard(1),
-                        (period, room, count) -> count - 1);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for tri-grouping.");
+//        return factory.from(Lecture.class)
+//                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
+//                .filter((period, room, count) -> count > 1)
+//                .penalize("roomOccupancy",
+//                        HardSoftScore.ofHard(1),
+//                        (period, room, count) -> count - 1);
     }
 
     private Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
@@ -142,6 +139,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint curriculumCompactness(ConstraintFactory factory) {
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
 //        return factory.from(Curriculum.class)
 //                .join(Lecture.class)
 //                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
@@ -149,7 +147,6 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
 //                .flatten()
 //                .penalize("curriculumCompactness",
 //                        HardSoftScore.ofSoft(2));
-        throw new UnsupportedOperationException();
     }
 
     private Constraint roomStability(ConstraintFactory factory) {

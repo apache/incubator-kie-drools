@@ -8,16 +8,30 @@
 :experimental:
 
 
-Constraint streams are an Functional Programming form of incremental score calculation in plain Java 8+
-that is fast, scalable and debuggable.
+Constraint streams are a Functional Programming form of incremental score calculation in plain Java that is easy to
+read, write and debug.
 The API should feel familiar if you've worked with Java 8 Streams or SQL.
 
 [WARNING]
 ====
-The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
+The ConstraintStreams/ConstraintProvider API is an ongoing project.
 It works but it has many API gaps.
 Therefore, it is not rich enough yet to handle complex constraints.
 ====
+
+To use constraint streams in your project, implement the `ConstraintProvider` interface and use the following in your
+solver config:
+
+[source,xml,options="nowrap"]
+----
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      ...
+    </solver>
+----
+
 
 [[constraintStreamsIntroduction]]
 == Introduction
@@ -57,6 +71,7 @@ and supports <<explainingTheScore,justifications>>:
                         Talk::getDurationInMinutes);
     }
 ----
+
 
 [[constraintStreamsGroupingAndCollectors]]
 == Grouping and Collectors
@@ -174,3 +189,25 @@ The following example finds a computer which runs the most power-demanding proce
     }
 ----
 
+
+[[constraintStreamsImplementations]]
+== Variant implementation types
+
+Constraint streams come in two flavours, a default implementation using Drools under the hood and a pure Java-based
+implementation called _Bavet_. Drools-based implementation is more feature-complete.
+
+Bavet is an experimental implementation focusing on raw speed, which often significantly outperforms the Drools
+implementation, or even Drools itself.
+However, it lacks features.
+To try it out, implement the `ConstraintProvider` interface and use the following in your solver config:
+
+[source,xml,options="nowrap"]
+----
+    <solver>
+      <scoreDirectorFactory>
+        <constraintStreamImplType>BAVET</constraintStreamImplType>
+        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      ...
+    </solver>
+----

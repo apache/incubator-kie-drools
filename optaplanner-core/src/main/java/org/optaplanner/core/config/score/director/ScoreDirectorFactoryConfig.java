@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -558,7 +558,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                     "constraintProviderClass", this.constraintProviderClass);
             ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                     constraintProviderCustomProperties, "constraintProviderCustomProperties");
-            ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.BAVET);
+            ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(constraintStreamImplType,
+                    ConstraintStreamImplType.DROOLS);
             return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider, constraintStreamImplType_);
         } else {
             if (constraintProviderCustomProperties != null) {

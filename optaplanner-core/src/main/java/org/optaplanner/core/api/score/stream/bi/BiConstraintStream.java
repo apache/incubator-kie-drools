@@ -190,9 +190,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     }
 
     // ************************************************************************
-    // Group by
+    // Group by (TODO implement these)
     // ************************************************************************
 
+    /*
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping);
 
@@ -209,6 +210,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
             BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
+     */
 
     // ************************************************************************
     // Penalize/reward

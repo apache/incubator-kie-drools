@@ -16,22 +16,41 @@
 
 package org.optaplanner.examples.conferencescheduling.optional.score;
 
-import java.util.function.Function;
-
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.*;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_LEVEL_DIVERSITY;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.POPULAR_TALKS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_ROOM;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_UNAVAILABLE_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SAME_DAY_TALKS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNAVAILABLE_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_TIMESLOT_TAGS;
 
 public class ConferenceSchedulingConstraintProvider implements ConstraintProvider {
-
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
@@ -112,35 +131,37 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint speakerConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, intersecting(Talk::getSpeakerList))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(SPEAKER_CONFLICT,
-                        Talk::overlappingDurationInMinutes);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class, intersecting(Talk::getSpeakerList))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(SPEAKER_CONFLICT,
+//                        Talk::overlappingDurationInMinutes);
     }
 
     private Constraint talkPrerequisiteTalks(ConstraintFactory factory) {
-        return factory.from(Talk.class)
-                .join(Talk.class,
-                        containing(Talk::getPrerequisiteTalkSet, Function.identity()),
-                        lessThan(talk1 -> talk1.getTimeslot().getStartDateTime(),
-                                talk2 -> talk2.getTimeslot().getEndDateTime()))
-                .penalizeConfigurable(TALK_PREREQUISITE_TALKS,
-                        Talk::combinedDurationInMinutes);
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.from(Talk.class)
+//                .join(Talk.class,
+//                        containing(Talk::getPrerequisiteTalkSet, Function.identity()),
+//                        lessThan(talk1 -> talk1.getTimeslot().getStartDateTime(),
+//                                talk2 -> talk2.getTimeslot().getEndDateTime()))
+//                .penalizeConfigurable(TALK_PREREQUISITE_TALKS,
+//                        Talk::combinedDurationInMinutes);
     }
 
     private Constraint talkMutuallyExclusiveTalksTags(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, intersecting(Talk::getMutuallyExclusiveTalksTagSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
-                        (talk1, talk2) -> talk1.overlappingMutuallyExclusiveTalksTagCount(talk2)
-                        * talk1.overlappingDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class, intersecting(Talk::getMutuallyExclusiveTalksTagSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
+//                        (talk1, talk2) -> talk1.overlappingMutuallyExclusiveTalksTagCount(talk2)
+//                        * talk1.overlappingDurationInMinutes(talk2));
     }
 
     private Constraint consecutiveTalksPause(ConstraintFactory factory) {
-        throw new UnsupportedOperationException();
-//
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
 //        return factory.fromUniquePair((Talk.class, intersecting(Talk::getSpeakerList))
 //                .filter((talk1, talk2) -> !talk1.getTimeslot().pauseExists(talk2.getTimeslot(), $minimumPause))
 //                .penalizeConfigurable(CONSECUTIVE_TALKS_PAUSE,
@@ -148,15 +169,16 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint crowdControl(ConstraintFactory factory) {
-        return factory.from(Talk.class)
-                .filter(talk -> talk.getCrowdControlRisk() > 0)
-                // No fromUniquePair() because we want both [A, B] and [B, A].
-                .join(Talk.class, equal(Talk::getTimeslot))
-                .filter((talk1, talk2) -> talk1 != talk2)
-                .groupBy((talk1, talk2) -> talk1, countBi())
-                .filter((talk, count) -> count != 1)
-                .penalizeConfigurable(CROWD_CONTROL,
-                        (talk, count) -> talk.getDurationInMinutes());
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-joins.");
+//        return factory.from(Talk.class)
+//                .filter(talk -> talk.getCrowdControlRisk() > 0)
+//                // No fromUniquePair() because we want both [A, B] and [B, A].
+//                .join(Talk.class, equal(Talk::getTimeslot))
+//                .filter((talk1, talk2) -> talk1 != talk2)
+//                .groupBy((talk1, talk2) -> talk1, countBi())
+//                .filter((talk, count) -> count != 1)
+//                .penalizeConfigurable(CROWD_CONTROL,
+//                        (talk, count) -> talk.getDurationInMinutes());
     }
 
     private Constraint speakerRequiredTimeslotTags(ConstraintFactory factory) {
@@ -237,55 +259,60 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint themeTrackConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, intersecting(Talk::getThemeTrackTagSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(THEME_TRACK_CONFLICT,
-                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
-                        * talk1.overlappingDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class, intersecting(Talk::getThemeTrackTagSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(THEME_TRACK_CONFLICT,
+//                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
+//                        * talk1.overlappingDurationInMinutes(talk2));
     }
 
     private Constraint themeTrackRoomStability(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
-                equal(talk -> talk.getTimeslot().getStartDateTime().toLocalDate()),
-                intersecting(Talk::getThemeTrackTagSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .filter((talk1, talk2) -> talk1.getRoom() != talk2.getRoom())
-                .penalizeConfigurable(THEME_TRACK_ROOM_STABILITY,
-                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
-                        * talk1.combinedDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class,
+//                equal(talk -> talk.getTimeslot().getStartDateTime().toLocalDate()),
+//                intersecting(Talk::getThemeTrackTagSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .filter((talk1, talk2) -> talk1.getRoom() != talk2.getRoom())
+//                .penalizeConfigurable(THEME_TRACK_ROOM_STABILITY,
+//                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
+//                        * talk1.combinedDurationInMinutes(talk2));
     }
 
     private Constraint sectorConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, intersecting(Talk::getSectorTagSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(SECTOR_CONFLICT,
-                        (talk1, talk2) -> talk1.overlappingSectorCount(talk2)
-                        * talk1.overlappingDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class, intersecting(Talk::getSectorTagSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(SECTOR_CONFLICT,
+//                        (talk1, talk2) -> talk1.overlappingSectorCount(talk2)
+//                        * talk1.overlappingDurationInMinutes(talk2));
     }
 
     private Constraint audienceTypeDiversity(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
-                // Timeslot.overlaps() is deliberately not used
-                equal(Talk::getTimeslot),
-                intersecting(Talk::getAudienceTypeSet))
-                .rewardConfigurable(AUDIENCE_TYPE_DIVERSITY,
-                        (talk1, talk2) -> talk1.overlappingAudienceTypeCount(talk2)
-                        * talk1.getTimeslot().getDurationInMinutes());
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class,
+//                // Timeslot.overlaps() is deliberately not used
+//                equal(Talk::getTimeslot),
+//                intersecting(Talk::getAudienceTypeSet))
+//                .rewardConfigurable(AUDIENCE_TYPE_DIVERSITY,
+//                        (talk1, talk2) -> talk1.overlappingAudienceTypeCount(talk2)
+//                        * talk1.getTimeslot().getDurationInMinutes());
     }
 
     private Constraint audienceTypeThemeTrackConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
-                intersecting(Talk::getThemeTrackTagSet),
-                intersecting(Talk::getAudienceTypeSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(AUDIENCE_TYPE_THEME_TRACK_CONFLICT,
-                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
-                        * talk1.overlappingAudienceTypeCount(talk2)
-                        * talk1.overlappingDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class,
+//                intersecting(Talk::getThemeTrackTagSet),
+//                intersecting(Talk::getAudienceTypeSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(AUDIENCE_TYPE_THEME_TRACK_CONFLICT,
+//                        (talk1, talk2) -> talk1.overlappingThemeTrackCount(talk2)
+//                        * talk1.overlappingAudienceTypeCount(talk2)
+//                        * talk1.overlappingDurationInMinutes(talk2));
     }
 
     private Constraint audienceLevelDiversity(ConstraintFactory factory) {
@@ -298,25 +325,27 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint contentAudienceLevelFlowViolation(ConstraintFactory factory) {
-        return factory.from(Talk.class)
-                // fromUniquePair() not wanted due to lessThan(Talk::getAudienceLevel)
-                .join(Talk.class,
-                        intersecting(Talk::getContentTagSet),
-                        lessThan(Talk::getAudienceLevel),
-                        greaterThan(talk1 -> talk1.getTimeslot().getEndDateTime(),
-                                talk2 -> talk2.getTimeslot().getStartDateTime()))
-                .penalizeConfigurable(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION,
-                        (talk1, talk2) -> talk1.overlappingContentCount(talk2)
-                        * talk1.combinedDurationInMinutes(talk2));
+        throw new UnsupportedOperationException();
+//        return factory.from(Talk.class)
+//                // fromUniquePair() not wanted due to lessThan(Talk::getAudienceLevel)
+//                .join(Talk.class,
+//                        intersecting(Talk::getContentTagSet),
+//                        lessThan(Talk::getAudienceLevel),
+//                        greaterThan(talk1 -> talk1.getTimeslot().getEndDateTime(),
+//                                talk2 -> talk2.getTimeslot().getStartDateTime()))
+//                .penalizeConfigurable(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION,
+//                        (talk1, talk2) -> talk1.overlappingContentCount(talk2)
+//                        * talk1.combinedDurationInMinutes(talk2));
     }
 
     private Constraint contentConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, intersecting(Talk::getContentTagSet))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
-                .penalizeConfigurable(CONTENT_CONFLICT,
-                        (talk1, talk2) -> talk1.overlappingContentCount(talk2)
-                        * talk1.overlappingDurationInMinutes(talk2));
+        throw new UnsupportedOperationException("Not yet implemented due to missing support for advanced joiners.");
+//        return factory.fromUniquePair(Talk.class, intersecting(Talk::getContentTagSet))
+//                // TODO Support joiner for time overlap
+//                .filter(Talk::overlapsTime)
+//                .penalizeConfigurable(CONTENT_CONFLICT,
+//                        (talk1, talk2) -> talk1.overlappingContentCount(talk2)
+//                        * talk1.overlappingDurationInMinutes(talk2));
     }
 
     private Constraint languageDiversity(ConstraintFactory factory) {

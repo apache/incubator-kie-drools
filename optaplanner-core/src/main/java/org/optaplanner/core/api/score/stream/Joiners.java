@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -91,6 +90,8 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
+    /*
+    // TODO implement these joiners
     public static <A, B, Property_> BiJoiner<A, B> containing(
             Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
@@ -117,6 +118,7 @@ public final class Joiners {
             Function<A, ? extends Collection<Property_>> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
     }
+    */
 
     // TODO
     // join(..., planningVariableContainsCached(Talk::getPeriod, (Period a, Period b) -> a.overlaps(b)))

@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -61,13 +62,12 @@ final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
 
     @Override
     public void accumulate(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        context.getUndoMap().compute(value, (k, v) -> {
-           if (v == null) {
-               return accumulator.apply(context.getContainer(), (A) value);
-           } else {
-               throw new IllegalStateException("Undo for (" + value +  ") already exists.");
-           }
-        });
+        Map<Object, Runnable> undoMap = context.getUndoMap();
+        if (undoMap.containsKey(value)) {
+            throw new IllegalStateException("Undo for (" + value +  ") already exists.");
+        }
+        Runnable undo = accumulator.apply(context.getContainer(), (A) value);
+        undoMap.put(value, undo);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,6 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 import static org.optaplanner.core.api.score.stream.Joiners.*;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
-
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
