@@ -59,7 +59,7 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
 
     @Override
     public String toString() {
-        return "Constraint for " + exprId;
+        return "Constraint for '" + exprId + "' (index: " + index + ")";
     }
 
     public static AbstractSingleConstraint fromExpr( ExprViewItem expr ) {
