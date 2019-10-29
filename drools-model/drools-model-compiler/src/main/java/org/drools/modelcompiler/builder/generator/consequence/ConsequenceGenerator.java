@@ -25,9 +25,9 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -41,6 +41,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 /* Used to generate Consequence DSL */
 class ConsequenceGenerator {
@@ -56,7 +57,7 @@ class ConsequenceGenerator {
     public static void main(String[] args) throws Exception {
         arity = 24;
 
-        templateCU = StaticJavaParser.parseResource("ConsequenceBuilder.java");
+        templateCU = StaticJavaParser.parseResource("ConsequenceBuilderTemplate.java");
 
         consequenceBuilder = templateCU.getClassByName("ConsequenceBuilder")
                 .orElseThrow(() -> new RuntimeException("Main class not found"));
@@ -123,24 +124,29 @@ class ConsequenceGenerator {
         List<TypeParameter> genericTypeParameterList =
                 genericTypeStream(arity, ConsequenceGenerator::createTypeParameter)
                         .collect(Collectors.toList());
-        clone.setTypeParameters(NodeList.nodeList(genericTypeParameterList));
+        clone.setTypeParameters(nodeList(genericTypeParameterList));
 
         List<Type> genericTypeList =
                 genericTypeStream(arity, ConsequenceGenerator::parseType)
                         .collect(Collectors.toList());
 
         ClassOrInterfaceType extendTypeParameter = parseClassOrInterfaceType(arityName(arity));
-        extendTypeParameter.setTypeArguments(NodeList.nodeList(genericTypeList));
-        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), NodeList.nodeList(extendTypeParameter));
+        extendTypeParameter.setTypeArguments(nodeList(genericTypeList));
 
-        clone.setExtendedTypes(NodeList.nodeList(extendedType));
+        ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), nodeList(extendTypeParameter));
+
+        clone.findAll(MethodDeclaration.class, mc -> mc.getType().asString().equals(arityName(arity)))
+                .forEach(c -> c.setType(extendTypeParameter));
+
+
+        clone.setExtendedTypes(nodeList(extendedType));
 
         List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
             ClassOrInterfaceType type = parseClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
             return new Parameter(type, argName(genericTypeIndex));
         }).collect(Collectors.toList());
 
-        constructor.setParameters(NodeList.nodeList(parameters));
+        constructor.setParameters(nodeList(parameters));
         constructorBody(arity, constructor);
     }
 
@@ -148,8 +154,8 @@ class ConsequenceGenerator {
         List<Expression> constructorArgument = genericTypeStream(arity,
                                                       genericTypeIndex -> new NameExpr(argName(genericTypeIndex))).collect(Collectors.toList());
 
-        MethodCallExpr superCall = new MethodCallExpr(null, "super", NodeList.nodeList(constructorArgument));
-        constructor.setBody(new BlockStmt(NodeList.nodeList(new ExpressionStmt(superCall))));
+        MethodCallExpr superCall = new MethodCallExpr(null, "super", nodeList(constructorArgument));
+        constructor.setBody(new BlockStmt(nodeList(new ExpressionStmt(superCall))));
     }
 
     private static String argName(int genericTypeIndex) {
