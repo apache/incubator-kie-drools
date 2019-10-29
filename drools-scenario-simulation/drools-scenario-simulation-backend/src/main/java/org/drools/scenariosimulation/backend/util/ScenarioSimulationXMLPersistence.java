@@ -31,11 +31,17 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
+
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MODEL_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -68,7 +74,7 @@ public class ScenarioSimulationXMLPersistence {
         toConfigure.alias("Scenario", Scenario.class);
         toConfigure.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
         toConfigure.alias("Simulation", Simulation.class);
-        toConfigure.alias("SimulationDescriptor", SimulationDescriptor.class);
+        toConfigure.alias("SimulationDescriptor", ScesimModelDescriptor.class);
         toConfigure.alias("Import", Import.class);
         toConfigure.alias("Settings", Settings.class);
     }
@@ -82,13 +88,13 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String cleanUpUnusedNodes(String input) throws Exception {
-        String toReturn = DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
-        String[] SETTINGS = {"dmoSession", "dmnFilePath", "type", "fileName", "kieSession",
-                "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"};
+        String toReturn = DOMParserUtil.cleanupNodes(input, "Scenario", SIMULATION_DESCRIPTOR_NODE);
         for (String setting : SETTINGS) {
-            toReturn = DOMParserUtil.cleanupNodes(toReturn, "simulationDescriptor", setting);
+            toReturn = DOMParserUtil.cleanupNodes(toReturn, SIMULATION_DESCRIPTOR_NODE, setting);
         }
-        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), "simulation", "scenarios", "scesimData");
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), SIMULATION_NODE, "scenarios", "scesimData");
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, SCESIM_MODEL_DESCRIPTOR_NODE);
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), BACKGROUND_NODE, SIMULATION_DESCRIPTOR_NODE, SCESIM_MODEL_DESCRIPTOR_NODE);
         return toReturn;
     }
 

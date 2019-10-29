@@ -25,15 +25,15 @@ import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.DMO_SESSION_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.FACT_MAPPINGS_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.FACT_MAPPING_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.SCENARIO_SIMULATION_MODEL_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.SETTINGS;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.SETTINGS_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.SIMULATION_DESCRIPTOR_NODE;
-import static org.drools.scenariosimulation.backend.util.InMemoryMigrationStrategy.SIMULATION_NODE;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -317,8 +317,8 @@ public class ScenarioSimulationXMLPersistenceTest {
     private void commonCheckSimulation(ScenarioSimulationModel toCheck) throws Exception {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
-        assertNotNull(toCheck.getSimulation().getSimulationDescriptor());
-        toCheck.getSimulation().getUnmodifiableScesimData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        assertNotNull(toCheck.getSimulation().getScesimModelDescriptor());
+        toCheck.getSimulation().getUnmodifiableData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 
@@ -331,8 +331,8 @@ public class ScenarioSimulationXMLPersistenceTest {
     private void commonCheckBackground(ScenarioSimulationModel toCheck) throws Exception {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getBackground());
-        assertNotNull(toCheck.getBackground().getSimulationDescriptor());
-        toCheck.getSimulation().getUnmodifiableScesimData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
+        toCheck.getSimulation().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 }

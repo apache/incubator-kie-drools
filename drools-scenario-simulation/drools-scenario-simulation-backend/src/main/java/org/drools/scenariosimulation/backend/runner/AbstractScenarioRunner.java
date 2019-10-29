@@ -23,7 +23,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
@@ -42,7 +42,7 @@ public abstract class AbstractScenarioRunner extends Runner {
     protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     protected final Description desc;
     protected final KieContainer kieContainer;
-    protected final SimulationDescriptor simulationDescriptor;
+    protected final ScesimModelDescriptor scesimModelDescriptor;
     protected final Settings settings;
     protected List<ScenarioWithIndex> scenarios;
     protected String fileName;
@@ -53,30 +53,30 @@ public abstract class AbstractScenarioRunner extends Runner {
                                   String fileName,
                                   ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                   Settings settings) {
-        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex(), fileName, expressionEvaluatorFactory, settings);
+        this(kieContainer, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), fileName, expressionEvaluatorFactory, settings);
     }
 
     public AbstractScenarioRunner(KieContainer kieContainer,
-                                  SimulationDescriptor simulationDescriptor,
+                                  ScesimModelDescriptor scesimModelDescriptor,
                                   List<ScenarioWithIndex> scenarios,
                                   String fileName,
                                   ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                   Settings settings) {
         this.kieContainer = kieContainer;
-        this.simulationDescriptor = simulationDescriptor;
+        this.scesimModelDescriptor = scesimModelDescriptor;
         this.scenarios = scenarios;
         this.fileName = fileName;
-        this.desc = getDescriptionForSimulation(getFileName(), simulationDescriptor, scenarios);
+        this.desc = getDescriptionForSimulation(getFileName(), scenarios);
         this.classLoader = kieContainer.getClassLoader();
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.settings = settings;
     }
 
     public static Description getDescriptionForSimulation(Optional<String> filename, Simulation simulation) {
-        return getDescriptionForSimulation(filename, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex());
+        return getDescriptionForSimulation(filename, simulation.getScenarioWithIndex());
     }
 
-    public static Description getDescriptionForSimulation(Optional<String> filename, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios) {
+    public static Description getDescriptionForSimulation(Optional<String> filename, List<ScenarioWithIndex> scenarios) {
         Description suiteDescription = Description.createSuiteDescription("Test Scenarios (Preview) tests");
         scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
                 getDescriptionForScenario(filename, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
@@ -88,7 +88,7 @@ public abstract class AbstractScenarioRunner extends Runner {
                                                  String.format("#%d: %s", index, scenario.getDescription()));
     }
 
-    public static ScenarioRunnerProvider getSpecificRunnerProvider(SimulationDescriptor simulationDescriptor, Type type) {
+    public static ScenarioRunnerProvider getSpecificRunnerProvider(Type type) {
         if (Type.RULE.equals(type)) {
             return RuleScenarioRunner::new;
         } else if (Type.DMN.equals(type)) {
@@ -142,7 +142,7 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData, Settings settings) {
         newRunnerHelper().run(getKieContainer(),
-                              getSimulationDescriptor(),
+                              getScesimModelDescriptor(),
                               scenarioWithIndex,
                               expressionEvaluatorFactory,
                               getClassLoader(),
@@ -166,8 +166,8 @@ public abstract class AbstractScenarioRunner extends Runner {
         return kieContainer;
     }
 
-    public SimulationDescriptor getSimulationDescriptor() {
-        return simulationDescriptor;
+    public ScesimModelDescriptor getScesimModelDescriptor() {
+        return scesimModelDescriptor;
     }
 
     public Optional<SimulationRunMetadata> getLastRunResultMetadata() {

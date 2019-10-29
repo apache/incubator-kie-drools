@@ -33,24 +33,24 @@ public class BackgroundTest {
         background = new Background();
         FactIdentifier factIdentifier = FactIdentifier.create("Test", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("Test", FactMappingType.GIVEN);
-        background.getSimulationDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
+        background.getScesimModelDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
 
-        originalBackgroundData = background.addScesimData();
+        originalBackgroundData = background.addData();
         originalBackgroundData.setDescription("Test Description");
         originalBackgroundData.addMappingValue(factIdentifier, expressionIdentifier, "TEST");
     }
 
     @Test
     public void addScesimData() {
-        background.addScesimData(1);
+        background.addData(1);
 
         muteException(() -> {
-                          background.addScesimData(-1);
+                          background.addData(-1);
                           fail();
                       },
                       IllegalArgumentException.class);
         muteException(() -> {
-                          background.addScesimData(3);
+                          background.addData(3);
                           fail();
                       },
                       IllegalArgumentException.class);
@@ -58,12 +58,12 @@ public class BackgroundTest {
 
     @Test
     public void cloneScesimData() {
-        BackgroundData clonedBackgroundData = background.cloneScesimData(0, 1);
+        BackgroundData clonedBackgroundData = background.cloneData(0, 1);
 
         assertEquals(originalBackgroundData.getDescription(), clonedBackgroundData.getDescription());
         assertEquals(originalBackgroundData.getUnmodifiableFactMappingValues().size(), clonedBackgroundData.getUnmodifiableFactMappingValues().size());
-        assertEquals(originalBackgroundData, background.getScesimDataByIndex(0));
-        assertEquals(clonedBackgroundData, background.getScesimDataByIndex(1));
+        assertEquals(originalBackgroundData, background.getDataByIndex(0));
+        assertEquals(clonedBackgroundData, background.getDataByIndex(1));
 
         assertNotEquals(originalBackgroundData, clonedBackgroundData);
         assertNotEquals(originalBackgroundData.getUnmodifiableFactMappingValues().get(0), clonedBackgroundData.getUnmodifiableFactMappingValues().get(0));
@@ -73,25 +73,25 @@ public class BackgroundTest {
     public void cloneScesimDataFail() {
 
         muteException(() -> {
-                          background.cloneScesimData(-1, 1);
+                          background.cloneData(-1, 1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          background.cloneScesimData(2, 1);
+                          background.cloneData(2, 1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          background.cloneScesimData(0, -1);
+                          background.cloneData(0, -1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          background.cloneScesimData(0, 2);
+                          background.cloneData(0, 2);
                           fail();
                       },
                       IllegalArgumentException.class);
@@ -99,20 +99,20 @@ public class BackgroundTest {
 
     @Test
     public void removeFactMappingByIndex() {
-        assertEquals(2, background.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, background.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
         background.removeFactMappingByIndex(0);
-        assertEquals(1, background.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, background.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     @Test
     public void removeFactMapping() {
-        assertEquals(2, background.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, background.getSimulationDescriptor().getUnmodifiableFactMappings().size());
-        background.removeFactMapping(background.getSimulationDescriptor().getFactMappingByIndex(0));
-        assertEquals(1, background.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, background.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        background.removeFactMapping(background.getScesimModelDescriptor().getFactMappingByIndex(0));
+        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {

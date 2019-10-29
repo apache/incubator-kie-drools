@@ -19,7 +19,7 @@ package org.drools.scenariosimulation.backend.runner;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,11 +63,11 @@ public class AbstractScenarioRunnerTest {
 
     @Test
     public void getSpecificRunnerProvider() {
-        SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
+        ScesimModelDescriptor scesimModelDescriptor = new ScesimModelDescriptor();
         // all existing types should have a dedicated runner
         for (ScenarioSimulationModel.Type value : ScenarioSimulationModel.Type.values()) {
             settingsLocal.setType(value);
-            AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor, value);
+            AbstractScenarioRunner.getSpecificRunnerProvider(value);
         }
     }
 

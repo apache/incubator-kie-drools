@@ -65,31 +65,50 @@ public class Settings {
         this.type = type;
     }
 
+
+    /**
+     * @deprecated
+     */
     @Deprecated
     public String getFileName() {
         return fileName;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public String getKieSession() {
         return kieSession;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public void setKieSession(String kieSession) {
         this.kieSession = kieSession;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public String getKieBase() {
         return kieBase;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public void setKieBase(String kieBase) {
         this.kieBase = kieBase;

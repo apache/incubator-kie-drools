@@ -22,7 +22,8 @@ import static java.util.stream.Collectors.toList;
  */
 public class Scenario extends AbstractScesimData {
 
-    Scenario cloneScesimData() {
+    @Override
+    Scenario cloneInstance() {
         Scenario cloned = new Scenario();
         cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));
         return cloned;

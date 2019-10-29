@@ -33,24 +33,24 @@ public class SimulationTest {
         simulation = new Simulation();
         FactIdentifier factIdentifier = FactIdentifier.create("Test", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("Test", FactMappingType.GIVEN);
-        simulation.getSimulationDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
+        simulation.getScesimModelDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
 
-        originalScenario = simulation.addScesimData();
+        originalScenario = simulation.addData();
         originalScenario.setDescription("Test Description");
         originalScenario.addMappingValue(factIdentifier, expressionIdentifier, "TEST");
     }
 
     @Test
     public void addScenarioTest() {
-        simulation.addScesimData(1);
+        simulation.addData(1);
 
         muteException(() -> {
-                          simulation.addScesimData(-1);
+                          simulation.addData(-1);
                           fail();
                       },
                       IllegalArgumentException.class);
         muteException(() -> {
-                          simulation.addScesimData(3);
+                          simulation.addData(3);
                           fail();
                       },
                       IllegalArgumentException.class);
@@ -58,12 +58,12 @@ public class SimulationTest {
 
     @Test
     public void cloneScenarioTest() {
-        Scenario clonedScenario = simulation.cloneScesimData(0, 1);
+        Scenario clonedScenario = simulation.cloneData(0, 1);
 
         assertEquals(originalScenario.getDescription(), clonedScenario.getDescription());
         assertEquals(originalScenario.getUnmodifiableFactMappingValues().size(), clonedScenario.getUnmodifiableFactMappingValues().size());
-        assertEquals(originalScenario, simulation.getScesimDataByIndex(0));
-        assertEquals(clonedScenario, simulation.getScesimDataByIndex(1));
+        assertEquals(originalScenario, simulation.getDataByIndex(0));
+        assertEquals(clonedScenario, simulation.getDataByIndex(1));
 
         assertNotEquals(originalScenario, clonedScenario);
         assertNotEquals(originalScenario.getUnmodifiableFactMappingValues().get(0), clonedScenario.getUnmodifiableFactMappingValues().get(0));
@@ -73,25 +73,25 @@ public class SimulationTest {
     public void cloneScenarioFail() {
 
         muteException(() -> {
-                          simulation.cloneScesimData(-1, 1);
+                          simulation.cloneData(-1, 1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulation.cloneScesimData(2, 1);
+                          simulation.cloneData(2, 1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulation.cloneScesimData(0, -1);
+                          simulation.cloneData(0, -1);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulation.cloneScesimData(0, 2);
+                          simulation.cloneData(0, 2);
                           fail();
                       },
                       IllegalArgumentException.class);
@@ -99,20 +99,20 @@ public class SimulationTest {
 
     @Test
     public void removeFactMappingByIndex() {
-        assertEquals(2, simulation.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
         simulation.removeFactMappingByIndex(0);
-        assertEquals(1, simulation.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(1, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     @Test
     public void removeFactMapping() {
-        assertEquals(2, simulation.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
-        simulation.removeFactMapping(simulation.getSimulationDescriptor().getFactMappingByIndex(0));
-        assertEquals(1, simulation.getUnmodifiableScesimData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        simulation.removeFactMapping(simulation.getScesimModelDescriptor().getFactMappingByIndex(0));
+        assertEquals(1, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {

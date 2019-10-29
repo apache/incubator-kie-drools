@@ -29,7 +29,7 @@ public class Simulation extends AbstractScesimModel<Scenario> {
     }
 
     @Override
-    public Scenario addScesimData(int index) {
+    public Scenario addData(int index) {
         if (index < 0 || index > scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
@@ -39,14 +39,14 @@ public class Simulation extends AbstractScesimModel<Scenario> {
     }
 
     @Override
-    public Simulation cloneScesimModel() {
+    public Simulation cloneModel() {
         Simulation toReturn = new Simulation();
-        final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
+        final List<FactMapping> originalFactMappings = this.scesimModelDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
-            toReturn.simulationDescriptor.addFactMapping(i, originalFactMapping);
+            toReturn.scesimModelDescriptor.addFactMapping(i, originalFactMapping);
         }
-        this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneScesimData()));
+        this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneInstance()));
         return toReturn;
     }
 }

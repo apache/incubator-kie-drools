@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * SimulationDescriptor describes a template of a simulation
+ * <code>ScesimModelDescriptor</code> describes the template of a concrete <code>AbstractScesimModel</code>
  */
-public class SimulationDescriptor {
+public class ScesimModelDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 

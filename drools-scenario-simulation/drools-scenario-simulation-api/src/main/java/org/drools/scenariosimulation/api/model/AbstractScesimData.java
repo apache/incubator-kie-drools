@@ -83,10 +83,6 @@ public abstract class AbstractScesimData {
         return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier)).collect(toList());
     }
 
-    public void setDescription(String name) {
-        addOrUpdateMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, name);
-    }
-
     public String getDescription() {
         return factMappingValues.stream()
                 .filter(e -> e.getExpressionIdentifier().equals(ExpressionIdentifier.DESCRIPTION) &&
@@ -96,13 +92,17 @@ public abstract class AbstractScesimData {
                 .findFirst().orElse("");
     }
 
+    public void setDescription(String name) {
+        addOrUpdateMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, name);
+    }
+
     public Collection<String> getFactNames() {
         return factMappingValues.stream().map(e -> e.getFactIdentifier().getName()).collect(toSet());
     }
 
     public void resetErrors() {
-        factMappingValues.forEach(elem -> elem.resetStatus());
+        factMappingValues.forEach(FactMappingValue::resetStatus);
     }
 
-    abstract AbstractScesimData cloneScesimData();
+    abstract AbstractScesimData cloneInstance();
 }

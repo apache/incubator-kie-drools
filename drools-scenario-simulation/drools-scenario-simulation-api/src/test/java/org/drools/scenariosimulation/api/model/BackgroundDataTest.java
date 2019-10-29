@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public class BackgroundDataTest {
 
-    SimulationDescriptor simulationDescriptor;
+    ScesimModelDescriptor scesimModelDescriptor;
     BackgroundData backgroundData;
     FactIdentifier factIdentifier;
     ExpressionIdentifier expressionIdentifier;
@@ -35,8 +35,8 @@ public class BackgroundDataTest {
     @Before
     public void init() {
         background = new Background();
-        simulationDescriptor = background.getSimulationDescriptor();
-        backgroundData = background.addScesimData();
+        scesimModelDescriptor = background.getScesimModelDescriptor();
+        backgroundData = background.addData();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
@@ -76,7 +76,7 @@ public class BackgroundDataTest {
         backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
         assertEquals(description, backgroundData.getDescription());
 
-        BackgroundData scenarioWithDescriptionNull = background.addScesimData();
+        BackgroundData scenarioWithDescriptionNull = background.addData();
         scenarioWithDescriptionNull.setDescription(null);
         assertEquals("", scenarioWithDescriptionNull.getDescription());
     }

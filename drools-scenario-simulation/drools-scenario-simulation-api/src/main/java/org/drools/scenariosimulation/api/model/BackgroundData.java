@@ -22,7 +22,8 @@ import static java.util.stream.Collectors.toList;
  */
 public class BackgroundData extends AbstractScesimData {
 
-    BackgroundData cloneScesimData() {
+    @Override
+    BackgroundData cloneInstance() {
         BackgroundData cloned = new BackgroundData();
         cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));
         return cloned;

@@ -19,14 +19,14 @@ import java.util.List;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.kie.api.runtime.KieContainer;
 
 @FunctionalInterface
 public interface ScenarioRunnerProvider {
 
     AbstractScenarioRunner create(KieContainer kieContainer,
-                                  SimulationDescriptor simulationDescriptor,
+                                  ScesimModelDescriptor scesimModelDescriptor,
                                   List<ScenarioWithIndex> scenarios,
                                   Settings settings);
 }

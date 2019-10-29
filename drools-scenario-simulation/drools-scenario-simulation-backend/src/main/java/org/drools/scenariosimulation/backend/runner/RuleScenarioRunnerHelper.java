@@ -31,7 +31,7 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
@@ -59,7 +59,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
                                                   ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                                  SimulationDescriptor simulationDescriptor,
+                                                  ScesimModelDescriptor scesimModelDescriptor,
                                                   Settings settings) {
         if (!Type.RULE.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
@@ -83,7 +83,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                     ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(scenarioResult.getFactMappingValue());
                     scenarioRunnerData.addResult(scenarioResult);
                     ruleScenarioExecutableBuilder.addInternalCondition(clazz,
-                                                                       createExtractorFunction(expressionEvaluator, scenarioResult.getFactMappingValue(), simulationDescriptor),
+                                                                       createExtractorFunction(expressionEvaluator, scenarioResult.getFactMappingValue(), scesimModelDescriptor),
                                                                        scenarioResult);
                 });
 
@@ -106,7 +106,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     @Override
-    protected void verifyConditions(SimulationDescriptor simulationDescriptor,
+    protected void verifyConditions(ScesimModelDescriptor scesimModelDescriptor,
                                     ScenarioRunnerData scenarioRunnerData,
                                     ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
@@ -122,11 +122,11 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                 continue;
             }
 
-            getScenarioResultsFromGivenFacts(simulationDescriptor, assertionOnFact, input, expressionEvaluatorFactory).forEach(scenarioRunnerData::addResult);
+            getScenarioResultsFromGivenFacts(scesimModelDescriptor, assertionOnFact, input, expressionEvaluatorFactory).forEach(scenarioRunnerData::addResult);
         }
     }
 
-    protected List<ScenarioResult> getScenarioResultsFromGivenFacts(SimulationDescriptor simulationDescriptor,
+    protected List<ScenarioResult> getScenarioResultsFromGivenFacts(ScesimModelDescriptor scesimModelDescriptor,
                                                                     List<ScenarioExpect> scenarioOutputsPerFact,
                                                                     ScenarioGiven input,
                                                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -142,7 +142,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                 ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(expectedResult);
 
                 ScenarioResult scenarioResult = fillResult(expectedResult,
-                                                           () -> createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor)
+                                                           () -> createExtractorFunction(expressionEvaluator, expectedResult, scesimModelDescriptor)
                                                                    .apply(factInstance),
                                                            expressionEvaluator);
 
@@ -154,12 +154,12 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
     protected Function<Object, ResultWrapper> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
                                                                       FactMappingValue expectedResult,
-                                                                      SimulationDescriptor simulationDescriptor) {
+                                                                      ScesimModelDescriptor scesimModelDescriptor) {
         return objectToCheck -> {
 
             ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
 
-            FactMapping factMapping = simulationDescriptor.getFactMapping(expectedResult.getFactIdentifier(), expressionIdentifier)
+            FactMapping factMapping = scesimModelDescriptor.getFactMapping(expectedResult.getFactIdentifier(), expressionIdentifier)
                     .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
             List<String> pathToValue = factMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(toList());

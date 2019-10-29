@@ -28,61 +28,61 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SimulationDescriptorTest {
+public class ScesimModelDescriptorTest {
 
-    SimulationDescriptor simulationDescriptor;
+    ScesimModelDescriptor scesimModelDescriptor;
     FactIdentifier factIdentifier;
     ExpressionIdentifier expressionIdentifier;
 
     @Before
     public void init() {
-        simulationDescriptor = new SimulationDescriptor();
+        scesimModelDescriptor = new ScesimModelDescriptor();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addFactMappingTest() {
-        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
 
         // Should fail
-        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addFactMappingIndexTest() {
         // Should fail
-        simulationDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void removeFactMappingByIndex() {
         int testingIndex = 0;
-        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        assertNotNull(simulationDescriptor.getFactMappingByIndex(testingIndex));
-        simulationDescriptor.removeFactMappingByIndex(testingIndex);
-        simulationDescriptor.getFactMappingByIndex(testingIndex);
+        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        assertNotNull(scesimModelDescriptor.getFactMappingByIndex(testingIndex));
+        scesimModelDescriptor.removeFactMappingByIndex(testingIndex);
+        scesimModelDescriptor.getFactMappingByIndex(testingIndex);
     }
 
     @Test
     public void removeFactMapping() {
-        FactMapping retrieved = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        assertTrue(simulationDescriptor.getUnmodifiableFactMappings().contains(retrieved));
-        simulationDescriptor.removeFactMapping(retrieved);
-        assertFalse(simulationDescriptor.getUnmodifiableFactMappings().contains(retrieved));
+        FactMapping retrieved = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        assertTrue(scesimModelDescriptor.getUnmodifiableFactMappings().contains(retrieved));
+        scesimModelDescriptor.removeFactMapping(retrieved);
+        assertFalse(scesimModelDescriptor.getUnmodifiableFactMappings().contains(retrieved));
     }
 
     @Test
     public void getIndexByIdentifierTest() {
         List<FactMapping> originalFactMappings = IntStream.range(0, 2).boxed()
-                .map(i -> simulationDescriptor
+                .map(i -> scesimModelDescriptor
                         .addFactMapping(FactIdentifier.create("test " + i, String.class.getCanonicalName()), this.expressionIdentifier)
                 ).collect(Collectors.toList());
         int indexToCheck = 0;
-        int indexRetrieved = simulationDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
+        int indexRetrieved = scesimModelDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
         assertEquals(indexToCheck, indexRetrieved);
         indexToCheck = 1;
-        indexRetrieved = simulationDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
+        indexRetrieved = scesimModelDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
         assertEquals(indexToCheck, indexRetrieved);
     }
 
@@ -90,32 +90,32 @@ public class SimulationDescriptorTest {
     public void moveFactMappingTest() {
         ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", FactMappingType.GIVEN);
         ExpressionIdentifier expressionIdentifier3 = ExpressionIdentifier.create("Test expression 3", FactMappingType.GIVEN);
-        FactMapping factMapping1 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        FactMapping factMapping2 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
-        FactMapping factMapping3 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier3);
-        List<FactMapping> factMappings = simulationDescriptor.getUnmodifiableFactMappings();
+        FactMapping factMapping1 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        FactMapping factMapping2 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
+        FactMapping factMapping3 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier3);
+        List<FactMapping> factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
 
         assertEquals(factMappings.get(0), factMapping1);
         assertEquals(factMappings.get(1), factMapping2);
         assertEquals(factMappings.get(2), factMapping3);
 
-        simulationDescriptor.moveFactMapping(0, 1);
+        scesimModelDescriptor.moveFactMapping(0, 1);
 
-        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
+        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping1);
         assertEquals(factMappings.get(2), factMapping3);
 
-        simulationDescriptor.moveFactMapping(2, 1);
+        scesimModelDescriptor.moveFactMapping(2, 1);
 
-        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
+        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping3);
         assertEquals(factMappings.get(2), factMapping1);
 
-        simulationDescriptor.moveFactMapping(2, 2);
+        scesimModelDescriptor.moveFactMapping(2, 2);
 
-        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
+        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping3);
         assertEquals(factMappings.get(2), factMapping1);
@@ -124,29 +124,29 @@ public class SimulationDescriptorTest {
     @Test
     public void moveFactMappingOldFailTest() {
         ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", FactMappingType.GIVEN);
-        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
+        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
 
         muteException(() -> {
-                          simulationDescriptor.moveFactMapping(2, 0);
+                          scesimModelDescriptor.moveFactMapping(2, 0);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulationDescriptor.moveFactMapping(-1, 0);
+                          scesimModelDescriptor.moveFactMapping(-1, 0);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulationDescriptor.moveFactMapping(0, 2);
+                          scesimModelDescriptor.moveFactMapping(0, 2);
                           fail();
                       },
                       IllegalArgumentException.class);
 
         muteException(() -> {
-                          simulationDescriptor.moveFactMapping(0, -1);
+                          scesimModelDescriptor.moveFactMapping(0, -1);
                           fail();
                       },
                       IllegalArgumentException.class);

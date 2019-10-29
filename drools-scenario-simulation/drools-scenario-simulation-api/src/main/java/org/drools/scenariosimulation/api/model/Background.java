@@ -23,7 +23,7 @@ import java.util.List;
 public class Background extends AbstractScesimModel<BackgroundData> {
 
     @Override
-    public BackgroundData addScesimData(int index) {
+    public BackgroundData addData(int index) {
         if (index < 0 || index > scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
@@ -32,38 +32,13 @@ public class Background extends AbstractScesimModel<BackgroundData> {
         return backgroundData;
     }
 
-    //    /**
-//     * Describes structure of the simulation
-//     */
-//    private final SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
-//
-//
-//
-//    public SimulationDescriptor getSimulationDescriptor() {
-//        return simulationDescriptor;
-//    }
-//
-//
-//
-//    public void removeFactMappingByIndex(int index) {
-//        simulationDescriptor.removeFactMappingByIndex(index);
-//    }
-//
-//    public void removeFactMapping(FactMapping toRemove) {
-//        simulationDescriptor.removeFactMapping(toRemove);
-//    }
-//
-//    public void clear() {
-//        simulationDescriptor.clear();
-//    }
-
     @Override
-    public Background cloneScesimModel() {
+    public Background cloneModel() {
         Background toReturn = new Background();
-        final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
+        final List<FactMapping> originalFactMappings = this.scesimModelDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
-            toReturn.simulationDescriptor.addFactMapping(i, originalFactMapping);
+            toReturn.scesimModelDescriptor.addFactMapping(i, originalFactMapping);
         }
         return toReturn;
     }

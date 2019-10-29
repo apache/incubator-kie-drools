@@ -25,23 +25,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION_ELEMENTS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION_IDENTIFIER_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_IDENTIFIER_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
-
-    public static final String DMO_SESSION_NODE = "dmoSession";
-    public static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
-    public static final String EXPRESSION_ELEMENTS_NODE = "expressionElements";
-    public static final String FACT_IDENTIFIER_NODE = "factIdentifier";
-    public static final String FACT_MAPPING_NODE = "FactMapping";
-    public static final String FACT_MAPPINGS_NODE = "factMappings";
-    public static final String SIMULATION_NODE = "simulation";
-    public static final String BACKGROUND_NODE = "background";
-    public static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
-    public static final String SCENARIO_SIMULATION_MODEL_NODE = "ScenarioSimulationModel";
-    public static final String SETTINGS_NODE = "settings";
-    public static final String[] SETTINGS = {"dmoSession", "dmnFilePath", "type", "fileName", "kieSession",
-            "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"};
 
     @Override
     public ThrowingConsumer<Document> from1_0to1_1() {

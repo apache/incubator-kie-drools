@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ScenarioTest {
 
-    SimulationDescriptor simulationDescriptor;
+    ScesimModelDescriptor scesimModelDescriptor;
     Scenario scenario;
     FactIdentifier factIdentifier;
     ExpressionIdentifier expressionIdentifier;
@@ -35,8 +35,8 @@ public class ScenarioTest {
     @Before
     public void init() {
         simulation = new Simulation();
-        simulationDescriptor = simulation.getSimulationDescriptor();
-        scenario = simulation.addScesimData();
+        scesimModelDescriptor = simulation.getScesimModelDescriptor();
+        scenario = simulation.addData();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
@@ -76,7 +76,7 @@ public class ScenarioTest {
         scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
         assertEquals(description, scenario.getDescription());
 
-        Scenario scenarioWithDescriptionNull = simulation.addScesimData();
+        Scenario scenarioWithDescriptionNull = simulation.addData();
         scenarioWithDescriptionNull.setDescription(null);
         assertEquals("", scenarioWithDescriptionNull.getDescription());
     }

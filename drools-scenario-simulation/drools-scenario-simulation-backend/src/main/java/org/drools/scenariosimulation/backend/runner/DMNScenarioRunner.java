@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.kie.api.runtime.KieContainer;
 
@@ -32,16 +32,16 @@ public class DMNScenarioRunner extends AbstractScenarioRunner {
     }
 
     public DMNScenarioRunner(KieContainer kieContainer, Simulation simulation, String fileName, Settings settings) {
-        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex(), fileName, settings);
+        this(kieContainer, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), fileName, settings);
     }
 
-    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios, Settings settings) {
-        this(kieContainer, simulationDescriptor, scenarios, null, settings);
+    public DMNScenarioRunner(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, List<ScenarioWithIndex> scenarios, Settings settings) {
+        this(kieContainer, scesimModelDescriptor, scenarios, null, settings);
     }
 
-    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios, String fileName, Settings settings) {
+    public DMNScenarioRunner(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, List<ScenarioWithIndex> scenarios, String fileName, Settings settings) {
         super(kieContainer,
-              simulationDescriptor,
+              scesimModelDescriptor,
               scenarios,
               fileName,
               ExpressionEvaluatorFactory.create(

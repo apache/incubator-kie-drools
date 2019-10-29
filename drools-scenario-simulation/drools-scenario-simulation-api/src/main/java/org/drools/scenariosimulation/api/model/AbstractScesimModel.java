@@ -27,64 +27,64 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
     /**
      * Describes structure of the simulation
      */
-    protected final SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
+    protected final ScesimModelDescriptor scesimModelDescriptor = new ScesimModelDescriptor();
 
     /**
      * Contains list of scenarios to test
      */
     protected final List<T> scesimData = new LinkedList<>();
 
-    public abstract AbstractScesimModel cloneScesimModel();
+    public abstract AbstractScesimModel cloneModel();
 
-    public abstract T addScesimData(int index);
+    public abstract T addData(int index);
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * @return
      */
-    public List<T> getUnmodifiableScesimData() {
+    public List<T> getUnmodifiableData() {
         return Collections.unmodifiableList(scesimData);
     }
 
-    public void removeScesimDataByIndex(int index) {
+    public void removeDataByIndex(int index) {
         scesimData.remove(index);
     }
 
-    public void removeScesimData(T toRemove) {
+    public void removeData(T toRemove) {
         scesimData.remove(toRemove);
     }
 
-    public T getScesimDataByIndex(int index) {
+    public T getDataByIndex(int index) {
         return scesimData.get(index);
     }
 
-    public T addScesimData() {
-        return addScesimData(scesimData.size());
+    public T addData() {
+        return addData(scesimData.size());
     }
 
-    public void replaceScesimData(int index, T newScesimData) {
+    public void replaceData(int index, T newScesimData) {
         scesimData.set(index, newScesimData);
     }
 
-    public T cloneScesimData(int sourceIndex, int targetIndex) {
+    public T cloneData(int sourceIndex, int targetIndex) {
         if (sourceIndex < 0 || sourceIndex >= scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("SourceIndex out of range ").append(sourceIndex).toString());
         }
         if (targetIndex < 0 || targetIndex > scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("TargetIndex out of range ").append(targetIndex).toString());
         }
-        T scesimDataByIndex = getScesimDataByIndex(sourceIndex);
-        T clonedScesimData = (T) scesimDataByIndex.cloneScesimData();
+        T scesimDataByIndex = getDataByIndex(sourceIndex);
+        T clonedScesimData = (T) scesimDataByIndex.cloneInstance();
         scesimData.add(targetIndex, clonedScesimData);
         return clonedScesimData;
     }
 
     public void clear() {
-        simulationDescriptor.clear();
-        clearScesimDatas();
+        scesimModelDescriptor.clear();
+        clearDatas();
     }
 
-    public void clearScesimDatas() {
+    public void clearDatas() {
         scesimData.clear();
     }
 
@@ -92,21 +92,21 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
         scesimData.forEach(AbstractScesimData::resetErrors);
     }
 
-    public SimulationDescriptor getSimulationDescriptor() {
-        return simulationDescriptor;
+    public ScesimModelDescriptor getScesimModelDescriptor() {
+        return scesimModelDescriptor;
     }
 
     public void removeFactMappingByIndex(int index) {
-        clearScesimDatas(simulationDescriptor.getFactMappingByIndex(index));
-        simulationDescriptor.removeFactMappingByIndex(index);
+        clearDatas(scesimModelDescriptor.getFactMappingByIndex(index));
+        scesimModelDescriptor.removeFactMappingByIndex(index);
     }
 
     public void removeFactMapping(FactMapping toRemove) {
-        clearScesimDatas(toRemove);
-        simulationDescriptor.removeFactMapping(toRemove);
+        clearDatas(toRemove);
+        scesimModelDescriptor.removeFactMapping(toRemove);
     }
 
-    private void clearScesimDatas(FactMapping toRemove) {
+    private void clearDatas(FactMapping toRemove) {
         scesimData.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }
 }
