@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator.consequence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -94,8 +95,6 @@ class ConsequenceGenerator {
 
     private static void replaceName(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
         ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName(arity));
-        ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
-        ClassOrInterfaceType arityBlockTypePlusOne = parseClassOrInterfaceType("Block" + (arity + 1));
 
         clone.findAll(ClassOrInterfaceDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
                 .forEach(c -> c.setName(arityName(arity)));
@@ -105,11 +104,6 @@ class ConsequenceGenerator {
 
         constructor.setName(arityName(arity));
 
-        clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK))
-                .forEach(oldType -> oldType.replace(arityBlockType));
-
-        clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK_PLUS_ONE))
-                .forEach(oldType -> oldType.replace(arityBlockTypePlusOne));
     }
 
     private static String arityName(int arity) {
@@ -148,6 +142,21 @@ class ConsequenceGenerator {
 
         constructor.setParameters(nodeList(parameters));
         constructorBody(arity, constructor);
+
+        ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
+        arityBlockType.setTypeArguments(nodeList(genericTypeList));
+
+        ClassOrInterfaceType arityBlockTypePlusOne = parseClassOrInterfaceType("Block" + (arity + 1));
+        List<Type> genericTypeListPlusDrools = new ArrayList<>(genericTypeList);
+        genericTypeListPlusDrools.add(0, parseClassOrInterfaceType("Drools"));
+        arityBlockTypePlusOne.setTypeArguments(nodeList(genericTypeListPlusDrools));
+
+        clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK))
+                .forEach(oldType -> oldType.replace(arityBlockType));
+
+        clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK_PLUS_ONE))
+                .forEach(oldType -> oldType.replace(arityBlockTypePlusOne));
+
     }
 
     private static void constructorBody(int arity, ConstructorDeclaration constructor) {
