@@ -1,10 +1,10 @@
+import { Card, CardBody, CardHeader } from '@patternfly/react-core';
 import React from 'react';
-import { Card, CardHeader, CardBody } from '@patternfly/react-core';
 import { url } from './Url';
 
 const ProcessDetailsProcessDiagram = () => {
   return (
-    <Card style={{ overflowX: 'scroll', overflowY: 'scroll' }}>
+    <Card style={{ overflowX: 'auto', overflowY: 'auto' }}>
       <CardHeader>Process Diagram</CardHeader>
       <CardBody>
         <img src={url} />

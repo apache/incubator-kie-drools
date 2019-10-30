@@ -1,4 +1,6 @@
+import { TimeAgo } from '@n1ru4l/react-time-ago';
 import React, { useState } from 'react';
+import gql from 'graphql-tag';
 import {
   DataListItem,
   DataListItemRow,
@@ -15,7 +17,6 @@ import {
   DropdownPosition
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import gql from 'graphql-tag';
 import { useApolloClient } from 'react-apollo';
 
 export interface IOwnProps {
@@ -24,9 +25,11 @@ export interface IOwnProps {
   instanceState: string;
   processID: string;
   parentInstanceID: string | null;
+  processName: string;
+  start:string;
 }
 
-const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceState, processID, parentInstanceID }) => {
+const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceState, processID, parentInstanceID, processName,start }) => {
   const [expanded, setexpanded] = useState(['kie-datalist-toggle']);
   const [isOpen, setisOpen] = useState(false);
   const [isLoaded, setisLoaded] = useState(false);
@@ -39,9 +42,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
       ProcessInstances(filter: { parentProcessInstanceId: $instanceId }) {
         id
         processId
+        processName
         parentProcessInstanceId
         roles
         state
+        start
       }
     }
   `;
@@ -93,11 +98,13 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
           />
           <DataListItemCells
             dataListCells={[
-              <DataListCell key="primary content">
-                Instance {id} ({processID})
+              <DataListCell key={1}>{processName}</DataListCell>,
+              <DataListCell key={2}>
+                {start? 
+                  <TimeAgo date={new Date(`${start}`)} render={({ error, value }) => <span>{value}</span>} />
+                : ''}
               </DataListCell>,
-              <DataListCell key="secondary content">Chart to be added</DataListCell>,
-              <DataListCell key="secondary content 3">{instanceState}</DataListCell>
+              <DataListCell key={3}>{instanceState}</DataListCell>
             ]}
           />
 
@@ -122,10 +129,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
               onSelect={onSelect}
               toggle={<KebabToggle onToggle={onToggle} />}
               dropdownItems={[
-                <DropdownItem key={1}>Link</DropdownItem>,
-                <DropdownItem key={2} component="button">
-                  Action
-                </DropdownItem>
+                <DropdownItem key={1}>Abort</DropdownItem>,
               ]}
             />
           </DataListAction>
@@ -138,7 +142,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
           {isLoaded &&
             childList['ProcessInstances'] != undefined &&
             childList['ProcessInstances'].map((child, index) => {
-              console.log('i am a child', child);
               return (
                 <DataListItemComponent
                   id={index}
@@ -147,6 +150,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
                   instanceID={child.id}
                   processID={child.processId}
                   parentInstanceID={child.parentProcessInstanceId}
+                  processName={child.processName}
+                  start={child.start}
                 />
               );
             })}

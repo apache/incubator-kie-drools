@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { DataList, PageSection, Card } from '@patternfly/react-core';
-import ScrollArea from 'react-scrollbar';
-import './DataList.css';
-import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
-import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
-import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
+import {useQuery} from '@apollo/react-hooks';
+import {Breadcrumb, BreadcrumbItem, Card, DataList , Grid, GridItem, PageSection} from '@patternfly/react-core';
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import { useQuery } from '@apollo/react-hooks';
+import React, {useEffect, useState} from 'react';
+import {Link} from "react-router-dom";
+import ScrollArea from 'react-scrollbar';
+import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
+import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
+import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
+import './DataList.css';
 
-export interface IOwnProps {}
-
-const DataListComponent: React.FC<IOwnProps> = () => {
+const DataListComponent: React.FC<{}> = () => {
   const [isActiveChecked, setIsActiveChecked] = useState<boolean>(false);
   const [isCompletedChecked, setIsCompletedChecked] = useState<boolean>(false);
   const [isAbortChecked, setisAbortChecked] = useState<boolean>(false);
@@ -24,9 +23,11 @@ const DataListComponent: React.FC<IOwnProps> = () => {
       ProcessInstances(filter: { parentProcessInstanceId: $parentProcessId }) {
         id
         processId
+        processName
         parentProcessInstanceId
         roles
         state
+        start
       }
     }
   `;
@@ -38,7 +39,6 @@ const DataListComponent: React.FC<IOwnProps> = () => {
     fetchPolicy: 'network-only'
   });
 
-  console.log(data);
   useEffect(() => {
     setInitData(data);
     setFilterArray(data);
@@ -113,43 +113,57 @@ const DataListComponent: React.FC<IOwnProps> = () => {
   if (loading) return <p>Loading....</p>;
   if (error) return <p>oops.. some error</p>;
 
+  const BreadcrumbStyle = {
+    paddingBottom: '20px'
+  };
+
   return (
-    <React.Fragment>
-      <PageSection variant="light">
-        <DataListTitleComponent />
-      </PageSection>
-      <PageSection>
-        <Card className="dataList">
-          <DataListToolbarComponent
-            isActive={isActiveChecked}
-            isComplete={isCompletedChecked}
-            isAborted={isAbortChecked}
-            handleChange={handleChange}
-            checkedArray={checkedArray}
-            filterClick={onFilterClick}
-            removeCheck={removeChecked}
-          />
-          <DataList aria-label="Expandable data list example">
-            <ScrollArea smoothScrolling={true} className="scrollArea">
-              {!loading &&
-                filterArray != undefined &&
-                filterArray['ProcessInstances'].map((item, index) => {
-                  return (
-                    <DataListItemComponent
-                      id={index}
-                      key={index}
-                      instanceState={item.state}
-                      instanceID={item.id}
-                      processID={item.processId}
-                      parentInstanceID={item.parentProcessInstanceId}
-                    />
-                  );
-                })}
-            </ScrollArea>
-          </DataList>
-        </Card>
-      </PageSection>
-    </React.Fragment>
+      <React.Fragment>
+        <PageSection variant="light">
+          <DataListTitleComponent/>
+          <Breadcrumb>
+            <BreadcrumbItem><Link to={'/'}>Home</Link></BreadcrumbItem>
+            <BreadcrumbItem isActive>Process Instances</BreadcrumbItem>
+          </Breadcrumb>
+        </PageSection>
+        <PageSection>
+          <Grid gutter="md">
+            <GridItem span={12}>
+              <Card className="dataList">
+                <DataListToolbarComponent
+                    isActive={isActiveChecked}
+                    isComplete={isCompletedChecked}
+                    isAborted={isAbortChecked}
+                    handleChange={handleChange}
+                    checkedArray={checkedArray}
+                    filterClick={onFilterClick}
+                    removeCheck={removeChecked}
+                />
+                <DataList aria-label="Expandable data list example">
+                  <ScrollArea smoothScrolling={true} className="scrollArea">
+                    {!loading &&
+                    filterArray != undefined &&
+                    filterArray['ProcessInstances'].map((item, index) => {
+                      return (
+                          <DataListItemComponent
+                              id={index}
+                              key={index}
+                              instanceState={item.state}
+                              instanceID={item.id}
+                              processID={item.processId}
+                              parentInstanceID={item.parentProcessInstanceId}
+                              processName={item.processName}
+                              start={item.start}
+                          />
+                      );
+                    })}
+                  </ScrollArea>
+                </DataList>
+              </Card>
+            </GridItem>
+          </Grid>
+        </PageSection>
+      </React.Fragment>
   );
 };
 

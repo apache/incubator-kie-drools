@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
 import {
-  Dropdown,
-  DropdownToggle,
-  DropdownToggleCheckbox,
   Button,
+  Checkbox,
+  Chip,
   ChipGroup,
   ChipGroupToolbarItem,
-  Chip,
-  Toolbar,
-  ToolbarItem,
-  ToolbarGroup,
+  Dropdown,
   DropdownItem,
-  Checkbox
+  DropdownToggle,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
-import _ from 'lodash';
+import React, { useState } from 'react';
 
 export interface IOwnProps {
   isComplete: boolean;
@@ -39,7 +37,7 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
   const [isOpen, setisOpen] = useState(false);
 
   const dropDownList = [
-    <DropdownItem key="link1" component="checkbox">
+    <DropdownItem key="link1">
       <Checkbox
         label="  ACTIVE"
         aria-label="controlled checkbox example"
@@ -119,21 +117,8 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
           <ToolbarItem>
             <Dropdown
               toggle={
-                <DropdownToggle
-                  splitButtonItems={[
-                    <DropdownToggleCheckbox id="example-checkbox-1" key="split-checkbox" aria-label="Select all" />
-                  ]}
-                />
-              }
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <Dropdown
-              toggle={
                 <DropdownToggle onToggle={onToggle}>
-                  <FilterIcon /> &nbsp;&nbsp; Dropdown
+                  <FilterIcon /> &nbsp;&nbsp; State
                 </DropdownToggle>
               }
               isOpen={isOpen}

@@ -1,10 +1,10 @@
+import { Card, CardBody, CardFooter, CardHeader, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import React from 'react';
-import { Card, CardHeader, CardBody, CardFooter, Text, TextVariants, TextContent } from '@patternfly/react-core';
 import ReactJson from 'react-json-view';
 
 const ProcessDetailsProcessVariables = ({ loading, data }) => {
   return (
-    <Card style={{ marginTop: '2em', overflowX: 'scroll' }}>
+    <Card style={{ overflowX: 'auto' }}>
       <CardHeader>Process Variables</CardHeader>
       <CardBody>
         <TextContent style={{ width: '30em' }}>
@@ -12,8 +12,7 @@ const ProcessDetailsProcessVariables = ({ loading, data }) => {
             data.ProcessInstances.map((item, index) => {
               return (
                 <div key={index}>
-                  <ReactJson src={JSON.parse(item.variables)}></ReactJson>
-                  <br />
+                  <ReactJson src={JSON.parse(item.variables)}/>
                 </div>
               );
             })
@@ -22,7 +21,6 @@ const ProcessDetailsProcessVariables = ({ loading, data }) => {
           )}
         </TextContent>
       </CardBody>
-      <CardFooter></CardFooter>
     </Card>
   );
 };
