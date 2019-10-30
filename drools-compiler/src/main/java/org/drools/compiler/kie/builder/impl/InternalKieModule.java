@@ -151,9 +151,11 @@ public interface InternalKieModule extends KieModule, Serializable {
     static InternalKieModule createKieModule(ReleaseId releaseId, File jar) {
         try (ZipFile zipFile = new ZipFile(jar)) {
             ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
-            KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
-            setDefaultsforEmptyKieModule(kieModuleModel);
-            return kieModuleModel != null ? InternalKieModuleProvider.get(adapt(releaseId), kieModuleModel, jar) : null;
+            if (zipEntry != null) {
+                KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( zipFile.getInputStream( zipEntry ) );
+                setDefaultsforEmptyKieModule( kieModuleModel );
+                return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+            }
         } catch (Exception e) {
             LocalLogger.logger.error(e.getMessage(), e);
         }

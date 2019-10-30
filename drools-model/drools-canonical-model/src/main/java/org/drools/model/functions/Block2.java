@@ -2,11 +2,12 @@ package org.drools.model.functions;
 
 import java.io.Serializable;
 
-public interface Block2<A, B> extends Serializable {
-    void execute(A a, B b) throws Exception;
+public interface Block2<T1, T2> extends Serializable {
+
+    void execute(T1 arg1, T2 arg2) throws Exception;
 
     default BlockN asBlockN() {
-        return new Impl( this );
+        return new Impl(this);
     }
 
     class Impl extends IntrospectableLambda implements BlockN {
@@ -18,7 +19,7 @@ public interface Block2<A, B> extends Serializable {
         }
 
         @Override
-        public void execute( Object... objs ) throws Exception {
+        public void execute(Object... objs) throws Exception {
             block.execute(objs[0], objs[1]);
         }
 
