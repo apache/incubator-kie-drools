@@ -16,17 +16,20 @@
 
 package org.drools.scenariosimulation.api.model;
 
+import java.util.stream.IntStream;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class SimulationTest {
 
-    Simulation simulation;
-    Scenario originalScenario;
+    private Simulation simulation;
+    private Scenario originalScenario;
 
     @Before
     public void setup() {
@@ -41,7 +44,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void addScenarioTest() {
+    public void addData() {
         simulation.addData(1);
 
         muteException(() -> {
@@ -57,7 +60,23 @@ public class SimulationTest {
     }
 
     @Test
-    public void cloneScenarioTest() {
+    public void cloneModel() {
+        final Simulation cloned = this.simulation.cloneModel();
+        assertNotNull(cloned);
+        final ScesimModelDescriptor originalDescriptor = simulation.getScesimModelDescriptor();
+        final ScesimModelDescriptor clonedDescriptor = cloned.getScesimModelDescriptor();
+        assertEquals(originalDescriptor.getUnmodifiableFactMappings().size(), clonedDescriptor.getUnmodifiableFactMappings().size());
+        IntStream.range(0, originalDescriptor.getUnmodifiableFactMappings().size()).forEach(index -> {
+            assertEquals(originalDescriptor.getUnmodifiableFactMappings().get(index), clonedDescriptor.getUnmodifiableFactMappings().get(index));
+        });
+        assertEquals(simulation.getUnmodifiableData().size(), cloned.getUnmodifiableData().size());
+        IntStream.range(0, simulation.getUnmodifiableData().size()).forEach(index -> {
+            assertEquals(simulation.getUnmodifiableData().get(index).getDescription(), cloned.getUnmodifiableData().get(index).getDescription());
+        });
+    }
+
+    @Test
+    public void cloneData() {
         Scenario clonedScenario = simulation.cloneData(0, 1);
 
         assertEquals(originalScenario.getDescription(), clonedScenario.getDescription());

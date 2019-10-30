@@ -16,17 +16,20 @@
 
 package org.drools.scenariosimulation.api.model;
 
+import java.util.stream.IntStream;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class BackgroundTest {
 
-    Background background;
-    BackgroundData originalBackgroundData;
+    private Background background;
+    private BackgroundData originalBackgroundData;
 
     @Before
     public void setup() {
@@ -41,7 +44,7 @@ public class BackgroundTest {
     }
 
     @Test
-    public void addScesimData() {
+    public void addData() {
         background.addData(1);
 
         muteException(() -> {
@@ -56,8 +59,25 @@ public class BackgroundTest {
                       IllegalArgumentException.class);
     }
 
+
     @Test
-    public void cloneScesimData() {
+    public void cloneModel() {
+        final Background cloned = this.background.cloneModel();
+        assertNotNull(cloned);
+        final ScesimModelDescriptor originalDescriptor = background.getScesimModelDescriptor();
+        final ScesimModelDescriptor clonedDescriptor = cloned.getScesimModelDescriptor();
+        assertEquals(originalDescriptor.getUnmodifiableFactMappings().size(), clonedDescriptor.getUnmodifiableFactMappings().size());
+        IntStream.range(0, originalDescriptor.getUnmodifiableFactMappings().size()).forEach(index -> {
+            assertEquals(originalDescriptor.getUnmodifiableFactMappings().get(index), clonedDescriptor.getUnmodifiableFactMappings().get(index));
+        });
+        assertEquals(background.getUnmodifiableData().size(), cloned.getUnmodifiableData().size());
+        IntStream.range(0, background.getUnmodifiableData().size()).forEach(index -> {
+            assertEquals(background.getUnmodifiableData().get(index).getDescription(), cloned.getUnmodifiableData().get(index).getDescription());
+        });
+    }
+
+    @Test
+    public void cloneData() {
         BackgroundData clonedBackgroundData = background.cloneData(0, 1);
 
         assertEquals(originalBackgroundData.getDescription(), clonedBackgroundData.getDescription());

@@ -72,14 +72,14 @@ public abstract class AbstractScenarioRunner extends Runner {
         this.settings = settings;
     }
 
-    public static Description getDescriptionForSimulation(Optional<String> filename, Simulation simulation) {
-        return getDescriptionForSimulation(filename, simulation.getScenarioWithIndex());
+    public static Description getDescriptionForSimulation(Optional<String> className, Simulation simulation) {
+        return getDescriptionForSimulation(className, simulation.getScenarioWithIndex());
     }
 
-    public static Description getDescriptionForSimulation(Optional<String> filename, List<ScenarioWithIndex> scenarios) {
+    public static Description getDescriptionForSimulation(Optional<String> className, List<ScenarioWithIndex> scenarios) {
         Description suiteDescription = Description.createSuiteDescription("Test Scenarios (Preview) tests");
         scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
-                getDescriptionForScenario(filename, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
+                getDescriptionForScenario(className, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
         return suiteDescription;
     }
 
