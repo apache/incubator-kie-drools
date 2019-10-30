@@ -106,7 +106,7 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
         scesimModelDescriptor.removeFactMapping(toRemove);
     }
 
-    private void clearDatas(FactMapping toRemove) {
+    protected void clearDatas(FactMapping toRemove) {
         scesimData.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }
 }
