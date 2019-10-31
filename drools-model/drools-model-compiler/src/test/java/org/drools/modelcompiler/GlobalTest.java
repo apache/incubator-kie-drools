@@ -371,7 +371,7 @@ public class GlobalTest extends BaseModelTest {
                         "           , $no10Count_1 : no10Count\n" +
                         "           , firings not contains \"fired\")\n" +
                         "then\n" +
-                        "  $input.setNo12Count(functions.sumOf(new Object[]{$no1Count_1, $no2Count_1, $no3Count_1, $no4Count_1, $no5Count_1, $no6Count_1, $no7Count_1, $no8Count_1, $no9Count_1, $no10Count_1}).intValue());\n" +
+                        "  $input.setNo13Count(functions.sumOf(new Object[]{$no1Count_1, $no2Count_1, $no3Count_1, $no4Count_1, $no5Count_1, $no6Count_1, $no7Count_1, $no8Count_1, $no9Count_1, $no10Count_1}).intValue());\n" +
                         "  $input.getFirings().add(\"fired\");\n" +
                         "  update($input);\n" +
                         "end";
@@ -391,7 +391,8 @@ public class GlobalTest extends BaseModelTest {
                         "import " + Functions.class.getCanonicalName() + ";" +
                         "global Functions functions;" +
                         "rule useSumOf when\n" +
-                        "  $input : InputDataTypes( $no1Count_1 : no1Count\n" +
+                        "  $input : InputDataTypes( " +
+                        "             $no1Count_1 : no1Count\n" +
                         "           , $no2Count_1 : no2Count\n" +
                         "           , $no3Count_1 : no3Count\n" +
                         "           , $no4Count_1 : no4Count\n" +
@@ -402,9 +403,44 @@ public class GlobalTest extends BaseModelTest {
                         "           , $no9Count_1 : no9Count\n" +
                         "           , $no10Count_1 : no10Count\n" +
                         "           , $no11Count_1 : no11Count\n" +
+                        "           , $no12Count_1 : no12Count\n" +
+                        "           , $no13Count_1 : no13Count\n" +
+                        "           , $no14Count_1 : no14Count\n" +
+                        "           , $no15Count_1 : no15Count\n" +
+                        "           , $no16Count_1 : no16Count\n" +
+                        "           , $no17Count_1 : no17Count\n" +
+                        "           , $no18Count_1 : no18Count\n" +
+                        "           , $no19Count_1 : no19Count\n" +
+                        "           , $no20Count_1 : no20Count\n" +
+                        "           , $no21Count_1 : no21Count\n" +
+                        "           , $no22Count_1 : no22Count\n" +
                         "           , firings not contains \"fired\")\n" +
                         "then\n" +
-                        "  $input.setNo12Count(functions.sumOf(new Object[]{$no1Count_1, $no2Count_1, $no3Count_1, $no4Count_1, $no5Count_1, $no6Count_1, $no7Count_1, $no8Count_1, $no9Count_1, $no10Count_1, $no11Count_1}).intValue());\n" +
+                        "  $input.setNo13Count(functions.sumOf(new Object[]{" +
+                        "       $no1Count_1, " +
+                        "       $no2Count_1, " +
+                        "       $no3Count_1, " +
+                        "       $no4Count_1, " +
+                        "       $no5Count_1, " +
+                        "       $no6Count_1, " +
+                        "       $no7Count_1, " +
+                        "       $no8Count_1, " +
+                        "       $no9Count_1, " +
+                        "       $no10Count_1, " +
+                        "       $no11Count_1," +
+                        "       $no12Count_1," +
+                        "       $no13Count_1," +
+                        "       $no14Count_1," +
+                        "       $no15Count_1," +
+                        "       $no16Count_1," +
+                        "       $no17Count_1," +
+                        "       $no18Count_1," +
+                        "       $no19Count_1," +
+                        "       $no20Count_1," +
+                        "       $no21Count_1," +
+                        "       $no22Count_1" +
+                        "" +
+                        "}).intValue());\n" +
                         "  $input.getFirings().add(\"fired\");\n" +
                         "  update($input);\n" +
                         "end";
