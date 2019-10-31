@@ -61,9 +61,9 @@ public class FactMapping {
     private List<String> genericTypes;
 
     /**
-     * It defines if the FactMapping is of ExpressionType (i.e. it manages a MVEL/FEEL Expression). FrontEnd scoped
+     * It defines the Fact type
      */
-    private boolean expressionType = false;
+    private FactMappingClassType factType = FactMappingClassType.SIMPLE;
 
     /**
      * The <b>width</b> of the FactMapping column. FrontEnd scoped
@@ -170,20 +170,20 @@ public class FactMapping {
         return getPlaceHolder(factMappingType) + " " + index;
     }
 
+    public FactMappingClassType getFactType() {
+        return factType;
+    }
+
+    public void setFactType(FactMappingClassType factType) {
+        this.factType = factType;
+    }
+
     public static String getInstancePlaceHolder(int index) {
         return "INSTANCE " + index;
     }
 
     public static String getPropertyPlaceHolder(int index) {
         return "PROPERTY " + index;
-    }
-
-    public boolean isExpressionType() {
-        return expressionType;
-    }
-
-    public void setExpressionType(boolean expressionType) {
-        this.expressionType = expressionType;
     }
 
     @Override
