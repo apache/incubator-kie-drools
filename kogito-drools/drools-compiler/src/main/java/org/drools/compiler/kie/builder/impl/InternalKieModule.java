@@ -51,6 +51,8 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -152,10 +154,13 @@ public interface InternalKieModule extends KieModule, Serializable {
     static InternalKieModule createKieModule( ReleaseId releaseId, File jar ) {
         try (ZipFile zipFile = new ZipFile( jar )) {
             ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
-            KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
-            setDefaultsforEmptyKieModule(kieModuleModel);
-            return kieModuleModel != null ? InternalKieModuleProvider.get(adapt( releaseId ), kieModuleModel, jar) : null;
+            if (zipEntry != null) {
+                KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( zipFile.getInputStream( zipEntry ) );
+                setDefaultsforEmptyKieModule( kieModuleModel );
+                return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+            }
         } catch ( Exception e ) {
+            LocalLogger.logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -196,5 +201,9 @@ public interface InternalKieModule extends KieModule, Serializable {
             this.className = className;
             this.bytecode = bytecode;
         }
+    }
+
+    final class LocalLogger {
+        private static final Logger logger = LoggerFactory.getLogger(InternalKieModule.class);
     }
 }
