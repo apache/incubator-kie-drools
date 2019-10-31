@@ -15,7 +15,10 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+/**
+    It assigns a Type to the Fact, and in detail to the class present in <code>FactMapping.className</code>
+ */
 public enum FactMappingClassType {
     SIMPLE,
-    COMPLEX
+    EXPRESSION
 }
