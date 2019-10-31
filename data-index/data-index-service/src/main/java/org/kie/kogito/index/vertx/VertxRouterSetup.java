@@ -16,8 +16,6 @@
 
 package org.kie.kogito.index.vertx;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -39,17 +37,13 @@ public class VertxRouterSetup {
     @Inject
     GraphQL graphQL;
 
-    private AtomicBoolean routesAdded = new AtomicBoolean(false);
-
     void setupRouter(@Observes Router router) {
-        if (!routesAdded.get()) {
-            router.route("/graphql").handler(ApolloWSHandler.create(graphQL));
-            router.route("/graphql").handler(GraphQLHandler.create(graphQL, new GraphQLHandlerOptions()));
-            router.route("/graphiql/*").handler(GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true)));
-            router.route("/").handler(ctx -> ctx.reroute("/graphiql"));
-            router.route().handler(LoggerHandler.create());
-            router.route().handler(StaticHandler.create());
-            router.route().handler(FaviconHandler.create());
-        }
+        router.route("/graphql").handler(ApolloWSHandler.create(graphQL));
+        router.route("/graphql").handler(GraphQLHandler.create(graphQL, new GraphQLHandlerOptions()));
+        router.route("/graphiql/*").handler(GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true)));
+        router.route("/").handler(ctx -> ctx.reroute("/graphiql"));
+        router.route().handler(LoggerHandler.create());
+        router.route().handler(StaticHandler.create());
+        router.route().handler(FaviconHandler.create());
     }
 }

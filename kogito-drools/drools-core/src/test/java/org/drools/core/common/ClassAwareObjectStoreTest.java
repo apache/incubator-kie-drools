@@ -111,7 +111,7 @@ public class ClassAwareObjectStoreTest {
 
     @ClassAwareObjectStoreParameterizedTest
     public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns(final ClassAwareObjectStore underTest) throws Exception {
-        assertThat(underTest.iterateObjects(SuperClass.class)).isEmpty();
+        assertThat(collect(underTest.iterateObjects(SuperClass.class))).isEmpty();
 
         insertObjectWithFactHandle(underTest, new SubClass());
         insertObjectWithFactHandle(underTest, new SuperClass());
@@ -127,11 +127,11 @@ public class ClassAwareObjectStoreTest {
     @ClassAwareObjectStoreParameterizedTest
     public void clearRemovesInsertedObjects(final ClassAwareObjectStore underTest) throws Exception {
         insertObjectWithFactHandle(underTest, new SimpleClass());
-        assertThat(underTest.iterateObjects()).hasSize(1);
+        assertThat(collect(underTest.iterateObjects())).hasSize(1);
 
         underTest.clear();
 
-        assertThat(underTest.iterateObjects()).isEmpty();
+        assertThat(collect(underTest.iterateObjects())).isEmpty();
     }
 
     @ClassAwareObjectStoreParameterizedTest
@@ -150,8 +150,8 @@ public class ClassAwareObjectStoreTest {
         insertObjectWithFactHandle(underTest, new SuperClass());
         insertObjectWithFactHandle(underTest, new SubClass());
 
-        assertThat(underTest.iterateFactHandles(SubClass.class)).hasSize(1);
-        assertThat(underTest.iterateFactHandles(SuperClass.class)).hasSize(2);
+        assertThat(collect(underTest.iterateFactHandles(SubClass.class))).hasSize(1);
+        assertThat(collect(underTest.iterateFactHandles(SuperClass.class))).hasSize(2);
     }
 
 
