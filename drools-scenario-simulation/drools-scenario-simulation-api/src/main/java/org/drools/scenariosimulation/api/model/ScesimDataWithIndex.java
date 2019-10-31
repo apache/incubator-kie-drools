@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * Tuple with <code>AbstractScesimData</code> and its index
  */
-public class ScesimDataWithIndex<T extends AbstractScesimData> {
+public abstract class ScesimDataWithIndex<T extends AbstractScesimData> {
 
     protected T scesimData;
     protected int index;

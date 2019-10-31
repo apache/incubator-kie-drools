@@ -26,11 +26,11 @@ import static org.junit.Assert.assertTrue;
 
 public class BackgroundDataTest {
 
-    ScesimModelDescriptor scesimModelDescriptor;
-    BackgroundData backgroundData;
-    FactIdentifier factIdentifier;
-    ExpressionIdentifier expressionIdentifier;
-    Background background;
+    private ScesimModelDescriptor scesimModelDescriptor;
+    private BackgroundData backgroundData;
+    private FactIdentifier factIdentifier;
+    private ExpressionIdentifier expressionIdentifier;
+    private Background background;
 
     @Before
     public void init() {

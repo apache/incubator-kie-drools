@@ -118,13 +118,15 @@ public class DOMParserUtil {
      */
     public static String replaceNodeName(Document document, String containerNodeName, String childNodeNameToReplace, String childNodeNameReplacement) throws Exception {
         final NodeList containerNodes = document.getElementsByTagName(containerNodeName);
-        for (int i = 0; i < containerNodes.getLength(); i ++) {
-            Node containerNode = containerNodes.item(i);
-            final NodeList childNodes = containerNode.getChildNodes();
-            for (int j = 0; j < childNodes.getLength(); j ++) {
-                Node childNode = childNodes.item(j);
-                if (childNode.getNodeName().equals(childNodeNameToReplace)) {
-                    document.renameNode(childNode, null, childNodeNameReplacement);
+        if (containerNodes != null) {
+            for (int i = 0; i < containerNodes.getLength(); i++) {
+                Node containerNode = containerNodes.item(i);
+                final NodeList childNodes = containerNode.getChildNodes();
+                for (int j = 0; j < childNodes.getLength(); j++) {
+                    Node childNode = childNodes.item(j);
+                    if (Objects.equals(childNode.getNodeName(), childNodeNameToReplace)) {
+                        document.renameNode(childNode, null, childNodeNameReplacement);
+                    }
                 }
             }
         }

@@ -26,11 +26,11 @@ import static org.junit.Assert.assertTrue;
 
 public class ScenarioTest {
 
-    ScesimModelDescriptor scesimModelDescriptor;
-    Scenario scenario;
-    FactIdentifier factIdentifier;
-    ExpressionIdentifier expressionIdentifier;
-    Simulation simulation;
+    private ScesimModelDescriptor scesimModelDescriptor;
+    private Scenario scenario;
+    private FactIdentifier factIdentifier;
+    private ExpressionIdentifier expressionIdentifier;
+    private Simulation simulation;
 
     @Before
     public void init() {
