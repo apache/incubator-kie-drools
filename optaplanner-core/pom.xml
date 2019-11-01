@@ -75,10 +75,6 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
