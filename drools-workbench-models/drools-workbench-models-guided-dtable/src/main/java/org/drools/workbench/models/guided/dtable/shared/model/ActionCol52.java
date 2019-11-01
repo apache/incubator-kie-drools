@@ -19,4 +19,16 @@ public class ActionCol52 extends DTColumnConfig52 {
 
     private static final long serialVersionUID = 729l;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ActionCol52)) {
+            return false;
+        }
+
+        return super.equals(o);
+    }
+
 }

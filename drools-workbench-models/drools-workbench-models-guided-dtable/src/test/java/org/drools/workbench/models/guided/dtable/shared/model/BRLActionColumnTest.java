@@ -22,6 +22,7 @@ import static org.drools.workbench.models.guided.dtable.shared.model.ConditionCo
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_HEADER;
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_HIDE_COLUMN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
@@ -59,6 +60,7 @@ public class BRLActionColumnTest extends ColumnTestBase {
     @Test
     public void testDiffEmpty() {
         checkDiffEmpty(column1, column2);
+        assertEquals(column1, column2);
     }
 
     @Test
@@ -69,6 +71,7 @@ public class BRLActionColumnTest extends ColumnTestBase {
         column2.setDefinition(definition2);
 
         checkSingleDiff(FIELD_DEFINITION, definition1, definition2, column1, column2);
+        assertNotEquals(column1, column2);
     }
 
     @Test
@@ -87,6 +90,7 @@ public class BRLActionColumnTest extends ColumnTestBase {
         assertEquals(FIELD_FIELD_TYPE, diff.get(1).getFieldName());
         assertEquals("FieldType1", diff.get(1).getOldValue());
         assertEquals("FieldType2", diff.get(1).getValue());
+        assertNotEquals(column1, column2);
     }
 
     @Test
@@ -123,5 +127,6 @@ public class BRLActionColumnTest extends ColumnTestBase {
         assertEquals(FIELD_FIELD_TYPE, diff.get(4).getFieldName());
         assertEquals("FieldType1", diff.get(4).getOldValue());
         assertEquals("FieldType2", diff.get(4).getValue());
+        assertNotEquals(column1, column2);
     }
 }

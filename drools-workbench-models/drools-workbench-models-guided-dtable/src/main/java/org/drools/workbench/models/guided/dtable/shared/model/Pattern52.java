@@ -240,9 +240,6 @@ public class Pattern52
         if (!(o instanceof Pattern52)) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
         Pattern52 pattern52 = (Pattern52) o;
         return isNegated == pattern52.isNegated &&
                 Objects.equals(factType, pattern52.factType) &&
