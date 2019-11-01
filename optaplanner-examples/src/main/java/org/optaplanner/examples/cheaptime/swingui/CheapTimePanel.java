@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 
 package org.optaplanner.examples.cheaptime.swingui;
-
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -56,6 +53,10 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.nullsFirst;
+import static java.util.function.Function.identity;
+
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
@@ -65,8 +66,8 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
                     .thenComparingInt(a -> a.getTask().getDuration())
                     .thenComparingLong(TaskAssignment::getId);
     private static final Comparator<TaskAssignment> GROUP_BY_MACHINE_COMPARATOR =
-            comparing(TaskAssignment::getMachine, comparingLong(Machine::getId))
-                    .thenComparingInt(TaskAssignment::getStartPeriod)
+            comparing(TaskAssignment::getMachine, nullsFirst(comparing(Machine::getId)))
+                    .thenComparing(TaskAssignment::getStartPeriod, nullsFirst(comparing(identity())))
                     .thenComparingInt(a -> a.getTask().getDuration())
                     .thenComparingLong(TaskAssignment::getId);
 
