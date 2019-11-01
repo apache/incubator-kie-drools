@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.metadata;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -22,6 +23,7 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 
@@ -44,19 +46,24 @@ public class PersistenceLabeler implements Labeler {
     public void processProto(final File file) {
         try {
             if (file != null && !KOGITO_APPLICATION_PROTO.equalsIgnoreCase(file.getName())) {
-                this.encodedProtos.put(generateKey(file), compactFile(file));
+                this.encodedProtos.put(generateKey(file), compressFile(file));
             }
         } catch (IOException e) {
             throw new UncheckedIOException("Error while processing proto files as image labels", e);
         }
     }
 
-    protected String compactFile(final File file) throws IOException {
+    protected String compressFile(final File file) throws IOException {
         final byte[] contents = Files.readAllBytes(file.toPath());
         if (contents == null) {
             return "";
         }
-        return Base64.getEncoder().encodeToString(contents);
+        try(final ByteArrayOutputStream fileContents = new ByteArrayOutputStream(contents.length)) {
+            try(final GZIPOutputStream gzip = new GZIPOutputStream(fileContents)){
+                gzip.write(contents);
+            }
+            return Base64.getEncoder().encodeToString(fileContents.toByteArray());
+        }
     }
 
     protected String generateKey(final File file) {
