@@ -164,8 +164,14 @@ required by the processes on that computer using the `ConstraintCollectors.sum(.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant `sumLong()`, as
-well as a `BigDecimal`-based variant `sumBigDecimal()`.
+The return value for this collector is a 32-bit signed integer (`int`). There are also the following variants:
+
+* 64-bit variant `sumLong()`
+* `java.math.BigDecimal`-based variant `sumBigDecimal()`
+* `java.math.BigInteger`-based variant `sumBigInteger()`
+* `java.time.Duration`-based variant `sumDuration()`
+* `java.time.Period`-based variant `sumPeriod()`
+
 
 [collectorsMinMax]
 ==== Minimums and maximums

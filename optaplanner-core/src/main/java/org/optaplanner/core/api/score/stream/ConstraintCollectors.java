@@ -16,11 +16,16 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
@@ -173,6 +178,52 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    public static <A> UniConstraintCollector<A, ?, BigDecimal> sumBigDecimal(
+            Function<? super A, BigDecimal> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new BigDecimal[] { BigDecimal.ZERO },
+                (resultContainer, a) -> {
+                    BigDecimal value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, BigInteger> sumBigInteger(
+            Function<? super A, BigInteger> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new BigInteger[] { BigInteger.ZERO },
+                (resultContainer, a) -> {
+                    BigInteger value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Duration> sumDuration(Function<? super A, Duration> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new Duration[] { Duration.ZERO },
+                (resultContainer, a) -> {
+                    Duration value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Period> sumPeriod(Function<? super A, Period> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new Period[] { Period.ZERO },
+                (resultContainer, a) -> {
+                    Period value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(
             ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
@@ -193,6 +244,54 @@ public final class ConstraintCollectors {
                     long value = groupValueMapping.applyAsLong(a, b);
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal> sumBigDecimal(
+            BiFunction<? super A, ? super B, BigDecimal> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new BigDecimal[] { BigDecimal.ZERO },
+                (resultContainer, a, b) -> {
+                    BigDecimal value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, BigInteger> sumBigInteger(
+            BiFunction<? super A, ? super B, BigInteger> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new BigInteger[] { BigInteger.ZERO },
+                (resultContainer, a, b) -> {
+                    BigInteger value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Duration> sumDuration(
+            BiFunction<? super A, ? super B, Duration> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new Duration[] { Duration.ZERO },
+                (resultContainer, a, b) -> {
+                    Duration value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Period> sumPeriod(
+            BiFunction<? super A, ? super B, Period> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new Period[] { Period.ZERO },
+                (resultContainer, a, b) -> {
+                    Period value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
                 resultContainer -> resultContainer[0]);
     }
