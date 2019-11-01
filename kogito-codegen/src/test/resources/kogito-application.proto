@@ -1,0 +1,25 @@
+syntax = "proto2";
+package org.kie.kogito.examples;
+import "kogito-types.proto";
+
+message Address {
+	option java_package = "org.kie.kogito.examples.onboarding";
+	optional string city = 1;
+	optional string country = 2;
+	optional string street = 3;
+	optional string zipCode = 4;
+}
+message Employee {
+	option java_package = "org.kie.kogito.examples.onboarding";
+	optional Address address = 1;
+	optional kogito.Date birthDate = 2;
+	optional string firstName = 3;
+	optional string lastName = 4;
+	optional string personalId = 5;
+}
+message Payroll {
+	option java_package = "org.kie.kogito.examples.onboarding";
+	optional kogito.Date paymentDate = 1;
+	optional double taxRate = 2;
+	optional int32 vacationDays = 3;
+}

@@ -31,18 +31,21 @@ import org.kie.kogito.codegen.process.persistence.proto.Proto;
 public class PersistenceLabeler implements Labeler {
 
     private static final String PERSISTENCE_LABEL_PREFIX = ImageMetaData.LABEL_PREFIX + "persistence/proto/";
+    private static final String KOGITO_APPLICATION_PROTO = "kogito-application.proto";
     public static final String PROTO_FILE_EXT = ".proto";
     private final Map<String, String> encodedProtos = new HashMap<>();
 
     /**
      * Transforms the given {@link Proto} into a format for the {@link ImageMetaData} 
      * 
-     * @param proto
+     * @param file that will be added to the label
      * @throws IOException 
      */
     public void processProto(final File file) {
         try {
-            this.encodedProtos.put(generateKey(file), compactFile(file));
+            if (file != null && !KOGITO_APPLICATION_PROTO.equalsIgnoreCase(file.getName())) {
+                this.encodedProtos.put(generateKey(file), compactFile(file));
+            }
         } catch (IOException e) {
             throw new UncheckedIOException("Error while processing proto files as image labels", e);
         }

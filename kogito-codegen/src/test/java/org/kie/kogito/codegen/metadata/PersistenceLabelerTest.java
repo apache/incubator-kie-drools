@@ -31,10 +31,13 @@ public class PersistenceLabelerTest {
     void testGenerateLabels() throws URISyntaxException {
         final PersistenceLabeler labeler = new PersistenceLabeler();
         final File protoFile = new File(this.getClass().getResource("/kogito-types.proto").toURI());
+        final File kogitoApplication = new File(this.getClass().getResource("/kogito-application.proto").toURI());
 
         assertThat(protoFile).isNotNull();
+        assertThat(kogitoApplication).isNotNull();
 
         labeler.processProto(protoFile);
+        labeler.processProto(kogitoApplication);
 
         final Map<String, String> labels = labeler.generateLabels();
 
