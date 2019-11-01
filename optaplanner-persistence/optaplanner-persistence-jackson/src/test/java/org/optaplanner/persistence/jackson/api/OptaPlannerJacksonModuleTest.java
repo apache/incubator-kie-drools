@@ -27,6 +27,11 @@ import static org.junit.Assert.*;
 
 public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerAndDeserializerTest {
 
+    /**
+     * According to official specification (see {@link Class#getDeclaredMethods()},
+     * "The elements in the returned array are not sorted and are not in any particular order."
+     * Enabling {@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} will make this test work as expected.
+     */
     @Test
     public void polymorphicScore() {
         ObjectMapper objectMapper = new ObjectMapper();
