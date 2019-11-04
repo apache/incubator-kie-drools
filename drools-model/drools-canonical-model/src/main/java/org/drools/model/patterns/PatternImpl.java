@@ -1,6 +1,7 @@
 package org.drools.model.patterns;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -148,5 +149,13 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     public PatternImpl<T> negate() {
         this.constraint = constraint.negate();
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "PatternImpl (type: " +  type + ", " +
+                "inputVars: " + Arrays.toString(inputVariables) + ", " +
+                "outputVar: " + variable + ", " +
+                "constraint: " + constraint + ")";
     }
 }

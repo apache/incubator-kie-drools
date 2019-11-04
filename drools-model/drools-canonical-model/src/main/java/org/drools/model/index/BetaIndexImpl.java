@@ -21,4 +21,12 @@ public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaI
     public Function1<B, V> getRightOperandExtractor() {
         return rightOperandExtractor;
     }
+
+    @Override
+    public String toString() {
+        return "BetaIndex #" + getIndexId() + " (" + getConstraintType() + ", " +
+                "left: lambda " + System.identityHashCode(getLeftOperandExtractor()) + ", " +
+                "right: lambda " + System.identityHashCode(rightOperandExtractor) + ")";
+    }
+
 }

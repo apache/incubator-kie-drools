@@ -106,6 +106,6 @@ public class RuleImpl implements Rule, ModelComponent {
 
     @Override
     public String toString() {
-        return "Rule: " +  pkg + "." + name;
+        return "Rule: " +  pkg + "." + name + " (view: " + view + ", consequences: " + consequences + ")";
     }
 }

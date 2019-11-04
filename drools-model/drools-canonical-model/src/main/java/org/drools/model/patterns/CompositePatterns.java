@@ -102,4 +102,12 @@ public class CompositePatterns implements Condition, View, ModelComponent {
         if ( !ModelComponent.areEqualInModel( patterns, patterns1.patterns ) ) return false;
         return ModelComponent.areEqualInModel( consequences, patterns1.consequences );
     }
+
+    @Override
+    public String toString() {
+        return "CompositePatterns of " + type + " (" +
+                "vars: " + usedVars + ", " +
+                "patterns: " + patterns + ", " +
+                "consequences: " + consequences + ")";
+    }
 }
