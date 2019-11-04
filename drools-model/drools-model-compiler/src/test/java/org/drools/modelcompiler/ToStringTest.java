@@ -86,25 +86,21 @@ public class ToStringTest {
                         on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
                 );
 
-        String var1toString = "Variable $var$1$ of type " + markV.getType();
         String pattern1toString = "PatternImpl (type: PATTERN, inputVars: null, " +
-                "outputVar: " + var1toString + ", " +
+                "outputVar: " + markV + ", " +
                 "constraint: Constraint for 'exprA' (index: AlphaIndex #0 (EQUAL, left: lambda " + System.identityHashCode(nameGetter) + ", right: " + person + ")))";
-        String var3toString = "Variable $var$3$ of type " + olderV.getType();
         String pattern2toString = "PatternImpl (type: PATTERN, inputVars: null, " +
-                "outputVar: " + var3toString + ", " +
+                "outputVar: " + olderV + ", " +
                 "constraint: MultipleConstraints (constraints: [" +
                 "Constraint for 'exprB' (index: AlphaIndex #1 (NOT_EQUAL, left: lambda " + System.identityHashCode(nameGetter) + ", right: " + person + ")), " +
                 "Constraint for 'exprC' (index: BetaIndex #0 (GREATER_THAN, left: lambda " + System.identityHashCode(ageGetter) + ", right: lambda " + System.identityHashCode(ageCaster) + "))]))";
+        String accumulatePatternToString = "PatternImpl (type: PATTERN, inputVars: null, " +
+                        "outputVar: " + olderV + ", " +
+                        "constraint: Constraint for 'exprD' (index: null))";
         String accumulateToString = "AccumulatePatternImpl (functions: [" + actualAccumulate + "], " +
-                "condition: PatternImpl (" +
-                "type: PATTERN, inputVars: null, " +
-                "outputVar: " + var3toString + ", " +
-                "constraint: Constraint for 'exprD' (index: null)), " +
-                "pattern: PatternImpl (type: PATTERN, inputVars: null, " +
-                "outputVar: " + var3toString + ", " +
-                "constraint: Constraint for 'exprD' (index: null)))";
-        String consequenceToString = "ConsequenceImpl (variables: [" + var3toString + ", " + var1toString + "], language: java, breaking: false)";
+                "condition: " + accumulatePatternToString + ", " +
+                "pattern: " + accumulatePatternToString + ")";
+        String consequenceToString = "ConsequenceImpl (variables: [" + olderV + ", " + markV + "], language: java, breaking: false)";
         String expectedToString = "Rule: defaultpkg.beta (" +
                 "view: CompositePatterns of AND (vars: null, patterns: [" + pattern1toString +
                 ", " + pattern2toString +
@@ -113,6 +109,6 @@ public class ToStringTest {
                 "consequences: {default=" + consequenceToString +
                 "}), consequences: {default=" + consequenceToString + "})";
 
-        Assertions.assertThat(rule.toString()).isEqualTo(expectedToString);
+        Assertions.assertThat(rule).hasToString(expectedToString);
     }
 }
