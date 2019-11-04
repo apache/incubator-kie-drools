@@ -73,6 +73,14 @@ and supports <<explainingTheScore,justifications>>:
 ----
 
 
+[[constraintStreamsJoin]]
+== Join
+
+image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
+
+image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
+
+
 [[constraintStreamsGroupingAndCollectors]]
 == Grouping and Collectors
 
