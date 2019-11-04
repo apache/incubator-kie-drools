@@ -155,6 +155,7 @@ public class DOMParserUtilTest {
         List<Node> testNodes = retrieved.values().iterator().next();
         assertNotNull(testNodes);
         assertEquals(1, testNodes.size());
+        assertEquals("replacement", testNodes.get(0).getNodeName());
     }
 
     @Test

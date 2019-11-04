@@ -51,11 +51,11 @@ public class ScesimModelDescriptor {
 
     public void moveFactMapping(int oldIndex, int newIndex) {
         if (oldIndex < 0 || oldIndex >= factMappings.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index ").append(oldIndex)
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(oldIndex)
                                                        .append(" not found in the list").toString());
         }
         if (newIndex < 0 || newIndex >= factMappings.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index ").append(newIndex)
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(newIndex)
                                                        .append(" out of range").toString());
         }
         FactMapping factMapping = factMappings.get(oldIndex);

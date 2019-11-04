@@ -96,25 +96,25 @@ public class BackgroundTest {
                           background.cloneData(-1, 1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           background.cloneData(2, 1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           background.cloneData(0, -1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           background.cloneData(0, 2);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
     }
 
     @Test

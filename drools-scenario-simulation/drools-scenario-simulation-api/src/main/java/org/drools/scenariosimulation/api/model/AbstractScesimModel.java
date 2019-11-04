@@ -68,10 +68,10 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
 
     public T cloneData(int sourceIndex, int targetIndex) {
         if (sourceIndex < 0 || sourceIndex >= scesimData.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("SourceIndex out of range ").append(sourceIndex).toString());
+            throw new IndexOutOfBoundsException(new StringBuilder().append("SourceIndex out of range ").append(sourceIndex).toString());
         }
         if (targetIndex < 0 || targetIndex > scesimData.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("TargetIndex out of range ").append(targetIndex).toString());
+            throw new IndexOutOfBoundsException(new StringBuilder().append("TargetIndex out of range ").append(targetIndex).toString());
         }
         T scesimDataByIndex = getDataByIndex(sourceIndex);
         T clonedScesimData = (T) scesimDataByIndex.cloneInstance();

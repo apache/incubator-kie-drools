@@ -95,25 +95,25 @@ public class SimulationTest {
                           simulation.cloneData(-1, 1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           simulation.cloneData(2, 1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           simulation.cloneData(0, -1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           simulation.cloneData(0, 2);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
     }
 
     @Test

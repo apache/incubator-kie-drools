@@ -183,25 +183,25 @@ public class ScesimModelDescriptorTest {
                           scesimModelDescriptor.moveFactMapping(2, 0);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           scesimModelDescriptor.moveFactMapping(-1, 0);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           scesimModelDescriptor.moveFactMapping(0, 2);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
 
         muteException(() -> {
                           scesimModelDescriptor.moveFactMapping(0, -1);
                           fail();
                       },
-                      IllegalArgumentException.class);
+                      IndexOutOfBoundsException.class);
     }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
