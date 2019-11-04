@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +75,8 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -4355,5 +4359,72 @@ public class IncrementalCompilationTest {
         assertEquals(2, ks2.fireAllRules());
         assertEquals(2, list2.size());
         assertTrue(list2.containsAll( Arrays.asList( "R2", "R3" ) ));
+    }
+
+    @Test
+    public void testKJarUpgradeWithSerializedSession() {
+        final String drl1 = "package org.drools.compiler\n" +
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        final String drl2_1 = "package org.drools.compiler\n" +
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "rule R2_1 when\n" +
+                "   $m : Message( message == \"Hi Universe\" )\n" +
+                "then\n" +
+                "end\n";
+
+        final String drl2_2 = "package org.drools.compiler\n" +
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "rule R2_2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1, drl2_1);
+
+        // Create a session and fire rules
+        final KieContainer kc1 = ks.newKieContainer(releaseId1);
+        final KieSession ksession1 = kc1.newKieSession();
+        ksession1.insert(new Message("Hello World"));
+        assertEquals(1, ksession1.fireAllRules());
+
+        KieBase kbase = ksession1.getKieBase();
+        KieMarshallers marshallers = ks.getMarshallers();
+        Marshaller marshaller1 = marshallers.newMarshaller(kc1.getKieBase());
+        byte[] marshalledSession = null;
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            marshaller1.marshall(baos, ksession1);
+            marshalledSession = baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+
+        final KieContainer kc2 = ks.newKieContainer(releaseId1);
+
+        Marshaller marshaller2 = marshallers.newMarshaller(kc2.getKieBase());
+        KieSession ksession2;
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(marshalledSession)) {
+            ksession2 = marshaller2.unmarshall(bais);
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+
+        // Create a new jar for version 1.1.0
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1, drl2_2);
+        // try to update the container to version 1.1.0
+        kc2.updateToVersion(releaseId2);
+
+        // continue working with the session
+        ksession2.insert(new Message("Hello World"));
+        assertEquals(3, ksession2.fireAllRules());
     }
 }
