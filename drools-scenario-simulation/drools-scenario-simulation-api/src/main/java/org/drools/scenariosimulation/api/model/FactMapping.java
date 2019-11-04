@@ -63,7 +63,7 @@ public class FactMapping {
     /**
      * It defines the Fact type
      */
-    private FactMappingClassType factClassType = FactMappingClassType.RAW;
+    private FactMappingValueType valueType = FactMappingValueType.RAW;
 
     /**
      * The <b>width</b> of the FactMapping column. FrontEnd scoped
@@ -96,7 +96,7 @@ public class FactMapping {
         this.factAlias = original.factAlias;
         this.expressionAlias = original.expressionAlias;
         this.genericTypes = original.genericTypes;
-        this.factClassType = original.factClassType;
+        this.valueType = original.valueType;
         this.columnWidth = original.columnWidth;
     }
 
@@ -171,12 +171,12 @@ public class FactMapping {
         return getPlaceHolder(factMappingType) + " " + index;
     }
 
-    public FactMappingClassType getFactClassType() {
-        return factClassType;
+    public FactMappingValueType getValueType() {
+        return valueType;
     }
 
-    public void setFactClassType(FactMappingClassType factClassType) {
-        this.factClassType = factClassType;
+    public void setValueType(FactMappingValueType valueType) {
+        this.valueType = valueType;
     }
 
     public static String getInstancePlaceHolder(int index) {
@@ -203,7 +203,7 @@ public class FactMapping {
                 Objects.equals(getFactAlias(), that.getFactAlias()) &&
                 Objects.equals(getExpressionAlias(), that.getExpressionAlias()) &&
                 Objects.equals(getGenericTypes(), that.getGenericTypes()) &&
-                Objects.equals(getFactClassType(), that.getFactClassType()) ;
+                Objects.equals(getValueType(), that.getValueType()) ;
     }
 
     @Override
@@ -216,7 +216,7 @@ public class FactMapping {
                 getFactAlias(),
                 getExpressionAlias(),
                 getGenericTypes(),
-                getFactClassType());
+                getValueType());
     }
 
     public Double getColumnWidth() {

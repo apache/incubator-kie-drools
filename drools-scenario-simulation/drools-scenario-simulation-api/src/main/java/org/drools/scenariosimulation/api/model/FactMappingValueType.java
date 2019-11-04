@@ -16,11 +16,12 @@
 package org.drools.scenariosimulation.api.model;
 
 /**
-    It assigns a Type to the Fact, and in detail to the class present in <code>FactMapping.className</code>
-    - EXPRESSION: The value associated with the Fact is of Expression type
+    It assigns a Type to the <code>FactMapping</code> value
+    - EXPRESSION: The value associated with the Fact is of Expression type, to be evaluated in the class defined in
+                  <code>FactMapping.className</code>
     - RAW: The value represent a raw type. Its specific type is defined in <code>FactMapping.className</code>
  */
-public enum FactMappingClassType {
+public enum FactMappingValueType {
     EXPRESSION,
     RAW
 }
