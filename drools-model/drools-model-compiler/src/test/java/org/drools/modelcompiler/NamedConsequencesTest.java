@@ -145,16 +145,33 @@ public class NamedConsequencesTest extends BaseModelTest {
     @Test
     public void testIfAfterAccumulate() {
         String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
-                "  accumulate ( $p: Object(); \n" +
-                "                $sum : sum(1)  \n" +
+                "  $r : Result()\n" +
+                "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                $sum : sum($p.getAge())  \n" +
                 "              )                          \n" +
+//                "  Result()\n" +
                 "  if ($sum > 70) do[greater]\n" +
+                "  String()\n" +
                 "then\n" +
+                "  $r.addValue(\"default\");\n" +
                 "then[greater]\n" +
+                "  $r.addValue(\"greater\");\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
+        Result result = new Result();
+        ksession.insert( result );
 
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        List results = ( List )result.getValue();
+        assertEquals(1, results.size());
+        assertEquals("greater", results.get(0));
     }
 }
