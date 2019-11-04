@@ -61,9 +61,9 @@ public class FactMapping {
     private List<String> genericTypes;
 
     /**
-     * It defines the Fact type
+     * It defines the FactMappingValueType
      */
-    private FactMappingValueType valueType = FactMappingValueType.RAW;
+    private FactMappingValueType factMappingValueType = FactMappingValueType.RAW;
 
     /**
      * The <b>width</b> of the FactMapping column. FrontEnd scoped
@@ -96,7 +96,7 @@ public class FactMapping {
         this.factAlias = original.factAlias;
         this.expressionAlias = original.expressionAlias;
         this.genericTypes = original.genericTypes;
-        this.valueType = original.valueType;
+        this.factMappingValueType = original.factMappingValueType;
         this.columnWidth = original.columnWidth;
     }
 
@@ -171,12 +171,12 @@ public class FactMapping {
         return getPlaceHolder(factMappingType) + " " + index;
     }
 
-    public FactMappingValueType getValueType() {
-        return valueType;
+    public FactMappingValueType getFactMappingValueType() {
+        return factMappingValueType;
     }
 
-    public void setValueType(FactMappingValueType valueType) {
-        this.valueType = valueType;
+    public void setFactMappingValueType(FactMappingValueType factMappingValueType) {
+        this.factMappingValueType = factMappingValueType;
     }
 
     public static String getInstancePlaceHolder(int index) {
@@ -203,7 +203,7 @@ public class FactMapping {
                 Objects.equals(getFactAlias(), that.getFactAlias()) &&
                 Objects.equals(getExpressionAlias(), that.getExpressionAlias()) &&
                 Objects.equals(getGenericTypes(), that.getGenericTypes()) &&
-                Objects.equals(getValueType(), that.getValueType()) ;
+                Objects.equals(getFactMappingValueType(), that.getFactMappingValueType()) ;
     }
 
     @Override
@@ -216,7 +216,7 @@ public class FactMapping {
                 getFactAlias(),
                 getExpressionAlias(),
                 getGenericTypes(),
-                getValueType());
+                getFactMappingValueType());
     }
 
     public Double getColumnWidth() {
