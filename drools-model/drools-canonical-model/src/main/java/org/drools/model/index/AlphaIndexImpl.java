@@ -22,4 +22,10 @@ public class AlphaIndexImpl<A, V> extends AbstractIndex<A, V> implements AlphaIn
         return IndexType.ALPHA;
     }
 
+    @Override
+    public String toString() {
+        return "AlphaIndex #" + getIndexId() + " (" + getConstraintType() + ", " +
+                "left: lambda " + System.identityHashCode(getLeftOperandExtractor()) + ", " +
+                "right: " + rightValue + ")";
+    }
 }

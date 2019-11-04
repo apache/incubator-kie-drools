@@ -60,4 +60,9 @@ public class NamedConsequenceImpl implements Condition, ModelComponent {
         if ( breaking != that.breaking ) return false;
         return name != null ? name.equals( that.name ) : that.name == null;
     }
+
+    @Override
+    public String toString() {
+        return "NamedConsequenceImpl '" + name + "' (breaking: " + breaking + ")";
+    }
 }

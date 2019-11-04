@@ -92,4 +92,12 @@ public class QueryCallPattern implements Condition, ModelComponent {
 
         return open == that.open && ModelComponent.areEqualInModel( query, that.query ) && ModelComponent.areEqualInModel( arguments, that.arguments );
     }
+
+    @Override
+    public String toString() {
+        return "QueryCallPattern (" +
+                "arguments: " + Arrays.toString(arguments) + ", " +
+                "open: " + open  + ", " +
+                "query: " + query + ")";
+    }
 }

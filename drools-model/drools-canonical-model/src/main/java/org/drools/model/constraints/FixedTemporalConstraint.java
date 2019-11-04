@@ -81,4 +81,12 @@ public class FixedTemporalConstraint<A> extends TemporalConstraint {
         }
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "FixedTemporalConstraint for '" + getExprId() + "' (" +
+                "function: lambda " + System.identityHashCode(func) + ", " +
+                "value: " + value + ")";
+    }
+
 }
