@@ -30,9 +30,12 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DroolsConstraint<Solution_> implements Constraint {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DroolsConstraint.class);
     private final DroolsConstraintFactory<Solution_> constraintFactory;
     private final String constraintPackage;
     private final String constraintName;
@@ -126,8 +129,20 @@ public class DroolsConstraint<Solution_> implements Constraint {
      */
     public void createRules(Map<DroolsAbstractConstraintStream<Solution_>, Rule> ruleLibrary,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        assembleScoringStreamTree(scoringStream).forEach(stream -> ruleLibrary.computeIfAbsent(stream, key ->
-                key.buildRule(this, scoreHolderGlobal).orElse(null)));
+        assembleScoringStreamTree(scoringStream).forEach(stream -> ruleLibrary.compute(stream, (key, rule) -> {
+            if (rule == null) {
+                final Rule newRule = key.buildRule(this, scoreHolderGlobal).orElse(null);
+                if (newRule == null) {
+                    LOGGER.trace("Constraint stream {} resulted in no new Drools rules.", key);
+                } else {
+                    LOGGER.trace("Constraint stream {} created new Drools rule {}.", key, newRule);
+                }
+                return newRule;
+            } else {
+                LOGGER.trace("Constraint stream {} reused Drools rule {}.", key, rule);
+                return rule;
+            }
+        }));
     }
 
     // ************************************************************************
