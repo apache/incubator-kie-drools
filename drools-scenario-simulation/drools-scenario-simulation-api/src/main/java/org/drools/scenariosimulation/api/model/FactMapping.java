@@ -63,7 +63,7 @@ public class FactMapping {
     /**
      * It defines the Fact type
      */
-    private FactMappingClassType factClassType = FactMappingClassType.SIMPLE;
+    private FactMappingClassType factClassType = FactMappingClassType.RAW;
 
     /**
      * The <b>width</b> of the FactMapping column. FrontEnd scoped
