@@ -12,7 +12,7 @@ Each example is described below, the order starts with the simplest (most of the
 The Deploy use cases shown below all involve ``mvn install``.
 Remote deployment of JARs in Maven is well covered in Maven literature.
 Utilize refers to the initial act of loading the resources and providing access to the KIE runtimes.
-Where as Run refers to the act of interacting with those runtimes.
+Whereas Run refers to the act of interacting with those runtimes.
 
 == Default KieSession
 
@@ -112,7 +112,7 @@ kSession.fireAllRules();
 ----
 ====
 
-== KieBase Inheritence
+== KieBase Inheritance
 
 * Project: kiebase-inclusion.
 * Summary: 'kmodule.xml' demonstrates that one KieBase can include the resources from another KieBase, from another KieModule. In this case it inherits the named KieBase from the 'name-kiesession' example. The included KieBase can be from the current KieModule or any other KieModule that is in the pom.xml dependency list.
@@ -293,7 +293,7 @@ private List<Integer> useKieSession(String name) {
 * Summary: The project does not contain a kmodule.xml, nor does the pom.xml have any dependencies for other KieModules. Instead the Java code demonstrates the loading of a dynamic KieModule from a Maven repository. 
 
 
-The pom.xml must include kie-ci as a depdency, to ensure Maven is available at runtime.
+The pom.xml must include kie-ci as a dependency, to ensure Maven is available at runtime.
 As this uses Maven under the hood you can also use the standard Maven settings.xml file.
 
 .Author - pom.xml
@@ -489,10 +489,10 @@ kSession.fireAllRules();
 ----
 ====
 
-== Programmaticaly build a Simple KieModule with Defaults
+== Programmatically build a Simple KieModule with Defaults
 
 * Project: kiemoduelmodel-example
-* Summary: Programmaticaly buid a KieModule from just a single file. The POM and models are all defaulted. This is the quickest out of the box approach, but should not be added to a Maven repository.
+* Summary: Programmatically build a KieModule from just a single file. The POM and models are all defaulted. This is the quickest out of the box approach, but should not be added to a Maven repository.
 
 
 .Build and Install - Maven
@@ -535,10 +535,10 @@ kSession.fireAllRules();
 ----
 ====
 
-== Programmaticaly build a KieModule using Meta Models
+== Programmatically build a KieModule using Meta Models
 
 * Project: kiemoduelmodel-example
-* Summary: Programmaticaly build a KieModule, by creating its kmodule.xml meta model resources. 
+* Summary: Programmatically build a KieModule, by creating its kmodule.xml meta model resources.
 
 
 .Build and Install - Maven

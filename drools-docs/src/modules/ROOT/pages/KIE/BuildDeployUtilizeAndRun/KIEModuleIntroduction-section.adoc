@@ -37,7 +37,7 @@ Either added to the classpath, like any other JAR in a Maven dependency listing,
 KIE will scan the classpath to find all the JARs with a kmodule.xml in it.
 Each found JAR is represented by the KieModule interface.
 The terms classpath KieModule and dynamic KieModule are used to refer to the two loading approaches.
-While dynamic modules supports side by side versioning, classpath modules do not.
+While dynamic modules support side by side versioning, classpath modules do not.
 Further once a module is on the classpath, no other version may be loaded dynamically.
 
 Detailed references for the API are included in the next sections, the impatient can jump straight to the examples section, which is fairly self-explanatory on the different use cases.

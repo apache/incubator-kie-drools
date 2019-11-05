@@ -3,9 +3,9 @@
 = Security Manager
 
 
-The KIE engine is a platform for the modelling and execution of business behavior, using a multitude of declarative abstractions and metaphores, like rules, processes, decision tables and etc.
+The KIE engine is a platform for the modelling and execution of business behavior, using a multitude of declarative abstractions and metaphors, like rules, processes, decision tables and etc.
 
-Many times, the authoring of these metaphores is done by third party groups, be it a different group inside the same company, a group from a partner company, or even anonymous third parties on the internet. 
+Many times, the authoring of these metaphors is done by third party groups, be it a different group inside the same company, a group from a partner company, or even anonymous third parties on the internet.
 
 Rules and Processes are designed to execute arbitrary code in order to do their job, but in such cases it might be necessary to constrain what they can do.
 For instance, it is unlikely a rule should be allowed to create a classloader (what could open the system to an attack) and certainly it should not be allowed to make a call to ``System.exit()``.
@@ -23,7 +23,7 @@ Examples are: it needs to create classloaders, read system properties, access th
 Once a security manager is installed, though, it will apply restrictions to all the code executing in the JVM according to the defined policy.
 For that reason, KIE allows the user to define two different policy files: one for the engine itself and one for the assets deployed into and executed by the engine.
 
-One easy way to setup the enviroment is to give the engine itself a very permissive policy, while providing a constrained policy for rules and processes. 
+One easy way to setup the environment is to give the engine itself a very permissive policy, while providing a constrained policy for rules and processes.
 
 Policy files follow the standard policy file syntax as described in the Java documentation.
 For more details, see:
