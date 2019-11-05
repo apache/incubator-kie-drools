@@ -20,7 +20,7 @@ package org.drools.scenariosimulation.api.model;
     column value should be managed as an Expression.
     - EXPRESSION: The value associated with the Fact is of Expression type, to be evaluated in the class defined in
                   <code>FactMapping.className</code>
-    - NOT_EXPRESSION: The value represent a "raw" type. Its specific type is defined in <code>FactMapping.className</code>
+    - NOT_EXPRESSION: The specific value-type is defined by its content defined in <code>FactMapping.className</code>
  */
 public enum FactMappingValueType {
     EXPRESSION,
