@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,91 +26,92 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-public class SimulationTest {
+public class BackgroundTest {
 
-    private Simulation simulation;
-    private Scenario originalScenario;
+    private Background background;
+    private BackgroundData originalBackgroundData;
 
     @Before
     public void setup() {
-        simulation = new Simulation();
+        background = new Background();
         FactIdentifier factIdentifier = FactIdentifier.create("Test", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("Test", FactMappingType.GIVEN);
-        simulation.getScesimModelDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
+        background.getScesimModelDescriptor().addFactMapping(factIdentifier, expressionIdentifier);
 
-        originalScenario = simulation.addData();
-        originalScenario.setDescription("Test Description");
-        originalScenario.addMappingValue(factIdentifier, expressionIdentifier, "TEST");
+        originalBackgroundData = background.addData();
+        originalBackgroundData.setDescription("Test Description");
+        originalBackgroundData.addMappingValue(factIdentifier, expressionIdentifier, "TEST");
     }
 
     @Test
     public void addData() {
-        simulation.addData(1);
+        background.addData(1);
 
         muteException(() -> {
-                          simulation.addData(-1);
+                          background.addData(-1);
                           fail();
                       },
                       IllegalArgumentException.class);
         muteException(() -> {
-                          simulation.addData(3);
+                          background.addData(3);
                           fail();
                       },
                       IllegalArgumentException.class);
     }
 
+
     @Test
     public void cloneModel() {
-        final Simulation cloned = this.simulation.cloneModel();
+        final Background cloned = this.background.cloneModel();
         assertNotNull(cloned);
-        final ScesimModelDescriptor originalDescriptor = simulation.getScesimModelDescriptor();
+        final ScesimModelDescriptor originalDescriptor = background.getScesimModelDescriptor();
         final ScesimModelDescriptor clonedDescriptor = cloned.getScesimModelDescriptor();
         assertEquals(originalDescriptor.getUnmodifiableFactMappings().size(), clonedDescriptor.getUnmodifiableFactMappings().size());
         IntStream.range(0, originalDescriptor.getUnmodifiableFactMappings().size()).forEach(index -> {
             assertEquals(originalDescriptor.getUnmodifiableFactMappings().get(index), clonedDescriptor.getUnmodifiableFactMappings().get(index));
         });
-        assertEquals(simulation.getUnmodifiableData().size(), cloned.getUnmodifiableData().size());
-        IntStream.range(0, simulation.getUnmodifiableData().size()).forEach(index -> {
-            assertEquals(simulation.getUnmodifiableData().get(index).getDescription(), cloned.getUnmodifiableData().get(index).getDescription());
+        assertEquals(background.getUnmodifiableData().size(), cloned.getUnmodifiableData().size());
+        IntStream.range(0, background.getUnmodifiableData().size()).forEach(index -> {
+            assertEquals(background.getUnmodifiableData().get(index).getDescription(), cloned.getUnmodifiableData().get(index).getDescription());
         });
     }
 
     @Test
     public void cloneData() {
-        Scenario clonedScenario = simulation.cloneData(0, 1);
+        BackgroundData clonedBackgroundData = background.cloneData(0, 1);
 
-        assertEquals(originalScenario.getDescription(), clonedScenario.getDescription());
-        assertEquals(originalScenario.getUnmodifiableFactMappingValues().size(), clonedScenario.getUnmodifiableFactMappingValues().size());
-        assertEquals(originalScenario, simulation.getDataByIndex(0));
-        assertEquals(clonedScenario, simulation.getDataByIndex(1));
+        assertEquals(originalBackgroundData.getDescription(), clonedBackgroundData.getDescription());
+        assertEquals(originalBackgroundData.getUnmodifiableFactMappingValues().size(), clonedBackgroundData.getUnmodifiableFactMappingValues().size());
+        assertEquals(originalBackgroundData, background.getDataByIndex(0));
+        assertEquals(clonedBackgroundData, background.getDataByIndex(1));
 
-        assertNotEquals(originalScenario, clonedScenario);
-        assertNotEquals(originalScenario.getUnmodifiableFactMappingValues().get(0), clonedScenario.getUnmodifiableFactMappingValues().get(0));
+        assertNotEquals(originalBackgroundData, clonedBackgroundData);
+        assertNotEquals(originalBackgroundData.getUnmodifiableFactMappingValues().get(0), clonedBackgroundData.getUnmodifiableFactMappingValues().get(0));
     }
 
     @Test
-    public void cloneScenarioFail() {
+    public void cloneScesimDataFail() {
 
         muteException(() -> {
-                          simulation.cloneData(-1, 1);
+                          background.cloneData(-1, 1);
                           fail();
                       },
                       IndexOutOfBoundsException.class);
 
         muteException(() -> {
-                          simulation.cloneData(2, 1);
+                          background.cloneData(2, 1);
                           fail();
                       },
                       IndexOutOfBoundsException.class);
 
         muteException(() -> {
-                          simulation.cloneData(0, -1);
+                          background.cloneData(0, -1);
                           fail();
                       },
                       IndexOutOfBoundsException.class);
 
         muteException(() -> {
-                          simulation.cloneData(0, 2);
+                          background.cloneData(0, 2);
                           fail();
                       },
                       IndexOutOfBoundsException.class);
@@ -118,20 +119,20 @@ public class SimulationTest {
 
     @Test
     public void removeFactMappingByIndex() {
-        assertEquals(2, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
-        simulation.removeFactMappingByIndex(0);
-        assertEquals(1, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        background.removeFactMappingByIndex(0);
+        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     @Test
     public void removeFactMapping() {
-        assertEquals(2, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
-        simulation.removeFactMapping(simulation.getScesimModelDescriptor().getFactMappingByIndex(0));
-        assertEquals(1, simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        background.removeFactMapping(background.getScesimModelDescriptor().getFactMappingByIndex(0));
+        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {

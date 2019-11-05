@@ -61,7 +61,7 @@ public class ScenarioSimulationSharedUtils {
 
     public static List<ScenarioWithIndex> toScenarioWithIndex(Simulation simulation) {
         List<ScenarioWithIndex> toReturn = new ArrayList<>();
-        List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
+        List<Scenario> scenarios = simulation.getUnmodifiableData();
         for (int index = 0; index < scenarios.size(); index += 1) {
             toReturn.add(new ScenarioWithIndex(index + 1, scenarios.get(index)));
         }

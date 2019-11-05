@@ -39,7 +39,7 @@ public class DOMParserUtilTest {
     private static final String MAIN_ATTRIBUTE_NAME = "mainattribute";
     private static final String ATTRIBUTE_VALUE = "default";
     private static final String TEST_NODE = "testnode";
-    private static final String TEST_NODE_CONTENT = "testnode";
+    private static final String TEST_NODE_CONTENT = "testnodecontent";
     private static final String TEST_NODE_TOREMOVE_1 = "toremove1";
     private static final String TEST_NODE_TOREMOVE_2 = "toremove2";
     private static final String CHILD_NODE = "child";
@@ -142,6 +142,20 @@ public class DOMParserUtilTest {
         assertNotNull(testNodes);
         assertEquals(1, testNodes.size());
         assertEquals(replacement, testNodes.get(0).getTextContent());
+    }
+
+    @Test
+    public void replaceNodeName() throws Exception {
+        final String replacement = "replacement";
+        Document document = DOMParserUtil.getDocument(XML);
+        DOMParserUtil.replaceNodeName(document, MAIN_NODE, TEST_NODE, replacement);
+        final Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, replacement);
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.size());
+        List<Node> testNodes = retrieved.values().iterator().next();
+        assertNotNull(testNodes);
+        assertEquals(1, testNodes.size());
+        assertEquals("replacement", testNodes.get(0).getNodeName());
     }
 
     @Test

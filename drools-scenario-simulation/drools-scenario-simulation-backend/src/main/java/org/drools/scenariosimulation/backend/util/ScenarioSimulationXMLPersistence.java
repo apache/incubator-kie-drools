@@ -29,12 +29,19 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
+
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MODEL_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -67,8 +74,9 @@ public class ScenarioSimulationXMLPersistence {
         toConfigure.alias("Scenario", Scenario.class);
         toConfigure.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
         toConfigure.alias("Simulation", Simulation.class);
-        toConfigure.alias("SimulationDescriptor", SimulationDescriptor.class);
+        toConfigure.alias("SimulationDescriptor", ScesimModelDescriptor.class);
         toConfigure.alias("Import", Import.class);
+        toConfigure.alias("Settings", Settings.class);
     }
 
     public static ScenarioSimulationXMLPersistence getInstance() {
@@ -80,7 +88,14 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String cleanUpUnusedNodes(String input) throws Exception {
-        return DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
+        String toReturn = DOMParserUtil.cleanupNodes(input, "Scenario", SIMULATION_DESCRIPTOR_NODE);
+        for (String setting : SETTINGS) {
+            toReturn = DOMParserUtil.cleanupNodes(toReturn, SIMULATION_DESCRIPTOR_NODE, setting);
+        }
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), SIMULATION_NODE, "scenarios", "scesimData");
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, SCESIM_MODEL_DESCRIPTOR_NODE);
+        toReturn = DOMParserUtil.replaceNodeName(DOMParserUtil.getDocument(toReturn), BACKGROUND_NODE, SIMULATION_DESCRIPTOR_NODE, SCESIM_MODEL_DESCRIPTOR_NODE);
+        return toReturn;
     }
 
     public static double getColumnWidth(String expressionIdentifierName) {
@@ -140,6 +155,8 @@ public class ScenarioSimulationXMLPersistence {
                 migrator = migrator.andThen(getMigrationStrategy().from1_5to1_6());
             case "1.6":
                 migrator = migrator.andThen(getMigrationStrategy().from1_6to1_7());
+            case "1.7":
+                migrator = migrator.andThen(getMigrationStrategy().from1_7to1_8());
                 supported = true;
                 break;
             default:

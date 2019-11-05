@@ -22,19 +22,24 @@ import java.util.Objects;
 
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION_ELEMENTS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION_IDENTIFIER_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_IDENTIFIER_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
-
-    private static final String DMO_SESSION_NODE = "dmoSession";
-    private static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
-    private static final String FACT_IDENTIFIER = "factIdentifier";
-    private static final String FACT_MAPPING_NODE = "FactMapping";
-    private static final String FACT_MAPPINGS_NODE = "factMappings";
-    private static final String SIMULATION_NODE = "simulation";
-    private static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
 
     @Override
     public ThrowingConsumer<Document> from1_0to1_1() {
@@ -68,7 +73,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
         return document -> {
             List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
             Node factMappingsNode = factMappingsNodes.get(0);
-            final List<Node> factIdentifierNodeList = DOMParserUtil.getNestedChildrenNodesList(factMappingsNode, FACT_MAPPING_NODE, FACT_IDENTIFIER);
+            final List<Node> factIdentifierNodeList = DOMParserUtil.getNestedChildrenNodesList(factMappingsNode, FACT_MAPPING_NODE, FACT_IDENTIFIER_NODE);
             factIdentifierNodeList.forEach(factIdentifierNode -> {
                 List<Node> factIdentifierNameList = DOMParserUtil.getChildrenNodesList(factIdentifierNode, "name");
                 if (!factIdentifierNameList.isEmpty()) {
@@ -153,11 +158,11 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             DOMParserUtil.cleanupNodes(document, "Scenario", SIMULATION_DESCRIPTOR_NODE);
             List<Node> simulationFactMappingNodeList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
             for (Node simulationFactMapping : simulationFactMappingNodeList) {
-                replaceReference(simulationFactMappingNodeList, simulationFactMapping, FACT_IDENTIFIER);
+                replaceReference(simulationFactMappingNodeList, simulationFactMapping, FACT_IDENTIFIER_NODE);
             }
             List<Node> scenarioFactMappingValueNodeList = DOMParserUtil.getNestedChildrenNodesList(document, "Scenario", "factMappingValues", "FactMappingValue");
             scenarioFactMappingValueNodeList.forEach(scenarioFactMappingValue -> {
-                replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, FACT_IDENTIFIER);
+                replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, FACT_IDENTIFIER_NODE);
                 replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, EXPRESSION_IDENTIFIER_NODE);
             });
             updateVersion(document, "1.6");
@@ -174,6 +179,40 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                 DOMParserUtil.createNodeAtPosition(factMappingNode, "columnWidth", Double.toString(getColumnWidth(expressionIdentifierName)), null);
             });
             updateVersion(document, "1.7");
+        };
+    }
+
+    @Override
+    public ThrowingConsumer<Document> from1_7to1_8() {
+        return document -> {
+            final Node settingsNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null, null);
+            for (String setting : SETTINGS) {
+                final Map<Node, List<Node>> childrenNodesMap = DOMParserUtil.getChildrenNodesMap(document, SIMULATION_DESCRIPTOR_NODE, setting);
+                childrenNodesMap.values().stream()
+                        .filter(childNodeList -> !childNodeList.isEmpty())
+                        .findFirst()
+                        .ifPresent(childNodeList -> {
+                            final Node node = childNodeList.get(0);
+                            DOMParserUtil.createNodeAtPosition(settingsNode, node.getNodeName(), node.getTextContent(), null);
+                            node.getParentNode().removeChild(node);
+                        });
+            }
+            final Node backgroundNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null, null);
+            final Node simulationDescriptorNode = DOMParserUtil.createNodeAtPosition(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null, null);
+            final Node factMappingsNode = DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, FACT_MAPPINGS_NODE, null, null);
+            final Node factMappingNode = DOMParserUtil.createNodeAtPosition(factMappingsNode, FACT_MAPPING_NODE, null, null);
+            final Node expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_ELEMENTS_NODE, null, null);
+            ((Element)expressionElementsNode).setAttribute("class", "linked-list");
+            final Node expressionIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "0|1", null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "type", "GIVEN", null);
+            final Node factIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "name", "Empty", null);
+            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "className", "java.lang.Void", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "className", "java.lang.Void", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "factAlias", "Instance 1", null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "expressionAlias", "PROPERTY 1", null);
+            updateVersion(document, "1.8");
         };
     }
 

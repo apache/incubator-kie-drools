@@ -1,9 +1,9 @@
-<ScenarioSimulationModel version="1.8">
+<ScenarioSimulationModel version="1.7">
   <simulation>
     <simulationDescriptor>
       <factMappings>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements class="linked-list"/>
           <expressionIdentifier>
             <name>Index</name>
             <type>OTHER</type>
@@ -16,7 +16,7 @@
           <factAlias>#</factAlias>
         </FactMapping>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements class="linked-list"/>
           <expressionIdentifier>
             <name>Description</name>
             <type>OTHER</type>
@@ -29,7 +29,7 @@
           <factAlias>Scenario description</factAlias>
         </FactMapping>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements class="linked-list"/>
           <expressionIdentifier>
             <name>0|1</name>
             <type>GIVEN</type>
@@ -43,7 +43,7 @@
           <expressionAlias>PROPERTY 1</expressionAlias>
         </FactMapping>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements class="linked-list"/>
           <expressionIdentifier>
             <name>0|2</name>
             <type>EXPECT</type>
@@ -54,8 +54,11 @@
           <expressionAlias>PROPERTY 2</expressionAlias>
         </FactMapping>
       </factMappings>
+      <type>RULE</type>
+      <skipFromBuild>false</skipFromBuild>
+      <dmoSession>default</dmoSession>
     </simulationDescriptor>
-    <scenarios>
+    <scenarios class="linked-list">
       <Scenario>
         <factMappingValues>
           <FactMappingValue>
@@ -70,20 +73,11 @@
             <factIdentifier reference="../../../../../simulationDescriptor/factMappings/FactMapping[3]/factIdentifier"/>
             <expressionIdentifier reference="../../../../../simulationDescriptor/factMappings/FactMapping[4]/expressionIdentifier"/>
           </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier reference="../../../../../simulationDescriptor/factMappings/FactMapping/factIdentifier"/>
-            <expressionIdentifier reference="../../../../../simulationDescriptor/factMappings/FactMapping/expressionIdentifier"/>
-            <rawValue class="string">1</rawValue>
-          </FactMappingValue>
         </factMappingValues>
         <simulationDescriptor reference="../../../simulationDescriptor"/>
       </Scenario>
     </scenarios>
   </simulation>
-  <settings>
-    <dmoSession></dmoSession>
-    <type>RULE</type>
-  </settings>
   <imports>
     <imports/>
   </imports>

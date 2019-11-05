@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,30 +17,24 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.List;
 
-import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.toScenarioWithIndex;
-
 /**
- * Envelop class that wrap the definition of the simulation and the values of the scenarios
+ * Envelop class that wrap the definition of the <b>Background</b> grid and its data
  */
-public class Simulation extends AbstractScesimModel<Scenario> {
-
-    public List<ScenarioWithIndex> getScenarioWithIndex() {
-        return toScenarioWithIndex(this);
-    }
+public class Background extends AbstractScesimModel<BackgroundData> {
 
     @Override
-    public Scenario addData(int index) {
+    public BackgroundData addData(int index) {
         if (index < 0 || index > scesimData.size()) {
             throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
-        Scenario scenario = new Scenario();
-        scesimData.add(index, scenario);
-        return scenario;
+        BackgroundData backgroundData = new BackgroundData();
+        scesimData.add(index, backgroundData);
+        return backgroundData;
     }
 
     @Override
-    public Simulation cloneModel() {
-        Simulation toReturn = new Simulation();
+    public Background cloneModel() {
+        Background toReturn = new Background();
         final List<FactMapping> originalFactMappings = this.scesimModelDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
@@ -49,4 +43,5 @@ public class Simulation extends AbstractScesimModel<Scenario> {
         this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneInstance()));
         return toReturn;
     }
+
 }
