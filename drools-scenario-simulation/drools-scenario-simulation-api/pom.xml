@@ -35,7 +35,7 @@
       <id>sonarcloud-analysis</id>
       <properties>
         <!-- Excluding AuditLog/AuditLogLine from coverage statistics. Those classes contains only getter/setter. -->
-        <sonar.coverage.exclusions>**/model/Audit*.java</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/model/Audit*.java,**/model/Settings.java,**/model/ExpressionElement.java,**/model/ScenarioSimulationModel.java,**/model/BackgroundDataWithIndex.java,**/model/ScesimDataWithIndex.java</sonar.coverage.exclusions>
       </properties>
     </profile>
   </profiles>

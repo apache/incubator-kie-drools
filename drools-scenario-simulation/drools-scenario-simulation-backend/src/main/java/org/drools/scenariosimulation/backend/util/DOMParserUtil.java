@@ -108,6 +108,31 @@ public class DOMParserUtil {
                         .forEach(childNode -> childNode.setTextContent(replacement)));
     }
 
+    /**
+     * Replace <b>all childNodeNameToReplace</b> nodes in <b>all containerNodeName</b>s presents in document with <b>childNodeNameReplacement</b>
+     * @param document
+     * @param containerNodeName
+     * @param childNodeNameToReplace
+     * @param childNodeNameReplacement
+     * @return
+     */
+    public static String replaceNodeName(Document document, String containerNodeName, String childNodeNameToReplace, String childNodeNameReplacement) throws Exception {
+        final NodeList containerNodes = document.getElementsByTagName(containerNodeName);
+        if (containerNodes != null) {
+            for (int i = 0; i < containerNodes.getLength(); i++) {
+                Node containerNode = containerNodes.item(i);
+                final NodeList childNodes = containerNode.getChildNodes();
+                for (int j = 0; j < childNodes.getLength(); j++) {
+                    Node childNode = childNodes.item(j);
+                    if (Objects.equals(childNode.getNodeName(), childNodeNameToReplace)) {
+                        document.renameNode(childNode, null, childNodeNameReplacement);
+                    }
+                }
+            }
+        }
+        return getString(document);
+    }
+
     public static String getAttributeValue(Node containerNode, String attributeName) {
         return (containerNode.getAttributes() != null && containerNode.getAttributes().getNamedItem(attributeName) != null) ? containerNode.getAttributes().getNamedItem(attributeName).getNodeValue() : null;
     }

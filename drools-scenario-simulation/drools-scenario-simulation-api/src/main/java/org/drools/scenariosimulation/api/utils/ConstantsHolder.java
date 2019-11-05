@@ -15,6 +15,10 @@
  */
 package org.drools.scenariosimulation.api.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Class which contains shared Constants in Scenario Simulation module
  */
@@ -29,6 +33,21 @@ public class ConstantsHolder {
 
     /* FEEL constants */
     public static final String UNARY_PARAMETER_IDENTIFIER = "?";
+
+    public static final String DMO_SESSION_NODE = "dmoSession";
+    public static final String EXPRESSION_IDENTIFIER_NODE = "expressionIdentifier";
+    public static final String EXPRESSION_ELEMENTS_NODE = "expressionElements";
+    public static final String FACT_IDENTIFIER_NODE = "factIdentifier";
+    public static final String FACT_MAPPING_NODE = "FactMapping";
+    public static final String FACT_MAPPINGS_NODE = "factMappings";
+    public static final String SIMULATION_NODE = "simulation";
+    public static final String BACKGROUND_NODE = "background";
+    public static final String SIMULATION_DESCRIPTOR_NODE = "simulationDescriptor";
+    public static final String SCESIM_MODEL_DESCRIPTOR_NODE = "scesimModelDescriptor";
+    public static final String SCENARIO_SIMULATION_MODEL_NODE = "ScenarioSimulationModel";
+    public static final String SETTINGS_NODE = "settings";
+    public static final List<String> SETTINGS = Collections.unmodifiableList(Arrays.asList(DMO_SESSION_NODE, "dmnFilePath", "type", "fileName", "kieSession",
+                                                                                           "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"));
 
     private ConstantsHolder() {
         // Not instantiable

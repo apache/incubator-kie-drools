@@ -15,48 +15,16 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import java.util.Objects;
-
 /**
- * Tuple with Scenario and its index
+ * Tuple with <code>Scenario</code> and its index
  */
-public class ScenarioWithIndex {
-
-    protected Scenario scenario;
-    protected int index;
+public class ScenarioWithIndex extends ScesimDataWithIndex<Scenario> {
 
     public ScenarioWithIndex() {
         // CDI
     }
 
     public ScenarioWithIndex(int index, Scenario scenario) {
-        this.scenario = scenario;
-        this.index = index;
-    }
-
-    public Scenario getScenario() {
-        return scenario;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ScenarioWithIndex that = (ScenarioWithIndex) o;
-        return index == that.index &&
-                Objects.equals(scenario, that.scenario);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(scenario, index);
+        super(index, scenario);
     }
 }

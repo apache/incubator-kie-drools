@@ -25,32 +25,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * SimulationDescriptor describes a template of a simulation
+ * <code>ScesimModelDescriptor</code> describes the template of a concrete <code>AbstractScesimModel</code>
  */
-public class SimulationDescriptor {
+public class ScesimModelDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 
-    private String dmoSession;
-
-    private String dmnFilePath;
-
-    private ScenarioSimulationModel.Type type;
-
-    private String fileName;
-
-    private String kieSession;
-
-    private String kieBase;
-
-    private String ruleFlowGroup;
-
-    private String dmnNamespace;
-
-    private String dmnName;
-
-    private boolean skipFromBuild = false;
-    private boolean stateless = false;
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -64,103 +44,18 @@ public class SimulationDescriptor {
         return factMappings.stream().map(FactMapping::getFactIdentifier).collect(Collectors.toSet());
     }
 
-    public String getDmoSession() {
-        return dmoSession;
-    }
-
-    public void setDmoSession(String ruleSession) {
-        this.dmoSession = ruleSession;
-    }
-
-    public String getDmnFilePath() {
-        return dmnFilePath;
-    }
-
-    public void setDmnFilePath(String dmnFilePath) {
-        this.dmnFilePath = dmnFilePath;
-    }
-
-    public ScenarioSimulationModel.Type getType() {
-        return type;
-    }
-
-    public void setType(ScenarioSimulationModel.Type type) {
-        this.type = type;
-    }
-
     public List<FactMapping> getFactMappings() {
         return factMappings;
     }
 
-    @Deprecated
-    public String getFileName() {
-        return fileName;
-    }
-
-    @Deprecated
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    @Deprecated
-    public String getKieSession() {
-        return kieSession;
-    }
-
-    @Deprecated
-    public void setKieSession(String kieSession) {
-        this.kieSession = kieSession;
-    }
-
-    @Deprecated
-    public String getKieBase() {
-        return kieBase;
-    }
-
-    @Deprecated
-    public void setKieBase(String kieBase) {
-        this.kieBase = kieBase;
-    }
-
-    public String getRuleFlowGroup() {
-        return ruleFlowGroup;
-    }
-
-    public void setRuleFlowGroup(String ruleFlowGroup) {
-        this.ruleFlowGroup = ruleFlowGroup;
-    }
-
-    public String getDmnNamespace() {
-        return dmnNamespace;
-    }
-
-    public void setDmnNamespace(String dmnNamespace) {
-        this.dmnNamespace = dmnNamespace;
-    }
-
-    public String getDmnName() {
-        return dmnName;
-    }
-
-    public void setDmnName(String dmnName) {
-        this.dmnName = dmnName;
-    }
-
-    public boolean isSkipFromBuild() {
-        return skipFromBuild;
-    }
-
-    public void setSkipFromBuild(boolean skipFromBuild) {
-        this.skipFromBuild = skipFromBuild;
-    }
 
     public void moveFactMapping(int oldIndex, int newIndex) {
         if (oldIndex < 0 || oldIndex >= factMappings.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index ").append(oldIndex)
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(oldIndex)
                                                        .append(" not found in the list").toString());
         }
         if (newIndex < 0 || newIndex >= factMappings.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index ").append(newIndex)
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(newIndex)
                                                        .append(" out of range").toString());
         }
         FactMapping factMapping = factMappings.get(oldIndex);
@@ -248,11 +143,4 @@ public class SimulationDescriptor {
         return factMappings.stream().filter(predicate).collect(Collectors.toList());
     }
 
-    public boolean isStateless() {
-        return stateless;
-    }
-
-    public void setStateless(boolean stateless) {
-        this.stateless = stateless;
-    }
 }

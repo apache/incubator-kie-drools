@@ -33,7 +33,8 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
@@ -52,11 +53,11 @@ import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.c
 
 public abstract class AbstractRunnerHelper {
 
-    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
+    public void run(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData, Settings settings) {
 
-        Scenario scenario = scenarioWithIndex.getScenario();
+        Scenario scenario = scenarioWithIndex.getScesimData();
 
-        extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluatorFactory)
+        extractGivenValues(scesimModelDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluatorFactory)
                 .forEach(scenarioRunnerData::addGiven);
 
         extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addExpect);
@@ -64,11 +65,11 @@ public abstract class AbstractRunnerHelper {
         Map<String, Object> requestContext = executeScenario(kieContainer,
                                                              scenarioRunnerData,
                                                              expressionEvaluatorFactory,
-                                                             simulationDescriptor);
+                                                             scesimModelDescriptor, settings);
 
         scenarioRunnerData.setMetadata(extractResultMetadata(requestContext, scenarioWithIndex));
 
-        verifyConditions(simulationDescriptor,
+        verifyConditions(scesimModelDescriptor,
                          scenarioRunnerData,
                          expressionEvaluatorFactory,
                          requestContext);
@@ -77,7 +78,7 @@ public abstract class AbstractRunnerHelper {
                           scenario);
     }
 
-    protected List<ScenarioGiven> extractGivenValues(SimulationDescriptor simulationDescriptor,
+    protected List<ScenarioGiven> extractGivenValues(ScesimModelDescriptor scesimModelDescriptor,
                                                      List<FactMappingValue> factMappingValues,
                                                      ClassLoader classLoader,
                                                      ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -95,7 +96,7 @@ public abstract class AbstractRunnerHelper {
                 FactIdentifier factIdentifier = entry.getKey();
 
                 // for each fact, create a map of path to fields and values to set
-                Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
+                Map<List<String>, Object> paramsForBean = getParamsForBean(scesimModelDescriptor,
                                                                            factIdentifier,
                                                                            entry.getValue(),
                                                                            expressionEvaluatorFactory);
@@ -173,7 +174,7 @@ public abstract class AbstractRunnerHelper {
         return groupByFactIdentifier;
     }
 
-    protected Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor,
+    protected Map<List<String>, Object> getParamsForBean(ScesimModelDescriptor scesimModelDescriptor,
                                                          FactIdentifier factIdentifier,
                                                          List<FactMappingValue> factMappingValues,
                                                          ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -184,7 +185,7 @@ public abstract class AbstractRunnerHelper {
         for (FactMappingValue factMappingValue : factMappingValues) {
             ExpressionIdentifier expressionIdentifier = factMappingValue.getExpressionIdentifier();
 
-            FactMapping factMapping = simulationDescriptor.getFactMapping(factIdentifier, expressionIdentifier)
+            FactMapping factMapping = scesimModelDescriptor.getFactMapping(factIdentifier, expressionIdentifier)
                     .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
             List<String> pathToField = factMapping.getExpressionElementsWithoutClass().stream()
@@ -276,9 +277,10 @@ public abstract class AbstractRunnerHelper {
     protected abstract Map<String, Object> executeScenario(KieContainer kieContainer,
                                                            ScenarioRunnerData scenarioRunnerData,
                                                            ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                                           SimulationDescriptor simulationDescriptor);
+                                                           ScesimModelDescriptor scesimModelDescriptor,
+                                                           Settings settings);
 
-    protected abstract void verifyConditions(SimulationDescriptor simulationDescriptor,
+    protected abstract void verifyConditions(ScesimModelDescriptor scesimModelDescriptor,
                                              ScenarioRunnerData scenarioRunnerData,
                                              ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                              Map<String, Object> requestContext);

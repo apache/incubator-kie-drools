@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.scenariosimulation.api.model;
 
-package org.drools.scenariosimulation.backend.runner.model;
-
-import org.drools.scenariosimulation.api.model.Simulation;
-
-public class SimulationWithFileName {
-
-    private final Simulation simulation;
-    private final String fileName;
-
-    public SimulationWithFileName(Simulation simulation, String fileName) {
-        this.simulation = simulation;
-        this.fileName = fileName;
+/**
+ * Tuple with <code>BackgroundData</code>> and its index
+ */
+public class BackgroundDataWithIndex extends ScesimDataWithIndex<BackgroundData> {
+    
+    public BackgroundDataWithIndex() {
+        // CDI
     }
 
-    public Simulation getSimulation() {
-        return simulation;
+    public BackgroundDataWithIndex(int index, BackgroundData backgroundData) {
+        super(index, backgroundData);
     }
 
-    public String getFileName() {
-        return fileName;
-    }
 }

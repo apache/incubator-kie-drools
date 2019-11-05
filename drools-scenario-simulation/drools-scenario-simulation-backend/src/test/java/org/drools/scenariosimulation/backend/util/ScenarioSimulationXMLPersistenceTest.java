@@ -25,6 +25,14 @@ import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
@@ -75,11 +83,11 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-1.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_1to1_2().accept(document);
-        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmoSession");
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
         assertEquals(1, retrieved.values().iterator().next().size());
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "type");
         commonVerifySingleNodeSingleChild(retrieved, "RULE");
         commonCheck(toMigrate, document, "1.2");
     }
@@ -89,10 +97,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-2.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_2to1_3().accept(document);
-        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
-        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
+        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionElementsNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "expressionElements");
             assertEquals(1, expressionElementsNodes.size());
@@ -107,45 +115,45 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-3-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_3to1_4().accept(document);
-        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "fileName");
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "fileName");
         commonVerifySingleNodeSingleChild(retrieved, null);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieSession");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "kieSession");
         commonVerifySingleNodeSingleChild(retrieved, "default");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieBase");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "kieBase");
         commonVerifySingleNodeSingleChild(retrieved, "default");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "ruleFlowGroup");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "ruleFlowGroup");
         commonVerifySingleNodeSingleChild(retrieved, "default");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmoSession");
         commonVerifySingleNodeSingleChild(retrieved, "default");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "skipFromBuild");
         commonVerifySingleNodeSingleChild(retrieved, "false");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "type");
         commonVerifySingleNodeSingleChild(retrieved, "RULE");
         commonCheck(toMigrate, document, "1.4");
 
         toMigrate = getFileContent("scesim-1-3-dmn_1.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_3to1_4().accept(document);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmnNamespace");
         commonVerifySingleNodeSingleChild(retrieved, null);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmnName");
         commonVerifySingleNodeSingleChild(retrieved, null);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "skipFromBuild");
         commonVerifySingleNodeSingleChild(retrieved, "false");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "type");
         commonVerifySingleNodeSingleChild(retrieved, "DMN");
         commonCheck(toMigrate, document, "1.4");
 
         toMigrate = getFileContent("scesim-1-3-dmn_2.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_3to1_4().accept(document);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmnNamespace");
         commonVerifySingleNodeSingleChild(retrieved, null);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmnName");
         commonVerifySingleNodeSingleChild(retrieved, null);
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "skipFromBuild");
         commonVerifySingleNodeSingleChild(retrieved, "false");
-        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "type");
         commonVerifySingleNodeSingleChild(retrieved, "DMN");
         commonCheck(toMigrate, document, "1.4");
     }
@@ -155,7 +163,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-4-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_4to1_5().accept(document);
-        List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "dmoSession");
+        List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmoSession");
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());
         commonCheck(toMigrate, document, "1.5");
@@ -177,10 +185,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
-        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
-        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
+        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
             String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
@@ -197,6 +205,46 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
+    public void migrateIfNecessary_1_7_to_1_8() throws Exception {
+        String toMigrate = getFileContent("scesim-1-7-dmn.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_7to1_8().accept(document);
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "dmnFilePath");
+        commonVerifySingleNodeSingleChild(retrieved, "src/main/resources/com/list.dmn");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "type");
+        commonVerifySingleNodeSingleChild(retrieved, "DMN");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "dmnNamespace");
+        commonVerifySingleNodeSingleChild(retrieved, "https://github.com/kiegroup/drools/kie-dmn/_CC8924B0-D729-4D70-9588-039B5824FFE9");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "dmnName");
+        commonVerifySingleNodeSingleChild(retrieved, "a1Collection");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "skipFromBuild");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "stateless");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        for (String setting : SETTINGS) {
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, setting);
+            assertTrue(retrieved.values().iterator().next().isEmpty());
+        }
+        commonCheck(toMigrate, document, "1.8");
+        commonCheckBackground(document);
+        toMigrate = getFileContent("scesim-1-7-rule.scesim");
+        document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_7to1_8().accept(document);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "type");
+        commonVerifySingleNodeSingleChild(retrieved, "RULE");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, DMO_SESSION_NODE);
+        commonVerifySingleNodeSingleChild(retrieved, "default");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SCENARIO_SIMULATION_MODEL_NODE, SETTINGS_NODE, "skipFromBuild");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        for (String setting : SETTINGS) {
+            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, setting);
+            assertTrue(retrieved.values().iterator().next().isEmpty());
+        }
+        commonCheck(toMigrate, document, "1.8");
+        commonCheckBackground(document);
+    }
+
+    @Test
     public void migrateIfNecessary() throws Exception {
         Assertions.assertThatThrownBy(() -> instance.migrateIfNecessary("<ScenarioSimulationModel version=\"9999999999.99999999999\" />"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -206,7 +254,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
         String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
         Document document = DOMParserUtil.getDocument(afterMigration);
-        commonCheckVersion(document, "1.7");
+        commonCheckVersion(document, ScenarioSimulationXMLPersistence.getCurrentVersion());
     }
 
     @Test
@@ -219,16 +267,16 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalRULE() throws Exception {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(ScenarioSimulationModel.Type.RULE, retrieved.getSimulation().getSimulationDescriptor().getType());
-        commonCheckScenarioSimulationModel(retrieved);
+        assertEquals(ScenarioSimulationModel.Type.RULE, retrieved.getSettings().getType());
+        commonCheckSimulation(retrieved);
     }
 
     @Test
     public void unmarshalDMN() throws Exception {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getSimulation().getSimulationDescriptor().getType());
-        commonCheckScenarioSimulationModel(retrieved);
+        assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getSettings().getType());
+        commonCheckSimulation(retrieved);
     }
 
     /**
@@ -249,7 +297,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     private void commonCheck(String toMigrate, Document document, String expectedVersion) throws Exception {
         commonCheckVersion(document, expectedVersion);
-        commonCheckScenarioSimulationModel(document);
+        commonCheckSimulation(document);
         instance.migrateIfNecessary(toMigrate);
     }
 
@@ -257,20 +305,34 @@ public class ScenarioSimulationXMLPersistenceTest {
         final Map<Node, String> attributeValues = DOMParserUtil.getAttributeValues(document, "ScenarioSimulationModel", "version");
         assertNotNull(attributeValues);
         assertEquals(1, attributeValues.size());
-        assertEquals(expectedVersion, (String) attributeValues.values().toArray()[0]);
+        assertEquals(expectedVersion, attributeValues.values().toArray()[0]);
     }
 
-    private void commonCheckScenarioSimulationModel(Document toCheck) throws Exception {
+    private void commonCheckSimulation(Document toCheck) throws Exception {
         String migrated = DOMParserUtil.getString(toCheck);
         ScenarioSimulationModel scenarioSimulationModel = instance.internalUnmarshal(migrated);
-        commonCheckScenarioSimulationModel(scenarioSimulationModel);
+        commonCheckSimulation(scenarioSimulationModel);
     }
 
-    private void commonCheckScenarioSimulationModel(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckSimulation(ScenarioSimulationModel toCheck) throws Exception {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
-        assertNotNull(toCheck.getSimulation().getSimulationDescriptor());
-        toCheck.getSimulation().getUnmodifiableScenarios().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        assertNotNull(toCheck.getSimulation().getScesimModelDescriptor());
+        toCheck.getSimulation().getUnmodifiableData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        }));
+    }
+
+    private void commonCheckBackground(Document toCheck) throws Exception {
+        String migrated = DOMParserUtil.getString(toCheck);
+        ScenarioSimulationModel scenarioSimulationModel = instance.internalUnmarshal(migrated);
+        commonCheckBackground(scenarioSimulationModel);
+    }
+
+    private void commonCheckBackground(ScenarioSimulationModel toCheck) throws Exception {
+        assertNotNull(toCheck);
+        assertNotNull(toCheck.getBackground());
+        assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
+        toCheck.getSimulation().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 }

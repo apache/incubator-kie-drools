@@ -70,7 +70,7 @@ public class ScenarioResultMetadata {
      * @param severity
      */
     public void addAuditMessage(int messageIndex, String message, String severity) {
-        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScenario().getDescription(), messageIndex, message, severity));
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, message, severity));
     }
 
     /**

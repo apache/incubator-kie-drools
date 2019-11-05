@@ -29,9 +29,13 @@ public class ScenarioSimulationModel
     }
 
     @XStreamAsAttribute()
-    private String version = "1.7";
+    private String version = "1.8";
 
     private Simulation simulation;
+
+    private Background background;
+
+    private Settings settings;
 
     private Imports imports = new Imports();
 
@@ -41,6 +45,22 @@ public class ScenarioSimulationModel
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    public Background getBackground() {
+        return background;
+    }
+
+    public void setBackground(Background background) {
+        this.background = background;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     @Override

@@ -19,8 +19,9 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.stream.Stream;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileName;
+import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileNameAndSettings;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class ScenarioJunitActivatorTest {
     private AbstractScenarioRunner runnerMock;
 
     @Mock
-    private SimulationWithFileName simulationWithFileNameMock;
+    private SimulationWithFileNameAndSettings simulationWithFileNameAndSettingsMock;
 
     @Mock
     private ScenarioSimulationModel scenarioSimulationModelMock;
@@ -60,27 +61,30 @@ public class ScenarioJunitActivatorTest {
     private RunNotifier runNotifierMock;
 
     private Simulation simulationLocal;
+    private Settings settingsLocal;
 
     @Before
     public void setup() throws Exception {
         simulationLocal = new Simulation();
-        simulationLocal.getSimulationDescriptor().setSkipFromBuild(true);
+        settingsLocal = new Settings();
+        settingsLocal.setSkipFromBuild(true);
         when(xmlReaderMock.unmarshal(any())).thenReturn(scenarioSimulationModelMock);
         when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationLocal);
+        when(scenarioSimulationModelMock.getSettings()).thenReturn(settingsLocal);
     }
 
     @Test
     public void getChildrenTest() throws InitializationError {
         assertEquals(0, getScenarioJunitActivator().getChildren().size());
 
-        simulationLocal.getSimulationDescriptor().setSkipFromBuild(false);
+        settingsLocal.setSkipFromBuild(false);
 
         assertEquals(1, getScenarioJunitActivator().getChildren().size());
     }
 
     @Test
     public void runChildTest() throws InitializationError {
-        getScenarioJunitActivator().runChild(simulationWithFileNameMock, runNotifierMock);
+        getScenarioJunitActivator().runChild(simulationWithFileNameAndSettingsMock, runNotifierMock);
         verify(runnerMock, times(1)).run(runNotifierMock);
     }
 
@@ -102,7 +106,7 @@ public class ScenarioJunitActivatorTest {
             }
 
             @Override
-            AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String path) {
+            AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String path, Settings settings) {
                 return runnerMock;
             }
         };
