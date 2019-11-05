@@ -3,19 +3,25 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import java.util.Collections;
 import java.util.Objects;
 
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.Consequence;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -61,10 +67,31 @@ public class NamedConsequenceVisitor {
         final String condition = desc.getCondition().toString();
         if (!condition.equals("true")) { // Default case
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));
-            when.addArgument(context.getVarExpr(patternRelated.getIdentifier()));
 
-            DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternRelated.getIdentifier(), condition);
-            parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));
+            String identifier = patternRelated.getIdentifier();
+            DrlxParseResult parseResult;
+            if (identifier == null) {
+                AccumulateDescr source = (AccumulateDescr) patternRelated.getSource();
+                AccumulateDescr.AccumulateFunctionCallDescr functionDescr = source.getFunctions().iterator().next();
+
+                String functionDescrIdentifier = functionDescr.getBind();
+                DeclarationSpec functionIdentifierType = context.getDeclarationById(functionDescrIdentifier).get();
+                when.addArgument(context.getVarExpr(functionDescrIdentifier));
+
+                parseResult = new ConstraintParser(context, packageModel).drlxParse(functionIdentifierType.getDeclarationClass(), functionDescrIdentifier, condition);
+                parseResult.accept((DrlxParseSuccess parseSuccess) -> {
+                    SingleDrlxParseSuccess parseSuccess1 = (SingleDrlxParseSuccess) parseSuccess;
+                    when.addArgument(generateLambdaWithoutParameters(parseSuccess1.getUsedDeclarations(), parseSuccess.getExpr(), true));
+                });
+
+            } else {
+
+                when.addArgument(context.getVarExpr(identifier));
+                parseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, identifier, condition);
+                parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));
+
+            }
+
 
         }
 
