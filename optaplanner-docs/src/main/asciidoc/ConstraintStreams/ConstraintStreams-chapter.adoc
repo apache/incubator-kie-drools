@@ -73,6 +73,13 @@ and supports <<explainingTheScore,justifications>>:
 ----
 
 
+[[constraintStreamsFilter]]
+== Filter
+
+image::ConstraintStreams/constraintStreamFilter.png[align="center"]
+
+
+
 [[constraintStreamsJoin]]
 == Join
 
