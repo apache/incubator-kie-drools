@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUE_TYPE_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
@@ -253,8 +254,8 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
-            List<Node> factMappingValueTypeNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "factMappingValueType");
-            assertEquals(1, factMappingValueTypeNodes .size());
+            List<Node> factMappingValueTypeNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE);
+            assertEquals(1, factMappingValueTypeNodes.size());
             String factMappingValueTypeText = factMappingValueTypeNodes .get(0).getTextContent();
             assertNotNull(factMappingValueTypeText);
             assertFalse(factMappingValueTypeText.isEmpty());
