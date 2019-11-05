@@ -197,7 +197,7 @@ public class KieBuilderImpl
             log.warn("drools-model-compiler not found on the classpath, defaulting to plain DRL compilation");
             projectClass = KieModuleKieProject::new;
         }
-        return buildAll(projectClass);
+        return buildAll(projectClass, o -> true);
     }
 
     @Override
