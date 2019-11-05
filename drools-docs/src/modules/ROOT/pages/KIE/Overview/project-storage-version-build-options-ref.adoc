@@ -87,7 +87,7 @@ xref:_buildingwithmaven[]
 endif::[]
 
 |Embedded Java application (KJAR)
-|If you have an embedded Java application from which you want to build your {PRODUCT} project, you can use a `KieModuleModel` instance to programatically create a `kmodule.xml` file with the KIE base and KIE session configurations, and then add all resources in your project to the KIE virtual file system `KieFileSystem` to build the project.
+|If you have an embedded Java application from which you want to build your {PRODUCT} project, you can use a `KieModuleModel` instance to programmatically create a `kmodule.xml` file with the KIE base and KIE session configurations, and then add all resources in your project to the KIE virtual file system `KieFileSystem` to build the project.
 a|
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}#project-build-deploy-java-proc_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_]
@@ -144,7 +144,7 @@ endif::[]
 ifdef::DROOLS,JBPM,OP[]
 
 endif::[]
-* *Embedded Java application*: (KJAR) If you have an embedded Java application from which you want to build your {PRODUCT} project, you can use a `KieModuleModel` instance to programatically create a `kmodule.xml` file with the KIE base and KIE session configurations, and then add all resources in your project to the KIE virtual file system `KieFileSystem` to build the project. For more information about building projects in a Java application, see
+* *Embedded Java application*: (KJAR) If you have an embedded Java application from which you want to build your {PRODUCT} project, you can use a `KieModuleModel` instance to programmatically create a `kmodule.xml` file with the KIE base and KIE session configurations, and then add all resources in your project to the KIE virtual file system `KieFileSystem` to build the project. For more information about building projects in a Java application, see
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}#project-build-deploy-java-proc_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]

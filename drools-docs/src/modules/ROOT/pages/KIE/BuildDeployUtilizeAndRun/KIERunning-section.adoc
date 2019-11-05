@@ -260,7 +260,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 In the above example multiple commands are executed, two of which populate the ``ExecutionResults``.
 The query command defaults to use the same identifier as the query name, but it can also be mapped to a different identifier.
 
-All commands support XML and jSON marshalling using XStream, as well as JAXB marshalling.
+All commands support XML and JSON marshalling using XStream, as well as JAXB marshalling.
 This is covered in <<_ch.commands>>.
 
 == StatelessKieSession
@@ -402,7 +402,7 @@ baos.close();
 ====
 
 
-Im most cases, a single strategy is insufficient.
+In most cases, a single strategy is insufficient.
 For added flexibility, the `ObjectMarshallingStrategyAcceptor` interface can be used.
 This Marshaller has a chain of strategies, and while reading or writing a user object it iterates the strategies asking if they accept responsibility for marshalling the user object.
 One of the provided implementations is ``ClassFilterAcceptor``.

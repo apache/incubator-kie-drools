@@ -89,7 +89,7 @@ have to follow the maven convention and then have to be a name in the form {arti
 
 Maven supports a number of mechanisms to manage versioning and dependencies within applications.
 Modules can be published with specific version numbers, or they can use the SNAPSHOT suffix.
-Dependencies can specify version ranges to consume, or take avantage of SNAPSHOT mechanism.
+Dependencies can specify version ranges to consume, or take advantage of SNAPSHOT mechanism.
 
 StackOverflow provides a very good description for this, which is reproduced below.
 
