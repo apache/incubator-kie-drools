@@ -24,12 +24,14 @@ import junit.framework.TestCase;
 import org.drools.workbench.models.testscenarios.backend.SqlDateWrapper;
 import org.drools.workbench.models.testscenarios.backend.StringCollection;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.mockito.Mockito.mock;
 
 public class FactFieldValueVerifierTest extends TestCase {
 
+    @Test
     public void testSQLDate() throws Exception {
 
         SqlDateWrapper sqlDateWrapper = new SqlDateWrapper();
@@ -55,6 +57,7 @@ public class FactFieldValueVerifierTest extends TestCase {
         assertTrue(verifyField.getSuccessResult());
     }
 
+    @Test
     public void testExpectedList() throws Exception {
 
         final StringCollection collection = new StringCollection();
