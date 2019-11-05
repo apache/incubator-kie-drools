@@ -14,6 +14,7 @@
           </factIdentifier>
           <className>java.lang.Integer</className>
           <factAlias>#</factAlias>
+          <columnWidth>70.0</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements class="linked-list"/>
@@ -27,6 +28,7 @@
           </factIdentifier>
           <className>java.lang.String</className>
           <factAlias>Scenario description</factAlias>
+           <columnWidth>300.0</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements class="linked-list"/>
@@ -41,6 +43,7 @@
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
           <expressionAlias>PROPERTY 1</expressionAlias>
+          <columnWidth>114.0</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements class="linked-list"/>
@@ -52,6 +55,7 @@
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 2</factAlias>
           <expressionAlias>PROPERTY 2</expressionAlias>
+          <columnWidth>114.0</columnWidth>
         </FactMapping>
       </factMappings>
       <type>RULE</type>
