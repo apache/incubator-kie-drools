@@ -16,12 +16,13 @@
 package org.drools.scenariosimulation.api.model;
 
 /**
-    It assigns a Type to the <code>FactMapping</code> value
+    It assigns a Type to the <code>FactMapping</code> value. Used <b>ONLY</b> in FrontEnd side, to determine if a
+    column value should be managed as an Expression.
     - EXPRESSION: The value associated with the Fact is of Expression type, to be evaluated in the class defined in
                   <code>FactMapping.className</code>
-    - RAW: The value represent a raw type. Its specific type is defined in <code>FactMapping.className</code>
+    - NOT_EXPRESSION: The value represent a "raw" type. Its specific type is defined in <code>FactMapping.className</code>
  */
 public enum FactMappingValueType {
     EXPRESSION,
-    RAW
+    NOT_EXPRESSION
 }

@@ -61,12 +61,12 @@ public class FactMapping {
     private List<String> genericTypes;
 
     /**
-     * It defines the FactMappingValueType
+     * It defines the FactMappingValueType. <b>FrontEnd scoped</b>
      */
-    private FactMappingValueType factMappingValueType = FactMappingValueType.RAW;
+    private FactMappingValueType factMappingValueType = FactMappingValueType.NOT_EXPRESSION;
 
     /**
-     * The <b>width</b> of the FactMapping column. FrontEnd scoped
+     * The <b>width</b> of the FactMapping column. <b>FrontEnd scoped</b>
      */
     private Double columnWidth;
 
