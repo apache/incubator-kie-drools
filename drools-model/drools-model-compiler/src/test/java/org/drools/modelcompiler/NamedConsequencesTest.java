@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -152,7 +153,6 @@ public class NamedConsequencesTest extends BaseModelTest {
                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
                 "                $sum : sum($p.getAge())  \n" +
                 "              )                          \n" +
-//                "  Result()\n" +
                 "  if ($sum > 70) do[greater]\n" +
                 "  String()\n" +
                 "then\n" +
