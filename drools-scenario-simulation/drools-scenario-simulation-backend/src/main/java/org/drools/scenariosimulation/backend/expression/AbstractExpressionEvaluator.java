@@ -32,7 +32,6 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName())) {
             return verifyResult(rawExpression, resultValue);

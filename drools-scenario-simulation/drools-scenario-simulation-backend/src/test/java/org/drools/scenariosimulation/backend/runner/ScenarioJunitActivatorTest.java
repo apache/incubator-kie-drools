@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileNameAndSettings;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class ScenarioJunitActivatorTest {
     private AbstractScenarioRunner runnerMock;
 
     @Mock
-    private SimulationWithFileNameAndSettings simulationWithFileNameAndSettingsMock;
+    private ScenarioRunnerDTO scenarioRunnerDTOMock;
 
     @Mock
     private ScenarioSimulationModel scenarioSimulationModelMock;
@@ -84,7 +84,7 @@ public class ScenarioJunitActivatorTest {
 
     @Test
     public void runChildTest() throws InitializationError {
-        getScenarioJunitActivator().runChild(simulationWithFileNameAndSettingsMock, runNotifierMock);
+        getScenarioJunitActivator().runChild(scenarioRunnerDTOMock, runNotifierMock);
         verify(runnerMock, times(1)).run(runNotifierMock);
     }
 
@@ -106,7 +106,7 @@ public class ScenarioJunitActivatorTest {
             }
 
             @Override
-            AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String path, Settings settings) {
+            AbstractScenarioRunner newRunner(KieContainer kieContainer, ScenarioRunnerDTO scenarioRunnerDTO) {
                 return runnerMock;
             }
         };

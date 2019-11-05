@@ -22,10 +22,14 @@ import java.util.List;
  */
 public class Background extends AbstractScesimModel<BackgroundData> {
 
+    public List<BackgroundDataWithIndex> getBackgroundDataWithIndex() {
+        return toScesimDataWithIndex(BackgroundDataWithIndex::new);
+    }
+
     @Override
     public BackgroundData addData(int index) {
         if (index < 0 || index > scesimData.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
         BackgroundData backgroundData = new BackgroundData();
         scesimData.add(index, backgroundData);
@@ -43,5 +47,4 @@ public class Background extends AbstractScesimModel<BackgroundData> {
         this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneInstance()));
         return toReturn;
     }
-
 }

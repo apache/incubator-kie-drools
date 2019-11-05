@@ -30,8 +30,8 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
@@ -64,15 +64,14 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!Type.RULE.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
-        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer,
-                                                                                    settings.getDmoSession(),
-                                                                                    settings.isStateless());
+        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilderWrapper(kieContainer, settings);
 
         if (settings.getRuleFlowGroup() != null) {
             ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(settings.getRuleFlowGroup());
         }
 
-        scenarioRunnerData.getGivens().stream().map(ScenarioGiven::getValue).forEach(ruleScenarioExecutableBuilder::insert);
+        loadInputData(scenarioRunnerData.getBackgrounds(), ruleScenarioExecutableBuilder);
+        loadInputData(scenarioRunnerData.getGivens(), ruleScenarioExecutableBuilder);
         // all new facts should be verified internally to the working memory
         scenarioRunnerData.getExpects().stream()
                 .filter(ScenarioExpect::isNewFact)
@@ -176,8 +175,20 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         };
     }
 
+    protected void loadInputData(List<ScenarioGiven> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
+        for (ScenarioGiven scenarioGiven : dataToLoad) {
+            executableBuilder.insert(scenarioGiven);
+        }
+    }
+
     @Override
-    public Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         return fillBean(className, params, classLoader);
+    }
+
+    protected RuleScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer, Settings settings) {
+        return createBuilder(kieContainer,
+                             settings.getDmoSession(),
+                             settings.isStateless());
     }
 }

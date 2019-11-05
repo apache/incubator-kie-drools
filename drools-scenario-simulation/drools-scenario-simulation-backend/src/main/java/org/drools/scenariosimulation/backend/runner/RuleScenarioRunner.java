@@ -16,38 +16,18 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
-import java.util.List;
-
-import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Settings;
-import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.kie.api.runtime.KieContainer;
 
 public class RuleScenarioRunner extends AbstractScenarioRunner {
 
-    public RuleScenarioRunner(KieContainer kieContainer, Simulation simulation, Settings settings) {
-        this(kieContainer, simulation, null, settings);
-    }
-
-    public RuleScenarioRunner(KieContainer kieContainer, Simulation simulation, String fileName, Settings settings) {
-        this(kieContainer, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), fileName, settings);
-    }
-
-    public RuleScenarioRunner(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, List<ScenarioWithIndex> scenarios, Settings settings) {
-        this(kieContainer, scesimModelDescriptor, scenarios, null, settings);
-    }
-
-    public RuleScenarioRunner(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, List<ScenarioWithIndex> scenarios, String fileName, Settings settings) {
+    public RuleScenarioRunner(KieContainer kieContainer, ScenarioRunnerDTO scenarioRunnerDTO) {
         super(kieContainer,
-              scesimModelDescriptor,
-              scenarios,
-              fileName,
+              scenarioRunnerDTO,
               ExpressionEvaluatorFactory.create(
                       kieContainer.getClassLoader(),
-                      settings.getType()),
-              settings);
+                      scenarioRunnerDTO.getSettings().getType()));
     }
 
     @Override

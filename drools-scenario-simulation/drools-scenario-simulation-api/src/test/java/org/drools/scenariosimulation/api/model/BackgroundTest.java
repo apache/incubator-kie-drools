@@ -16,15 +16,16 @@
 
 package org.drools.scenariosimulation.api.model;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 public class BackgroundTest {
 
@@ -47,18 +48,12 @@ public class BackgroundTest {
     public void addData() {
         background.addData(1);
 
-        muteException(() -> {
-                          background.addData(-1);
-                          fail();
-                      },
-                      IllegalArgumentException.class);
-        muteException(() -> {
-                          background.addData(3);
-                          fail();
-                      },
-                      IllegalArgumentException.class);
-    }
+        assertThatThrownBy(() -> background.addData(-1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
+        assertThatThrownBy(() -> background.addData(3))
+                .isInstanceOf(IndexOutOfBoundsException.class);
+    }
 
     @Test
     public void cloneModel() {
@@ -92,29 +87,17 @@ public class BackgroundTest {
     @Test
     public void cloneScesimDataFail() {
 
-        muteException(() -> {
-                          background.cloneData(-1, 1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> background.cloneData(-1, 1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          background.cloneData(2, 1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> background.cloneData(2, 1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          background.cloneData(0, -1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> background.cloneData(0, -1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          background.cloneData(0, 2);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> background.cloneData(0, 2))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -135,13 +118,12 @@ public class BackgroundTest {
         assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
-    private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
-        try {
-            toBeExecuted.run();
-        } catch (Throwable t) {
-            if (!t.getClass().isAssignableFrom(expected)) {
-                throw t;
-            }
-        }
+    @Test
+    public void getBackgroundDataWithIndex() {
+        List<BackgroundDataWithIndex> backgroundDataWithIndex = background.getBackgroundDataWithIndex();
+        assertEquals(background.getUnmodifiableData().size(), backgroundDataWithIndex.size());
+        BackgroundDataWithIndex backgroundData = backgroundDataWithIndex.get(0);
+        int index = backgroundData.getIndex();
+        assertEquals(background.getDataByIndex(index - 1), backgroundData.getScesimData());
     }
 }

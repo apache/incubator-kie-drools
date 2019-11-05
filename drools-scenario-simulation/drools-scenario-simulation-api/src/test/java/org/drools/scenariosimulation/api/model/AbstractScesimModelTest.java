@@ -38,8 +38,7 @@ public class AbstractScesimModelTest {
             }
         });
         IntStream.range(0, SCENARIO_DATA).forEach(index -> abstractScesimModelSpy.scesimData.add(getSpyScenario(index)));
-        IntStream.range(0, FACT_MAPPINGS).forEach(index -> abstractScesimModelSpy.scesimModelDescriptor. getFactMappings().add(getSpyFactMapping()));
-
+        IntStream.range(0, FACT_MAPPINGS).forEach(index -> abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().add(getSpyFactMapping()));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -122,7 +121,7 @@ public class AbstractScesimModelTest {
         final FactMapping factMappingByIndex = abstractScesimModelSpy.scesimModelDescriptor.getFactMappingByIndex(2);
         abstractScesimModelSpy.removeFactMappingByIndex(2);
         verify(abstractScesimModelSpy, times(1)).clearDatas(eq(factMappingByIndex));
-        assertEquals(FACT_MAPPINGS -1, abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size());
+        assertEquals(FACT_MAPPINGS - 1, abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size());
         assertFalse(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().contains(factMappingByIndex));
     }
 
@@ -132,7 +131,7 @@ public class AbstractScesimModelTest {
         final FactMapping factMappingByIndex = abstractScesimModelSpy.scesimModelDescriptor.getFactMappingByIndex(2);
         abstractScesimModelSpy.removeFactMapping(factMappingByIndex);
         verify(abstractScesimModelSpy, times(1)).clearDatas(eq(factMappingByIndex));
-        assertEquals(FACT_MAPPINGS -1, abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size());
+        assertEquals(FACT_MAPPINGS - 1, abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size());
         assertFalse(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().contains(factMappingByIndex));
     }
 

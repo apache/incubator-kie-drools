@@ -24,6 +24,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -46,20 +47,18 @@ public class AbstractScenarioRunnerTest {
     protected KieContainer kieContainerMock;
     protected AbstractScenarioRunner abstractScenarioRunnerLocal;
     protected Settings settingsLocal;
-    private Simulation simulationLocal;
+    private ScenarioRunnerDTO scenarioRunnerDTOLocal;
 
     @Before
     public void setup() {
         settingsLocal = new Settings();
-        simulationLocal = getSimulation();
+        scenarioRunnerDTOLocal = getScenarioRunnerDTO();
         abstractScenarioRunnerLocal = spy(
                 new AbstractScenarioRunner(kieContainerMock,
-                                           new Simulation(),
-                                           "",
+                                           scenarioRunnerDTOLocal,
                                            ExpressionEvaluatorFactory.create(
                                                    this.getClass().getClassLoader(),
-                                                   ScenarioSimulationModel.Type.RULE),
-                                           settingsLocal) {
+                                                   ScenarioSimulationModel.Type.RULE)) {
                     @Override
                     protected AbstractRunnerHelper newRunnerHelper() {
                         return null;
@@ -69,23 +68,15 @@ public class AbstractScenarioRunnerTest {
 
     @Test
     public void getDescriptionForSimulationByClassNameAndSimulation() {
-        Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), simulationLocal);
+        Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), scenarioRunnerDTOLocal.getScenarioWithIndices());
         commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getCanonicalName());
-        retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(String.class.getCanonicalName()), simulationLocal);
-        commonVerifyDescriptionForSimulation(retrieved, String.class.getCanonicalName());
-    }
-
-    @Test
-    public void getDescriptionForSimulationByClassNameAndScenarios() {
-        Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), simulationLocal.getScenarioWithIndex());
-        commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getCanonicalName());
-        retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(String.class.getCanonicalName()), simulationLocal.getScenarioWithIndex());
+        retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(String.class.getCanonicalName()), scenarioRunnerDTOLocal.getScenarioWithIndices());
         commonVerifyDescriptionForSimulation(retrieved, String.class.getCanonicalName());
     }
 
     @Test
     public void getDescriptionForScenario() {
-        final Scenario scenario = simulationLocal.getUnmodifiableData().get(2);
+        final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
         Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario);
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getCanonicalName());
         retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of(String.class.getCanonicalName()), 1, scenario);
@@ -122,7 +113,7 @@ public class AbstractScenarioRunnerTest {
         assertEquals("Test Scenarios (Preview) tests", retrieved.getClassName());
         IntStream.range(0, SCENARIO_DATA).forEach(index -> {
             final Description description = retrieved.getChildren().get(index);
-            commonVerifyDescriptionForScenario(description, index + 1, simulationLocal.getUnmodifiableData().get(index).getDescription(), className);
+            commonVerifyDescriptionForScenario(description, index + 1, scenarioRunnerDTOLocal.getScenarioWithIndices().get(index).getScesimData().getDescription(), className);
         });
     }
 
@@ -131,12 +122,17 @@ public class AbstractScenarioRunnerTest {
         assertEquals(expected, description.getDisplayName());
     }
 
-    private Simulation getSimulation() {
-        Simulation toReturn = new Simulation();
+    private ScenarioRunnerDTO getScenarioRunnerDTO() {
+
+        Simulation simulation = new Simulation();
         IntStream.range(0, SCENARIO_DATA).forEach(index -> {
-            Scenario scenario = toReturn.addData();
+            Scenario scenario = simulation.addData();
             scenario.setDescription("INDEX-" + index);
         });
-        return toReturn;
+
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
+        model.setSimulation(simulation);
+
+        return new ScenarioRunnerDTO(model, "");
     }
 }

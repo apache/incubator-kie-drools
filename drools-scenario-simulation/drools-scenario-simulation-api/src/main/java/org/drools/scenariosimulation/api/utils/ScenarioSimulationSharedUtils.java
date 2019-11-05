@@ -21,10 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.scenariosimulation.api.model.Scenario;
-import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Simulation;
-
 public class ScenarioSimulationSharedUtils {
 
     public static final String FILE_EXTENSION = "scesim";
@@ -57,14 +53,5 @@ public class ScenarioSimulationSharedUtils {
     public static boolean isMap(String className) {
         return Map.class.getCanonicalName().equals(className) ||
                 HashMap.class.getCanonicalName().equals(className);
-    }
-
-    public static List<ScenarioWithIndex> toScenarioWithIndex(Simulation simulation) {
-        List<ScenarioWithIndex> toReturn = new ArrayList<>();
-        List<Scenario> scenarios = simulation.getUnmodifiableData();
-        for (int index = 0; index < scenarios.size(); index += 1) {
-            toReturn.add(new ScenarioWithIndex(index + 1, scenarios.get(index)));
-        }
-        return toReturn;
     }
 }

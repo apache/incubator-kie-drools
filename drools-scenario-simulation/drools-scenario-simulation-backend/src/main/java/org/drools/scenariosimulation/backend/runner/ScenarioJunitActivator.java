@@ -27,8 +27,7 @@ import java.util.stream.Stream;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
-import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileNameAndSettings;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -41,7 +40,7 @@ import org.kie.api.runtime.KieContainer;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesByExtension;
 
-public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileNameAndSettings> {
+public class ScenarioJunitActivator extends ParentRunner<ScenarioRunnerDTO> {
 
     public static final String ACTIVATOR_CLASS_NAME = "ScenarioJunitActivatorTest";
 
@@ -57,29 +56,29 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileNameA
     }
 
     @Override
-    protected List<SimulationWithFileNameAndSettings> getChildren() {
+    protected List<ScenarioRunnerDTO> getChildren() {
         return getResources().map(this::parseFile)
                 .filter(item -> isNotSkipFromBuild(item.getSettings()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    protected Description describeChild(SimulationWithFileNameAndSettings child) {
-        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
+    protected Description describeChild(ScenarioRunnerDTO child) {
+        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getScenarioWithIndices());
     }
 
     @Override
-    protected void runChild(SimulationWithFileNameAndSettings child, RunNotifier notifier) {
+    protected void runChild(ScenarioRunnerDTO child, RunNotifier notifier) {
         KieContainer kieClasspathContainer = getKieContainer();
-        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation(), child.getFileName(), child.getSettings());
+        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child);
         scenarioRunner.run(notifier);
     }
 
-    protected SimulationWithFileNameAndSettings parseFile(String path) {
+    protected ScenarioRunnerDTO parseFile(String path) {
         try (final Scanner scanner = new Scanner(new File(path))) {
             String rawFile = scanner.useDelimiter("\\Z").next();
             ScenarioSimulationModel scenarioSimulationModel = getXmlReader().unmarshal(rawFile);
-            return new SimulationWithFileNameAndSettings(scenarioSimulationModel.getSimulation(), path, scenarioSimulationModel.getSettings());
+            return new ScenarioRunnerDTO(scenarioSimulationModel, path);
         } catch (FileNotFoundException e) {
             throw new ScenarioException("File not found, this should not happen: " + path, e);
         } catch (Exception e) {
@@ -103,10 +102,8 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileNameA
         return KieServices.get().getKieClasspathContainer();
     }
 
-    AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String fileName, Settings settings) {
-        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(settings.getType())
-                .create(kieContainer, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), settings);
-        runner.setFileName(fileName);
-        return runner;
+    AbstractScenarioRunner newRunner(KieContainer kieContainer, ScenarioRunnerDTO scenarioRunnerDTO) {
+        return AbstractScenarioRunner.getSpecificRunnerProvider(scenarioRunnerDTO.getSettings().getType())
+                .create(kieContainer, scenarioRunnerDTO);
     }
 }
