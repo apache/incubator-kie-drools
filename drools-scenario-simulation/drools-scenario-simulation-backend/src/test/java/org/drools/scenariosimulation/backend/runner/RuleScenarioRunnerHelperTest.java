@@ -47,6 +47,7 @@ import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
+import org.drools.scenariosimulation.backend.runner.model.BackgroundGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
@@ -455,18 +456,18 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     @Test
     public void extractBackgroundValues() {
         // TEST 1 - background correct
-        List<ScenarioGiven> scenarioGivens = runnerHelper.extractBackgroundValues(background,
-                                                                                  classLoader,
-                                                                                  expressionEvaluatorFactory);
-        assertEquals(3, scenarioGivens.size());
-        for (ScenarioGiven scenarioGiven : scenarioGivens) {
-            if (scenarioGiven.getFactIdentifier().equals(personFactIdentifier)) {
-                assertEquals(personFactIdentifier, scenarioGiven.getFactIdentifier());
-                Person person = (Person) scenarioGiven.getValue();
+        List<BackgroundGiven> backgroundGivens = runnerHelper.extractBackgroundValues(background,
+                                                                                      classLoader,
+                                                                                      expressionEvaluatorFactory);
+        assertEquals(3, backgroundGivens.size());
+        for (BackgroundGiven backgroundGiven : backgroundGivens) {
+            if (backgroundGiven.getFactIdentifier().equals(personFactIdentifier)) {
+                assertEquals(personFactIdentifier, backgroundGiven.getFactIdentifier());
+                Person person = (Person) backgroundGiven.getValue();
                 assertEquals(NAME, person.getFirstName());
-            } else if (scenarioGiven.getFactIdentifier().equals(disputeFactIdentifier)) {
-                assertEquals(disputeFactIdentifier, scenarioGiven.getFactIdentifier());
-                Dispute dispute = (Dispute) scenarioGiven.getValue();
+            } else if (backgroundGiven.getFactIdentifier().equals(disputeFactIdentifier)) {
+                assertEquals(disputeFactIdentifier, backgroundGiven.getFactIdentifier());
+                Dispute dispute = (Dispute) backgroundGiven.getValue();
                 assertEquals(AMOUNT, dispute.getAmount(), 0.1);
             } else {
                 fail();
@@ -491,8 +492,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ArgumentCaptor<Object> insertCaptor = ArgumentCaptor.forClass(Object.class);
 
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
-        scenarioRunnerData.addBackground(new ScenarioGiven(personFactIdentifier, new Person()));
-        scenarioRunnerData.addBackground(new ScenarioGiven(disputeFactIdentifier, new Dispute()));
+        scenarioRunnerData.addBackground(new BackgroundGiven(personFactIdentifier, new Person()));
+        scenarioRunnerData.addBackground(new BackgroundGiven(disputeFactIdentifier, new Dispute()));
         scenarioRunnerData.addGiven(new ScenarioGiven(personFactIdentifier, new Person()));
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));

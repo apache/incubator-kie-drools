@@ -30,14 +30,14 @@ public class ScenarioRunnerDTO {
     private final Settings settings;
     private final Background background;
     private final List<ScenarioWithIndex> scenarioWithIndices;
-    private final ScesimModelDescriptor scesimModelDescriptor;
+    private final ScesimModelDescriptor simulationModelDescriptor;
 
     public ScenarioRunnerDTO(ScenarioSimulationModel model, String fileName) {
         this(model.getSimulation().getScesimModelDescriptor(), model.getSimulation().getScenarioWithIndex(), fileName, model.getSettings(), model.getBackground());
     }
 
-    public ScenarioRunnerDTO(ScesimModelDescriptor scesimModelDescriptor, List<ScenarioWithIndex> scenarioWithIndices, String fileName, Settings settings, Background background) {
-        this.scesimModelDescriptor = scesimModelDescriptor;
+    public ScenarioRunnerDTO(ScesimModelDescriptor simulationModelDescriptor, List<ScenarioWithIndex> scenarioWithIndices, String fileName, Settings settings, Background background) {
+        this.simulationModelDescriptor = simulationModelDescriptor;
         this.scenarioWithIndices = scenarioWithIndices;
         this.fileName = fileName;
         this.settings = settings;
@@ -60,7 +60,7 @@ public class ScenarioRunnerDTO {
         return scenarioWithIndices;
     }
 
-    public ScesimModelDescriptor getScesimModelDescriptor() {
-        return scesimModelDescriptor;
+    public ScesimModelDescriptor getSimulationModelDescriptor() {
+        return simulationModelDescriptor;
     }
 }

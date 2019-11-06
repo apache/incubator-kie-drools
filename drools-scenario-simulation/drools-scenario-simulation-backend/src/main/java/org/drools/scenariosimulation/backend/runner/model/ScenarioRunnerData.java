@@ -26,13 +26,13 @@ import java.util.Optional;
  */
 public class ScenarioRunnerData {
 
-    private final List<ScenarioGiven> backgrounds = new ArrayList<>();
+    private final List<BackgroundGiven> backgrounds = new ArrayList<>();
     private final List<ScenarioGiven> givens = new ArrayList<>();
     private final List<ScenarioExpect> expects = new ArrayList<>();
     private final List<ScenarioResult> results = new ArrayList<>();
     private ScenarioResultMetadata metadata;
 
-    public void addBackground(ScenarioGiven backgroundInstance) {
+    public void addBackground(BackgroundGiven backgroundInstance) {
         backgrounds.add(backgroundInstance);
     }
 
@@ -52,8 +52,8 @@ public class ScenarioRunnerData {
         this.metadata = metadata;
     }
 
-    public List<ScenarioGiven> getBackgrounds() {
-        return backgrounds;
+    public List<BackgroundGiven> getBackgrounds() {
+        return Collections.unmodifiableList(backgrounds);
     }
 
     public List<ScenarioGiven> getGivens() {

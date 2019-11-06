@@ -68,7 +68,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return executableBuilder.run().getOutputs();
     }
 
-    protected void loadInputData(List<ScenarioGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
+    protected <T extends ScenarioGiven> void loadInputData(List<T> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
         for (ScenarioGiven input : dataToLoad) {
             executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
         }

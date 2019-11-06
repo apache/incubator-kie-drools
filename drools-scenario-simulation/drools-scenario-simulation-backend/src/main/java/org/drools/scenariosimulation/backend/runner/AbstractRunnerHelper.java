@@ -39,6 +39,7 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
+import org.drools.scenariosimulation.backend.runner.model.BackgroundGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
@@ -95,17 +96,17 @@ public abstract class AbstractRunnerHelper {
                           scenario);
     }
 
-    protected List<ScenarioGiven> extractBackgroundValues(Background background,
-                                                          ClassLoader classLoader,
-                                                          ExpressionEvaluatorFactory expressionEvaluatorFactory) {
-        List<ScenarioGiven> backgrounds = new ArrayList<>();
+    protected List<BackgroundGiven> extractBackgroundValues(Background background,
+                                                            ClassLoader classLoader,
+                                                            ExpressionEvaluatorFactory expressionEvaluatorFactory) {
+        List<BackgroundGiven> backgrounds = new ArrayList<>();
         for (BackgroundData row : background.getUnmodifiableData()) {
             try {
-                List<ScenarioGiven> rowBackgrounds = extractGivenValues(background.getScesimModelDescriptor(),
-                                                                        row.getUnmodifiableFactMappingValues(),
-                                                                        classLoader,
-                                                                        expressionEvaluatorFactory);
-                backgrounds.addAll(rowBackgrounds);
+                extractGivenValues(background.getScesimModelDescriptor(),
+                                   row.getUnmodifiableFactMappingValues(),
+                                   classLoader,
+                                   expressionEvaluatorFactory)
+                        .forEach(elem -> backgrounds.add(new BackgroundGiven(elem)));
             } catch (ScenarioException e) {
                 throw new ScenarioException("Error in BACKGROUND data");
             }

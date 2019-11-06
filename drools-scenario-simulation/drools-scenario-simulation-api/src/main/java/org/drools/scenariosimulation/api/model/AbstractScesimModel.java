@@ -112,7 +112,7 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
         scesimData.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }
 
-    protected <Z extends ScesimDataWithIndex> List<Z> toScesimDataWithIndex(BiFunction<Integer, T, Z> producer) {
+    protected <Z extends ScesimDataWithIndex<T>> List<Z> toScesimDataWithIndex(BiFunction<Integer, T, Z> producer) {
         List<Z> toReturn = new ArrayList<>();
         List<T> data = getUnmodifiableData();
         for (int index = 0; index < data.size(); index += 1) {

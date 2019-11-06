@@ -121,7 +121,7 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData, Settings settings, Background background) {
         newRunnerHelper().run(getKieContainer(),
-                              scenarioRunnerDTO.getScesimModelDescriptor(),
+                              scenarioRunnerDTO.getSimulationModelDescriptor(),
                               scenarioWithIndex,
                               expressionEvaluatorFactory,
                               getClassLoader(),

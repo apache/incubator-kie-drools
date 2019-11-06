@@ -175,7 +175,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         };
     }
 
-    protected void loadInputData(List<ScenarioGiven> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
+    protected <T extends ScenarioGiven> void loadInputData(List<T> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
         for (ScenarioGiven scenarioGiven : dataToLoad) {
             executableBuilder.insert(scenarioGiven.getValue());
         }
