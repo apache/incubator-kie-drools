@@ -82,4 +82,79 @@ public class FactFieldValueVerifierTest extends TestCase {
 
         assertTrue(verifyField.getSuccessResult());
     }
+
+    @Test
+    public void testExpectedListComplexValues() throws Exception {
+
+        final StringCollection collection = new StringCollection();
+        collection.getList().add("Edam, Mature");
+        collection.getList().add("(Cheddar, Premature)");
+
+        final HashMap<String, Object> populatedData = new HashMap<>();
+        populatedData.put("collection", collection);
+
+        final TypeResolver typeResolver = mock(TypeResolver.class);
+
+        final FactFieldValueVerifier verifier = new FactFieldValueVerifier(populatedData,
+                                                                           "collection",
+                                                                           collection,
+                                                                           typeResolver);
+
+        final List<VerifyField> fieldValues = new ArrayList<>();
+        final VerifyField verifyField = new VerifyField("list", "=[\"Edam, Mature\", \"(Cheddar, Premature)\"]", "==");
+        fieldValues.add(verifyField);
+
+        verifier.checkFields(fieldValues);
+
+        assertTrue(verifyField.getSuccessResult());
+    }
+
+    @Test
+    public void testExpectedListIsEmpty() throws Exception {
+
+        final StringCollection collection = new StringCollection();
+
+        final HashMap<String, Object> populatedData = new HashMap<>();
+        populatedData.put("collection", collection);
+
+        final TypeResolver typeResolver = mock(TypeResolver.class);
+
+        final FactFieldValueVerifier verifier = new FactFieldValueVerifier(populatedData,
+                                                                           "collection",
+                                                                           collection,
+                                                                           typeResolver);
+
+        final List<VerifyField> fieldValues = new ArrayList<>();
+        final VerifyField verifyField = new VerifyField("list", "=[]", "==");
+        fieldValues.add(verifyField);
+
+        verifier.checkFields(fieldValues);
+
+        assertTrue(verifyField.getSuccessResult());
+    }
+
+    @Test
+    public void testExpectedListHasDifferentContent() throws Exception {
+
+        final StringCollection collection = new StringCollection();
+        collection.getList().add("cheddar");
+
+        final HashMap<String, Object> populatedData = new HashMap<>();
+        populatedData.put("collection", collection);
+
+        final TypeResolver typeResolver = mock(TypeResolver.class);
+
+        final FactFieldValueVerifier verifier = new FactFieldValueVerifier(populatedData,
+                                                                           "collection",
+                                                                           collection,
+                                                                           typeResolver);
+
+        final List<VerifyField> fieldValues = new ArrayList<>();
+        final VerifyField verifyField = new VerifyField("list", "=[\"CHEDDAR\"]", "!=");
+        fieldValues.add(verifyField);
+
+        verifier.checkFields(fieldValues);
+
+        assertTrue(verifyField.getSuccessResult());
+    }
 }
