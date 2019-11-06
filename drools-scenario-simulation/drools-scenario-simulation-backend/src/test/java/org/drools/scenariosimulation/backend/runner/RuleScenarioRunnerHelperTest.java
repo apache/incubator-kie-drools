@@ -57,6 +57,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -487,6 +488,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void executeScenario() {
+        ArgumentCaptor<Object> insertCaptor = ArgumentCaptor.forClass(Object.class);
+
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addBackground(new ScenarioGiven(personFactIdentifier, new Person()));
         scenarioRunnerData.addBackground(new ScenarioGiven(disputeFactIdentifier, new Dispute()));
@@ -503,7 +506,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
         verify(ruleScenarioExecutableBuilderMock, times(1)).setActiveRuleFlowGroup(eq(ruleFlowGroup));
-        verify(ruleScenarioExecutableBuilderMock, times(inputObjects)).insert(any());
+
+        verify(ruleScenarioExecutableBuilderMock, times(inputObjects)).insert(insertCaptor.capture());
+        for (Object value : insertCaptor.getAllValues()) {
+            assertTrue(value instanceof Person || value instanceof Dispute);
+        }
+
         verify(ruleScenarioExecutableBuilderMock, times(1)).addInternalCondition(eq(Person.class), any(), any());
         verify(ruleScenarioExecutableBuilderMock, times(1)).run();
 

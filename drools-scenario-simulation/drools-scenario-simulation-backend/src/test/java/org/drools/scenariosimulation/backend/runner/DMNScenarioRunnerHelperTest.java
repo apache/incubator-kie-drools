@@ -59,6 +59,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -280,6 +281,8 @@ public class DMNScenarioRunnerHelperTest {
 
     @Test
     public void executeScenario() {
+        ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
+
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addBackground(new ScenarioGiven(personFactIdentifier, new Person()));
         scenarioRunnerData.addBackground(new ScenarioGiven(disputeFactIdentifier, new Dispute()));
@@ -290,11 +293,13 @@ public class DMNScenarioRunnerHelperTest {
 
         int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size();
 
-
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(eq(DMN_FILE_PATH));
-        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(anyString(), any());
+        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(anyString(), setValueCaptor.capture());
+        for (Object value : setValueCaptor.getAllValues()) {
+            assertTrue(value instanceof Person || value instanceof Dispute);
+        }
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).run();
 
