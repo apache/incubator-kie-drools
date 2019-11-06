@@ -38,7 +38,7 @@ import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -110,7 +110,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                                     ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
 
-        for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
+        for (InstanceGiven input : scenarioRunnerData.getGivens()) {
             FactIdentifier factIdentifier = input.getFactIdentifier();
             List<ScenarioExpect> assertionOnFact = scenarioRunnerData.getExpects().stream()
                     .filter(elem -> !elem.isNewFact())
@@ -127,7 +127,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
     protected List<ScenarioResult> getScenarioResultsFromGivenFacts(ScesimModelDescriptor scesimModelDescriptor,
                                                                     List<ScenarioExpect> scenarioOutputsPerFact,
-                                                                    ScenarioGiven input,
+                                                                    InstanceGiven input,
                                                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
@@ -175,9 +175,9 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         };
     }
 
-    protected <T extends ScenarioGiven> void loadInputData(List<T> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
-        for (ScenarioGiven scenarioGiven : dataToLoad) {
-            executableBuilder.insert(scenarioGiven.getValue());
+    protected void loadInputData(List<InstanceGiven> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
+        for (InstanceGiven instanceGiven : dataToLoad) {
+            executableBuilder.insert(instanceGiven.getValue());
         }
     }
 

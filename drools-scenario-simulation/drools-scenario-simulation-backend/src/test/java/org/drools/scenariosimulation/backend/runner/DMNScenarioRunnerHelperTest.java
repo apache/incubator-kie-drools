@@ -44,10 +44,9 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
-import org.drools.scenariosimulation.backend.runner.model.BackgroundGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
@@ -285,9 +284,9 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
 
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
-        scenarioRunnerData.addBackground(new BackgroundGiven(personFactIdentifier, new Person()));
-        scenarioRunnerData.addBackground(new BackgroundGiven(disputeFactIdentifier, new Dispute()));
-        scenarioRunnerData.addGiven(new ScenarioGiven(personFactIdentifier, new Person()));
+        scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, new Person()));
+        scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, new Dispute()));
+        scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, new Person()));
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));

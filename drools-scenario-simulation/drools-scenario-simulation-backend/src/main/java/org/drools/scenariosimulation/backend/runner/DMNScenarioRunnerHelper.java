@@ -35,7 +35,7 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -68,8 +68,8 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return executableBuilder.run().getOutputs();
     }
 
-    protected <T extends ScenarioGiven> void loadInputData(List<T> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
-        for (ScenarioGiven input : dataToLoad) {
+    protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
+        for (InstanceGiven input : dataToLoad) {
             executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
         }
     }

@@ -18,12 +18,12 @@ package org.drools.scenariosimulation.backend.runner.model;
 
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 
-public class ScenarioGiven {
+public class InstanceGiven {
 
     private final FactIdentifier factIdentifier;
     private final Object value;
 
-    public ScenarioGiven(FactIdentifier factIdentifier, Object value) {
+    public InstanceGiven(FactIdentifier factIdentifier, Object value) {
         this.factIdentifier = factIdentifier;
         this.value = value;
     }
