@@ -4,15 +4,23 @@
       "tslint:recommended",
       "tslint-config-standard",
       "tslint-react",
-      "tslint-config-prettier"
+      "tslint-config-prettier",
+      "tslint-react-hooks"
     ],
     "jsRules": {},
     "rules": {
-      "ordered-imports": true,
+      "ordered-imports": false,
       "object-literal-sort-keys": false,
       "member-ordering": false,
       "jsx-no-lambda": false,
-      "jsx-boolean-value": false
+      "jsx-boolean-value": false,
+      "no-empty-interface": false,
+      "react-hooks-nesting": [
+        true,
+        {
+          "detect-hooks-from-non-react-namespace": true
+        }
+      ]
     },
     "rulesDirectory": []
   }

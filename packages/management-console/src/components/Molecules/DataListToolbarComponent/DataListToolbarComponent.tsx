@@ -75,8 +75,8 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
     </DropdownItem>
   ];
 
-  const onToggle = isOpen => {
-    setisOpen(isOpen);
+  const onToggle = _isOpen => {
+    setisOpen(_isOpen);
   };
   const onSelect = event => {
     setisOpen(isOpen ? false : true);

@@ -22,6 +22,8 @@ const ProcessDetailsPage = ({match}) => {
                 roles
                 variables
                 state
+                start
+                end
                 childProcessInstanceId
                 nodes {
                     id
@@ -59,8 +61,7 @@ const ProcessDetailsPage = ({match}) => {
                             </Breadcrumb>
                         </GridItem>
                         <GridItem span={8}>
-
-                            <ProcessDetailsProcessDiagram/>
+                                <ProcessDetailsProcessDiagram/>
                         </GridItem>
                         <GridItem span={4}>
                             <ProcessDetails loading={loading} data={data}/>

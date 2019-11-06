@@ -19,24 +19,25 @@ const ProcessDetails = ({loading, data}) => {
                         <Text component={TextVariants.p}>{data.ProcessInstances[0].id}</Text>
                     </FormGroup>
                     <FormGroup label="Endpoint" fieldId="endpoint">
+                    {data.ProcessInstances[0].endpoint ?
                         <Text component={TextVariants.p}>{data.ProcessInstances[0].endpoint}</Text>
-                    </FormGroup>
+                        : '' }
+                    </FormGroup> 
                     <FormGroup label="Start" fieldId="start">
+                    {data.ProcessInstances[0].start ?
                         <Text component={TextVariants.p}>
-                            {data.ProcessInstances[0].start ?
-                                <TimeAgo date={new Date(`${data.ProcessInstances[0].start}`)} render={({error, value}) =>
+                            <TimeAgo date={new Date(`${data.ProcessInstances[0].start}`)} render={({error, value}) =>
                                     <span>{value}</span>}/>
-                                : ''}
-                        </Text>
-                    </FormGroup>
+                        </Text>: ''}
+                    </FormGroup> 
                     <FormGroup label="End" fieldId="end">
+                    {data.ProcessInstances[0].end ?
                         <Text component={TextVariants.p}>
-                            {data.ProcessInstances[0].end ?
-                                <TimeAgo date={new Date(`${data.ProcessInstances[0].end}`)} render={({error, value}) =>
-                                    <span>{value}</span>}/>
-                                : ''}
+                            <TimeAgo date={new Date(`${data.ProcessInstances[0].end}`)} render={({error, value}) =>
+                                <span>{value}</span>}/>
                         </Text>
-                    </FormGroup>
+                        : ''}
+                    </FormGroup> 
                     {data.ProcessInstances[0].parentProcessInstanceId ?
                         <FormGroup label="Parent Process" fieldId="parent">
                             <Text component={TextVariants.p}>
@@ -45,7 +46,7 @@ const ProcessDetails = ({loading, data}) => {
                                 </Link>
                             </Text>
                         </FormGroup> : ''}
-                    {data.ProcessInstances[0].childProcessInstanceId.length>0 ?
+                    {data.ProcessInstances[0].childProcessInstanceId ?
                         <FormGroup label="Sub Processes" fieldId="parent">
                             {data.ProcessInstances[0].childProcessInstanceId.map((child, index) =>
                                 <Text component={TextVariants.p} key={child} style={{marginTop: '5px'}}>

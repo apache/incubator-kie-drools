@@ -6,7 +6,7 @@ interface IOwnProps {}
 const AvatarComponent: React.FC<IOwnProps> = () => {
   const userImage = require('../../../static/user.png');
 
-  return <Avatar src={userImage} alt="Kogito Logo"></Avatar>;
+  return <Avatar src={userImage} alt="Kogito Logo" />;
 };
 
 export default AvatarComponent;

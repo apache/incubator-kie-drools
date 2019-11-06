@@ -11,7 +11,7 @@ const BrandComponent: React.FC<combinedProps> = ({ history }) => {
   const onLogoClick = () => {
     history.push('/ProcessInstances');
   };
-  return <Brand src={logo} alt="Kogito Logo" onClick={onLogoClick}></Brand>;
+  return <Brand src={logo} alt="Kogito Logo" onClick={onLogoClick} />;
 };
 
 export default withRouter(BrandComponent);

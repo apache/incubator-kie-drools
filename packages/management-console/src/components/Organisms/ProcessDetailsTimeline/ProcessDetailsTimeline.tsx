@@ -4,7 +4,12 @@ import { ServicesIcon, UserIcon } from '@patternfly/react-icons'
 import React from 'react';
 import './ProcessDetailsTimeline.css';
 
-const ProcessDetailsTimeline = ({ loading, data }) => {
+export interface IOwnProps {
+  loading: boolean,
+  data: any
+}
+
+const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
 
   return (
     <Card>
@@ -12,9 +17,9 @@ const ProcessDetailsTimeline = ({ loading, data }) => {
       <CardBody>
         <div className="timeline-container">
           {!loading ? (
-            data[0].nodes.map((content, index) => {
+            data[0].nodes.map(content => {
               return (
-                <div className="timeline-item" key={index}>
+                <div className="timeline-item" key={content.id}>
                   <div className="timeline-item-content">
                     <TimeAgo date={new Date(`${content.exit}`)} render={({ error, value }) => <span>{value}</span>} />
                     <p>{content.name}</p>

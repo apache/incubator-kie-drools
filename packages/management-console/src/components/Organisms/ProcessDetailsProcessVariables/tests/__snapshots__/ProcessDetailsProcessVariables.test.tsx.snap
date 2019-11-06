@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Process Variables component Assertion for props 1`] = `
+<Card
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <CardHeader>
+    Process Variables
+  </CardHeader>
+  <CardBody>
+    <TextContent
+      style={
+        Object {
+          "width": "30em",
+        }
+      }
+    >
+      <div
+        key="0"
+      >
+        <t
+          collapseStringsAfterLength={false}
+          collapsed={false}
+          defaultValue={null}
+          displayDataTypes={true}
+          displayObjectSize={true}
+          enableClipboard={true}
+          groupArraysAfterLength={100}
+          iconStyle="triangle"
+          indentWidth={4}
+          name="root"
+          onAdd={false}
+          onDelete={false}
+          onEdit={false}
+          onSelect={false}
+          shouldCollapse={false}
+          sortKeys={false}
+          src={
+            Object {
+              "hotel": Object {
+                "address": Object {
+                  "city": "Berlin",
+                  "country": "Germany",
+                  "street": "street",
+                  "zipCode": "12345",
+                },
+                "bookingNumber": "XX-012345",
+                "name": "Perfect hotel",
+                "phone": "09876543",
+              },
+              "traveller": Object {
+                "address": Object {
+                  "city": "Karkow",
+                  "country": "Poland",
+                  "street": "palna",
+                  "zipCode": "200300",
+                },
+                "email": "rob@redhat.com",
+                "firstName": "Rob",
+                "lastName": "Rob",
+                "nationality": "Polish",
+              },
+              "trip": Object {
+                "begin": "2019-10-22T22:00:00Z[UTC]",
+                "city": "Berlin",
+                "country": "Germany",
+                "end": "2019-10-30T22:00:00Z[UTC]",
+                "visaRequired": false,
+              },
+            }
+          }
+          style={Object {}}
+          theme="rjv-default"
+          validationMessage="Validation Error"
+        />
+      </div>
+    </TextContent>
+  </CardBody>
+</Card>
+`;
+
+exports[`Process Variables component Sample test case 1`] = `
+<Card
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <CardHeader>
+    Process Variables
+  </CardHeader>
+  <CardBody>
+    <TextContent
+      style={
+        Object {
+          "width": "30em",
+        }
+      }
+    >
+      <Text
+        component="h4"
+      >
+        Loading...
+      </Text>
+    </TextContent>
+  </CardBody>
+</Card>
+`;

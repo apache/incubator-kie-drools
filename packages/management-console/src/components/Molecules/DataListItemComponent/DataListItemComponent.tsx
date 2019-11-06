@@ -18,7 +18,7 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { useApolloClient } from 'react-apollo';
-
+/* tslint:disable:no-string-literal */
 export interface IOwnProps {
   id: number;
   instanceID: string;
@@ -57,17 +57,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
     setisChecked(isChecked ? false : true);
   };
 
-  const onToggle = isOpen => {
-    setisOpen(isOpen);
+  const onToggle = _isOpen => {
+    setisOpen(_isOpen);
   };
 
-  const toggle = async id => {
-    const index = expanded.indexOf(id);
+  const toggle = async _id => {
+    const index = expanded.indexOf(_id);
     const newExpanded =
-      index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+      index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, _id];
     setexpanded(newExpanded);
-    if (isLoaded) {
-    } else {
+    if (!isLoaded){
       const data = await client.query({
         query: GET_CHILD_INSTANCES,
         variables: {
@@ -140,7 +139,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
           isHidden={expanded.includes('kie-datalist-toggle')}
         >
           {isLoaded &&
-            childList['ProcessInstances'] != undefined &&
+            childList['ProcessInstances'] !== undefined &&
             childList['ProcessInstances'].map((child, index) => {
               return (
                 <DataListItemComponent

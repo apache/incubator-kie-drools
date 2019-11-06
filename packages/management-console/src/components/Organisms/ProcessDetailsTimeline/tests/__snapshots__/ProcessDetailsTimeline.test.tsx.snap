@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Process Details Timeline component Sample test case 1`] = `
+<Card>
+  <CardHeader>
+    Timeline
+  </CardHeader>
+  <CardBody>
+    <div
+      className="timeline-container"
+    >
+      <div
+        className="timeline-item"
+        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      >
+        <div
+          className="timeline-item-content"
+        >
+          <TimeAgo
+            date={2019-10-22T04:43:01.144Z}
+            formatter={[Function]}
+            render={[Function]}
+          />
+          <p>
+            Book flight
+          </p>
+          <span
+            className="circle"
+          >
+            <ServicesIcon
+              className="processdetailstimetine-iconstyle"
+              color="currentColor"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </CardBody>
+</Card>
+`;
+
+exports[`Process Details Timeline component test human task 1`] = `
+<Card>
+  <CardHeader>
+    Timeline
+  </CardHeader>
+  <CardBody>
+    <div
+      className="timeline-container"
+    >
+      <div
+        className="timeline-item"
+        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      >
+        <div
+          className="timeline-item-content"
+        >
+          <TimeAgo
+            date={2019-10-22T04:43:01.144Z}
+            formatter={[Function]}
+            render={[Function]}
+          />
+          <p>
+            Book flight
+          </p>
+          <span
+            className="circle"
+          >
+            <UserIcon
+              className="processdetailstimetine-iconstyle"
+              color="currentColor"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </CardBody>
+</Card>
+`;

@@ -32,8 +32,8 @@ const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
     setmodalToggle(modalToggle ? false : true);
   };
 
-  const onDropdownToggle = isDropdownOpen => {
-    setDropdownOpen(isDropdownOpen);
+  const onDropdownToggle = _isDropdownOpen => {
+    setDropdownOpen(_isDropdownOpen);
   };
 
   const onDropdownSelect = () => {
@@ -42,8 +42,8 @@ const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
   const onKebabDropdownSelect = () => {
     setKebabDropdownOpen(!isKebabDropdownOpen);
   };
-  const onKebabDropdownToggle = isKebabDropdownOpen => {
-    setKebabDropdownOpen(isKebabDropdownOpen);
+  const onKebabDropdownToggle = _isKebabDropdownOpen => {
+    setKebabDropdownOpen(_isKebabDropdownOpen);
   };
   const kebabDropdownItems = [
     <DropdownItem key={1}>

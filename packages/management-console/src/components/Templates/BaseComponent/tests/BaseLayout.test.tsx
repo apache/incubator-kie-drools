@@ -3,6 +3,6 @@ import { shallow } from 'enzyme';
 import BaseLayout from '../BaseLayout';
 
 it('Sample test case', () => {
-  let wrapper = shallow(<BaseLayout />);
+  const wrapper = shallow(<BaseLayout />);
   expect(wrapper).toMatchSnapshot();
 });
