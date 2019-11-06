@@ -112,6 +112,8 @@ every computer whose processes consume more power than is available.
     }
 ----
 
+image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
+
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
