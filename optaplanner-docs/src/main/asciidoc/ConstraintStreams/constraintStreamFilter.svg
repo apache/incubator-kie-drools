@@ -181,6 +181,8 @@
 
 
 
+
+
     inkscape:perspective
        sodipodi:type=&quot;inkscape:persp3d&quot;
        inkscape:vp_x=&quot;0 : 526.18109 : 1&quot;
@@ -482,7 +484,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.29"
-     inkscape:cx="406.97674"
+     inkscape:cx="400"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
@@ -618,17 +620,17 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1602"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1598"
-           style="font-size:12.87545681px;fill:#8f5902"><rect
+           style="font-size:12.87545681px;fill:#ce5c00;"><rect
              id="rect1596"
              width="30.176865"
              height="18.106113"
              x="272.43326"
              y="71.33873"
-             style="font-size:12.87545681px;fill:#8f5902" /></flowRegion><flowPara
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;" /></flowRegion><flowPara
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;"
            id="flowPara1600">Ann</flowPara></flowRoot>    </g>
     <g
        style="display:inline"
@@ -672,7 +674,9 @@
            y="167.73238"
            style="font-size:21.33333397px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara1682"
-         style="font-size:21.33333397px;line-height:1.25">Uni&lt;Shift&gt;</flowPara></flowRoot>    <g
+         style="font-size:21.33333397px;line-height:1.25">Uni&lt;<flowSpan
+   style="fill:#4e9a06"
+   id="flowSpan303">Shift</flowSpan>&gt;</flowPara></flowRoot>    <g
        style="display:inline"
        transform="translate(-399.439,-190)"
        id="g1899">
@@ -687,19 +691,19 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          id="flowRoot1897"
          xml:space="preserve"><flowRegion
-           style="font-size:12.87545681px;fill:#8f5902"
+           style="font-size:12.87545681px;fill:#ce5c00;"
            id="flowRegion1893"><rect
-             style="font-size:12.87545681px;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;"
              y="71.33873"
              x="272.43326"
              height="18.106113"
              width="30.176865"
              id="rect1891" /></flowRegion><flowPara
            id="flowPara1895"
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902">Beth</flowPara></flowRoot>    </g>
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;">Beth</flowPara></flowRoot>    </g>
     <g
        id="g1911"
        transform="translate(-459.439,-190)"
@@ -744,17 +748,17 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1921"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1917"
-           style="font-size:12.87545681px;fill:#8f5902"><rect
+           style="font-size:12.87545681px;fill:#ce5c00;"><rect
              id="rect1915"
              width="30.176865"
              height="18.106113"
              x="272.43326"
              y="71.33873"
-             style="font-size:12.87545681px;fill:#8f5902" /></flowRegion><flowPara
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;" /></flowRegion><flowPara
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;"
            id="flowPara1919">Beth</flowPara></flowRoot>    </g>
     <g
        style="display:inline"
@@ -799,19 +803,19 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          id="flowRoot1945"
          xml:space="preserve"><flowRegion
-           style="font-size:12.87545681px;fill:#8f5902"
+           style="font-size:12.87545681px;fill:#ce5c00;"
            id="flowRegion1941"><rect
-             style="font-size:12.87545681px;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;"
              y="71.33873"
              x="272.43326"
              height="18.106113"
              width="30.176865"
              id="rect1939" /></flowRegion><flowPara
            id="flowPara1943"
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902">Ann</flowPara></flowRoot>    </g>
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;">Ann</flowPara></flowRoot>    </g>
     <g
        id="g1959"
        transform="translate(-459.439,-130)"
@@ -873,19 +877,19 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          id="flowRoot1221"
          xml:space="preserve"><flowRegion
-           style="font-size:12.87545681px;fill:#8f5902"
+           style="font-size:12.87545681px;fill:#ce5c00;"
            id="flowRegion1217"><rect
-             style="font-size:12.87545681px;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;"
              y="71.33873"
              x="272.43326"
              height="18.106113"
              width="30.176865"
              id="rect1215" /></flowRegion><flowPara
            id="flowPara1219"
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902">Ann</flowPara></flowRoot>    </g>
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;">Ann</flowPara></flowRoot>    </g>
     <g
        id="g1235"
        transform="translate(-50.22885,-672.36218)"
@@ -928,7 +932,9 @@
            width="240.30989"
            id="rect1237" /></flowRegion><flowPara
          style="font-size:21.33333397px;line-height:1.25"
-         id="flowPara1241">Uni&lt;Shift&gt;</flowPara></flowRoot>    <g
+         id="flowPara1241">Uni&lt;<flowSpan
+   style="fill:#4e9a06"
+   id="flowSpan305">Shift</flowSpan>&gt;</flowPara></flowRoot>    <g
        id="g1303"
        transform="translate(9.77115,-642.36213)"
        style="display:inline">
@@ -944,17 +950,17 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1301"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1297"
-           style="font-size:12.87545681px;fill:#8f5902"><rect
+           style="font-size:12.87545681px;fill:#ce5c00;"><rect
              id="rect1295"
              width="30.176865"
              height="18.106113"
              x="272.43326"
              y="71.33873"
-             style="font-size:12.87545681px;fill:#8f5902" /></flowRegion><flowPara
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;" /></flowRegion><flowPara
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;"
            id="flowPara1299">Ann</flowPara></flowRoot>    </g>
     <g
        style="display:inline"
@@ -1008,7 +1014,7 @@
    style="font-size:16px;line-height:1.25;text-align:start;text-anchor:start"
    id="flowSpan1205">     <flowSpan
    style="fill:#4e9a06"
-   id="flowSpan1207">shift</flowSpan>.getEmployee().getName() == &quot;Ann&quot;</flowSpan>)</flowPara></flowRoot>    <path
+   id="flowSpan1207">shift</flowSpan>.getEmployeeName().equals(&quot;Ann&quot;)</flowSpan>)</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cc"
        style="display:inline;fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        d="m 178.57706,133.70109 h 83.96812"
@@ -1087,7 +1093,11 @@
            y="167.73238"
            style="font-size:21.33333397px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara601"
-         style="font-size:21.33333397px;line-height:1.25">Bi&lt;Shift, DayOff&gt;</flowPara></flowRoot>    <g
+         style="font-size:21.33333397px;line-height:1.25">Bi&lt;<flowSpan
+   style="fill:#4e9a06"
+   id="flowSpan295">Shift</flowSpan>, <flowSpan
+   style="fill:#204a87"
+   id="flowSpan297">DayOff</flowSpan>&gt;</flowPara></flowRoot>    <g
        style="display:inline"
        transform="translate(-475.91132,-402.3622)"
        id="g711">
@@ -1102,19 +1112,19 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          id="flowRoot709"
          xml:space="preserve"><flowRegion
-           style="font-size:12.87545681px;fill:#8f5902"
+           style="font-size:12.87545681px;fill:#ce5c00;"
            id="flowRegion705"><rect
-             style="font-size:12.87545681px;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;"
              y="71.33873"
              x="272.43326"
              height="18.106113"
              width="30.176865"
              id="rect703" /></flowRegion><flowPara
            id="flowPara707"
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902">Ann</flowPara></flowRoot>    </g>
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;">Ann</flowPara></flowRoot>    </g>
     <g
        id="g723"
        transform="translate(-535.91132,-402.3622)"
@@ -1159,17 +1169,17 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot733"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion729"
-           style="font-size:12.87545681px;fill:#8f5902"><rect
+           style="font-size:12.87545681px;fill:#ce5c00;"><rect
              id="rect727"
              width="30.176865"
              height="18.106113"
              x="272.43326"
              y="71.33873"
-             style="font-size:12.87545681px;fill:#8f5902" /></flowRegion><flowPara
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;" /></flowRegion><flowPara
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;"
            id="flowPara731">Beth</flowPara></flowRoot>    </g>
     <g
        style="display:inline"
@@ -1214,19 +1224,19 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          id="flowRoot757"
          xml:space="preserve"><flowRegion
-           style="font-size:12.87545681px;fill:#8f5902"
+           style="font-size:12.87545681px;fill:#ce5c00;"
            id="flowRegion753"><rect
-             style="font-size:12.87545681px;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;"
              y="71.33873"
              x="272.43326"
              height="18.106113"
              width="30.176865"
              id="rect751" /></flowRegion><flowPara
            id="flowPara755"
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902">Beth</flowPara></flowRoot>    </g>
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;">Beth</flowPara></flowRoot>    </g>
     <g
        id="g771"
        transform="translate(-535.91132,-342.3622)"
@@ -1394,7 +1404,11 @@
            width="250.30992"
            id="rect907" /></flowRegion><flowPara
          style="font-size:21.33333397px;line-height:1.25"
-         id="flowPara911">Bi&lt;Shift, DayOff&gt;</flowPara></flowRoot>    <g
+         id="flowPara911">Bi&lt;<flowSpan
+   style="fill:#4e9a06"
+   id="flowSpan299">Shift</flowSpan>, <flowSpan
+   style="fill:#204a87"
+   id="flowSpan301">DayOff</flowSpan>&gt;</flowPara></flowRoot>    <g
        id="g925"
        transform="translate(-46.525878,-402.3622)"
        style="display:inline">
@@ -1410,17 +1424,17 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot923"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion919"
-           style="font-size:12.87545681px;fill:#8f5902"><rect
+           style="font-size:12.87545681px;fill:#ce5c00;"><rect
              id="rect917"
              width="30.176865"
              height="18.106113"
              x="272.43326"
              y="71.33873"
-             style="font-size:12.87545681px;fill:#8f5902" /></flowRegion><flowPara
-           style="font-size:12.87545681px;line-height:1.25;fill:#8f5902"
+             style="font-size:12.87545681px;fill:#ce5c00;" /></flowRegion><flowPara
+           style="font-size:12.87545681px;line-height:1.25;fill:#ce5c00;"
            id="flowPara921">Beth</flowPara></flowRoot>    </g>
     <g
        style="display:inline"
