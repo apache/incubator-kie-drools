@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
@@ -165,6 +166,10 @@ public class CoercedExpression {
     }
 
     private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
+        if(typedExpression.getType() == ClassUtil.NullType.class) {
+            return typedExpression;
+        }
+
         final Expression expression = typedExpression.getExpression();
         if (expression instanceof BooleanLiteralExpr) {
             return typedExpression;
