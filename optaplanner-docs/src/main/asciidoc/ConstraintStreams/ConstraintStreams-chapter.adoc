@@ -74,6 +74,7 @@ and supports <<explainingTheScore,justifications>>:
 
 image::ConstraintStreams/constraintStreamIntroduction.png[align="center"]
 image::ConstraintStreams/constraintStreamIncrementalCalculation.png[align="center"]
+image::ConstraintStreams/constraintStreamJustification.png[align="center"]
 
 
 [[constraintStreamsFilter]]
