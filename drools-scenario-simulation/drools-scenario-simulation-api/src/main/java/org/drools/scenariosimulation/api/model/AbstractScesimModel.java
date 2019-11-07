@@ -36,7 +36,7 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
      */
     protected final List<T> scesimData = new LinkedList<>();
 
-    public abstract AbstractScesimModel cloneModel();
+    public abstract AbstractScesimModel<T> cloneModel();
 
     public abstract T addData(int index);
 
