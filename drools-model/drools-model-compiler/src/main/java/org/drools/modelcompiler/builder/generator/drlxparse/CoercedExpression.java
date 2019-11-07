@@ -103,8 +103,7 @@ public class CoercedExpression {
             coercedRight = coerceToDate(right);
         } else if (shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
-        } else if ((Boolean.class.isAssignableFrom(leftClass) || boolean.class.isAssignableFrom(leftClass))
-                && (!Boolean.class.isAssignableFrom(rightClass) || !boolean.class.isAssignableFrom(rightClass))) {
+        } else if (isBoolean(leftClass) && !isBoolean(rightClass)) {
             coercedRight = coerceBoolean(right);
         } else {
             coercedRight = right;
@@ -118,6 +117,10 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private boolean isBoolean(Class<?> leftClass) {
+        return Boolean.class.isAssignableFrom(leftClass) || boolean.class.isAssignableFrom(leftClass);
     }
 
     private boolean shouldCoerceBToMap() {
