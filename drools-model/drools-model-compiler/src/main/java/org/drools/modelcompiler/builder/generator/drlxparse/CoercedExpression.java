@@ -101,10 +101,11 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
-        } else if(shouldCoerceBToMap()) {
+        } else if (shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
-        } else if (Boolean.class.isAssignableFrom(leftClass) && !Boolean.class.isAssignableFrom(rightClass)) {
-             coercedRight = coerceBoolean(right);
+        } else if ((Boolean.class.isAssignableFrom(leftClass) || boolean.class.isAssignableFrom(leftClass))
+                && (!Boolean.class.isAssignableFrom(rightClass) || !boolean.class.isAssignableFrom(rightClass))) {
+            coercedRight = coerceBoolean(right);
         } else {
             coercedRight = right;
         }
@@ -137,7 +138,6 @@ public class CoercedExpression {
                 && !Boolean.class.isAssignableFrom(rightClass)
                 && !String.class.isAssignableFrom(rightClass)
                 && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
-
     }
 
     private TypedExpression castToClass(Class<?> clazz) {
@@ -160,13 +160,13 @@ public class CoercedExpression {
     }
 
     private static TypedExpression coerceToDate(TypedExpression typedExpression) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, STRING_TO_DATE_METHOD );
-        methodCallExpr.addArgument( typedExpression.getExpression() );
-        return new TypedExpression( methodCallExpr, Date.class );
+        MethodCallExpr methodCallExpr = new MethodCallExpr(null, STRING_TO_DATE_METHOD);
+        methodCallExpr.addArgument(typedExpression.getExpression());
+        return new TypedExpression(methodCallExpr, Date.class);
     }
 
     private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
-        if(typedExpression.getType() == ClassUtil.NullType.class) {
+        if (typedExpression.getType() == ClassUtil.NullType.class) {
             return typedExpression;
         }
 
