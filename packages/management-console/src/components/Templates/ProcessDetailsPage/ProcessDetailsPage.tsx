@@ -52,7 +52,7 @@ const ProcessDetailsPage = ({match}) => {
         <>
             <Page>
                 <PageSection style={PageSectionStyle}>
-                    <Grid gutter="md">
+                    <Grid gutter="md" className="pf-m-all-12-col pf-m-all-6-col-on-lg pf-m-all-4-col-on-xl">
                         <GridItem span={12}>
                             <Breadcrumb>
                                 <BreadcrumbItem><Link to={'/'}>Home</Link></BreadcrumbItem>
@@ -60,16 +60,13 @@ const ProcessDetailsPage = ({match}) => {
                                 <BreadcrumbItem isActive>{data.ProcessInstances[0].processName}</BreadcrumbItem>
                             </Breadcrumb>
                         </GridItem>
-                        <GridItem span={8}>
-                                <ProcessDetailsProcessDiagram/>
-                        </GridItem>
-                        <GridItem span={4}>
+                        <GridItem>
                             <ProcessDetails loading={loading} data={data}/>
                         </GridItem>
-                        <GridItem span={8}>
+                        <GridItem>
                             <ProcessDetailsProcessVariables loading={loading} data={data}/>
                         </GridItem>
-                        <GridItem span={4}>
+                        <GridItem>
                             <ProcessDetailsTimeline loading={loading} data={data.ProcessInstances}/>
                         </GridItem>
                     </Grid>
