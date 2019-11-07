@@ -39,7 +39,7 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
   const dropDownList = [
     <DropdownItem key="link1">
       <Checkbox
-        label="  ACTIVE"
+        label="ACTIVE"
         aria-label="controlled checkbox example"
         id="check-1"
         name="isActiveChecked"

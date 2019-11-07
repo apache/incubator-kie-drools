@@ -9,7 +9,6 @@ import DataListItemComponent from '../../Molecules/DataListItemComponent/DataLis
 import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
 import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
 import './DataList.css';
-// import { Spinner } from '@patternfly/react-core/dist/esm/experimental';
 
 const DataListComponent: React.FC<{}> = () => {
   const [isActiveChecked, setIsActiveChecked] = useState<boolean>(false);
@@ -51,9 +50,8 @@ const DataListComponent: React.FC<{}> = () => {
         setCheckedArray([...checkedArray, 'ACTIVE']);
       } else if (!isActiveChecked === false) {
         const tempArr = checkedArray.slice();
-        const temp = 'ACTIVE';
         _.remove(tempArr, _temp => {
-          return temp === 'ACTIVE';
+          return _temp === 'ACTIVE';
         });
         setCheckedArray(tempArr);
       }
@@ -65,9 +63,8 @@ const DataListComponent: React.FC<{}> = () => {
         setCheckedArray([...checkedArray, 'COMPLETED']);
       } else if (!isCompletedChecked === false) {
         const tempArr = checkedArray.slice();
-        const temp = 'COMPLETED';
         _.remove(tempArr, _temp => {
-          return temp === 'COMPLETED';
+          return _temp === 'COMPLETED';
         });
         setCheckedArray(tempArr);
       }
@@ -78,9 +75,8 @@ const DataListComponent: React.FC<{}> = () => {
         setCheckedArray([...checkedArray, 'ABORTED']);
       } else if (!isAbortChecked === false) {
         const tempArr = checkedArray.slice();
-        const temp = 'ABORTED';
         _.remove(tempArr, _temp => {
-          return temp === 'ABORTED';
+          return _temp === 'ABORTED';
         });
         setCheckedArray(tempArr);
       }
@@ -91,8 +87,8 @@ const DataListComponent: React.FC<{}> = () => {
     const tempArr = [];
     checkedArray.map(check => {
       initData['ProcessInstances'].map(_data => {
-        if (data.state.toString().toLowerCase() === check.toString().toLowerCase()) {
-          tempArr.push(data);
+        if (_data.state.toString().toLowerCase() === check.toString().toLowerCase()) {
+          tempArr.push(_data);
         }
       });
     });
