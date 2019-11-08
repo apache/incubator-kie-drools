@@ -17,7 +17,7 @@ const AboutModalBox: React.FC<IOwnProps> = ({ isOpenProp, handleModalToggleProp 
       productName="Kogito"
     >
       <TextContent>
-        <TextList component="dl" style={{ width: '100%' }}>
+        <TextList component="dl">
           <TextListItem component="dt">CFME Version</TextListItem>
           <TextListItem component="dd">5.5.3.4.20102789036450</TextListItem>
           <TextListItem component="dt">Cloudforms Version</TextListItem>

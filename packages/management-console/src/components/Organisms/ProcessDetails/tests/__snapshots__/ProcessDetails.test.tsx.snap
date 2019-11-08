@@ -3,7 +3,12 @@
 exports[`Process Details component Snapshot tests 1`] = `
 <Card>
   <CardHeader>
-    Details
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Details
+    </Title>
   </CardHeader>
   <CardBody>
     <Form>

@@ -1,13 +1,3 @@
-.styleToolBar > * {
-  padding-right: 25px;
-}
-.scrollArea {
-  max-height: 625px;
-}
-.dataList {
-  min-height: 300px;
-}
-
 .spinner-center {
   text-align: center;
   margin-top: 5%;

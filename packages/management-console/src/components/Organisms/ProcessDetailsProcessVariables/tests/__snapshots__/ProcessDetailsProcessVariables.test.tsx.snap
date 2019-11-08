@@ -1,24 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Process Variables component Assertion for props 1`] = `
-<Card
-  style={
-    Object {
-      "overflowX": "auto",
-    }
-  }
->
+<Card>
   <CardHeader>
-    Process Variables
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Process Variables
+    </Title>
   </CardHeader>
   <CardBody>
-    <TextContent
-      style={
-        Object {
-          "width": "30em",
-        }
-      }
-    >
+    <TextContent>
       <div
         key="0"
       >
@@ -84,24 +77,17 @@ exports[`Process Variables component Assertion for props 1`] = `
 `;
 
 exports[`Process Variables component Sample test case 1`] = `
-<Card
-  style={
-    Object {
-      "overflowX": "auto",
-    }
-  }
->
+<Card>
   <CardHeader>
-    Process Variables
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Process Variables
+    </Title>
   </CardHeader>
   <CardBody>
-    <TextContent
-      style={
-        Object {
-          "width": "30em",
-        }
-      }
-    >
+    <TextContent>
       <Text
         component="h4"
       >

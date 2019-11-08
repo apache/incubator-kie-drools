@@ -3,7 +3,12 @@
 exports[`Process Details Timeline component Sample test case 1`] = `
 <Card>
   <CardHeader>
-    Timeline
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Timeline
+    </Title>
   </CardHeader>
   <CardBody>
     <div
@@ -46,7 +51,12 @@ exports[`Process Details Timeline component Sample test case 1`] = `
 exports[`Process Details Timeline component test human task 1`] = `
 <Card>
   <CardHeader>
-    Timeline
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Timeline
+    </Title>
   </CardHeader>
   <CardBody>
     <div

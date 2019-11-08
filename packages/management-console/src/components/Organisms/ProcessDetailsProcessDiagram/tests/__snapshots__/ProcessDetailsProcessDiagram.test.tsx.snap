@@ -1,16 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Process Details Diagram component Snapshot tests 1`] = `
-<Card
-  style={
-    Object {
-      "overflowX": "auto",
-      "overflowY": "auto",
-    }
-  }
->
+<Card>
   <CardHeader>
-    Process Diagram
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Process Diagram
+    </Title>
   </CardHeader>
   <CardBody>
     <img

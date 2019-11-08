@@ -1,12 +1,14 @@
 import {TimeAgo} from '@n1ru4l/react-time-ago';
-import {Button, Card, CardBody, CardHeader, Form, FormGroup, Text, TextVariants} from '@patternfly/react-core';
+import {Button, Card, CardBody, CardHeader, Form, FormGroup, Text, TextVariants, Title} from '@patternfly/react-core';
 import React from 'react';
 import {Link} from "react-router-dom";
 
 const ProcessDetails = ({loading, data}) => {
     return (
         <Card>
-            <CardHeader>Details</CardHeader>
+            <CardHeader>
+                <Title headingLevel="h3" size="xl">Details</Title>
+            </CardHeader>
             <CardBody>
                 <Form>
                     <FormGroup label="Name" fieldId="name">
