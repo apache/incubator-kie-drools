@@ -74,7 +74,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.Double.*;
+import static java.lang.Double.isFinite;
 
 public class BenchmarkReport {
 
