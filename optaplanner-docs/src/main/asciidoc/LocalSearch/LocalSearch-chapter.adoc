@@ -541,6 +541,70 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 ----
 
 
+[[greatDeluge]]
+== Great Deluge
+
+
+[[greatDelugeAlgorithm]]
+=== Algorithm Description
+
+Great Deluge algorithm is similar to the  <<simulatedAnnealing,Simulated Annealing>> algorithm, it evaluates only a few moves per steps,
+so it steps quickly. The first accepted move is the winning step. A move is accepted only if it is not lower than
+the score value (water level) that we are working with. It means Great Deluge is deterministic and opposite
+of Simulated Annealing has no randomization in it. The water level is increased after every step either about the fixed value
+or by percentual value.
+A gradual increase in water level gives Great Deluge more time to escape from local maxima.
+
+
+[[greatDelugeConfiguration]]
+=== Configuration
+
+Simplest configuration:
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>GREAT_DELUGE</localSearchType>
+  </localSearch>
+----
+
+Great Deluge takes as starting water level best score from construction heuristic and uses default rain speed ratio. Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <greatDelugeInitialWaterLevel>20hard/100soft</greatDelugeInitialWaterLevel>
+      <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+OptaPlanner implements two water level increment options:
+
+If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by a constant value.
+
+[source,xml,options="nowrap"]
+----
+<acceptor>
+  <greatDelugeWaterLevelIncrementScore>10</greatDelugeWaterLevelIncrementScore>
+</acceptor>
+----
+To avoid hard coding the water level increment, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+
+[source,xml,options="nowrap"]
+----
+<acceptor>
+  <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
+</acceptor>
+----
+
+Also `greatDelugeInitialWaterLevel` can be set as a starting water level but is recommended not to do it,
+so the algorithm takes as starting value the best score from the construction heuristic.
+Use the Benchmarker to fine-tune tweak your configuration.
+
 [[stepCountingHillClimbing]]
 == Step Counting Hill Climbing
 
