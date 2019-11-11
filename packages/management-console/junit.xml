@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="10" failures="0" time="8.319">
-  <testsuite name="Process Details Diagram component" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.435" tests="1">
-    <testcase classname="Process Details Diagram component Snapshot tests" name="Process Details Diagram component Snapshot tests" time="0.012">
+<testsuites name="jest tests" tests="10" failures="0" time="6.881">
+  <testsuite name="Process Details Timeline component" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.222" tests="3">
+    <testcase classname="Process Details Timeline component Sample test case" name="Process Details Timeline component Sample test case" time="0.038">
     </testcase>
-  </testsuite>
-  <testsuite name="Process Details Timeline component" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.448" tests="3">
-    <testcase classname="Process Details Timeline component Sample test case" name="Process Details Timeline component Sample test case" time="0.019">
-    </testcase>
-    <testcase classname="Process Details Timeline component Sample test case" name="Process Details Timeline component Sample test case" time="0.002">
+    <testcase classname="Process Details Timeline component Sample test case" name="Process Details Timeline component Sample test case" time="0.003">
     </testcase>
     <testcase classname="Process Details Timeline component test human task" name="Process Details Timeline component test human task" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="Process Details component" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.471" tests="2">
-    <testcase classname="Process Details component Snapshot tests" name="Process Details component Snapshot tests" time="0.017">
-    </testcase>
-    <testcase classname="Process Details component Sample test case" name="Process Details component Sample test case" time="0.005">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.554" tests="1">
+    <testcase classname=" Sample test case" name=" Sample test case" time="0.027">
     </testcase>
   </testsuite>
-  <testsuite name="Process Variables component" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.491" tests="2">
-    <testcase classname="Process Variables component Sample test case" name="Process Variables component Sample test case" time="0.012">
+  <testsuite name="Process Details Diagram component" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.454" tests="1">
+    <testcase classname="Process Details Diagram component Snapshot tests" name="Process Details Diagram component Snapshot tests" time="0.025">
+    </testcase>
+  </testsuite>
+  <testsuite name="Process Details Page component" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.711" tests="1">
+    <testcase classname="Process Details Page component Sample test case" name="Process Details Page component Sample test case" time="0.034">
+    </testcase>
+  </testsuite>
+  <testsuite name="Process Variables component" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.683" tests="2">
+    <testcase classname="Process Variables component Sample test case" name="Process Variables component Sample test case" time="0.023">
     </testcase>
     <testcase classname="Process Variables component Assertion for props" name="Process Variables component Assertion for props" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="Process Details Page component" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.591" tests="1">
-    <testcase classname="Process Details Page component Sample test case" name="Process Details Page component Sample test case" time="0.023">
+  <testsuite name="Process Details component" errors="0" failures="0" skipped="0" timestamp="2019-11-08T13:00:55" time="4.728" tests="2">
+    <testcase classname="Process Details component Snapshot tests" name="Process Details component Snapshot tests" time="0.014">
     </testcase>
-  </testsuite>
-  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2019-11-07T14:49:49" time="5.648" tests="1">
-    <testcase classname=" Sample test case" name=" Sample test case" time="0.012">
+    <testcase classname="Process Details component Sample test case" name="Process Details component Sample test case" time="0.005">
     </testcase>
   </testsuite>
 </testsuites>
