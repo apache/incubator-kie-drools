@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -72,8 +74,10 @@ public class ScenarioSimulationXMLPersistence {
         toConfigure.alias("FactMappingType", FactMappingType.class);
         toConfigure.alias("FactMappingValue", FactMappingValue.class);
         toConfigure.alias("Scenario", Scenario.class);
+        toConfigure.alias("BackgroundData", BackgroundData.class);
         toConfigure.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
         toConfigure.alias("Simulation", Simulation.class);
+        toConfigure.alias("Background", Background.class);
         toConfigure.alias("SimulationDescriptor", ScesimModelDescriptor.class);
         toConfigure.alias("Import", Import.class);
         toConfigure.alias("Settings", Settings.class);

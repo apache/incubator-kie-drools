@@ -332,7 +332,8 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getBackground());
         assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
-        toCheck.getSimulation().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
+        assertFalse(toCheck.getBackground().getUnmodifiableData().isEmpty());
+        toCheck.getBackground().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
         }));
     }
 }
