@@ -42,6 +42,7 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -55,6 +56,7 @@ import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -76,18 +78,13 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    public void processExpression(SingleDrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.hasUnificationVariable()) {
-            Expression dslExpr = buildUnificationExpression(drlxParseResult);
-            context.addExpression(dslExpr);
-        } else if ( drlxParseResult.isValidExpression() ) {
-            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
-            context.addExpression(dslExpr);
-        }
-        if (drlxParseResult.getExprBinding() != null) {
-            Expression dslExpr = buildBinding(drlxParseResult);
-            context.addExpression(dslExpr);
-        }
+    public abstract void processExpression(SingleDrlxParseSuccess drlxParseResult);
+
+    protected MethodCallExpr createInputExpression(String identifier) {
+        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
+        exprDSL.addArgument( context.getVarExpr(identifier) );
+
+        return exprDSL;
     }
 
     public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
@@ -97,7 +94,7 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    private Expression buildUnificationExpression(SingleDrlxParseSuccess drlxParseResult) {
+    protected Expression buildUnificationExpression(SingleDrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType(), drlxParseResult.getUnificationName());
         return exprDSL;
