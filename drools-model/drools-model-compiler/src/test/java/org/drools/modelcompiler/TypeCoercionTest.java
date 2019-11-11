@@ -17,17 +17,18 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -253,6 +254,27 @@ public class TypeCoercionTest extends BaseModelTest {
         assertEquals(0, ksession.fireAllRules());
     }
 
+    @Test
+    public void testPrimitivePromotionInLHS() {
+        // DROOLS-4717
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( age > Double.valueOf(1) )\n" +
+                "then\n" +
+                "  insert(new Result($p));\n" +
+                "end";
 
+        KieSession ksession = getKieSession( str );
 
+        final Person luca = new Person("Luca", 35);
+        ksession.insert(luca);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        Assertions.assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
+    }
 }
