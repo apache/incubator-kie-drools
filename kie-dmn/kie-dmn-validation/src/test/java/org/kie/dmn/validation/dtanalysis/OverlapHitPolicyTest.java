@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +53,8 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
 
     @Parameterized.Parameters(name = "using {0}")
     public static Collection<HitPolicy> data() {
-        return Arrays.asList(HitPolicy.values());
+        // Overlaps are not checked for COLLECT hit policy
+        return Arrays.asList(HitPolicy.values()).stream().filter(hp-> hp!= HitPolicy.COLLECT).collect(Collectors.toList());
     }
 
     @Test

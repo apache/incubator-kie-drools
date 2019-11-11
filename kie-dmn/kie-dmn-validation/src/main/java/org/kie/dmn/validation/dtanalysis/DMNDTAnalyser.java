@@ -50,6 +50,7 @@ import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
@@ -108,10 +109,12 @@ public class DMNDTAnalyser {
         compileTableRules(dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
-        LOG.debug("findGaps");
-        findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
-        LOG.debug("findOverlaps");
-        findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
+            LOG.debug("findGaps");
+            findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+            LOG.debug("findOverlaps");
+            findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        }
         LOG.debug("computeMaskedRules");
         analysis.computeMaskedRules();
         LOG.debug("computeMisleadingRules");
