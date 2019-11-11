@@ -47,6 +47,10 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -93,6 +97,16 @@
       <artifactId>json-unit-assertj</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -112,7 +126,35 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>testWithoutKeycloak</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>testWitKeycloak</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>KeycloakIntegrationIndexingServiceTest.java</include>
+              </includes>
+              <excludes>
+                <exclude>none</exclude>
+              </excludes>
+              <systemProperties>
+                <quarkus.oidc.enabled>true</quarkus.oidc.enabled>
+              </systemProperties>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
+          <excludes>
+            <exclude>**/KeycloakIntegrationIndexingServiceTest.java</exclude>
+          </excludes>
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemProperties>
@@ -165,5 +207,5 @@
       </build>
     </profile>
   </profiles>
-  
+
 </project>
