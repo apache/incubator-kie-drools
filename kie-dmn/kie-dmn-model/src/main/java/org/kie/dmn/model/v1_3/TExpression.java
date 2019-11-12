@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.model.api.dmndi;
+package org.kie.dmn.model.v1_3;
 
 import javax.xml.namespace.QName;
 
-public interface DMNEdge extends Edge {
+import org.kie.dmn.model.api.Expression;
 
-    public DMNLabel getDMNLabel();
-
-    public void setDMNLabel(DMNLabel value);
-
-    public QName getDmnElementRef();
-
-    public void setDmnElementRef(QName value);
+public class TExpression extends TDMNElement implements Expression {
 
     /**
-     * @since DMN v1.3
+     * align with internal model
      */
-    QName getSourceElement();
+    protected QName typeRef;
 
-    /**
-     * @since DMN v1.3
-     */
-    void setSourceElement(QName value);
+    @Override
+    public QName getTypeRef() {
+        return this.typeRef;
+    }
 
-    /**
-     * @since DMN v1.3
-     */
-    QName getTargetElement();
+    @Override
+    public void setTypeRef(QName value) {
+        this.typeRef = value;
+    }
 
-    /**
-     * @since DMN v1.3
-     */
-    void setTargetElement(QName value);
 }
