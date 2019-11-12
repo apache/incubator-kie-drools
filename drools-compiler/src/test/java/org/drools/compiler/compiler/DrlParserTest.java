@@ -221,7 +221,7 @@ public class DrlParserTest {
     }
 
     @Test
-    public void testIfAfterAccumulateNoError() {
+    public void testIfAfterPattern() {
         String str =
                 "rule R when\n" +
                         "  $sum : Integer()\n" +
@@ -235,7 +235,7 @@ public class DrlParserTest {
 
 
     @Test
-    public void testIfAfterAccumulateError() {
+    public void testIfAfterAccumulate() {
         String str =
                 "rule R when\n" +
                         "  accumulate ( $p: Object(); \n" +
