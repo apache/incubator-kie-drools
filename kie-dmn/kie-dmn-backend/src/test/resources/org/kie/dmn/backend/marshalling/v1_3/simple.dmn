@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:include1="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"              xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" id="_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" name="Chapter 11 Example" namespace="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" exporter="DMN Modeler" exporterVersion="6.2.2.1" triso:logoChoice="None">
+<semantic:extensionElements/>
+<semantic:decisionService id="_61a137fa-eedd-4cf0-8969-827591267b4b_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+    <semantic:variable name="Whole Model Decision Service" id="_61a137fa-eedd-4cf0-8969-827591267b4b_DS_VAR" typeRef="Any"/>
+    <semantic:outputDecision href="#_938e8026-7825-47c1-8890-a0bed982db6f"/>
+    <semantic:inputData href="#_e4e47ee0-ff98-41fd-922a-f80bac93bcc3"/>
+</semantic:decisionService>
+<semantic:decisionService id="_419129c5-55c0-48f6-bb2b-1ddacdb7aad3_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+    <semantic:variable name="Diagram Page 1" id="_419129c5-55c0-48f6-bb2b-1ddacdb7aad3_DS_VAR" typeRef="Any"/>
+    <semantic:outputDecision href="#_938e8026-7825-47c1-8890-a0bed982db6f"/>
+    <semantic:inputData href="#_e4e47ee0-ff98-41fd-922a-f80bac93bcc3"/>
+</semantic:decisionService>
+<semantic:inputData id="_e4e47ee0-ff98-41fd-922a-f80bac93bcc3" name="name">
+    <semantic:variable name="name" id="_7a9307f0-fa0d-4e15-9a3a-b8009558c758" typeRef="string"/>
+</semantic:inputData>
+<semantic:decision id="_938e8026-7825-47c1-8890-a0bed982db6f" name="salutation">
+    <semantic:variable name="salutation" id="_4c00fc87-5c90-4cf7-96ba-49a5b3c05807" typeRef="string"/>
+    <semantic:informationRequirement id="_db797801-9e06-49ba-8384-6f7c6a15019b">
+        <semantic:requiredInput href="#_e4e47ee0-ff98-41fd-922a-f80bac93bcc3"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_6bae1586-dff3-442c-99c4-57cb2ca8813f" typeRef="string" triso:expressionId="_875337f7-4847-4d98-926c-957c71626d79">
+        <semantic:text>"Hello, "+name</semantic:text>
+    </semantic:literalExpression>
+</semantic:decision>
+<dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_419129c5-55c0-48f6-bb2b-1ddacdb7aad3" triso:modelElementRef="_7dc00112-0d6b-4d89-a677-9c99cbf29bcf" name="Page 1">
+        <di:extension/>
+        <dmndi:Size height="1050" width="1485"/>
+        <dmndi:DMNShape id="_3ed3ded2-30be-46b8-872f-0d9db4b572d2" dmnElementRef="_e4e47ee0-ff98-41fd-922a-f80bac93bcc3">
+            <dc:Bounds x="295.7588291168213" y="223" width="135.48234176635742" height="60"/>
+            <dmndi:DMNLabel sharedStyle="LS_61a137fa-eedd-4cf0-8969-827591267b4b_0" trisodmn:defaultBounds="true"/>
+        </dmndi:DMNShape>
+        <dmndi:DMNShape id="_cd689688-c21d-4d97-8e84-147eb7ef12e2" dmnElementRef="_938e8026-7825-47c1-8890-a0bed982db6f">
+            <dc:Bounds x="486.2411708831787" y="223" width="153" height="60"/>
+            <dmndi:DMNLabel sharedStyle="LS_61a137fa-eedd-4cf0-8969-827591267b4b_0" trisodmn:defaultBounds="true"/>
+        </dmndi:DMNShape>
+        <dmndi:DMNEdge id="_f6ec1781-c8d6-4abc-9290-d682e3d2c6ef" dmnElementRef="_db797801-9e06-49ba-8384-6f7c6a15019b">
+            <di:waypoint x="431.9968013763428" y="253"/>
+            <di:waypoint x="486.2411708831787" y="253"/>
+            <dmndi:DMNLabel sharedStyle="LS_61a137fa-eedd-4cf0-8969-827591267b4b_0"/>
+        </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+    <dmndi:DMNStyle id="LS_61a137fa-eedd-4cf0-8969-827591267b4b_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+</dmndi:DMNDI>
+</semantic:definitions>

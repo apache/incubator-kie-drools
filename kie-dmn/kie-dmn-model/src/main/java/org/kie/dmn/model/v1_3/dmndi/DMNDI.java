@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 import org.kie.dmn.model.api.dmndi.DMNDiagram;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.api.dmndi.DiagramElement;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_2.dmndi.Style.IDREFStubStyle;
+import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_3.dmndi.Style.IDREFStubStyle;
 
 
 public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.DMNDI {

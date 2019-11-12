@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.UnaryTests;
 
@@ -85,6 +86,16 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     @Override
     public void setIsCollection(Boolean value) {
         this.isCollection = value;
+    }
+
+    @Override
+    public FunctionItem getFunctionItem() {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
+    @Override
+    public void setFunctionItem(FunctionItem value) {
+        throw new UnsupportedOperationException("Since DMNv1.3");
     }
 
 }

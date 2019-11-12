@@ -64,6 +64,11 @@ public class UnmarshalMarshalTest {
     protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
+    public void testV12_simple() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "simple.dmn");
+    }
+
+    @Test
     public void testV12_ch11example() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ch11example.dmn");
     }

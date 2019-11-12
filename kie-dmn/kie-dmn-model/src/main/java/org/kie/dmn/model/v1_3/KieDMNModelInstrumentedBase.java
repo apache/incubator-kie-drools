@@ -31,10 +31,10 @@ import org.kie.dmn.model.api.RowLocation;
 
 public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumentedBase {
 
-    public static final String URI_DMN = "http://www.omg.org/spec/DMN/20191111/MODEL/";
-    public static final String URI_FEEL = "http://www.omg.org/spec/DMN/20191111/FEEL/";
-    public static final String URI_KIE = "http://www.drools.org/kie/dmn/1.3";
-    public static final String URI_DMNDI = "http://www.omg.org/spec/DMN/20191111/DMNDI/";
+    public static final String URI_DMN = "https://www.omg.org/spec/DMN/20191111/MODEL/";
+    public static final String URI_FEEL = "https://www.omg.org/spec/DMN/20191111/FEEL/";
+    public static final String URI_KIE = "https://www.drools.org/kie/dmn/1.3";
+    public static final String URI_DMNDI = "https://www.omg.org/spec/DMN/20191111/DMNDI/";
     public static final String URI_DI = "http://www.omg.org/spec/DMN/20180521/DI/";
     public static final String URI_DC = "http://www.omg.org/spec/DMN/20180521/DC/";
 

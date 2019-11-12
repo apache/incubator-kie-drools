@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_3.dmndi;
 
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 
 public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.Point {
 

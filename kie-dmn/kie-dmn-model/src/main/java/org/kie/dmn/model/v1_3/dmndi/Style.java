@@ -19,7 +19,7 @@ package org.kie.dmn.model.v1_3.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 import org.w3c.dom.Element;
 
 

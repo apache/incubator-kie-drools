@@ -55,7 +55,9 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
         RuleAnnotationClause e = (RuleAnnotationClause) parent;
 
-        writer.addAttribute(NAME, e.getName());
+        if (e.getName() != null) {
+            writer.addAttribute(NAME, e.getName());
+        }
     }
 
     @Override
