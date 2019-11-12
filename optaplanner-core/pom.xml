@@ -53,12 +53,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-canonical-model</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
-      <optional>true</optional>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
