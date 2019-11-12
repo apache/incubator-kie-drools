@@ -25,6 +25,7 @@ import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
@@ -229,7 +230,8 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonCheckFactMappingValueType(document);
+        commonCheckFactMappingValueType(document, SIMULATION_NODE);
+        commonCheckFactMappingValueType(document, BACKGROUND_NODE);
         toMigrate = getFileContent("scesim-1-7-rule.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_7to1_8().accept(document);
@@ -245,11 +247,12 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonCheckFactMappingValueType(document);
+        commonCheckFactMappingValueType(document, SIMULATION_NODE);
+        commonCheckFactMappingValueType(document, BACKGROUND_NODE);
     }
 
-    private void commonCheckFactMappingValueType(Document document) {
-        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
+    private void commonCheckFactMappingValueType(Document document, String scesimModel) {
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, scesimModel, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
