@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
@@ -30,6 +29,7 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSIO
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUE_TYPE_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.NOT_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
@@ -229,7 +229,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonFactMappingValueType(document);
+        commonCheckFactMappingValueType(document);
         toMigrate = getFileContent("scesim-1-7-rule.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_7to1_8().accept(document);
@@ -245,10 +245,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonFactMappingValueType(document);
+        commonCheckFactMappingValueType(document);
     }
 
-    private void commonFactMappingValueType(Document document) {
+    private void commonCheckFactMappingValueType(Document document) {
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
@@ -256,11 +256,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         for (Node factMappingNode : factMappingNodes) {
             List<Node> factMappingValueTypeNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE);
             assertEquals(1, factMappingValueTypeNodes.size());
-            String factMappingValueTypeText = factMappingValueTypeNodes .get(0).getTextContent();
+            String factMappingValueTypeText = factMappingValueTypeNodes.get(0).getTextContent();
             assertNotNull(factMappingValueTypeText);
             assertFalse(factMappingValueTypeText.isEmpty());
-            FactMappingValueType factMappingValueType = FactMappingValueType.valueOf(factMappingValueTypeText);
-            assertEquals(FactMappingValueType.NOT_EXPRESSION, factMappingValueType);
+            assertEquals(NOT_EXPRESSION, factMappingValueTypeText);
         }
     }
 
@@ -334,12 +333,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         commonCheckSimulation(scenarioSimulationModel);
     }
 
-    private void commonCheckSimulation(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckSimulation(ScenarioSimulationModel toCheck) {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
         assertNotNull(toCheck.getSimulation().getScesimModelDescriptor());
-        toCheck.getSimulation().getUnmodifiableData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
-        }));
     }
 
     private void commonCheckBackground(Document toCheck) throws Exception {
@@ -348,12 +345,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         commonCheckBackground(scenarioSimulationModel);
     }
 
-    private void commonCheckBackground(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckBackground(ScenarioSimulationModel toCheck) {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getBackground());
         assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
         assertFalse(toCheck.getBackground().getUnmodifiableData().isEmpty());
-        toCheck.getBackground().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
-        }));
     }
 }
