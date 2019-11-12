@@ -34,7 +34,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName())) {
+        if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue);
         } else {
             return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
@@ -42,11 +42,29 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     protected Object commonEvaluationLiteralExpression(String className, List<String> genericClasses, String raw) {
-        if (ScenarioSimulationSharedUtils.isCollection(className)) {
+        if (isStructuredInput(className)) {
             return convertResult(raw, className, genericClasses);
         } else {
             return internalLiteralEvaluation(raw, className);
         }
+    }
+
+    /**
+     * Check if resultClass represents a structured result
+     * @param resultClass
+     * @return
+     */
+    protected boolean isStructuredResult(Class<?> resultClass) {
+        return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
+    }
+
+    /**
+     * Check if className represents a structured input
+     * @param className
+     * @return
+     */
+    protected boolean isStructuredInput(String className) {
+        return ScenarioSimulationSharedUtils.isCollection(className);
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {

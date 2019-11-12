@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.api.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class ScenarioSimulationSharedUtilsTest {
                                             LinkedList.class.getCanonicalName());
 
     List<String> mapValues = Arrays.asList(Map.class.getCanonicalName(),
-                                           HashMap.class.getCanonicalName());
+                                           HashMap.class.getCanonicalName(),
+                                           LinkedHashMap.class.getCanonicalName());
 
     @Test
     public void isCollection() {
