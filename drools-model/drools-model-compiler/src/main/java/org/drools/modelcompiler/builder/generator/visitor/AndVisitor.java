@@ -18,17 +18,26 @@ public class AndVisitor {
     }
 
     public void visit(AndDescr descr) {
+        int exprStackSize = this.context.getExprPointerLevel();
+
         // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
-        if (this.context.getExprPointerLevel() != 1) {
+        if (exprStackSize != 1) {
             final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
             this.context.addExpression(andDSL);
             this.context.pushExprPointer(andDSL::addArgument);
+            exprStackSize++;
         }
+
         for (BaseDescr subDescr : descr.getDescrs()) {
             this.context.parentDesc = descr;
             subDescr.accept(visitor);
         }
-        if (this.context.getExprPointerLevel() != 1) {
+
+        if (exprStackSize != this.context.getExprPointerLevel()) {
+            throw new RuntimeException( "Non paired number of push and pop expression on context stack in " + descr );
+        }
+
+        if (exprStackSize != 1) {
             this.context.popExprPointer();
         }
     }

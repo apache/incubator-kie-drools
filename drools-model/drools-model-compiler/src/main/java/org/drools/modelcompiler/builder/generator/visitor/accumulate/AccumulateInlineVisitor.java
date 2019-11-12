@@ -31,34 +31,39 @@ public class AccumulateInlineVisitor {
     public void inlineAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL, Set<String> externalDeclrs, BaseDescr input) {
         // LEGACY: Accumulate with inline custom code
         AccumulateInline accumulateInline = new AccumulateInline(context, packageModel, descr, basePattern);
-        if (input instanceof PatternDescr) {
-            try {
-                accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) input).getIdentifier());
-            } catch (UnsupportedInlineAccumulate e) {
-                new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
-            } catch (MissingSemicolonInlineAccumulateException e) {
-                context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage()));
-            }
-        } else if (input instanceof AndDescr) {
-            BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
-            Collection<String> allNamesInActionBlock = collectNamesInBlock(actionBlock, context);
-
-            final Optional<BaseDescr> bindingUsedInAccumulate =
-                    ((AndDescr) input).getDescrs()
-                            .stream()
-                            .filter(b -> allNamesInActionBlock.contains(((PatternDescr) b).getIdentifier()))
-                            .findFirst();
-
-            if(bindingUsedInAccumulate.isPresent()) {
-                BaseDescr binding = bindingUsedInAccumulate.get();
+        context.pushExprPointer(accumulateDSL::addArgument);
+        try {
+            if ( input instanceof PatternDescr ) {
                 try {
-                    accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) binding).getIdentifier());
+                    accumulateInline.visitAccInlineCustomCode( accumulateDSL, externalDeclrs, (( PatternDescr ) input).getIdentifier() );
                 } catch (UnsupportedInlineAccumulate e) {
-                    new LegacyAccumulate(context, descr, basePattern, accumulateInline.getUsedExternalDeclarations()).build();
+                    new LegacyAccumulate( context, descr, basePattern, accumulateInline.getUsedExternalDeclarations() ).build();
+                } catch (MissingSemicolonInlineAccumulateException e) {
+                    context.addCompilationError( new InvalidExpressionErrorResult( e.getMessage() ) );
                 }
+            } else if ( input instanceof AndDescr ) {
+                BlockStmt actionBlock = parseBlockAddSemicolon( descr.getActionCode() );
+                Collection<String> allNamesInActionBlock = collectNamesInBlock( actionBlock, context );
+
+                final Optional<BaseDescr> bindingUsedInAccumulate =
+                        (( AndDescr ) input).getDescrs()
+                                .stream()
+                                .filter( b -> allNamesInActionBlock.contains( (( PatternDescr ) b).getIdentifier() ) )
+                                .findFirst();
+
+                if ( bindingUsedInAccumulate.isPresent() ) {
+                    BaseDescr binding = bindingUsedInAccumulate.get();
+                    try {
+                        accumulateInline.visitAccInlineCustomCode( accumulateDSL, externalDeclrs, (( PatternDescr ) binding).getIdentifier() );
+                    } catch (UnsupportedInlineAccumulate e) {
+                        new LegacyAccumulate( context, descr, basePattern, accumulateInline.getUsedExternalDeclarations() ).build();
+                    }
+                }
+            } else {
+                throw new UnsupportedOperationException( "I was expecting input to be of type PatternDescr. " + input );
             }
-        } else {
-            throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
+        } finally {
+            context.popExprPointer();
         }
     }
 

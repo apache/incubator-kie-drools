@@ -90,29 +90,31 @@ public abstract class AccumulateVisitor {
 
         context.pushExprPointer(accumulateExprs::addArgument);
 
-        Set<String> externalDeclrs = new HashSet<>(context.getAvailableBindings());
-        input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
-        input.accept(modelGeneratorVisitor);
+        try {
+            Set<String> externalDeclrs = new HashSet<>( context.getAvailableBindings() );
+            input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+            input.accept( modelGeneratorVisitor );
 
-        if (accumulateExprs.getArguments().isEmpty()) {
-            accumulateDSL.remove(accumulateExprs);
-        } else if (accumulateExprs.getArguments().size() == 1) {
-            accumulateDSL.setArgument(0, accumulateExprs.getArguments().get(0));
-        }
-
-        if (!descr.getFunctions().isEmpty()) {
-            if (validateBindings()) {
-                return;
+            if ( accumulateExprs.getArguments().isEmpty() ) {
+                accumulateDSL.remove( accumulateExprs );
+            } else if ( accumulateExprs.getArguments().size() == 1 ) {
+                accumulateDSL.setArgument( 0, accumulateExprs.getArguments().get( 0 ) );
             }
-            classicAccumulate(accumulateDSL);
-        } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
-            new AccumulateInlineVisitor(context, packageModel).inlineAccumulate(descr, basePattern, accumulateDSL, externalDeclrs, input);
-        } else {
-            throw new UnsupportedOperationException("Unknown type of Accumulate.");
-        }
 
-        context.popExprPointer();
-        postVisit();
+            if ( !descr.getFunctions().isEmpty() ) {
+                if ( validateBindings() ) {
+                    return;
+                }
+                classicAccumulate( accumulateDSL );
+            } else if ( descr.getFunctions().isEmpty() && descr.getInitCode() != null ) {
+                new AccumulateInlineVisitor( context, packageModel ).inlineAccumulate( descr, basePattern, accumulateDSL, externalDeclrs, input );
+            } else {
+                throw new UnsupportedOperationException( "Unknown type of Accumulate." );
+            }
+        } finally {
+            context.popExprPointer();
+            postVisit();
+        }
     }
 
     private void classicAccumulate(MethodCallExpr accumulateDSL) {
@@ -147,27 +149,29 @@ public abstract class AccumulateVisitor {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
+        try {
+            final MethodCallExpr functionDSL = new MethodCallExpr( null, ACC_FUNCTION_CALL );
 
-        final String optBindingId = ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
-        final String bindingId = ofNullable(optBindingId).orElse(context.getOrCreateAccumulatorBindingId(function.getFunction()));
+            final String optBindingId = ofNullable( function.getBind() ).orElse( basePattern.getIdentifier() );
+            final String bindingId = ofNullable( optBindingId ).orElse( context.getOrCreateAccumulatorBindingId( function.getFunction() ) );
 
-        optNewBinding = Optional.empty();
+            optNewBinding = Optional.empty();
 
-        if (function.getParams().length == 0) {
-            final AccumulateFunction optAccumulateFunction = getAccumulateFunction(function, Object.class);
-            zeroParameterFunction(functionDSL, bindingId, optAccumulateFunction);
-        } else {
-            parseFirstParameter(function, functionDSL, bindingId);
+            if ( function.getParams().length == 0 ) {
+                final AccumulateFunction optAccumulateFunction = getAccumulateFunction( function, Object.class );
+                zeroParameterFunction( functionDSL, bindingId, optAccumulateFunction );
+            } else {
+                parseFirstParameter( function, functionDSL, bindingId );
+            }
+
+            if ( bindingId != null ) {
+                final MethodCallExpr asDSL = new MethodCallExpr( functionDSL, BIND_AS_CALL );
+                asDSL.addArgument( context.getVarExpr( bindingId ) );
+                accumulateDSL.addArgument( asDSL );
+            }
+        } finally {
+            context.popExprPointer();
         }
-
-        if (bindingId != null) {
-            final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
-            asDSL.addArgument(context.getVarExpr(bindingId));
-            accumulateDSL.addArgument(asDSL);
-        }
-
-        context.popExprPointer();
     }
 
     private void parseFirstParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId) {

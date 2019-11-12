@@ -99,8 +99,6 @@ public class AccumulateInline {
     void visitAccInlineCustomCode(MethodCallExpr accumulateDSL, Set<String> externalDeclarations, String identifier) {
         initInlineAccumulateTemplate();
 
-        context.pushExprPointer(accumulateDSL::addArgument);
-
         parseInitBlock();
         Collection<String> allNamesInActionBlock = parseActionBlock(externalDeclarations);
         parseReverseBlock(externalDeclarations, allNamesInActionBlock);
@@ -115,8 +113,6 @@ public class AccumulateInline {
         }
 
         addAccumulateClassInitializationToMethod(accumulateDSL, identifier);
-
-        context.popExprPointer();
     }
 
     private void initInlineAccumulateTemplate() {
