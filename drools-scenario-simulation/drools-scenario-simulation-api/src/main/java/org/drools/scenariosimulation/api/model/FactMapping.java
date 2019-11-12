@@ -60,6 +60,14 @@ public class FactMapping {
      */
     private List<String> genericTypes;
 
+    /**
+     * It defines the FactMappingValueType. <b>FrontEnd scoped</b>
+     */
+    private FactMappingValueType factMappingValueType = FactMappingValueType.NOT_EXPRESSION;
+
+    /**
+     * The <b>width</b> of the FactMapping column. <b>FrontEnd scoped</b>
+     */
     private Double columnWidth;
 
     public FactMapping() {
@@ -88,6 +96,7 @@ public class FactMapping {
         this.factAlias = original.factAlias;
         this.expressionAlias = original.expressionAlias;
         this.genericTypes = original.genericTypes;
+        this.factMappingValueType = original.factMappingValueType;
         this.columnWidth = original.columnWidth;
     }
 
@@ -162,6 +171,14 @@ public class FactMapping {
         return getPlaceHolder(factMappingType) + " " + index;
     }
 
+    public FactMappingValueType getFactMappingValueType() {
+        return factMappingValueType;
+    }
+
+    public void setFactMappingValueType(FactMappingValueType factMappingValueType) {
+        this.factMappingValueType = factMappingValueType;
+    }
+
     public static String getInstancePlaceHolder(int index) {
         return "INSTANCE " + index;
     }
@@ -185,14 +202,21 @@ public class FactMapping {
                 Objects.equals(getClassName(), that.getClassName()) &&
                 Objects.equals(getFactAlias(), that.getFactAlias()) &&
                 Objects.equals(getExpressionAlias(), that.getExpressionAlias()) &&
-                Objects.equals(getGenericTypes(), that.getGenericTypes());
+                Objects.equals(getGenericTypes(), that.getGenericTypes()) &&
+                Objects.equals(getFactMappingValueType(), that.getFactMappingValueType()) ;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
                 getExpressionElements(),
-                getExpressionIdentifier(), getFactIdentifier(), getClassName(), getFactAlias(), getExpressionAlias(), getGenericTypes());
+                getExpressionIdentifier(),
+                getFactIdentifier(),
+                getClassName(),
+                getFactAlias(),
+                getExpressionAlias(),
+                getGenericTypes(),
+                getFactMappingValueType());
     }
 
     public Double getColumnWidth() {

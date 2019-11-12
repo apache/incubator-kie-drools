@@ -203,6 +203,7 @@ public class ClassUtil {
             return false;
         }
         return ( actualParamType == double.class && primitiveArgument == float.class ) ||
+                ( actualParamType == double.class && primitiveArgument == int.class ) ||
                 ( actualParamType == float.class && primitiveArgument == long.class ) ||
                 ( actualParamType == long.class && primitiveArgument == int.class ) ||
                 ( actualParamType == int.class && primitiveArgument == char.class ) ||

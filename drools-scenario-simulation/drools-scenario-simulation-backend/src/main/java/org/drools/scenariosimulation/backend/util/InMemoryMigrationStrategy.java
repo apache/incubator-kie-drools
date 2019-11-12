@@ -200,6 +200,8 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                             node.getParentNode().removeChild(node);
                         });
             }
+            final List<Node> factMappingNodesList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
+            factMappingNodesList.forEach(factMappingNode -> DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, FactMappingValueType.NOT_EXPRESSION.toString(), null));
             final Node backgroundNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null, null);
             final Node simulationDescriptorNode = DOMParserUtil.createNodeAtPosition(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null, null);
             final Node factMappingsNode = DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, FACT_MAPPINGS_NODE, null, null);
