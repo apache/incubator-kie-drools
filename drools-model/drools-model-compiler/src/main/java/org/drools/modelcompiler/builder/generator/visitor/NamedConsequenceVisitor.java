@@ -14,7 +14,6 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.Consequence;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
@@ -69,22 +68,23 @@ public class NamedConsequenceVisitor {
 
             String identifier = patternRelated.getIdentifier();
             DrlxParseResult parseResult;
-            if (identifier == null) { // The accumulate pattern doesn't have an identifier. Let's take the identifier from the first function
-                AccumulateDescr source = (AccumulateDescr) patternRelated.getSource();
-                String identifierDeclaration = ofNullable(source.getFunctions().iterator().next())
-                        .map(AccumulateDescr.AccumulateFunctionCallDescr::getBind)
-                        .orElseThrow(() -> new InvalidNamedConsequenceException("Cannot find function identifier"));
+            if (identifier == null) { // The accumulate pattern doesn't have an identifier. Let's parse the consequence and use the acc functions
 
-
-                DeclarationSpec functionIdentifierType =
-                        context.getDeclarationById(identifierDeclaration)
-                                .orElseThrow(() -> new InvalidNamedConsequenceException("Function identifier is not a declaration"));
-
-                when.addArgument(context.getVarExpr(identifierDeclaration));
-
-                parseResult = new ConstraintParser(context, packageModel).drlxParse(functionIdentifierType.getDeclarationClass(), identifierDeclaration, condition);
+                parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, "", condition);
                 parseResult.accept((DrlxParseSuccess parseSuccess) -> {
+
                     SingleDrlxParseSuccess parseSuccess1 = (SingleDrlxParseSuccess) parseSuccess;
+
+                    AccumulateDescr source = (AccumulateDescr) patternRelated.getSource();
+
+                    for(String usedDeclaration : parseSuccess1.getUsedDeclarations()) {
+                        for(AccumulateDescr.AccumulateFunctionCallDescr functionCallDescr :source.getFunctions()) {
+                            if(functionCallDescr.getBind().equals(usedDeclaration)) {
+                                addVariable(patternRelated, when, functionCallDescr);
+                            }
+                        }
+                    }
+
                     when.addArgument(generateLambdaWithoutParameters(parseSuccess1.getUsedDeclarations(), parseSuccess.getExpr(), true));
                 });
 
@@ -103,6 +103,14 @@ public class NamedConsequenceVisitor {
         MethodCallExpr rhs = onDSL(desc.getConsequence());
         then.addArgument(rhs);
         return then;
+    }
+
+    private void addVariable(PatternDescr patternRelated, MethodCallExpr when, AccumulateDescr.AccumulateFunctionCallDescr accFuncCallDescr) {
+        String identifierDeclaration = ofNullable(accFuncCallDescr)
+                .map(AccumulateDescr.AccumulateFunctionCallDescr::getBind)
+                .orElseThrow(() -> new InvalidNamedConsequenceException("Cannot find function identifier"));
+
+        when.addArgument(context.getVarExpr(identifierDeclaration));
     }
 
     private BaseDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
