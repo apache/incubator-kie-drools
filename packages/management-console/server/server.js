@@ -157,6 +157,8 @@ const data = [
         roles: [],
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -195,6 +197,8 @@ const data = [
         roles: [],
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -233,6 +237,8 @@ const data = [
         roles: [],
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -330,6 +336,8 @@ const data = [
         roles: [],
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -368,6 +376,8 @@ const data = [
         roles: [],
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -406,6 +416,7 @@ const data = [
         roles: [],
         state: "ABORTED",
         start: "2019-10-22T03:40:44.089Z",
+        endpoint: "http://localhost:8080/travels",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -494,6 +505,7 @@ const data = [
         processName: "travels",
         roles: [],
         state: "ACTIVE",
+        endpoint: "http://localhost:8080/travels",
         start: "2019-10-22T03:40:44.089Z",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -583,7 +595,9 @@ const data = [
         processName: "FlightBooking",
         roles: [],
         state: "COMPLETED",
+        endpoint: "http://localhost:8080/travels",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
         nodes: [
@@ -621,7 +635,9 @@ const data = [
         processName: "HotelBooking",
         roles: [],
         state: "COMPLETED",
+        endpoint: "http://localhost:8080/travels",
         start: "2019-10-22T03:40:44.089Z",
+        end: "2019-10-22T05:40:44.089Z",
         variables:
                 '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
         nodes: [

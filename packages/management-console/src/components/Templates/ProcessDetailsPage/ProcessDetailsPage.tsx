@@ -24,6 +24,7 @@ const ProcessDetailsPage = ({match}) => {
                 state
                 start
                 end
+                endpoint
                 childProcessInstanceId
                 nodes {
                     id
