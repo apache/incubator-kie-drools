@@ -8,4 +8,5 @@ out/
 *.log
 **/yarn.lock
 **/stats.json
+**/junit.xml
 package-lock.json
