@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_c8fc1424-d3fb-40c5-81df-22b409891192" id="_c8fc1424-d3fb-40c5-81df-22b409891192" name="base join" namespace="http://www.trisotech.com/definitions/_c8fc1424-d3fb-40c5-81df-22b409891192" exporter="DMN Modeler" exporterVersion="6.3.1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_c8fc1424-d3fb-40c5-81df-22b409891192_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_c8fc1424-d3fb-40c5-81df-22b409891192_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_a4d64efa-21e3-4069-a652-2f12807d2fc2"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_b1517b28-b25d-43c0-9801-571b07eddcb8_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_b1517b28-b25d-43c0-9801-571b07eddcb8_DS_VAR" typeRef="Any"/>
+    </semantic:decisionService>
+    <semantic:businessKnowledgeModel id="_0e8cb9f3-3b80-420e-8d35-0b92fef7f994" name="join">
+        <semantic:variable name="join" id="_45cba76a-ec1f-40df-b014-5053e4a9c289" typeRef="string"/>
+        <semantic:encapsulatedLogic id="_9985e20a-a1c4-4ee9-ba33-59cb68bbc4e6" kind="FEEL" typeRef="string" triso:expressionId="_c77e0dd3-cc62-49e9-a829-4488b1f81dc6">
+            <semantic:formalParameter name="p1" typeRef="string" id="_e8ff7d0b-6c36-4d1d-8673-745a2560ee0b"/>
+            <semantic:formalParameter name="p2" typeRef="string" id="_39fec499-3e3b-4310-a244-36eaefcd5dde"/>
+            <semantic:literalExpression id="_e70b1082-96e6-4595-8165-7786a6df179b" typeRef="string">
+                <semantic:text>p1 + p2</semantic:text>
+            </semantic:literalExpression>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decisionService id="_9f75ca5b-8eaf-4c81-8d1e-fae649fb4b84" name="DS1">
+        <semantic:variable name="DS1" id="_a4920373-e132-4477-b034-aa3657888ea6" typeRef="Any"/>
+        <semantic:outputDecision href="#_a4d64efa-21e3-4069-a652-2f12807d2fc2"/>
+    </semantic:decisionService>
+    <semantic:decision id="_a4d64efa-21e3-4069-a652-2f12807d2fc2" name="singleton">
+        <semantic:variable name="singleton" id="_ca396a59-205b-47e2-8bc1-b537d0b40a68" typeRef="string"/>
+        <semantic:literalExpression id="_c5c85c3f-0dc9-4843-9a7b-8d67a01dfad1" typeRef="string" triso:expressionId="_a052232f-ad59-4f98-a74d-69caf98fb3f9">
+            <semantic:text>"Hello"</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_b1517b28-b25d-43c0-9801-571b07eddcb8" triso:modelElementRef="_d33ffd54-f1d4-4546-9be7-7438d8b573d9" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_a894a331-1e72-47a5-aa9a-fa8ab46070df" dmnElementRef="_0e8cb9f3-3b80-420e-8d35-0b92fef7f994">
+                <dc:Bounds x="224.5" y="120" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_c8fc1424-d3fb-40c5-81df-22b409891192_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_c57969ea-c82a-44b0-896d-09d7bc849203" dmnElementRef="_9f75ca5b-8eaf-4c81-8d1e-fae649fb4b84" isCollapsed="false">
+                <dc:Bounds x="450" y="99" width="260" height="200"/>
+                <dmndi:DMNLabel sharedStyle="LS_c8fc1424-d3fb-40c5-81df-22b409891192_0" trisodmn:defaultBounds="true"/>
+                <dmndi:DMNDecisionServiceDividerLine>
+                    <di:waypoint x="450" y="199"/>
+                    <di:waypoint x="710" y="199"/>
+                </dmndi:DMNDecisionServiceDividerLine>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_1a5c74e1-d5b5-4886-b929-c626949ad5f5" dmnElementRef="_a4d64efa-21e3-4069-a652-2f12807d2fc2">
+                <dc:Bounds x="503.5" y="120" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_c8fc1424-d3fb-40c5-81df-22b409891192_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_c8fc1424-d3fb-40c5-81df-22b409891192_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
