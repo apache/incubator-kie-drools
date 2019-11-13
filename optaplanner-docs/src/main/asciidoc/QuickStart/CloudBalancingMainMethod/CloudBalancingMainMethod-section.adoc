@@ -48,7 +48,7 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 ----
         SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver solver<CloudBalance> = solverFactory.buildSolver();
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
 ----
 
 . Load the problem. 
