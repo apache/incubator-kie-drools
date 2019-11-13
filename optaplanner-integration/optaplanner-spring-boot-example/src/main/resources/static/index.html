@@ -4,18 +4,75 @@
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>OptaPlanner Spring Boot example</title>
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/webjars/font-awesome/css/all.css" />
+    <link rel="stylesheet" href="/app.css" />
 </head>
 <body>
 <div class="container">
-    <h1>OptaPlanner Spring Boot example</h1>
-    <div class="container"><br/>
-        <div class="alert alert-success">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>Success!</strong> It is working as we expected.
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="https://www.optaplanner.org">
+            <img src="optaPlannerLogo200px.png" alt="OptaPlanner logo">
+        </a>
+    </nav>
+    <h1>High school time table solver</h1>
+    <p>Generate the optimal schedule for your teachers and students.</p>
+
+    <div style="margin-bottom: .5rem">
+        <button type="button" class="btn btn-primary">
+            <span class="fas fa-plus"></span> Add lesson
+        </button>
+        <button type="button" class="btn btn-secondary">
+            <span class="fas fa-plus"></span> Add timeslot
+        </button>
+        <button type="button" class="btn btn-secondary" data-action="addRoom" data-toggle="modal" data-target="#roomDialog">
+            <span class="fas fa-plus"></span> Add room
+        </button>
+
+        <div class="float-right">
+            <button id="refreshButton" type="button" class="btn btn-secondary">
+                <span class="fas fa-refresh"></span> Refresh
+            </button>
+            <button id="solveButton" type="button" class="btn btn-success" data-action="solve" >
+                <span class="fas fa-play"></span> Solve
+            </button>
+            <!--    <button type="button" class="float-right btn btn-warning"><span class="fas fa-stop"></span> Terminate</button>-->
+        </div>
+    </div>
+
+    <table class="table" id="timeTableByRoom">
+        <!-- Filled in by app.js -->
+    </table>
+
+    <h2>Unassigned lessons</h2>
+    <div id="unassignedLessonsByRoom"></div>
+</div>
+
+
+<div class="modal fade" id="roomDialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Add a room</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="roomName">Room name</label>
+                    <input type="text" class="form-control" id="roomName" name="roomName" required value="Room D">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="addRoomSubmitButton">Submit new room</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 <script src="/webjars/jquery/jquery.min.js"></script>
 <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>

@@ -50,6 +50,10 @@
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>font-awesome</artifactId>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -63,6 +67,11 @@
         <groupId>org.webjars</groupId>
         <artifactId>bootstrap</artifactId>
         <version>4.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>font-awesome</artifactId>
+        <version>5.11.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

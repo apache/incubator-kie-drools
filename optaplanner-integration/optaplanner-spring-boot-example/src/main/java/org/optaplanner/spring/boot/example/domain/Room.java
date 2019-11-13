@@ -16,31 +16,34 @@
 
 package org.optaplanner.spring.boot.example.domain;
 
-import java.time.Duration;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-public class Detective {
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
+public class Room {
+
+    @PlanningId
+    @NotNull
+    private long id;
+
+    @NotBlank
     private String name;
-    private Duration workDuration;
 
-    public Detective() {
+    private Room() {
     }
 
-    public Detective(String name, Duration workDuration) {
-        this.name = name;
-        this.workDuration = workDuration;
+    public Room(long id, String name) {
+        this.id = id;
+        this.name = name.trim();
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
+    public long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
-    }
-
-    public Duration getWorkDuration() {
-        return workDuration;
     }
 
 }

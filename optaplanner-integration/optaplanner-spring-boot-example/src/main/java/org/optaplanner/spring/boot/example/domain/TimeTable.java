@@ -26,40 +26,52 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 @PlanningSolution
-public class PoliceSolution {
+public class TimeTable {
 
+    private long problemId;
     @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = "detectiveRange")
-    private List<Detective> detectiveList;
-
+    @ValueRangeProvider(id = "timeslotRange")
+    private List<Timeslot> timeslotList;
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "roomRange")
+    private List<Room> roomList;
     @PlanningEntityCollectionProperty
-    private List<Investigation> investigationList;
+    private List<Lesson> lessonList;
 
     @PlanningScore
     private HardSoftScore score;
 
-    public PoliceSolution() {
+    private TimeTable() {
     }
 
-    public PoliceSolution(List<Detective> detectiveList, List<Investigation> investigationList) {
-        this.detectiveList = detectiveList;
-        this.investigationList = investigationList;
+    public TimeTable(long problemId, List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList) {
+        this.problemId = problemId;
+        this.timeslotList = timeslotList;
+        this.roomList = roomList;
+        this.lessonList = lessonList;
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    public List<Detective> getDetectiveList() {
-        return detectiveList;
+    public long getProblemId() {
+        return problemId;
     }
 
-    public List<Investigation> getInvestigationList() {
-        return investigationList;
+    public List<Timeslot> getTimeslotList() {
+        return timeslotList;
+    }
+
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public List<Lesson> getLessonList() {
+        return lessonList;
     }
 
     public HardSoftScore getScore() {
         return score;
     }
 
+    public void setScore(HardSoftScore score) {
+        this.score = score;
+    }
 }

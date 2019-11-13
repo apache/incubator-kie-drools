@@ -16,44 +16,49 @@
 
 package org.optaplanner.spring.boot.example.domain;
 
-import java.time.Duration;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import javax.validation.constraints.NotNull;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
-@PlanningEntity
-public class Investigation {
+public class Timeslot {
 
     @PlanningId
+    @NotNull
     private long id;
-    private Duration estimatedDuration;
 
-    @PlanningVariable(valueRangeProviderRefs = "detectiveRange")
-    private Detective detective;
+    @NotNull
+    private DayOfWeek dayOfWeek;
+    @NotNull
+    private LocalTime startTime;
+    @NotNull
+    private LocalTime endTime;
 
-    private Investigation() {
+    private Timeslot() {
     }
 
-    public Investigation(long id, Duration estimatedDuration) {
+    public Timeslot(long id, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
         this.id = id;
-        this.estimatedDuration = estimatedDuration;
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
     public long getId() {
         return id;
     }
 
-    public Duration getEstimatedDuration() {
-        return estimatedDuration;
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
     }
 
-    public Detective getDetective() {
-        return detective;
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
     }
 
 }
