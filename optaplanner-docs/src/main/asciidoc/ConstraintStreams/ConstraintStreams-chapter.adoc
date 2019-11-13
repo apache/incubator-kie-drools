@@ -17,7 +17,10 @@ The API should feel familiar if you've worked with Java 8 Streams or SQL.
 The ConstraintStreams/ConstraintProvider API is an ongoing project.
 It works but it has many API gaps.
 Therefore, it is not rich enough yet to handle complex constraints.
+<<explainingTheScore,Constraint justifications>> may not function properly.
 ====
+
+// TODO Remove the previous sentence when PLANNER-1709 is fixed.
 
 To use constraint streams in your project, implement the `ConstraintProvider` interface and use the following in your
 solver config:
@@ -55,11 +58,18 @@ that uses a functional approach:
 However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
 When the planning variable of a single `Talk` changes, to recalculate the score,
 the normal Streams API has to execute the entire stream from scratch.
+
+On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>:
+
+////
+TODO Replace the previous sentence when PLANNER-1709 is fixed.
+
 So it doesn't do <<incrementalScoreCalculation,deltas>>.
 Nor does it support <<explainingTheScore,justifications>>.
 
 On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>
 and supports <<explainingTheScore,justifications>>:
+////
 
 [source,java,options="nowrap"]
 ----
