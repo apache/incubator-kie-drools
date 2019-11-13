@@ -20,6 +20,8 @@ var autoRefreshIntervalId = null;
 
 function refreshTimeTable() {
     $.getJSON("/timeTable/" + PROBLEM_ID, function (timeTable) {
+        $("#score").text("Score: "+ (timeTable.score == null ? "?" : timeTable.score));
+
         var timeTableByRoom = $("#timeTableByRoom");
         timeTableByRoom.children().remove();
         var unassignedLessonsByRoom = $("#unassignedLessonsByRoom");
