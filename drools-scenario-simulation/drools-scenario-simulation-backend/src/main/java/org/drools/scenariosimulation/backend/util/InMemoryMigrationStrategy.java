@@ -210,7 +210,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             final Node factMappingNode = DOMParserUtil.createNodeAtPosition(factMappingsNode, FACT_MAPPING_NODE, null, null);
             DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION, null);
             final Node expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_ELEMENTS_NODE, null, null);
-            ((Element)expressionElementsNode).setAttribute("class", "linked-list");
+            ((Element) expressionElementsNode).setAttribute("class", "linked-list");
             final Node expressionIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null, null);
             DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "1|1", null);
             DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "type", "GIVEN", null);

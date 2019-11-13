@@ -65,7 +65,6 @@ public class Settings {
         this.type = type;
     }
 
-
     /**
      * @deprecated
      */

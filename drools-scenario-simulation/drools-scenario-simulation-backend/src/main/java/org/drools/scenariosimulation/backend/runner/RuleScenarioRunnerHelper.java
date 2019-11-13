@@ -30,15 +30,15 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -64,15 +64,14 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!Type.RULE.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
-        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer,
-                                                                                    settings.getDmoSession(),
-                                                                                    settings.isStateless());
+        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilderWrapper(kieContainer, settings);
 
         if (settings.getRuleFlowGroup() != null) {
             ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(settings.getRuleFlowGroup());
         }
 
-        scenarioRunnerData.getGivens().stream().map(ScenarioGiven::getValue).forEach(ruleScenarioExecutableBuilder::insert);
+        loadInputData(scenarioRunnerData.getBackgrounds(), ruleScenarioExecutableBuilder);
+        loadInputData(scenarioRunnerData.getGivens(), ruleScenarioExecutableBuilder);
         // all new facts should be verified internally to the working memory
         scenarioRunnerData.getExpects().stream()
                 .filter(ScenarioExpect::isNewFact)
@@ -111,7 +110,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                                     ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
 
-        for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
+        for (InstanceGiven input : scenarioRunnerData.getGivens()) {
             FactIdentifier factIdentifier = input.getFactIdentifier();
             List<ScenarioExpect> assertionOnFact = scenarioRunnerData.getExpects().stream()
                     .filter(elem -> !elem.isNewFact())
@@ -128,7 +127,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
     protected List<ScenarioResult> getScenarioResultsFromGivenFacts(ScesimModelDescriptor scesimModelDescriptor,
                                                                     List<ScenarioExpect> scenarioOutputsPerFact,
-                                                                    ScenarioGiven input,
+                                                                    InstanceGiven input,
                                                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
@@ -176,8 +175,20 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         };
     }
 
+    protected void loadInputData(List<InstanceGiven> dataToLoad, RuleScenarioExecutableBuilder executableBuilder) {
+        for (InstanceGiven instanceGiven : dataToLoad) {
+            executableBuilder.insert(instanceGiven.getValue());
+        }
+    }
+
     @Override
-    public Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         return fillBean(className, params, classLoader);
+    }
+
+    protected RuleScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer, Settings settings) {
+        return createBuilder(kieContainer,
+                             settings.getDmoSession(),
+                             settings.isStateless());
     }
 }

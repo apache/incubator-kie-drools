@@ -16,11 +16,13 @@
 
 package org.drools.scenariosimulation.api.model;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,16 +49,11 @@ public class SimulationTest {
     public void addData() {
         simulation.addData(1);
 
-        muteException(() -> {
-                          simulation.addData(-1);
-                          fail();
-                      },
-                      IllegalArgumentException.class);
-        muteException(() -> {
-                          simulation.addData(3);
-                          fail();
-                      },
-                      IllegalArgumentException.class);
+        assertThatThrownBy(() -> simulation.addData(-1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
+
+        assertThatThrownBy(() -> simulation.addData(3))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -91,29 +88,17 @@ public class SimulationTest {
     @Test
     public void cloneScenarioFail() {
 
-        muteException(() -> {
-                          simulation.cloneData(-1, 1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> simulation.cloneData(-1, 1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          simulation.cloneData(2, 1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> simulation.cloneData(2, 1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          simulation.cloneData(0, -1);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> simulation.cloneData(0, -1))
+                .isInstanceOf(IndexOutOfBoundsException.class);
 
-        muteException(() -> {
-                          simulation.cloneData(0, 2);
-                          fail();
-                      },
-                      IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> simulation.cloneData(0, 2))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -134,13 +119,12 @@ public class SimulationTest {
         assertEquals(0, simulation.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
     }
 
-    private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
-        try {
-            toBeExecuted.run();
-        } catch (Throwable t) {
-            if (!t.getClass().isAssignableFrom(expected)) {
-                throw t;
-            }
-        }
+    @Test
+    public void getScenarioWithIndex() {
+        List<ScenarioWithIndex> scenarioWithIndex = simulation.getScenarioWithIndex();
+        assertEquals(simulation.getUnmodifiableData().size(), scenarioWithIndex.size());
+        ScenarioWithIndex scenario = scenarioWithIndex.get(0);
+        int index = scenario.getIndex();
+        assertEquals(simulation.getDataByIndex(index - 1), scenario.getScesimData());
     }
 }

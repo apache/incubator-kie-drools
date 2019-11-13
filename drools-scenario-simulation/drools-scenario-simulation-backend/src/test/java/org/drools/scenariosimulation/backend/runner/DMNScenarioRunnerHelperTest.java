@@ -36,6 +36,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.expression.DMNFeelExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
@@ -45,16 +46,20 @@ import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -69,8 +74,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -79,11 +87,17 @@ public class DMNScenarioRunnerHelperTest {
     private static final String NAME = "NAME";
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
+    private static final String DMN_FILE_PATH = "dmnFilePath";
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
-    private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper();
+    private final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper() {
+        @Override
+        protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
+            return dmnScenarioExecutableBuilderMock;
+        }
+    };
     @Mock
     protected Map<String, Object> requestContextMock;
     @Mock
@@ -92,7 +106,12 @@ public class DMNScenarioRunnerHelperTest {
     protected DMNDecisionResult dmnDecisionResultMock;
     @Mock
     protected DMNModel dmnModelMock;
+    @Mock
+    protected DMNScenarioExecutableBuilder dmnScenarioExecutableBuilderMock;
+    @Mock
+    protected KieContainer kieContainerMock;
     private Simulation simulation;
+    private Settings settings;
     private FactIdentifier personFactIdentifier;
     private ExpressionIdentifier firstNameGivenExpressionIdentifier;
     private FactMapping firstNameGivenFactMapping;
@@ -110,7 +129,12 @@ public class DMNScenarioRunnerHelperTest {
 
     @Before
     public void init() {
+        when(dmnScenarioExecutableBuilderMock.run()).thenReturn(mock(RequestContext.class));
+
         simulation = new Simulation();
+        settings = new Settings();
+        settings.setType(ScenarioSimulationModel.Type.DMN);
+        settings.setDmnFilePath(DMN_FILE_PATH);
         personFactIdentifier = FactIdentifier.create("Fact 1", Person.class.getCanonicalName());
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
@@ -253,6 +277,37 @@ public class DMNScenarioRunnerHelperTest {
                              " has not been successfully evaluated: " +
                              failedDecision.getEvaluationStatus(),
                      failedResult.getErrorMessage().get());
+    }
+
+    @Test
+    public void executeScenario() {
+        ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
+
+        ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
+        scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, new Person()));
+        scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, new Dispute()));
+        scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, new Person()));
+        FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
+        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
+        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
+
+        int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size();
+
+        runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
+
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(eq(DMN_FILE_PATH));
+        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(anyString(), setValueCaptor.capture());
+        for (Object value : setValueCaptor.getAllValues()) {
+            assertTrue(value instanceof Person || value instanceof Dispute);
+        }
+
+        verify(dmnScenarioExecutableBuilderMock, times(1)).run();
+
+        // test not rule error
+        settings.setType(ScenarioSimulationModel.Type.RULE);
+        assertThatThrownBy(() -> runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessageStartingWith("Impossible to run");
     }
 
     public void commonExtractResultMetadata(List<DMNMessage> messages) {

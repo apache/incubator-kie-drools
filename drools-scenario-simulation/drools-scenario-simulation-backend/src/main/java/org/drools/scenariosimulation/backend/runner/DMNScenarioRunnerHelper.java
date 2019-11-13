@@ -28,14 +28,14 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -59,13 +59,19 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!ScenarioSimulationModel.Type.DMN.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
-        DMNScenarioExecutableBuilder executableBuilder = DMNScenarioExecutableBuilder.createBuilder(kieContainer);
+        DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
         executableBuilder.setActiveModel(settings.getDmnFilePath());
-        for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
-            executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
-        }
+
+        loadInputData(scenarioRunnerData.getBackgrounds(), executableBuilder);
+        loadInputData(scenarioRunnerData.getGivens(), executableBuilder);
 
         return executableBuilder.run().getOutputs();
+    }
+
+    protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
+        for (InstanceGiven input : dataToLoad) {
+            executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
+        }
     }
 
     @Override
@@ -179,5 +185,9 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             targetMap.put(lastStep, listObjectEntry.getValue());
         }
         return toReturn;
+    }
+
+    protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
+        return DMNScenarioExecutableBuilder.createBuilder(kieContainer);
     }
 }

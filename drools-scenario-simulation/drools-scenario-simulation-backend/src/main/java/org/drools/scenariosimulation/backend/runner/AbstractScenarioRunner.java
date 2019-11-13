@@ -19,14 +19,14 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.List;
 import java.util.Optional;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
-import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -42,38 +42,17 @@ public abstract class AbstractScenarioRunner extends Runner {
     protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     protected final Description desc;
     protected final KieContainer kieContainer;
-    protected final ScesimModelDescriptor scesimModelDescriptor;
-    protected final Settings settings;
-    protected List<ScenarioWithIndex> scenarios;
-    protected String fileName;
+    protected final ScenarioRunnerDTO scenarioRunnerDTO;
     protected SimulationRunMetadataBuilder simulationRunMetadataBuilder;
 
     public AbstractScenarioRunner(KieContainer kieContainer,
-                                  Simulation simulation,
-                                  String fileName,
-                                  ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                  Settings settings) {
-        this(kieContainer, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), fileName, expressionEvaluatorFactory, settings);
-    }
-
-    public AbstractScenarioRunner(KieContainer kieContainer,
-                                  ScesimModelDescriptor scesimModelDescriptor,
-                                  List<ScenarioWithIndex> scenarios,
-                                  String fileName,
-                                  ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                                  Settings settings) {
+                                  ScenarioRunnerDTO scenarioRunnerDTO,
+                                  ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         this.kieContainer = kieContainer;
-        this.scesimModelDescriptor = scesimModelDescriptor;
-        this.scenarios = scenarios;
-        this.fileName = fileName;
-        this.desc = getDescriptionForSimulation(getFileName(), scenarios);
+        this.scenarioRunnerDTO = scenarioRunnerDTO;
+        this.desc = getDescriptionForSimulation(getFileName(), scenarioRunnerDTO.getScenarioWithIndices());
         this.classLoader = kieContainer.getClassLoader();
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
-        this.settings = settings;
-    }
-
-    public static Description getDescriptionForSimulation(Optional<String> className, Simulation simulation) {
-        return getDescriptionForSimulation(className, simulation.getScenarioWithIndex());
     }
 
     public static Description getDescriptionForSimulation(Optional<String> className, List<ScenarioWithIndex> scenarios) {
@@ -103,8 +82,8 @@ public abstract class AbstractScenarioRunner extends Runner {
         simulationRunMetadataBuilder = SimulationRunMetadataBuilder.create();
 
         notifier.fireTestStarted(getDescription());
-        for (ScenarioWithIndex scenarioWithIndex : scenarios) {
-            singleRunScenario(scenarioWithIndex, notifier, settings)
+        for (ScenarioWithIndex scenarioWithIndex : scenarioRunnerDTO.getScenarioWithIndices()) {
+            singleRunScenario(scenarioWithIndex, notifier, scenarioRunnerDTO.getSettings(), scenarioRunnerDTO.getBackground())
                     .ifPresent(simulationRunMetadataBuilder::addScenarioResultMetadata);
         }
         notifier.fireTestStarted(getDescription());
@@ -115,7 +94,7 @@ public abstract class AbstractScenarioRunner extends Runner {
         return this.desc;
     }
 
-    protected Optional<ScenarioResultMetadata> singleRunScenario(ScenarioWithIndex scenarioWithIndex, RunNotifier runNotifier, Settings settings) {
+    protected Optional<ScenarioResultMetadata> singleRunScenario(ScenarioWithIndex scenarioWithIndex, RunNotifier runNotifier, Settings settings, Background background) {
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
 
         int index = scenarioWithIndex.getIndex();
@@ -123,15 +102,15 @@ public abstract class AbstractScenarioRunner extends Runner {
         runNotifier.fireTestStarted(descriptionForScenario);
 
         try {
-            internalRunScenario(scenarioWithIndex, scenarioRunnerData, settings);
+            internalRunScenario(scenarioWithIndex, scenarioRunnerData, settings, background);
         } catch (ScenarioException e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
-            indexedScenarioException.setFileName(fileName);
+            indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         } catch (Throwable e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
                     scenarioWithIndex.getScesimData().getDescription() + "'", e);
-            indexedScenarioException.setFileName(fileName);
+            indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         }
 
@@ -140,22 +119,19 @@ public abstract class AbstractScenarioRunner extends Runner {
         return scenarioRunnerData.getMetadata();
     }
 
-    protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData, Settings settings) {
+    protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData, Settings settings, Background background) {
         newRunnerHelper().run(getKieContainer(),
-                              getScesimModelDescriptor(),
+                              scenarioRunnerDTO.getSimulationModelDescriptor(),
                               scenarioWithIndex,
                               expressionEvaluatorFactory,
                               getClassLoader(),
                               scenarioRunnerData,
-                              settings);
+                              settings,
+                              background);
     }
 
     public Optional<String> getFileName() {
-        return Optional.ofNullable(fileName);
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+        return Optional.ofNullable(scenarioRunnerDTO.getFileName());
     }
 
     public ClassLoader getClassLoader() {
@@ -164,10 +140,6 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     public KieContainer getKieContainer() {
         return kieContainer;
-    }
-
-    public ScesimModelDescriptor getScesimModelDescriptor() {
-        return scesimModelDescriptor;
     }
 
     public Optional<SimulationRunMetadata> getLastRunResultMetadata() {

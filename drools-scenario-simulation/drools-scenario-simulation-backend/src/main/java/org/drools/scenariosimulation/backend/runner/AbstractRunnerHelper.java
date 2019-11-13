@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -33,13 +35,13 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -53,11 +55,26 @@ import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.c
 
 public abstract class AbstractRunnerHelper {
 
-    public void run(KieContainer kieContainer, ScesimModelDescriptor scesimModelDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluatorFactory expressionEvaluatorFactory, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData, Settings settings) {
+    public void run(KieContainer kieContainer,
+                    ScesimModelDescriptor scesimModelDescriptor,
+                    ScenarioWithIndex scenarioWithIndex,
+                    ExpressionEvaluatorFactory expressionEvaluatorFactory,
+                    ClassLoader classLoader,
+                    ScenarioRunnerData scenarioRunnerData,
+                    Settings settings,
+                    Background background) {
 
         Scenario scenario = scenarioWithIndex.getScesimData();
 
-        extractGivenValues(scesimModelDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluatorFactory)
+        extractBackgroundValues(background,
+                                classLoader,
+                                expressionEvaluatorFactory)
+                .forEach(scenarioRunnerData::addBackground);
+
+        extractGivenValues(scesimModelDescriptor,
+                           scenario.getUnmodifiableFactMappingValues(),
+                           classLoader,
+                           expressionEvaluatorFactory)
                 .forEach(scenarioRunnerData::addGiven);
 
         extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addExpect);
@@ -78,11 +95,29 @@ public abstract class AbstractRunnerHelper {
                           scenario);
     }
 
-    protected List<ScenarioGiven> extractGivenValues(ScesimModelDescriptor scesimModelDescriptor,
+    protected List<InstanceGiven> extractBackgroundValues(Background background,
+                                                          ClassLoader classLoader,
+                                                          ExpressionEvaluatorFactory expressionEvaluatorFactory) {
+        List<InstanceGiven> backgrounds = new ArrayList<>();
+        for (BackgroundData row : background.getUnmodifiableData()) {
+            try {
+                List<InstanceGiven> givens = extractGivenValues(background.getScesimModelDescriptor(),
+                                                                row.getUnmodifiableFactMappingValues(),
+                                                                classLoader,
+                                                                expressionEvaluatorFactory);
+                backgrounds.addAll(givens);
+            } catch (ScenarioException e) {
+                throw new ScenarioException("Error in BACKGROUND data");
+            }
+        }
+        return backgrounds;
+    }
+
+    protected List<InstanceGiven> extractGivenValues(ScesimModelDescriptor scesimModelDescriptor,
                                                      List<FactMappingValue> factMappingValues,
                                                      ClassLoader classLoader,
                                                      ExpressionEvaluatorFactory expressionEvaluatorFactory) {
-        List<ScenarioGiven> scenarioGiven = new ArrayList<>();
+        List<InstanceGiven> instanceGiven = new ArrayList<>();
 
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
                 groupByFactIdentifierAndFilter(factMappingValues, FactMappingType.GIVEN);
@@ -104,8 +139,8 @@ public abstract class AbstractRunnerHelper {
                 Object bean = getDirectMapping(paramsForBean)
                         .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
 
-                scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
-            } catch(Exception e) {
+                instanceGiven.add(new InstanceGiven(factIdentifier, bean));
+            } catch (Exception e) {
                 hasError = true;
             }
         }
@@ -114,7 +149,7 @@ public abstract class AbstractRunnerHelper {
             throw new ScenarioException("Error in GIVEN data");
         }
 
-        return scenarioGiven;
+        return instanceGiven;
     }
 
     protected ResultWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {

@@ -15,9 +15,11 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Abstract class representing the content model of the grid, to be extended by concrete implementations
@@ -34,7 +36,7 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
      */
     protected final List<T> scesimData = new LinkedList<>();
 
-    public abstract AbstractScesimModel cloneModel();
+    public abstract AbstractScesimModel<T> cloneModel();
 
     public abstract T addData(int index);
 
@@ -108,5 +110,14 @@ public abstract class AbstractScesimModel<T extends AbstractScesimData> {
 
     protected void clearDatas(FactMapping toRemove) {
         scesimData.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
+    }
+
+    protected <Z extends ScesimDataWithIndex<T>> List<Z> toScesimDataWithIndex(BiFunction<Integer, T, Z> producer) {
+        List<Z> toReturn = new ArrayList<>();
+        List<T> data = getUnmodifiableData();
+        for (int index = 0; index < data.size(); index += 1) {
+            toReturn.add(producer.apply(index + 1, data.get(index)));
+        }
+        return toReturn;
     }
 }

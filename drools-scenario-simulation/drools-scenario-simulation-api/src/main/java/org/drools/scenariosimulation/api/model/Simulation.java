@@ -17,21 +17,19 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.List;
 
-import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.toScenarioWithIndex;
-
 /**
  * Envelop class that wrap the definition of the simulation and the values of the scenarios
  */
 public class Simulation extends AbstractScesimModel<Scenario> {
 
     public List<ScenarioWithIndex> getScenarioWithIndex() {
-        return toScenarioWithIndex(this);
+        return toScesimDataWithIndex(ScenarioWithIndex::new);
     }
 
     @Override
     public Scenario addData(int index) {
         if (index < 0 || index > scesimData.size()) {
-            throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
+            throw new IndexOutOfBoundsException(new StringBuilder().append("Index out of range ").append(index).toString());
         }
         Scenario scenario = new Scenario();
         scesimData.add(index, scenario);

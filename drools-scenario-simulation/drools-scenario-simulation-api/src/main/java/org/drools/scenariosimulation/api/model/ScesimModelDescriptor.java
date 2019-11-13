@@ -31,7 +31,6 @@ public class ScesimModelDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 
-
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * @return
@@ -48,15 +47,14 @@ public class ScesimModelDescriptor {
         return factMappings;
     }
 
-
     public void moveFactMapping(int oldIndex, int newIndex) {
         if (oldIndex < 0 || oldIndex >= factMappings.size()) {
             throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(oldIndex)
-                                                       .append(" not found in the list").toString());
+                                                        .append(" not found in the list").toString());
         }
         if (newIndex < 0 || newIndex >= factMappings.size()) {
             throw new IndexOutOfBoundsException(new StringBuilder().append("Index ").append(newIndex)
-                                                       .append(" out of range").toString());
+                                                        .append(" out of range").toString());
         }
         FactMapping factMapping = factMappings.get(oldIndex);
         factMappings.remove(oldIndex);
@@ -142,5 +140,4 @@ public class ScesimModelDescriptor {
     private List<FactMapping> internalFilter(Predicate<FactMapping> predicate) {
         return factMappings.stream().filter(predicate).collect(Collectors.toList());
     }
-
 }
