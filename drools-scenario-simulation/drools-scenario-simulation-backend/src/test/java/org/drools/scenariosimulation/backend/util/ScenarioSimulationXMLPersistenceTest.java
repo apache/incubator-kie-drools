@@ -185,13 +185,33 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     @Test
     public void migrateIfNecessary_1_6_to_1_7() throws Exception {
-        String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        String toMigrate = getFileContent("scesim-1-6-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
+        for (Node factMappingNode : factMappingNodes) {
+            List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
+            String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
+            assertNotNull(expressionIdentifierName);
+            List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
+            assertEquals(1, columnWidthNodes.size());
+            String columnWidth = columnWidthNodes.get(0).getTextContent();
+            assertNotNull(columnWidth);
+            assertFalse(columnWidth.isEmpty());
+            double columnWidthDouble = Double.parseDouble(columnWidth);
+            assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
+        }
+        commonCheck(toMigrate, document, "1.7");
+        toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_6to1_7().accept(document);
+        factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
+        assertNotNull(factMappingsNodes);
+        assertEquals(1, factMappingsNodes.size());
+        factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
             String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
