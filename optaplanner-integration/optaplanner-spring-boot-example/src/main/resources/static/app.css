@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 
-div.lesson {
-    border: solid thin black;
-    padding: .2rem;
-    margin: .2rem;
-}
-
-span.subject {
-    font-weight: bold;
-}
-span.teacher {
-    font-style: italic;
-    margin-left: .5rem;
-}
-span.studentGroup {
-    margin-left: .5rem;
+.timeTable tr th, .timeTable tr td {
+    padding: 0.5rem;
+    vertical-align: middle;
 }

@@ -25,15 +25,15 @@ function refreshTimeTable() {
         var unassignedLessonsByRoom = $("#unassignedLessonsByRoom");
         unassignedLessonsByRoom.children().remove();
 
-        var headerRow = timeTableByRoom.append($("<thead></thead>")).append("<tr></tr>");
+        var thead = $("<thead>").appendTo(timeTableByRoom);
+        var headerRow = $("<tr>").appendTo(thead);
         headerRow.append($("<th>Timeslot</th>"));
         $.each(timeTable.roomList, function (index, room) {
             headerRow.append($("<th>" + room.name + "</th>"));
         });
-        timeTableByRoom.append(headerRow);
 
         $.each(timeTable.timeslotList, function (index, timeslot) {
-            var row = timeTableByRoom.append($("<tr></tr>"));
+            var row = $("<tr>").appendTo(timeTableByRoom);
             row.append($("<th>" + timeslot.dayOfWeek + " " + timeslot.startTime + "-" + timeslot.endTime + "</th>"));
             $.each(timeTable.roomList, function (index, room) {
                 row.append($("<td id=\"timeslot" + timeslot.id + "room" + room.id + "\"></td>"));
@@ -41,11 +41,11 @@ function refreshTimeTable() {
         });
 
         $.each(timeTable.lessonList, function (index, lesson) {
-            var lessonElement = $("<div class=\"lesson\">"
-                    + "<span class=\"subject\">" + lesson.subject + "</span><br/>"
-                    + "<span class=\"teacher\">by " + lesson.teacher + "</span><br/>"
-                    + "<span class=\"studentGroup\">" + lesson.studentGroup + "</span>"
-                    + "</div>");
+            var lessonElement = $("<div class=\"card lesson\"><div class=\"card-body p-2\">"
+                    + "<h5 class=\"card-title mb-1\">" + lesson.subject + "</h5>"
+                    + "<p class=\"card-text text-muted ml-2 mb-1\">by " + lesson.teacher + "</p>"
+                    + "<p class=\"card-text ml-2\">" + lesson.studentGroup + "</p>"
+                    + "</div></div>");
             if (lesson.timeslot == null || lesson.room == null) {
                 unassignedLessonsByRoom.append(lessonElement);
             } else {
