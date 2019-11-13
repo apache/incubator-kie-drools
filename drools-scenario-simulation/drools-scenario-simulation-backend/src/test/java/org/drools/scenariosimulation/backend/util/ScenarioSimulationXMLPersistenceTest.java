@@ -19,17 +19,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUE_TYPE_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.NOT_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
@@ -184,13 +185,33 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     @Test
     public void migrateIfNecessary_1_6_to_1_7() throws Exception {
-        String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        String toMigrate = getFileContent("scesim-1-6-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
+        for (Node factMappingNode : factMappingNodes) {
+            List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
+            String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
+            assertNotNull(expressionIdentifierName);
+            List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
+            assertEquals(1, columnWidthNodes.size());
+            String columnWidth = columnWidthNodes.get(0).getTextContent();
+            assertNotNull(columnWidth);
+            assertFalse(columnWidth.isEmpty());
+            double columnWidthDouble = Double.parseDouble(columnWidth);
+            assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
+        }
+        commonCheck(toMigrate, document, "1.7");
+        toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_6to1_7().accept(document);
+        factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
+        assertNotNull(factMappingsNodes);
+        assertEquals(1, factMappingsNodes.size());
+        factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
             String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
@@ -229,7 +250,8 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonFactMappingValueType(document);
+        commonCheckFactMappingValueType(document, SIMULATION_NODE);
+        commonCheckFactMappingValueType(document, BACKGROUND_NODE);
         toMigrate = getFileContent("scesim-1-7-rule.scesim");
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_7to1_8().accept(document);
@@ -245,22 +267,22 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
         commonCheck(toMigrate, document, "1.8");
         commonCheckBackground(document);
-        commonFactMappingValueType(document);
+        commonCheckFactMappingValueType(document, SIMULATION_NODE);
+        commonCheckFactMappingValueType(document, BACKGROUND_NODE);
     }
 
-    private void commonFactMappingValueType(Document document) {
-        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
+    private void commonCheckFactMappingValueType(Document document, String scesimModel) {
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, scesimModel, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
         assertNotNull(factMappingsNodes);
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> factMappingValueTypeNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE);
             assertEquals(1, factMappingValueTypeNodes.size());
-            String factMappingValueTypeText = factMappingValueTypeNodes .get(0).getTextContent();
+            String factMappingValueTypeText = factMappingValueTypeNodes.get(0).getTextContent();
             assertNotNull(factMappingValueTypeText);
             assertFalse(factMappingValueTypeText.isEmpty());
-            FactMappingValueType factMappingValueType = FactMappingValueType.valueOf(factMappingValueTypeText);
-            assertEquals(FactMappingValueType.NOT_EXPRESSION, factMappingValueType);
+            assertEquals(NOT_EXPRESSION, factMappingValueTypeText);
         }
     }
 
@@ -334,12 +356,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         commonCheckSimulation(scenarioSimulationModel);
     }
 
-    private void commonCheckSimulation(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckSimulation(ScenarioSimulationModel toCheck) {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getSimulation());
         assertNotNull(toCheck.getSimulation().getScesimModelDescriptor());
-        toCheck.getSimulation().getUnmodifiableData().forEach(scenario -> scenario.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
-        }));
     }
 
     private void commonCheckBackground(Document toCheck) throws Exception {
@@ -348,11 +368,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         commonCheckBackground(scenarioSimulationModel);
     }
 
-    private void commonCheckBackground(ScenarioSimulationModel toCheck) throws Exception {
+    private void commonCheckBackground(ScenarioSimulationModel toCheck) {
         assertNotNull(toCheck);
         assertNotNull(toCheck.getBackground());
         assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
-        toCheck.getSimulation().getUnmodifiableData().forEach(backgroundData -> backgroundData.getUnmodifiableFactMappingValues().forEach(factMappingValue -> {
-        }));
+        assertFalse(toCheck.getBackground().getUnmodifiableData().isEmpty());
     }
 }

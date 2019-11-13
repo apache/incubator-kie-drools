@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_DATA_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION_ELEMENTS_NODE;
@@ -33,7 +33,10 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.EXPRESSION
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_IDENTIFIER_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPINGS_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUES_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUE_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.FACT_MAPPING_VALUE_TYPE_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.NOT_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS_NODE;
@@ -200,22 +203,34 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                         });
             }
             final List<Node> factMappingNodesList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
-            factMappingNodesList.forEach(factMappingNode -> DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, FactMappingValueType.NOT_EXPRESSION.toString(), null));
+            factMappingNodesList.forEach(factMappingNode -> DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION, null));
             final Node backgroundNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null, null);
             final Node simulationDescriptorNode = DOMParserUtil.createNodeAtPosition(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null, null);
             final Node factMappingsNode = DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, FACT_MAPPINGS_NODE, null, null);
             final Node factMappingNode = DOMParserUtil.createNodeAtPosition(factMappingsNode, FACT_MAPPING_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION, null);
             final Node expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_ELEMENTS_NODE, null, null);
             ((Element)expressionElementsNode).setAttribute("class", "linked-list");
             final Node expressionIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "0|1", null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "1|1", null);
             DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "type", "GIVEN", null);
             final Node factIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_IDENTIFIER_NODE, null, null);
             DOMParserUtil.createNodeAtPosition(factIdentifierNode, "name", "Empty", null);
-            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "className", "java.lang.Void", null);
-            DOMParserUtil.createNodeAtPosition(factMappingNode, "className", "java.lang.Void", null);
+            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "className", Void.class.getCanonicalName(), null);
+            DOMParserUtil.createNodeAtPosition(factMappingNode, "className", Void.class.getCanonicalName(), null);
             DOMParserUtil.createNodeAtPosition(factMappingNode, "factAlias", "Instance 1", null);
             DOMParserUtil.createNodeAtPosition(factMappingNode, "expressionAlias", "PROPERTY 1", null);
+            final Node scesimData = DOMParserUtil.createNodeAtPosition(backgroundNode, "scesimData", null, null);
+            ((Element)scesimData).setAttribute("class", "linked-list");
+            final Node backgroundData = DOMParserUtil.createNodeAtPosition(scesimData, BACKGROUND_DATA_NODE, null, null);
+            final Node factMappingValues = DOMParserUtil.createNodeAtPosition(backgroundData, FACT_MAPPING_VALUES_NODE, null, null);
+            final Node factMappingValue = DOMParserUtil.createNodeAtPosition(factMappingValues, FACT_MAPPING_VALUE_NODE, null, null);
+            final Node factIdentifier = DOMParserUtil.createNodeAtPosition(factMappingValue, FACT_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(factIdentifier, "name", "Empty", null);
+            DOMParserUtil.createNodeAtPosition(factIdentifier, "className", Void.class.getCanonicalName(), null);
+            final Node expressionIdentifier = DOMParserUtil.createNodeAtPosition(factMappingValue, EXPRESSION_IDENTIFIER_NODE, null, null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifier, "name", "1|1", null);
+            DOMParserUtil.createNodeAtPosition(expressionIdentifier, "type", "GIVEN", null);
             updateVersion(document, "1.8");
         };
     }
