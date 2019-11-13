@@ -119,6 +119,9 @@
               <goals>
                 <goal>jar</goal>
               </goals>
+              <configuration>
+                <source>${maven.compiler.source}</source>
+              </configuration>
             </execution>
           </executions>
       </plugin>

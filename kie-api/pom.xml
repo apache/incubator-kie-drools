@@ -43,6 +43,7 @@
                   <artifactId>apiviz</artifactId>
                   <version>1.3.4</version>
                 </docletArtifact>
+                <source>${maven.compiler.source}</source>
               </configuration>
             </plugin>
           </plugins>
@@ -81,6 +82,7 @@
         <configuration>
           <sourcepath>${project.basedir}/src/main/java</sourcepath>
           <excludePackageNames>org.kie.util*</excludePackageNames>
+          <source>${maven.compiler.source}</source>
           <groups>
             <group>
               <title>KIE Base API</title>
