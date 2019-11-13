@@ -220,6 +220,35 @@ public class DrlParserTest {
         createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
+    @Test
+    public void testIfAfterPattern() {
+        String str =
+                "rule R when\n" +
+                        "  $sum : Integer()\n" +
+                        "  if ($sum > 70) do[greater]\n" +
+                        "then\n" +
+                        "then[greater]\n" +
+                        "end";
+
+        createKBuilderAddDrlAndAssertHasNoErrors( str );
+    }
+
+
+    @Test
+    public void testIfAfterAccumulate() {
+        String str =
+                "rule R when\n" +
+                        "  accumulate ( $p: Object(); \n" +
+                        "                $sum : sum(1)  \n" +
+                        "              )                          \n" +
+                        "  if ($sum > 70) do[greater]\n" +
+                        "then\n" +
+                        "then[greater]\n" +
+                        "end";
+
+        createKBuilderAddDrlAndAssertHasNoErrors( str );
+    }
+
     private void createKBuilderAddDrlAndAssertHasNoErrors(String drl) {
         KnowledgeBuilder kbuilder = createKBuilderWithSpecifiedDrl( drl );
         assertHasNoErrors( kbuilder );

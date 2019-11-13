@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -465,6 +466,13 @@ public class KiePackagesBuilder {
                 }
 
                 pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
+
+                for(Variable v : accumulatePattern.getBoundVariables()) {
+                    if(source instanceof Pattern) {
+                        ctx.registerPattern(v, (Pattern) source);
+                    }
+                }
+
                 return existingPattern ? null : pattern;
             }
             case QUERY:
@@ -544,7 +552,9 @@ public class KiePackagesBuilder {
     private ConditionalBranch buildConditionalConsequence(RuleContext ctx, ConditionalNamedConsequenceImpl consequence) {
         EvalCondition evalCondition;
         if (consequence.getExpr() != null) {
+
             Pattern pattern = ctx.getPattern(consequence.getExpr().getVariables()[0]);
+
             EvalExpression eval = new LambdaEvalExpression(pattern, consequence.getExpr());
             evalCondition = new EvalCondition(eval, pattern.getRequiredDeclarations());
         } else {

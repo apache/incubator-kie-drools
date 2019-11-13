@@ -43,7 +43,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -521,113 +520,6 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-    @Test
-    public void testNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  do[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
-
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
-    }
-
-    @Test
-    public void testBreakingNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  if ( age < 30 ) break[FoundYoungMark]" +
-                "  else if ( age > 50) break[FoundOldMark]\n" +
-                "  else break[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundYoungMark]\n" +
-                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
-                "then[FoundOldMark]\n" +
-                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(1, results.size());
-
-        assertEquals( "Found Mark", results.iterator().next() );
-    }
-
-    @Test
-    public void testNonBreakingNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  if ( age < 30 ) break[FoundYoungMark]" +
-                "  else if ( age > 50) break[FoundOldMark]\n" +
-                "  else do[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundYoungMark]\n" +
-                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
-                "then[FoundOldMark]\n" +
-                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
-
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
 
     @Test

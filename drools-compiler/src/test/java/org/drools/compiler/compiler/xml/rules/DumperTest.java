@@ -128,6 +128,7 @@ public class DumperTest {
         assertTrue( out.contains( "declare trait Foo" ) );
     }
 
+
     @Test
     public void testRoundTripEnumDeclarations() throws Exception {
         DumperTestHelper.DrlFile( "test_EnumDeclaration.drl" );
