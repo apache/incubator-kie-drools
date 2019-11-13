@@ -1,0 +1,95 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.dmn.core.v1_3;
+
+import java.math.BigDecimal;
+
+import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+
+public class DMN13specificTest extends BaseInterpretedVsCompiledTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMN13specificTest.class);
+
+    public DMN13specificTest(final boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
+
+    @Test
+    public void testDMNv1_3_simple() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("name", "John");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("salutation"), is("Hello, John"));
+    }
+
+    @Test
+    public void testDMNv1_3_ch11() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Applicant data", mapOf(entry("Age", new BigDecimal(51)),
+                                            entry("MaritalStatus", "M"),
+                                            entry("EmploymentStatus", "EMPLOYED"),
+                                            entry("ExistingCustomer", false),
+                                            entry("Monthly", mapOf(entry("Income", new BigDecimal(100_000)),
+                                                                   entry("Repayments", new BigDecimal(2_500)),
+                                                                   entry("Expenses", new BigDecimal(10_000))))));
+        context.set("Bureau data", mapOf(entry("Bankrupt", false),
+                                         entry("CreditScore", new BigDecimal(600))));
+        context.set("Requested product", mapOf(entry("ProductType", "STANDARD LOAN"),
+                                               entry("Rate", new BigDecimal(0.08)),
+                                               entry("Term", new BigDecimal(36)),
+                                               entry("Amount", new BigDecimal(100_000))));
+        context.set("Supporting documents", null);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Strategy"), is("THROUGH"));
+        assertThat(result.get("Routing"), is("ACCEPT"));
+    }
+       
+}

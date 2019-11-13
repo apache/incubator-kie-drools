@@ -16,17 +16,19 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 
-public class DMNTypeRegistryV11 implements DMNTypeRegistry {
+public class DMNTypeRegistryV13 implements DMNTypeRegistry {
 
     private Map<String, Map<String, DMNType>> types = new HashMap<>(  );
 
@@ -40,7 +42,19 @@ public class DMNTypeRegistryV11 implements DMNTypeRegistry {
         return UNKNOWN;
     }
 
-    public DMNTypeRegistryV11() {
+    public static final List<BuiltInType> ITEMDEF_TYPEREF_FEEL_BUILTIN = Collections.unmodifiableList(Arrays.asList(BuiltInType.NUMBER,
+                                                                                                                    BuiltInType.STRING,
+                                                                                                                    BuiltInType.BOOLEAN,
+                                                                                                                    BuiltInType.DURATION,
+                                                                                                                    BuiltInType.DATE,
+                                                                                                                    BuiltInType.TIME,
+                                                                                                                    BuiltInType.DATE_TIME,
+                                                                                                                    BuiltInType.UNKNOWN,
+                                                                                                                    BuiltInType.LIST,
+                                                                                                                    BuiltInType.FUNCTION,
+                                                                                                                    BuiltInType.CONTEXT));
+
+    public DMNTypeRegistryV13() {
         String feelNamespace = KieDMNModelInstrumentedBase.URI_FEEL;
         Map<String, DMNType> feelTypes = new HashMap<>(  );
         types.put( feelNamespace, feelTypes );
