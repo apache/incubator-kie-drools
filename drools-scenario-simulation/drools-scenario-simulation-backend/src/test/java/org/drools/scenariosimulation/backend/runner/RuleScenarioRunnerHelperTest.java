@@ -47,9 +47,9 @@ import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -454,8 +454,21 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void extractBackgroundValues() {
+        // TEST 0 - empty background
+        Background emptyBackground = new Background();
+        List<InstanceGiven> emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
+                                                                                         classLoader,
+                                                                                         expressionEvaluatorFactory);
+        assertEquals(0, emptyBackgroundGivens.size());
+
+        emptyBackground.addData();
+        emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
+                                                                     classLoader,
+                                                                     expressionEvaluatorFactory);
+        assertEquals(0, emptyBackgroundGivens.size());
+
         // TEST 1 - background correct
-        List<InstanceGiven> backgroundGivens = runnerHelper.extractBackgroundValues(background,
+        List<InstanceGiven> backgroundGivens = runnerHelper.extractBackgroundValues(this.background,
                                                                                     classLoader,
                                                                                     expressionEvaluatorFactory);
         assertEquals(3, backgroundGivens.size());
@@ -476,7 +489,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         // TEST 2 - broken background
         FactMappingValue notValid = backgroundData1.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "notValid");
 
-        assertThatThrownBy(() -> runnerHelper.extractBackgroundValues(background,
+        assertThatThrownBy(() -> runnerHelper.extractBackgroundValues(this.background,
                                                                       classLoader,
                                                                       expressionEvaluatorFactory))
                 .isInstanceOf(ScenarioException.class)
