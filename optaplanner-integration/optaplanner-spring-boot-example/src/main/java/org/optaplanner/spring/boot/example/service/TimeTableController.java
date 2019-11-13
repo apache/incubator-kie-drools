@@ -67,7 +67,7 @@ public class TimeTableController {
     public void solve(@PathVariable long problemId) {
         // TODO Race condition ?
         TimeTable timeTable = get(problemId);
-        solverManager.solve(timeTable);
+        solverManager.solve(timeTable, newTimeTable -> problemIdToTimeTableMap.put(problemId, newTimeTable));
     }
 
     public TimeTable generateProblem(Long problemId) {

@@ -15,6 +15,8 @@
  */
 
 var PROBLEM_ID = 7;
+var autoRefreshCount = 0;
+var autoRefreshIntervalId = null;
 
 function refreshTimeTable() {
     $.getJSON("/timeTable/" + PROBLEM_ID, function (timeTable) {
@@ -58,7 +60,7 @@ function addRoom() {
     var roomName = $("#roomName").val();
     $.post("/timeTable/" + PROBLEM_ID + "/addRoom", JSON.stringify({"name": roomName}), function () {
         refreshTimeTable();
-    }, "json").fail(function() {
+    }).fail(function() {
         console.warn("Error on post to /timeTable/addRoom.")
     });
     $('#roomDialog').modal('toggle');
@@ -66,10 +68,22 @@ function addRoom() {
 
 function solveTimeTable() {
     $.post("/timeTable/" + PROBLEM_ID + "/solve", function () {
-        // TODO refresh screen while solving
-    }, "json").fail(function() {
+        autoRefreshCount = 16;
+        if (autoRefreshIntervalId == null) {
+            autoRefreshIntervalId = setInterval(autoRefresh, 2000);
+        }
+    }).fail(function() {
         console.warn("Error on post to /timeTable/solve.")
     });
+}
+
+function autoRefresh() {
+    refreshTimeTable();
+    autoRefreshCount--;
+    if (autoRefreshCount <= 0) {
+        clearInterval(autoRefreshIntervalId);
+        autoRefreshIntervalId = null;
+    }
 }
 
 $(document).ready( function() {

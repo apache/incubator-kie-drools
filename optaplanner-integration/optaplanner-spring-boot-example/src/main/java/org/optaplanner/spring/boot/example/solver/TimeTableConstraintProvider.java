@@ -23,8 +23,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.spring.boot.example.domain.Lesson;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-
 public class TimeTableConstraintProvider implements ConstraintProvider {
 
     @Override
@@ -33,7 +31,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 roomConflict(constraintFactory),
                 teacherConflict(constraintFactory),
                 studentGroupConflict(constraintFactory),
-                minimizeTeacherWorkDays(constraintFactory)
+                teacherRoomStability(constraintFactory)
         };
     }
 
@@ -61,11 +59,20 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .penalize("Student group conflict", HardSoftScore.ONE_HARD);
     }
 
-    private Constraint minimizeTeacherWorkDays(ConstraintFactory constraintFactory) {
+    private Constraint teacherRoomStability(ConstraintFactory constraintFactory) {
         return constraintFactory
-                .from(Lesson.class)
-                .groupBy(Lesson::getTeacher, countDistinct((Lesson lesson) -> lesson.getTimeslot().getDayOfWeek()))
-                .penalize("Minimize teacher work days", HardSoftScore.ONE_SOFT);
+                .fromUniquePair(Lesson.class,
+                        Joiners.equal(Lesson::getTimeslot),
+                        Joiners.equal(Lesson::getTeacher),
+                        Joiners.equal(Lesson::getRoom))
+                .reward("Teacher room stability", HardSoftScore.ONE_SOFT);
     }
+
+//    private Constraint minimizeTeacherWorkDays(ConstraintFactory constraintFactory) {
+//        return constraintFactory
+//                .from(Lesson.class)
+//                .groupBy(Lesson::getTeacher, countDistinct((Lesson lesson) -> lesson.getTimeslot().getDayOfWeek()))
+//                .penalize("Minimize teacher work days", HardSoftScore.ONE_SOFT);
+//    }
 
 }

@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -39,10 +40,12 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public void solve(Object problemId, Solution_ planningProblem) {
+    public void solve(Object problemId, Solution_ planningProblem,
+            Consumer<Solution_> bestSolutionConsumer) {
         executorService.submit(() -> {
             try {
                 Solver<Solution_> solver = solverFactory.buildSolver();
+                solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
                 solver.solve(planningProblem);
             } catch (Exception e) {
                 e.printStackTrace(); // TODO generated
