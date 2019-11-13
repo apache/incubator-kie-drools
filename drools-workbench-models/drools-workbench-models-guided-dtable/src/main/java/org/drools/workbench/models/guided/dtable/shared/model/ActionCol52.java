@@ -31,4 +31,8 @@ public class ActionCol52 extends DTColumnConfig52 {
         return super.equals(o);
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

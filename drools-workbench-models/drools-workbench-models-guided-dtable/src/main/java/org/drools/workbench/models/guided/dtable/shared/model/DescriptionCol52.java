@@ -43,4 +43,8 @@ public class DescriptionCol52 extends DTColumnConfig52 {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

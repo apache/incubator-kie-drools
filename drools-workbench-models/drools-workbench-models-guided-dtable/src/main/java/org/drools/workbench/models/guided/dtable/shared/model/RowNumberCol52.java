@@ -42,4 +42,9 @@ public class RowNumberCol52 extends DTColumnConfig52 {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

@@ -37,4 +37,9 @@ public class ActionRetractFactCol52 extends ActionCol52 {
         }
         return super.equals(o);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
