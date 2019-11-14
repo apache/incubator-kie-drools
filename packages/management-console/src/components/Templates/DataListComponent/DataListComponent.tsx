@@ -4,7 +4,6 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import ScrollArea from 'react-scrollbar';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
 import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
@@ -28,6 +27,8 @@ const DataListComponent: React.FC<{}> = () => {
         roles
         state
         start
+        managementEnabled
+        endpoint
       }
     }
   `;
@@ -138,7 +139,7 @@ const DataListComponent: React.FC<{}> = () => {
                     removeCheck={removeChecked}
                 />
                 <DataList aria-label="Expandable data list example">
-                  <ScrollArea smoothScrolling={true} className="scrollArea">
+
                     {!loading &&
                     filterArray !== undefined &&
                     filterArray['ProcessInstances'].map((item, index) => {
@@ -152,13 +153,16 @@ const DataListComponent: React.FC<{}> = () => {
                               parentInstanceID={item.parentProcessInstanceId}
                               processName={item.processName}
                               start={item.start}
+                              state={item.state}
+                              managementEnabled={item.managementEnabled}
+                              endpoint={item.endpoint}
                           />
                       );
                     })}
                     {
                       loading && ( <div className="spinner-center"> <p>spinner</p> </div> )
                     }
-                  </ScrollArea>
+
                 </DataList> </>): (
                 <div className="error-text">
                   <TextContent>

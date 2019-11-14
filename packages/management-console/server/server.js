@@ -19,6 +19,7 @@ const typeDefs = gql`
         rootProcessId: String
         roles: [String!]
         state: ProcessInstanceState!
+        managementEnabled: Boolean
         endpoint: String!
         nodes: [NodeInstance!]!
         variables: String
@@ -36,6 +37,7 @@ const typeDefs = gql`
         rootProcessId: String
         roles: [String!]
         state: ProcessInstanceState!
+        managementEnabled: Boolean
         endpoint: String!
         start: DateTime!
         end: DateTime
@@ -74,6 +76,7 @@ const typeDefs = gql`
         processId: [String!]
         limit: Int
         offset: Int
+        managementEnabled: Boolean
         nodes: [String]
     }
 
@@ -158,7 +161,8 @@ const data = [
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080",
+        managementEnabled: false,
         variables:
                 '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -190,6 +194,46 @@ const data = [
         childProcessInstanceId: []
     },
     {
+        id: "a23e6c20-02c2-4c2b-8c5c-e988a0adf863",
+        processId: "flightBooking",
+        parentProcessInstanceId: "e4448857-fa0c-403b-ad69-f0a353458b9d",
+        processName: "FlightBooking",
+        roles: [],
+        state: "ERROR",
+        managementEnabled: true,
+        endpoint: "http://localhost:8080",
+        start: "2019-10-22T03:40:44.089Z",
+        variables:
+                '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+        nodes: [
+            {
+                name: "End Event 1",
+                definitionId: "EndEvent_1",
+                id: "8ac1fc9d-6de2-4b23-864e-ba79315db317",
+                enter: "2019-10-22T03:37:30.804Z",
+                exit: "2019-10-22T03:37:30.804Z",
+                type: "EndNode"
+            },
+            {
+                name: "Book flight",
+                definitionId: "ServiceTask_1",
+                id: "2efa0617-d155-44dc-9b1e-38efc0dcec02",
+                enter: "2019-10-22T03:37:30.804Z",
+                exit: "2019-10-22T03:37:30.804Z",
+                type: "WorkItemNode"
+            },
+            {
+                name: "StartProcess",
+                definitionId: "StartEvent_1",
+                id: "849d5bf2-4032-4897-8b30-179ce9d3444b",
+                enter: "2019-10-22T03:37:30.804Z",
+                exit: "2019-10-22T03:37:30.804Z",
+                type: "StartNode"
+            }
+        ],
+        childProcessInstanceId: []
+    },
+    {
         id: "a23e6c20-02c2-4c2b-8c5c-e988a0adf862",
         processId: "flightBooking",
         parentProcessInstanceId: "e4448857-fa0c-403b-ad69-f0a353458b9d",
@@ -198,7 +242,8 @@ const data = [
         state: "COMPLETED",
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080",
+        managementEnabled: "false",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -235,10 +280,11 @@ const data = [
         parentProcessInstanceId: null,
         processName: "travels",
         roles: [],
-        state: "COMPLETED",
+        state: "ERROR",
+        managementEnabled: true,
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -335,9 +381,10 @@ const data = [
         processName: "FlightBooking",
         roles: [],
         state: "COMPLETED",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -375,9 +422,10 @@ const data = [
         processName: "HotelBooking",
         roles: [],
         state: "COMPLETED",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
         variables:
                 '{"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -415,8 +463,9 @@ const data = [
         processName: "travels",
         roles: [],
         state: "ABORTED",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
         nodes: [
@@ -505,7 +554,8 @@ const data = [
         processName: "travels",
         roles: [],
         state: "ACTIVE",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -595,7 +645,8 @@ const data = [
         processName: "FlightBooking",
         roles: [],
         state: "COMPLETED",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
         variables:
@@ -635,7 +686,8 @@ const data = [
         processName: "HotelBooking",
         roles: [],
         state: "COMPLETED",
-        endpoint: "http://localhost:8080/travels",
+        endpoint: "http://localhost:8080/",
+        managementEnabled: false,
         start: "2019-10-22T03:40:44.089Z",
         end: "2019-10-22T05:40:44.089Z",
         variables:

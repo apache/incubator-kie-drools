@@ -3,8 +3,9 @@
     "baseUrl": "./",
     "target": "es5",
     "module": "commonjs",
-    "sourceMap": false,
+    "sourceMap": true,
     "outDir": "./dist",
+    "allowJs": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
