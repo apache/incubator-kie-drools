@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_5c8b9296-96cf-4898-bba5-3a2d21d34eed" name="Loan info" namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" exporter="DMN Modeler" exporterVersion="6.2.2.3">
+<semantic:definitions id="_5c8b9296-96cf-4898-bba5-3a2d21d34eed" name="Loan info" namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" exporter="DMN Modeler" exporterVersion="6.2.2.3" xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed">
 	<semantic:itemDefinition name="tBorrower" label="tBorrower">
 		<semantic:itemComponent id="_b7dcc14d-510d-4628-a510-ca774208e501" name="Full Name">
 			<semantic:typeRef>string</semantic:typeRef>
@@ -125,7 +125,7 @@
 		<semantic:itemComponent id="_aa55fa1a-3e82-4439-b422-21921c6a64b0" name="Monthly Insurance Payment">
 			<semantic:typeRef>number</semantic:typeRef>
 		</semantic:itemComponent>
-		<semantic:itemComponent id="_77f3b202-47ba-432b-9ada-e81700db445f" name="Monthly HOA/Condo Fee">
+		<semantic:itemComponent id="_77f3b202-47ba-432b-9ada-e81700db445f" name="Monthly HOA Condo Fee">
 			<semantic:typeRef>number</semantic:typeRef>
 		</semantic:itemComponent>
 	</semantic:itemDefinition>
@@ -204,7 +204,7 @@
 		<semantic:itemComponent id="_cd96db58-d312-41dc-a3e4-6fa93766b49d" name="Initial Monthly Payment" isCollection="false">
 			<semantic:typeRef>number</semantic:typeRef>
 		</semantic:itemComponent>
-		<semantic:itemComponent id="_c05792fd-417f-4662-b6b8-7cf708c26976" name="Quallifying Monthly Payment" isCollection="false">
+		<semantic:itemComponent id="_c05792fd-417f-4662-b6b8-7cf708c26976" name="Qualifying Monthly Payment" isCollection="false">
 			<semantic:typeRef>number</semantic:typeRef>
 		</semantic:itemComponent>
 		<semantic:itemComponent id="_30babadc-60b5-4879-b233-410b43349ef4" name="Points Amount">

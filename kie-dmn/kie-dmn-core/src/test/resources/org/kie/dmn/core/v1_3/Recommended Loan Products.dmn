@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   id="_736fa164-03d8-429f-8318-4913a548c3a6" name="Recommended Loan Products" namespace="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6" exporter="DMN Modeler" exporterVersion="6.2.3" xmlns:include1="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed">
+<semantic:definitions id="_736fa164-03d8-429f-8318-4913a548c3a6" name="Recommended Loan Products" namespace="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6" exporter="DMN Modeler" exporterVersion="6.2.3" xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:include1="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" xmlns="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6">
 	<semantic:import namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" name="Services" importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>
 	<semantic:itemDefinition name="tBorrower" label="tBorrower">
 		<semantic:itemComponent id="_b7dcc14d-510d-4628-a510-ca774208e501" name="Full Name">
@@ -152,7 +152,7 @@
 		<semantic:itemComponent id="_68f6a641-5e2d-4b1b-9f2b-41f933976dee" name="Product Name" isCollection="false">
 			<semantic:typeRef>tProductName</semantic:typeRef>
 			<semantic:allowedValues>
-				<semantic:text>"Fixed30-NoPointsOrFees","Fixed30-Standard","Fixed30-LowestRate","Fixed15-NoPointsOrFees","Fixed15-Standard"</semantic:text>
+				<semantic:text>"Fixed30-NoPoints","Fixed30-Standard","Fixed30-LowestRate","Fixed15-NoPoints","Fixed15-Standard","ARM5/1-NoPoints","ARM5/1-Standard"</semantic:text>
 			</semantic:allowedValues>
 		</semantic:itemComponent>
 		<semantic:itemComponent id="_39c5300a-339c-4bde-8dfc-17e5d3f6f535" name="Type" isCollection="false">
