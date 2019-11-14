@@ -16,23 +16,17 @@
 
 package org.kie.dmn.core.compiler;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
-import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.FunctionDefinition;
+
+import static org.kie.dmn.core.compiler.DecisionCompiler.loadInCtx;
 
 public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
     @Override
@@ -69,37 +63,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
 
         ctx.enterFrame();
         try {
-            Map<String, DMNType> importedTypes = new HashMap<>();
-            for( DMNNode dep : bkmi.getDependencies().values() ) {
-                if( dep instanceof BusinessKnowledgeModelNode ) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
-                    } else {
-                        // then the BKM dependency is an imported BKM.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
-                        }
-                    }
-                } else if (dep instanceof DecisionServiceNode) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable(dep.getName(), ((DecisionServiceNode) dep).getResultType());
-                    } else {
-                        // then the DS dependency is an imported DS.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((DecisionServiceNode) dep).getResultType());
-                        }
-                    }
-                }
-            }
-            for (Entry<String, DMNType> importedType : importedTypes.entrySet()) {
-                ctx.setVariable(importedType.getKey(), importedType.getValue());
-            }
+            loadInCtx(bkmi, ctx, model);
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
             ctx.setVariable(bkmi.getName(), bkmi.getResultType());
             FunctionDefinition funcDef = bkmi.getBusinessKnowledModel().getEncapsulatedLogic();
