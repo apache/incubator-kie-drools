@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -33,14 +32,7 @@ public interface SolverManager<Solution_> extends AutoCloseable {
         return new DefaultSolverManager<>(solverFactory);
     }
 
-    default UUID solve(Solution_ planningProblem,
-            Consumer<Solution_> bestSolutionConsumer) {
-        UUID problemId = UUID.randomUUID();
-        solve(problemId, planningProblem, bestSolutionConsumer);
-        return problemId;
-    }
-
-    void solve(Object problemId, Solution_ planningProblem,
+    SolverFuture solve(Solution_ planningProblem,
             Consumer<Solution_> bestSolutionConsumer);
 
     // TODO onExceptionThrown default to logger.error

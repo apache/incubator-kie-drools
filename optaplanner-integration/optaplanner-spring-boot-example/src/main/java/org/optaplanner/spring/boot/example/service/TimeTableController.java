@@ -21,56 +21,83 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.optaplanner.core.api.solver.SolverFuture;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.Room;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
 import org.optaplanner.spring.boot.example.domain.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/timeTable/{problemId}")
+@RequestMapping("/timeTable")
 public class TimeTableController {
 
     @Autowired
     SolverManager<TimeTable> solverManager;
 
-    private ConcurrentMap<Long, TimeTable> problemIdToTimeTableMap = new ConcurrentHashMap<>();
+    private AtomicReference<TimeTable> timeTableReference = new AtomicReference<>(generateProblem());
+    private SolverFuture solverFuture = null;
 
-    // To try, open http://localhost:8080/timeTable/7
+    // To try, open http://localhost:8080/timeTable
     @RequestMapping()
-    public TimeTable get(@PathVariable long problemId) {
-        return problemIdToTimeTableMap.computeIfAbsent(problemId, this::generateProblem);
-    }
-
-    // To try:  curl -d '{"name":"Room Z"}' -H "Content-Type: application/json" -X POST http://localhost:8080/timeTable/7/addRoom
-    @PostMapping("/addRoom")
-    public void addRoom(@PathVariable long problemId, @RequestBody Room room) {
-        // TODO Race condition with proper synchronization of these 3 actions
-        TimeTable timeTable = get(problemId);
-        long nextRoomId = timeTable.getRoomList().stream()
-                .map(Room::getId).max(Comparator.naturalOrder())
-                .orElse(0L)
-                + 1L;
-        timeTable.getRoomList().add(new Room(nextRoomId, room.getName()));
+    public TimeTable refreshTimeTable() {
+        return timeTableReference.get();
     }
 
     @PostMapping("/solve")
-    public void solve(@PathVariable long problemId) {
-        // TODO Race condition ?
-        TimeTable timeTable = get(problemId);
-        solverManager.solve(timeTable, newTimeTable -> problemIdToTimeTableMap.put(problemId, newTimeTable));
+    public void solve() {
+        TimeTable timeTable = timeTableReference.get();
+        // TODO Race condition if room is added while solving, it disappears
+        solverFuture = solverManager.solve(timeTable, timeTableReference::set);
     }
 
-    public TimeTable generateProblem(Long problemId) {
+    @PostMapping("/addLesson")
+    public void addLesson(@RequestBody Lesson lesson) {
+        timeTableReference.updateAndGet(timeTable -> {
+            long nextId = timeTable.getLessonList().stream()
+                    .map(Lesson::getId).max(Comparator.naturalOrder())
+                    .orElse(0L)
+                    + 1L;
+            timeTable.getLessonList().add(new Lesson(nextId,
+                    lesson.getSubject(), lesson.getTeacher(), lesson.getStudentGroup()));
+            return timeTable;
+        });
+    }
+
+    @PostMapping("/addTimeslot")
+    public void addTimeslot(@RequestBody Timeslot timeslot) {
+        timeTableReference.updateAndGet(timeTable -> {
+            long nextId = timeTable.getTimeslotList().stream()
+                    .map(Timeslot::getId).max(Comparator.naturalOrder())
+                    .orElse(0L)
+                    + 1L;
+            timeTable.getTimeslotList().add(new Timeslot(nextId,
+                    timeslot.getDayOfWeek(), timeslot.getStartTime(), timeslot.getEndTime()));
+            return timeTable;
+        });
+    }
+
+    // To try:  curl -d '{"name":"Room Z"}' -H "Content-Type: application/json" -X POST http://localhost:8080/timeTable/addRoom
+    @PostMapping("/addRoom")
+    public void addRoom(@RequestBody Room room) {
+        timeTableReference.updateAndGet(timeTable -> {
+            long nextId = timeTable.getRoomList().stream()
+                    .map(Room::getId).max(Comparator.naturalOrder())
+                    .orElse(0L)
+                    + 1L;
+            timeTable.getRoomList().add(new Room(nextId, room.getName()));
+            return timeTable;
+        });
+    }
+
+    public TimeTable generateProblem() {
         List<Timeslot> timeslotList = new ArrayList<>(10);
         long timeslotId = 1L;
         timeslotList.add(new Timeslot(timeslotId++, DayOfWeek.MONDAY, LocalTime.of(8, 30), LocalTime.of(9, 30)));
@@ -122,7 +149,7 @@ public class TimeTableController {
         lessonList.get(6).setTimeslot(timeslotList.get(3));
         lessonList.get(6).setRoom(roomList.get(1));
 
-        return new TimeTable(problemId, timeslotList, roomList, lessonList);
+        return new TimeTable(timeslotList, roomList, lessonList);
     }
 
 }

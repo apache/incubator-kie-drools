@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-var PROBLEM_ID = 7;
 var autoRefreshCount = 0;
 var autoRefreshIntervalId = null;
 
 function refreshTimeTable() {
-    $.getJSON("/timeTable/" + PROBLEM_ID, function (timeTable) {
+    $.getJSON("/timeTable", function (timeTable) {
         $("#score").text("Score: "+ (timeTable.score == null ? "?" : timeTable.score));
 
         var timeTableByRoom = $("#timeTableByRoom");
@@ -58,18 +57,8 @@ function refreshTimeTable() {
     });
 }
 
-function addRoom() {
-    var roomName = $("#roomName").val();
-    $.post("/timeTable/" + PROBLEM_ID + "/addRoom", JSON.stringify({"name": roomName}), function () {
-        refreshTimeTable();
-    }).fail(function() {
-        console.warn("Error on post to /timeTable/addRoom.")
-    });
-    $('#roomDialog').modal('toggle');
-}
-
 function solveTimeTable() {
-    $.post("/timeTable/" + PROBLEM_ID + "/solve", function () {
+    $.post("/timeTable/solve", function () {
         autoRefreshCount = 16;
         if (autoRefreshIntervalId == null) {
             autoRefreshIntervalId = setInterval(autoRefresh, 2000);
@@ -88,6 +77,43 @@ function autoRefresh() {
     }
 }
 
+function addLesson() {
+    $.post("/timeTable/addLesson", JSON.stringify({
+        "subject": $("#lesson_subject").val(),
+        "teacher": $("#lesson_teacher").val(),
+        "studentGroup": $("#lesson_studentGroup").val()
+    }), function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on post to /timeTable/addLesson.")
+    });
+    $('#lessonDialog').modal('toggle');
+}
+
+function addTimeslot() {
+    $.post("/timeTable/addTimeslot", JSON.stringify({
+        "dayOfWeek": $("#timeslot_dayOfWeek").val(),
+        "startTime": $("#timeslot_startTime").val(),
+        "endTime": $("#timeslot_endTime").val()
+    }), function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on post to /timeTable/addTimeslot.")
+    });
+    $('#timeslotDialog').modal('toggle');
+}
+
+function addRoom() {
+    $.post("/timeTable/addRoom", JSON.stringify({
+        "name": $("#room_name").val()
+    }), function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on post to /timeTable/addRoom.")
+    });
+    $('#roomDialog').modal('toggle');
+}
+
 $(document).ready( function() {
     $.ajaxSetup({
         headers: {
@@ -95,14 +121,20 @@ $(document).ready( function() {
             'Accept': 'application/json'
         }
     });
-    $("#addRoomSubmitButton").click(function() {
-        addRoom();
-    });
     $("#refreshButton").click(function() {
         refreshTimeTable();
     });
     $("#solveButton").click(function() {
         solveTimeTable();
+    });
+    $("#addLessonSubmitButton").click(function() {
+        addLesson();
+    });
+    $("#addTimeslotSubmitButton").click(function() {
+        addTimeslot();
+    });
+    $("#addRoomSubmitButton").click(function() {
+        addRoom();
     });
 
     refreshTimeTable();

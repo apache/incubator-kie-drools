@@ -20,6 +20,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 public class Timeslot {
@@ -31,8 +32,10 @@ public class Timeslot {
     @NotNull
     private DayOfWeek dayOfWeek;
     @NotNull
+    @JsonFormat(pattern = "hh:mm")
     private LocalTime startTime;
     @NotNull
+    @JsonFormat(pattern = "hh:mm")
     private LocalTime endTime;
 
     private Timeslot() {

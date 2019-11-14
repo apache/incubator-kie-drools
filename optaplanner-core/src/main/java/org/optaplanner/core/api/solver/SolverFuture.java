@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-.timeTable tr th, .timeTable tr td {
-    padding: 0.5rem;
-    vertical-align: middle;
-}
+package org.optaplanner.core.api.solver;
 
-.score {
-    font-weight: bold;
-    vertical-align: middle;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public interface SolverFuture<Solution_> {
+
+    Solution_ getBestSolution();
+
+    void terminateEarly();
+
 }

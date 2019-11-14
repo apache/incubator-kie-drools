@@ -40,22 +40,25 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public void solve(Object problemId, Solution_ planningProblem,
+    public DefaultSolverFuture solve(Solution_ planningProblem,
             Consumer<Solution_> bestSolutionConsumer) {
+        Solver<Solution_> solver = solverFactory.buildSolver();
+        // TODO consumption should happen on different thread than solver thread, doing skipAhead and throttling
+        solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
+        DefaultSolverFuture solverFuture = new DefaultSolverFuture<>(solver);
         executorService.submit(() -> {
             try {
-                Solver<Solution_> solver = solverFactory.buildSolver();
-                solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
                 solver.solve(planningProblem);
             } catch (Exception e) {
                 e.printStackTrace(); // TODO generated
             }
         });
-        // TODO generated
+        return solverFuture;
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         executorService.shutdownNow();
     }
+
 }

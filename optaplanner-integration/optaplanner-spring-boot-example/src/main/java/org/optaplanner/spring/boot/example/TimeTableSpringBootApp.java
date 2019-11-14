@@ -21,10 +21,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 // TODO document in user guide @EntityScan("org.optaplanner.spring.boot.example") if this class is in app
-public class PoliceSpringBootApp {
+public class TimeTableSpringBootApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(PoliceSpringBootApp.class, args);
+        SpringApplication.run(TimeTableSpringBootApp.class, args);
     }
 
 }

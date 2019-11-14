@@ -604,8 +604,8 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
-    public Talk withTimeslot(Timeslot timeSlot) {
-        this.timeslot = timeSlot;
+    public Talk withTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
         return this;
     }
 
