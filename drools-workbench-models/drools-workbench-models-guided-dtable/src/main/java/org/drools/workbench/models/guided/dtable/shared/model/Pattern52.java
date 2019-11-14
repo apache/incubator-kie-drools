@@ -17,6 +17,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
@@ -239,28 +240,13 @@ public class Pattern52
         if (!(o instanceof Pattern52)) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
-
         Pattern52 pattern52 = (Pattern52) o;
-
-        if (isNegated != pattern52.isNegated) {
-            return false;
-        }
-        if (factType != null ? !factType.equals(pattern52.factType) : pattern52.factType != null) {
-            return false;
-        }
-        if (boundName != null ? !boundName.equals(pattern52.boundName) : pattern52.boundName != null) {
-            return false;
-        }
-        if (conditions != null ? !conditions.equals(pattern52.conditions) : pattern52.conditions != null) {
-            return false;
-        }
-        if (window != null ? !window.equals(pattern52.window) : pattern52.window != null) {
-            return false;
-        }
-        return entryPointName != null ? entryPointName.equals(pattern52.entryPointName) : pattern52.entryPointName == null;
+        return isNegated == pattern52.isNegated &&
+                Objects.equals(factType, pattern52.factType) &&
+                Objects.equals(boundName, pattern52.boundName) &&
+                Objects.equals(conditions, pattern52.conditions) &&
+                Objects.equals(window, pattern52.window) &&
+                Objects.equals(entryPointName, pattern52.entryPointName);
     }
 
     @Override

@@ -20,7 +20,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
  */
 public class DescriptionCol52 extends DTColumnConfig52 {
 
-    private static final long serialVersionUID = -306736594255777798L;
+    private static final long serialVersionUID = 729l;
 
     private static final DTCellValue52 DEFAULT_DESCRIPTION = new DTCellValue52( "" );
 
@@ -29,4 +29,22 @@ public class DescriptionCol52 extends DTColumnConfig52 {
         return DEFAULT_DESCRIPTION;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DescriptionCol52)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
