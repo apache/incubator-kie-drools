@@ -16,6 +16,8 @@
 
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
+import javax.xml.XMLConstants;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -39,9 +41,14 @@ import org.kie.dmn.model.api.PerformanceIndicator;
 import org.kie.dmn.model.api.TextAnnotation;
 import org.kie.dmn.model.api.dmndi.DMNDI;
 import org.kie.dmn.model.v1_3.TDefinitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefinitionsConverter
         extends NamedElementConverter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefinitionsConverter.class);
+
     private static final String EXPRESSION_LANGUAGE = "expressionLanguage";
     private static final String TYPE_LANGUAGE       = "typeLanguage";
     private static final String NAMESPACE           = "namespace";
@@ -103,6 +110,10 @@ public class DefinitionsConverter
         def.setNamespace( namespace );
         def.setExporter( exporter );
         def.setExporterVersion( exporterVersion );
+
+        if (!def.getNsContext().containsKey(XMLConstants.DEFAULT_NS_PREFIX)) {
+            LOG.warn("This DMN file does not define a default namespace");
+        }
     }
 
     @Override
