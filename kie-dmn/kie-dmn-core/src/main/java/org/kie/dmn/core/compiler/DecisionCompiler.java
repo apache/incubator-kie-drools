@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -69,63 +70,41 @@ public class DecisionCompiler implements DRGElementCompiler {
 
         ctx.enterFrame();
         try {
-            Map<String, DMNType> importedTypes = new HashMap<>();
-            for( DMNNode dep : di.getDependencies().values() ) {
-                if( dep instanceof DecisionNode ) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        ctx.setVariable(dep.getName(), ((DecisionNode) dep).getResultType());
-                    } else {
-                        // then the Decision dependency is an imported Decision.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((DecisionNode) dep).getResultType());
-                        }
-                    }
-                } else if( dep instanceof InputDataNode ) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        ctx.setVariable(dep.getName(), ((InputDataNode) dep).getType());
-                    } else {
-                        // then the InputData dependency is an imported InputData.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((InputDataNode) dep).getType());
-                        }
-                    }
-                } else if( dep instanceof BusinessKnowledgeModelNode ) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
-                    } else {
-                        // then the BKM dependency is an imported BKM.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
-                        }
-                    }
-                } else if (dep instanceof DecisionServiceNode) {
-                    if (dep.getModelNamespace().equals(model.getNamespace())) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable(dep.getName(), ((DecisionServiceNode) dep).getResultType());
-                    } else {
-                        // then the BKM dependency is an imported BKM.
-                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
-                        if (alias.isPresent()) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
-                            importedComposite.addField(dep.getName(), ((DecisionServiceNode) dep).getResultType());
-                        }
-                    }
-                }
-            }
-            for (Entry<String, DMNType> importedType : importedTypes.entrySet()) {
-                ctx.setVariable(importedType.getKey(), importedType.getValue());
-            }
+            loadInCtx(di, ctx, model);
             DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, di, di.getName(), di.getDecision().getExpression() );
             di.setEvaluator( evaluator );
         } finally {
             ctx.exitFrame();
+        }
+    }
+
+    public static void loadInCtx(DMNBaseNode node, DMNCompilerContext ctx, DMNModelImpl model) {
+        Map<String, DMNType> importedTypes = new HashMap<>();
+        for (DMNNode dep : node.getDependencies().values()) {
+            DMNType depType = null;
+            if (dep instanceof DecisionNode) {
+                depType = ((DecisionNode) dep).getResultType();
+            } else if (dep instanceof InputDataNode) {
+                depType = ((InputDataNode) dep).getType();
+            } else if (dep instanceof BusinessKnowledgeModelNode) {
+                depType = ((BusinessKnowledgeModelNode) dep).getResultType();
+            } else if (dep instanceof DecisionServiceNode) {
+                depType = ((DecisionServiceNode) dep).getResultType();
+            }
+            if (dep.getModelNamespace().equals(model.getNamespace())) {
+                // for BKMs might need to create a DMNType for "functions" and replace the type here by that
+                ctx.setVariable(dep.getName(), depType);
+            } else {
+                // then the dependency is an imported dependency.
+                Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
+                if (alias.isPresent()) {
+                    CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
+                    importedComposite.addField(dep.getName(), depType);
+                }
+            }
+        }
+        for (Entry<String, DMNType> importedType : importedTypes.entrySet()) {
+            ctx.setVariable(importedType.getKey(), importedType.getValue());
         }
     }
 }

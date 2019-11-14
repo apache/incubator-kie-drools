@@ -371,5 +371,32 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
                                                             containsInAnyOrder(Arrays.asList("Model B2", "modelA"),
                                                                                Arrays.asList("Model B", "modelA"))));
     }
+
+    @Test
+    public void testImportDependenciesBKMchain() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("base join.dmn",
+                                                                                       this.getClass(),
+                                                                                       "use join.dmn");
+
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/definitions/_c8fc1424-d3fb-40c5-81df-22b409891192",
+                                                        "base join");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_2b5e6bbd-2524-4b72-bff9-ca5ecdcea172",
+                                                   "use join");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = runtime.newContext();
+        context.set("name", "John Doe");
+
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("greet").getResult(), is("Hi, John Doe"));
+        assertThat(evaluateAll.getDecisionResultByName("greet2").getResult(), is("Hello, John Doe"));
+    }
 }
 
