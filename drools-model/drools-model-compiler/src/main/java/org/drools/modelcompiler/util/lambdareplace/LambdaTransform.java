@@ -88,7 +88,7 @@ public class LambdaTransform {
     }
 
     private NodeList<ClassOrInterfaceType> createExtendedType() {
-        ClassOrInterfaceType bifunction = parseClassOrInterfaceType("java.util.function.BiFunction");
+        ClassOrInterfaceType bifunction = functionType();
 
         List<LambdaParameter> withBoolean = new ArrayList<>(lambdaParameters);
         withBoolean.add(new LambdaParameter("", Boolean.class));
@@ -101,18 +101,33 @@ public class LambdaTransform {
         return NodeList.nodeList(bifunction);
     }
 
+    private ClassOrInterfaceType functionType() {
+        String type;
+        switch(lambdaParameters.size()) {
+            case 1: type = "java.util.function.Function"; break;
+            case 2: type = "java.util.function.BiFunction"; break;
+            default:
+                throw new NoFunctionForTypesException();
+        }
+        return parseClassOrInterfaceType(type);
+    }
+
     private static class NotLambdaException extends RuntimeException {
 
     }
 
-    private class LambdaParameter {
+    private static class LambdaParameter {
 
         String name;
         Class<?> clazz;
 
-        public LambdaParameter(String name, Class<?> clazz) {
+        LambdaParameter(String name, Class<?> clazz) {
             this.name = name;
             this.clazz = clazz;
         }
+    }
+
+    private static class NoFunctionForTypesException extends RuntimeException {
+
     }
 }
