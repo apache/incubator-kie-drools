@@ -65,7 +65,6 @@ public class LambdaClass {
 
     private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
-        methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(parseClassOrInterfaceType("java.lang.Boolean"));
 
         setMethodParameter(methodDeclaration);

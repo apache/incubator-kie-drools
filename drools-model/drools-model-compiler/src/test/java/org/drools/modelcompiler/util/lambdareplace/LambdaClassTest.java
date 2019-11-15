@@ -20,7 +20,6 @@ public class LambdaClassTest {
                 "" +
                 "public class Lambda1215CE50D171DD25AC89D919C31CB479 {\n" +
                 "\n" +
-                "        @Override()\n" +
                 "        public java.lang.Boolean apply(org.drools.modelcompiler.domain.Person p) {\n" +
                 "            return p.getAge() > 35;\n" +
                 "        }\n" +
@@ -41,7 +40,6 @@ public class LambdaClassTest {
                 "" +
                 "public class Lambda5899FA70FFBD0AB136E1673C97CB1EAB {\n" +
                 "\n" +
-                "        @Override()\n" +
                 "        public java.lang.Boolean apply(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) {\n" +
                 "            return p1.getAge() > p2.getAge();\n" +
                 "        }\n" +
