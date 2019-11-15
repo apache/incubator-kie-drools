@@ -1,0 +1,50 @@
+package org.drools.modelcompiler.util.lambdareplace;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.Type;
+
+public class ExecModelLambdaPostProcessor {
+
+    private final static String EXPR_CALL = "expr";
+    private LambdaClass lambdaClass;
+
+    Map<String, CreatedClass> lambdaClasses = new HashMap<>();
+
+    public PostProcessedExecModel convertLambdas(String packageName, Statement inputDSL) {
+        lambdaClass = new LambdaClass(packageName);
+
+        Statement clone = inputDSL.clone();
+
+        clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
+                .forEach(this::replaceLambdaInExpr);
+
+
+        return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
+    }
+
+    private void replaceLambdaInExpr(MethodCallExpr methodCallExpr) {
+
+        Expression last = methodCallExpr.getArguments().removeLast();
+        if(!last.isLambdaExpr()) {
+            throw new NotLambdaException();
+        }
+
+        LambdaExpr lambdaExpr = last.asLambdaExpr();
+
+        CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString(), Object.class, Object.class);
+        lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+
+        TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithoutPackage()));
+        methodCallExpr.addArgument(new MethodReferenceExpr(type, NodeList.nodeList(), "apply" ));
+    }
+}

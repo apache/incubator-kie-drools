@@ -7,17 +7,23 @@ public class CreatedClass {
 
     private final CompilationUnit compilationUnit;
     private final String className;
+    private final String packageName;
 
-    public CreatedClass(CompilationUnit compilationUnit, String className) {
+    public CreatedClass(CompilationUnit compilationUnit, String className, String packageName) {
         this.compilationUnit = compilationUnit;
         this.className = className;
+        this.packageName = packageName;
     }
 
     public String getCompilationUnitAsString() {
         return new PrettyPrinter().print(compilationUnit);
     }
 
-    public String getClassName() {
+    public String getClassNameWithoutPackage() {
         return className;
+    }
+
+    public String getClassNameWithPackage() {
+        return String.format("%s.%s", packageName, className);
     }
 }

@@ -51,7 +51,7 @@ public class LambdaClass {
 
         createMethodDeclaration(classDeclaration);
 
-        return new CreatedClass(compilationUnit, className);
+        return new CreatedClass(compilationUnit, className, packageName);
     }
 
     private void parseParameters(Class<?>[] argsType) {
@@ -84,10 +84,6 @@ public class LambdaClass {
     private ClassOrInterfaceDeclaration createClass(CompilationUnit cu) {
         ClassOrInterfaceDeclaration expression = cu.addClass(className);
         return expression;
-    }
-
-    private static class NotLambdaException extends RuntimeException {
-
     }
 
     private static class LambdaParameter {
