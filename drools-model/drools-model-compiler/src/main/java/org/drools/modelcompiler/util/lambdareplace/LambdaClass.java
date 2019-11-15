@@ -2,6 +2,7 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -15,6 +16,8 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -47,11 +50,17 @@ public class LambdaClass {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = compilationUnit.addClass(className);
+        ClassOrInterfaceDeclaration classDeclaration = createClass(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
+    }
+
+    private ClassOrInterfaceDeclaration createClass(CompilationUnit compilationUnit) {
+        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = compilationUnit.addClass(className);
+        classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
+        return classOrInterfaceDeclaration;
     }
 
     private void parseParameters() {
@@ -63,8 +72,8 @@ public class LambdaClass {
     }
 
     private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
-        MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
-        methodDeclaration.setType(parseClassOrInterfaceType("java.lang.Boolean"));
+        MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
+        methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 
         setMethodParameter(methodDeclaration);
 
@@ -78,6 +87,22 @@ public class LambdaClass {
         }
     }
 
+    private NodeList<ClassOrInterfaceType> createImplementedType() {
+        ClassOrInterfaceType bifunction = functionType();
+
+        List<Type> typeArguments = lambdaParameters.stream()
+                .map(p -> p.type)
+                .collect(Collectors.toList());
+
+        bifunction.setTypeArguments(NodeList.nodeList(typeArguments));
+        return NodeList.nodeList(bifunction);
+    }
+
+    private ClassOrInterfaceType functionType() {
+        String type = "Predicate" + lambdaParameters.size();
+        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+    }
+
     private static class LambdaParameter {
 
         String name;
@@ -87,5 +112,9 @@ public class LambdaClass {
             this.name = name;
             this.type = type;
         }
+    }
+
+    private class NoFunctionForTypesException extends RuntimeException {
+
     }
 }

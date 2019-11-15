@@ -5,17 +5,16 @@ import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.Type;
 
 public class ExecModelLambdaPostProcessor {
 
     private final static String EXPR_CALL = "expr";
+    private final static String TEST_CALL = "test";
     private LambdaClass lambdaClass;
 
     Map<String, CreatedClass> lambdaClasses = new HashMap<>();
@@ -42,7 +41,7 @@ public class ExecModelLambdaPostProcessor {
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithPackage()));
-                a.replace(new MethodReferenceExpr(type, NodeList.nodeList(), "apply"));
+                a.replace(new MethodReferenceExpr(type, NodeList.nodeList(), TEST_CALL));
             }
         });
     }
