@@ -16,12 +16,13 @@
 
 package org.drools.ruleunit.impl;
 
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.command.pmml.ApplyPmmlModelCommandExecutorImpl;
 import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.ApplyPmmlModelCommandExecutor;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.drools.ruleunit.RuleUnit;
 
 public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
 
@@ -38,5 +39,10 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
     @Override
     public boolean isRuleUnitClass( Class<?> ruleUnitClass ) {
         return RuleUnit.class.isAssignableFrom(ruleUnitClass);
+    }
+
+    @Override
+    public boolean isDataSourceClass( Class<?> ruleUnitClass ) {
+        return DataSource.class.isAssignableFrom(ruleUnitClass);
     }
 }

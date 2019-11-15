@@ -36,7 +36,6 @@ import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
@@ -48,6 +47,7 @@ import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
 import org.drools.core.xml.WrapperSemanticModule;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
@@ -197,7 +197,7 @@ public class KnowledgeBuilderConfigurationImpl
             // an osgi environement) so try with the class loader of this class
             this.chainedProperties = ChainedProperties.getChainedProperties( getClass().getClassLoader() );
 
-            if (this.classLoader instanceof ProjectClassLoader) {
+            if (this.classLoader instanceof ProjectClassLoader ) {
                 ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());
             }
         }

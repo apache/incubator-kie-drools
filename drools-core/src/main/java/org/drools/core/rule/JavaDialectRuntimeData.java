@@ -46,7 +46,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Constraint;
@@ -54,6 +53,7 @@ import org.drools.core.spi.Wireable;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;
 
@@ -359,7 +359,7 @@ public class JavaDialectRuntimeData
         if (store != null) {
             bytecode = store.get(resourceName);
         }
-        if (bytecode == null && rootClassLoader instanceof ProjectClassLoader) {
+        if (bytecode == null && rootClassLoader instanceof ProjectClassLoader ) {
             bytecode = ((ProjectClassLoader)rootClassLoader).getBytecode(resourceName);
         }
         return bytecode;

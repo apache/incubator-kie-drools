@@ -50,6 +50,8 @@
   </scm>
 
   <modules>
+    <module>drools-core-reflective</module>
+    <module>drools-core-dynamic</module>
     <module>kie-test-util</module>
     <module>drools-beliefs</module>
     <module>drools-core</module>

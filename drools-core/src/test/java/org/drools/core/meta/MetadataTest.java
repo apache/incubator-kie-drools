@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.meta.org.test.AnotherKlass;
 import org.drools.core.meta.org.test.AnotherKlassImpl;
@@ -39,9 +38,15 @@ import org.drools.core.metadata.MetadataContainer;
 import org.drools.core.metadata.With;
 import org.drools.core.test.model.Person;
 import org.drools.core.util.StandaloneTraitFactory;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class MetadataTest {
 

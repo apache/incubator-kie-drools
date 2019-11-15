@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.dynamic.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 
 public class ClassLoaderTest {

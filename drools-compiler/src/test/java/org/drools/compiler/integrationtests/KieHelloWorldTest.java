@@ -28,7 +28,7 @@ import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.core.common.ProjectClassLoader;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;

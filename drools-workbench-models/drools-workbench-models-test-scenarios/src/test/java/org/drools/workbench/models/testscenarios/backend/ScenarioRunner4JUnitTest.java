@@ -18,9 +18,9 @@ package org.drools.workbench.models.testscenarios.backend;
 
 import java.util.HashMap;
 
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,11 @@ import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieSession;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ScenarioRunner4JUnitTest {
 

@@ -54,7 +54,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
-import static org.drools.core.common.ProjectClassLoader.findParentClassLoader;
+import static org.drools.reflective.classloader.ProjectClassLoader.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
     private volatile KieContainer classpathKContainer;

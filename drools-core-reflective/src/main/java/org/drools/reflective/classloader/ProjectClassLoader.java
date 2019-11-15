@@ -13,38 +13,31 @@
  * limitations under the License.
 */
 
-package org.drools.core.common;
+package org.drools.reflective.classloader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import org.drools.core.util.ClassUtils;
+import org.drools.reflective.ComponentsFactory;
+import org.drools.reflective.ResourceProvider;
+import org.drools.reflective.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-
-public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
+public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
     private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
                                                             new ClassNotFoundException("This is just a cached Exception. Disable non existing classes cache to see the actual one.") :
                                                             null;
-
-    private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
 
     static {
         registerAsParallelCapable();
@@ -64,35 +57,9 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     private ResourceProvider resourceProvider;
 
-    private ProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
+    protected ProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider) {
         super(parent);
         this.resourceProvider = resourceProvider;
-    }
-
-    public static class IBMClassLoader extends ProjectClassLoader implements KieTypeResolver {
-        private final boolean parentImplementsFindResources;
-
-        private static final Enumeration<URL> EMPTY_RESOURCE_ENUM = new Vector<URL>().elements();
-
-        private IBMClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
-            super(parent, resourceProvider);
-            Method m = null;
-            try {
-                m = parent.getClass().getMethod("findResources", String.class);
-            } catch (NoSuchMethodException e) { }
-            parentImplementsFindResources = m != null && m.getDeclaringClass() == parent.getClass();
-        }
-
-        @Override
-        protected Enumeration<URL> findResources(String name) throws IOException {
-            // if the parent doesn't implemnt this method call getResources directly on it
-            // see https://blogs.oracle.com/bhaktimehta/entry/ibm_jdk_and_classloader_getresources
-            return parentImplementsFindResources ? EMPTY_RESOURCE_ENUM : getParent().getResources(name);
-        }
-    }
-
-    private static ProjectClassLoader internalCreate(ClassLoader parent, ResourceProvider resourceProvider) {
-        return isIBM_JVM ? new IBMClassLoader(parent, resourceProvider) : new ProjectClassLoader(parent, resourceProvider);
     }
 
     public static ClassLoader getClassLoader(final ClassLoader classLoader,
@@ -120,9 +87,8 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         return parent;
     }
 
-
     public static ProjectClassLoader createProjectClassLoader() {
-        return internalCreate(findParentClassLoader(), null);
+        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), null);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
@@ -131,9 +97,9 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return internalCreate(findParentClassLoader(), resourceProvider);
+            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider);
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : internalCreate(parent, resourceProvider);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
@@ -189,7 +155,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     // This method has to be public because is also used by the android ClassLoader
     public Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
-        byte[] bytecode = getBytecode(convertClassToResourcePath(name));
+        byte[] bytecode = getBytecode( ClassUtils.convertClassToResourcePath(name));
         if (bytecode == null) {
             if (CACHE_NON_EXISTING_CLASSES) {
                 nonExistingClasses.add(name);
@@ -219,7 +185,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     public Class<?> defineClass(String name, byte[] bytecode) {
-        return defineClass(name, convertClassToResourcePath(name), bytecode);
+        return defineClass(name, ClassUtils.convertClassToResourcePath(name), bytecode);
     }
 
     public synchronized Class<?> defineClass(String name, String resourceName, byte[] bytecode) {
@@ -228,7 +194,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     public synchronized void undefineClass(String name) {
-        String resourceName = convertClassToResourcePath(name);
+        String resourceName = ClassUtils.convertClassToResourcePath(name);
         if (store.remove(resourceName) != null) {
             if (CACHE_NON_EXISTING_CLASSES) {
                 nonExistingClasses.add(name);
@@ -238,14 +204,14 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     public void storeClass(String name, byte[] bytecode) {
-        storeClass(name, convertClassToResourcePath(name), bytecode);
+        storeClass(name, ClassUtils.convertClassToResourcePath(name), bytecode);
     }
 
     public void storeClasses(Map<String, byte[]> classesMap) {
         for ( Map.Entry<String, byte[]> entry : classesMap.entrySet() ) {
             if ( entry.getValue() != null ) {
                 String resourceName = entry.getKey();
-                String className = convertResourceToClassName( resourceName );
+                String className = ClassUtils.convertResourceToClassName( resourceName );
                 storeClass( className, resourceName, entry.getValue() );
             }
         }
@@ -369,7 +335,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     // WARNING: This is and should be used just for testing purposes.
     // If not, dragons will come to the Earth, eat all cookies and
     // hijack all kittens and puppies.
-    void setInternalClassLoader(InternalTypesClassLoader classLoader) {
+    public void setInternalClassLoader(InternalTypesClassLoader classLoader) {
         typesClassLoader = classLoader;
     }
 
@@ -387,104 +353,48 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         nonExistingClasses.addAll(other.nonExistingClasses);
     }
 
-    InternalTypesClassLoader makeClassLoader() {
-        return AccessController.doPrivileged(
-                (PrivilegedAction<InternalTypesClassLoader>) () ->
-                        ClassUtils.isAndroid() ?
-                                (InternalTypesClassLoader) ClassUtils.instantiateObject(
-                                        "org.drools.android.DexInternalTypesClassLoader", null, this) :
-                                new DefaultInternalTypesClassLoader(this));
-    }
+    public abstract InternalTypesClassLoader makeClassLoader();
 
-    @Override public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProjectClassLoader)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProjectClassLoader)) {
+            return false;
+        }
 
         ProjectClassLoader that = (ProjectClassLoader) o;
 
         if (droolsClassLoader != null ? !droolsClassLoader.equals(
-                that.droolsClassLoader) : that.droolsClassLoader != null)
+                                                                  that.droolsClassLoader) : that.droolsClassLoader != null) {
             return false;
+        }
         if (typesClassLoader != null ? !typesClassLoader.equals(
-                that.typesClassLoader) : that.typesClassLoader != null)
+                                                                that.typesClassLoader) : that.typesClassLoader != null) {
             return false;
+        }
         if (getParent() != null ? !getParent().equals(
-                that.getParent()) : that.getParent() != null)
+                                                      that.getParent()) : that.getParent() != null) {
             return false;
+        }
         return resourceProvider != null ? resourceProvider.equals(
                 that.resourceProvider) : that.resourceProvider == null;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result =
                 droolsClassLoader != null ? droolsClassLoader.hashCode() : 0;
-        result = 31 * result + (
-                typesClassLoader != null ? typesClassLoader.hashCode() : 0);
-        result = 31 * result + (
-                resourceProvider != null ? resourceProvider.hashCode() : 0);
-        result = 31 * result +(getParent() != null ? getParent().hashCode() : 0);
+        result = 31 * result + (typesClassLoader != null ? typesClassLoader.hashCode() : 0);
+        result = 31 * result + (resourceProvider != null ? resourceProvider.hashCode() : 0);
+        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
         return result;
     }
 
-    interface InternalTypesClassLoader extends KieTypeResolver {
-        Class<?> defineClass(String name, byte[] bytecode);
-        Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException;
-    }
-
-    private static class DefaultInternalTypesClassLoader extends ClassLoader implements InternalTypesClassLoader {
-
-        static {
-            registerAsParallelCapable();
-        }
-
-        private final ProjectClassLoader projectClassLoader;
-
-        private DefaultInternalTypesClassLoader( ProjectClassLoader projectClassLoader ) {
-            super( projectClassLoader.getParent() );
-            this.projectClassLoader = projectClassLoader;
-        }
-
-        public Class<?> defineClass( String name, byte[] bytecode ) {
-            int lastDot = name.lastIndexOf( '.' );
-            if ( lastDot > 0 ) {
-                String pkgName = name.substring( 0, lastDot );
-                if ( getPackage( pkgName ) == null ) {
-                    definePackage( pkgName, "", "", "", "", "", "", null );
-                }
-            }
-            return defineClass( name, bytecode, 0, bytecode.length );
-        }
-
-        protected Class<?> loadClass( String name, boolean resolve ) throws ClassNotFoundException {
-            try {
-                return loadType( name, resolve );
-            } catch (ClassNotFoundException cnfe) {
-                try {
-                    return projectClassLoader.internalLoadClass( name, resolve );
-                } catch (ClassNotFoundException cnfe2) {
-                    return projectClassLoader.tryDefineType( name, cnfe );
-                }
-            }
-        }
-
-        public Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException {
-            return super.loadClass( name, resolve );
-        }
-
-        @Override
-        public URL getResource( String name ) {
-            return projectClassLoader.getResource( name );
-        }
-
-        @Override
-        public InputStream getResourceAsStream(String name) {
-            return projectClassLoader.getResourceAsStream( name );
-        }
-
-        @Override
-        public Enumeration<URL> getResources(String name) throws IOException {
-            return projectClassLoader.getResources( name );
-        }
+    public interface InternalTypesClassLoader extends KieTypeResolver {
+        Class<?> defineClass( String name, byte[] bytecode );
+        Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
     }
 
     public synchronized void reinitTypes() {
