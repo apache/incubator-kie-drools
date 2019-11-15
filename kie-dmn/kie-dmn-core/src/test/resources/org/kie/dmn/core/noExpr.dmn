@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_461041dc-9ab9-4e23-ae01-3366a7544cd3" id="_461041dc-9ab9-4e23-ae01-3366a7544cd3" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_461041dc-9ab9-4e23-ae01-3366a7544cd3" exporter="DMN Modeler" exporterVersion="6.3.1" triso:logoChoice="Default">
+    <semantic:decision id="_d3e51812-36ac-4fe1-9e1a-96161bb88fdb" name="is it raining?">
+        <semantic:variable name="is it raining?" id="_23d959b4-8205-4441-b575-8c6d225abbc6" typeRef="boolean"/>
+        <semantic:literalExpression id="_4da41ef2-5998-4329-9ab2-a82046f334ca" typeRef="boolean" triso:expressionId="_0b4f1301-baed-4ec9-b774-3337770d3bba">
+            <semantic:text>true</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_cdd03786-d1ab-47b5-ba05-df830458dc62" name="what to do today?">
+        <semantic:variable name="what to do today?" id="_9b2cd7a8-ff5d-4c90-9b42-679c14312dea" typeRef="Any"/>
+        <semantic:informationRequirement id="_6441ec19-31db-4133-95e7-ee3997cf5407">
+            <semantic:requiredDecision href="#_d3e51812-36ac-4fe1-9e1a-96161bb88fdb"/>
+        </semantic:informationRequirement>
+    </semantic:decision>
+</semantic:definitions>
