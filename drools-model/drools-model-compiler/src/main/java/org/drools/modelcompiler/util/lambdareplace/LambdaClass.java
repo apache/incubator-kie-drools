@@ -15,7 +15,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
@@ -34,7 +34,7 @@ public class LambdaClass {
         this.packageName = packageName;
     }
 
-    public CreatedClass createClass(String expressionString, Class<?>... argsType) {
+    public CreatedClass createClass(String expressionString) {
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -44,21 +44,20 @@ public class LambdaClass {
         lambdaExpr = expression.asLambdaExpr();
         className = CLASS_NAME_PREFIX + md5Hash(expressionString);
 
-        parseParameters(argsType);
+        parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = createClass(compilationUnit);
+        ClassOrInterfaceDeclaration classDeclaration = compilationUnit.addClass(className);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    private void parseParameters(Class<?>[] argsType) {
+    private void parseParameters() {
         NodeList<Parameter> parameters = lambdaExpr.getParameters();
-        for (int i = 0; i < parameters.size(); i++) {
-            Parameter p = parameters.get(i);
-            Class<?> c = argsType[i];
+        for (Parameter p : parameters) {
+            Type c = p.getType();
             lambdaParameters.add(new LambdaParameter(p.getNameAsString(), c));
         }
     }
@@ -75,28 +74,18 @@ public class LambdaClass {
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {
         for (LambdaParameter parameter : lambdaParameters) {
-            ClassOrInterfaceType type = parseClassOrInterfaceType(parameter.clazz.getCanonicalName());
-            methodDeclaration.addParameter(new Parameter(type, parameter.name));
+            methodDeclaration.addParameter(new Parameter(parameter.type, parameter.name));
         }
-    }
-
-    private ClassOrInterfaceDeclaration createClass(CompilationUnit cu) {
-        ClassOrInterfaceDeclaration expression = cu.addClass(className);
-        return expression;
     }
 
     private static class LambdaParameter {
 
         String name;
-        Class<?> clazz;
+        Type type;
 
-        LambdaParameter(String name, Class<?> clazz) {
+        LambdaParameter(String name, Type type) {
             this.name = name;
-            this.clazz = clazz;
+            this.type = type;
         }
-    }
-
-    private static class NoFunctionForTypesException extends RuntimeException {
-
     }
 }

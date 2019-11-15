@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.util.Objects;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.PrettyPrinter;
 
@@ -29,5 +31,24 @@ public class CreatedClass {
 
     public String getClassNamePath() {
         return String.format("%s/%s.java", packageName.replace(".", "/"), className);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CreatedClass that = (CreatedClass) o;
+        return compilationUnit.equals(that.compilationUnit) &&
+                className.equals(that.className) &&
+                packageName.equals(that.packageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(compilationUnit, className, packageName);
     }
 }

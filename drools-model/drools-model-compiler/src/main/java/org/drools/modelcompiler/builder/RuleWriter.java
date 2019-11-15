@@ -19,9 +19,11 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -96,12 +98,12 @@ public class RuleWriter {
 
         protected final CompilationUnit source;
         private final String name;
-        private final List<CreatedClass> createdClasses;
+        private final Set<CreatedClass> createdClasses = new HashSet<>();
 
-        private RuleFileSource(String name, CompilationUnit source, List<CreatedClass> createdClasses) {
+        private RuleFileSource(String name, CompilationUnit source, Collection<CreatedClass> createdClasses) {
             this.name = name;
             this.source = source;
-            this.createdClasses = createdClasses;
+            this.createdClasses.addAll(createdClasses);
         }
 
         public String getName() {
@@ -112,7 +114,7 @@ public class RuleWriter {
             return prettyPrinter.print(source);
         }
 
-        public List<CreatedClass> getCreatedClasses() {
+        public Collection<CreatedClass> getCreatedClasses() {
             return createdClasses;
         }
     }

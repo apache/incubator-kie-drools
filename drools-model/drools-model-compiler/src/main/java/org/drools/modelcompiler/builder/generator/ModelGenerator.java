@@ -307,7 +307,7 @@ public class ModelGenerator {
         Expression salienceExpr = parseExpression( value );
         Optional<TypedExpression> typedExpression = expressionTyper.toTypedExpression(salienceExpr).getTypedExpression();
         if (typedExpression.isPresent()) {
-            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true);
+            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true, Optional.empty());
             MethodCallExpr supplyCall = new MethodCallExpr(null, SUPPLY_CALL);
             expressionTyperContext.getUsedDeclarations().stream()
                     .map(context::getVarExpr)

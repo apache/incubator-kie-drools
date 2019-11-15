@@ -38,7 +38,7 @@ public class ExecModelLambdaPostProcessor {
             if(a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString(), Object.class, Object.class);
+                CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithPackage()));

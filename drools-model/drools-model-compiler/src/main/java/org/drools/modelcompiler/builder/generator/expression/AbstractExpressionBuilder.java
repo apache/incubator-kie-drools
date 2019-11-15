@@ -147,7 +147,7 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
+        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam(), Optional.of(drlxParseResult.getPatternType()));
     }
 
     boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
