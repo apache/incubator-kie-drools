@@ -101,4 +101,9 @@ public interface InternalRuntimeManager extends RuntimeManager {
      * Deactivates this runtime manager by making it only available for already running instances.
      */
     void deactivate();
+
+    /**
+     * Determines if there is security manager configured
+     */  
+    boolean hasSecurityManager();
 }
