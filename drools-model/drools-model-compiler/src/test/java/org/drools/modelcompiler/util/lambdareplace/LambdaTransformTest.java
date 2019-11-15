@@ -7,11 +7,11 @@ import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.*;
 
 
-public class LambdaCreationTest {
+public class LambdaTransformTest {
 
     @Test
     public void createLambdaClass() {
-        CreatedClass aClass = new LambdaCreation("org.drools.modelcompiler.util.lambdareplace")
+        CreatedClass aClass = new LambdaTransform("org.drools.modelcompiler.util.lambdareplace")
                 .createClass("(p1, p2) -> p1.getAge() > p2.getAge()", Person.class, Person.class);
 
         //language=JAVA

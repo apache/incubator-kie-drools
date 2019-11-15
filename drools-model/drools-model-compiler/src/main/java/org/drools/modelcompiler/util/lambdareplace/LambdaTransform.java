@@ -21,14 +21,14 @@ import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
-public class LambdaCreation {
+public class LambdaTransform {
 
     private LambdaExpr lambdaExpr;
     private final String packageName;
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
-    public LambdaCreation(String packageName) {
+    public LambdaTransform(String packageName) {
         this.packageName = packageName;
     }
 
@@ -60,7 +60,7 @@ public class LambdaCreation {
         }
     }
 
-    private MethodDeclaration createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
+    private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(parseClassOrInterfaceType("java.lang.Boolean"));
@@ -69,8 +69,6 @@ public class LambdaCreation {
 
         ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
-
-        return methodDeclaration;
     }
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {
