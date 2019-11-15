@@ -23,6 +23,14 @@ public class Dispute {
     private Person assignee;
     private double amount;
 
+    public Dispute() {
+    }
+
+    public Dispute(String description, double amount) {
+        this.description = description;
+        this.amount = amount;
+    }
+
     public String getDescription() {
         return description;
     }

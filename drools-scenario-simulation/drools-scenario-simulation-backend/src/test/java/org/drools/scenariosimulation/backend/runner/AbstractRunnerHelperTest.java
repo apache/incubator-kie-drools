@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -69,7 +70,7 @@ public class AbstractRunnerHelperTest {
         }
 
         @Override
-        protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
             return null;
         }
     };

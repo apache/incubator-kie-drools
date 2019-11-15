@@ -73,4 +73,8 @@ public class ResultWrapper<T> {
     public T orElseGet(Supplier<T> defaultSupplier) {
         return satisfied ? result : defaultSupplier.get();
     }
+
+    public Optional<T> getOptional() {
+        return Optional.ofNullable( orElse(null));
+    }
 }

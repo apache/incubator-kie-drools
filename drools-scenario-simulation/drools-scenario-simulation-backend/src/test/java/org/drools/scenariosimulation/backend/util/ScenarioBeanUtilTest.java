@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.NotEmptyConstructor;
@@ -32,6 +33,7 @@ import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.junit.Test;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getField;
@@ -40,6 +42,7 @@ import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revert
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class ScenarioBeanUtilTest {
@@ -54,7 +57,7 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("creator", "firstName"), FIRST_NAME);
         paramsToSet.put(Arrays.asList("creator", "age"), AGE);
 
-        Object result = ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        Object result = ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
 
         assertTrue(result instanceof Dispute);
 
@@ -63,41 +66,58 @@ public class ScenarioBeanUtilTest {
         assertEquals(dispute.getCreator().getAge(), AGE);
     }
 
+    @Test
+    public void fillBeanTestWithInitialInstanceTest() {
+        Dispute dispute = new Dispute();
+
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(Arrays.asList("creator", "firstName"), FIRST_NAME);
+        paramsToSet.put(Arrays.asList("creator", "age"), AGE);
+
+        Object result = ScenarioBeanUtil.fillBean(Optional.of(dispute), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+
+        assertTrue(result instanceof Dispute);
+        assertSame(dispute, result);
+
+        assertEquals(dispute.getCreator().getFirstName(), FIRST_NAME);
+        assertEquals(dispute.getCreator().getAge(), AGE);
+    }
+
     @Test(expected = ScenarioException.class)
     public void fillBeanLoadClassTest() {
-        ScenarioBeanUtil.fillBean("FakeCanonicalName", new HashMap<>(), classLoader);
+        ScenarioBeanUtil.fillBean(Optional.empty(), "FakeCanonicalName", new HashMap<>(), classLoader);
     }
 
     @Test(expected = ScenarioException.class)
     public void fillBeanFailNotEmptyConstructorTest() {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(Arrays.asList("name"), null);
+        paramsToSet.put(singletonList("name"), null);
 
-        ScenarioBeanUtil.fillBean(NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(Optional.empty(), NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
     public void fillBeanFailTest() {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(Arrays.asList("fakeField"), null);
+        paramsToSet.put(singletonList("fakeField"), null);
 
-        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
     public void fillBeanFailNullClassTest() {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(Arrays.asList("fakeField"), null);
+        paramsToSet.put(singletonList("fakeField"), null);
 
-        ScenarioBeanUtil.fillBean(null, paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(Optional.empty(), null, paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
     public void fillBeanFailWrongTypeTest() {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(Arrays.asList("description"), new ArrayList<>());
+        paramsToSet.put(singletonList("description"), new ArrayList<>());
 
-        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test
@@ -119,7 +139,7 @@ public class ScenarioBeanUtilTest {
     @Test
     public void navigateToObjectFakeFieldTest() {
         Dispute dispute = new Dispute();
-        List<String> pathToProperty = Arrays.asList("fakeField");
+        List<String> pathToProperty = singletonList("fakeField");
 
         String message = "Impossible to find field with name 'fakeField' in class " + Dispute.class.getCanonicalName();
         assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, true))
