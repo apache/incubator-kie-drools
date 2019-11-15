@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -241,7 +242,7 @@ public class DMNScenarioRunnerHelperTest {
         params.put(asList("creator", "surname"), "TestSurname");
         params.put(singletonList("age"), BigDecimal.valueOf(10));
 
-        Object objectRaw = runnerHelper.createObject(String.class.getCanonicalName(), params, this.getClass().getClassLoader());
+        Object objectRaw = runnerHelper.createObject(Optional.empty(), String.class.getCanonicalName(), params, this.getClass().getClassLoader());
         assertTrue(objectRaw instanceof Map);
 
         Map<String, Object> object = (Map<String, Object>) objectRaw;

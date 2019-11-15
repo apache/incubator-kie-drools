@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -34,6 +35,7 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
@@ -123,6 +125,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     private ExpressionIdentifier amountExpectedExpressionIdentifier;
     private FactMapping amountNameExpectedFactMapping;
     private FactMappingValue amountNameExpectedFactMappingValue;
+    private FactMapping disputeExpressionGivenFactMapping;
+    private ExpressionIdentifier expressionGivenExpressionIdentifier;
 
     @Before
     public void setup() {
@@ -153,6 +157,11 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         amountNameExpectedFactMapping = simulation.getScesimModelDescriptor().addFactMapping(disputeFactIdentifier, amountExpectedExpressionIdentifier);
         amountNameExpectedFactMapping.addExpressionElement("Fact 2", Double.class.getCanonicalName());
         amountNameExpectedFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
+
+        expressionGivenExpressionIdentifier = ExpressionIdentifier.create("directMapping", FactMappingType.GIVEN);
+        disputeExpressionGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(disputeFactIdentifier, expressionGivenExpressionIdentifier);
+        disputeExpressionGivenFactMapping.setFactMappingValueType(FactMappingValueType.EXPRESSION);
+        disputeExpressionGivenFactMapping.addExpressionElement("Dispute", Dispute.class.getCanonicalName());
 
         scenario1 = simulation.addData();
         scenario1.setDescription(TEST_DESCRIPTION);
@@ -194,6 +203,22 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                               classLoader,
                                                                               expressionEvaluatorFactory);
         assertEquals(2, scenario2Inputs.size());
+
+        // add expression
+        scenario2.addOrUpdateMappingValue(disputeFactIdentifier, expressionGivenExpressionIdentifier, "# new org.drools.scenariosimulation.backend.model.Dispute(\"dispute description\", 10)");
+
+        scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
+                                                                              scenario2.getUnmodifiableFactMappingValues(),
+                                                                              classLoader,
+                                                                              expressionEvaluatorFactory);
+        assertEquals(2, scenario2Inputs.size());
+        Optional<Dispute> disputeGivenOptional = scenario2Inputs.stream()
+                .filter(elem -> elem.getValue() instanceof Dispute)
+                .map(elem -> (Dispute) elem.getValue())
+                .findFirst();
+        assertTrue(disputeGivenOptional.isPresent());
+        assertEquals(disputeGivenOptional.get().getDescription(), "dispute description");
+
 
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
         assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
@@ -487,7 +512,9 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         }
 
         // TEST 2 - broken background
-        FactMappingValue notValid = backgroundData1.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "notValid");
+        String notValid = "notValid";
+        FactMappingValue notValid1 = backgroundData1.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, notValid);
+        FactMappingValue notValid2 = backgroundData2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, notValid);
 
         assertThatThrownBy(() -> runnerHelper.extractBackgroundValues(this.background,
                                                                       classLoader,
@@ -495,8 +522,10 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Error in BACKGROUND data");
 
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, notValid.getStatus());
-        assertTrue(notValid.getExceptionMessage().startsWith("Impossible to parse"));
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, notValid1.getStatus());
+        assertTrue(notValid1.getExceptionMessage().startsWith("Impossible to parse"));
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, notValid2.getStatus());
+        assertTrue(notValid2.getExceptionMessage().startsWith("Impossible to parse"));
     }
 
     @Test

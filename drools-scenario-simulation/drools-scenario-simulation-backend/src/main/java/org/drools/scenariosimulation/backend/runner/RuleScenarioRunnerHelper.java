@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -182,8 +183,8 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     @Override
-    protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
-        return fillBean(className, params, classLoader);
+    protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        return fillBean(initialInstance, className, params, classLoader);
     }
 
     protected RuleScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer, Settings settings) {

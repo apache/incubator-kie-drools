@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 
@@ -43,13 +44,22 @@ public class ScenarioBeanUtil {
     private ScenarioBeanUtil() {
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T fillBean(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        return fillBean(Optional.empty(), className, params, classLoader);
+    }
 
-        Class<T> clazz = loadClass(className, classLoader);
-        T beanToFill = newInstance(clazz);
+    @SuppressWarnings("unchecked")
+    public static <T> T fillBean(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+
+        T beanToFill = (T) initialInstance.orElseGet(() -> newInstance(loadClass(className, classLoader)));
 
         for (Map.Entry<List<String>, Object> param : params.entrySet()) {
+
+            // direct mapping already considered
+            if(param.getKey().isEmpty()) {
+                continue;
+            }
+
             try {
                 fillProperty(beanToFill, param.getKey(), param.getValue());
             } catch (ReflectiveOperationException e) {

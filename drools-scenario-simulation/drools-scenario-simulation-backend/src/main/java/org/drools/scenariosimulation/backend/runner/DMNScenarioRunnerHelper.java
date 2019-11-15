@@ -19,6 +19,7 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -170,9 +171,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
-        Map<String, Object> toReturn = new HashMap<>();
+    protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        Map<String, Object> toReturn = (Map<String, Object>) initialInstance.orElseGet(HashMap::new);
         for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {
+
+            // direct mapping already considered
+            if(listObjectEntry.getKey().isEmpty()) {
+                continue;
+            }
 
             List<String> allSteps = listObjectEntry.getKey();
             List<String> steps = allSteps.subList(0, allSteps.size() - 1);
