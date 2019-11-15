@@ -18,10 +18,14 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class LambdaTransform {
 
+    private final static String CLASS_NAME_PREFIX = "Lambda";
     private LambdaExpr lambdaExpr;
+    private String className;
+
     private final String packageName;
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
@@ -38,6 +42,7 @@ public class LambdaTransform {
         }
 
         lambdaExpr = expression.asLambdaExpr();
+        className = CLASS_NAME_PREFIX + md5Hash(expressionString);
 
         parseParameters(argsType);
 
@@ -46,7 +51,7 @@ public class LambdaTransform {
 
         createMethodDeclaration(classDeclaration);
 
-        return new CreatedClass(compilationUnit);
+        return new CreatedClass(compilationUnit, className);
     }
 
     private void parseParameters(Class<?>[] argsType) {
@@ -77,7 +82,7 @@ public class LambdaTransform {
     }
 
     private ClassOrInterfaceDeclaration createClass(CompilationUnit cu) {
-        ClassOrInterfaceDeclaration expression = cu.addClass("Expression");
+        ClassOrInterfaceDeclaration expression = cu.addClass(className);
         return expression;
     }
 

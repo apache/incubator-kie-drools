@@ -5,15 +5,19 @@ import com.github.javaparser.printer.PrettyPrinter;
 
 public class CreatedClass {
 
-    private CompilationUnit compilationUnit;
+    private final CompilationUnit compilationUnit;
+    private final String className;
 
-    public CreatedClass(CompilationUnit compilationUnit) {
+    public CreatedClass(CompilationUnit compilationUnit, String className) {
         this.compilationUnit = compilationUnit;
+        this.className = className;
     }
 
     public String getCompilationUnitAsString() {
         return new PrettyPrinter().print(compilationUnit);
     }
 
-
+    public String getClassName() {
+        return className;
+    }
 }
