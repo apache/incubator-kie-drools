@@ -2614,5 +2614,30 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat((Map<?, ?>) result.get("DecisionNumberInList"), hasEntry(is("Result_3"), is(true)));
         assertThat((Map<?, ?>) result.get("DecisionNumberInList"), hasEntry(is("Result_4"), is(true)));
     }
+
+    @Test
+    public void testNoExpr() {
+        // DROOLS-4765 DMN validation rule alignment for missing expression
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("noExpr.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_461041dc-9ab9-4e23-ae01-3366a7544cd3", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(DMNMessage.Severity.WARN).size(), is(1));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(DMNMessage.Severity.WARN).size(), is(1));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()),
+                   dmnModel.getMessages(DMNMessage.Severity.WARN)
+                           .stream()
+                           .filter(m -> m.getSourceId().equals("_cdd03786-d1ab-47b5-ba05-df830458dc62"))
+                           .count(),
+                   is(1L));
+        assertThat(dmnResult.getDecisionResultByName("is it raining?").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("what to do today?").getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED));
+    }
 }
 

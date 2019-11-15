@@ -33,7 +33,7 @@ rule DECISION_MISSING_EXPR
 when
     $d : Decision(expression == null)
 then
-    reporter.report(DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_DECISION, $d.getIdentifierString());
+    reporter.report(DMNMessage.Severity.WARN, $d, Msg.MISSING_EXPRESSION_FOR_DECISION, $d.getIdentifierString());
 end
 
 rule DECISION_MISSING_VAR

@@ -342,7 +342,9 @@ public class ValidatorTest extends AbstractValidatorTest {
         // DMN v1.2 CH11 example for Adjudication does not define decision logic nor typeRef:
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
+        assertTrue(validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
+                                                   p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
+                                                   p.getSourceId().equals("d_Adjudication")));
     }
 
     @Test
@@ -386,5 +388,17 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                        VALIDATE_MODEL,
                                                        VALIDATE_COMPILATION);
         assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING && p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)).count(), is(1L));
+    }
+
+    @Test
+    public void testDecisionNoExpr() {
+        // DROOLS-4765 DMN validation rule alignment for missing expression
+        List<DMNMessage> validate = validator.validate(getReader("noExpr.dmn", DMNRuntimeTest.class),
+                                                       VALIDATE_MODEL); // this test ensures the WARN for missing expr on the Decision node also applies when using static model validation rules (before compilation)
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
+                                                 p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
+                                                 p.getSourceId().equals("_cdd03786-d1ab-47b5-ba05-df830458dc62")).count(),
+                   is(1L));
     }
 }
