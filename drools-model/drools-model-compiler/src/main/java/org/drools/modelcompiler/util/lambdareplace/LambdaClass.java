@@ -20,7 +20,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
-public class LambdaTransform {
+public class LambdaClass {
 
     private final static String CLASS_NAME_PREFIX = "Lambda";
     private LambdaExpr lambdaExpr;
@@ -30,7 +30,7 @@ public class LambdaTransform {
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
-    public LambdaTransform(String packageName) {
+    public LambdaClass(String packageName) {
         this.packageName = packageName;
     }
 
