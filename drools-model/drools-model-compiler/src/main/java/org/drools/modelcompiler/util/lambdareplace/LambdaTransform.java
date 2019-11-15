@@ -2,7 +2,6 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -17,7 +16,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -79,37 +77,8 @@ public class LambdaTransform {
     }
 
     private ClassOrInterfaceDeclaration createClass(CompilationUnit cu) {
-
         ClassOrInterfaceDeclaration expression = cu.addClass("Expression");
-
-        expression.setImplementedTypes(createExtendedType());
-
         return expression;
-    }
-
-    private NodeList<ClassOrInterfaceType> createExtendedType() {
-        ClassOrInterfaceType bifunction = functionType();
-
-        List<LambdaParameter> withBoolean = new ArrayList<>(lambdaParameters);
-        withBoolean.add(new LambdaParameter("", Boolean.class));
-
-        List<Type> typeArguments = withBoolean.stream()
-                .map(p -> parseClassOrInterfaceType(p.clazz.getCanonicalName()))
-                .collect(Collectors.toList());
-
-        bifunction.setTypeArguments(NodeList.nodeList(typeArguments));
-        return NodeList.nodeList(bifunction);
-    }
-
-    private ClassOrInterfaceType functionType() {
-        String type;
-        switch(lambdaParameters.size()) {
-            case 1: type = "java.util.function.Function"; break;
-            case 2: type = "java.util.function.BiFunction"; break;
-            default:
-                throw new NoFunctionForTypesException();
-        }
-        return parseClassOrInterfaceType(type);
     }
 
     private static class NotLambdaException extends RuntimeException {

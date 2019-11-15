@@ -18,7 +18,7 @@ public class LambdaTransformTest {
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
                 "" +
-                "public class Expression implements java.util.function.Function<org.drools.modelcompiler.domain.Person, java.lang.Boolean> {\n" +
+                "public class Expression {\n" +
                 "\n" +
                 "        @Override()\n" +
                 "        public java.lang.Boolean apply(org.drools.modelcompiler.domain.Person p) {\n" +
@@ -39,7 +39,7 @@ public class LambdaTransformTest {
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
                 "" +
-                "public class Expression implements java.util.function.BiFunction<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person, java.lang.Boolean> {\n" +
+                "public class Expression {\n" +
                 "\n" +
                 "        @Override()\n" +
                 "        public java.lang.Boolean apply(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) {\n" +
