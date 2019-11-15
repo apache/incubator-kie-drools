@@ -73,6 +73,7 @@ public class LambdaClass {
 
     private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
+        methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 
         setMethodParameter(methodDeclaration);
