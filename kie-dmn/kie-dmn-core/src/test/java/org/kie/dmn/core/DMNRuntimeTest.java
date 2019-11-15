@@ -2617,7 +2617,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNoExpr() {
-        // DROOLS-
+        // DROOLS-4765 DMN validation rule alignment for missing expression
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("noExpr.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_461041dc-9ab9-4e23-ae01-3366a7544cd3", "Drawing 1");
         assertThat(dmnModel, notNullValue());

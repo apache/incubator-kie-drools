@@ -392,7 +392,7 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testDecisionNoExpr() {
-        // DROOLS-
+        // DROOLS-4765 DMN validation rule alignment for missing expression
         List<DMNMessage> validate = validator.validate(getReader("noExpr.dmn", DMNRuntimeTest.class),
                                                        VALIDATE_MODEL); // this test ensures the WARN for missing expr on the Decision node also applies when using static model validation rules (before compilation)
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
