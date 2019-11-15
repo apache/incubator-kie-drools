@@ -59,7 +59,6 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
-import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -363,7 +362,8 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     public Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier) {
         return new AdvanceSessionTimeCommand( outIdentifier, amount, unit );
     }
-    
+
+    @Override
     public Command newApplyPmmlModel(PMMLRequestData request) {
     	return new ApplyPmmlModelCommand(request);
     }

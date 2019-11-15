@@ -52,11 +52,11 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
+import org.drools.ruleunit.DataSource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

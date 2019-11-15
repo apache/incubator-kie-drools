@@ -17,7 +17,8 @@
  */
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.ruleunit.RuleUnitUtil;
+
+import org.kie.internal.ruleunit.RuleUnitUtil;
 
 /**
  * An entry point descriptor for facts. This is part of the

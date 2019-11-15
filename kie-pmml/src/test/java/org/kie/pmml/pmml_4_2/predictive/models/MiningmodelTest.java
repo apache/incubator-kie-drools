@@ -15,39 +15,32 @@
  */
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
+import org.drools.ruleunit.executor.InternalRuleUnitExecutor;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
-import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 import org.kie.pmml.pmml_4_2.model.ScoreCard;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecutionState;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class MiningmodelTest extends DroolsAbstractPMMLTest {
     private static final boolean VERBOSE = true;
@@ -72,7 +65,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 .addParameter("fld4", "optA", String.class);
         PMMLRequestData request = rdb.build();
         PMML4Result resultHolder = helper.submitRequest(request);
-        Collection<?> objects = ((InternalRuleUnitExecutor)helper.getExecutor()).getSessionObjects();
+        Collection<?> objects = (( InternalRuleUnitExecutor )helper.getExecutor()).getSessionObjects();
         objects.forEach(o -> {System.out.println(o);});
         helper.getMiningModelPojo().forEach(mmp -> {System.out.println(mmp);});
         helper.getResultData().iterator().forEachRemaining(rd -> {

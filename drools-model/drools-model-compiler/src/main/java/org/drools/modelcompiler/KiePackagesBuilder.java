@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,7 +63,6 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.ruleunit.RuleUnitUtil;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.Enabled;
@@ -135,6 +133,7 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
+import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
 

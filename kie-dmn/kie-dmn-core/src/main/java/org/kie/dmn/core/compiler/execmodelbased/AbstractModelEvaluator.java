@@ -20,14 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.ruleunit.executor.RuleUnitExecutorSession;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -46,6 +45,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.drools.ruleunit.RuleUnitExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,11 +15,6 @@
 
 package org.drools.workbench.models.guided.scorecard.backend.test2;
 
-import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +22,9 @@ import java.util.Map;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
 import org.drools.workbench.models.guided.scorecard.backend.test1.ApplicantAttribute;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -44,14 +37,19 @@ import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
+
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
 
@@ -229,7 +227,7 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
                 if (ruleImpl != null) {
                     RuleUnitDescription descr = ikb.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
-                        return descr.getRuleUnitClass();
+                        return (Class<? extends RuleUnit>) descr.getRuleUnitClass();
                     }
                 }
             }

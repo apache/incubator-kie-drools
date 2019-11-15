@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -174,10 +173,6 @@ public interface InternalFactHandle
         default RightTuple getFirstRightTuple(RuleBasePartitionId partitionId) {
             return getFirstRightTuple( partitionId.getParallelEvaluationSlot() );
         }
-    }
-
-    default InternalDataSource<?> getDataSource() {
-        return null;
     }
 
     default InternalFactHandle getParentHandle() {

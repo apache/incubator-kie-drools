@@ -20,9 +20,9 @@ import java.lang.reflect.Constructor;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 import static org.junit.Assert.assertEquals;
 

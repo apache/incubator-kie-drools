@@ -100,7 +100,7 @@ then
    modelTarget.setContext("@{miningModel.modelId}");
    Summed_@{miningModel.targetField} target = new Summed_@{miningModel.targetField}();
    target.setValue($svalue);
-   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   FactHandle fh = ((org.drools.ruleunit.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("Sum_@{miningModel.targetField}",target);
    $reslt.addResultVariable("@{miningModel.targetField}",modelTarget);

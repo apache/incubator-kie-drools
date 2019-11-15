@@ -23,15 +23,15 @@ import java.util.Map;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.util.StringUtils;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.drools.ruleunit.RuleUnit;
 
 import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public final class TestUtil {
 
-    public static Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+    public static Class<? extends RuleUnit> getStartingRuleUnit( String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
         Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
         RuleImpl ruleImpl;
         for (String pkgName : possiblePackages) {
@@ -41,7 +41,7 @@ public final class TestUtil {
                 if (ruleImpl != null) {
                     RuleUnitDescription descr = ikb.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
-                        return descr.getRuleUnitClass();
+                        return (Class<? extends RuleUnit>) descr.getRuleUnitClass();
                     }
                 }
             }

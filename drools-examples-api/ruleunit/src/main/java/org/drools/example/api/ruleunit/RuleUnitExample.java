@@ -18,8 +18,8 @@ package org.drools.example.api.ruleunit;
 
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 public class RuleUnitExample {
 

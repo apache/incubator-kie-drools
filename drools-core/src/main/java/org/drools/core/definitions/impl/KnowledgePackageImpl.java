@@ -658,7 +658,7 @@ public class KnowledgePackageImpl
         for (String implicitImport : implicitImports) {
             typeResolver.addImplicitImport(implicitImport);
         }
-        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(typeResolver);
+        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(this);
     }
 
     public RuleUnitDescriptionLoader getRuleUnitDescriptionLoader() {

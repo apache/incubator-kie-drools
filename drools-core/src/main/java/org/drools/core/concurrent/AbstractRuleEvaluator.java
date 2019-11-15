@@ -16,7 +16,6 @@
 
 package org.drools.core.concurrent;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.KnowledgeHelper;
@@ -35,7 +34,6 @@ public class AbstractRuleEvaluator {
     }
 
     protected KnowledgeHelper newKnowledgeHelper() {
-        RuleBaseConfiguration rbc = agenda.getWorkingMemory().getKnowledgeBase().getConfiguration();
-        return rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( agenda.getWorkingMemory() );
+        return agenda.getWorkingMemory().createKnowledgeHelper();
     }
 }

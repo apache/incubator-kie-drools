@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -19,6 +17,8 @@ import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.decisiontables.Indexed;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 import static java.util.stream.Collectors.toList;
 

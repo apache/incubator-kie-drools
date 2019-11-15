@@ -90,7 +90,7 @@ then
    @{miningModel.targetField} target = new @{miningModel.targetField}();
    target.setValue($svalue);
    target.setWeight($sweight);
-   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   FactHandle fh = ((org.drools.ruleunit.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{miningModel.targetField}",target);
    results.update(fh,$reslt);
@@ -108,7 +108,7 @@ then
    @{miningModel.targetField} target = new @{miningModel.targetField}();
    target.setValue($svalue);
    target.setWeight($sweight);
-   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   FactHandle fh = ((org.drools.ruleunit.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{miningModel.targetField}",target);
    results.update(fh,$reslt);

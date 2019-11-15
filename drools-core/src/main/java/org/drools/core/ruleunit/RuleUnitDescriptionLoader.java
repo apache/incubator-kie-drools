@@ -22,23 +22,24 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.kie.internal.ruleunit.RuleUnitComponentFactory;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 
 public class RuleUnitDescriptionLoader {
 
-    private State state = State.UNKNOWN;
+    private RuleUnitDescriptionRegistry.State state = RuleUnitDescriptionRegistry.State.UNKNOWN;
 
-    private transient final TypeResolver typeResolver;
+    private transient final InternalKnowledgePackage pkg;
     private final Map<String, RuleUnitDescription> ruleUnitDescriptionsCache = new ConcurrentHashMap<>();
     private final Set<String> nonExistingUnits = new HashSet<>();
 
-    public RuleUnitDescriptionLoader(final TypeResolver typeResolver) {
-        this.typeResolver = typeResolver;
+    public RuleUnitDescriptionLoader(InternalKnowledgePackage pkg) {
+        this.pkg = pkg;
     }
 
-    public State getState() {
+    public RuleUnitDescriptionRegistry.State getState() {
         return state;
     }
 
@@ -62,7 +63,7 @@ public class RuleUnitDescriptionLoader {
             return null;
         }
         try {
-            return new RuleUnitDescription((Class<? extends RuleUnit>) typeResolver.resolveType(ruleUnit));
+            return RuleUnitComponentFactory.get().createRuleUnitDescription( pkg, (Class<?>) pkg.getTypeResolver().resolveType(ruleUnit) );
         } catch (final ClassNotFoundException e) {
             nonExistingUnits.add(ruleUnit);
             return null;

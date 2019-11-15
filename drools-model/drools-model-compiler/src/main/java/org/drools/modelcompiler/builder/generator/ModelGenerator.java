@@ -39,7 +39,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
-import org.drools.core.ruleunit.RuleUnitDescription;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.MVELSafeHelper;
 import com.github.javaparser.ast.Modifier;

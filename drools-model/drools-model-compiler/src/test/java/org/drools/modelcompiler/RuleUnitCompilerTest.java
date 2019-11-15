@@ -23,9 +23,9 @@ import java.util.List;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 import static java.util.Arrays.asList;
 
@@ -75,7 +75,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                 "end\n";
 
         KieContainer kieContainer = getKieContainer( null, str );
-        RuleUnitExecutor executor = kieContainer.newRuleUnitExecutor();
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
 
         DataSource<Person> persons = DataSource.create( new Person( "Mario", 42 ),
                                                         new Person( "Marilena", 44 ),
@@ -99,7 +99,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                 "end\n";
 
         KieContainer kieContainer = getKieContainer( null, str );
-        RuleUnitExecutor executor = kieContainer.newRuleUnitExecutor();
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
 
         DataSource<Person> persons = DataSource.create( new Person( "Mario", 42 ),
                                                         new Person( "Marilena", 44 ),
@@ -172,7 +172,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                 "end\n";
 
         KieContainer kieContainer = getKieContainer( null, str );
-        RuleUnitExecutor executor = kieContainer.newRuleUnitExecutor();
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
 
         PositiveNegativeDTUnit ruleUnit = new PositiveNegativeDTUnit(47);
         executor.run(ruleUnit);
