@@ -44,6 +44,10 @@ public class ScenarioBeanUtil {
     private ScenarioBeanUtil() {
     }
 
+    public static <T> T fillBean(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        return fillBean(Optional.empty(), className, params, classLoader);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T fillBean(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
 
