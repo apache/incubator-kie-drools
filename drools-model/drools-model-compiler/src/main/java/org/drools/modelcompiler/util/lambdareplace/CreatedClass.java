@@ -26,4 +26,8 @@ public class CreatedClass {
     public String getClassNameWithPackage() {
         return String.format("%s.%s", packageName, className);
     }
+
+    public String getClassNamePath() {
+        return String.format("%s/%s.java", packageName.replace(".", "/"), className);
+    }
 }

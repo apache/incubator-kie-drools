@@ -18,8 +18,16 @@ public class PostProcessedExecModel {
         return convertedStatement.toString();
     }
 
+    public Statement getConvertedStatement() {
+        return convertedStatement;
+    }
+
     public PostProcessedExecModel addAllLambdaClasses(Collection<CreatedClass> createdClasses) {
         this.createdClasses.addAll(createdClasses);
         return this;
+    }
+
+    public List<CreatedClass> getCreatedClasses() {
+        return createdClasses;
     }
 }

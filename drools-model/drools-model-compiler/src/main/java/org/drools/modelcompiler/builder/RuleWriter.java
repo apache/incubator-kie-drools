@@ -25,7 +25,11 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
+import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
+import org.drools.modelcompiler.util.lambdareplace.PostProcessedExecModel;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
@@ -69,20 +73,35 @@ public class RuleWriter {
 
                 String addFileName = classOptional.get().getNameAsString();
 
-                rules.add(new RuleFileSource(addFileName, cu));
+                CompilationUnit postProcessedCU = cu.clone();
+
+                List<CreatedClass> createdClasses = new ArrayList<>();
+                for (Statement statement : postProcessedCU.findAll(Statement.class)) {
+                    createdClasses.addAll(postProcessLambda(statement));
+                }
+
+                rules.add(new RuleFileSource(addFileName, postProcessedCU, createdClasses));
             }
         }
         return rules;
+    }
+
+    private List<CreatedClass> postProcessLambda(Statement s) {
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas(pkgModel.getName(), s);
+        s.replace(postProcessedExecModel.getConvertedStatement());
+        return postProcessedExecModel.getCreatedClasses();
     }
 
     public class RuleFileSource {
 
         protected final CompilationUnit source;
         private final String name;
+        private final List<CreatedClass> createdClasses;
 
-        private RuleFileSource(String name, CompilationUnit source) {
+        private RuleFileSource(String name, CompilationUnit source, List<CreatedClass> createdClasses) {
             this.name = name;
             this.source = source;
+            this.createdClasses = createdClasses;
         }
 
         public String getName() {
@@ -91,6 +110,10 @@ public class RuleWriter {
 
         public String getSource() {
             return prettyPrinter.print(source);
+        }
+
+        public List<CreatedClass> getCreatedClasses() {
+            return createdClasses;
         }
     }
 }
