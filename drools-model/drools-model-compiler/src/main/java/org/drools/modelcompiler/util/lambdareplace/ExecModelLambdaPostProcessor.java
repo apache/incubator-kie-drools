@@ -7,12 +7,9 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
 
 public class ExecModelLambdaPostProcessor {
 
@@ -27,17 +24,19 @@ public class ExecModelLambdaPostProcessor {
 
         Statement clone = inputDSL.clone();
 
-        clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
-                .forEach(this::replaceLambdaInExpr);
-
-
-        return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
+        try {
+            clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
+                    .forEach(this::replaceLambdaInExpr);
+            return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
+        } catch (LambdaClass.LambdaTypeNeededException e) {
+            return new PostProcessedExecModel(inputDSL);
+        }
     }
 
     private void replaceLambdaInExpr(MethodCallExpr methodCallExpr) {
 
         methodCallExpr.getArguments().forEach(a -> {
-            if(a.isLambdaExpr()) {
+            if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
                 CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString());

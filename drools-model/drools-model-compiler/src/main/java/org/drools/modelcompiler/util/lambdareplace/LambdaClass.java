@@ -19,6 +19,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
@@ -67,6 +68,9 @@ public class LambdaClass {
         NodeList<Parameter> parameters = lambdaExpr.getParameters();
         for (Parameter p : parameters) {
             Type c = p.getType();
+            if(c instanceof UnknownType) {
+                throw new LambdaTypeNeededException();
+            }
             lambdaParameters.add(new LambdaParameter(p.getNameAsString(), c));
         }
     }
@@ -115,7 +119,7 @@ public class LambdaClass {
         }
     }
 
-    private class NoFunctionForTypesException extends RuntimeException {
+    public static class LambdaTypeNeededException extends RuntimeException {
 
     }
 }
