@@ -8,8 +8,11 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 
 public class ExecModelLambdaPostProcessor {
 
@@ -40,8 +43,8 @@ public class ExecModelLambdaPostProcessor {
                 CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
-                TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithPackage()));
-                a.replace(new MethodReferenceExpr(type, NodeList.nodeList(), TEST_CALL));
+                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
+                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
             }
         });
     }

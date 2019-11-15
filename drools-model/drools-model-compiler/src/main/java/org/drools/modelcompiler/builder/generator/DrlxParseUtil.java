@@ -469,7 +469,12 @@ public class DrlxParseUtil {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {
-            Type type = patternClass.map(p -> (Type)StaticJavaParser.parseClassOrInterfaceType(p.getCanonicalName())).orElse(new UnknownType());
+            Type type;
+            if(patternClass.isPresent() && usedDeclarations.isEmpty()) {
+                type = StaticJavaParser.parseClassOrInterfaceType(patternClass.get().getCanonicalName());
+            } else {
+                type = new UnknownType();
+            }
             lambdaExpr.addParameter(new Parameter(type, THIS_PLACEHOLDER));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
