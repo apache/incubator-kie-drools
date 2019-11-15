@@ -430,9 +430,26 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                             VALIDATE_COMPILATION)
                                              .theseModels(getReader("Financial.dmn", DMN13specificTest.class),
                                                           getReader("Chapter 11 Example.dmn", DMN13specificTest.class));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING && // <<<<<<<< THIS IS WIP
                                                    p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
                                                    p.getSourceId().equals("_4bd33d4a-741b-444a-968b-64e1841211e7")));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
+                                                   p.getMessageType().equals(DMNMessageType.INVALID_NAME) &&
+                                                   p.getSourceId().equals("_96b30012-a6e7-4545-89d3-068ec722469c")));
+
     }
+
+    @Test
+    public void testDMNv1_3_ch11example2() {
+        List<DMNMessage> validate = validator.validateUsing(
+                                                            VALIDATE_MODEL,
+                                                            VALIDATE_COMPILATION)
+                                             .theseModels(getReader("Recommended Loan Products.dmn", DMN13specificTest.class),
+                                                          getReader("Loan info.dmn", DMN13specificTest.class));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
 }
