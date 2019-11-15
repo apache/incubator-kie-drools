@@ -34,17 +34,16 @@ public class ExecModelLambdaPostProcessor {
 
     private void replaceLambdaInExpr(MethodCallExpr methodCallExpr) {
 
-        Expression last = methodCallExpr.getArguments().removeLast();
-        if(!last.isLambdaExpr()) {
-            throw new NotLambdaException();
-        }
+        methodCallExpr.getArguments().forEach(a -> {
+            if(a.isLambdaExpr()) {
+                LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-        LambdaExpr lambdaExpr = last.asLambdaExpr();
+                CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString(), Object.class, Object.class);
+                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
-        CreatedClass aClass = lambdaClass.createClass(lambdaExpr.toString(), Object.class, Object.class);
-        lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
-
-        TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithoutPackage()));
-        methodCallExpr.addArgument(new MethodReferenceExpr(type, NodeList.nodeList(), "apply" ));
+                TypeExpr type = new TypeExpr(StaticJavaParser.parseType(aClass.getClassNameWithoutPackage()));
+                a.replace(new MethodReferenceExpr(type, NodeList.nodeList(), "apply"));
+            }
+        });
     }
 }
