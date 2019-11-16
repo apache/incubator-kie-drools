@@ -1,5 +1,5 @@
 [[cloudBalancingScoreConfiguration]]
-= Score Configuration
+= Score configuration
 :imagesdir: ../..
 
 Planner will search for the `Solution` with the highest ``Score``.
@@ -16,7 +16,7 @@ There are several ways to implement such a score function:
 
 
 [[cloudBalancingEasyJavaScoreConfiguration]]
-== Easy Java Score Configuration
+== Easy Java score configuration
 
 One way to define a score function is to implement the interface `EasyScoreCalculator` in plain Java.
 
@@ -57,7 +57,7 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
                     used = true;
                 }
             }
-            
+
             // Hard constraints
             int cpuPowerAvailable = computer.getCpuPower() - cpuPowerUsage;
             if (cpuPowerAvailable < 0) {
@@ -71,7 +71,7 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
             if (networkBandwidthAvailable < 0) {
                 hardScore += networkBandwidthAvailable;
             }
-            
+
             // Soft constraints
             if (used) {
                 softScore -= computer.getCost();
@@ -89,9 +89,9 @@ To fix that, either use incremental Java score calculation or Drools score calcu
 
 
 [[cloudBalancingDroolsScoreConfiguration]]
-== Drools Score Configuration
+== Drools score configuration
 
-Drools score calculation uses incremental calculation, where every score constraint is written as one or more score rules. 
+Drools score calculation uses incremental calculation, where every score constraint is written as one or more score rules.
 
 Using the Drools rule engine for score calculation, allows you to integrate with other Drools technologies, such as decision tables (XLS or web based), the KIE Workbench, ...
 

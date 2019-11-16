@@ -1,10 +1,10 @@
 [[cloudBalancingTutorial]]
-= Cloud Balancing Tutorial
+= Cloud balancing tutorial
 :imagesdir: ../..
 
 
 [[cloudBalancingProblemDescription]]
-== Problem Description
+== Problem description
 
 Suppose your company owns a number of cloud computers and needs to run a number of processes on those computers.
 Assign each process to a computer.
@@ -38,7 +38,7 @@ Here's an executive summary of this example and <<machineReassignment,an advance
 image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 [[cloudBalancingProblemSize]]
-== Problem Size
+== Problem size
 
 .Cloud Balancing Problem Size
 [cols="1,1,1,1", options="header"]

@@ -1,5 +1,5 @@
 [[repeatedPlanning]]
-= Repeated Planning
+= Repeated planning
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -8,25 +8,25 @@
 :experimental:
 
 [[introductionToRepeatedPlanning]]
-== Introduction to Repeated Planning
+== Introduction to repeated planning
 
 The problem facts used to create a solution may change before or during the execution of that solution. Delaying planning in order to lower the risk of problem facts changing is not ideal, as an incomplete plan is preferable to no plan.
 
 The following examples demonstrate situations where planning solutions need to be altered due to unpredictable changes:
 
-* _Unforeseen fact changes_ 
+* _Unforeseen fact changes_
 
-** An employee assigned to a shift calls in sick. 
+** An employee assigned to a shift calls in sick.
 ** An airplane scheduled to take off has a technical delay.
 ** One of the machines or vehicles break down.
-+ 
++
 Unforeseen fact changes benefit from using _backup planning_.
 
 * _Cannot assign all entities immediately_
 +
 Leave some unassigned. For example:
 +
-** There are 10 shifts at the same time to assign but only nine employees to handle shifts. 
+** There are 10 shifts at the same time to assign but only nine employees to handle shifts.
 +
 For this type of planning, use <<overconstrainedPlanning,_overconstrained planning_>>.
 
@@ -34,7 +34,7 @@ For this type of planning, use <<overconstrainedPlanning,_overconstrained planni
 +
 For example:
 
-** Hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable, and for week five and beyond are not worth planning yet. 
+** Hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable, and for week five and beyond are not worth planning yet.
 +
 This problem benefits from <<continuousPlanning,_continuous planning_>>.
 
@@ -48,7 +48,7 @@ Planner allows you to start planning earlier, despite unforeseen changes, as the
 
 
 [[backupPlanning]]
-== Backup Planning
+== Backup planning
 
 Backup planning adds extra score constraints to create space in the planning for when things go wrong. That creates a backup plan within the plan itself.
 
@@ -58,9 +58,9 @@ An example of backup planning is as follows:
 +
 * Assign an employee as the spare employee (one for every 10 shifts at the same time).
 * Keep one hospital bed open in each department.
-. Change the planning problem when an unforeseen event occurs. 
+. Change the planning problem when an unforeseen event occurs.
 +
-For example, if an employee calls in sick: 
+For example, if an employee calls in sick:
 +
 * Delete the sick employee and leave their shifts unassigned.
 * Restart the planning, starting from that solution, which now has a different score.
@@ -69,7 +69,7 @@ The construction heuristics fills in the newly created gaps (probably with the s
 
 
 [[overconstrainedPlanning]]
-== Overconstrained Planning
+== Overconstrained planning
 
 When there is no feasible solution to assign all planning entities, it is preferable to assign as many entities as possible without breaking hard constraints.
 This is called overconstrained planning.
@@ -82,7 +82,7 @@ There are two ways to avoid this:
 
 
 [[overconstrainedPlanningWithNullableVariables]]
-=== Overconstrained Planning with Nullable Variables
+=== Overconstrained planning with nullable variables
 
 If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
 
@@ -96,7 +96,7 @@ To implement this:
 
 
 [[overconstrainedPlanningWithVirutalValues]]
-=== Overconstrained Planning with Virtual Values
+=== Overconstrained planning with virtual values
 
 In overconstrained planning it is often useful to know which resources are lacking.
 In overconstrained planning with virtual values, the solution indicates which resources to buy.
@@ -111,7 +111,7 @@ To implement this:
 . Optionally, change all soft constraints to ignore virtual assigned entities.
 
 [[continuousPlanning]]
-== Continuous Planning (Windowed Planning)
+== Continuous planning (windowed planning)
 
 Continuous planning is the technique of planning one or more upcoming planning periods at the same time
 and repeating that process monthly, weekly, daily, hourly, or even more frequently.
@@ -131,7 +131,7 @@ some problem facts (F, H, I, J, K) changed in the meantime, which results in unr
 
 The planning window can be split up in several stages:
 
-* _History_ 
+* _History_
 +
 Immutable past time periods. It contains only immovable entities.
 +
@@ -178,7 +178,7 @@ So the draft length needs to be longer than the part that will be published firs
 However, it is stored in the database and used as a starting point for the next solver.
 
 * _Unplanned_ (out of scope)
-+ 
++
 Planning entities that are not in the current planning window.
 +
 ** If the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
@@ -189,14 +189,14 @@ image::RepeatedPlanning/continuousPublishingWithRotation.png[align="center"]
 
 
 [[immovablePlanningEntities]]
-=== Immovable Planning Entities
+=== Immovable planning entities
 
 An immovable planning entity doesn't change during solving.
 This is commonly used by users to pin down one or more specific assignments
 and force Planner to schedule around those fixed assignments.
 
 [[pinDownPlanningEntities]]
-==== Pin Down Planning Entities with @PlanningPin
+==== Pin down planning entities with `@PlanningPin`
 
 To make some planning entities immovable, add an `@PlanningPin` annotation
 on a boolean getter or field of the planning entity class.
@@ -225,7 +225,7 @@ In the example above, if `pinned` is `true`, the lecture will not be assigned to
 (even if the current period and rooms fields are `null`).
 
 [[configureAMovableEntitySelectionFilter]]
-==== Configure a Movable EntitySelectionFilter
+==== Configure a movable `EntitySelectionFilter`
 
 Alternatively, to make some planning entities immovable, add an entity `SelectionFilter`
 that returns `true` if an entity is movable, and `false` if it is immovable.
@@ -261,7 +261,7 @@ public class ShiftAssignment {
 
 
 [[nonvolatileReplanning]]
-=== Nonvolatile Replanning to Minimize Disruption (Semi-movable Planning Entities)
+=== Nonvolatile replanning to minimize disruption (semi-movable planning entities)
 
 Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
 
@@ -308,7 +308,7 @@ The soft penalty of `-1000` means that a better solution is only accepted if it 
 
 
 [[realTimePlanning]]
-== Real-time Planning
+== Real-time planning
 
 To do real-time planning, combine the following planning techniques:
 
@@ -328,13 +328,13 @@ Planner can handle such scenarios with `ProblemFactChange` (in combination with 
 
 
 [[problemFactChange]]
-=== ProblemFactChange
+=== `ProblemFactChange`
 
 While the `Solver` is solving, one of the problem facts may be changed by an outside event. For example, an airplane is delayed and needs the runway at a later time.
 
 [IMPORTANT]
 ====
-Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it. 
+Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
 ====
 
 Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible. For example:
@@ -370,7 +370,7 @@ The `ScoreDirector` must be updated with any change on the problem facts of plan
 ====
 
 
-To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>. 
+To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>.
 
 A planning clone of a solution must fulfill these requirements:
 
@@ -380,7 +380,7 @@ A planning clone of a solution must fulfill these requirements:
 
 
 [[problemFactChangeExample]]
-==== Cloud Balancing ProblemFactChange Example
+==== Cloud balancing `ProblemFactChange` example
 
 Consider the following example of a `ProblemFactChange` implementation in the cloud balancing use case:
 
@@ -416,7 +416,7 @@ Consider the following example of a `ProblemFactChange` implementation in the cl
 . The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
 * The `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
 * A planning clone also clones the planning entities and planning entity collections.
-+ 
++
 So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.
 
 . Use the method `ScoreDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
@@ -429,7 +429,7 @@ Any problem fact or problem fact list changed by a `ProblemFactChange` must be p
 Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
 
 [[cloningSolutionsToAvoidRaceConditions]]
-==== Cloning Solutions to Avoid Race Conditions in Real-time Planning
+==== Cloning solutions to avoid race conditions in real-time planning
 
 Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized solution. This is acceptable, provided the first solver phase can handle it.
 
@@ -455,7 +455,7 @@ This implies the construction heuristic runs again, but because little or no pla
 
 
 [[daemon]]
-=== Daemon: `solve()` Does Not Return
+=== Daemon: `solve()` does not return
 
 In real-time planning, it is often useful to have a solver thread wait when it runs out of work, and immediately resume solving a problem once new problem fact changes are added.
 Putting the `Solver` in daemon mode has the following effects:

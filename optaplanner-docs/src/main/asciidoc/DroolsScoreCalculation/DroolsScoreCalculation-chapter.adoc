@@ -1,5 +1,5 @@
 [[droolsScoreCalculation]]
-= Drools Score Calculation
+= Drools score calculation
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -34,13 +34,13 @@ Every score constraint is written as one or more score rules.
 
 
 [[droolsScoreRulesConfiguration]]
-== Drools Score Rules Configuration
+== Drools score rules configuration
 
 There are several ways to define where your score rules live.
 
 
 [[droolsScoreCalculationScoreDrl]]
-=== A scoreDrl Resource on the Classpath
+=== A `scoreDrl` resource on the classpath
 
 This is the easy way.
 The score rules live in a DRL file which is provided as a classpath resource.
@@ -81,7 +81,7 @@ Otherwise Planner automatically changes the Drools default to `ALLOWED` so prope
 
 
 [[droolsScoreCalculationScoreDrlFile]]
-=== A scoreDrlFile
+=== A `scoreDrlFile` element
 
 To use `File` on the local file system, instead of a classpath resource, add the score rules DRL file in the solver configuration as a `<scoreDrlFile>` element:
 
@@ -103,7 +103,7 @@ Add multiple `<scoreDrlFile>` elements if the score rules are split across multi
 
 
 [[droolsScoreCalculationKsessionName]]
-=== A ksessionName in a Kjar from a Maven repository
+=== A `ksessionName` in a KJAR from a Maven repository
 
 This way allows you to use score rules defined by the Workbench or build a kjar and deploy it to the Execution Server.
 Both the score rules and the solver configuration are resources in a kjar.
@@ -148,7 +148,7 @@ If no `<ksessionName>` element is specified, the default ksession of the `kmodul
 
 
 [[implementingAScoreRule]]
-== Implementing a Score Rule
+== Implementing a score rule
 
 Here is an example of a score constraint implemented as a score rule in a DRL file:
 
@@ -191,7 +191,7 @@ The ``scoreHolder``'s method uses it to do incremental score calculation correct
 
 
 [[weighingScoreRules]]
-== Weighing Score Rules
+== Weighing score rules
 
 If you've configured a <<constraintConfiguration,constraint configuration>>,
 the score level and score weight of each constraint are beautifully decoupled from the constraint implementation,

@@ -1,10 +1,10 @@
 [[travelingTournament]]
-= Traveling Tournament Problem (TTP)
+= Traveling tournament problem (TTP)
 :imagesdir: ../..
 
 
 [[travelingTournamentProblemDescription]]
-== Problem Description
+== Problem description
 
 Schedule matches between _n_ teams.
 
@@ -25,7 +25,7 @@ The problem is defined on http://mat.tepper.cmu.edu/TOURN/[Michael Trick's websi
 
 
 [[travelingTournamentProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

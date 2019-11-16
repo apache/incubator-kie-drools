@@ -1,5 +1,5 @@
 [[moveAndNeighborhoodSelection]]
-= Move and Neighborhood Selection
+= Move and neighborhood selection
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,11 +9,11 @@
 
 
 [[moveAndNeighborhoodSelectionIntroduction]]
-== Move and Neighborhood Introduction
+== Move and neighborhood introduction
 
 
 [[whatIsAMove]]
-=== What is a ``Move``?
+=== What is a `Move`?
 
 A `Move` is a change (or set of changes) from a solution A to a solution B.
 For example, the move below changes queen `C` from row `0` to row ``2``:
@@ -50,7 +50,7 @@ Therefore, all the optimization algorithms are confronted with `Move` selection:
 
 
 [[whatIsAMoveSelector]]
-=== What is a ``MoveSelector``?
+=== What is a `MoveSelector?
 
 A ``MoveSelector``'s main function is to create `Iterator<Move>` when needed.
 An optimization algorithm will iterate through a subset of those moves.
@@ -70,7 +70,7 @@ For example: you might want to configure a <<filteredSelection,filter>> to disca
 
 
 [[subselectingOfEntitiesValuesAndOtherMoves]]
-=== Subselecting of Entities, Values and Other Moves
+=== Subselecting of entities, values, and other moves
 
 To create a ``Move``, a `MoveSelector` needs to select one or more planning entities and/or planning values to move.
 Just like ``MoveSelector``s, ``EntitySelector``s and ``ValueSelector``s need to support a similar feature set (such as scalable just-in-time selection). Therefore, they all implement a common interface `Selector` and they are configured similarly.
@@ -103,11 +103,11 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 
 [[genericMoveSelectors]]
-== Generic MoveSelectors
+== Generic `MoveSelectors`
 
 
 [[genericMoveSelectorsOverview]]
-=== Generic MoveSelectors Overview
+=== Generic `MoveSelectors` overview
 
 [cols="1,2a,2a"]
 |===
@@ -145,7 +145,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 
 [[changeMoveSelector]]
-=== ChangeMoveSelector
+=== `ChangeMoveSelector`
 
 For one planning variable, the `ChangeMove` selects one planning entity and one planning value and assigns the entity's variable to that value.
 
@@ -190,7 +190,7 @@ This move selector only supports <<cacheType,phase or solver caching>> if it doe
 
 
 [[swapMoveSelector]]
-=== SwapMoveSelector
+=== `SwapMoveSelector`
 
 The `SwapMove` selects two different planning entities and swaps the planning values of all their planning variables.
 
@@ -243,7 +243,7 @@ This move selector only supports <<cacheType,phase or solver caching>> if it doe
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s).
 
 [[pillarChangeMoveSelector]]
-==== PillarChangeMoveSelector
+==== `PillarChangeMoveSelector`
 
 The `PillarChangeMove` selects one entity pillar (or subset of those) and changes the value of one variable (which is the same for all entities) to another value.
 
@@ -289,7 +289,7 @@ and step caching scales badly memory wise.
 
 
 [[pillarSwapMoveSelector]]
-==== PillarSwapMoveSelector
+==== `PillarSwapMoveSelector`
 
 The `PillarSwapMove` selects two different entity pillars and swaps the values of all their variables for all their entities.
 
@@ -400,7 +400,7 @@ In this case, the entity being operated on need not be `Comparable`. The given `
 === Move selectors for chained variables
 
 [[tailChainSwapMoveSelector]]
-==== TailChainSwapMoveSelector or 2-opt
+==== `TailChainSwapMoveSelector` or 2-opt
 
 A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
 The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
@@ -443,7 +443,7 @@ Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include alm
 This move selector does not support <<cacheType,phase or solver caching>>.
 
 [[subChainChangeMoveSelector]]
-==== SubChainChangeMoveSelector
+==== `SubChainChangeMoveSelector`
 
 A _subChain_ is a set of planning entities with a chained planning variable which form part of a chain.
 The `subChainChangeMoveSelector` selects a subChain and moves it to another place (in a different or the same anchor chain).
@@ -492,7 +492,7 @@ and step caching scales badly memory wise.
 
 
 [[subChainSwapMoveSelector]]
-==== SubChainSwapMoveSelector
+==== `SubChainSwapMoveSelector`
 
 The `subChainSwapMoveSelector` selects two different subChains and moves them to another place in a different or the same anchor chain.
 
@@ -536,11 +536,11 @@ and step caching scales badly memory wise.
 
 
 [[combiningMultipleMoveSelectors]]
-== Combining Multiple ``MoveSelector``s
+== Combining multiple `MoveSelector`s
 
 
 [[unionMoveSelector]]
-=== unionMoveSelector
+=== `unionMoveSelector`
 
 A `unionMoveSelector` selects a `Move` by selecting one of its `MoveSelector` children to supply the next ``Move``.
 
@@ -615,7 +615,7 @@ To give each individual `Move` the same selection chance (as opposed to each ``M
 
 
 [[cartesianProductMoveSelector]]
-=== cartesianProductMoveSelector
+=== `cartesianProductMoveSelector`
 
 A `cartesianProductMoveSelector` selects a new ``CompositeMove``.
 It builds that `CompositeMove` by selecting one `Move` per `MoveSelector` child and adding it to the ``CompositeMove``.
@@ -659,7 +659,7 @@ To enforce that two child selectors use the same entity or value efficiently, us
 
 
 [[entitySelector]]
-== EntitySelector
+== `EntitySelector`
 
 Simplest configuration:
 
@@ -682,7 +682,7 @@ The `entityClass` property is only required if it cannot be deduced automaticall
 
 
 [[valueSelector]]
-== ValueSelector
+== `ValueSelector`
 
 Simplest configuration:
 
@@ -715,11 +715,11 @@ If a selected entity cannot be downcasted, the `ValueSelector` is empty for that
 
 
 [[generalSelectorFeatures]]
-== General `Selector` Features
+== General `Selector` features
 
 
 [[cacheType]]
-=== ``CacheType``: Create Moves Ahead of Time or Just In Time
+=== `CacheType`: create moves ahead of time or just in time
 
 A ``Selector``'s `cacheType` determines when a selection (such as a ``Move``, an entity, a value, ...)
 is created and how long it lives.
@@ -763,7 +763,7 @@ but it cannot contain a `STEP` cached ``changeMoveSelector``.
 
 
 [[selectionOrder]]
-=== SelectionOrder: Original, Sorted, Random, Shuffled or Probabilistic
+=== `SelectionOrder`: original, sorted, random, shuffled, or probabilistic
 
 A ``Selector``'s `selectionOrder` determines the order in which the selections (such as ``Move``s, entities, values, ...) are iterated.
 An optimization algorithm will usually only iterate through a subset of its ``MoveSelector``'s selections, starting from the start, so the `selectionOrder` is critical to decide which ``Move``s are actually evaluated.
@@ -802,11 +802,11 @@ Avoid overwriting the `selectionOrder` of those nested ``Selector``s.
 
 
 [[recommendedCombinationsOfCacheTypeAndSelectionOrder]]
-=== Recommended Combinations of `CacheType` and `SelectionOrder`
+=== Recommended combinations of `CacheType` and `SelectionOrder`
 
 
 [[justInTimeRandomSelection]]
-==== Just in Time Random Selection (default)
+==== Just in time random selection (default)
 
 This combination is great for big use cases (10 000 entities or more), as it scales up well in memory footprint and performance.
 Other combinations are often not even viable on such sizes.
@@ -833,7 +833,7 @@ Notice that *it never creates a list of ``**Move**``s* and it generates random n
 
 
 [[cachedShuffledSelection]]
-==== Cached Shuffled Selection
+==== Cached shuffled selection
 
 This combination often wins for small use cases (1000 entities or less).
 Beyond that size, it scales up badly in memory footprint and performance.
@@ -876,7 +876,7 @@ Otherwise, do something like this:
 
 
 [[cachedRandomSelection]]
-==== Cached Random Selection
+==== Cached random selection
 
 This combination is often a worthy competitor for medium use cases, especially with fast stepping optimization algorithms (such as Simulated Annealing). Unlike cached shuffled selection, it doesn't waste time shuffling the moves list at the beginning of every step.
 
@@ -893,7 +893,7 @@ This combination is often a worthy competitor for medium use cases, especially w
 
 
 [[filteredSelection]]
-=== Filtered Selection
+=== Filtered selection
 
 There can be certain moves that you don't want to select, because:
 
@@ -938,7 +938,7 @@ In most cases, you'll need to know both the entity and the value involved so you
 
 
 [[filteredMoveSelection]]
-==== Filtered Move Selection
+==== Filtered move selection
 
 Unaccepted moves will not be selected and will therefore never have their `doMove()` method called:
 
@@ -969,7 +969,7 @@ You can configure multiple `filterClass` elements on a single move selector.
 
 
 [[filteredEntitySelection]]
-==== Filtered Entity Selection
+==== Filtered entity selection
 
 Unaccepted entities will not be selected and will therefore never be used to create a move.
 
@@ -1002,7 +1002,7 @@ You can configure multiple `filterClass` elements on a single entity selector.
 
 
 [[filteredValueSelection]]
-==== Filtered Value Selection
+==== Filtered value selection
 
 Unaccepted values will not be selected and will therefore never be used to create a move.
 
@@ -1033,7 +1033,7 @@ You can configure multiple `filterClass` elements on a single value selector.
 
 
 [[sortedSelection]]
-=== Sorted Selection
+=== Sorted selection
 
 Sorted selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType` ``JUST_IN_TIME`` and it only works with ``selectionOrder`` ``SORTED``.
@@ -1048,7 +1048,7 @@ If you do explicitly configure the ``Selector``, it overwrites the default setti
 
 
 [[sortedSelectionBySorterManner]]
-==== Sorted Selection by `SorterManner`
+==== Sorted selection by `SorterManner`
 
 Some `Selector` types implement a `SorterManner` out of the box:
 
@@ -1077,7 +1077,7 @@ Some `Selector` types implement a `SorterManner` out of the box:
 
 
 [[sortedSelectionByComparator]]
-==== Sorted Selection by `Comparator`
+==== Sorted selection by `Comparator`
 
 An easy way to sort a `Selector` is with a plain old ``Comparator``:
 
@@ -1109,7 +1109,7 @@ You'll also need to configure it (unless it's annotated on the domain model and 
 
 
 [[sortedSelectionBySelectionSorterWeightFactory]]
-==== Sorted Selection by `SelectionSorterWeightFactory`
+==== Sorted selection by `SelectionSorterWeightFactory`
 
 If you need the entire `Solution` to sort a ``Selector``, use a `SelectionSorterWeightFactory` instead:
 
@@ -1171,7 +1171,7 @@ You'll also need to configure it (unless it's annotated on the domain model and 
 
 
 [[sortedSelectionBySelectionSorter]]
-==== Sorted Selection by `SelectionSorter`
+==== Sorted selection by `SelectionSorter`
 
 Alternatively, you can also use the interface `SelectionSorter` directly:
 
@@ -1195,7 +1195,7 @@ public interface SelectionSorter<Solution_, T> {
 
 
 [[probabilisticSelection]]
-=== Probabilistic Selection
+=== Probabilistic selection
 
 Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType` ``JUST_IN_TIME`` and it only works with ``selectionOrder`` ``PROBABILISTIC``.
@@ -1226,7 +1226,7 @@ For example, if there are three entities: process A (probabilityWeight 2.0), pro
 
 
 [[limitedSelection]]
-=== Limited Selection
+=== Limited selection
 
 Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics (which don't support <<acceptedCountLimit,acceptedCountLimit>>).
 
@@ -1246,7 +1246,7 @@ To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usua
 
 
 [[mimicSelection]]
-=== Mimic Selection (Record/Replay)
+=== Mimic selection (record/replay)
 
 During mimic selection, one normal selector records its selection and one or multiple other special selectors replay that selection.
 The recording selector acts as a normal selector and supports all other configuration properties.
@@ -1273,7 +1273,7 @@ Mimic selection is useful to create <<cartesianProductMoveSelector,a composite m
 
 
 [[nearbySelection]]
-=== Nearby Selection
+=== Nearby selection
 
 In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby values or swapping nearby entities can *heavily increase scalability* and improve solution quality.
 
@@ -1398,11 +1398,11 @@ As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 
 
 [[customMoves]]
-== Custom Moves
+== Custom moves
 
 
 [[whichMoveTypesMightBeMissing]]
-=== Which Move Types Might be Missing in my Implementation?
+=== Which move types might be missing in my implementation?
 
 To determine which move types might be missing in your implementation,
 run a <<benchmarker,Benchmarker>> __for a short amount of time__
@@ -1415,7 +1415,7 @@ and benchmark it against the previous configurations to see if you want to keep 
 
 
 [[customMovesIntroduction]]
-=== Custom Moves Introduction
+=== Custom moves introduction
 
 Instead of using the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``.
 Generic and custom ``MoveSelector``s can be <<combiningMultipleMoveSelectors,combined>> as desired.
@@ -1429,7 +1429,7 @@ After implementing a custom ``Move``, turn on `environmentMode` ``FULL_ASSERT`` 
 
 
 [[theInterfaceMove]]
-=== The Interface `Move`
+=== The `Move` interface
 
 All moves implement the `Move` interface:
 
@@ -1555,7 +1555,7 @@ Optionally, implement the `getSimpleMoveTypeDescription()` method to support
 ----
 
 
-==== Custom move: rebase()
+==== Custom move: `rebase()`
 
 For <<multithreadedIncrementalSolving,multithreaded incremental solving>>,
 the custom move must implement the `rebase()` method:
@@ -1582,7 +1582,7 @@ To rebase lists or arrays in bulk, use `rebaseList()` and `rebaseArray()` on `Ab
 
 
 [[customMoveGetPlanningEntitiesAndGetPlanningValues]]
-==== Custom move: getPlanningEntities() and getPlanningValues()
+==== Custom move: `getPlanningEntities()` and `getPlanningValues()`
 
 A custom move should also implement the `getPlanningEntities()` and `getPlanningValues()` methods.
 Those are used by <<tabuSearch,entity tabu and value tabu>> respectively.
@@ -1620,7 +1620,7 @@ and return all their values (to which they are changing) in ``getPlanningValues(
 
 
 [[customMoveEqualsAndHashCode]]
-==== Custom move: equals() and hashCode()
+==== Custom move: `equals()` and `hashCode()`
 
 A `Move` must implement the `equals()` and `hashCode()` methods for <<tabuSearch,move tabu>>.
 Two moves which make the same change on a solution, should be equal ideally.
@@ -1663,7 +1663,7 @@ Now, let's generate instances of this custom ``Move`` class. There are 2 ways:
 
 
 [[moveListFactory]]
-==== ``MoveListFactory``: the Easy Way to Generate Custom Moves
+==== `MoveListFactory`: the easy way to generate custom moves
 
 The easiest way to generate custom moves is by implementing the interface ``MoveListFactory``:
 
@@ -1735,7 +1735,7 @@ that it does not move <<immovablePlanningEntities, immovable entities>>.
 
 
 [[moveIteratorFactory]]
-==== ``MoveIteratorFactory``: Generate Custom Moves Just in Time
+==== ``MoveIteratorFactory``: generate Custom moves just in time
 
 Use this advanced form to generate custom moves Just In Time
 by implementing the `MoveIteratorFactory` interface:

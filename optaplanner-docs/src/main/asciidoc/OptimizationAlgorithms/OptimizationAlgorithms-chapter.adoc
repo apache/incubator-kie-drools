@@ -1,5 +1,5 @@
 [[optimizationAlgorithms]]
-= Optimization Algorithms
+= Optimization algorithms
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[searchSpaceSize]]
-== Search Space Size in the Real World
+== Search space size in the real world
 
 The number of possible solutions for a planning problem can be mind blowing.
 For example:
@@ -48,7 +48,7 @@ usually perform best for real-world problems given real-world time limitations.
 
 
 [[doesPlannerFindTheOptimalSolution]]
-== Does Planner Find the Optimal Solution?
+== Does planner find the optimal solution?
 
 The business wants the optimal solution, but they also have other requirements:
 
@@ -61,7 +61,7 @@ Given these requirements, and despite the promises of some salesmen, it is usual
 Therefore, Planner focuses on finding the best solution in available time.
 In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
 
-The nature of NP-complete problems make scaling a prime concern. 
+The nature of NP-complete problems make scaling a prime concern.
 
 [NOTE]
 ====
@@ -74,7 +74,7 @@ Do not assess quality on small data sets (unless production encounters only such
 
 
 [[architectureOverview]]
-== Architecture Overview
+== Architecture overview
 
 Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
 
@@ -85,7 +85,7 @@ image::OptimizationAlgorithms/architectureOverview.png[align="center"]
 
 
 [[optimizationAlgorithmsOverview]]
-== Optimization Algorithms Overview
+== Optimization algorithms overview
 
 Planner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
@@ -129,7 +129,7 @@ To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metahe
 
 
 [[whichOptimizationAlgorithmsShouldIUse]]
-== Which Optimization Algorithms Should I Use?
+== Which optimization algorithms should I use?
 
 The best optimization algorithms configuration to use depends heavily on your use case.
 However, this basic procedure provides a good starting configuration that will produce better than average results.
@@ -141,14 +141,14 @@ However, this basic procedure provides a good starting configuration that will p
 
 . Next, add Late Acceptance behind it:
 .. First Fit Decreasing.
-.. <<lateAcceptance,Late Acceptance>>. 
+.. <<lateAcceptance,Late Acceptance>>.
 
 At this point, the return on invested time lowers and the result is likely to be sufficient.
 
 However, this can be improved at a lower return on invested time.
 Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
 
-. First Fit Decreasing: <<tabuSearch,Tabu Search>>. 
+. First Fit Decreasing: <<tabuSearch,Tabu Search>>.
 
 Use the <<benchmarker,Benchmarker>> to improve the values for the size parameters.
 
@@ -176,7 +176,7 @@ The default value of parameters will change between minor versions, to improve t
 
 
 [[solverPhase]]
-== Solver Phase
+== Solver phase
 
 A `Solver` can use multiple optimization algorithms in sequence.
 *Each optimization algorithm is represented by one solver `Phase`.*
@@ -244,10 +244,10 @@ the current phase is terminated and all subsequent phases will not run.
 
 
 [[scopeOverview]]
-== Scope Overview
+== Scope overview
 
 A solver will iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn, usually iteratively runs moves.
-These form four nested scopes: 
+These form four nested scopes:
 
 . Solver
 . Phase
@@ -269,7 +269,7 @@ Metaheuristic phases in particular need to be instructed to stop solving.
 This can be because of a number of reasons, for example, if the time is up, or the perfect score has been reached just before its solution is used.
 Finding the optimal solution cannot be relied on (unless you know the optimal score), because a metaheuristic algorithm is generally unaware of the optimal solution.
 
-This is not an issue for real-life problems, as finding the optimal solution may take more time than is available. 
+This is not an issue for real-life problems, as finding the optimal solution may take more time than is available.
 Finding the best solution in the available time is the most important outcome.
 
 [IMPORTANT]
@@ -286,7 +286,7 @@ which is a ratio between the time already spent solving and the estimated entire
 
 
 [[timeMillisSpentTermination]]
-=== Time Spent Termination
+=== Time spent termination
 
 Terminates when an amount of time has been used.
 
@@ -376,7 +376,7 @@ which will send time gradient-based algorithms (such as Simulated Annealing) on 
 
 
 [[unimprovedTimeMillisSpentTermination]]
-=== Unimproved Time Spent Termination
+=== Unimproved time spent termination
 
 Terminates when the best score has not improved in a specified amount of time.
 Each time a new best solution is found, the timer basically resets.
@@ -500,7 +500,7 @@ This effectively implies a threshold of `1hard/-2147483648soft`, because it reli
 
 
 [[bestScoreTermination]]
-=== BestScoreTermination
+=== `BestScoreTermination`
 
 `BestScoreTermination` terminates when a certain score has been reached.
 Use this `Termination` where the perfect score is known, for example for four queens (which uses a <<simpleScore,SimpleScore>>):
@@ -534,7 +534,7 @@ In this instance, `Termination` once a feasible solution has been reached is not
 
 
 [[bestScoreFeasibleTermination]]
-=== BestScoreFeasibleTermination
+=== `BestScoreFeasibleTermination`
 
 Terminates as soon as a feasible solution has been discovered.
 Requires that `Score` implements `FeasibilityScore`.
@@ -550,7 +550,7 @@ This `Termination` is usually combined with other terminations.
 
 
 [[stepCountTermination]]
-=== StepCountTermination
+=== `StepCountTermination`
 
 Terminates when a number of steps has been reached.
 This is useful for hardware performance independent runs.
@@ -568,7 +568,7 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 
 
 [[unimprovedStepCountTermination]]
-=== UnimprovedStepCountTermination
+=== `UnimprovedStepCountTermination`
 
 Terminates when the best score has not improved in a number of steps.
 This is useful for hardware performance independent runs.
@@ -589,7 +589,7 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 
 
 [[scoreCalculationCountTermination]]
-=== ScoreCalculationCountTermination
+=== `ScoreCalculationCountTermination`
 
 `ScoreCalculationCountTermination` terminates when a number of score calculations have been reached.
 This is often the sum of the number of moves and the number of steps.
@@ -606,7 +606,7 @@ Switching <<environmentMode,EnvironmentMode>> can heavily impact when this termi
 
 
 [[combiningMultipleTerminations]]
-=== Combining Multiple Terminations
+=== Combining multiple terminations
 
 Terminations can be combined, for example: terminate after `100` steps or if a score of `0` has been reached:
 
@@ -634,7 +634,7 @@ This example ensures it does not just terminate after finding a feasible solutio
 
 
 [[asynchronousTermination]]
-=== Asynchronous Termination from Another Thread
+=== Asynchronous termination from another thread
 
 Asychronous termination from another thread occurs when a `Solver` needs to be terminated early from another thread, for example, due to a user action or a server restart.
 This cannot be configured by a `Termination` as it is impossible to predict when and if it will occur.
@@ -661,7 +661,7 @@ This guarantees a graceful shutdown when an `ExecutorService` (such as a thread 
 
 
 [[SolverEventListener]]
-== SolverEventListener
+== `SolverEventListener`
 
 Each time a new best solution is found, a new `BestSolutionChangedEvent` is fired in the `Solver` thread.
 
@@ -703,7 +703,7 @@ So it should return quickly to avoid slowing down the solving.
 
 
 [[customSolverPhase]]
-== Custom Solver Phase
+== Custom solver phase
 
 Run a custom optimization algorithm between phases or before the first phase to initialize the `Solution`, or to get a better score quickly.
 You will still want to reuse the score calculation.
@@ -813,7 +813,7 @@ add the `customProperties` element and use <<customPropertiesConfiguration,custo
 
 
 [[noChangeSolverPhase]]
-== No Change Solver Phase
+== No change solver phase
 
 In rare cases, it's useful not to run any solver phases.
 But by default, configuring no phase will trigger running the default phases.
@@ -829,7 +829,7 @@ To avoid those, configure a `NoChangePhase`:
 
 
 [[multithreadedSolving]]
-== Multithreaded Solving
+== Multithreaded solving
 
 There are several ways of doing multithreaded solving:
 
@@ -854,7 +854,7 @@ and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 ====
 
 [[planningId]]
-=== @PlanningId
+=== ``@PlanningId`
 
 For some functionality (such as multithreaded solving and real-time planning),
 Planner needs to map problem facts and planning entities to an ID.
@@ -898,7 +898,7 @@ An `@PlanningId` property must be:
 
 
 [[customThreadFactory]]
-=== Custom Thread Factory (WildFly, Android, GAE, ...)
+=== Custom thread factory (WildFly, Android, GAE, ...)
 
 The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environments
 where arbitrary thread creation should be avoided,
@@ -916,7 +916,7 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 ----
 
 [[multithreadedIncrementalSolving]]
-=== Multithreaded Incremental Solving
+=== Multithreaded incremental solving
 
 Enable multithreaded incremental solving by <<planningId,adding a @PlanningId annotation>>
 on every planning entity class and planning value class.

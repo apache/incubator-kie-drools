@@ -1,5 +1,5 @@
 [[localSearch]]
-= Local Search
+= Local search
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -23,11 +23,11 @@ Therefore it's pretty natural to implement.
 
 
 [[localSearchConcepts]]
-== Local Search Concepts
+== Local search concepts
 
 
 [[localSearchStepByStep]]
-=== Step by Step
+=== Step by step
 
 A step is the winning ``Move``.
 Local Search tries a number of moves on the current solution and picks the best accepted move as the step:
@@ -77,7 +77,7 @@ By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's 
 
 
 [[localSearchConceptsDecideTheNextStep]]
-=== Decide the Next Step
+=== Decide the next step
 
 Local Search decides the next step with the aid of three configurable components:
 
@@ -161,7 +161,7 @@ It is possible to disable breaking ties randomly by explicitly setting `breakTie
 
 
 [[acceptedCountLimit]]
-==== Accepted Count Limit
+==== Accepted count limit
 
 When there are many possible moves, it becomes inefficient to evaluate all of them at every step.
 To evaluate only a random subset of all the moves, use:
@@ -186,7 +186,7 @@ With a low `acceptedCountLimit` (so a fast stepping algorithm), it is recommende
 
 
 [[localSearchPickEarlyType]]
-==== Pick Early Type
+==== Pick early type
 
 A forager can pick a move early during a step, ignoring subsequent selected moves.
 There are three pick early types for Local Search:
@@ -218,11 +218,11 @@ There are three pick early types for Local Search:
 
 
 [[hillClimbing]]
-== Hill Climbing (Simple Local Search)
+== Hill climbing (simple local search)
 
 
 [[hillClimbingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the solution with the highest score.
 That best move is called the step move.
@@ -236,9 +236,9 @@ This is a good thing, because in an NP-complete problem it's impossible to predi
 
 
 [[hillClimbingStuckInLocalOptima]]
-=== Stuck in Local Optima
+=== Stuck in local optima
 
-Hill Climbing always takes improving moves.
+Hill climbing always takes improving moves.
 This may seem like a good thing, but it's not: *Hill Climbing can easily get stuck in a local optimum.* This happens when it reaches a solution for which all the moves deteriorate the score.
 Even if it picks one of those moves, the next step might go back to the original solution and which case chasing its own tail:
 
@@ -277,11 +277,11 @@ Advanced configuration:
 
 
 [[tabuSearch]]
-== Tabu Search
+== Tabu search
 
 
 [[tabuSearchAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Tabu Search is a Local Search that maintains a tabu list to avoid getting stuck in local optima.
 The tabu list holds recently used objects that are _taboo_ to use for now.
@@ -415,11 +415,11 @@ Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
 
 
 [[simulatedAnnealing]]
-== Simulated Annealing
+== Simulated annealing
 
 
 [[simulatedAnnealingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Simulated Annealing evaluates only a few moves per step, so it steps quickly.
 In the classic implementation, the first accepted move is the winning step.
@@ -477,11 +477,11 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 
 
 [[lateAcceptance]]
-== Late Acceptance
+== Late acceptance
 
 
 [[lateAcceptanceAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which is the winning score of a fixed number of steps ago).
@@ -606,11 +606,11 @@ so the algorithm takes as starting value the best score from the construction he
 Use the Benchmarker to fine-tune tweak your configuration.
 
 [[stepCountingHillClimbing]]
-== Step Counting Hill Climbing
+== Step counting hill climbing
 
 
 [[stepCountingHillClimbingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Step Counting Hill Climbing also evaluates only a few moves per step.
 For a number of steps, it keeps the step score as a threshold.
@@ -644,11 +644,11 @@ Step Counting Hill Climbing can be combined with a tabu acceptor at the same tim
 
 
 [[strategicOscillation]]
-== Strategic Oscillation
+== Strategic oscillation
 
 
 [[strategicOscillationAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Strategic Oscillation is an add-on, which works especially well with <<tabuSearch,Tabu Search>>.
 Instead of picking the accepted move with the highest score, it employs a different mechanism: If there's an improving move, it picks it.
@@ -683,11 +683,11 @@ The following ``finalistPodiumType``s are supported:
 
 
 [[variableNeighborhoodDescent]]
-== Variable Neighborhood Descent
+== Variable neighborhood descent
 
 
 [[variableNeighborhoodDescentAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Variable Neighborhood Descent iteratively tries multiple move selectors
 in original order (depleting each selector entirely before trying the next one),
@@ -737,10 +737,9 @@ but it is useful in some use cases with a very erratic score landscape.
 
 
 [[customTerminationSelectorOrAcceptor]]
-== Using a Custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor
+== Using a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector`, or `Acceptor`
 
-Plug in a custom ``Termination``, ``MoveSelector``, ``EntitySelector``, `ValueSelector` or `Acceptor`
-by extending the abstract class and also the related `\*Config` class.
+Plug in a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector` or `Acceptor` by extending the abstract class and also the related `\*Config` class.
 
 [IMPORTANT]
 ====

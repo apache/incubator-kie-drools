@@ -1,5 +1,5 @@
 [[cloudBalancingBeyondThisTutorial]]
-= Beyond this Tutorial
+= Beyond this tutorial
 :imagesdir: ../..
 
 Now that this simple example works, you can try going further.

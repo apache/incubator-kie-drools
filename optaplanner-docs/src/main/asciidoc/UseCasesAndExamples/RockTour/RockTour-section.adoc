@@ -1,10 +1,10 @@
 [[rockTour]]
-= Rock Tour
+= Rock tour
 :imagesdir: ../..
 
 
 [[rockTourProblemDescription]]
-== Problem Description
+== Problem description
 
 Drive the rock bus from show to show, but schedule shows only on available days.
 
@@ -25,7 +25,7 @@ Soft constraints:
 
 
 [[rockTourProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

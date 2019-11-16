@@ -1,5 +1,5 @@
 [[cloudBalancingMainMethod]]
-= Run the Cloud Balancing Hello World
+= Run the cloud balancing Hello World
 :imagesdir: ../..
 
 . <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
@@ -41,7 +41,7 @@ public class CloudBalancingHelloWorld {
 The code example does the following:
 
 . Build the `Solver` based on a solver configuration (in this case <<solverConfigurationByXML,an XML file>>, `cloudBalancingSolverConfig.xml`, from the classpath).
-+ 
++
 Building the `Solver` is the most complicated part of this procedure. For more detail, see <<cloudBalancingSolverConfiguration, Solver Configuration>>.
 +
 [source,java,options="nowrap"]
@@ -51,7 +51,7 @@ Building the `Solver` is the most complicated part of this procedure. For more d
         Solver<CloudBalance> solver = solverFactory.buildSolver();
 ----
 
-. Load the problem. 
+. Load the problem.
 +
 `CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
 +

@@ -1,5 +1,5 @@
 [[constructionHeuristics]]
-= Construction Heuristics
+= Construction heuristics
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -18,11 +18,11 @@ Construction heuristics terminate automatically, so there's usually no need to c
 
 
 [[firstFit]]
-== First Fit
+== First fit
 
 
 [[firstFitAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 The First Fit algorithm cycles through all the planning entities (in default order), initializing one planning entity at a time.
 It assigns the planning entity to the best available planning value, taking the already initialized planning entities into account.
@@ -64,11 +64,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[firstFitDecreasing]]
-== First Fit Decreasing
+== First fit decreasing
 
 
 [[firstFitDecreasingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Like <<firstFit,First Fit>>, but assigns the more difficult planning entities first, because they are less likely to fit in the leftovers.
 So it sorts the planning entities on decreasing difficulty.
@@ -113,11 +113,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[weakestFit]]
-== Weakest Fit
+== Weakest fit
 
 
 [[weakestFitAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Like First Fit, but uses the weaker planning values first, because the strong planning values are more likely to be able to accommodate later planning entities.
 So it sorts the planning values on increasing strength.
@@ -160,11 +160,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[weakestFitDecreasing]]
-== Weakest Fit Decreasing
+== Weakest fit decreasing
 
 
 [[weakestFitDecreasingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Combines First Fit Decreasing and Weakest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on increasing strength.
@@ -209,11 +209,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[strongestFit]]
-== Strongest Fit
+== Strongest fit
 
 
 [[strongestFitAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Like First Fit, but uses the strong planning values first, because the strong planning values are more likely to have a lower soft cost to use.
 So it sorts the planning values on decreasing strength.
@@ -256,11 +256,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[strongestFitDecreasing]]
-== Strongest Fit Decreasing
+== Strongest fit decreasing
 
 
 [[strongestFitDecreasingAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Combines First Fit Decreasing and Strongest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on decreasing strength.
@@ -305,11 +305,11 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 
 
 [[allocateEntityFromQueue]]
-== Allocate Entity From Queue
+== Allocate entity from queue
 
 
 [[allocateEntityFromQueueAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Allocate Entity From Queue is a versatile, generic form of <<firstFit,First Fit>>, <<firstFitDecreasing,First Fit Decreasing>>,
 <<weakestFit,Weakest Fit>>, <<weakestFitDecreasing,Weakest Fit Decreasing>>,
@@ -398,7 +398,7 @@ similar to <<scalingMultiplePlanningVariablesInConstructionHeuristics,the less v
 
 
 [[allocateEntityFromQueueMultipleEntityClasses]]
-=== Multiple Entity Classes
+=== Multiple entity classes
 
 The easiest way to deal with multiple entity classes is to run a separate Construction Heuristic for each entity class:
 
@@ -432,7 +432,7 @@ The easiest way to deal with multiple entity classes is to run a separate Constr
 
 
 [[constructionHeuristicsPickEarlyType]]
-=== Pick Early Type
+=== Pick early type
 
 There are several pick early types for Construction Heuristics:
 
@@ -494,11 +494,11 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, use `
 
 
 [[allocateToValueFromQueue]]
-== Allocate To Value From Queue
+== Allocate to value from queue
 
 
 [[allocateToValueFromQueueAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Allocate To Value From Queue works like this:
 
@@ -557,11 +557,11 @@ For scaling out, see <<scalingConstructionHeuristics,scaling construction heuris
 
 
 [[cheapestInsertion]]
-== Cheapest Insertion
+== Cheapest insertion
 
 
 [[cheapestInsertionAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 The Cheapest Insertion algorithm cycles through all the planning values for all the planning entities, initializing one planning entity at a time.
 It assigns a planning entity to the best available planning value (out of all the planning entities and values), taking the already initialized planning entities into account.
@@ -606,11 +606,11 @@ For a very advanced configuration, see <<allocateFromPool,Allocate from pool>>.
 
 
 [[regretInsertion]]
-== Regret Insertion
+== Regret insertion
 
 
 [[regretInsertionAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 The Regret Insertion algorithm behaves like the Cheapest Insertion algorithm.
 It also cycles through all the planning values for all the planning entities, initializing one planning entity at a time.
@@ -625,11 +625,11 @@ This algorithm has not been implemented yet.
 
 
 [[allocateFromPool]]
-== Allocate From Pool
+== Allocate from pool
 
 
 [[allocateFromPoolAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Allocate From Pool is a versatile, generic form of <<cheapestInsertion,Cheapest Insertion>> and <<regretInsertion,Regret Insertion>>.
 It works like this:
@@ -695,7 +695,7 @@ For scaling out, see <<scalingConstructionHeuristics,scaling construction heuris
 
 
 [[scalingConstructionHeuristics]]
-== Scaling Construction Heuristics
+== Scaling construction heuristics
 
 If the Construction Heuristic takes a long time to solve and create an initial solution,
 there is too little time left for <<localSearch,Local Search>> to reach a near optimal solution.
@@ -718,7 +718,7 @@ So if a move has the same score as before the planning variable was initialized,
 
 
 [[scalingMultiplePlanningVariablesInConstructionHeuristics]]
-=== Scaling Multiple Planning Variables in Construction Heuristics
+=== Scaling multiple planning variables in construction heuristics
 
 There are two ways to deal with multiple planning variables,
 depending on how their ``ChangeMove``s are combined:
@@ -800,7 +800,7 @@ With three or more variables, it's possible to combine the cartesian product and
 
 
 [[otherScalingTechniquesInConstructionHeuristics]]
-=== Other Scaling Techniques in Construction Heuristics
+=== Other scaling techniques in construction heuristics
 
 <<partitionedSearch,Partitioned Search>> reduces the number of moves per step.
 On top of that, it runs the Construction Heuristic on the partitions in parallel.

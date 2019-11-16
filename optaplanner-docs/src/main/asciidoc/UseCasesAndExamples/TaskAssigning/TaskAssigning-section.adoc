@@ -4,7 +4,7 @@
 
 
 [[taskAssigningProblemDescription]]
-== Problem Description
+== Problem description
 
 Assign each task to a spot in an employee's queue.
 Each task has a duration which is affected by the employee's affinity level with the task's customer.
@@ -32,13 +32,13 @@ Soft level 3 constraints:
 
 
 [[taskAssigningValueProposition]]
-== Value Proposition
+== Value proposition
 
 image::UseCasesAndExamples/TaskAssigning/taskAssigningValueProposition.png[align="center"]
 
 
 [[taskAssigningProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -50,6 +50,6 @@ image::UseCasesAndExamples/TaskAssigning/taskAssigningValueProposition.png[align
 
 
 [[taskAssigningDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/TaskAssigning/taskAssigningClassDiagram.png[align="center"]

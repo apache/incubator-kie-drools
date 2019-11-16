@@ -1,10 +1,10 @@
 [[flightCrewScheduling]]
-= Flight Crew Scheduling
+= Flight crew scheduling
 :imagesdir: ../..
 
 
 [[flightCrewSchedulingProblemDescription]]
-== Problem Description
+== Problem description
 
 Assign flights to pilots and flight attendants.
 
@@ -26,7 +26,7 @@ Soft constraints:
 
 
 [[flightCrewSchedulingProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

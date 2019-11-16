@@ -1,10 +1,10 @@
 [[investment]]
-= Investment Asset Class Allocation (Portfolio Optimization)
+= Investment asset class allocation (portfolio optimization)
 :imagesdir: ../..
 
 
 [[investmentProblemDescription]]
-== Problem Description
+== Problem description
 
 Decide the relative quantity to invest in each asset class.
 
@@ -21,7 +21,7 @@ Soft constraints:
 
 
 [[investmentProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

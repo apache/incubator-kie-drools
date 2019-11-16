@@ -22,7 +22,7 @@ image::Integration/integrationOverview.png[align="center"]
 
 
 [[integrationWithPersistentStorage]]
-== Persistent Storage
+== Persistent storage
 
 
 [[integrationWithJpaAndHibernate]]
@@ -48,7 +48,7 @@ Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of t
 
 
 [[jpaAndHibernatePersistingAScore]]
-==== JPA and Hibernate: Persisting a `Score`
+==== JPA and Hibernate: persisting a `Score`
 
 When a `Score` is persisted into a relational database, JPA and Hibernate will default to Java serializing it to a `BLOB` column.
 This has several disadvantages:
@@ -152,7 +152,7 @@ All this support is Hibernate specific because currently JPA 2.1's converters do
 
 
 [[jpaAndHibernatePlanningCloning]]
-==== JPA and Hibernate: Planning Cloning
+==== JPA and Hibernate: planning cloning
 
 In JPA and Hibernate, there is usually a `@ManyToOne` relationship from most problem fact classes to the planning solution class.
 Therefore, the problem fact classes reference the planning solution class, which implies that when the solution is <<cloningASolution,planning cloned>>, they need to be cloned too.
@@ -195,7 +195,7 @@ Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage 
 
 
 [[xStreamMarshallingAScore]]
-==== XStream: Marshalling a `Score`
+==== XStream: marshalling a `Score`
 
 When a `Score` is marshalled to XML or JSON by the default XStream configuration, it's verbose and ugly.
 To fix that, configure the appropriate ``ScoreXStreamConverter``:
@@ -263,7 +263,7 @@ Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of 
 
 
 [[jaxbMarshallingAScore]]
-==== JAXB: Marshalling a `Score`
+==== JAXB: marshalling a `Score`
 
 When a `Score` is marshalled to XML or JSON by the default JAXB configuration, it's corrupted.
 To fix that, configure the appropriate ``ScoreJaxbXmlAdapter``:
@@ -336,7 +336,7 @@ objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
 
 [[jacksonMarshallingAScore]]
-==== Jackson: Marshalling a `Score`
+==== Jackson: marshalling a `Score`
 
 When a `Score` is marshalled to/from JSON by the default Jackson configuration, it fails.
 The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonJsonSerializer`,
@@ -433,11 +433,11 @@ That component works in Karaf too.
 
 
 [[integrationWithOtherEnvironments]]
-== Other Environments
+== Other environments
 
 
 [[integrationWithJBossModules]]
-=== JBoss Modules, WildFly and JBoss EAP
+=== JBoss Modules, WildFly, and JBoss EAP
 
 Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
 so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
@@ -478,7 +478,7 @@ To get decent <<logging,logging of the solver(s)>>, create a file `src/main/reso
 
 
 [[skinnyWarOnWildFlyAndJBossEAP]]
-==== Skinny war on WildFly and JBoss EAP
+==== Skinny WAR on WildFly and JBoss EAP
 
 To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
 (just like any other dependency).
@@ -502,7 +502,7 @@ Let's create an module called __org.optaplanner__:
     ...
     <resource-root path="optaplanner-core-${version}.jar"/>
     ...
-    <resource-root path="."/> 
+    <resource-root path="."/>
   </resources>
   <dependencies>
     <module name="javaee.api"/>
@@ -542,7 +542,7 @@ none of the DRL rules will fire, due to ClassLoader issues.
 
 
 [[integrationWithJPMS]]
-=== Java Platform Module System (Jigsaw)
+=== Java platform module system (Jigsaw)
 
 When using Planner from code on the modulepath (Java 9 and higher),
 _open_ your packages that contain your domain objects, DRL files and solver configuration
@@ -623,7 +623,7 @@ dependencies {
 
 
 [[integrationWithHumanPlanners]]
-== Integration with Human Planners (Politics)
+== Integration with human planners (politics)
 
 A good Planner implementation beats any good human planner for non-trivial datasets.
 Many human planners fail to accept this, often because they feel threatened by an automated system.
@@ -650,7 +650,7 @@ image::Integration/keepTheUserInControl.png[align="center"]
 
 
 [[sizingHardwareAndSoftware]]
-== Sizing Hardware and Software
+== Sizing hardware and software
 
 Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
 

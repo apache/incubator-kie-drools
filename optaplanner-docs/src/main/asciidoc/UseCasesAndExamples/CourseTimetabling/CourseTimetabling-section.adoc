@@ -1,10 +1,10 @@
 [[curriculumCourse]]
-= Course Timetabling (ITC 2007 Track 3 - Curriculum Course Scheduling)
+= Course timetabling (ITC 2007 Track 3 - Curriculum Course Scheduling)
 :imagesdir: ../..
 
 
 [[curriculumCourseProblemDescription]]
-== Problem Description
+== Problem description
 
 Schedule each lecture into a timeslot and into a room.
 
@@ -26,7 +26,7 @@ The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course
 
 
 [[curriculumCourseProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -48,6 +48,6 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
 
 
 [[curriculumCourseDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/CourseTimetabling/curriculumCourseClassDiagram.png[align="center"]

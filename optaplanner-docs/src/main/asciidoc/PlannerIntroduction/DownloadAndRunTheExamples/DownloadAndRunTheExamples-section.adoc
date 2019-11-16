@@ -1,16 +1,16 @@
 [[downloadAndRunTheExamples]]
-= Download and Run the Examples
+= Download and run the examples
 :imagesdir: ../..
 
 
 [[getTheReleaseZipAndRunTheExamples]]
-== Get the Release zip and Run the Examples
+== Get the release ZIP and run the examples
 
 To try it now:
 
 . Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
 . Open the directory [path]_examples_ and run the script.
-+ 
++
 Linux or Mac:
 +
 [source,sh,options="nowrap"]
@@ -42,7 +42,7 @@ It runs just as well on a server or a mobile JVM as it does on the desktop.
 
 
 [[runTheExamplesInAnIDE]]
-== Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)
+== Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)
 
 To run the examples in your favorite IDE:
 
@@ -63,7 +63,7 @@ To run the examples in your favorite IDE:
 
 
 [[useWithMavenGradleEtc]]
-== Use OptaPlanner with Maven, Gradle, Ivy, Buildr or ANT
+== Use OptaPlanner with Maven, Gradle, Ivy, Buildr, or ANT
 
 The OptaPlanner jars are available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository]
 (and the snapshots in pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
@@ -134,7 +134,7 @@ Check the maven repository `pom.xml` files to determine the minimal dependency s
 
 
 [[buildFromSource]]
-== Build OptaPlanner from Source
+== Build OptaPlanner from source
 
 
 *Prerequisites*

@@ -1,5 +1,5 @@
 [[benchmarker]]
-= Benchmarking and Tweaking
+= Benchmarking and tweaking
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[findTheBestSolverConfiguration]]
-== Find the Best `Solver` Configuration
+== Find the best solver configuration
 
 Planner supports several optimization algorithms, so you're probably wondering which is the best one?
 Although some optimization algorithms generally perform better than others, it really depends on your problem domain.
@@ -23,11 +23,11 @@ image::BenchmarkingAndTweaking/benchmarkOverview.png[align="center"]
 
 
 [[benchmarkConfiguration]]
-== Benchmark Configuration
+== Benchmark configuration
 
 
 [[addADependencyOnBenchmarkJar]]
-=== Add a Dependency on `optaplanner-benchmark`
+=== Add a dependency on `optaplanner-benchmark`
 
 The benchmarker is in a separate artifact called ``optaplanner-benchmark``.
 
@@ -48,7 +48,7 @@ If you use ANT, you've probably already copied the required jars from the downlo
  directory.
 
 [[runASimpleBenchmark]]
-=== Run a Simple Benchmark
+=== Run a simple benchmark
 
 To quickly setup a benchmark, create a `PlannerBenchmarkFactory` from your solver configuration XML,
 load a few datasets and benchmark them. For example, with 3 datasets:
@@ -75,7 +75,7 @@ but it doesn't compare solver configurations to find the best algorithm.
 To do that, set up an explicit benchmark configuration:
 
 [[buildAndRunAPlannerBenchmark]]
-=== Configure and Run an Advanced Benchmark
+=== Configure and run an advanced benchmark
 
 Build a `PlannerBenchmark` instance with a ``PlannerBenchmarkFactory``.
 Configure it with a benchmark configuration XML file, provided as a classpath resource:
@@ -169,11 +169,11 @@ but instead are added to the tail of the solver phases list.
 
 
 [[solutionFileIO]]
-=== SolutionFileIO: Input And Output Of Solution Files
+=== `SolutionFileIO`: input and output of solution files
 
 
 [[solutionFileIOInterface]]
-==== `SolutionFileIO` Interface
+==== `SolutionFileIO` interface
 
 The benchmarker needs to be able to read the input files to load a ``Solution``.
 Also, it optionally writes the best `Solution` of each benchmark to an output file.
@@ -195,7 +195,7 @@ There are several ways to serialize a solution:
 
 
 [[xStreamSolutionFileIO]]
-==== ``XStreamSolutionFileIO``: Serialize To And From An XML Format
+==== `XStreamSolutionFileIO: serialize to and from an XML format
 
 To use the `XStreamSolutionFileIO` instance to read and write solutions,
 configure your `Solution` class as an ``xStreamAnnotatedClass``:
@@ -229,7 +229,7 @@ or large performance degradation.
 
 
 [[customSolutionFileIO]]
-==== Custom ``SolutionFileIO``: Serialize To And From A Custom Format
+==== Custom `SolutionFileIO`: serialize to and from a custom format
 
 Implement your own `SolutionFileIO` implementation and configure it with the `solutionFileIOClass` element to write to a custom format (such as a txt or a binary format):
 
@@ -252,7 +252,7 @@ A `SolutionFileIO` implementation must be thread-safe.
 
 
 [[readingAnInputSolutionFromADatabase]]
-==== Reading An Input Solution From A Database (Or Other Storage)
+==== Reading an input solution from a database or other storage
 
 There are two options if your dataset is in a relational database or another type of repository:
 
@@ -269,14 +269,11 @@ Then use those files in `<inputSolutionFile>` elements.
 
 
 [[warmingUpTheHotSpotCompiler]]
-=== Warming Up The HotSpot Compiler
+=== Warming up the HotSpot compiler
 
-Without a warm up, the results of the first (or first few) benchmarks are not reliable,
-because they will lose CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
+Without a warm up, the results of the first (or first few) benchmarks are not reliable because they lose CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
 
-To avoid that distortion, the benchmarker runs some of the benchmarks for 30 seconds,
-before running the real benchmarks.
-That default warm up of 30 seconds usually suffices. Change it, for example to give it 60 seconds:
+To avoid that distortion, the benchmarker runs some of the benchmarks for 30 seconds, before running the real benchmarks. That default warm up of 30 seconds usually suffices. Change it, for example to give it 60 seconds:
 
 [source,xml,options="nowrap"]
 ----
@@ -306,7 +303,7 @@ With large datasets, this can cause the warm up to run considerably longer than 
 
 
 [[benchmarkBlueprint]]
-=== Benchmark Blueprint: A Predefined Configuration
+=== Benchmark blueprint: a predefined configuration
 
 To quickly configure and run a benchmark for typical solver configs, use a `solverBenchmarkBluePrint` instead of ``solverBenchmark``s:
 
@@ -352,7 +349,7 @@ The following ``SolverBenchmarkBluePrintType``s are supported:
 
 
 [[writeTheOutputSolutionOfBenchmarkRuns]]
-=== Write The Output Solution Of Benchmark Runs
+=== Write the output solution of benchmark runs
 
 The best solution of each benchmark run can be written in the ``benchmarkDirectory``.
 By default, this is disabled, because the files are rarely used and considered bloat.
@@ -371,7 +368,7 @@ To write those solutions in the ``benchmarkDirectory``, enable ``writeOutputSolu
 
 
 [[benchmarkLogging]]
-=== Benchmark Logging
+=== Benchmark logging
 
 Benchmark logging is configured like <<logging,solver logging>>.
 
@@ -396,11 +393,11 @@ For example with Logback in ``logback.xml``:
 
 
 [[benchmarkReport]]
-== Benchmark Report
+== Benchmark report
 
 
 [[benchmarkHtmlReport]]
-=== HTML Report
+=== HTML report
 
 After running a benchmark, an HTML report will be written in the `benchmarkDirectory` with the `index.html` filename.
 Open it in your browser.
@@ -433,7 +430,7 @@ If you share the benchmark report with people from another country, consider ove
 
 
 [[rankingTheSolvers]]
-=== Ranking The ``Solver``s
+=== Ranking the solvers
 
 The benchmark report automatically ranks the solvers.
 The `Solver` with rank `0` is called the favorite ``Solver``: it performs best overall, but it might not be the best on every problem.
@@ -482,22 +479,22 @@ Or by implementing a weight factory:
 
 
 [[benchmarkReportSummaryStatistics]]
-== Summary Statistics
+== Summary statistics
 
 
 [[benchmarkReportBestScoreSummary]]
-=== Best Score Summary (Graph And Table)
+=== Best score summary (graph and table)
 
 Shows the best score per `inputSolutionFile` for each solver configuration.
 
 Useful for visualizing the best solver configuration.
 
-.Best Score Summary Statistic
+.Best score summary statistic
 image::BenchmarkingAndTweaking/bestScoreSummary.png[align="center"]
 
 
 [[benchmarkReportBestScoreScalabilitySummary]]
-=== Best Score Scalability Summary (Graph)
+=== Best score scalability summary (graph)
 
 Shows the best score per problem scale for each solver configuration.
 
@@ -510,7 +507,7 @@ The problem scale will report `0` if any `@ValueRangeProvider` method signature 
 
 
 [[benchmarkReportBestScoreDistributionSummary]]
-=== Best Score Distribution Summary (Graph)
+=== Best score distribution summary (graph)
 
 Shows the best score distribution per `inputSolutionFile` for each solver configuration.
 
@@ -523,7 +520,7 @@ Enable <<statisticalBenchmarking,statistical benchmarking>> to use this summary.
 
 
 [[benchmarkReportWinningScoreDifferenceSummary]]
-=== Winning Score Difference Summary (Graph And Table)
+=== Winning score difference summary (graph And table)
 
 Shows the winning score difference per `inputSolutionFile` for each solver configuration.
 The winning score difference is the score difference with the score of the winning solver configuration for that particular ``inputSolutionFile``.
@@ -532,7 +529,7 @@ Useful for zooming in on the results of the best score summary.
 
 
 [[benchmarkReportWorstScoreDifferencePercentageSummary]]
-=== Worst Score Difference Percentage (ROI) Summary (Graph and Table)
+=== Worst score difference percentage (ROI) summary (graph And table)
 
 Shows the return on investment (ROI) per `inputSolutionFile` for each solver configuration if you'd upgrade from the worst solver configuration for that particular ``inputSolutionFile``.
 
@@ -540,7 +537,7 @@ Useful for visualizing the return on investment (ROI) to decision makers.
 
 
 [[benchmarkReportScoreCalculationSpeedSummary]]
-=== Score Calculation Speed Summary (Graph and Table)
+=== Score calculation speed summary (graph And table)
 
 Shows the score calculation speed: a count per second per problem scale for each solver configuration.
 
@@ -548,7 +545,7 @@ Useful for comparing different score calculators and/or score rule implementatio
 
 
 [[benchmarkReportTimeSpentSummary]]
-=== Time Spent Summary (Graph And Table)
+=== Time spent summary (graph And table)
 
 Shows the time spent per `inputSolutionFile` for each solver configuration.
 This is pointless if it's benchmarking against a fixed time limit.
@@ -557,7 +554,7 @@ Useful for visualizing the performance of construction heuristics (presuming tha
 
 
 [[benchmarkReportTimeSpentScalabilitySummary]]
-=== Time Spent Scalability Summary (Graph)
+=== Time spent scalability summary (graph)
 
 Shows the time spent per problem scale for each solver configuration.
 This is pointless if it's benchmarking against a fixed time limit.
@@ -566,7 +563,7 @@ Useful for extrapolating the scalability of construction heuristics (presuming t
 
 
 [[benchmarkReportBestScorePerTimeSpentSummary]]
-=== Best Score Per Time Spent Summary (Graph)
+=== Best score per time spent summary (graph)
 
 Shows the best score per time spent for each solver configuration.
 This is pointless if it's benchmarking against a fixed time limit.
@@ -575,11 +572,11 @@ Useful for visualizing trade-off between the best score versus the time spent fo
 
 
 [[benchmarkReportStatisticPerDataset]]
-== Statistic Per Dataset (Graph And CSV)
+== Statistic per dataset (graph and CSV)
 
 
 [[enableAProblemStatistic]]
-=== Enable A Problem Statistic
+=== Enable a problem statistic
 
 The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to the ``benchmarkDirectory``.
 To configure one or more, add a `problemStatisticType` line for each one:
@@ -621,7 +618,7 @@ The following types are supported:
 
 
 [[benchmarkReportBestScoreOverTimeStatistic]]
-=== Best Score Over Time Statistic (Graph And CSV)
+=== Best score over time statistic (graph and CSV)
 
 Shows how the best score evolves over time. It is run by default.
 To run it when other statistics are configured, also add:
@@ -651,7 +648,7 @@ image::BenchmarkingAndTweaking/letTheBestScoreStatisticGuideYou.png[align="cente
 
 
 [[benchmarkReportStepScoreOverTimeStatistic]]
-=== Step Score Over Time Statistic (Graph And CSV)
+=== Step score over time statistic (graph and CSV)
 
 To see how the step score evolves over time, add:
 
@@ -678,7 +675,7 @@ especially for fast stepping algorithms
 
 
 [[benchmarkReportScoreCalculationSpeedOverTimeStatistic]]
-=== Score Calculation Speed Over Time Statistic (Graph And CSV)
+=== Score calculation speed over time statistic (graph and CSV)
 
 To see how fast the scores are calculated, add:
 
@@ -703,7 +700,7 @@ After those few seconds of initialization, the calculation speed is relatively s
 
 
 [[benchmarkReportBestSolutionMutationOverTimeStatistic]]
-=== Best Solution Mutation Over Time Statistic (Graph And CSV)
+=== Best solution mutation over time statistic (graph and CSV)
 
 To see how much each new best solution differs from the __previous best solution__, by counting the number of planning variables which have a different value (not including the variables that have changed multiple times but still end up with the same value), add:
 
@@ -722,7 +719,7 @@ Use Tabu Search - an algorithm that behaves like a human - to get an estimation 
 
 
 [[benchmarkReportMoveCountPerStepStatistic]]
-=== Move Count Per Step Statistic (Graph And CSV)
+=== Move count per step statistic (graph and CSV)
 
 To see how the selected and accepted move count per step evolves over time, add:
 
@@ -745,7 +742,7 @@ This statistic has been seen to slow down the solver noticeably due to GC stress
 
 
 [[benchmarkReportMemoryUseStatistic]]
-=== Memory Use Statistic (Graph And CSV)
+=== Memory use statistic (graph and CSV)
 
 To see how much memory is used, add:
 
@@ -762,17 +759,17 @@ image::BenchmarkingAndTweaking/memoryUseStatistic.png[align="center"]
 
 
 [WARNING]
-====
+==
 The memory use statistic has been seen to affect the solver noticeably.
-====
+==
 
 
 [[benchmarkReportStatisticPerSingleBenchmark]]
-== Statistic Per Single Benchmark (Graph And CSV)
+== Statistic per single benchmark (graph and CSV)
 
 
 [[enableASingleStatistic]]
-=== Enable A Single Statistic
+=== Enable a single statistic
 
 A single statistic is static for one dataset for one solver configuration.
 Unlike a problem statistic, it does not aggregate over solver configurations.
@@ -808,7 +805,7 @@ The following types are supported:
 
 
 [[benchmarkReportConstraintMatchTotalBestScoreOverTimeStatistic]]
-=== Constraint Match Total Best Score Over Time Statistic (Graph And CSV)
+=== Constraint match total best score over time statistic (graph and CSV)
 
 To see which constraints are matched in the best score (and how much) over time, add:
 
@@ -834,7 +831,7 @@ The constraint match total statistics affect the solver noticeably.
 
 
 [[benchmarkReportConstraintMatchTotalStepScoreOverTimeStatistic]]
-=== Constraint Match Total Step Score Over Time Statistic (Graph And CSV)
+=== Constraint match total step score over time statistic (graph and CSV)
 
 To see which constraints are matched in the step score (and how much) over time, add:
 
@@ -858,7 +855,7 @@ The constraint match total statistics affect the solver noticeably.
 
 
 [[benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic]]
-=== Picked Move Type Best Score Diff Over Time Statistic (Graph And CSV)
+=== Picked move type best score diff over time statistic (graph and CSV)
 
 To see which move types improve the best score (and how much) over time, add:
 
@@ -875,7 +872,7 @@ image::BenchmarkingAndTweaking/pickedMoveTypeBestScoreDiffStatistic.png[align="c
 
 
 [[benchmarkReportPickedMoveTypeStepScoreDiffOverTimeStatistic]]
-=== Picked Move Type Step Score Diff Over Time Statistic (Graph And CSV)
+=== Picked move type step score diff over time statistic (graph and CSV)
 
 To see how much each winning step affects the step score over time, add:
 
@@ -892,15 +889,15 @@ image::BenchmarkingAndTweaking/pickedMoveTypeStepScoreDiffStatistic.png[align="c
 
 
 [[advancedBenchmarking]]
-== Advanced Benchmarking
+== Advanced benchmarking
 
 
 [[benchmarkingPerformanceTricks]]
-=== Benchmarking Performance Tricks
+=== Benchmarking performance tricks
 
 
 [[parallelBenchmarkingOnMultipleThreads]]
-==== Parallel Benchmarking On Multiple Threads
+==== Parallel benchmarking on multiple threads
 
 If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on multiple threads to get your benchmarks results faster:
 
@@ -971,7 +968,7 @@ This feature is independent of <<multithreadedSolving,multithreaded solving>> or
 
 
 [[statisticalBenchmarking]]
-=== Statistical Benchmarking
+=== Statistical benchmarking
 
 To minimize the influence of your environment and the Random Number Generator on the benchmark results, configure the number of times each single benchmark run is repeated.
 The results of those runs are statistically aggregated.
@@ -1004,7 +1001,7 @@ If `subSingleCount` is higher than ``1``, the benchmarker will automatically use
 
 
 [[templateBasedBenchmarking]]
-=== Template Based Benchmarking And Matrix Benchmarking
+=== Template-based benchmarking and matrix benchmarking
 
 Matrix benchmarking is benchmarking a combination of value sets.
 For example: benchmark four `entityTabuSize` values (``5``, ``7``, `11` and ``13``) combined with three `acceptedCountLimit` values (``500``, `1000` and ``2000``), resulting in 12 solver configurations.
@@ -1084,7 +1081,7 @@ And build it with the class ``PlannerBenchmarkFactory``:
 
 
 [[benchmarkReportAggregation]]
-=== Benchmark Report Aggregation
+=== Benchmark report aggregation
 
 The `BenchmarkAggregator` takes one or more existing benchmarks and merges them into new benchmark report, without actually running the benchmarks again.
 

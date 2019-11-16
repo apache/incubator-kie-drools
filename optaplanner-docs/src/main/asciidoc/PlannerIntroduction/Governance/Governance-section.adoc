@@ -6,17 +6,17 @@
 [[statusOfOptaPlanner]]
 == Status of OptaPlanner
 
-OptaPlanner is stable, reliable and scaleable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 variables each, multiple constraint types and billions of possible constraint matches. 
+OptaPlanner is stable, reliable and scaleable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 variables each, multiple constraint types and billions of possible constraint matches.
 
 
 [[releaseNotes]]
-== Release Notes
+== Release notes
 
 We release every month. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 
 [[backwardsCompatibility]]
-== Backwards Compatibility
+== Backwards compatibility
 
 OptaPlanner separates its API and implementation:
 
@@ -33,7 +33,7 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 
 
 [[communityAndSupport]]
-== Community and Support
+== Community and support
 
 For news and articles, check https://www.optaplanner.org/blog/[our blog],
 https://twitter.com/OptaPlanner[twitter] (including https://twitter.com/GeoffreyDeSmet[Geoffrey's twitter])

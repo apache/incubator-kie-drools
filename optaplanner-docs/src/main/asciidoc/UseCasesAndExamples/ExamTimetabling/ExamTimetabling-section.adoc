@@ -1,10 +1,10 @@
 [[examination]]
-= Exam Timetabling (ITC 2007 track 1 - Examination)
+= Exam timetabling (ITC 2007 track 1 - Examination)
 :imagesdir: ../..
 
 
 [[examinationProblemDescription]]
-== Problem Description
+== Problem description
 
 Schedule each exam into a period and into a room.
 Multiple exams can share the same room during the same period.
@@ -41,7 +41,7 @@ Many improvements have been made since then.
 
 
 [[examinationProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -57,7 +57,7 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
 
 
 [[examinationDomainModel]]
-== Domain Model
+== Domain model
 
 Below you can see the main examination domain classes:
 
@@ -67,4 +67,3 @@ image::UseCasesAndExamples/ExamTimetabling/examinationDomainDiagram.png[align="c
 Notice that we've split up the exam concept into an `Exam` class and a `Topic` class.
 The `Exam` instances change during solving (this is the planning entity class), when their period or room property changes.
 The ``Topic``, `Period` and `Room` instances never change during solving (these are problem facts, just like some other classes).
-

@@ -1,5 +1,5 @@
 [[scoreCalculation]]
-= Score Calculation
+= Score calculation
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,11 +9,11 @@
 
 
 [[scoreTerminology]]
-== Score Terminology
+== Score terminology
 
 
 [[whatIsAScore]]
-=== What is a Score?
+=== What is a score?
 
 Every `Solution` has a score.
 The score is an objective way to compare two solutions.
@@ -29,7 +29,7 @@ image::ScoreCalculation/optimalWithIncompleteConstraints.png[align="center"]
 
 
 [[formalizeTheBusinessConstraints]]
-=== Formalize the Business Constraints
+=== Formalize the business constraints
 
 To implement a verbal business constraint, it needs to be formalized as a score constraint.
 Luckily, defining constraints in Planner is very flexible through the following score techniques:
@@ -50,12 +50,12 @@ Expect score constraints to be added, changed or removed after the first release
 
 
 [[scoreConstraintSignum]]
-=== Score Constraint Signum (Positive or Negative)
+=== Score constraint signum (positive or negative)
 
 All score techniques are based on constraints.
 A constraint can be a simple pattern (such as __Maximize the apple harvest in the solution__) or a more complex pattern.
 A positive constraint is a constraint you want to maximize.
-A negative constraint is a constraint you want to minimize.
+A negative constraint is a constraint you want to minimize
 
 image::ScoreCalculation/positiveAndNegativeConstraints.png[align="center"]
 
@@ -73,7 +73,7 @@ on a certain planning entity set, it is called a __constraint match__.
 
 
 [[scoreConstraintWeight]]
-=== Score Constraint Weight
+=== Score constraint weight
 
 Not all score constraints are equally important.
 If breaking one constraint is equally bad as breaking another constraint x times,
@@ -106,7 +106,7 @@ Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSof
 
 
 [[scoreLevel]]
-=== Score Constraint Level (hard, soft, ...)
+=== Score constraint level (hard, soft, ...)
 
 Sometimes a score constraint outranks another score constraint, no matter how many times the latter is broken.
 In that case, those score constraints are in different levels.
@@ -164,7 +164,7 @@ such as <<hardSoftScore,HardSoftScore>> and <<hardMediumSoftScore,HardMediumSoft
 
 
 [[paretoScoring]]
-=== Pareto Scoring (AKA Multi-objective Optimization Scoring)
+=== Pareto scoring (AKA multi-objective optimization scoring)
 
 Far less common is the use case of pareto optimization, which is also known as _multi-objective optimization_.
 In pareto scoring, score constraints are in the same score level, yet they are not weighted against each other.
@@ -196,7 +196,7 @@ Yet, two apples are not greater than one orange (but actually equal). Pareto com
 
 
 [[combiningScoreTechniques]]
-=== Combining Score Techniques
+=== Combining score techniques
 
 All the score techniques mentioned above, can be combined seamlessly:
 
@@ -242,7 +242,7 @@ public class CloudBalance {
 
 
 [[avoidFloatingPointNumbersInScoreCalculation]]
-=== Avoid Floating Point Numbers in Score Calculation
+=== Avoid floating point numbers in score calculation
 
 Avoid the use of `float` or `double` in score calculation.
 Use `BigDecimal` or scaled `long` instead.
@@ -276,7 +276,7 @@ For example, if we multiply all weights by ``1000``, a fuelCost of `0.07` become
 
 
 [[scoreType]]
-== Choose a Score Type
+== Choose a score type
 
 Depending on the number of score levels and type of score weights you need, choose a `Score` type.
 Most use cases use a ``HardSoftScore``.
@@ -289,7 +289,7 @@ see <<integration,the integration chapter>>.
 
 
 [[simpleScore]]
-=== SimpleScore
+=== `SimpleScore`
 
 A `SimpleScore` has a single `int` value, for example ``-123``.
 It has a single score level.
@@ -308,7 +308,7 @@ Variants of this `Score` type:
 
 
 [[hardSoftScore]]
-=== HardSoftScore (Recommended)
+=== `HardSoftScore` (Recommended)
 
 A `HardSoftScore` has a hard `int` value and a soft `int` value, for example ``-123hard/-456soft``.
 It has two score levels (hard and soft).
@@ -327,7 +327,7 @@ Variants of this `Score` type:
 
 
 [[hardMediumSoftScore]]
-=== HardMediumSoftScore
+=== `HardMediumSoftScore`
 
 A `HardMediumSoftScore` which has a hard `int` value, a medium `int` value and a soft `int` value, for example ``-123hard/-456medium/-789soft``.
 It has three score levels (hard, medium and soft).
@@ -349,7 +349,7 @@ Variants of this `Score` type:
 
 
 [[bendableScore]]
-=== BendableScore
+=== `BendableScore`
 
 A `BendableScore` has a configurable number of score levels.
 It has an array of hard `int` values and an array of soft `int` values,
@@ -385,7 +385,7 @@ Variants of this `Score` type:
 
 
 [[customScore]]
-=== Implementing a Custom Score
+=== Implementing a custom score
 
 Internally, each `Score` implementation also has a `ScoreDefinition` implementation.
 For example: `SimpleScore` is defined by ``SimpleScoreDefinition``.
@@ -411,7 +411,7 @@ you'll need to write custom glue code too.
 
 
 [[scoreCalculationTypes]]
-=== Score Calculation Types
+=== Score calculation types
 
 There are several ways to calculate the `Score` of a ``Solution``:
 
@@ -438,7 +438,7 @@ To update planning entities when the planning variable change, use <<shadowVaria
 
 
 [[easyJavaScoreCalculation]]
-=== Easy Java Score Calculation
+=== Easy Java score calculation
 
 An easy way to implement your score calculation in Java.
 
@@ -456,7 +456,7 @@ Implement the one method of the interface ``EasyScoreCalculator``:
 public interface EasyScoreCalculator<Solution_> {
 
     Score calculateScore(Solution_ solution);
-   
+
 }
 ----
 
@@ -469,7 +469,7 @@ public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> 
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
-        
+
         int score = 0;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -519,7 +519,7 @@ add the `easyScoreCalculatorCustomProperties` element and use <<customProperties
 
 
 [[incrementalJavaScoreCalculation]]
-=== Incremental Java Score Calculation
+=== Incremental Java score calculation
 
 A way to implement your score calculation incrementally in Java.
 
@@ -555,7 +555,7 @@ public interface IncrementalScoreCalculator<Solution_> {
     void afterEntityRemoved(Object entity);
 
     Score calculateScore();
-    
+
 }
 ----
 
@@ -756,7 +756,7 @@ without any extra domain-specific code.
 
 
 [[initializingScoreTrend]]
-=== InitializingScoreTrend
+=== `InitializingScoreTrend`
 
 The `InitializingScoreTrend` specifies how the Score will change as more and more variables are initialized (while the already initialized variables do not change). Some optimization algorithms (such Construction Heuristics and Exhaustive Search) run faster if they have such information.
 
@@ -793,7 +793,7 @@ Alternatively, you can also specify the trend for each score level separately:
 
 
 [[invalidScoreDetection]]
-=== Invalid Score Detection
+=== Invalid score detection
 
 When you put the <<environmentMode,`environmentMode`>> in `FULL_ASSERT` (or ``FAST_ASSERT``),
 it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
@@ -824,7 +824,7 @@ but to verify that the score rules implement the real business needs,
 
 
 [[scoreCalculationPerformanceTricks]]
-== Score Calculation Performance Tricks
+== Score calculation performance tricks
 
 
 [[scoreCalculationPerformanceTricksOverview]]
@@ -837,7 +837,7 @@ which normally means a better solution in equal time.
 
 
 [[scoreCalculationSpeed]]
-=== Score Calculation Speed
+=== Score calculation speed
 
 After solving a problem, the `Solver` will log the __score calculation speed per second__.
 This is a good measurement of Score calculation performance,
@@ -858,7 +858,7 @@ Comparing the best score with the original's best score is pointless: it's compa
 
 
 [[incrementalScoreCalculation]]
-=== Incremental Score Calculation (with Deltas)
+=== Incremental score calculation (with deltas)
 
 When a `Solution` changes, incremental score calculation (AKA delta based score calculation)
 calculates the delta with the previous state to find the new ``Score``,
@@ -881,7 +881,7 @@ Notice that the speedup is relative to the size of your planning problem (your _
 
 
 [[avoidCallingRemoteServicesDuringScoreCalculation]]
-=== Avoid Calling Remote Services During Score Calculation
+=== Avoid calling remote services during score calculation
 
 Do not call remote services in your score calculation (except if you are bridging `EasyScoreCalculator` to a legacy system). The network latency will kill your score calculation performance.
 Cache the results of those remote services if possible.
@@ -891,7 +891,7 @@ then turn them into <<cachedProblemFact,cached problem facts>>.
 
 
 [[pointlessConstraints]]
-=== Pointless Constraints
+=== Pointless constraints
 
 If you know a certain constraint can never be broken (or it is always broken), do not write a score constraint for it.
 For example in n queens, the score calculation does not check if multiple queens occupy the same column,
@@ -906,7 +906,7 @@ There is no need to dynamically change your score calculation based on the datas
 
 
 [[buildInHardConstraint]]
-=== Built-in Hard Constraint
+=== Built-in hard constraint
 
 Instead of implementing a hard constraint, it can sometimes be built in.
 For example, if `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution,
@@ -924,7 +924,7 @@ as explained in their documentation.
 
 
 [[otherScoreCalculationPerformanceTricks]]
-=== Other Score Calculation Performance Tricks
+=== Other score calculation performance tricks
 
 * Verify that your score calculation happens in the correct `Number` type.
 If you are making the sum of `int` values, do not let Drools sum it in a `double` which takes longer.
@@ -937,7 +937,7 @@ Make sure your design is flexible enough to allow configuration based tweaking.
 
 
 [[scoreTrap]]
-=== Score Trap
+=== Score trap
 
 Make sure that none of your score constraints cause a score trap.
 A trapped score constraint uses the same weight for different constraint matches, when it could just as easily use a different weight.
@@ -979,7 +979,7 @@ There are several ways to deal with a score trap:
 
 
 [[stepLimitBenchmark]]
-=== stepLimit Benchmark
+=== `stepLimit` benchmark
 
 Not all score constraints have the same performance cost.
 Sometimes one score constraint can kill the score calculation performance outright.
@@ -987,7 +987,7 @@ Use the <<benchmarker,Benchmarker>> to do a one minute run and check what happen
 
 
 [[fairnessScoreConstraints]]
-=== Fairness Score Constraints
+=== Fairness score constraints
 
 Some use cases have a business requirement to provide a fair schedule (usually as a soft score constraint), for example:
 
@@ -1015,7 +1015,7 @@ When the workload is perfectly balanced, the user often likes to see a `0` score
 
 
 [[constraintConfiguration]]
-== Constraint Configuration: Adjust Constraint Weights dynamically
+== Constraint configuration: adjust constraint weights dynamically
 
 Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint
 is not easy. It often involves negotiating with different stakeholders and their priorities.
@@ -1030,7 +1030,7 @@ image::ScoreCalculation/parameterizeTheScoreWeights.png[align="center"]
 
 
 [[createAConstraintConfiguration]]
-=== Create a Constraint Configuration
+=== Create a constraint configuration
 
 First, create a new class to hold the constraint weights and other constraint parameters.
 Annotate it with `@ConstraintConfiguration`:
@@ -1077,7 +1077,7 @@ That pause length is a field in the constraint configuration without a `@Constra
 
 
 [[constraintWeight]]
-=== Add a Constraint Weight for each Constraint
+=== Add a constraint weight for each constraint
 
 In the constraint configuration class, add a `@ConstraintWeight` field or property for each constraint:
 
@@ -1184,7 +1184,7 @@ But when 2 overlapping talks share 3 content tags, the match weight is `3`, so t
 
 
 [[explainingTheScore]]
-== Explaining the Score: Which Constraints Are Broken?
+== Explaining the score: which constraints are broken?
 
 The easiest way to explain the score during development is to print the return value of `explainBestScore()`,
 but only use that method for diagnostic purposes:
@@ -1222,7 +1222,7 @@ Instead use the ConstraintMatch API below and do it properly.
 ====
 
 [[usingScoreCalculationOutsideTheSolver]]
-=== Using Score Calculation Outside the `Solver`
+=== Using score calculation outside the `Solver`
 
 If other parts of your application, for example your webUI, need to calculate the score of a solution,
 reuse the `ScoreDirectorFactory` of the `SolverFactory` to build a separate `ScoreDirector` for that webUI:
@@ -1255,7 +1255,7 @@ image::ScoreCalculation/scoreVisualization.png[align="center"]
 
 
 [[constraintMatchTotal]]
-=== Constraint Match Total: Break down the Score by Constraint
+=== Constraint match total: break down the score by constraint
 
 To break down the score per constraint (so per score rule with Drools score calculation),
 get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
@@ -1289,7 +1289,7 @@ but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requi
 
 
 [[indictmentHeatMap]]
-=== Indictment Heat Map: Visualize the Hot Planning Entities
+=== Indictment heat map: visualize the hot planning entities
 
 To show a heat map in the UI that highlights the planning entities and problem facts have an impact on the ``Score``,
 get the `Indictment` map from the ``ScoreDirector``:

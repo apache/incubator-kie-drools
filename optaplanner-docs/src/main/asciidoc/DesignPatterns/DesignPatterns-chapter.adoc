@@ -1,5 +1,5 @@
 [[designPatterns]]
-= Design Patterns
+= Design patterns
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[designPatternsIntroduction]]
-== Design Patterns Introduction
+== Design patterns introduction
 
 OptaPlanner design patterns are generic reusable solutions to common challenges in the model or architecture of projects that perform constraint solving. The design patterns in this section list and solve common design challenges.
 
@@ -79,7 +79,7 @@ Vehicle routing is different because it uses a <<chainedPlanningVariable,chained
 ====
 
 [[assigningTimeToPlanningEntities]]
-== Assigning Time to Planning Entities
+== Assigning time to planning entities
 
 Dealing with time and dates in planning problems may be problematic because it is dependent on the needs of your use case.
 
@@ -137,7 +137,7 @@ image::DesignPatterns/assigningTimeToPlanningEntities2.png[align="center"]
 
 
 [[timeslotPattern]]
-=== Timeslot Pattern: Assign to a Fixed-Length Timeslot
+=== Timeslot pattern:  assign to a fixed-length timeslot
 
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.
@@ -156,7 +156,7 @@ However, in exam timetabling, that is allowed, if there is enough seating capaci
 
 
 [[timeGrainPattern]]
-=== TimeGrain Pattern: Assign to a Starting TimeGrain
+=== TimeGrain pattern: assign to a starting TimeGrain
 
 Assigning humans to start a meeting at four seconds after 9 o'clock is pointless because most human activities have a time granularity of five minutes or 15 minutes.
 Therefore it is not necessary to allow a planning entity to be assigned subsecond, second or even one minute accuracy.
@@ -174,7 +174,7 @@ However, such solution is not impossible, as shown in <<cheapTimeScheduling,chea
 
 
 [[chainedThroughTimePattern]]
-=== Chained Through Time Pattern: Assign in a Chain that Determines Starting Time
+=== Chained through time pattern: assign in a chain that determines starting time
 
 If a person or a machine continuously works on **one task at a time in sequence**,
 which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
@@ -201,7 +201,7 @@ Between planning entities, there are three ways to create gaps:
 
 
 [[chainedThroughTimeAutomaticCollapse]]
-==== Chained Through Time: Automatic Collapse
+==== Chained through time: automatic collapse
 
 In some use case there is an overhead time for certain tasks,
 which can be shared by multiple tasks, of those are consecutively scheduled.
@@ -216,7 +216,7 @@ that calculates the start and end times of each task.
 
 
 [[timeBucketPattern]]
-=== Time Bucket Pattern: Assign to a Capacitated Bucket per Time Period
+=== Time bucket pattern: assign to a capacitated bucket per time period
 
 In this pattern, the time of each employee is divided into _buckets_.
 For example 1 bucket per week.
@@ -243,7 +243,7 @@ Nevertheless, it may be beneficial in order to simplify the maintenance, ownersh
 
 
 [[cloudArchitecturePatterns]]
-== Cloud Architecture Patterns
+== Cloud architecture patterns
 
 There are two common usage patterns of Planner in the cloud:
 

@@ -1,5 +1,5 @@
 [[constraintStreams]]
-= Constraint Streams Score Calculation
+= Constraint streams score calculation
 :doctype: book
 :imagesdir: ..
 :sectnums:

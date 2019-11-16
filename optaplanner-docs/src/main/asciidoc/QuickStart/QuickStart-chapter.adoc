@@ -1,5 +1,5 @@
 [[quickStart]]
-= Getting Started: A Cloud Balancing Demonstration
+= Getting started: a cloud balancing demonstration
 :doctype: book
 :imagesdir: ..
 :sectnums:

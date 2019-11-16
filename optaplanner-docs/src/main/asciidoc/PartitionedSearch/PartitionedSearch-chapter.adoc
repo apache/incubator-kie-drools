@@ -1,5 +1,5 @@
 [[partitionedSearch]]
-= Partitioned Search
+= Partitioned search
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[partitionedSearchAlgorithm]]
-== Algorithm Description
+== Algorithm description
 
 It is often more efficient to partition large data sets (usually above 5000 planning entities)
 into smaller pieces and solve them separately.
@@ -98,11 +98,11 @@ followed by a non-partitioned Local Search phase:
 
 
 [[partitioningASolution]]
-== Partitioning a Solution
+== Partitioning a solution
 
 
 [[customSolutionPartitioner]]
-=== Custom SolutionPartitioner
+=== Custom `SolutionPartitioner`
 
 To use a custom `SolutionPartitioner`, configure one on the Partitioned Search phase:
 
@@ -216,7 +216,7 @@ add the `solutionPartitionerCustomProperties` element and use <<customProperties
 
 
 [[runnablePartThreadLimit]]
-== Runnable Part Thread Limit
+== Runnable part thread limit
 
 When running a multithreaded solver, such as Partitioned Search, CPU power can quickly become a scarce resource,
 which can cause other processes or threads to hang or freeze.

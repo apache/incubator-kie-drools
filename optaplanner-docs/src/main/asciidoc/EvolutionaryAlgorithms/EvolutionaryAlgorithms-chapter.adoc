@@ -1,5 +1,5 @@
 [[evolutionaryAlgorithms]]
-= Evolutionary Algorithms
+= Evolutionary algorithms
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -15,13 +15,13 @@ Evolutionary Algorithms work on a population of solutions and evolve that popula
 
 
 [[evolutionaryStrategies]]
-== Evolutionary Strategies
+== Evolutionary strategies
 
 This algorithm has not been implemented yet.
 
 
 [[geneticAlgorithms]]
-== Genetic Algorithms
+== Genetic algorithms
 
 This algorithm has not been implemented yet.
 

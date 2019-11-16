@@ -1,10 +1,10 @@
 [[dinnerParty]]
-= Dinner Party
+= Dinner party
 :imagesdir: ../..
 
 
 [[dinnerPartyProblemDescription]]
-== Problem Description
+== Problem description
 
 Miss Manners is throwing another dinner party.
 
@@ -19,7 +19,7 @@ Planner's implementation is far more scalable because it uses heuristics to find
 
 
 [[dinnerPartyProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

@@ -1,5 +1,5 @@
 [[shadowVariable]]
-= Shadow Variable
+= Shadow variable
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -37,7 +37,7 @@ There are several built-in shadow variables:
 
 
 [[bidirectionalVariable]]
-== Bi-directional Variable (Inverse Relation Shadow Variable)
+== Bi-directional variable (inverse relation shadow variable)
 
 Two variables are bi-directional if their instances always point to each other (unless one side points to `null` and the other side does not exist).
 So if A references B, then B references A.
@@ -134,7 +134,7 @@ Planner will not violate that principle during planning, but the input must not 
 
 
 [[anchorShadowVariable]]
-== Anchor Shadow Variable
+== Anchor shadow variable
 
 An anchor shadow variable is the anchor of <<chainedPlanningVariable,a chained variable>>.
 

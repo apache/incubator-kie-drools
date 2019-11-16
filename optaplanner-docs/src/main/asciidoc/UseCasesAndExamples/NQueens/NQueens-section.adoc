@@ -1,10 +1,10 @@
 [[nQueens]]
-= N Queens
+= N queens
 :imagesdir: ../..
 
 
 [[nQueensProblemDescription]]
-== Problem Description
+== Problem description
 
 Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
 The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
@@ -31,14 +31,14 @@ Below is a correct solution:
 .A Correct Solution for the Four Queens Puzzle
 image::UseCasesAndExamples/NQueens/solvedNQueens04.png[align="center"]
 
-All the constraints have been met, so the solution is correct. 
+All the constraints have been met, so the solution is correct.
 
 Note that most _n_ queens puzzles have multiple correct solutions.
 We will focus on finding a single correct solution for a given _n_, not on finding the number of possible correct solutions for a given _n_.
 
 
 [[nQueensProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -55,11 +55,11 @@ With a few changes it has been shown to easily handle 5000 queens and more.
 
 
 [[nQueensDomainModel]]
-== Domain Model
+== Domain model
 
 This example uses the domain model to solve the four queens problem.
 
-. *Creating a Domain Model* 
+. *Creating a Domain Model*
 A good domain model will make it easier to understand and solve your planning problem.
 +
 This is the domain model for the _n_ queens example:
@@ -67,7 +67,7 @@ This is the domain model for the _n_ queens example:
 [source,java,options="nowrap"]
 ----
 public class Column {
-    
+
     private int index;
 
     // ... getters and setters
@@ -77,7 +77,7 @@ public class Column {
 [source,java,options="nowrap"]
 ----
 public class Row {
-    
+
     private int index;
 
     // ... getters and setters
@@ -87,7 +87,7 @@ public class Row {
 [source,java,options="nowrap"]
 ----
 public class Queen {
-    
+
     private Column column;
     private Row row;
 
@@ -101,7 +101,7 @@ public class Queen {
 
 . *Calculating the Search Space.*
 +
-A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...). 
+A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...).
 +
 The ascending diagonal line and the descending diagonal line can be calculated based on the column and the row.
 +
@@ -110,7 +110,7 @@ The column and row indexes start from the upper left corner of the chessboard.
 [source,java,options="nowrap"]
 ----
 public class NQueens {
-    
+
     private int n;
     private List<Column> columnList;
     private List<Row> rowList;
@@ -168,4 +168,3 @@ Notice that in the four queens example, NQueens's `getN()` method will always re
 |===
 
 When two queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
-

@@ -1,10 +1,10 @@
 [[tennis]]
-= Tennis Club Scheduling
+= Tennis club scheduling
 :imagesdir: ../..
 
 
 [[tennisProblemDescription]]
-== Problem Description
+== Problem description
 
 Every week the tennis club has four teams playing round robin against each other.
 Assign those four spots to the teams fairly.
@@ -24,7 +24,7 @@ Soft constraints:
 
 
 [[tennisProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -33,6 +33,6 @@ munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssign
 
 
 [[tennisDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/TennisScheduling/tennisClassDiagram.png[align="center"]

@@ -1,5 +1,5 @@
 [[exhaustiveSearch]]
-= Exhaustive Search
+= Exhaustive search
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -16,11 +16,11 @@ That being said, it doesn't scale (not even beyond toy data sets) and is therefo
 
 
 [[bruteForce]]
-== Brute Force
+== Brute force
 
 
 [[bruteForceAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 The Brute Force algorithm creates and evaluates every possible solution.
 
@@ -52,11 +52,11 @@ Simplest configuration of Brute Force:
 
 
 [[branchAndBound]]
-== Branch And Bound
+== Branch and bound
 
 
 [[branchAndBoundAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Branch And Bound also explores nodes in an exponential search tree, but it investigates more promising nodes first and prunes away worthless nodes.
 
@@ -174,7 +174,7 @@ The `valueSorterManner` options are:
 
 
 [[scalabilityOfExhaustiveSearch]]
-== Scalability of Exhaustive Search
+== Scalability of exhaustive search
 
 Exhaustive Search variants suffer from two big scalability issues:
 

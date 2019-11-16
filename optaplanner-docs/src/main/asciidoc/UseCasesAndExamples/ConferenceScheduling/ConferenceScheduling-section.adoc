@@ -1,10 +1,10 @@
 [[conferenceScheduling]]
-= Conference Scheduling
+= Conference scheduling
 :imagesdir: ../..
 
 
 [[conferenceSchedulingProblemDescription]]
-== Problem Description
+== Problem description
 
 Assign each conference talk to a timeslot and a room, after the talks have been accepted.
 
@@ -73,13 +73,13 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingConstraints.
 
 
 [[conferenceSchedulingValueProposition]]
-== Value Proposition
+== Value proposition
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingValueProposition.png[align="center"]
 
 
 [[conferenceSchedulingProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -98,7 +98,7 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingArchitecture
 
 
 [[conferenceSchedulingDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingClassDiagram.png[align="center"]
 

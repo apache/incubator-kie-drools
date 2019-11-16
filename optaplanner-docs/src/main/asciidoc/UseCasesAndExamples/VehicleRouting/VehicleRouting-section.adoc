@@ -1,10 +1,10 @@
 [[vehicleRouting]]
-= Vehicle Routing
+= Vehicle routing
 :imagesdir: ../..
 
 
 [[vehicleRoutingProblemDescription]]
-== Problem Description
+== Problem description
 
 Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot.
 Each vehicle can service multiple customers, but it has a limited capacity.
@@ -30,13 +30,13 @@ The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVR
 
 
 [[vehicleRoutingValueProposition]]
-== Value Proposition
+== Value proposition
 
 image::UseCasesAndExamples/VehicleRouting/vehicleRoutingValueProposition.png[align="center"]
 
 
 [[vehicleRoutingProblemSize]]
-== Problem Size
+== Problem size
 
 CVRP instances (without time windows):
 
@@ -156,7 +156,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 
 
 [[vehicleRoutingDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/VehicleRouting/vehicleRoutingClassDiagram.png[align="center"]
 
@@ -165,7 +165,7 @@ This allows it to express its constraints more naturally, because properties suc
 
 
 [[roadDistancesInsteadOfAirDistances]]
-=== Road Distances Instead of Air Distances
+=== Road distances instead of air distances
 
 In the real world, vehicles cannot follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:

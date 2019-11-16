@@ -1,10 +1,10 @@
 [[cheapTimeScheduling]]
-= Cheap Time Scheduling
+= Cheap time scheduling
 :imagesdir: ../..
 
 
 [[cheapTimeSchedulingProblemDescription]]
-== Problem Description
+== Problem description
 
 Schedule all tasks in time and on a machine to minimize power cost.
 Power prices differs in time.
@@ -31,7 +31,7 @@ The problem is defined by http://iconchallenge.insight-centre.org/[the ICON chal
 
 
 [[cheapTimeSchedulingProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----

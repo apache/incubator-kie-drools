@@ -1,5 +1,5 @@
 [[examplesOverview]]
-= Examples Overview
+= Examples overview
 
 Planner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
 
@@ -16,7 +16,7 @@ Realistic contests provide an objective comparison of Planner with competitive s
 The source code of all these examples is available in the distribution zip under [path]_examples/sources_
 and also in git under [path]_optaplanner/optaplanner-examples_.
 
-.Examples Overview
+.Examples overview
 [cols="1,1a,1a,1a,1a", options="header"]
 |===
 |Example |Domain |Size |Contest |Special features used

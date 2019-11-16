@@ -1,10 +1,10 @@
 [[bedAllocation]]
-= Hospital Bed Planning (PAS - Patient Admission Scheduling)
+= Hospital bed planning (PAS - Patient Admission Scheduling)
 :imagesdir: ../..
 
 
 [[bedAllocationProblemDescription]]
-== Problem Description
+== Problem description
 
 Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay in the hospital.
 Each bed belongs to a room and each room belongs to a department.
@@ -37,7 +37,7 @@ The problem is a variant on https://people.cs.kuleuven.be/~wim.vancroonenburg/pa
 
 
 [[bedAllocationProblemSize]]
-== Problem Size
+== Problem size
 
 [source,options="nowrap"]
 ----
@@ -58,7 +58,6 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
 
 
 [[bedAllocationDomainModel]]
-== Domain Model
+== Domain model
 
 image::UseCasesAndExamples/BedAllocation/hospitalBedAllocationClassDiagram.png[align="center"]
-
