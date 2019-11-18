@@ -14,6 +14,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 public class ExecModelLambdaPostProcessor {
 
     private final static String EXPR_CALL = "expr";
+    private final static String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
     private final static String TEST_CALL = "test";
     private LambdaClass lambdaClass;
 
@@ -25,10 +26,15 @@ public class ExecModelLambdaPostProcessor {
         Statement clone = inputDSL.clone();
 
         try {
-            clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
+//            clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
+//                    .forEach(this::replaceLambdaInExpr);
+
+            clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()))
                     .forEach(this::replaceLambdaInExpr);
+
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
         } catch (LambdaClass.LambdaTypeNeededException e) {
+            System.out.println(e);
             return new PostProcessedExecModel(inputDSL);
         }
     }

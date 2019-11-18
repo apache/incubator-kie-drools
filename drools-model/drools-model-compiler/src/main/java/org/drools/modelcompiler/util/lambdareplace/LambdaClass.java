@@ -69,7 +69,7 @@ public class LambdaClass {
         for (Parameter p : parameters) {
             Type c = p.getType();
             if(c instanceof UnknownType) {
-                throw new LambdaTypeNeededException();
+                throw new LambdaTypeNeededException(lambdaExpr.toString());
             }
             lambdaParameters.add(new LambdaParameter(p.getNameAsString(), c));
         }
@@ -121,5 +121,15 @@ public class LambdaClass {
 
     public static class LambdaTypeNeededException extends RuntimeException {
 
+        private final String lambda;
+
+        public LambdaTypeNeededException(String lambda) {
+            this.lambda = lambda;
+        }
+
+        @Override
+        public String getMessage() {
+            return "Missing argument in Lambda: " + lambda;
+        }
     }
 }
