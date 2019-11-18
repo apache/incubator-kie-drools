@@ -35,6 +35,7 @@ import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
+import org.kie.dmn.core.imports.ImportsTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.Definitions;
 
@@ -400,5 +401,15 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                  p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
                                                  p.getSourceId().equals("_cdd03786-d1ab-47b5-ba05-df830458dc62")).count(),
                    is(1L));
+    }
+
+    @Test
+    public void testValidateSchemaAndModels() {
+        // DROOLS-4773 DMN Validator fluent builder schema & analysis using reader
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
+                                                            VALIDATE_MODEL)
+                                             .theseModels(getReader("base join.dmn", ImportsTest.class),
+                                                          getReader("use join.dmn", ImportsTest.class));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
 }
