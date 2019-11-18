@@ -717,7 +717,7 @@ public class DrlxParseUtil {
                 Collections.emptyList() :
                 Stream.of(watchAnn.getValue().toString().split(","))
                         .map( String::trim )
-                        .map( StringUtils::lcFirst )
+                        .map( StringUtils::lcFirstForBean )
                         .collect( toList() );
     }
 

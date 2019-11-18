@@ -20,11 +20,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -359,14 +365,15 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @Test
     public void testFactType() throws Exception {
+        // DROOLS-4784
         String str =
                 "package org.test;\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "declare Name\n" +
-                "    value : String\n" +
+                "    VALUE : String\n" +
                 "end\n" +
                 "rule R when\n" +
-                "    Name($v : value == \"Mario\")\n" +
+                "    Name($v : VALUE == \"Mario\")\n" +
                 "then\n" +
                 "    insert($v);" +
                 "end";
@@ -375,16 +382,27 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         FactType nameType = ksession.getKieBase().getFactType("org.test", "Name");
         Object name = nameType.newInstance();
-        nameType.set(name, "value", "Mario");
+        nameType.set(name, "VALUE", "Mario");
 
         ksession.insert(name);
         ksession.fireAllRules();
 
-        assertEquals( "Mario", nameType.get( name, "value" ) );
+        assertEquals( "Mario", nameType.get( name, "VALUE" ) );
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next() );
+
+        EntryPointNode epn = (( KnowledgeBaseImpl ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        Iterator<ObjectTypeNode> otns = epn.getObjectTypeNodes().values().iterator();
+        ObjectTypeNode otn = otns.next();
+        if (otn.toString().contains( "InitialFact" )) {
+            otn = otns.next();
+        }
+        AlphaNode alpha = (AlphaNode)otn.getSinks()[0];
+        AlphaNodeFieldConstraint constraint = alpha.getConstraint();
+        int index = (( IndexableConstraint ) constraint).getFieldExtractor().getIndex();
+        assertTrue( index >= 0 );
     }
 
     @Test

@@ -51,7 +51,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -220,7 +220,7 @@ public class ConstraintParser {
         if (hasBind) {
             return new SingleDrlxParseSuccess(patternType, exprId, bindingId, null, converted.getType() )
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
-                    .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
+                    .addReactOnProperty( lcFirstForBean(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
             Optional<DeclarationSpec> declarationSpec = context.getDeclarationById(expression);
             if (declarationSpec.isPresent()) {

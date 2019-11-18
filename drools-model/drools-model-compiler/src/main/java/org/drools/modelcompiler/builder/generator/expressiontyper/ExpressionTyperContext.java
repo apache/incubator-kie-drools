@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.github.javaparser.ast.expr.Expression;
 
-import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.core.util.StringUtils.lcFirstForBean;
 
 public class ExpressionTyperContext {
 
@@ -24,7 +24,7 @@ public class ExpressionTyperContext {
     }
 
     public void addReactOnProperties(String prop) {
-        reactOnProperties.add(lcFirst(prop));
+        reactOnProperties.add(lcFirstForBean(prop));
     }
 
     public Set<String> getReactOnProperties() {
