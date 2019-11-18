@@ -51,6 +51,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
+import static java.util.Optional.ofNullable;
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
@@ -147,7 +148,10 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam(), Optional.of(drlxParseResult.getPatternType()));
+        return drlxParseResult.isStatic() ? expr :
+                generateLambdaWithoutParameters(usedDeclarations,
+                                                expr,
+                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()));
     }
 
     boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
@@ -249,8 +253,8 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
-        Optional<Class<?>> leftType = Optional.ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
-        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> leftType = ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> rightType = ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
 
         // Use Number.class if they're both Numbers but different in order to use best possible type in the index
         Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {

@@ -470,7 +470,7 @@ public class DrlxParseUtil {
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {
             Type type;
-            if(patternClass.isPresent() && usedDeclarations.isEmpty()) {
+            if(patternClass.isPresent() && usedDeclarations.isEmpty() && patternClass.filter(c -> !Object.class.equals(c)).isPresent()) {
                 type = StaticJavaParser.parseClassOrInterfaceType(patternClass.get().getCanonicalName());
             } else {
                 type = new UnknownType();
