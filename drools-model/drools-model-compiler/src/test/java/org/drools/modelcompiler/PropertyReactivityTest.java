@@ -314,7 +314,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
 
-    @Test(timeout = 5000L)
+    @Test()
     public void testPRAfterAccumulate() {
         // DROOLS-2427
         final String str =
