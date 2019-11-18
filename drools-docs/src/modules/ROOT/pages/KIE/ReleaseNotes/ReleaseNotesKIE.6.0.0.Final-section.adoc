@@ -19,7 +19,7 @@ One of the biggest complaints during the 5.x series was the lack of defined meth
 The mechanism used by Drools and jBPM was very flexible, but it was too flexible.
 A big focus for 6.0 was streamlining the build, deploy and loading (utilization) aspects of the system.
 Building and deploying activities are now aligned with Maven and Maven repositories.
-The utilization for loading rules and processess is now convention and configuration oriented, instead of programmatic, with sane defaults to minimise the configuration.
+The utilization for loading rules and processes is now convention and configuration oriented, instead of programmatic, with sane defaults to minimise the configuration.
 
 Projects can be built with Maven and installed to the local M2_REPO or remote Maven repositories.
 Maven is then used to declare and build the classpath of dependencies, for KIE to access.
@@ -104,7 +104,7 @@ Maven LATEST, SNAPSHOT, RELEASE and version ranges are supported.
 ----
 KieServices ks = KieServices.Factory.get();
 KieContainer kContainer = ks.newKieContainer(
-        ks.newReleaseId("org.mygroup", "myartefact", "1.0") );
+        ks.newReleaseId("org.mygroup", "myartifact", "1.0") );
 
 KieSession kSession = kContainer.newKieSession("ksession1");
 kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
@@ -121,7 +121,7 @@ For stateful KieSessions the existing sessions are incrementally updated.
 [source,java]
 ----
 KieContainer kContainer.updateToVersion(
-                ks.newReleaseId("org.mygroup", "myartefact", "1.1") );
+                ks.newReleaseId("org.mygroup", "myartifact", "1.1") );
 ----
 ====
 

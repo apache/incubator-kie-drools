@@ -210,7 +210,7 @@ They are listed and described in the following table:
 |realtime
 |realtime, pseudo
 |Defines if events timestamps are determined by the system clock or by
-            a psuedo clock controlled by the application. This clock is specially useful for
+            a pseudo clock controlled by the application. This clock is especially useful for
             unit testing temporal rules.
 
 |beliefSystem
