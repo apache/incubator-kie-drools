@@ -405,7 +405,7 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testValidateSchemaAndModels() {
-        // DROOLS-
+        // DROOLS-4773 DMN Validator fluent builder schema & analysis using reader
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
                                                             VALIDATE_MODEL)
                                              .theseModels(getReader("base join.dmn", ImportsTest.class),
