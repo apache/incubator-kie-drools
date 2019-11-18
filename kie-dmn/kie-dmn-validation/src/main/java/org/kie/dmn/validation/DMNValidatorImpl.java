@@ -222,9 +222,24 @@ public class DMNValidatorImpl implements DMNValidator {
         @Override
         public List<DMNMessage> theseModels(Reader... readers) {
             DMNMessageManager results = new DefaultDMNMessagesManager();
-            if (flags.contains(VALIDATE_SCHEMA)) {
-                for (Reader reader : readers) {
-                    results.addAll(validator.validateSchema(reader));
+            List<Definitions> models = new ArrayList<>();
+            for (Reader reader : readers) {
+                try {
+                    String content = readContent(reader);
+                    if (flags.contains(VALIDATE_SCHEMA)) {
+                        results.addAll(validator.validateSchema(new StringReader(content)));
+                    }
+                    Definitions dmndefs = unmarshalDefinitionsFromReader(validator.dmnCompilerConfig, new StringReader(content));
+                    models.add(dmndefs);
+                } catch (Exception t) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          t,
+                                          null,
+                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          t.getMessage());
                 }
             }
             if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
@@ -238,7 +253,6 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                List<Definitions> models = unmarshallReaders(readers);
                 validateDefinitions(internalValidatorSortModels(models), results);
             }
             return results.getMessages();
@@ -420,8 +434,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 results.addAll( validateSchema( new StringReader( content ) ) );
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
-                Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new StringReader(content));
-                dmndefs.normalize();
+                Definitions dmndefs = unmarshalDefinitionsFromReader(dmnCompilerConfig, new StringReader(content));
                 validateModelCompilation( dmndefs, results, flags );
             }
         } catch ( Throwable t ) {
@@ -446,6 +459,12 @@ public class DMNValidatorImpl implements DMNValidator {
             content.append( b, 0, chars );
         }
         return content.toString();
+    }
+
+    private static Definitions unmarshalDefinitionsFromReader(DMNCompilerConfiguration config, Reader reader) {
+        Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(reader);
+        dmndefs.normalize();
+        return dmndefs;
     }
 
 
