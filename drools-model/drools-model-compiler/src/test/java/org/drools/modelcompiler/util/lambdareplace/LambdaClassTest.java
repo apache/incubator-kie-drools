@@ -11,7 +11,7 @@ public class LambdaClassTest {
     @Test
     public void createClassWithOneParameter() {
         CreatedClass aClass = new LambdaClass("org.drools.modelcompiler.util.lambdareplace")
-                .createClass("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35");
+                .createPredicate("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35");
 
         //language=JAVA
         String expectedResult = "" +
@@ -32,7 +32,7 @@ public class LambdaClassTest {
     @Test
     public void createClassWithTwoParameters() {
         CreatedClass aClass = new LambdaClass("org.drools.modelcompiler.util.lambdareplace")
-                .createClass("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()");
+                .createPredicate("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()");
 
         //language=JAVA
         String expectedResult = "" +
@@ -43,6 +43,27 @@ public class LambdaClassTest {
                 "        @Override()\n" +
                 "        public boolean test(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) {\n" +
                 "            return p1.getAge() > p2.getAge();\n" +
+                "        }\n" +
+                "    }\n";
+
+        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+
+    }
+
+    @Test
+    public void createExtractor() {
+        CreatedClass aClass = new LambdaClass("org.drools.modelcompiler.util.lambdareplace")
+                .createFunction("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()");
+
+        //language=JAVA
+        String expectedResult = "" +
+                "package org.drools.modelcompiler.util.lambdareplace;\n" +
+                "" +
+                "public class LambdaDC57C20B4AF3C2BFEB2552943994B6F7 implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
+                "\n" +
+                "        @Override()\n" +
+                "        public String test(org.drools.modelcompiler.domain.Person p1) {\n" +
+                "            return p1.getName();\n" +
                 "        }\n" +
                 "    }\n";
 

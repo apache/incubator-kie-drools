@@ -38,7 +38,7 @@ public class LambdaClass {
         this.packageName = packageName;
     }
 
-    public CreatedClass createClass(String expressionString) {
+    public CreatedClass createPredicate(String expressionString) {
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -51,14 +51,34 @@ public class LambdaClass {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = createClass(compilationUnit);
+        ClassOrInterfaceDeclaration classDeclaration = createPredicate(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    private ClassOrInterfaceDeclaration createClass(CompilationUnit compilationUnit) {
+    public CreatedClass createFunction(String expressionString) {
+        Expression expression = StaticJavaParser.parseExpression(expressionString);
+
+        if (!expression.isLambdaExpr()) {
+            throw new NotLambdaException();
+        }
+
+        lambdaExpr = expression.asLambdaExpr();
+        className = CLASS_NAME_PREFIX + md5Hash(expressionString);
+
+        parseParameters();
+
+        CompilationUnit compilationUnit = new CompilationUnit(packageName);
+        ClassOrInterfaceDeclaration classDeclaration = createPredicate(compilationUnit);
+
+        createMethodDeclaration(classDeclaration);
+
+        return new CreatedClass(compilationUnit, className, packageName);
+    }
+
+    private ClassOrInterfaceDeclaration createPredicate(CompilationUnit compilationUnit) {
         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = compilationUnit.addClass(className);
         classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
         return classOrInterfaceDeclaration;
