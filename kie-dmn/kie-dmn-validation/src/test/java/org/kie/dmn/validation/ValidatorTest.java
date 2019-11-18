@@ -425,14 +425,14 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testDMNv1_3_ch11example1() {
-        List<DMNMessage> validate = validator.validateUsing(
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
                                                             VALIDATE_MODEL,
                                                             VALIDATE_COMPILATION)
                                              .theseModels(getReader("Financial.dmn", DMN13specificTest.class),
                                                           getReader("Chapter 11 Example.dmn", DMN13specificTest.class));
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(ValidatorUtil.formatMessages(validate),
-                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING && // <<<<<<<< THIS IS WIP
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
                                                    p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
                                                    p.getSourceId().equals("_4bd33d4a-741b-444a-968b-64e1841211e7")));
         assertTrue(ValidatorUtil.formatMessages(validate),
@@ -444,7 +444,7 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testDMNv1_3_ch11example2() {
-        List<DMNMessage> validate = validator.validateUsing(
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
                                                             VALIDATE_MODEL,
                                                             VALIDATE_COMPILATION)
                                              .theseModels(getReader("Recommended Loan Products.dmn", DMN13specificTest.class),
