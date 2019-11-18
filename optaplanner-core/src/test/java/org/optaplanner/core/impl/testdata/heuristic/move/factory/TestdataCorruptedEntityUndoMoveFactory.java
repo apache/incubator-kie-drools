@@ -8,17 +8,17 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.heuristic.move.TestdataCorruptedUndoMove;
+import org.optaplanner.core.impl.testdata.heuristic.move.TestdataCorruptedEntityUndoMove;
 
-public class TestdataChangeMoveWithCorruptedUndoMoveFactory implements MoveListFactory<TestdataSolution> {
+public class TestdataCorruptedEntityUndoMoveFactory implements MoveListFactory<TestdataSolution> {
 
     @Override
     public List<? extends Move<TestdataSolution>> createMoveList(TestdataSolution solution) {
-        List<TestdataCorruptedUndoMove> moveList = new ArrayList<>();
+        List<TestdataCorruptedEntityUndoMove> moveList = new ArrayList<>();
 
         for (TestdataEntity entity : solution.getEntityList()) {
             for (TestdataValue value : solution.getValueList()) {
-                moveList.add(new TestdataCorruptedUndoMove(entity, value));
+                moveList.add(new TestdataCorruptedEntityUndoMove(entity, value));
             }
         }
         return moveList;

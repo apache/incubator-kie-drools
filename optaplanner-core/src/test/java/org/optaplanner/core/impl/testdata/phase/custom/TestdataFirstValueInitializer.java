@@ -5,16 +5,18 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class TestdataInitializer implements CustomPhaseCommand<TestdataSolution> {
+public class TestdataFirstValueInitializer implements CustomPhaseCommand<TestdataSolution> {
 
     @Override
     public void changeWorkingSolution(ScoreDirector<TestdataSolution> scoreDirector) {
         TestdataSolution solution = scoreDirector.getWorkingSolution();
+        TestdataValue firstValue = solution.getValueList().get(0);
 
         for (TestdataEntity entity : solution.getEntityList()) {
             scoreDirector.beforeVariableChanged(entity, "value");
-            entity.setValue(solution.getValueList().get(0));
+            entity.setValue(firstValue);
             scoreDirector.afterVariableChanged(entity, "value");
         }
 

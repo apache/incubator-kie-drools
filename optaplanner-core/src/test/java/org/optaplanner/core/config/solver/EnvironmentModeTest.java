@@ -18,6 +18,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
@@ -25,10 +26,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataChangeMoveWithCorruptedUndoMoveFactory;
-import org.optaplanner.core.impl.testdata.phase.custom.TestdataInitializer;
+import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataCorruptedEntityUndoMoveFactory;
+import org.optaplanner.core.impl.testdata.phase.custom.TestdataFirstValueInitializer;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataStepScoreListener;
-import org.optaplanner.core.impl.testdata.score.director.TestdataCalculator;
-import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedCalculator;
+import org.optaplanner.core.impl.testdata.score.director.TestdataDifferentValuesCalculator;
+import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +61,7 @@ public class EnvironmentModeTest {
     @Before
     public void setUpSolverConfig() {
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig();
-        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataInitializer.class));
+        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
@@ -78,7 +80,7 @@ public class EnvironmentModeTest {
 
     @Test
     public void determinismTest() {
-        setSolverConfigCalculatorClass(TestdataCalculator.class);
+        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
 
         Solver solver1 = SolverFactory.create(solverConfig).buildSolver();
         Solver solver2 = SolverFactory.create(solverConfig).buildSolver();
@@ -102,15 +104,16 @@ public class EnvironmentModeTest {
     @Test
     public void corruptedCustomMovesTest() {
         // intrusive modes should throw exception about corrupted undoMove
-        setSolverConfigCalculatorClass(TestdataCalculator.class);
-        setSolverConfigMoveListFactoryClassToCorrupted();
+        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
             case FAST_ASSERT:
+                setSolverConfigMoveListFactoryClassToCorrupted(TestdataChangeMoveWithCorruptedUndoMoveFactory.class);
                 assertIllegalStateExceptionWhileSolving("corrupted undoMove");
                 break;
             case NON_INTRUSIVE_FULL_ASSERT:
+                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedEntityUndoMoveFactory.class);
                 assertIllegalStateExceptionWhileSolving("not the uncorruptedScore");
                 break;
             case REPRODUCIBLE:
@@ -126,7 +129,7 @@ public class EnvironmentModeTest {
     @Test
     public void corruptedScoreRulesTest() {
         // for full assert modes it should throw exception about corrupted score
-        setSolverConfigCalculatorClass(TestdataCorruptedCalculator.class);
+        setSolverConfigCalculatorClass(TestdataCorruptedDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
@@ -218,12 +221,12 @@ public class EnvironmentModeTest {
                                                            .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted() {
+    private void setSolverConfigMoveListFactoryClassToCorrupted(Class<? extends MoveListFactory> move) {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
-        moveListFactoryConfig.setMoveListFactoryClass(TestdataChangeMoveWithCorruptedUndoMoveFactory.class);
+        moveListFactoryConfig.setMoveListFactoryClass(move);
 
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig();
-        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataInitializer.class));
+        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
