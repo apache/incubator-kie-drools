@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -72,7 +73,7 @@ public class JobResource {
                 .thenApply(result -> Optional
                         .ofNullable(result)
                         .map(ScheduledJob::getJob)
-                        .orElseThrow(() -> new RuntimeException("Failed to cancel job scheduling for jobId " + id)));
+                        .orElseThrow(() -> new NotFoundException("Failed to cancel job scheduling for jobId " + id)));
     }
 
     @GET
@@ -82,7 +83,10 @@ public class JobResource {
         LOGGER.debug("REST get {}", id);
         return jobRepository
                 .get(id)
-                .thenApply(ScheduledJob::getJob);
+                .thenApply(result -> Optional
+                        .ofNullable(result)
+                        .map(ScheduledJob::getJob)
+                        .orElseThrow(() -> new NotFoundException("Job not found id " + id)));
     }
 
     @GET
@@ -91,6 +95,9 @@ public class JobResource {
     public CompletionStage<ScheduledJob> getScheduledJob(@PathParam("id") String id) {
         LOGGER.debug("REST get {}", id);
         return jobRepository
-                .get(id);
+                .get(id)
+                .thenApply(result -> Optional
+                        .ofNullable(result)
+                        .orElseThrow(() -> new NotFoundException("Job not found id " + id)));
     }
 }
