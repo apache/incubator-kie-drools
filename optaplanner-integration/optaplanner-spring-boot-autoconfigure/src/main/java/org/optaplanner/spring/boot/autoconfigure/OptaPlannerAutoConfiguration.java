@@ -92,7 +92,7 @@ public class OptaPlannerAutoConfiguration {
             solverConfig.setSolutionClass(findSolutionClass(entityScanner));
         }
         if (solverConfig.getEntityClassList() == null) {
-            solverConfig.setEntityClassList(new ArrayList<>(findEntityClassSet(entityScanner)));
+            solverConfig.setEntityClassList(findEntityClassList(entityScanner));
         }
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
@@ -121,7 +121,7 @@ public class OptaPlannerAutoConfiguration {
         return solutionClassSet.iterator().next();
     }
 
-    private Set<Class<?>> findEntityClassSet(EntityScanner entityScanner) {
+    private List<Class<?>> findEntityClassList(EntityScanner entityScanner) {
         Set<Class<?>> entityClassSet;
         try {
             entityClassSet = entityScanner.scan(PlanningEntity.class);
@@ -132,7 +132,7 @@ public class OptaPlannerAutoConfiguration {
             throw new IllegalStateException("No classes (" + entityClassSet
                     + ") found with a @" + PlanningEntity.class.getSimpleName() + " annotation.");
         }
-        return entityClassSet;
+        return new ArrayList<>(entityClassSet);
     }
 
     private Class<? extends ConstraintProvider> findConstraintProviderClass() {
