@@ -16,7 +16,7 @@ public class ExecModelLambdaPostProcessor {
     private final static String EXPR_CALL = "expr";
     private final static String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
     private final static String TEST_CALL = "test";
-    private LambdaClass lambdaClass;
+    private MaterializedLambdaPredicate materializedLambdaPredicate;
 
     Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private String packageName;
@@ -33,7 +33,7 @@ public class ExecModelLambdaPostProcessor {
 //                    .forEach(this::replaceLambdaInExpr);
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
-        } catch (LambdaClass.LambdaTypeNeededException e) {
+        } catch (MaterializedLambdaPredicate.LambdaTypeNeededException e) {
             System.out.println(e);
             return new PostProcessedExecModel(inputDSL);
         }
@@ -45,7 +45,7 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = new LambdaClass(packageName).createPredicate(lambdaExpr.toString());
+                CreatedClass aClass = new MaterializedLambdaPredicate(packageName).createPredicate(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

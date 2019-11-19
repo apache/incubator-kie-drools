@@ -24,7 +24,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
-public class LambdaClass {
+public class MaterializedLambdaExtractor {
 
     private final static String CLASS_NAME_PREFIX = "Lambda";
     private LambdaExpr lambdaExpr;
@@ -34,7 +34,7 @@ public class LambdaClass {
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
-    public LambdaClass(String packageName) {
+    public MaterializedLambdaExtractor(String packageName) {
         this.packageName = packageName;
     }
 
