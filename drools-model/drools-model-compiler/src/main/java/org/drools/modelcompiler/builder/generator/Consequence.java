@@ -45,10 +45,9 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static java.util.stream.Collectors.toSet;
-
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -218,7 +217,11 @@ public class Consequence {
         if (requireDrools) {
             executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
         }
-        verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
+        verifiedDeclUsedInRHS.stream().map(x -> {
+            DeclarationSpec declarationById = context.getDeclarationById(x).get();
+
+            return new Parameter(declarationById.getBoxedType(), x);
+        }).forEach(executeLambda::addParameter);
         executeLambda.setBody(ruleConsequence);
         return executeCall;
     }
