@@ -58,7 +58,6 @@ import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.services.time.TimerInstance;
-import org.kie.services.time.impl.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,53 +136,49 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             switch (timer.getTimeType()) {
                 case Timer.TIME_CYCLE:
 
-                    if (CronExpression.isValidExpression(timer.getDelay())) {
-                        //timerInstance.setCronExpression(timer.getDelay());
-                    } else {
+                    String tempDelay = resolveVariable(timer.getDelay());
+                    String tempPeriod = resolveVariable(timer.getPeriod());
+                    if (DateTimeUtils.isRepeatable(tempDelay)) {
+                        String[] values = DateTimeUtils.parseISORepeatable(tempDelay);
+                        String tempRepeatLimit = values[0];
+                        tempDelay = values[1];
+                        tempPeriod = values[2];
 
-                        String tempDelay = resolveVariable(timer.getDelay());
-                        String tempPeriod = resolveVariable(timer.getPeriod());
-                        if (DateTimeUtils.isRepeatable(tempDelay)) {
-                            String[] values = DateTimeUtils.parseISORepeatable(tempDelay);
-                            String tempRepeatLimit = values[0];
-                            tempDelay = values[1];
-                            tempPeriod = values[2];
-
-                            if (!tempRepeatLimit.isEmpty()) {
-                                try {
-                                    int repeatLimit = Integer.parseInt(tempRepeatLimit);
-                                    if (repeatLimit <= -1) {
-                                        repeatLimit = Integer.MAX_VALUE;
-                                    }
-                                    
-                                    return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(tempDelay), businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), repeatLimit);
-                                } catch (NumberFormatException e) {
-                                    // ignore
+                        if (!tempRepeatLimit.isEmpty()) {
+                            try {
+                                int repeatLimit = Integer.parseInt(tempRepeatLimit);
+                                if (repeatLimit <= -1) {
+                                    repeatLimit = Integer.MAX_VALUE;
                                 }
+                                
+                                return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(tempDelay), businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), repeatLimit);
+                            } catch (NumberFormatException e) {
+                                // ignore
                             }
-                            
                         }
-                        long actualDelay = businessCalendar.calculateBusinessTimeAsDuration(tempDelay);
-                        if (tempPeriod == null) {
-                            return DurationExpirationTime.repeat(actualDelay, actualDelay, Integer.MAX_VALUE);
-                        } else {
-                            return DurationExpirationTime.repeat(actualDelay, businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), Integer.MAX_VALUE);
-                        }
+                        
                     }
-                    break;
+                    long actualDelay = businessCalendar.calculateBusinessTimeAsDuration(tempDelay);
+                    if (tempPeriod == null) {
+                        return DurationExpirationTime.repeat(actualDelay, actualDelay, Integer.MAX_VALUE);
+                    } else {
+                        return DurationExpirationTime.repeat(actualDelay, businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), Integer.MAX_VALUE);
+                    }
+                                        
                 case Timer.TIME_DURATION:
                     delay = resolveVariable(timer.getDelay());
                     
                     return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(delay));
                 case Timer.TIME_DATE:
                     // even though calendar is available concrete date was provided so it shall be used
-                    return ExactExpirationTime.of(timer.getDate());               
+                    return ExactExpirationTime.of(timer.getDate());   
+                    
+                default: 
+                    throw new UnsupportedOperationException("Not supported timer definition");
             }
         } else {
             return configureTimerInstance(timer);
-        }        
-        
-        throw new UnsupportedOperationException("Not supported timer definition");
+        }                        
     }
 
     protected ExpirationTime configureTimerInstance(Timer timer) {
@@ -201,31 +196,28 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     }
                 } else {
                     String resolvedDelay = resolveVariable(timer.getDelay());
-                    if (CronExpression.isValidExpression(resolvedDelay)) {
-                        //timerInstance.setCronExpression(resolvedDelay);
-                    } else {
-
-                        // when using ISO date/time period is not set
-                        long[] repeatValues = null;
-                        try {
-                            repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                        } catch (RuntimeException e) {
-                            // cannot parse delay, trying to interpret it
-                            repeatValues = DateTimeUtils.parseRepeatableDateTime(resolvedDelay);
-                        }
-                        if (repeatValues.length == 3) {
-                            int parsedReapedCount = (int) repeatValues[0];
-                            if (parsedReapedCount <= -1) {
-                                parsedReapedCount = Integer.MAX_VALUE;
-                            }
-                            
-                            return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], parsedReapedCount);
-                        } else if (repeatValues.length == 2) {
-                            return DurationExpirationTime.repeat(repeatValues[0], repeatValues[1], Integer.MAX_VALUE);
-                        } else {
-                            return DurationExpirationTime.repeat(repeatValues[0],repeatValues[0], Integer.MAX_VALUE);
-                        }
+                   
+                    // when using ISO date/time period is not set
+                    long[] repeatValues = null;
+                    try {
+                        repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                    } catch (RuntimeException e) {
+                        // cannot parse delay, trying to interpret it
+                        repeatValues = DateTimeUtils.parseRepeatableDateTime(resolvedDelay);
                     }
+                    if (repeatValues.length == 3) {
+                        int parsedReapedCount = (int) repeatValues[0];
+                        if (parsedReapedCount <= -1) {
+                            parsedReapedCount = Integer.MAX_VALUE;
+                        }
+                        
+                        return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], parsedReapedCount);
+                    } else if (repeatValues.length == 2) {
+                        return DurationExpirationTime.repeat(repeatValues[0], repeatValues[1], Integer.MAX_VALUE);
+                    } else {
+                        return DurationExpirationTime.repeat(repeatValues[0],repeatValues[0], Integer.MAX_VALUE);
+                    }
+                    
                 }
 
             case Timer.TIME_DURATION:
@@ -241,7 +233,6 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
             case Timer.TIME_DATE:
                 try {
-                    duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
                     return ExactExpirationTime.of(timer.getDate());
                 } catch (RuntimeException e) {
                     // cannot parse delay, trying to interpret it

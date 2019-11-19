@@ -16,19 +16,14 @@
 
 package org.kie.kogito.jobs.service.resource;
 
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.api.Job;
@@ -37,9 +32,13 @@ import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -138,8 +137,8 @@ public class JobResourceTest {
                 .extract()
                 .as(ScheduledJob.class);
         assertEquals(scheduledJob.getJob(), job);
-        assertEquals(scheduledJob.getRetries(), 0);
-        assertEquals(scheduledJob.getStatus(), JobStatus.SCHEDULED);
+        assertEquals(0, scheduledJob.getRetries());
+        assertEquals(JobStatus.SCHEDULED, scheduledJob.getStatus());
         assertNotNull(scheduledJob.getScheduledId());
     }
 }

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class DefaultErrorMapper implements ExceptionMapper<Exception> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DefaultErrorMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultErrorMapper.class);
 
     @Override
     public Response toResponse(Exception exception) {

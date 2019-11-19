@@ -50,9 +50,7 @@ public class JobSchedulerManager {
                 // terminated
                 .flatMapRsPublisher(t -> ErrorHandling.skipErrorPublisher(scheduler::schedule, t))
                 .onError(ex -> LOGGER.error("Error loading jobs", ex))
-                .forEach(a -> {
-                    LOGGER.info("Loaded and scheduled job {}", a);
-                })
+                .forEach(a -> LOGGER.info("Loaded and scheduled job {}", a))
                 .run()
                 .thenAccept(c -> LOGGER.info("Loading scheduled jobs completed !"));
     }

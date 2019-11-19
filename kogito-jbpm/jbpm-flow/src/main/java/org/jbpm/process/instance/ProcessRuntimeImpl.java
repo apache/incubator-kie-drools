@@ -75,7 +75,6 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
-import org.kie.services.time.impl.CronExpression;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -117,13 +116,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                 
                 for (StartNode startNode : startNodes) {
                     if (startNode != null && startNode.getTimer() != null) {
-                        
-                        if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
-                            
-                        } else {
-                            jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));
-                        }
-                        
+                                               
+                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));                       
                     }
                 }
             }
@@ -573,7 +567,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                 long delay = repeatValues[0];
                 long period = -1;
                 try {
-                    period = DateTimeUtils.parseTimeString(timer.getPeriod());
+                    period = TimeUtils.parseTimeString(timer.getPeriod());
                     
                 } catch (RuntimeException e) {
                     period = repeatValues[0];
@@ -590,9 +584,10 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         case Timer.TIME_DATE:
             
             return ExactExpirationTime.of(timer.getDate());
-        }
-        
-        throw new UnsupportedOperationException("Not supported timer definition");
+            
+        default: 
+            throw new UnsupportedOperationException("Not supported timer definition");
+        }                
 
     }
 

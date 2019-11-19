@@ -49,7 +49,7 @@ public class CallbackJobsServiceResource {
     @POST
     @Path("{processId}/instances/{processInstanceId}/timers/{timerId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response retriggerInstanceInError(@PathParam("processId") String processId, 
+    public Response triggerTimer(@PathParam("processId") String processId, 
                                              @PathParam("processInstanceId") String processInstanceId, 
                                              @PathParam("timerId") String timerId,
                                              @QueryParam("limit") @DefaultValue("0") Integer limit) {

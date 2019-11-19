@@ -23,6 +23,10 @@ public class DateUtil {
 
     public static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
 
+    private DateUtil() {
+        
+    }
+    
     public static ZonedDateTime now() {
         return ZonedDateTime.now(DEFAULT_ZONE);
     }

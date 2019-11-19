@@ -20,4 +20,8 @@ public final class AvailableStreams {
 
     public static final String JOB_ERROR = "job-error";
     public static final String JOB_SUCCESS = "job-success";
+    
+    private AvailableStreams() {
+        
+    }
 }

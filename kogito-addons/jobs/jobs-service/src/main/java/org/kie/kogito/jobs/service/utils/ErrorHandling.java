@@ -26,6 +26,10 @@ import org.slf4j.LoggerFactory;
 public class ErrorHandling {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorHandling.class);
+    
+    private ErrorHandling() {
+        
+    }
 
     /**
      * Utility method that receives execute function that returns a {@link Publisher} and skip any the error element,
@@ -43,7 +47,7 @@ public class ErrorHandling {
         return ReactiveStreams
                 .fromPublisher(function.apply(input))
                 .onError(t -> LOGGER.warn("Error skipped when processing {}.", input, t))
-                .onErrorResumeWithRsPublisher((t) -> ReactiveStreams.<R>empty().buildRs())
+                .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R>empty().buildRs())
                 .buildRs();
     }
 }

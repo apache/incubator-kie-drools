@@ -32,6 +32,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -61,7 +62,6 @@ import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
-import org.kie.services.time.impl.CronExpression;
 
 public class LightProcessRuntime implements InternalProcessRuntime {
 
@@ -112,11 +112,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
                 for (StartNode startNode : startNodes) {
                     if (startNode != null && startNode.getTimer() != null) {
                         
-                        if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
-                            
-                        } else {
-                            jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));
-                        }
+                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));                        
                         
                     }
                 }
@@ -496,14 +492,14 @@ public class LightProcessRuntime implements InternalProcessRuntime {
             if (repeatValues.length == 3) {
                 int parsedReapedCount = (int)repeatValues[0];
                 if (parsedReapedCount > -1) {
-//                    timerInstance.setRepeatLimit(parsedReapedCount+1);
+                    parsedReapedCount = Integer.MAX_VALUE;
                 }
                 return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
             } else {
                 long delay = repeatValues[0];
                 long period = -1;
                 try {
-                    period = DateTimeUtils.parseTimeString(timer.getPeriod());
+                    period = TimeUtils.parseTimeString(timer.getPeriod());
                     
                 } catch (RuntimeException e) {
                     period = repeatValues[0];
@@ -520,9 +516,10 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         case Timer.TIME_DATE:
             
             return ExactExpirationTime.of(timer.getDate());
-        }
         
-        throw new UnsupportedOperationException("Not supported timer definition");
+        default: 
+            throw new UnsupportedOperationException("Not supported timer definition");
+        }
 
     }
 

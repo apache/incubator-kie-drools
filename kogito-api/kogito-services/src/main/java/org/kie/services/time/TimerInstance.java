@@ -31,13 +31,10 @@ public class TimerInstance implements Serializable{
     private long timerId;
     private long delay;
     private long period;
-    private JobHandle jobHandle;
     private Date activated;
     private Date lastTriggered;
     private String processInstanceId;
     private int repeatLimit = -1;
-    private long sessionId;
-    private String cronExpression;
     
     public String getId() {
         return id;
@@ -69,14 +66,6 @@ public class TimerInstance implements Serializable{
     
     public void setPeriod(long period) {
         this.period = period;
-    }
-
-    public JobHandle getJobHandle() {
-        return jobHandle;
-    }
-
-    public void setJobHandle(JobHandle jobHandle) {
-        this.jobHandle = jobHandle;
     }
     
     public Date getActivated() {
@@ -111,25 +100,9 @@ public class TimerInstance implements Serializable{
         this.repeatLimit = stopAfter;
     }
 
-    public long getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(long sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public String getCronExpression() {
-        return cronExpression;
-    }
-
-    public void setCronExpression(String cronExpression) {
-        this.cronExpression = cronExpression;
-    }
-
     @Override
     public String toString() {
-        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", jobHandle=" + jobHandle + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
+        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
                + "]";
     }
     

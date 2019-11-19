@@ -513,7 +513,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         logger.debug("SLA due date is set to {}", slaDueDateExpression);
         InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
         long duration = -1;
-        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
+        if (kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
             BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
 
             duration = businessCalendar.calculateBusinessTimeAsDuration(slaDueDateExpression);

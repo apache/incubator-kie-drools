@@ -70,7 +70,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .filter(Boolean.TRUE::equals)
                 //2- calculate the delay (when the job should be executed)
                 .map(checked -> job.getExpirationTime())
-                .map(expirationTime -> calculateDelay(expirationTime))
+                .map(this::calculateDelay)
                 //3- schedule the job
                 .map(delay -> doSchedule(delay, job))
                 .flatMapRsPublisher(p -> p)
@@ -125,10 +125,6 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .map(ScheduledJob::getJob)
                 .map(Job::getId)
                 .flatMapCompletionStage(jobRepository::delete);
-    }
-
-    private boolean notExpired(ZonedDateTime expirationTime) {
-        return !isExpired(expirationTime);
     }
 
     private boolean isExpired(ZonedDateTime expirationTime) {

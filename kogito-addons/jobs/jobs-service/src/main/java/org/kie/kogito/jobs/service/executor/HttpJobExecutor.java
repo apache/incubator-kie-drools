@@ -133,7 +133,7 @@ public class HttpJobExecutor implements JobExecutor {
                 .findFirst()
                 .run()
                 .thenApply(response -> job)
-                .exceptionally((ex) -> {
+                .exceptionally(ex -> {
                     LOGGER.error("Generic error executing job {}", job, ex);
                     jobErrorEmitter.send(JobExecutionResponse.builder()
                                                  .message(ex.getMessage())

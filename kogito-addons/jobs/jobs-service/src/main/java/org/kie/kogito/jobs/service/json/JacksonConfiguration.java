@@ -34,7 +34,7 @@ public class JacksonConfiguration {
     @Singleton
     @Produces
     public ObjectMapperCustomizer customizer() {
-        return (objectMapper) -> {
+        return objectMapper -> {
             LOGGER.info("Jackson customization initialized.");
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.findAndRegisterModules();

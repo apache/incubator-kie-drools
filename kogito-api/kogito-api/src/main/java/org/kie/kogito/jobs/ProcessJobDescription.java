@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class ProcessJobDescription implements JobDescription {
 
-    public final static Integer DEFAULT_PRIORITY = 5;
+    public static final Integer DEFAULT_PRIORITY = 5;
 
     private final String id;
 

@@ -140,7 +140,7 @@ public class ScheduledJob {
         }
 
         private ZonedDateTime getLastUpdate() {
-            return Optional.ofNullable(lastUpdate).orElseGet(() -> DateUtil.now());
+            return Optional.ofNullable(lastUpdate).orElseGet(DateUtil::now);
         }
     }
 }
