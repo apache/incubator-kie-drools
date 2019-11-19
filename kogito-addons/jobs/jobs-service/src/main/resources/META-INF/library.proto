@@ -1,0 +1,20 @@
+package job.service;
+
+message ScheduledJob {
+  optional string scheduledId = 1;
+  optional Job job = 2;
+  optional int32 retries = 3; // no native Date type available in Protobuf
+  required string status = 4;
+  optional int64 lastUpdate = 5;
+}
+
+message Job {
+  required string id = 1;
+  optional string callbackEndpoint = 2;
+  optional int64 expirationTime = 3;
+  optional int32 priority = 4;
+  optional string processId = 5;
+  optional string processInstanceId = 6;
+  optional string rootProcessId = 7;
+  optional string rootProcessInstanceId = 8;
+}

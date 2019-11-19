@@ -17,22 +17,28 @@
 package org.kie.kogito.jobs.service.json;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.quarkus.jackson.ObjectMapperCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class JacksonConfiguration implements ObjectMapperCustomizer {
+public class JacksonConfiguration {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JacksonConfiguration.class);
 
-    @Override
-    public void customize(ObjectMapper objectMapper) {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.findAndRegisterModules();
-        objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+    @Singleton
+    @Produces
+    public ObjectMapperCustomizer customizer() {
+        return (objectMapper) -> {
+            LOGGER.info("Jackson customization initialized.");
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.findAndRegisterModules();
+            objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+        };
     }
-
 }

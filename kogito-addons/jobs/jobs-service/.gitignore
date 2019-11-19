@@ -8,6 +8,7 @@ target/
 /*.ipr
 /*.iws
 *.iml
-*.log
+/*.log**
+
 
 

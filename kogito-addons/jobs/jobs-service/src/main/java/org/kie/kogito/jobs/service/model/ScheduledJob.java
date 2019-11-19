@@ -16,20 +16,32 @@
 
 package org.kie.kogito.jobs.service.model;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.service.utils.DateUtil;
 
 public class ScheduledJob {
 
     private Job job;
     private String scheduledId;
     private Integer retries;
+    private JobStatus status;
+    private ZonedDateTime lastUpdate;
+    private JobExecutionResponse executionResponse;
 
-    public ScheduledJob(Job job, String scheduledId) {
+    public ScheduledJob() {
+    }
+
+    public ScheduledJob(Job job, String scheduledId, Integer retries, JobStatus status, ZonedDateTime lastUpdate,
+                        JobExecutionResponse executionResponse) {
         this.job = job;
         this.scheduledId = scheduledId;
+        this.retries = retries;
+        this.status = status;
+        this.lastUpdate = lastUpdate;
+        this.executionResponse = executionResponse;
     }
 
     public Job getJob() {
@@ -44,12 +56,91 @@ public class ScheduledJob {
         return retries;
     }
 
+    public JobStatus getStatus() {
+        return status;
+    }
+
+    public ZonedDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public JobExecutionResponse getExecutionResponse() {
+        return executionResponse;
+    }
+
+    public static ScheduledJobBuilder builder() {
+        return new ScheduledJobBuilder();
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", ScheduledJob.class.getSimpleName() + "[", "]")
-                .add("job=" + Optional.ofNullable(job).map(Job::getId).orElse(null))
-                .add("scheduledId='" + scheduledId + "'")
-                .add("retries=" + retries)
-                .toString();
+        final StringBuilder sb = new StringBuilder("ScheduledJob{");
+        sb.append("job=").append(job);
+        sb.append(", scheduledId='").append(scheduledId).append('\'');
+        sb.append(", retries=").append(retries);
+        sb.append(", status=").append(status);
+        sb.append(", lastUpdate=").append(lastUpdate);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class ScheduledJobBuilder {
+
+        private Job job;
+        private String scheduledId;
+        private Integer retries = 0;
+        private JobStatus status;
+        private ZonedDateTime lastUpdate;
+        private JobExecutionResponse executionResponse;
+
+        public ScheduledJobBuilder job(Job job) {
+            this.job = job;
+            return this;
+        }
+
+        public ScheduledJobBuilder scheduledId(String scheduledId) {
+            this.scheduledId = scheduledId;
+            return this;
+        }
+
+        public ScheduledJobBuilder retries(Integer retries) {
+            this.retries = retries;
+            return this;
+        }
+
+        public ScheduledJobBuilder incrementRetries() {
+            this.retries++;
+            return this;
+        }
+
+        public ScheduledJobBuilder of(ScheduledJob scheduledJob) {
+            return job(scheduledJob.getJob())
+                    .scheduledId(scheduledJob.getScheduledId())
+                    .retries(scheduledJob.getRetries())
+                    .status(scheduledJob.getStatus());
+        }
+
+        public ScheduledJobBuilder status(JobStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public ScheduledJobBuilder lastUpdate(ZonedDateTime time) {
+            this.lastUpdate = time;
+            return this;
+        }
+
+        public ScheduledJobBuilder lastUpdate(JobExecutionResponse executionResponse) {
+            this.executionResponse = executionResponse;
+            return this;
+        }
+
+        public ScheduledJob build() {
+            return new ScheduledJob(job, scheduledId, retries, status, getLastUpdate(), executionResponse);
+        }
+
+        private ZonedDateTime getLastUpdate() {
+            return Optional.ofNullable(lastUpdate).orElseGet(() -> DateUtil.now());
+        }
     }
 }

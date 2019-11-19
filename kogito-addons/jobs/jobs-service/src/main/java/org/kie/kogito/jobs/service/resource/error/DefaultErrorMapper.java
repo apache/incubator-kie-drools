@@ -25,12 +25,17 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.kie.kogito.jobs.service.model.ErrorResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Provider
 public class DefaultErrorMapper implements ExceptionMapper<Exception> {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(DefaultErrorMapper.class);
+
     @Override
     public Response toResponse(Exception exception) {
+        LOGGER.error("Sending error response", exception);
         return Response.status(Optional.ofNullable(exception)
                                        .filter(WebApplicationException.class::isInstance)
                                        .map(WebApplicationException.class::cast)

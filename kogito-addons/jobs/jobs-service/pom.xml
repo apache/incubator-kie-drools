@@ -8,9 +8,6 @@
     <version>8.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>jobs-service</artifactId>
-  <name>Jobs Service</name>
-  <description>Jobs Service (Timers and Async Jobs)</description>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -36,6 +33,12 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jackson</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
@@ -44,6 +47,23 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
+
+    <!-- Messaging Streams -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
+    </dependency>
+
+    <!-- Persistence -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-infinispan-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-query-dsl</artifactId>
+    </dependency>
+
 
     <!-- Testing -->
     <dependency>
@@ -57,7 +77,32 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-hotrod</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-remote-query-server</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+  <name>Jobs Service</name>
+  <description>Jobs Service (Timers and Async Jobs)</description>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <build>
     <plugins>
       <plugin>
@@ -121,6 +166,18 @@
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   </systemProperties>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jboss.jandex</groupId>
+            <artifactId>jandex-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-index</id>
+                <goals>
+                  <goal>jandex</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>

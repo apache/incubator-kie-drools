@@ -36,21 +36,21 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class VertxJobScheduler extends BaseTimerJobScheduler {
 
-    private Logger logger = LoggerFactory.getLogger(VertxJobScheduler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VertxJobScheduler.class);
 
     @Inject
     Vertx vertx;
 
     @Override
-    public Publisher<ScheduledJob> doSchedule(Duration delay, Job job) {
-        logger.debug("Job Scheduling {}", job);
+    public Publisher<String> doSchedule(Duration delay, Job job) {
+        LOGGER.debug("Job Scheduling {}", job);
         return ReactiveStreams
                 .of(setTimer(delay, job))
-                .map(id -> new ScheduledJob(job, String.valueOf(id)))
+                .map(String::valueOf)
                 .buildRs();
     }
 
-    private long setTimer(Duration delay, Job job) {
+    private long setTimer(Duration delay, Job job) {vertx.setPeriodic(1000, i->{});
         return vertx.setTimer(delay.toMillis(), scheduledId -> execute(job));
     }
 

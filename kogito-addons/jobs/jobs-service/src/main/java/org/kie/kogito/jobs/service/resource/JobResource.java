@@ -19,6 +19,7 @@ package org.kie.kogito.jobs.service.resource;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,6 +38,7 @@ import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ApplicationScoped
 @Path("/job")
 public class JobResource {
 
@@ -46,22 +48,18 @@ public class JobResource {
     VertxJobScheduler scheduler;
 
     @Inject
-    ReactiveJobRepository reactiveJobRepository;
+    ReactiveJobRepository jobRepository;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public CompletionStage<Job> create(Job job) {
         LOGGER.debug("REST create {}", job);
-        final CompletionStage<Job> response = ReactiveStreams.fromPublisher(scheduler.schedule(job))
+        return ReactiveStreams.fromPublisher(scheduler.schedule(job))
                 .map(ScheduledJob::getJob)
                 .findFirst()
                 .run()
-                .thenApply(j -> j.orElseThrow(() -> new RuntimeException("Failed to schedule job " + job.getId())))
-                .whenCompleteAsync((r, t) -> Optional
-                        .ofNullable(t)
-                        .ifPresent(ex -> LOGGER.error("Error Scheduling Job: {}. Details: {}", job, t)));
-        return response;
+                .thenApply(j -> j.orElseThrow(() -> new RuntimeException("Failed to schedule job " + job)));
     }
 
     @DELETE
@@ -69,12 +67,12 @@ public class JobResource {
     @Path("/{id}")
     public CompletionStage<Job> delete(@PathParam("id") String id) {
         LOGGER.debug("REST delete id {}", id);
-        return  scheduler
+        return scheduler
                 .cancel(id)
                 .thenApply(result -> Optional
                         .ofNullable(result)
                         .map(ScheduledJob::getJob)
-                        .orElseThrow(() -> new RuntimeException("Failed to cancel job scheduling")));
+                        .orElseThrow(() -> new RuntimeException("Failed to cancel job scheduling for jobId " + id)));
     }
 
     @GET
@@ -82,8 +80,17 @@ public class JobResource {
     @Path("/{id}")
     public CompletionStage<Job> get(@PathParam("id") String id) {
         LOGGER.debug("REST get {}", id);
-        return reactiveJobRepository
+        return jobRepository
                 .get(id)
                 .thenApply(ScheduledJob::getJob);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/scheduled/{id}")
+    public CompletionStage<ScheduledJob> getScheduledJob(@PathParam("id") String id) {
+        LOGGER.debug("REST get {}", id);
+        return jobRepository
+                .get(id);
     }
 }

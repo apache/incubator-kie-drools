@@ -16,11 +16,11 @@
 
 package org.kie.kogito.jobs.service.repository;
 
-import java.time.ZonedDateTime;
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.reactivestreams.Publisher;
 
 public interface ReactiveJobRepository {
 
@@ -28,9 +28,12 @@ public interface ReactiveJobRepository {
 
     CompletionStage<ScheduledJob> get(String id);
 
-    Publisher<ScheduledJob> getByTime(ZonedDateTime expirationTime);
-
     CompletionStage<Boolean> exists(String id);
 
     CompletionStage<ScheduledJob> delete(String id);
+
+    PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status);
+
+    PublisherBuilder<ScheduledJob> findAll();
+
 }

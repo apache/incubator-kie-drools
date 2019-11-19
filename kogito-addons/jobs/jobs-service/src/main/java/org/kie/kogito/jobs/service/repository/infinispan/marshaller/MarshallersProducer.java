@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.executor;
+package org.kie.kogito.jobs.service.repository.infinispan.marshaller;
 
-import java.util.concurrent.CompletionStage;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
-import org.kie.kogito.jobs.api.Job;
+import org.infinispan.protostream.MessageMarshaller;
 
-public class RetryJobExecutor implements JobExecutor {
+@ApplicationScoped
+public class MarshallersProducer {
 
-    @Override
-    public CompletionStage<Job> execute(Job job) {
-        return null;
+    @Produces
+    public MessageMarshaller scheduledJobMarshaller() {
+        return new ScheduledJobMarshaller();
+    }
+
+    @Produces
+    public MessageMarshaller jobMarshaller() {
+        return new JobMarshaller();
     }
 }

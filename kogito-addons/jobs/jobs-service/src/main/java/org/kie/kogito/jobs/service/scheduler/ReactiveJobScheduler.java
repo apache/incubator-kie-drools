@@ -18,7 +18,9 @@ package org.kie.kogito.jobs.service.scheduler;
 
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.reactivestreams.Publisher;
 
@@ -27,4 +29,9 @@ public interface ReactiveJobScheduler<T> extends JobScheduler<Publisher<T>, Comp
     Publisher<T> schedule(Job job);
 
     CompletionStage<ScheduledJob> cancel(String jobId);
+
+    PublisherBuilder<ScheduledJob> handleJobExecutionError(JobExecutionResponse errorResponse);
+
+    PublisherBuilder<ScheduledJob> handleJobExecutionSuccess(JobExecutionResponse errorResponse);
+
 }
