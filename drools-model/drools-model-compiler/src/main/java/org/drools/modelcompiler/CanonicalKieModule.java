@@ -230,7 +230,17 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, models).build();
-        return mergeProcesses( processes, canonicalKiePkgs );
+        CanonicalKiePackages canonicalKiePackages = mergeProcesses(processes, canonicalKiePkgs);
+
+        System.out.println("models.size() = " + models.size());
+        models.clear();
+        System.out.println("models.size() = " + models.size());
+
+        System.out.println("getModelSize = " + this.models.size());
+        this.models.clear();
+        System.out.println("getModelSize = " + this.models.size());
+
+        return canonicalKiePackages;
     }
 
     private CanonicalKiePackages mergeProcesses( List<Process> processes, CanonicalKiePackages canonicalKiePkgs ) {
