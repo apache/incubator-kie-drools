@@ -17,6 +17,8 @@ public class ExecModelLambdaPostProcessor {
     private final static String EXPR_CALL = "expr";
     private final static String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
     private final static String D_ALPHA_INDEXED_BY_CALL = "D.alphaIndexedBy";
+    private final static String D_ON_CALL = "D.on";
+    private final static String EXECUTE_CALL = "execute";
     private final static String TEST_CALL = "test";
     private MaterializedLambdaPredicate materializedLambdaPredicate;
 
@@ -33,6 +35,9 @@ public class ExecModelLambdaPostProcessor {
 
             clone.findAll(MethodCallExpr.class, mc -> isAlphaIndexedBy(mc))
                     .forEach(this::replaceExtractorInAlphaIndexedBy);
+
+            clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
+                    .forEach(this::replaceConsequenceInOnCall);
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
         } catch (MaterializedLambdaPredicate.LambdaTypeNeededException e) {
@@ -75,6 +80,20 @@ public class ExecModelLambdaPostProcessor {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
                 CreatedClass aClass = new MaterializedLambdaExtractor(packageName).create(lambdaExpr.toString(), returnType);
+                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+
+                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
+                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
+            }
+        });
+    }
+
+    private void replaceConsequenceInOnCall(MethodCallExpr methodCallExpr) {
+        methodCallExpr.getArguments().forEach(a -> {
+            if (a.isLambdaExpr()) {
+                LambdaExpr lambdaExpr = a.asLambdaExpr();
+
+                CreatedClass aClass = new MaterializedLambdaConsequence(packageName).create(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

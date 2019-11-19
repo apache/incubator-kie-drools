@@ -81,8 +81,8 @@ public class MaterializedLambdaConsequence {
 
         setMethodParameter(methodDeclaration);
 
-        ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
-        methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ExpressionStmt(clone.getExpression()))));
+        BlockStmt clone = (BlockStmt) lambdaExpr.getBody().clone();
+        methodDeclaration.setBody(clone);
     }
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {

@@ -112,6 +112,38 @@ public class ExecModelLambdaPostProcessorTest {
 
     }
 
+    @Test
+    public void convertConsequence() {
+        String dslInput = "org.drools.model.Rule rule = D.rule(\"rule2\").build(D.pattern(var_$pattern_DataType$2$).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
+                "                                                                                                    new defaultpkg.LambdaPredicateAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
+                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
+                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
+                "                                                                                                                     DomainClassesMetadataD72B4FA1839F9A294537411DCC4F3646.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
+                "                                                                                                                     new defaultpkg.LambdaExtractor3C616E80B72DC643C4A5B5C0CF12EBAC(),\n" +
+                "                                                                                                                     \"BBB\"),\n" +
+                "                                                                                                    D.reactOn(\"field2\")),\n" +
+                "                                                           D.on(var_result).execute((org.drools.modelcompiler.domain.Result result) -> {\n" +
+                "                                                               result.setValue(0);\n" +
+                "                                                           }));";
+
+        Statement expression = StaticJavaParser.parseStatement(dslInput);
+
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", expression);
+
+        String expectedResult = "org.drools.model.Rule rule = D.rule(\"rule2\").build(D.pattern(var_$pattern_DataType$2$).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
+                "                                                                                                    new defaultpkg.LambdaPredicateAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
+                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
+                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
+                "                                                                                                                     DomainClassesMetadataD72B4FA1839F9A294537411DCC4F3646.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
+                "                                                                                                                     new defaultpkg.LambdaExtractor3C616E80B72DC643C4A5B5C0CF12EBAC(),\n" +
+                "                                                                                                                     \"BBB\"),\n" +
+                "                                                                                                    D.reactOn(\"field2\")),\n" +
+                "                                                           D.on(var_result).execute(new mypackage.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));";
+
+        assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
+
+    }
+
 
 
 }
