@@ -17,7 +17,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 
@@ -60,26 +59,6 @@ public class MaterializedLambdaExtractor {
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    public CreatedClass createFunction(String expressionString) {
-        Expression expression = StaticJavaParser.parseExpression(expressionString);
-
-        if (!expression.isLambdaExpr()) {
-            throw new NotLambdaException();
-        }
-
-        lambdaExpr = expression.asLambdaExpr();
-        className = CLASS_NAME_PREFIX + md5Hash(expressionString);
-
-        parseParameters();
-
-        CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = createPredicate(compilationUnit);
-
-        createMethodDeclaration(classDeclaration);
-
-        return new CreatedClass(compilationUnit, className, packageName);
-    }
-
     private ClassOrInterfaceDeclaration createPredicate(CompilationUnit compilationUnit) {
         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = compilationUnit.addClass(className);
         classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
@@ -98,7 +77,7 @@ public class MaterializedLambdaExtractor {
     }
 
     private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
-        MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
+        MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(returnTypeJP());
 

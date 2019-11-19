@@ -19,7 +19,7 @@ public class MaterializedLambdaExtractorTest {
                 "public class LambdaExtractor133AF281814F16840FE105EF6D339F8A implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
                 "\n" +
                 "        @Override()\n" +
-                "        public java.lang.String test(org.drools.modelcompiler.domain.Person p1) {\n" +
+                "        public java.lang.String apply(org.drools.modelcompiler.domain.Person p1) {\n" +
                 "            return p1.getName();\n" +
                 "        }\n" +
                 "    }\n";
