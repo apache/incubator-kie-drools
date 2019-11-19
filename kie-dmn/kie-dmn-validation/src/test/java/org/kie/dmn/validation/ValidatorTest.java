@@ -439,7 +439,6 @@ public class ValidatorTest extends AbstractValidatorTest {
                    validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
                                                    p.getMessageType().equals(DMNMessageType.INVALID_NAME) &&
                                                    p.getSourceId().equals("_96b30012-a6e7-4545-89d3-068ec722469c")));
-
     }
 
     @Test
