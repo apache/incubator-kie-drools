@@ -15,6 +15,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
@@ -81,8 +82,15 @@ public class MaterializedLambdaConsequence {
 
         setMethodParameter(methodDeclaration);
 
-        BlockStmt clone = (BlockStmt) lambdaExpr.getBody().clone();
-        methodDeclaration.setBody(clone);
+        Statement body = lambdaExpr.getBody().clone();
+        if(body.isExpressionStmt()) {
+            BlockStmt clone = new BlockStmt(NodeList.nodeList(body));
+            methodDeclaration.setBody(clone);
+        } else if (body.isBlockStmt()) {
+            BlockStmt clone = (BlockStmt) body.clone();
+            methodDeclaration.setBody(clone);
+        }
+
     }
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {

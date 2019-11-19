@@ -15,8 +15,8 @@ public class ExecModelLambdaPostProcessorTest {
                         "                .build(\n" +
                         "                        pattern( oldestV ),\n" +
                         "                        not( pattern( otherV ).expr( \"exprA\", oldestV, (Person p1, Person p2) -> p1.getAge() > p2.getAge()) ),\n" +
-                        "                        on(oldestV).execute(p -> result.setValue( \"Oldest person is \" + p.getName()))\n" +
-                        "                );";
+                                "                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
+
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
@@ -27,8 +27,7 @@ public class ExecModelLambdaPostProcessorTest {
                         "                .build(\n" +
                         "                        pattern( oldestV ),\n" +
                         "                        not( pattern( otherV ).expr( \"exprA\", oldestV, new mypackage.LambdaPredicateE1D438AAC3AEAAFEE61CB8AFB5512703())),\n" +
-                        "                        on(oldestV).execute(p -> result.setValue( \"Oldest person is \" + p.getName()))\n" +
-                        "                );";
+                        "                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
 
         assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
 
@@ -42,9 +41,7 @@ public class ExecModelLambdaPostProcessorTest {
                 "                                                                                              D.reactOn(\"name\")).bind(var_$name,\n" +
                 "                                                                                                                      (_this) -> _this.getName(),\n" +
                 "                                                                                                                      D.reactOn(\"name\")),\n" +
-                "                                                       D.on(var_$name).execute((drools, $name) -> {\n" +
-                "                                                           drools.insert(new Result($name));\n" +
-                "                                                       }));";
+"                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
@@ -56,9 +53,8 @@ public class ExecModelLambdaPostProcessorTest {
                         "                                                                                              D.reactOn(\"name\")).bind(var_$name,\n" +
                         "                                                                                                                      (_this) -> _this.getName(),\n" +
                         "                                                                                                                      D.reactOn(\"name\")),\n" +
-                        "                                                       D.on(var_$name).execute((drools, $name) -> {\n" +
-                        "                                                           drools.insert(new Result($name));\n" +
-                        "                                                       }));";
+                        "                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
+
 
         assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
 
@@ -81,9 +77,8 @@ public class ExecModelLambdaPostProcessorTest {
                 "                                                                                                                                               (org.drools.modelcompiler.DataType _this) -> _this.getField2(),\n" +
                 "                                                                                                                                               \"BBB\"),\n" +
                 "                                                                                                                              D.reactOn(\"field2\")),\n" +
-                "                                                           D.on(var_result).execute((result) -> {\n" +
-                "                                                               result.setValue(0);\n" +
-                "                                                           }));";
+                "                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
+
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
@@ -104,9 +99,8 @@ public class ExecModelLambdaPostProcessorTest {
                 "                                                                                                                                                     new mypackage.LambdaExtractor3C616E80B72DC643C4A5B5C0CF12EBAC(),\n" +
                 "                                                                                                                                               \"BBB\"),\n" +
                 "                                                                                                                              D.reactOn(\"field2\")),\n" +
-                "                                                           D.on(var_result).execute((result) -> {\n" +
-                "                                                               result.setValue(0);\n" +
-                "                                                           }));";
+                "                                                           D.on(var_result).execute(new defaultpkg.LambdaConsequenceA275DE7DF16C84609DF94D2C495A1094()));\n";
+
 
         assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
 
