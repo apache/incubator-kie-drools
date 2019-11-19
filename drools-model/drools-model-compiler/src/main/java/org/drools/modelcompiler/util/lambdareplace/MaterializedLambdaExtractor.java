@@ -33,13 +33,13 @@ public class MaterializedLambdaExtractor {
     private final String packageName;
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
-    private Class<?> returnType;
+    private String returnType;
 
     public MaterializedLambdaExtractor(String packageName) {
         this.packageName = packageName;
     }
 
-    public CreatedClass create(String expressionString, Class<?> returnType) {
+    public CreatedClass create(String expressionString, String returnType) {
         this.returnType = returnType;
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
@@ -109,7 +109,7 @@ public class MaterializedLambdaExtractor {
     }
 
     private ClassOrInterfaceType returnTypeJP() {
-        return parseClassOrInterfaceType(returnType.getCanonicalName());
+        return parseClassOrInterfaceType(returnType);
     }
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {

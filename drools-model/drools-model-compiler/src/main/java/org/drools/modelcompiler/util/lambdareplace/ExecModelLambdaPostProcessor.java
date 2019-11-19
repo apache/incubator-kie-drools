@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -27,10 +28,10 @@ public class ExecModelLambdaPostProcessor {
 
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
-                    .forEach(this::replaceLambdaInExpr);
+                    .forEach(this::replacePredicateInExpr);
 
-//            clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()))
-//                    .forEach(this::replaceLambdaInExpr);
+            clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()))
+                    .forEach(this::replaceExtractorInAlphaIndexedBy);
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
         } catch (MaterializedLambdaPredicate.LambdaTypeNeededException e) {
@@ -39,13 +40,35 @@ public class ExecModelLambdaPostProcessor {
         }
     }
 
-    private void replaceLambdaInExpr(MethodCallExpr methodCallExpr) {
+    private void replacePredicateInExpr(MethodCallExpr methodCallExpr) {
 
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
                 CreatedClass aClass = new MaterializedLambdaPredicate(packageName).create(lambdaExpr.toString());
+                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+
+                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
+                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
+            }
+        });
+    }
+
+    private void replaceExtractorInAlphaIndexedBy(MethodCallExpr methodCallExpr) {
+        Expression argument = methodCallExpr.getArgument(0);
+
+        if(!argument.isClassExpr()) {
+            throw new RuntimeException();
+        }
+
+        String returnType = argument.asClassExpr().getTypeAsString();
+
+        methodCallExpr.getArguments().forEach(a -> {
+            if (a.isLambdaExpr()) {
+                LambdaExpr lambdaExpr = a.asLambdaExpr();
+
+                CreatedClass aClass = new MaterializedLambdaExtractor(packageName).create(lambdaExpr.toString(), returnType);
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

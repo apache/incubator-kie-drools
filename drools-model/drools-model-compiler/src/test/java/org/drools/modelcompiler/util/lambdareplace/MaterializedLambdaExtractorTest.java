@@ -10,7 +10,7 @@ public class MaterializedLambdaExtractorTest {
     @Test
     public void createExtractor() {
         CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace")
-                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()", String.class);
+                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()", String.class.getCanonicalName());
 
         //language=JAVA
         String expectedResult = "" +
