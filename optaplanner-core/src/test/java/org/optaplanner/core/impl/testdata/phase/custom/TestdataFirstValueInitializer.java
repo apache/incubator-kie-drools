@@ -24,10 +24,9 @@ public class TestdataFirstValueInitializer implements CustomPhaseCommand<Testdat
         Score<?> score = scoreDirector.calculateScore();
 
         if (!score.isSolutionInitialized()) {
-            throw new IllegalStateException(
-                    "The solution [" + TestdataEntity.class.getSimpleName()
-                            + "] was not fully initialized by CustomSolverPhase: "
-                            + this.getClass().getCanonicalName());
+            throw new IllegalStateException("The solution (" + TestdataEntity.class.getSimpleName()
+                                                    + ") was not fully initialized by CustomSolverPhase: ("
+                                                    + this.getClass().getCanonicalName() + ")");
         }
     }
 }

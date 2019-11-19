@@ -14,7 +14,6 @@ public class TestdataDifferentValuesCalculator implements EasyScoreCalculator<Te
     @Override
     public SimpleScore calculateScore(TestdataSolution solution) {
         int score = 0;
-
         Set<TestdataValue> alreadyUsedValues = new HashSet<>();
 
         for (TestdataEntity entity : solution.getEntityList()) {

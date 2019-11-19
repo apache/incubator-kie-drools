@@ -1,11 +1,8 @@
 package org.optaplanner.core.impl.testdata.score.director;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -19,9 +16,7 @@ public class TestdataCorruptedDifferentValuesCalculator implements EasyScoreCalc
     @Override
     public SimpleScore calculateScore(TestdataSolution solution) {
         numOfCalls += 1;
-
         int score = 0;
-
         Set<TestdataValue> alreadyUsedValues = new HashSet<>();
 
         for (TestdataEntity entity : solution.getEntityList()) {
@@ -34,6 +29,6 @@ public class TestdataCorruptedDifferentValuesCalculator implements EasyScoreCalc
                 }
             }
         }
-        return SimpleScore.of(score - numOfCalls); // each call of scoreFunctions differentiates score calculation
+        return SimpleScore.of(score - numOfCalls);
     }
 }

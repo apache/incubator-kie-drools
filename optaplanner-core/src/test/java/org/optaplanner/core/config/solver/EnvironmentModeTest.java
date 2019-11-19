@@ -3,9 +3,10 @@ package org.optaplanner.core.config.solver;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,11 +30,10 @@ import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataChangeM
 import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataCorruptedEntityUndoMoveFactory;
 import org.optaplanner.core.impl.testdata.phase.custom.TestdataFirstValueInitializer;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataStepScoreListener;
-import org.optaplanner.core.impl.testdata.score.director.TestdataDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedDifferentValuesCalculator;
+import org.optaplanner.core.impl.testdata.score.director.TestdataDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @RunWith(Parameterized.class)
@@ -41,7 +41,7 @@ public class EnvironmentModeTest {
 
     private static final int NUMBER_OF_RANDOM_NUMBERS_GENERATED = 1000;
     private static final int NUMBER_OF_TIMES_RUN = 10;
-    private static final int NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT = 3;
+    private static final int NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT = 20;
 
     private final EnvironmentMode environmentMode;
     private static TestdataSolution inputProblem;
@@ -54,8 +54,10 @@ public class EnvironmentModeTest {
     @BeforeClass
     public static void setUpInputProblem() {
         inputProblem = new TestdataSolution("s1");
-        inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        inputProblem.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"),
+                                                new TestdataValue("v3")));
+        inputProblem.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                                                 new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
     @Before
@@ -97,13 +99,13 @@ public class EnvironmentModeTest {
                 assertReproducibility(solver1, solver2);
                 break;
             default:
-                throw new AssertionError("Missing case for " + environmentMode);
+                Assertions.fail("Environment mode not covered: " + environmentMode);
         }
     }
 
     @Test
     public void corruptedCustomMovesTest() {
-        // intrusive modes should throw exception about corrupted undoMove
+        // Intrusive modes should throw exception about corrupted undoMove
         setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
 
         switch (environmentMode) {
@@ -119,16 +121,16 @@ public class EnvironmentModeTest {
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
             case PRODUCTION:
-                // no exception expected
+                // No exception expected
                 break;
             default:
-                throw new AssertionError("Missing case for " + environmentMode);
+                Assertions.fail("Environment mode not covered: " + environmentMode);
         }
     }
 
     @Test
     public void corruptedScoreRulesTest() {
-        // for full assert modes it should throw exception about corrupted score
+        // For full assert modes it should throw exception about corrupted score
         setSolverConfigCalculatorClass(TestdataCorruptedDifferentValuesCalculator.class);
 
         switch (environmentMode) {
@@ -142,38 +144,23 @@ public class EnvironmentModeTest {
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
             case PRODUCTION:
-                // no exception expected
+                // No exception expected
                 break;
             default:
-                throw new AssertionError("Missing case for " + environmentMode);
+                Assertions.fail("Environment mode not covered: " + environmentMode);
         }
     }
 
-    private void assertReproducibility(Solver solver1, Solver solver2) {
-        assertThat(areGeneratingSameNumbers(
-                ((DefaultSolver) solver1).getRandomFactory(),
-                ((DefaultSolver) solver2).getRandomFactory())
-        )
-                .as("Random factories generate different random values. This is 100% wrong.")
-                .isTrue();
-        assertThat(areScoreSeriesTheSame(solver1, solver2))
-                .as("Score steps are different and should be the same!")
-                .isTrue();
+    private void assertReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
+        assertGeneratingSameNumbers(((DefaultSolver) solver1).getRandomFactory(),
+                                    ((DefaultSolver) solver2).getRandomFactory());
+        assertSameScoreSeries(solver1, solver2);
     }
 
-    private void assertNonReproducibility(Solver solver1, Solver solver2) {
-        assertThat(areGeneratingSameNumbers(
-                ((DefaultSolver) solver1).getRandomFactory(),
-                ((DefaultSolver) solver2).getRandomFactory())
-        )
-                .as("Random factories generate exactly same results. "
-                            + "It can happen but the probability is very low. Run test again")
-                .isFalse();
-        assertThat(areScoreSeriesTheSame(solver1, solver2))
-                .as("Score steps are same and should be different! "
-                            + "This might be possible because searchSpace is not infinite and "
-                            + "two different random scenarios can have same results. Run test again.")
-                .isFalse();
+    private void assertNonReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
+        assertGeneratingDifferentNumbers(((DefaultSolver) solver1).getRandomFactory(),
+                                         ((DefaultSolver) solver2).getRandomFactory());
+        assertDifferentScoreSeries(solver1, solver2);
     }
 
     private void assertIllegalStateExceptionWhileSolving(String exceptionMessage) {
@@ -182,38 +169,65 @@ public class EnvironmentModeTest {
                 .withMessageContaining(exceptionMessage);
     }
 
-    private boolean areScoreSeriesTheSame(Solver<TestdataSolution> solver, Solver<TestdataSolution> solver2) {
-        boolean areSame = true;
-
+    private void assertSameScoreSeries(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
         TestdataStepScoreListener listener = new TestdataStepScoreListener();
         TestdataStepScoreListener listener2 = new TestdataStepScoreListener();
 
-        ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(listener);
+        ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
         ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
 
-        for (int i = 0; i < NUMBER_OF_TIMES_RUN && areSame; i++) {
-            solver.solve(inputProblem);
-            solver2.solve(inputProblem);
-
-            List<Integer> scoreTimeSeries = listener.getScores();
-            List<Integer> scoreTimeSeries2 = listener2.getScores();
-
-            areSame = scoreTimeSeries.equals(scoreTimeSeries2);
-        }
-        return areSame;
-    }
-
-    private boolean areGeneratingSameNumbers(RandomFactory f1, RandomFactory f2) {
-        boolean areSame = true;
-        Random random = f1.createRandom();
-        Random random2 = f2.createRandom();
-        for (int i = 0; i < EnvironmentModeTest.NUMBER_OF_RANDOM_NUMBERS_GENERATED; i++) {
-            if (random.nextInt() != random2.nextInt()) {
-                areSame = false;
-                break;
+        try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+            for (int i = 0; i < NUMBER_OF_TIMES_RUN; i++) {
+                solver1.solve(inputProblem);
+                solver2.solve(inputProblem);
+                softly.assertThat(listener.getScores()).as("Score steps should be the same "
+                                                                   + "in a reproducible environment mode.")
+                        .isEqualTo(listener2.getScores());
             }
         }
-        return areSame;
+    }
+
+    private void assertDifferentScoreSeries(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
+        TestdataStepScoreListener listener = new TestdataStepScoreListener();
+        TestdataStepScoreListener listener2 = new TestdataStepScoreListener();
+
+        ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
+        ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
+
+        try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+            for (int i = 0; i < NUMBER_OF_TIMES_RUN; i++) {
+                solver1.solve(inputProblem);
+                solver2.solve(inputProblem);
+                softly.assertThat(listener.getScores()).as("Score steps should not be the same in a non-reproducible environment mode. "
+                                                                   + "This might be possible because searchSpace is not infinite and "
+                                                                   + "two different random scenarios can have the same results. "
+                                                                   + "Run test again.")
+                        .isNotEqualTo(listener2.getScores());
+            }
+        }
+    }
+
+    private void assertGeneratingSameNumbers(RandomFactory factory1, RandomFactory factory2) {
+        Random random = factory1.createRandom();
+        Random random2 = factory2.createRandom();
+
+        for (int i = 0; i < EnvironmentModeTest.NUMBER_OF_RANDOM_NUMBERS_GENERATED; i++) {
+            Assertions.assertThat(random.nextInt()).as("Random factories should generate the same results "
+                                                               + "in a reproducible environment mode.")
+                    .isEqualTo(random2.nextInt());
+        }
+    }
+
+    private void assertGeneratingDifferentNumbers(RandomFactory factory1, RandomFactory factory2) {
+        Random random = factory1.createRandom();
+        Random random2 = factory2.createRandom();
+
+        for (int i = 0; i < EnvironmentModeTest.NUMBER_OF_RANDOM_NUMBERS_GENERATED; i++) {
+            Assertions.assertThat(random.nextInt()).as("Random factories should not generate exactly the same results "
+                                                               + "in the non-reproducible environment mode. "
+                                                               + "It can happen but the probability is very low. Run test again")
+                    .isNotEqualTo(random2.nextInt());
+        }
     }
 
     private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
