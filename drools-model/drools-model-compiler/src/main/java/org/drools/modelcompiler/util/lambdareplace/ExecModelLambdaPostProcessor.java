@@ -16,6 +16,7 @@ public class ExecModelLambdaPostProcessor {
 
     private final static String EXPR_CALL = "expr";
     private final static String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
+    private final static String D_ALPHA_INDEXED_BY_CALL = "D.alphaIndexedBy";
     private final static String TEST_CALL = "test";
     private MaterializedLambdaPredicate materializedLambdaPredicate;
 
@@ -30,7 +31,7 @@ public class ExecModelLambdaPostProcessor {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
                     .forEach(this::replacePredicateInExpr);
 
-            clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()))
+            clone.findAll(MethodCallExpr.class, mc -> isAlphaIndexedBy(mc))
                     .forEach(this::replaceExtractorInAlphaIndexedBy);
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
@@ -38,6 +39,11 @@ public class ExecModelLambdaPostProcessor {
             System.out.println(e);
             return new PostProcessedExecModel(inputDSL);
         }
+    }
+
+    private boolean isAlphaIndexedBy(MethodCallExpr mc) {
+        return ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()) ||
+                D_ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString());
     }
 
     private void replacePredicateInExpr(MethodCallExpr methodCallExpr) {
@@ -58,7 +64,7 @@ public class ExecModelLambdaPostProcessor {
     private void replaceExtractorInAlphaIndexedBy(MethodCallExpr methodCallExpr) {
         Expression argument = methodCallExpr.getArgument(0);
 
-        if(!argument.isClassExpr()) {
+        if (!argument.isClassExpr()) {
             throw new RuntimeException();
         }
 
