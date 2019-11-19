@@ -1970,17 +1970,24 @@ public class CompilerTest extends BaseModelTest {
     public void testCustomer() {
         String str =
 
-                        "import " + DataType.class.getCanonicalName() + ";\n" +
-                        "import " + Result.class.getCanonicalName() + ";\n" +
-                                "global org.drools.modelcompiler.domain.Result result;\n" +
-                                "rule \"rule1\"\n" +
-                        "when org.drools.modelcompiler.DataType (\n" +
-                        "        field1 == \"FF\"\n" +
-                        "        , field2 == \"BBB\"\n" +
-                        ")\n" +
-                        "then\n" +
-                        "    result.setValue(0);\n" +
-                        "end\n";
+                "import " + DataType.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global org.drools.modelcompiler.domain.Result result;\n" +
+                "rule \"rule1\"\n" +
+                "when org.drools.modelcompiler.DataType (\n" +
+                "        field1 == \"FF\"\n" +
+                "        , field2 == \"BBB\"\n" +
+                ")\n" +
+                "then\n" +
+                "    result.setValue(0);\n" +
+                "end\n" +
+                "rule \"rule2\"\n" +
+                "when org.drools.modelcompiler.DataType (\n" +
+                "        field2 == \"BBB\"\n" +
+                ")\n" +
+                "then\n" +
+                "    result.setValue(0);\n" +
+                "end\n";
 
         KieSession ksession = getKieSession(str);
 
@@ -1991,7 +1998,7 @@ public class CompilerTest extends BaseModelTest {
 
         Result r = new Result();
         ksession.setGlobal("result", r);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(2);
         assertEquals(0, r.getValue());
     }
 }
