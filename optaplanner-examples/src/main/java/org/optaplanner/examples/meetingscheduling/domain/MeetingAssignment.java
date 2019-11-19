@@ -18,6 +18,7 @@ package org.optaplanner.examples.meetingscheduling.domain;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -25,6 +26,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class MeetingAssignment extends AbstractPersistable {
 
     private Meeting meeting;
+    private boolean pinned;
 
     // Planning variables: changes during planning, between score calculations.
     private TimeGrain startingTimeGrain;
@@ -36,6 +38,15 @@ public class MeetingAssignment extends AbstractPersistable {
 
     public void setMeeting(Meeting meeting) {
         this.meeting = meeting;
+    }
+
+    @PlanningPin
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"timeGrainRange"})
