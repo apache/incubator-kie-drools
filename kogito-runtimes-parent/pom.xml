@@ -53,6 +53,7 @@
     <module>api</module>
     <module>drools</module>
     <module>jbpm</module>
+    <module>optaplanner</module>
     <module>addons</module>
     <module>kogito-maven-plugin</module>
     <module>kogito-codegen</module>
