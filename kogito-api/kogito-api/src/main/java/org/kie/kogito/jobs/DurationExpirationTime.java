@@ -34,7 +34,7 @@ public class DurationExpirationTime implements ExpirationTime {
     }
     
     public static DurationExpirationTime now() {
-        return new DurationExpirationTime(ZonedDateTime.now(), null, -1);
+        return new DurationExpirationTime(ZonedDateTime.now(), null, 0);
     }
     
     public static DurationExpirationTime after(long delay) {
@@ -42,7 +42,7 @@ public class DurationExpirationTime implements ExpirationTime {
     }
     
     public static DurationExpirationTime after(long delay, TemporalUnit unit) {
-        return new DurationExpirationTime(ZonedDateTime.now().plus(delay, unit), null, -1);
+        return new DurationExpirationTime(ZonedDateTime.now().plus(delay, unit), null, 0);
     }
     
     public static DurationExpirationTime repeat(long delay) {
@@ -58,7 +58,7 @@ public class DurationExpirationTime implements ExpirationTime {
     }
     
     public static DurationExpirationTime repeat(long delay, Long repeatInterval, TemporalUnit unit) {
-        return new DurationExpirationTime(ZonedDateTime.now().plus(delay, unit), repeatInterval, -1);
+        return new DurationExpirationTime(ZonedDateTime.now().plus(delay, unit), repeatInterval, 0);
     }
 
     public static DurationExpirationTime repeat(long delay, Long repeatInterval, Integer limit, TemporalUnit unit) {

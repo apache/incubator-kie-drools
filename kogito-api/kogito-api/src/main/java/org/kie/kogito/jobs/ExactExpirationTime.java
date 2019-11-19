@@ -24,7 +24,7 @@ public class ExactExpirationTime implements ExpirationTime {
     
     @Override
     public Integer repeatLimit() {
-        return null;
+        return 0;
     }
     
     public static ExactExpirationTime of(ZonedDateTime expirationTime) {

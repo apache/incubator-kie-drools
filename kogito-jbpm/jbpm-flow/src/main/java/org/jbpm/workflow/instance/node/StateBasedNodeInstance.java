@@ -152,19 +152,22 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                             if (!tempRepeatLimit.isEmpty()) {
                                 try {
                                     int repeatLimit = Integer.parseInt(tempRepeatLimit);
-                                    if (repeatLimit > -1) {
-//                                        timerInstance.setRepeatLimit(repeatLimit + 1);
+                                    if (repeatLimit <= -1) {
+                                        repeatLimit = Integer.MAX_VALUE;
                                     }
+                                    
+                                    return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(tempDelay), businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), repeatLimit);
                                 } catch (NumberFormatException e) {
                                     // ignore
                                 }
                             }
                             
                         }
+                        long actualDelay = businessCalendar.calculateBusinessTimeAsDuration(tempDelay);
                         if (tempPeriod == null) {
-                            return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(tempDelay));
+                            return DurationExpirationTime.repeat(actualDelay, actualDelay, Integer.MAX_VALUE);
                         } else {
-                            return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(tempDelay), businessCalendar.calculateBusinessTimeAsDuration(tempPeriod));
+                            return DurationExpirationTime.repeat(actualDelay, businessCalendar.calculateBusinessTimeAsDuration(tempPeriod), Integer.MAX_VALUE);
                         }
                     }
                     break;
@@ -190,10 +193,11 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             case Timer.TIME_CYCLE:
                 if (timer.getPeriod() != null) {
                     
+                    long actualDelay = DateTimeUtils.parseDuration(resolveVariable(timer.getDelay()));
                     if (timer.getPeriod() == null) {
-                        return DurationExpirationTime.repeat(DateTimeUtils.parseDuration(resolveVariable(timer.getDelay())));
+                        return DurationExpirationTime.repeat(actualDelay, actualDelay, Integer.MAX_VALUE);
                     } else {
-                        return DurationExpirationTime.repeat(DateTimeUtils.parseDuration(resolveVariable(timer.getDelay())), DateTimeUtils.parseDuration(resolveVariable(timer.getPeriod())));
+                        return DurationExpirationTime.repeat(actualDelay, DateTimeUtils.parseDuration(resolveVariable(timer.getPeriod())), Integer.MAX_VALUE);
                     }
                 } else {
                     String resolvedDelay = resolveVariable(timer.getDelay());
@@ -211,12 +215,15 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                         }
                         if (repeatValues.length == 3) {
                             int parsedReapedCount = (int) repeatValues[0];
+                            if (parsedReapedCount <= -1) {
+                                parsedReapedCount = Integer.MAX_VALUE;
+                            }
                             
                             return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], parsedReapedCount);
                         } else if (repeatValues.length == 2) {
-                            return DurationExpirationTime.repeat(repeatValues[0], repeatValues[1]);
+                            return DurationExpirationTime.repeat(repeatValues[0], repeatValues[1], Integer.MAX_VALUE);
                         } else {
-                            return DurationExpirationTime.repeat(repeatValues[0]);
+                            return DurationExpirationTime.repeat(repeatValues[0],repeatValues[0], Integer.MAX_VALUE);
                         }
                     }
                 }

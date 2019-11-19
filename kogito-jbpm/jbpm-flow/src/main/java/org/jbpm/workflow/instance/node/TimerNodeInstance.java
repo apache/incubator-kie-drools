@@ -36,7 +36,6 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
     
     private String timerId;
-    private boolean oneTimeTimer;
     
     public TimerNode getTimerNode() {
         return (TimerNode) getNode();
@@ -64,8 +63,6 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         JobsService jobService = ((InternalProcessRuntime)
                 getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         timerId = jobService.scheduleProcessInstanceJob(ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(), expirationTime, getProcessInstance().getId(), getProcessInstance().getRootProcessInstanceId(), getProcessInstance().getProcessId(), getProcessInstance().getRootProcessId()));
-        
-        oneTimeTimer = expirationTime.repeatInterval() == null;
     }
 
     
@@ -73,7 +70,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     	if ("timerTriggered".equals(type)) {
     		TimerInstance timer = (TimerInstance) event;
             if (timer.getId().equals(timerId)) {
-                triggerCompleted(oneTimeTimer || timer.getRepeatLimit() == 0);
+                triggerCompleted(timer.getRepeatLimit() <= 0);
             }
     	}
     }

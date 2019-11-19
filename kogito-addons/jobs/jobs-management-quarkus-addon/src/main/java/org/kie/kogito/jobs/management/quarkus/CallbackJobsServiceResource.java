@@ -20,9 +20,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -47,7 +49,10 @@ public class CallbackJobsServiceResource {
     @POST
     @Path("{processId}/instances/{processInstanceId}/timers/{timerId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response retriggerInstanceInError(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("timerId") String timerId) {
+    public Response retriggerInstanceInError(@PathParam("processId") String processId, 
+                                             @PathParam("processInstanceId") String processInstanceId, 
+                                             @PathParam("timerId") String timerId,
+                                             @QueryParam("limit") @DefaultValue("0") Integer limit) {
         if (processId == null || processInstanceId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Process id and Process instance id must be given").build();
         }
@@ -63,7 +68,7 @@ public class CallbackJobsServiceResource {
             if (processInstanceFound.isPresent()) {
                 ProcessInstance<?> processInstance = processInstanceFound.get();
                 String[] ids = timerId.split("_");
-                processInstance.send(Sig.of("timerTriggered", TimerInstance.with(Long.parseLong(ids[1]), timerId, -1)));
+                processInstance.send(Sig.of("timerTriggered", TimerInstance.with(Long.parseLong(ids[1]), timerId, limit)));
             } else {
                 return Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
             }
