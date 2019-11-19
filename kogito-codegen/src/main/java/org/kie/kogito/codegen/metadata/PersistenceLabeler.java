@@ -15,64 +15,24 @@
 
 package org.kie.kogito.codegen.metadata;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
-import org.kie.kogito.codegen.process.persistence.proto.Proto;
 
 /**
- * Responsible for generating image labels representing generated proto files
+ * Responsible for add persistence related labels to the image metadata
  */
 public class PersistenceLabeler implements Labeler {
 
-    private static final String PERSISTENCE_LABEL_PREFIX = ImageMetaData.LABEL_PREFIX + "persistence/proto/";
-    private static final String KOGITO_APPLICATION_PROTO = "kogito-application.proto";
-    public static final String PROTO_FILE_EXT = ".proto";
-    private final Map<String, String> encodedProtos = new HashMap<>();
+    static final String PERSISTENCE_LABEL_PREFIX = ImageMetaData.LABEL_PREFIX + "persistence/required";
+    private final Map<String, String> labels = new HashMap<>();
 
-    /**
-     * Transforms the given {@link Proto} into a format for the {@link ImageMetaData} 
-     * 
-     * @param file that will be added to the label
-     * @throws IOException 
-     */
-    public void processProto(final File file) {
-        try {
-            if (file != null && !KOGITO_APPLICATION_PROTO.equalsIgnoreCase(file.getName())) {
-                this.encodedProtos.put(generateKey(file), compressFile(file));
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error while processing proto files as image labels", e);
-        }
-    }
-
-    protected String compressFile(final File file) throws IOException {
-        final byte[] contents = Files.readAllBytes(file.toPath());
-        if (contents == null) {
-            return "";
-        }
-        try(final ByteArrayOutputStream fileContents = new ByteArrayOutputStream(contents.length)) {
-            try(final GZIPOutputStream gzip = new GZIPOutputStream(fileContents)){
-                gzip.write(contents);
-            }
-            return Base64.getEncoder().encodeToString(fileContents.toByteArray());
-        }
-    }
-
-    protected String generateKey(final File file) {
-        return String.format("%s%s", PERSISTENCE_LABEL_PREFIX, file.getName());
+    public PersistenceLabeler() {
+        labels.put(PERSISTENCE_LABEL_PREFIX, "true");
     }
 
     @Override
     public Map<String, String> generateLabels() {
-        return encodedProtos;
+        return labels;
     }
 
 }

@@ -11,17 +11,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.kogito.codegen.metadata;
 
 import java.util.Map;
 
 /**
- * Base interface for providing labels to Generators 
+ * Base interface for providing labels to Generators
  */
 public interface Labeler {
 
+    /**
+     * Will create the labels specified by the given Labeler
+     */
     Map<String, String> generateLabels();
 
 }

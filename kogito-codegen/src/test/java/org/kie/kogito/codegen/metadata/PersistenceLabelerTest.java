@@ -15,43 +15,18 @@
 
 package org.kie.kogito.codegen.metadata;
 
-import java.io.*;
-import java.net.URISyntaxException;
-import java.util.Base64;
-import java.util.Map;
-import java.util.zip.GZIPInputStream;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersistenceLabelerTest {
 
     @Test
-    void testGenerateLabels() throws URISyntaxException, IOException {
-        final PersistenceLabeler labeler = new PersistenceLabeler();
-        final File protoFile = new File(this.getClass().getResource("/kogito-types.proto").toURI());
-        final File kogitoApplication = new File(this.getClass().getResource("/kogito-application.proto").toURI());
-
-        assertThat(protoFile).isNotNull();
-        assertThat(kogitoApplication).isNotNull();
-
-        labeler.processProto(protoFile);
-        labeler.processProto(kogitoApplication);
-
-        final Map<String, String> labels = labeler.generateLabels();
-
-        assertThat(labels).size().isEqualTo(1);
-        assertThat(labels).containsKey(labeler.generateKey(protoFile));
-        final byte[] bytes = Base64.getDecoder().decode(labels.get("org.kie/persistence/proto/kogito-types.proto"));
-        assertThat(bytes).hasSize(229); //compressed bytes: http://www.txtwizard.net/compression
-    }
-
-    @Test
-    void testGenerateLabelsIOException() throws URISyntaxException {
-        final PersistenceLabeler labeler = new PersistenceLabeler();
-        Assertions.assertThrows(UncheckedIOException.class, () -> labeler.processProto(new File("/does/not/exist")));
+    void testGeneratedLabels() {
+        Map<String, String> labels = new PersistenceLabeler().generateLabels();
+        assertThat(labels).containsEntry(PersistenceLabeler.PERSISTENCE_LABEL_PREFIX, "true");
     }
 
 }
