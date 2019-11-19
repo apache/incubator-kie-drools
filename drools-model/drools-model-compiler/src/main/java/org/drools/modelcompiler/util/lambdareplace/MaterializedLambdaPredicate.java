@@ -26,7 +26,7 @@ import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaPredicate {
 
-    private final static String CLASS_NAME_PREFIX = "Lambda";
+    private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
     private LambdaExpr lambdaExpr;
     private String className;
 
