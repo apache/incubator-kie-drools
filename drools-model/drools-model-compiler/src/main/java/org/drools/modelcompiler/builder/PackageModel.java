@@ -42,8 +42,10 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -66,6 +68,7 @@ import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -93,7 +96,7 @@ public class PackageModel {
     public static final String DOMAIN_CLASSESS_METADATA_FILE_NAME = "DomainClassesMetadata";
     public static final String DOMAIN_CLASS_METADATA_INSTANCE = "_Metadata_INSTANCE";
 
-    private static final int RULES_DECLARATION_PER_CLASS = 1000;
+    private static final int RULES_DECLARATION_PER_CLASS = 1;
 
     private final String name;
     private final boolean isPattern;
@@ -611,7 +614,9 @@ public class PackageModel {
 
         MethodCallExpr rules = buildRulesField( rulesClass );
         if (requiresMultipleRulesLists) {
-            addRulesList( rulesListInitializerBody, "rulesList" );
+            MethodCallExpr add = new MethodCallExpr(new NameExpr("rules"), "addAll");
+            add.addArgument("rulesList");
+            rulesListInitializerBody.addStatement(add);
         }
 
         ruleMethodsInUnit.parallelStream().forEach( DrlxParseUtil::transformDrlNameExprToNameExpr);
@@ -635,7 +640,10 @@ public class PackageModel {
             if (count % RULES_DECLARATION_PER_CLASS == RULES_DECLARATION_PER_CLASS-1) {
                 int index = count / RULES_DECLARATION_PER_CLASS;
                 rules = buildRulesField(results, index);
-                addRulesList( rulesListInitializerBody, rulesFileName + "Rules" + index + ".rulesList" );
+                MethodCallExpr add = new MethodCallExpr(new NameExpr("rules"), "addAll");
+                ObjectCreationExpr newObject = new ObjectCreationExpr(null, parseClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
+                add.addArgument(new FieldAccessExpr(newObject, "rulesList"));
+                rulesListInitializerBody.addStatement(add);
             }
 
             // manage in main class init block:
@@ -695,12 +703,6 @@ public class PackageModel {
         rulesListInitializerBody.addStatement( add );
     }
 
-    private void addRulesList( BlockStmt rulesListInitializerBody, String listName ) {
-        MethodCallExpr add = new MethodCallExpr(new NameExpr("rules"), "addAll");
-        add.addArgument(listName);
-        rulesListInitializerBody.addStatement(add);
-    }
-
     private MethodCallExpr buildRulesField(RuleSourceResult results, int index) {
         CompilationUnit cu = new CompilationUnit();
         results.withClass(cu);
@@ -717,7 +719,7 @@ public class PackageModel {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
         ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
         VariableDeclarator rulesVar = new VariableDeclarator( rulesType, "rulesList", rulesInit );
-        rulesClass.addMember( new FieldDeclaration( NodeList.nodeList( publicModifier(), staticModifier()), rulesVar ) );
+        rulesClass.addMember( new FieldDeclaration( NodeList.nodeList( publicModifier(), finalModifier()), rulesVar ) );
         return rulesInit;
     }
 

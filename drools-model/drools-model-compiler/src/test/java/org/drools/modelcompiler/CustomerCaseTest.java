@@ -59,10 +59,10 @@ public class CustomerCaseTest extends OnlyPatternModelTest {
         ksession.insert(st);
         ksession.insert(st2);
 
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(System.in));
-        String name = reader.readLine();
-        System.out.println(name);
+//        BufferedReader reader =
+//                new BufferedReader(new InputStreamReader(System.in));
+//        String name = reader.readLine();
+//        System.out.println(name);
 
         Result r = new Result();
         ksession.setGlobal("result", r);
