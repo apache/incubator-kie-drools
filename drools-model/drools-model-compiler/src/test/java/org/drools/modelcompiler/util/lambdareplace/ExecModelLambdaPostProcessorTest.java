@@ -74,53 +74,53 @@ public class ExecModelLambdaPostProcessorTest {
 
     }
 
-    @Test
-    public void convertAlphaIndexedBy() {
-        String dslInput = "org.drools.model.Rule rule = D.rule(\"rule1\").build(D.pattern(var_$pattern_DataType$1$).expr(\"2BEF0A093C29ADEB403C89AC2C2C807F\",\n" +
-                "                                                                                                    new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
-                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
-                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
-                "                                                                                                                     DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field1\"),\n" +
-                "                                                                                                                     _this -> _this.getField1(),\n" +
-                "                                                                                                                     \"FF\"),\n" +
-                "                                                                                                    D.reactOn(\"field1\")).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
-                "                                                                                                                              new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
-                "                                                                                                                              D.alphaIndexedBy(java.lang.String.class,\n" +
-                "                                                                                                                                               org.drools.model.Index.ConstraintType.EQUAL,\n" +
-                "                                                                                                                                               DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
-                "                                                                                                                                               _this -> _this.getField2(),\n" +
-                "                                                                                                                                               \"BBB\"),\n" +
-                "                                                                                                                              D.reactOn(\"field2\")),\n" +
-                "                                                           D.on(var_result).execute((result) -> {\n" +
-                "                                                               result.setValue(0);\n" +
-                "                                                           }));";
-
-        Statement expression = StaticJavaParser.parseStatement(dslInput);
-
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", expression);
-
-        String expectedResult = "org.drools.model.Rule rule = D.rule(\"rule1\").build(D.pattern(var_$pattern_DataType$1$).expr(\"2BEF0A093C29ADEB403C89AC2C2C807F\",\n" +
-                "                                                                                                    new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
-                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
-                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
-                "                                                                                                                     DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field1\"),\n" +
-                "                                                                                                                     new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
-                "                                                                                                                     \"FF\"),\n" +
-                "                                                                                                    D.reactOn(\"field1\")).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
-                "                                                                                                                              new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
-                "                                                                                                                              D.alphaIndexedBy(java.lang.String.class,\n" +
-                "                                                                                                                                               org.drools.model.Index.ConstraintType.EQUAL,\n" +
-                "                                                                                                                                               DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
-                "                                                                                                                                                     new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
-                "                                                                                                                                               \"BBB\"),\n" +
-                "                                                                                                                              D.reactOn(\"field2\")),\n" +
-                "                                                           D.on(var_result).execute((result) -> {\n" +
-                "                                                               result.setValue(0);\n" +
-                "                                                           }));";
-
-        assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
-
-    }
+//    @Test
+//    public void convertAlphaIndexedBy() {
+//        String dslInput = "org.drools.model.Rule rule = D.rule(\"rule1\").build(D.pattern(var_$pattern_DataType$1$).expr(\"2BEF0A093C29ADEB403C89AC2C2C807F\",\n" +
+//                "                                                                                                    new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
+//                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
+//                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
+//                "                                                                                                                     DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field1\"),\n" +
+//                "                                                                                                                     _this -> _this.getField1(),\n" +
+//                "                                                                                                                     \"FF\"),\n" +
+//                "                                                                                                    D.reactOn(\"field1\")).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
+//                "                                                                                                                              new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
+//                "                                                                                                                              D.alphaIndexedBy(java.lang.String.class,\n" +
+//                "                                                                                                                                               org.drools.model.Index.ConstraintType.EQUAL,\n" +
+//                "                                                                                                                                               DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
+//                "                                                                                                                                               _this -> _this.getField2(),\n" +
+//                "                                                                                                                                               \"BBB\"),\n" +
+//                "                                                                                                                              D.reactOn(\"field2\")),\n" +
+//                "                                                           D.on(var_result).execute((result) -> {\n" +
+//                "                                                               result.setValue(0);\n" +
+//                "                                                           }));";
+//
+//        Statement expression = StaticJavaParser.parseStatement(dslInput);
+//
+//        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", expression);
+//
+//        String expectedResult = "org.drools.model.Rule rule = D.rule(\"rule1\").build(D.pattern(var_$pattern_DataType$1$).expr(\"2BEF0A093C29ADEB403C89AC2C2C807F\",\n" +
+//                "                                                                                                    new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
+//                "                                                                                                    D.alphaIndexedBy(java.lang.String.class,\n" +
+//                "                                                                                                                     org.drools.model.Index.ConstraintType.EQUAL,\n" +
+//                "                                                                                                                     DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field1\"),\n" +
+//                "                                                                                                                     new defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E(),\n" +
+//                "                                                                                                                     \"FF\"),\n" +
+//                "                                                                                                    D.reactOn(\"field1\")).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
+//                "                                                                                                                              new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
+//                "                                                                                                                              D.alphaIndexedBy(java.lang.String.class,\n" +
+//                "                                                                                                                                               org.drools.model.Index.ConstraintType.EQUAL,\n" +
+//                "                                                                                                                                               DomainClassesMetadataFA071C8FD678264E16EE56C749A15772.org_drools_modelcompiler_DataType_Metadata_INSTANCE.getPropertyIndex(\"field2\"),\n" +
+//                "                                                                                                                                                     new defaultpkg.LambdaAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +
+//                "                                                                                                                                               \"BBB\"),\n" +
+//                "                                                                                                                              D.reactOn(\"field2\")),\n" +
+//                "                                                           D.on(var_result).execute((result) -> {\n" +
+//                "                                                               result.setValue(0);\n" +
+//                "                                                           }));";
+//
+//        assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
+//
+//    }
 
 
 
