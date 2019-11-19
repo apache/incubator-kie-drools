@@ -31,7 +31,6 @@ import io.vertx.ext.web.handler.graphql.GraphQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class VertxRouterSetup {
         router.route("/graphql").handler(ApolloWSHandler.create(graphQL));
         router.route("/graphql").handler(GraphQLHandler.create(graphQL, new GraphQLHandlerOptions()));
         router.route("/graphiql/*").handler(GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true)));
-        router.route("/").handler(ctx -> ctx.reroute("/graphiql"));
+        router.route("/").handler(ctx -> ctx.response().putHeader("location", "/graphiql/").setStatusCode(302).end());
         router.route().handler(LoggerHandler.create());
         router.route().handler(StaticHandler.create());
         router.route().handler(FaviconHandler.create());
