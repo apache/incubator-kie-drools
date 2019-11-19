@@ -26,19 +26,21 @@ import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaExtractor {
 
-    private final static String CLASS_NAME_PREFIX = "Lambda";
+    private final static String CLASS_NAME_PREFIX = "LambdaExtractor";
     private LambdaExpr lambdaExpr;
     private String className;
 
     private final String packageName;
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
+    private Class<?> returnType;
 
     public MaterializedLambdaExtractor(String packageName) {
         this.packageName = packageName;
     }
 
-    public CreatedClass createPredicate(String expressionString) {
+    public CreatedClass create(String expressionString, Class<?> returnType) {
+        this.returnType = returnType;
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -98,12 +100,16 @@ public class MaterializedLambdaExtractor {
     private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
-        methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
+        methodDeclaration.setType(returnTypeJP());
 
         setMethodParameter(methodDeclaration);
 
         ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
+    }
+
+    private ClassOrInterfaceType returnTypeJP() {
+        return parseClassOrInterfaceType(returnType.getCanonicalName());
     }
 
     private void setMethodParameter(MethodDeclaration methodDeclaration) {
@@ -119,12 +125,14 @@ public class MaterializedLambdaExtractor {
                 .map(p -> p.type)
                 .collect(Collectors.toList());
 
-        bifunction.setTypeArguments(NodeList.nodeList(typeArguments));
+        NodeList<Type> implementedGenericType = NodeList.nodeList(typeArguments);
+        implementedGenericType.add(returnTypeJP());
+        bifunction.setTypeArguments(implementedGenericType);
         return NodeList.nodeList(bifunction);
     }
 
     private ClassOrInterfaceType functionType() {
-        String type = "Predicate" + lambdaParameters.size();
+        String type = "Function" + lambdaParameters.size();
         return parseClassOrInterfaceType("org.drools.model.functions." + type);
     }
 

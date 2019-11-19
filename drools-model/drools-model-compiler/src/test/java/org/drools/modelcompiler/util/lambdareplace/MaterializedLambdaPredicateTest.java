@@ -11,7 +11,7 @@ public class MaterializedLambdaPredicateTest {
     @Test
     public void createClassWithOneParameter() {
         CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace")
-                .createPredicate("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35");
+                .create("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35");
 
         //language=JAVA
         String expectedResult = "" +
@@ -32,7 +32,7 @@ public class MaterializedLambdaPredicateTest {
     @Test
     public void createClassWithTwoParameters() {
         CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace")
-                .createPredicate("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()");
+                .create("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()");
 
         //language=JAVA
         String expectedResult = "" +

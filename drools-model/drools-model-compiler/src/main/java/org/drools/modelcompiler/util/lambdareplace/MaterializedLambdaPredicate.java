@@ -26,7 +26,7 @@ import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaPredicate {
 
-    private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
+    private final static String CLASS_NAME_PREFIX = "LambdaExtractor";
     private LambdaExpr lambdaExpr;
     private String className;
 
@@ -38,7 +38,7 @@ public class MaterializedLambdaPredicate {
         this.packageName = packageName;
     }
 
-    public CreatedClass createPredicate(String expressionString) {
+    public CreatedClass create(String expressionString) {
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -51,14 +51,14 @@ public class MaterializedLambdaPredicate {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = createPredicate(compilationUnit);
+        ClassOrInterfaceDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    private ClassOrInterfaceDeclaration createPredicate(CompilationUnit compilationUnit) {
+    private ClassOrInterfaceDeclaration create(CompilationUnit compilationUnit) {
         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = compilationUnit.addClass(className);
         classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
         return classOrInterfaceDeclaration;

@@ -36,6 +36,7 @@ import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
@@ -318,7 +319,12 @@ public class PatternDSLTest {
                         and(
                             pattern(var_$c)
                                     .expr("$expr$1$", (_this) -> _this.getAge() < 10,
-                                            alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 10),
+                                            alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, new Function1<Child, Integer>() {
+                                                @Override
+                                                public Integer apply(Child _this) {
+                                                    return _this.getAge();
+                                                }
+                                            }, 10),
                                             reactOn("age")),
                             pattern(var_$a)
                                     .expr("$expr$2$", var_$c, (_this, $c) -> _this.getName().equals($c.getParent()), reactOn("name"))
