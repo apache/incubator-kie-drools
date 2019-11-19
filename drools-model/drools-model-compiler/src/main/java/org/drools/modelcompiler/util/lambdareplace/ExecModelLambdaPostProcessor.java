@@ -6,8 +6,10 @@ import java.util.Map;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -61,9 +63,13 @@ public class ExecModelLambdaPostProcessor {
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
+                a.replace(lambdaInstance(type));
             }
         });
+    }
+
+    private Expression lambdaInstance(ClassOrInterfaceType type) {
+        return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
     }
 
     private void replaceExtractorInAlphaIndexedBy(MethodCallExpr methodCallExpr) {
@@ -83,7 +89,7 @@ public class ExecModelLambdaPostProcessor {
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
+                a.replace(lambdaInstance(type));
             }
         });
     }
@@ -97,7 +103,7 @@ public class ExecModelLambdaPostProcessor {
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(new ObjectCreationExpr(null, type, NodeList.nodeList()));
+                a.replace(lambdaInstance(type));
             }
         });
     }

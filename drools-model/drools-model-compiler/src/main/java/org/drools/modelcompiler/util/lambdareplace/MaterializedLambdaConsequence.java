@@ -9,6 +9,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumConstantDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -51,16 +53,17 @@ public class MaterializedLambdaConsequence {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        ClassOrInterfaceDeclaration classDeclaration = createPredicate(compilationUnit);
+        EnumDeclaration classDeclaration = createPredicate(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    private ClassOrInterfaceDeclaration createPredicate(CompilationUnit compilationUnit) {
-        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = compilationUnit.addClass(className);
+    private EnumDeclaration createPredicate(CompilationUnit compilationUnit) {
+        EnumDeclaration classOrInterfaceDeclaration = compilationUnit.addEnum(className);
         classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
+        classOrInterfaceDeclaration.addEntry(new EnumConstantDeclaration("INSTANCE"));
         return classOrInterfaceDeclaration;
     }
 
@@ -75,7 +78,7 @@ public class MaterializedLambdaConsequence {
         }
     }
 
-    private void createMethodDeclaration(ClassOrInterfaceDeclaration classDeclaration) {
+    private void createMethodDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new VoidType());
