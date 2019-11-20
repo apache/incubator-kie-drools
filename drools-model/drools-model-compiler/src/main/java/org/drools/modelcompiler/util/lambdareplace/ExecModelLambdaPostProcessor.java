@@ -18,24 +18,29 @@ import static org.drools.modelcompiler.builder.generator.expression.PatternExpre
 
 public class ExecModelLambdaPostProcessor {
 
-    Map<String, CreatedClass> lambdaClasses = new HashMap<>();
-    private String packageName;
-    private String ruleClassName;
+    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
 
     public PostProcessedExecModel convertLambdas(String packageName, String ruleClassName, Statement inputDSL) {
-        this.packageName = packageName;
-        this.ruleClassName = ruleClassName;
         Statement clone = inputDSL.clone();
 
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
-                    .forEach(this::replacePredicateInExpr);
+                    .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
 
             clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-                    .forEach(this::replaceExtractorInAlphaIndexedBy);
+                    .forEach(methodCallExpr -> {
+                        Expression argument = methodCallExpr.getArgument(0);
+
+                        if (!argument.isClassExpr()) {
+                            throw new RuntimeException();
+                        }
+
+                        String returnType = argument.asClassExpr().getTypeAsString();
+                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+                    });
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
-                    .forEach(this::replaceConsequenceInOnCall);
+                    .forEach(methodCallExpr -> extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName)));
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
         } catch (LambdaTypeNeededException e) {
@@ -44,53 +49,16 @@ public class ExecModelLambdaPostProcessor {
         }
     }
 
-    private void replacePredicateInExpr(MethodCallExpr methodCallExpr) {
-
-        methodCallExpr.getArguments().forEach(a -> {
-            if (a.isLambdaExpr()) {
-                LambdaExpr lambdaExpr = a.asLambdaExpr();
-
-                CreatedClass aClass = new MaterializedLambdaPredicate(packageName, ruleClassName).create(lambdaExpr.toString());
-                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
-
-                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(lambdaInstance(type));
-            }
-        });
-    }
-
     private Expression lambdaInstance(ClassOrInterfaceType type) {
         return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
     }
 
-    private void replaceExtractorInAlphaIndexedBy(MethodCallExpr methodCallExpr) {
-        Expression argument = methodCallExpr.getArgument(0);
-
-        if (!argument.isClassExpr()) {
-            throw new RuntimeException();
-        }
-
-        String returnType = argument.asClassExpr().getTypeAsString();
-
+    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, MaterializedLambda lambdaExtractor) {
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = new MaterializedLambdaExtractor(packageName, ruleClassName, returnType).create(lambdaExpr.toString());
-                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
-
-                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(lambdaInstance(type));
-            }
-        });
-    }
-
-    private void replaceConsequenceInOnCall(MethodCallExpr methodCallExpr) {
-        methodCallExpr.getArguments().forEach(a -> {
-            if (a.isLambdaExpr()) {
-                LambdaExpr lambdaExpr = a.asLambdaExpr();
-
-                CreatedClass aClass = new MaterializedLambdaConsequence(packageName, ruleClassName).create(lambdaExpr.toString());
+                CreatedClass aClass = lambdaExtractor.create(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
