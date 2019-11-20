@@ -89,7 +89,11 @@ public class RuleWriter {
     }
 
     private List<CreatedClass> postProcessLambda(Statement s) {
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas(pkgModel.getName(), pkgModel.getRulesFileNameWithPackage(), s);
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas(
+                pkgModel.getName(),
+                pkgModel.getRulesFileNameWithPackage(),
+                s,
+                pkgModel.getImports());
         s.replace(postProcessedExecModel.getConvertedStatement());
         return postProcessedExecModel.getCreatedClasses();
     }

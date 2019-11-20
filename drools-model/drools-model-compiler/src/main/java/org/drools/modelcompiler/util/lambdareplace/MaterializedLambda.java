@@ -1,6 +1,9 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +35,7 @@ abstract class MaterializedLambda {
         this.ruleClassName = ruleClassName;
     }
 
-    public CreatedClass create(String expressionString) {
+    public CreatedClass create(String expressionString, Collection<String> imports) {
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -46,6 +49,9 @@ abstract class MaterializedLambda {
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
         compilationUnit.addImport(ruleClassName, true, true);
+        for(String i : imports) {
+            compilationUnit.addImport(i);
+        }
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);

@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.util.ArrayList;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.stmt.Statement;
 import org.junit.Test;
@@ -20,7 +22,7 @@ public class ExecModelLambdaPostProcessorTest {
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression);
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression, new ArrayList<>());
 
         String expectedResult =
                 "        Rule rule = rule(\"not\")\n" +
@@ -45,7 +47,7 @@ public class ExecModelLambdaPostProcessorTest {
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression);
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression, new ArrayList<>());
 
         String expectedResult =
                 "   org.drools.model.Rule rule = D.rule(\"R\").build(D.pattern(var_$pattern_Person$2$).expr(\"593440B7603CA900F1A34F18497AB0EA\",\n" +
@@ -82,7 +84,7 @@ public class ExecModelLambdaPostProcessorTest {
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage","rulename",  expression);
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage","rulename",  expression, new ArrayList<>());
 
         String expectedResult = "org.drools.model.Rule rule = D.rule(\"rule1\").build(D.pattern(var_$pattern_DataType$1$).expr(\"2BEF0A093C29ADEB403C89AC2C2C807F\",\n" +
                 "                                                                                                    defaultpkg.Lambda1F1B9676022CAF5489FB1C678F4D657E.INSTANCE,\n" +
@@ -122,7 +124,7 @@ public class ExecModelLambdaPostProcessorTest {
 
         Statement expression = StaticJavaParser.parseStatement(dslInput);
 
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression);
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression, new ArrayList<>());
 
         String expectedResult = "org.drools.model.Rule rule = D.rule(\"rule2\").build(D.pattern(var_$pattern_DataType$2$).expr(\"77E38C041F31083DCD4B15C970628D1F\",\n" +
                 "                                                                                                    new defaultpkg.LambdaPredicateAB4D983A6C15ED8C0C1BA898F5CDB6DD(),\n" +

@@ -45,6 +45,7 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
@@ -215,7 +216,7 @@ public class Consequence {
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
         if (requireDrools) {
-            executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
+            executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
         verifiedDeclUsedInRHS.stream().map(x -> {
             DeclarationSpec declarationById = context.getDeclarationById(x).get();

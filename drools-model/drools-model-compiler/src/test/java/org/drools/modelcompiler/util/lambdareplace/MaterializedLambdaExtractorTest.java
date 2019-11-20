@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
@@ -10,7 +12,7 @@ public class MaterializedLambdaExtractorTest {
     @Test
     public void createExtractor() {
         CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace", "rulename", String.class.getCanonicalName())
-                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()");
+                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()", new ArrayList<>());
 
         //language=JAVA
         String expectedResult = "" +
