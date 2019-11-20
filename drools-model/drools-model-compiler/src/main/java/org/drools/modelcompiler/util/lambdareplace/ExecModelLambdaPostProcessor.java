@@ -46,7 +46,7 @@ public class ExecModelLambdaPostProcessor {
                     .forEach(this::replaceConsequenceInOnCall);
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
-        } catch (MaterializedLambdaPredicate.LambdaTypeNeededException e) {
+        } catch (LambdaTypeNeededException e) {
             System.out.println(e);
             return new PostProcessedExecModel(inputDSL);
         }
@@ -103,7 +103,7 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = new MaterializedLambdaConsequence(packageName).create(lambdaExpr.toString());
+                CreatedClass aClass = new MaterializedLambdaConsequence(packageName, ruleClassName).create(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

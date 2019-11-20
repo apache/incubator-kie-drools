@@ -1,87 +1,33 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.ast.type.UnknownType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
-public class MaterializedLambdaPredicate {
+public class MaterializedLambdaPredicate extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
-    private LambdaExpr lambdaExpr;
-    private String className;
-
-    private final String packageName;
-    private String ruleClassName;
-
-    private List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
     public MaterializedLambdaPredicate(String packageName, String ruleClassName) {
-        this.packageName = packageName;
-        this.ruleClassName = ruleClassName;
+        super(packageName, ruleClassName);
     }
 
-    public CreatedClass create(String expressionString) {
-        Expression expression = StaticJavaParser.parseExpression(expressionString);
-
-        if (!expression.isLambdaExpr()) {
-            throw new NotLambdaException();
-        }
-
-        lambdaExpr = expression.asLambdaExpr();
-        className = CLASS_NAME_PREFIX + md5Hash(expressionString);
-
-        parseParameters();
-
-        CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        compilationUnit.addImport(ruleClassName, true, true);
-        EnumDeclaration classDeclaration = create(compilationUnit);
-
-        createMethodDeclaration(classDeclaration);
-
-        return new CreatedClass(compilationUnit, className, packageName);
+    @Override
+    String className(String expressionString) {
+        return CLASS_NAME_PREFIX + md5Hash(expressionString);
     }
 
-    private EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration classOrInterfaceDeclaration = compilationUnit.addEnum(className);
-        classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
-        classOrInterfaceDeclaration.addEntry(new EnumConstantDeclaration("INSTANCE"));
-        return classOrInterfaceDeclaration;
-    }
-
-    private void parseParameters() {
-        NodeList<Parameter> parameters = lambdaExpr.getParameters();
-        for (Parameter p : parameters) {
-            Type c = p.getType();
-            if(c instanceof UnknownType) {
-                throw new LambdaTypeNeededException(lambdaExpr.toString());
-            }
-            lambdaParameters.add(new LambdaParameter(p.getNameAsString(), c));
-        }
-    }
-
-    private void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    @Override
+    void createMethodDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
@@ -92,50 +38,9 @@ public class MaterializedLambdaPredicate {
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
     }
 
-    private void setMethodParameter(MethodDeclaration methodDeclaration) {
-        for (LambdaParameter parameter : lambdaParameters) {
-            methodDeclaration.addParameter(new Parameter(parameter.type, parameter.name));
-        }
-    }
-
-    private NodeList<ClassOrInterfaceType> createImplementedType() {
-        ClassOrInterfaceType bifunction = functionType();
-
-        List<Type> typeArguments = lambdaParameters.stream()
-                .map(p -> p.type)
-                .collect(Collectors.toList());
-
-        bifunction.setTypeArguments(NodeList.nodeList(typeArguments));
-        return NodeList.nodeList(bifunction);
-    }
-
-    private ClassOrInterfaceType functionType() {
+    @Override
+    protected ClassOrInterfaceType functionType() {
         String type = "Predicate" + lambdaParameters.size();
         return parseClassOrInterfaceType("org.drools.model.functions." + type);
-    }
-
-    private static class LambdaParameter {
-
-        String name;
-        Type type;
-
-        LambdaParameter(String name, Type type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
-
-    public static class LambdaTypeNeededException extends RuntimeException {
-
-        private final String lambda;
-
-        public LambdaTypeNeededException(String lambda) {
-            this.lambda = lambda;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Missing argument in Lambda: " + lambda;
-        }
     }
 }
