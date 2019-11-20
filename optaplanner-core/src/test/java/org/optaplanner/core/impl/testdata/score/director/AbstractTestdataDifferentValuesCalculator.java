@@ -33,10 +33,10 @@ public class AbstractTestdataDifferentValuesCalculator implements EasyScoreCalcu
                 }
             }
         }
-        if(isCorrupted) {
+        if (isCorrupted) {
             numOfCalls += 1;
             return SimpleScore.of(score - numOfCalls);
-        }else{
+        } else {
             return SimpleScore.of(score);
         }
     }

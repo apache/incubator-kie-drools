@@ -30,7 +30,6 @@ public class AbstractTestdataCorruptedUndoMoveTotalMappingFactory implements Mov
                     moveList.add(new TestdataCorruptedEntityUndoMove(entity, value));
                 } else {
                     moveList.add(new TestdataCorruptedUndoMove(entity, value));
-
                 }
             }
         }
