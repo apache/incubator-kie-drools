@@ -48,7 +48,7 @@ public class SpreadsheetCompiler {
     private final boolean trimCell;
 
     public SpreadsheetCompiler() {
-        this(false);
+        this(true);
     }
 
     public SpreadsheetCompiler(boolean trimCell) {
