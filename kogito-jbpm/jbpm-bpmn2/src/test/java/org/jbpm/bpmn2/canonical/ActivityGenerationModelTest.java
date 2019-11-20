@@ -19,6 +19,7 @@ package org.jbpm.bpmn2.canonical;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
@@ -85,6 +86,15 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.start();
 
         assertEquals(STATE_COMPLETED, processInstance.status());
+    }
+    
+    @Test
+    public void testProcessEmptyScript() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ProcessEmptyScript.bpmn2")).get(0);
+
+        assertThrows(IllegalStateException.class, () -> ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess()));
+        
+
     }
 
     @Test

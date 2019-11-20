@@ -72,7 +72,9 @@ public class ActionNodeVisitor extends AbstractVisitor {
             
             addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "action", lambda);
         } else {
-        
+            if (actionNode.getAction().toString() == null || actionNode.getAction().toString().trim().isEmpty()) {
+                throw new IllegalStateException("Action node " + node.getId() + " name " + node.getName() + " has not action defined");
+            }
             BlockStmt actionBody = new BlockStmt();
             LambdaExpr lambda = new LambdaExpr(
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
