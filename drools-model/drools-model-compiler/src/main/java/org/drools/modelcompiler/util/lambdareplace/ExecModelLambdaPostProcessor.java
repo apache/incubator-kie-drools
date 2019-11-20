@@ -76,7 +76,7 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = new MaterializedLambdaExtractor(packageName).create(lambdaExpr.toString(), returnType);
+                CreatedClass aClass = new MaterializedLambdaExtractor(packageName, ruleClassName, returnType).create(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

@@ -77,15 +77,18 @@ abstract class MaterializedLambda {
         return classOrInterfaceDeclaration;
     }
 
-    private NodeList<ClassOrInterfaceType> createImplementedType() {
-        ClassOrInterfaceType bifunction = functionType();
+    protected NodeList<ClassOrInterfaceType> createImplementedType() {
+        ClassOrInterfaceType functionType = functionType();
 
-        List<Type> typeArguments = lambdaParameters.stream()
+        List<Type> typeArguments = lambdaParametersToType();
+        functionType.setTypeArguments(NodeList.nodeList(typeArguments));
+        return NodeList.nodeList(functionType);
+    }
+
+    List<Type> lambdaParametersToType() {
+        return lambdaParameters.stream()
                 .map(p -> p.type)
                 .collect(Collectors.toList());
-
-        bifunction.setTypeArguments(NodeList.nodeList(typeArguments));
-        return NodeList.nodeList(bifunction);
     }
 
     abstract String className(String expressionString);

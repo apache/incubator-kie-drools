@@ -9,12 +9,13 @@ public class MaterializedLambdaExtractorTest {
 
     @Test
     public void createExtractor() {
-        CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace")
-                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()", String.class.getCanonicalName());
+        CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace", "rulename", String.class.getCanonicalName())
+                .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()");
 
         //language=JAVA
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
+                "import static rulename.*; " +
                 "" +
                 "public enum LambdaExtractor133AF281814F16840FE105EF6D339F8A implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
                 " INSTANCE; \n" +
@@ -25,6 +26,5 @@ public class MaterializedLambdaExtractorTest {
                 "    }\n";
 
         assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
-
     }
 }
