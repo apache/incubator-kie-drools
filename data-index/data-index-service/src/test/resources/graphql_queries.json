@@ -59,6 +59,13 @@
       "isNull": "%s"
     }
   },
+  "ProcessInstanceByIdAndErrorNode": {
+    "query": "query ( $id: String, $node: String ) { ProcessInstances( where: {  id: {  equal : $id }, error : { nodeDefinitionId: {  equal : $node } } }, orderBy: { error: { message: ASC } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "node": "%s"
+    }
+  },
   "UserTaskInstanceById": {
     "query": "query ( $id: String ) { UserTaskInstances( where: {  id: {  equal : $id } } ){ %s } }",
     "variables": {

@@ -16,42 +16,43 @@
 
 package org.kie.kogito.index.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ProcessInstanceError {
 
     private String nodeDefinitionId;
-    private String errorMessage;
+    @JsonProperty("errorMessage")
+    private String message;
 
     public ProcessInstanceError() {
     }
 
-    public ProcessInstanceError(String nodeDefinitionId, String errorMessage) {
+    public ProcessInstanceError(String nodeDefinitionId, String message) {
         this.nodeDefinitionId = nodeDefinitionId;
-        this.errorMessage = errorMessage;
+        this.message = message;
     }
 
-    
     public String getNodeDefinitionId() {
         return nodeDefinitionId;
     }
 
-    
     public void setNodeDefinitionId(String nodeDefinitionId) {
         this.nodeDefinitionId = nodeDefinitionId;
     }
 
-    
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 
-    
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
     public String toString() {
-        return "ProcessInstanceError [nodeDefinitionId=" + nodeDefinitionId + ", errorMessage=" + errorMessage + "]";
+        return "ProcessInstanceError{" +
+                "nodeDefinitionId='" + nodeDefinitionId + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
-
 }

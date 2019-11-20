@@ -50,6 +50,16 @@ message ProcessInstance {
     optional string parentProcessInstanceId = 12;
     /* @Field(store = Store.YES) */
     optional string processName = 13;
+    /* @Field(store = Store.YES) */
+    optional ProcessInstanceError error = 14;
+}
+
+/* @Indexed */
+message ProcessInstanceError {
+    /* @Field(store = Store.YES) */
+    optional string nodeDefinitionId = 1;
+    /* @Field(store = Store.YES) */
+    optional string message = 2;
 }
 
 /* @Indexed */

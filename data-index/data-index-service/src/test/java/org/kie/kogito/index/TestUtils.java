@@ -35,6 +35,7 @@ import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
 
@@ -97,6 +98,9 @@ public final class TestUtils {
         pi.setState(status);
         pi.setStart(ZonedDateTime.now());
         pi.setEnd(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);
+        if(ProcessInstanceState.ERROR.ordinal() == status){
+            pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
+        }
         return pi;
     }
 

@@ -51,7 +51,7 @@ public class GraphQLUtils {
 
     static {
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFiledName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).filter(f -> !"error".equals(f.getName())).map(getFiledName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFiledName()).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstanceId");
 
         try {
@@ -77,7 +77,7 @@ public class GraphQLUtils {
     public static String getProcessInstanceByIdAndStart(String id, String start) {
         return getProcessInstanceQuery("ProcessInstanceByIdAndStart", id, start);
     }
-    
+
     public static String getProcessInstanceByIdAndProcessId(String id, String processId) {
         return getProcessInstanceQuery("ProcessInstanceByIdAndProcessId", id, processId);
     }
@@ -100,6 +100,10 @@ public class GraphQLUtils {
 
     public static String getProcessInstanceByRootProcessInstanceId(String rootProcessInstanceId) {
         return getProcessInstanceQuery("ProcessInstanceByRootProcessInstanceId", rootProcessInstanceId);
+    }
+
+    public static String getProcessInstanceByIdAndErrorNode(String id, String nodeDefinitionId) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndErrorNode", id, nodeDefinitionId);
     }
 
     public static String getUserTaskInstanceById(String id) {
@@ -169,7 +173,7 @@ public class GraphQLUtils {
             }
 
             if (field.getType().getName().startsWith("org.kie.kogito.index.model")) {
-                return "";
+                return field.getName() + " { " + getAllFieldsList(field.getType()).map(f -> getFiledName().apply(f)).collect(joining(", ")) + " }";
             }
 
             return field.getName();

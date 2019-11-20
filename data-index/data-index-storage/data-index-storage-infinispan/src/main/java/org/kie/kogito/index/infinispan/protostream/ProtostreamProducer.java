@@ -54,4 +54,9 @@ public class ProtostreamProducer {
     MessageMarshaller nodeInstanceMarshaller() {
         return new NodeInstanceMarshaller(mapper);
     }
+
+    @Produces
+    MessageMarshaller processInstanceErrorMarshaller() {
+        return new ProcessInstanceErrorMarshaller(mapper);
+    }
 }

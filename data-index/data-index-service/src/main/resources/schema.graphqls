@@ -25,6 +25,7 @@ type ProcessInstance {
     start: DateTime!
     end: DateTime
     childProcessInstanceId: [String!]
+    error: ProcessInstanceError
 }
 
 type ProcessInstanceMeta {
@@ -39,6 +40,11 @@ type ProcessInstanceMeta {
     endpoint: String!
     start: DateTime!
     end: DateTime
+}
+
+type ProcessInstanceError {
+    nodeDefinitionId: String!
+    message: String
 }
 
 enum ProcessInstanceState {
@@ -67,6 +73,12 @@ input ProcessInstanceOrderBy {
     state: OrderBy
     start: OrderBy
     end: OrderBy
+    error: ProcessInstanceErrorOrderBy
+}
+
+input ProcessInstanceErrorOrderBy {
+    nodeDefinitionId: OrderBy
+    message: OrderBy
 }
 
 input ProcessInstanceArgument {
@@ -79,11 +91,17 @@ input ProcessInstanceArgument {
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument
     state: ProcessInstanceStateArgument
+    error: ProcessInstanceErrorArgument
     nodes: NodeInstanceArgument
     endpoint: StringArgument
     roles: StringArrayArgument
     start: DateArgument
     end: DateArgument
+}
+
+input ProcessInstanceErrorArgument {
+    nodeDefinitionId: StringArgument
+    message: StringArgument
 }
 
 input ProcessInstanceMetaArgument {

@@ -58,6 +58,7 @@ import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
+import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -166,7 +167,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
@@ -189,7 +190,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
-        KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
+        KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId, processId, processInstanceId);
         subProcessStartEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
         indexProcessCloudEvent(subProcessStartEvent);
 
@@ -329,7 +330,9 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].childProcessInstanceId", childProcessInstances == null ? isA(Collection.class) : hasItems(childProcessInstances))
-                .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()));
+                .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
+                .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
+                .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()));
     }
 
     private void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
@@ -383,7 +386,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].userTasks[0].actualOwner", is(userTaskEvent.getData().getActualOwner()))
                 .body("data.Travels[0].processInstances", is(nullValue()));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         consumer.onProcessInstanceDomainEvent(processEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
@@ -422,7 +425,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         consumer.onProcessInstanceDomainEvent(processEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
@@ -480,7 +483,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
 
         CompletableFuture.allOf(
@@ -524,7 +527,7 @@ public class IndexingServiceTest {
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
+        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
@@ -543,7 +546,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.ACTIVE.name()))
+                .body("data.Travels[0].processInstances[0].state", is(ACTIVE.name()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
@@ -568,14 +571,14 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].processInstances[0].state", is(ProcessInstanceState.COMPLETED.name()))
+                .body("data.Travels[0].processInstances[0].state", is(COMPLETED.name()))
                 .body("data.Travels[0].processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].flight.flightNumber", is("QF444"))
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
+        KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId, processId, processInstanceId);
         indexProcessCloudEvent(event);
 
         validateProcessInstance(getProcessInstanceByParentProcessInstanceId(processInstanceId), event);
@@ -584,6 +587,11 @@ public class IndexingServiceTest {
         validateProcessInstance(getProcessInstanceByIdAndNullRootProcessInstanceId(processInstanceId, true), endEvent);
         validateProcessInstance(getProcessInstanceById(processInstanceId), endEvent, subProcessInstanceId);
         validateProcessInstance(getProcessInstanceByIdAndParentProcessInstanceId(subProcessInstanceId, processInstanceId), event);
+
+        KogitoProcessCloudEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId, processId, processInstanceId);
+        indexProcessCloudEvent(errorEvent);
+
+        validateProcessInstance(getProcessInstanceByIdAndErrorNode(subProcessInstanceId, errorEvent.getData().getError().getNodeDefinitionId()), errorEvent);
     }
 
     @Test

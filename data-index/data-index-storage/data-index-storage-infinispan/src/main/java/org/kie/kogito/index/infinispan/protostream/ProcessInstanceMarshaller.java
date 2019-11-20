@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.ProcessInstanceError;
 
 public class ProcessInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<ProcessInstance> {
 
@@ -47,6 +48,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setRootProcessId(reader.readString("rootProcessId"));
         pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
         pi.setProcessName(reader.readString("processName"));
+        pi.setError(reader.readObject("error", ProcessInstanceError.class));
         return pi;
     }
 
@@ -65,6 +67,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString("rootProcessId", pi.getRootProcessId());
         writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());
         writer.writeString("processName", pi.getProcessName());
+        writer.writeObject("error", pi.getError(), ProcessInstanceError.class);
     }
 
     @Override
