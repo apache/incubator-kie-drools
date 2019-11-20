@@ -17,7 +17,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
 
-    public MaterializedLambdaPredicate(String packageName, String ruleClassName) {
+    MaterializedLambdaPredicate(String packageName, String ruleClassName) {
         super(packageName, ruleClassName);
     }
 

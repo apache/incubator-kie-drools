@@ -16,11 +16,8 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaConsequence";
 
-    private final String packageName;
-
-    public MaterializedLambdaConsequence(String packageName, String ruleClassName) {
+    MaterializedLambdaConsequence(String packageName, String ruleClassName) {
         super(packageName, ruleClassName);
-        this.packageName = packageName;
     }
 
     protected String className(String expressionString) {
