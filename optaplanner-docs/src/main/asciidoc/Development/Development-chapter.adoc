@@ -76,7 +76,7 @@ The word _maybe_ is to indicate that the advice is not guaranteed to be right in
 
 === Lifecycle
 
-One of the biggest challenges in multi-algorithm implementations (such as Planner)
+One of the biggest challenges in multi-algorithm implementations (such as OptaPlanner)
 is the lifecycle management of internal subsystems.
 These guidelines avoid lifecycle complexity:
 

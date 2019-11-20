@@ -220,7 +220,7 @@ add the `solutionPartitionerCustomProperties` element and use <<customProperties
 
 When running a multithreaded solver, such as Partitioned Search, CPU power can quickly become a scarce resource,
 which can cause other processes or threads to hang or freeze.
-However, Planner has a system to prevent CPU starving of
+However, OptaPlanner has a system to prevent CPU starving of
 other processes (such as an SSH connection in production or your IDE in development)
 or other threads (such as the servlet threads that handle REST requests).
 
@@ -235,7 +235,7 @@ this will probably hang the system.
 
 The `runnablePartThreadLimit` parameter specifies how many part threads are runnable at the same time.
 The other part threads will temporarily block and therefore will not consume any CPU power.
-*This parameter basically specifies how many CPU cores are donated to Planner.*
+*This parameter basically specifies how many CPU cores are donated to OptaPlanner.*
 All part threads share the CPU cores in a round-robin manner
 to consume (more or less) the same number of CPU cycles:
 
@@ -243,9 +243,9 @@ image::PartitionedSearch/partitionedSearchThreading.png[align="center"]
 
 The following `runnablePartThreadLimit` options are supported:
 
-* `UNLIMITED`: Allow Planner to occupy all CPU cores, do not avoid hogging.
+* `UNLIMITED`: Allow OptaPlanner to occupy all CPU cores, do not avoid hogging.
 Useful if a no hogging CPU policy is configured on the OS level.
-* `AUTO` (default): Let Planner decide how many CPU cores to occupy. This formula is based on experience.
+* `AUTO` (default): Let OptaPlanner decide how many CPU cores to occupy. This formula is based on experience.
 It does not hog all CPU cores on a multi-core machine.
 * Static number: The number of CPU cores to consume. For example:
 +
@@ -265,5 +265,5 @@ It can use the variable `availableProcessorCount`. For example:
 ====
 If the `runnablePartThreadLimit` is equal to or higher than the number of available processors,
 the host is likely to hang or freeze,
-unless there is an OS specific policy in place to avoid Planner from hogging all the CPU processors.
+unless there is an OS specific policy in place to avoid OptaPlanner from hogging all the CPU processors.
 ====

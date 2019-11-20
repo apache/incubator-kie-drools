@@ -10,6 +10,6 @@ OptaPlanner is 100% pure Java^TM^ and runs on any JVM 8 or higher.
 It <<integration,integrates very easily>> with other Java^TM^ technologies.
 OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
 
-Planner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
+OptaPlanner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
 
 image::PlannerIntroduction/Requirements/compatibility.png[align="center"]

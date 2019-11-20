@@ -1446,7 +1446,7 @@ public interface Move<Solution_> {
 ----
 
 To implement a custom move, it's recommended to extend `AbstractMove` instead implementing `Move` directly.
-Planner calls `AbstractMove.doMove(ScoreDirector)`, which calls `doMoveOnGenuineVariables(ScoreDirector)`.
+OptaPlanner calls `AbstractMove.doMove(ScoreDirector)`, which calls `doMoveOnGenuineVariables(ScoreDirector)`.
 For example in cloud balancing, this move changes one process to another computer:
 
 [source,java,options="nowrap"]
@@ -1489,7 +1489,7 @@ it must not change any of the problem facts as that will cause score corruption.
 Use <<realTimePlanning,real-time planning>> to change problem facts while solving.
 ====
 
-Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on each selected move.
+OptaPlanner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on each selected move.
 A _non doable move_ is:
 
 * A move that changes nothing on the current solution.
@@ -1533,7 +1533,7 @@ A solver phase might do and undo the same `Move` more than once.
 In fact, many solver phases will iteratively do and undo a number of moves to evaluate them,
 before selecting one of those and doing that move again (without undoing it the last time).
 
-Always implement the `toString()` method to keep Planner's logs readable.
+Always implement the `toString()` method to keep OptaPlanner's logs readable.
 Keep it non-verbose and make it consistent with <<genericMoveSelectorsOverview,the generic moves>>:
 
 [source,java,options="nowrap"]

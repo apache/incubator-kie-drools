@@ -29,18 +29,18 @@ The solver configuration file determines how the solving process works; it is co
 
 This solver configuration consists of three parts:
 
-. *Domain model configuration*: _What can Planner change?_
+. *Domain model configuration*: _What can OptaPlanner change?_
 +
-We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
+We need to make OptaPlanner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
 +
 [source,xml,options="nowrap"]
 ----
   <scanAnnotatedClasses/>
 ----
 
-. *Score configuration*: _How should Planner optimize the planning variables? What is our goal?_
+. *Score configuration*: _How should OptaPlanner optimize the planning variables? What is our goal?_
 +
-Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
+Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell OptaPlanner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
 +
 [source,xml,options="nowrap"]
 ----
@@ -50,7 +50,7 @@ Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need
   </scoreDirectorFactory>
 ----
 
-. *Optimization algorithms configuration*: _How should Planner optimize it?_
+. *Optimization algorithms configuration*: _How should OptaPlanner optimize it?_
 +
 In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
 +
@@ -61,7 +61,7 @@ In this case, we use the default <<optimizationAlgorithms,optimization algorithm
   </termination>
 ----
 +
-Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be. Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
+OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be. Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
 +
 The default algorithms will already easily surpass human planners and most in-house implementations.
 Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.

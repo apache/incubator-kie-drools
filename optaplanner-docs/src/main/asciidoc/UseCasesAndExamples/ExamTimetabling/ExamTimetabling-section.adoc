@@ -36,7 +36,7 @@ Soft constraints (each of which has a parametrized penalty):
 It uses large test data sets of real-life universities.
 
 The problem is defined by http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[the International Timetabling Competition 2007 track 1].
-Geoffrey De Smet finished 4th in that competition with a very early version of Planner.
+Geoffrey De Smet finished 4th in that competition with a very early version of OptaPlanner.
 Many improvements have been made since then.
 
 

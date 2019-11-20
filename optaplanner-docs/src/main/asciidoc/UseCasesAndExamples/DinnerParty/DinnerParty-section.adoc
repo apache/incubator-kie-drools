@@ -15,7 +15,7 @@ Miss Manners is throwing another dinner party.
 * And the two politicians, two doctors, two coaches and two programmers should not be the same kind at a table.
 
 Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
-Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
+OptaPlanner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
 
 
 [[dinnerPartyProblemSize]]

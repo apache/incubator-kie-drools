@@ -185,9 +185,9 @@ It is even possible to render the actual road routes with GraphHopper or Google 
 
 image::UseCasesAndExamples/VehicleRouting/vehicleRoutingGoogleMapsDirections.png[align="center"]
 
-Take special care that the road costs between two points use the same optimization criteria as the one used in Planner.
+Take special care that the road costs between two points use the same optimization criteria as the one used in OptaPlanner.
 For example, GraphHopper etc will by default return the fastest route, not the shortest route.
-Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads to a suboptimal solution as shown below:
+Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in OptaPlanner: this leads to a suboptimal solution as shown below:
 
 image::UseCasesAndExamples/VehicleRouting/roadDistanceTriangleInequality.png[align="center"]
 

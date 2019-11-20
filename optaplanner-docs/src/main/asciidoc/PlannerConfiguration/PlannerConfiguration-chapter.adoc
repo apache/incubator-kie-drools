@@ -1,5 +1,5 @@
 [[plannerConfiguration]]
-= Planner configuration
+= OptaPlanner configuration
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -11,7 +11,7 @@
 [[plannerConfigurationOverview]]
 == Overview
 
-Solving a planning problem with Planner consists of the following steps:
+Solving a planning problem with OptaPlanner consists of the following steps:
 
 . *Model your planning problem* as a class that implements the interface ``Solution``, for example the class ``NQueens``.
 . **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
@@ -109,7 +109,7 @@ Notice the three parts in it:
 
 These various parts of a configuration are explained further in this manual.
 
-*Planner makes it relatively easy to switch optimization algorithm(s) just by changing the configuration.* There is even a <<benchmarker,Benchmarker>> which allows you to play out different configurations against each other and report the most appropriate configuration for your use case.
+*OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by changing the configuration.* There is even a <<benchmarker,Benchmarker>> which allows you to play out different configurations against each other and report the most appropriate configuration for your use case.
 
 
 [[solverConfigurationByJavaAPI]]
@@ -184,7 +184,7 @@ Instead of the declaring the classes that have a `@PlanningSolution` or `@Planni
 </solver>
 ----
 
-Planner can find scan the classpath and find them automatically:
+OptaPlanner can find scan the classpath and find them automatically:
 
 [source,xml,options="nowrap"]
 ----
@@ -229,7 +229,7 @@ If `scanAnnotatedClasses` is not specified, the `org.reflections` transitive mav
 [[annotationAlternatives]]
 ==== Annotation alternatives
 
-Planner needs to be told which classes in your domain model are planning entities, which properties are planning variables, etc.
+OptaPlanner needs to be told which classes in your domain model are planning entities, which properties are planning variables, etc.
 There are several ways to deliver this information:
 
 * Add class annotations and JavaBean property annotations on the domain model (recommended). The property annotations must be on the getter method, not on the setter method. Such a getter does not need to be public.
@@ -302,7 +302,7 @@ In <<realTimePlanning,real-time planning>>, even though the problem itself chang
 
 To create a good domain model, read the <<domainModelingGuide,domain modeling guide>>.
 
-*In Planner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
+*In OptaPlanner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
 
 
 [[problemFact]]
@@ -350,13 +350,13 @@ public class Course implements Serializable {
 }
 ----
 
-A problem fact class does _not_ require any Planner specific code.
+A problem fact class does _not_ require any OptaPlanner specific code.
 For example, you can reuse your domain classes, which might have JPA annotations.
 
 [NOTE]
 ====
 Generally, better designed domain classes lead to simpler and more efficient score constraints.
-Therefore, when dealing with a messy (denormalized) legacy system, it can sometimes be worthwhile to convert the messy domain model into a Planner specific model first.
+Therefore, when dealing with a messy (denormalized) legacy system, it can sometimes be worthwhile to convert the messy domain model into a OptaPlanner specific model first.
 For example: if your domain model has two `Teacher` instances for the same teacher that teaches at two different departments, it is harder to write a correct score constraint that constrains a teacher's spare time on the original model than on an adjusted model.
 
 Alternatively, you can sometimes also introduce <<cachedProblemFact,_a cached problem fact_>> to enrich the domain model for planning only.
@@ -583,7 +583,7 @@ To allow an initialized planning variable to be ``null``, set `nullable` to ``tr
 
 [IMPORTANT]
 ====
-Planner will automatically add the value `null` to the value range.
+OptaPlanner will automatically add the value `null` to the value range.
 There is no need to add `null` in a collection used by a ``ValueRangeProvider``.
 ====
 
@@ -792,7 +792,7 @@ Furthermore, an `incrementUnit` can be specified, for example if you have to buy
 
 [NOTE]
 ====
-Return `CountableValueRange` instead of `ValueRange` whenever possible (so Planner knows that it's countable).
+Return `CountableValueRange` instead of `ValueRange` whenever possible (so OptaPlanner knows that it's countable).
 ====
 
 The `ValueRangeFactory` has creation methods for several value class types:
@@ -1059,7 +1059,7 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
 [[planningEntitiesOfASolution]]
 ==== Planning entities of a solution (`@PlanningEntityCollectionProperty`)
 
-Planner needs to extract the entity instances from the solution instance.
+OptaPlanner needs to extract the entity instances from the solution instance.
 It gets those collection(s) by calling every getter (or field) that is annotated with ``@PlanningEntityCollectionProperty``:
 
 [source,java,options="nowrap"]
@@ -1151,7 +1151,7 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 ==== Problem facts of a solution (`@ProblemFactCollectionProperty`)
 
 For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
-Planner needs to extract the problem fact instances from the solution instance.
+OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
 All objects returned by those methods will be inserted into the ConstrainStreams or Drools session,
 so the constraint steams or score rules can access them.
@@ -1241,7 +1241,7 @@ Where a score constraint needs to check that no two exams with a topic that shar
 ==== Auto discover solution properties
 
 Instead of configuring each property (or field) annotation explicitly,
-some can also be deduced automatically by Planner.
+some can also be deduced automatically by OptaPlanner.
 For example, on the cloud balancing example:
 
 [source,java,options="nowrap"]
@@ -1580,7 +1580,7 @@ It is recommended to write a test case that does a short run of your planning pr
 ==== `REPRODUCIBLE` (default)
 
 The reproducible mode is the default mode because it is recommended during development.
-In this mode, two runs in the same Planner version will execute the same code in the same order. **Those two
+In this mode, two runs in the same OptaPlanner version will execute the same code in the same order. **Those two
         runs will have the same result at every step**, except if the note below applies.
 This enables you to reproduce bugs consistently.
 It also allows you to benchmark certain refactorings (such as a score constraint performance optimization) fairly across runs.
@@ -1619,7 +1619,7 @@ The best way to illuminate the black box that is a ``Solver``, is to play with t
 +
 [NOTE]
 ====
-**If an error happens, Planner normally fails fast**: it throws a subclass of `RuntimeException` with a detailed message to the calling code.
+**If an error happens, OptaPlanner normally fails fast**: it throws a subclass of `RuntimeException` with a detailed message to the calling code.
 It does not log it as an error itself to avoid duplicate log messages.
 Except if the calling code explicitly catches and eats that ``RuntimeException``, a ``Thread``'s default `ExceptionHandler` will log it as an error anyway.
 Meanwhile, the code is disrupted from doing further harm or obfuscating the error.

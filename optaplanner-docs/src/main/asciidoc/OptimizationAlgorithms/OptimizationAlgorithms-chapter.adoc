@@ -48,7 +48,7 @@ usually perform best for real-world problems given real-world time limitations.
 
 
 [[doesPlannerFindTheOptimalSolution]]
-== Does planner find the optimal solution?
+== Does OptaPlanner find the optimal solution?
 
 The business wants the optimal solution, but they also have other requirements:
 
@@ -58,7 +58,7 @@ The business wants the optimal solution, but they also have other requirements:
 * Reliability: Every data set must have at least a decent result (better than a human planner).
 
 Given these requirements, and despite the promises of some salesmen, it is usually impossible for anyone or anything to find the optimal solution.
-Therefore, Planner focuses on finding the best solution in available time.
+Therefore, OptaPlanner focuses on finding the best solution in available time.
 In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
 
 The nature of NP-complete problems make scaling a prime concern.
@@ -76,7 +76,7 @@ Do not assess quality on small data sets (unless production encounters only such
 [[architectureOverview]]
 == Architecture overview
 
-Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
+OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
 
 * A rule engine, such as Drools Expert, is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as, "a teacher should not teach more then seven hours a day". It does delta-based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
 * An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
@@ -87,7 +87,7 @@ image::OptimizationAlgorithms/architectureOverview.png[align="center"]
 [[optimizationAlgorithmsOverview]]
 == Optimization algorithms overview
 
-Planner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
+OptaPlanner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
 
 image::OptimizationAlgorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
@@ -163,7 +163,7 @@ Other experiments can also be run. For example, the following multiple algorithm
 == Power tweaking or default parameter values
 
 Many optimization algorithms have parameters that affect results and scalability.
-Planner applies __configuration by exception__, so all optimization algorithms have default parameter values.
+OptaPlanner applies __configuration by exception__, so all optimization algorithms have default parameter values.
 This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users often do.
 
 The default parameter values are sufficient for many cases (and especially for prototypes), but if development time allows, it may be beneficial to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
@@ -215,7 +215,7 @@ Usually, a `Solver` will first run a construction heuristic and then run one or 
 
 image::OptimizationAlgorithms/generalPhaseSequence.png[align="center"]
 
-If no phases are configured, Planner will default to a Construction Heuristic phase followed by a Local Search phase.
+If no phases are configured, OptaPlanner will default to a Construction Heuristic phase followed by a Local Search phase.
 
 Some phases (especially construction heuristics) will terminate automatically.
 Other phases (especially metaheuristics) will only terminate if the `Phase` is configured to terminate:
@@ -842,7 +842,7 @@ There are several ways of doing multithreaded solving:
 * *Partitioned Search*: Split 1 dataset in multiple parts and solve them independently.
 ** Configure a <<partitionedSearch,Partitioned Search>>.
 * *Multithreaded incremental solving*: solve 1 dataset with multiple threads without sacrificing <<incrementalScoreCalculation, incremental score calculation>>.
-** Donate a portion of your CPU cores to Planner to scale up the score calculation speed and get the same results in fraction of the time.
+** Donate a portion of your CPU cores to OptaPlanner to scale up the score calculation speed and get the same results in fraction of the time.
 ** Configure <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
 
 image::OptimizationAlgorithms/multiThreadingStrategies.png[align="center"]
@@ -857,8 +857,8 @@ and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 === ``@PlanningId`
 
 For some functionality (such as multithreaded solving and real-time planning),
-Planner needs to map problem facts and planning entities to an ID.
-Planner uses that ID to _rebase_ a move from one thread's solution state to another's.
+OptaPlanner needs to map problem facts and planning entities to an ID.
+OptaPlanner uses that ID to _rebase_ a move from one thread's solution state to another's.
 
 To enable such functionality, specify the `@PlanningId` annotation on the identification field or getter method,
 for example on the database ID:
@@ -952,7 +952,7 @@ and the solver thread uses most of another CPU core.
 The following ``moveThreadCount``s are supported:
 
 * `NONE` (default): Don't run any move threads. Use the single threaded code.
-* ``AUTO``: Let Planner decide how many move threads to run in parallel.
+* ``AUTO``: Let OptaPlanner decide how many move threads to run in parallel.
 On machines or containers with little or no CPUs, this falls back to the single threaded code.
 * Static number: The number of move threads to run in parallel.
 +

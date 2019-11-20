@@ -245,7 +245,7 @@ Nevertheless, it may be beneficial in order to simplify the maintenance, ownersh
 [[cloudArchitecturePatterns]]
 == Cloud architecture patterns
 
-There are two common usage patterns of Planner in the cloud:
+There are two common usage patterns of OptaPlanner in the cloud:
 
 * *Batch planning*:
 Typically runs at night for hours to solve each tenant's dataset

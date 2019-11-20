@@ -11,7 +11,7 @@
 [[integrationOverview]]
 == Overview
 
-Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's), so integration with other Java technologies is straightforward.
+OptaPlanner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's), so integration with other Java technologies is straightforward.
 For example:
 
 * To read a planning problem from the database (and store the best solution in it), annotate the domain POJO's with JPA annotations.
@@ -33,7 +33,7 @@ to store them in a database by calling `EntityManager.persist()`.
 
 [NOTE]
 ====
-Do not confuse JPA's `@Entity` annotation with Planner's `@PlanningEntity` annotation.
+Do not confuse JPA's `@Entity` annotation with OptaPlanner's `@PlanningEntity` annotation.
 They can appear both on the same class:
 
 [source,java,options="nowrap"]
@@ -53,7 +53,7 @@ Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of t
 When a `Score` is persisted into a relational database, JPA and Hibernate will default to Java serializing it to a `BLOB` column.
 This has several disadvantages:
 
-* The Java serialization format of `Score` classes is currently not backwards compatible. Upgrading to a newer Planner version can break reading an existing database.
+* The Java serialization format of `Score` classes is currently not backwards compatible. Upgrading to a newer OptaPlanner version can break reading an existing database.
 * The score is not easily readable for a query executed in the database console. This is annoying during development.
 * The score cannot be used in a SQL or JPA-QL query to efficiently filter the results: for example to query all infeasible schedules.
 
@@ -426,7 +426,7 @@ For example, this will generate this JSON:
 [[integrationWithCamel]]
 === Camel and Karaf
 
-http://camel.apache.org/[Camel] is an enterprise integration framework which includes support for Planner (starting from Camel 2.13). It can expose a use case as a REST service, a SOAP service, a JMS service, ...
+http://camel.apache.org/[Camel] is an enterprise integration framework which includes support for OptaPlanner (starting from Camel 2.13). It can expose a use case as a REST service, a SOAP service, a JMS service, ...
 
 http://camel.apache.org/optaplanner.html[Read the documentation for the camel-optaplanner component.]
 That component works in Karaf too.
@@ -480,7 +480,7 @@ To get decent <<logging,logging of the solver(s)>>, create a file `src/main/reso
 [[skinnyWarOnWildFlyAndJBossEAP]]
 ==== Skinny WAR on WildFly and JBoss EAP
 
-To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
+To deploy an OptaPlanner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
 (just like any other dependency).
 However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment,
 but too heavyweight for frequent redeployments (especially over a slow network connection).
@@ -530,7 +530,7 @@ Let's create an module called __org.optaplanner__:
 [[integrationWithSpringBoot]]
 === Spring Boot
 
-Normally Planner just works on Spring Boot, simply add the `optaplanner-core` dependency.
+Normally OptaPlanner just works on Spring Boot, simply add the `optaplanner-core` dependency.
 If it has trouble finding classpath resources (such as the solver config, score DRL's and domain classes),
 provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>.
 
@@ -544,7 +544,7 @@ none of the DRL rules will fire, due to ClassLoader issues.
 [[integrationWithJPMS]]
 === Java platform module system (Jigsaw)
 
-When using Planner from code on the modulepath (Java 9 and higher),
+When using OptaPlanner from code on the modulepath (Java 9 and higher),
 _open_ your packages that contain your domain objects, DRL files and solver configuration
 _to all modules_ in your `module-info.java` file:
 
@@ -560,7 +560,7 @@ module org.optaplanner.cloudbalancing {
 }
 ----
 
-Otherwise Planner can't reach those classes or files, even if they are exported.
+Otherwise OptaPlanner can't reach those classes or files, even if they are exported.
 
 The package `org.xmlpull.v1` is split between dependencies of XStream.
 A workaround is to patch the `xmlpull` module with the `xpp3_min-1.1.4c.jar` artifact.
@@ -594,7 +594,7 @@ so it can find the classpath resources (such as the solver config, score DRL's a
 
 [NOTE]
 ====
-Planner does _not_ require OSGi.
+OptaPlanner does _not_ require OSGi.
 It works perfectly fine in a normal Java environment too.
 ====
 
@@ -602,10 +602,10 @@ It works perfectly fine in a normal Java environment too.
 [[integrationWithAndroid]]
 === Android
 
-Android is not a complete JVM (because some JDK libraries are missing), but Planner works on Android with <<easyJavaScoreCalculation,easy Java>> or <<incrementalJavaScoreCalculation,incremental Java>> score calculation.
+Android is not a complete JVM (because some JDK libraries are missing), but OptaPlanner works on Android with <<easyJavaScoreCalculation,easy Java>> or <<incrementalJavaScoreCalculation,incremental Java>> score calculation.
 The Drools rule engine does not work on Android yet, so Drools score calculation doesn't work on Android and its dependencies need to be excluded.
 
-*Workaround to use Planner on Android:*
+*Workaround to use OptaPlanner on Android:*
 
 . Add a dependency to the `build.gradle` file in your Android project to exclude `org.drools` and `xmlpull` dependencies:
 +
@@ -625,20 +625,20 @@ dependencies {
 [[integrationWithHumanPlanners]]
 == Integration with human planners (politics)
 
-A good Planner implementation beats any good human planner for non-trivial datasets.
+A good OptaPlanner implementation beats any good human planner for non-trivial datasets.
 Many human planners fail to accept this, often because they feel threatened by an automated system.
 
-But despite that, both can benefit if the human planner becomes the supervisor of Planner:
+But despite that, both can benefit if the human planner becomes the supervisor of OptaPlanner:
 
 * *The human planner defines, validates and tweaks the score function.*
 ** The human planner tweaks the constraint weights of the <<constraintConfiguration, constraint configuration>> in a UI,
 as the business priorities change over time.
 ** When the business changes, the score function often needs to change too.
 The human planner can notify the developers to add, change or remove score constraints.
-* *The human planner is always in control of Planner.*
+* *The human planner is always in control of OptaPlanner.*
 ** As shown in the course scheduling example, the human planner can pin down one or more planning variables to a specific planning value.
-Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human.
-If the human planner pins down all planning variables, he/she sidelines Planner completely.
+Because they are <<immovablePlanningEntities,immovable>>, OptaPlanner does not change them: it optimizes the planning around the enforcements made by the human.
+If the human planner pins down all planning variables, he/she sidelines OptaPlanner completely.
 ** In a prototype implementation, the human planner occasionally uses pinning to intervene,
 but as the implementation matures, this should become obsolete.
 The feature should be kept available as a reassurance for the humans,
@@ -652,17 +652,17 @@ image::Integration/keepTheUserInControl.png[align="center"]
 [[sizingHardwareAndSoftware]]
 == Sizing hardware and software
 
-Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
+Before sizing a OptaPlanner service, first understand the typical behaviour of a `Solver.solve()` call:
 
 image::Integration/sizingHardware.png[align="center"]
 
-Understand these guidelines to decide the hardware for a Planner service:
+Understand these guidelines to decide the hardware for a OptaPlanner service:
 
 * **RAM memory**: Provision plenty, but no need to provide more.
-** The problem dataset, loaded before Planner is called, often consumes the most memory. It depends on the problem scale.
+** The problem dataset, loaded before OptaPlanner is called, often consumes the most memory. It depends on the problem scale.
 *** For example, in the Machine Reassignment example some datasets use over 1GB in memory. But in most examples, they use just a few MB.
-*** If this is a problem, review the domain class structure: remove classes or fields that Planner doesn't need during solving.
-*** Planner usually has up to three solution instances: the internal working solution, the best solution and the old best solution (when it's being replaced). However, these are all a <<cloningASolution,planning clone>> of each other, so many problem fact instances are shared between those solution instances.
+*** If this is a problem, review the domain class structure: remove classes or fields that OptaPlanner doesn't need during solving.
+*** OptaPlanner usually has up to three solution instances: the internal working solution, the best solution and the old best solution (when it's being replaced). However, these are all a <<cloningASolution,planning clone>> of each other, so many problem fact instances are shared between those solution instances.
 ** During solving, the memory is very volatile, because solving creates many short-lived objects. The Garbage Collector deletes these in bulk and therefore needs some heap space as a buffer.
 ** The maximum size of the JVM heap space can be in three states:
 *** **Insufficient**: An `OutOfMemoryException` is thrown (often because the Garbage Collector is using more than 98% of the CPU time).
@@ -686,7 +686,7 @@ Understand these guidelines to decide the hardware for a Planner service:
 *** Distribute the Solver runs across the day (or night). This is especially an opportunity in SaaS that's used across the globe, due to timezones: UK and India can use the same CPU core when scheduling at night.
 ** The SolverManager will take care of the orchestration, especially in those underfunded environments in which solvers (and partitions) are forced to share CPU cores or wait in line.
 * **I/O (network, disk, ...)**: Not used during solving.
-** Planner is not a web server: a solver thread does not block (unlike a servlet thread), each one fully drains a CPU.
+** OptaPlanner is not a web server: a solver thread does not block (unlike a servlet thread), each one fully drains a CPU.
 *** A web server can handle 24 active servlets threads with eight cores without performance loss, because most servlets threads are blocking on I/O.
 *** However, 24 active solver threads with eight cores will cause each solver's <<scoreCalculationSpeed,score calculation speed>> to be three times slower, causing a big performance loss.
 ** Note that calling any I/O during solving, for example a remote service in your score calculation, causes a huge performance loss because it's called thousands of times per second, so it should complete in microseconds. So no good implementation does that.
@@ -699,7 +699,7 @@ Your mileage may vary.
 ** No experimentally proven advice yet (but prefer Linux anyway).
 * JDK
 ** Version: Java 7 can be between 10% and 25% faster than Java 6. But Java 8 however is usually not significantly faster than Java 7.
-** Garbage Collector: ParallelGC (the default in Java 8) can be potentially between 5% and 35% faster than G1GC (the default in Java 9). Unlike web servers, Planner needs a GC focused on throughput, not latency. Use `-XX:+UseParallelGC` to turn on ParallelGC.
+** Garbage Collector: ParallelGC (the default in Java 8) can be potentially between 5% and 35% faster than G1GC (the default in Java 9). Unlike web servers, OptaPlanner needs a GC focused on throughput, not latency. Use `-XX:+UseParallelGC` to turn on ParallelGC.
 * Logging can have a severe impact on performance.
 ** Debug logging `org.drools` can reduce performance by a factor of 7.
 ** Debug logging `org.optaplanner` can be between 0% and 15% slower than info logging. Trace logging can be between 5% and 70% slower than info logging.

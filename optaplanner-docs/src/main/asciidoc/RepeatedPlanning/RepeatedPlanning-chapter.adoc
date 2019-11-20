@@ -44,7 +44,7 @@ Use <<realTimePlanning,_real-time planning_>>.
 
 More CPU time results in a better planning solution.
 
-Planner allows you to start planning earlier, despite unforeseen changes, as the optimization algorithms support planning a solution that has already been partially planned. This is known as repeated planning.
+OptaPlanner allows you to start planning earlier, despite unforeseen changes, as the optimization algorithms support planning a solution that has already been partially planned. This is known as repeated planning.
 
 
 [[backupPlanning]]
@@ -74,7 +74,7 @@ The construction heuristics fills in the newly created gaps (probably with the s
 When there is no feasible solution to assign all planning entities, it is preferable to assign as many entities as possible without breaking hard constraints.
 This is called overconstrained planning.
 
-By default, Planner assigns all planning entities, overloads the planning values, and therefore breaks hard constraints.
+By default, OptaPlanner assigns all planning entities, overloads the planning values, and therefore breaks hard constraints.
 There are two ways to avoid this:
 
 * Use <<nullablePlanningVariable,nullable>> planning variables, so that some entities are unassigned.
@@ -193,7 +193,7 @@ image::RepeatedPlanning/continuousPublishingWithRotation.png[align="center"]
 
 An immovable planning entity doesn't change during solving.
 This is commonly used by users to pin down one or more specific assignments
-and force Planner to schedule around those fixed assignments.
+and force OptaPlanner to schedule around those fixed assignments.
 
 [[pinDownPlanningEntities]]
 ==== Pin down planning entities with `@PlanningPin`
@@ -324,7 +324,7 @@ image::RepeatedPlanning/realTimePlanningVehicleRouting.png[align="center"]
 
 In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55`, and in some cases, after the vehicles already left.
 
-Planner can handle such scenarios with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
+OptaPlanner can handle such scenarios with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
 
 
 [[problemFactChange]]

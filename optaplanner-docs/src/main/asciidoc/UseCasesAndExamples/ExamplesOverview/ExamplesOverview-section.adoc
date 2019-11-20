@@ -1,7 +1,7 @@
 [[examplesOverview]]
 = Examples overview
 
-Planner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
+OptaPlanner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
 
 Some of the examples solve problems that are presented in academic contests. The `Contest` column in the following table lists the contests. It also identifies an example as being either _realistic_ or _unrealistic_ for the purpose of a contest. A _realistic contest_ is _an official, independent contest_:
 
@@ -11,7 +11,7 @@ Some of the examples solve problems that are presented in academic contests. The
 * that expects reproducible results within a specific time limit on specific hardware.
 * that has had serious participation from the academic and/or enterprise Operations Research community.
 
-Realistic contests provide an objective comparison of Planner with competitive software and academic research.
+Realistic contests provide an objective comparison of OptaPlanner with competitive software and academic research.
 
 The source code of all these examples is available in the distribution zip under [path]_examples/sources_
 and also in git under [path]_optaplanner/optaplanner-examples_.

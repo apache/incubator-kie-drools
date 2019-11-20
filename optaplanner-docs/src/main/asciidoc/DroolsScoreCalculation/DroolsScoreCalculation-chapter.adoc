@@ -77,7 +77,7 @@ Optionally, you can also set drools configuration properties:
 
 To enable property reactive by default, without a `@propertyReactive` on the domain classes,
 add `<drools.propertySpecific>ALWAYS</drools.propertySpecific>` in there.
-Otherwise Planner automatically changes the Drools default to `ALLOWED` so property reactive is not active by default.
+Otherwise OptaPlanner automatically changes the Drools default to `ALLOWED` so property reactive is not active by default.
 
 
 [[droolsScoreCalculationScoreDrlFile]]

@@ -335,7 +335,7 @@ Advanced configuration:
 A Tabu Search acceptor should be combined with a high ``acceptedCountLimit``, such as ``1000``.
 ====
 
-Planner implements several tabu types:
+OptaPlanner implements several tabu types:
 
 * _Planning entity tabu_ (recommended) makes the planning entities of recent steps tabu. For example, for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.
 +

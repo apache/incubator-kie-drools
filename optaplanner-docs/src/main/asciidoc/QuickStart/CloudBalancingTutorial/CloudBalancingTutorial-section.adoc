@@ -29,9 +29,9 @@ image::QuickStart/CloudBalancingTutorial/cloudBalanceUseCase.png[align="center"]
 The simple algorithm used here is the _First Fit Decreasing_ algorithm, which assigns the bigger processes first and assigns the smaller processes to the remaining space.
 As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
 
-Planner does find the more optimal solution by using additional, smarter algorithms.
+OptaPlanner does find the more optimal solution by using additional, smarter algorithms.
 It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints).
-So let's see how Planner can be used in this scenario.
+So let's see how OptaPlanner can be used in this scenario.
 
 Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
 

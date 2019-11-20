@@ -1705,7 +1705,7 @@
            y="150.00014"
            style="font-size:14.66666698px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4308-6"
-         style="font-size:14.66666698px;line-height:1.25">Planner works with plain Java objects that are read/written to *.xlsx</flowPara></flowRoot>    <image
+         style="font-size:14.66666698px;line-height:1.25">OptaPlanner works with plain Java objects that are read/written to *.xlsx</flowPara></flowRoot>    <image
        y="602.36218"
        x="40"
        id="image441"

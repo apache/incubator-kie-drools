@@ -19,21 +19,21 @@ A separate object in the domain model must represent a full data set of problem,
 * ``Computer``: represents a computer with certain hardware and maintenance costs.
 +
 In this example, the sample instances for the `Computer` class are: `cpuPower`, `memory`, `networkBandwidth`, `cost`.
-* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner.
+* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by OptaPlanner.
 +
 Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
 * ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set.
 +
-For an object representing the full data set and solution, a sample instance holding the _score_ must be present. Planner can calculate and compare the scores for different solutions; the solution with the highest score is the optimal solution. Therefore, the sample instance for `CloudBalance` is `score`.
+For an object representing the full data set and solution, a sample instance holding the _score_ must be present. OptaPlanner can calculate and compare the scores for different solutions; the solution with the highest score is the optimal solution. Therefore, the sample instance for `CloudBalance` is `score`.
 
 . Determine which relationships (or fields) change during planning.
 
-* _Planning entity_: The class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because Planner can assign processes to computers.
-* _Problem fact_: A class representing input data that Planner can not change.
+* _Planning entity_: The class (or classes) that OptaPlanner can change during solving. In this example, it is the class ``Process``, because OptaPlanner can assign processes to computers.
+* _Problem fact_: A class representing input data that OptaPlanner can not change.
 * _Planning variable_: The property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
 * _Planning solution_: The class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
 
-In the UML class diagram below, the Planner concepts are already annotated:
+In the UML class diagram below, the OptaPlanner concepts are already annotated:
 
 image::QuickStart/CloudBalancingDomainModel/cloudBalanceClassDiagram.png[align="center"]
 
@@ -68,11 +68,11 @@ public class CloudComputer ... {
 
 The `Process` class is particularly important. It is the class that is modified during solving.
 
-We need to tell Planner that it can change the property ``computer``. To do this:
+We need to tell OptaPlanner that it can change the property ``computer``. To do this:
 . Annotate the class with `@PlanningEntity`.
 . Annotate the getter `getComputer()` with ``@PlanningVariable``.
 
-Of course, the property `computer` needs a setter too, so Planner can change it during solving.
+Of course, the property `computer` needs a setter too, so OptaPlanner can change it during solving.
 
 .CloudProcess.java
 ====
@@ -108,7 +108,7 @@ public class CloudProcess ... {
 ----
 ====
 
-* Planner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
+* OptaPlanner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
 
 * The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on `CloudBalance.getComputerList()`.
 
@@ -126,15 +126,15 @@ The `CloudBalance` class has a [path]_@PlanningSolution_
 
 * It holds a list of all computers and a list of all processes.
 * It represents both the planning problem and (if it is initialized) the planning solution.
-* To save a solution, Planner initializes a new instance of the class.
+* To save a solution, OptaPlanner initializes a new instance of the class.
 
-. The `processList` property holds a list of processes. Planner can change the processes, allocating them to different computers. Therefore, a process is a planing entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+. The `processList` property holds a list of processes. OptaPlanner can change the processes, allocating them to different computers. Therefore, a process is a planing entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
 
-. The `computerList` property holds a list of computers. Planner can not change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that Planner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
+. The `computerList` property holds a list of computers. OptaPlanner can not change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
 
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
-Planner automatically updates it when it calculates a `Score` for a solution instance. Therefore, this property needs a setter.
+OptaPlanner automatically updates it when it calculates a `Score` for a solution instance. Therefore, this property needs a setter.
 
 
 .CloudBalance.java

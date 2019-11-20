@@ -67,7 +67,7 @@ If the optimistic bound of a node is lower or equal to the global pessimistic bo
 ====
 Academic papers use the term lower bound instead of optimistic bound (and the term upper bound instead of pessimistic bound), because they minimize the score.
 
-Planner maximizes the score (because it supports combining negative and positive constraints). Therefore, for clarity, it uses different terms, as it would be confusing to use the term lower bound for a bound which is always higher.
+OptaPlanner maximizes the score (because it supports combining negative and positive constraints). Therefore, for clarity, it uses different terms, as it would be confusing to use the term lower bound for a bound which is always higher.
 ====
 
 For example: at index 14, it sets the global pessimistic bound to ``-2``.

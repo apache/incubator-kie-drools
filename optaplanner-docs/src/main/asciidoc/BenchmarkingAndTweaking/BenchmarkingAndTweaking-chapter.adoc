@@ -11,12 +11,12 @@
 [[findTheBestSolverConfiguration]]
 == Find the best solver configuration
 
-Planner supports several optimization algorithms, so you're probably wondering which is the best one?
+OptaPlanner supports several optimization algorithms, so you're probably wondering which is the best one?
 Although some optimization algorithms generally perform better than others, it really depends on your problem domain.
 Most solver phases have parameters which can be tweaked.
 Those parameters can influence the results a lot, even though most solver phases work pretty well out-of-the-box.
 
-Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with different settings
+Luckily, OptaPlanner includes a benchmarker, which allows you to play out different solver phases with different settings
 against each other in development, so you can use the best configuration for your planning problem in production.
 
 image::BenchmarkingAndTweaking/benchmarkOverview.png[align="center"]
@@ -154,7 +154,7 @@ This way the generated files are not bloating your source control and they aren'
 For example in git, it should be added to ``.gitignore``. Usually that directory is called ``local``.
 ====
 
-If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker does not fail-fast (unlike everything else in Planner).
+If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker does not fail-fast (unlike everything else in OptaPlanner).
 Instead, the Benchmarker continues to run all other benchmarks, write the benchmark report and then fail (if there is at least one failing single benchmark).
 The failing benchmarks are clearly marked as such in the benchmark report.
 
@@ -919,7 +919,7 @@ Leave some processors unused for garbage collection and other processes.
 The following ``parallelBenchmarkCount``s are supported:
 
 * `1` (default): Run all benchmarks sequentially.
-* ``AUTO``: Let Planner decide how many benchmarks to run in parallel. This formula is based on experience. It's recommended to prefer this over the other parallel enabling options.
+* ``AUTO``: Let OptaPlanner decide how many benchmarks to run in parallel. This formula is based on experience. It's recommended to prefer this over the other parallel enabling options.
 * Static number: The number of benchmarks to run in parallel.
 +
 [source,xml,options="nowrap"]
@@ -1118,7 +1118,7 @@ In the GUI, select the interesting benchmarks and click the button to generate t
 
 [NOTE]
 ====
-All the input reports which are being merged should have been generated with the same Planner version (excluding hotfix differences) as the ``BenchmarkAggregator``.
-Using reports from different Planner major or minor versions are not guaranteed to succeed and deliver correct information,
+All the input reports which are being merged should have been generated with the same OptaPlanner version (excluding hotfix differences) as the ``BenchmarkAggregator``.
+Using reports from different OptaPlanner major or minor versions are not guaranteed to succeed and deliver correct information,
 because the benchmark report data structure often changes.
 ====
