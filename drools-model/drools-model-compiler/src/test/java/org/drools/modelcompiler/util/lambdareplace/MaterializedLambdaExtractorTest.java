@@ -18,6 +18,7 @@ public class MaterializedLambdaExtractorTest {
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
                 "import static rulename.*; " +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "public enum LambdaExtractor133AF281814F16840FE105EF6D339F8A implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
                 " INSTANCE; \n" +

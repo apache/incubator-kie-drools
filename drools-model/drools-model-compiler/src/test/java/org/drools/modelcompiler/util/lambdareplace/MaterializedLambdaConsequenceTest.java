@@ -18,6 +18,7 @@ public class MaterializedLambdaConsequenceTest {
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
                 "import static rulename.*; " +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "public enum LambdaConsequence2FABA51719447471EAF65717A3CB3A94 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 "INSTANCE;\n" +
