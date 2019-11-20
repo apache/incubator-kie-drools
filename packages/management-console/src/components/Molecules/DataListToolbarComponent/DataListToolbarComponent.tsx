@@ -12,12 +12,14 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface IOwnProps {
   isComplete: boolean;
   isActive: boolean;
   isAborted: boolean;
+  isError:boolean;
+  isSuspended:boolean;
   checkedArray: any;
   handleChange: any;
   filterClick: any;
@@ -28,12 +30,15 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
   isActive,
   isComplete,
   isAborted,
+  isError,
+  isSuspended,
   handleChange,
   checkedArray,
   filterClick,
   removeCheck
 }) => {
-  const [chipGroups, setchipGroups] = useState([]);
+
+  const [chipGroups, setchipGroups] = useState([{category: 'Status',chips: ['ACTIVE']}]);
   const [isOpen, setisOpen] = useState(false);
 
   const dropDownList = [
@@ -58,7 +63,7 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
       />
     </DropdownItem>,
     <DropdownItem key="link3">
-      <Checkbox label="ERROR" aria-label="controlled checkbox example" id="check-3" name="isErrorChecked" />
+      <Checkbox label="ERROR" aria-label="controlled checkbox example" id="check-3" name="isErrorChecked" onChange={handleChange} isChecked={isError}/>
     </DropdownItem>,
     <DropdownItem key="link4">
       <Checkbox
@@ -71,7 +76,7 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
       />
     </DropdownItem>,
     <DropdownItem key="link5">
-      <Checkbox label="SUSPENDED" aria-label="controlled checkbox example" id="check-5" name="check5" />
+      <Checkbox label="SUSPENDED" aria-label="controlled checkbox example" id="check-5" name="isSuspendedChecked" onChange={handleChange} isChecked={isSuspended}/>
     </DropdownItem>
   ];
 
@@ -83,12 +88,9 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
   };
   const onFilterClick = () => {
     filterClick();
-    let chipArray = chipGroups.slice();
-    chipArray = [];
-    chipArray.push({
-      category: 'Status',
-      chips: checkedArray
-    });
+    let tempArr =[];
+    tempArr=checkedArray.slice();
+    const chipArray = [{category: 'Status', chips: tempArr}]
     setchipGroups(chipArray);
   };
   const deleteItem = id => {
@@ -105,7 +107,6 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
           setchipGroups(copyOfChipGroups);
         }
       }
-      filterClick();
       removeCheck(id);
     }
   };

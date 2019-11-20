@@ -139,7 +139,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
         query: GET_CHILD_INSTANCES,
         variables: {
           instanceId: [instanceID]
-        }
+        },
+        fetchPolicy:'network-only'
       });
       setchildList(data['data']);
       setisLoaded(true);
@@ -262,7 +263,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
               return (
                 <DataListItemComponent
                   id={index}
-                  key={index}
+                  key={child.id}
                   instanceState={child.state}
                   instanceID={child.id}
                   processID={child.processId}
