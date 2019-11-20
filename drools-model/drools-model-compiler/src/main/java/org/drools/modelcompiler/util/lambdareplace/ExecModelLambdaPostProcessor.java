@@ -4,42 +4,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-public class ExecModelLambdaPostProcessor {
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.EXPR_CALL;
 
-    private final static String EXPR_CALL = "expr";
-    private final static String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
-    private final static String D_ALPHA_INDEXED_BY_CALL = "D.alphaIndexedBy";
-    private final static String D_ON_CALL = "D.on";
-    private final static String EXECUTE_CALL = "execute";
-    private final static String TEST_CALL = "test";
-    private MaterializedLambdaPredicate materializedLambdaPredicate;
+public class ExecModelLambdaPostProcessor {
 
     Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private String packageName;
     private String ruleClassName;
-    private Statement inputDSL;
 
     public PostProcessedExecModel convertLambdas(String packageName, String ruleClassName, Statement inputDSL) {
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
-        this.inputDSL = inputDSL;
         Statement clone = inputDSL.clone();
 
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
                     .forEach(this::replacePredicateInExpr);
 
-            clone.findAll(MethodCallExpr.class, mc -> isAlphaIndexedBy(mc))
+            clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::replaceExtractorInAlphaIndexedBy);
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
@@ -50,11 +42,6 @@ public class ExecModelLambdaPostProcessor {
             System.out.println(e);
             return new PostProcessedExecModel(inputDSL);
         }
-    }
-
-    private boolean isAlphaIndexedBy(MethodCallExpr mc) {
-        return ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString()) ||
-                D_ALPHA_INDEXED_BY_CALL.equals(mc.getNameAsString());
     }
 
     private void replacePredicateInExpr(MethodCallExpr methodCallExpr) {
