@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.infinispan.listener.CacheObjectCreatedListener;
 import org.kie.kogito.index.infinispan.listener.CacheObjectRemovedListener;
 import org.kie.kogito.index.infinispan.listener.CacheObjectUpdatedListener;
+import org.kie.kogito.index.infinispan.query.InfinispanQuery;
+import org.kie.kogito.index.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +39,11 @@ public class CacheImpl<K, V> implements Cache<K, V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheImpl.class);
 
     private RemoteCache<K, V> delegate;
+    private String rootType;
 
-    public CacheImpl(RemoteCache<K, V> delegate) {
+    public CacheImpl(RemoteCache<K, V> delegate, String rootType) {
         this.delegate = delegate;
+        this.rootType = rootType;
     }
 
     @Override
@@ -187,5 +191,15 @@ public class CacheImpl<K, V> implements Cache<K, V> {
 
     public RemoteCache<K, V> getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public String getRootType() {
+        return rootType;
+    }
+
+    @Override
+    public Query<V> query() {
+        return new InfinispanQuery<>(delegate, rootType);
     }
 }

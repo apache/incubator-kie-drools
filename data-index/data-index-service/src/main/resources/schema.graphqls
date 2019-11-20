@@ -1,130 +1,280 @@
 scalar DateTime
 
 schema {
-  query: Query
-  subscription: Subscription
-}
-
-type ProcessInstance {
-  id: String!
-  processId: String!
-  processName: String
-  parentProcessInstanceId: String
-  rootProcessInstanceId: String
-  rootProcessId: String
-  roles: [String!]
-  state: ProcessInstanceState!
-  endpoint: String!
-  nodes: [NodeInstance!]!
-  variables: String
-  start: DateTime!
-  end: DateTime
-  childProcessInstanceId: [String!]
-}
-
-type ProcessInstanceMeta {
-  id: String!
-  processId: String!
-  processName: String
-  parentProcessInstanceId: String
-  rootProcessInstanceId: String
-  rootProcessId: String
-  roles: [String!]
-  state: ProcessInstanceState!
-  endpoint: String!
-  start: DateTime!
-  end: DateTime
-}
-
-enum ProcessInstanceState {
-  PENDING,
-  ACTIVE,
-  COMPLETED,
-  ABORTED,
-  SUSPENDED,
-  ERROR
-}
-
-type NodeInstance {
-  id: String!
-  name: String!
-  type: String!
-  enter: DateTime!
-  exit: DateTime
-  definitionId: String!
-  nodeId: String!
+    query: Query
+    subscription: Subscription
 }
 
 type Query {
-  ProcessInstances(filter: ProcessInstanceFilter): [ProcessInstance]
-  UserTaskInstances(filter: UserTaskInstanceFilter):  [UserTaskInstance]
+    ProcessInstances(where: ProcessInstanceArgument, orderBy: ProcessInstanceOrderBy, pagination: Pagination): [ProcessInstance]
+    UserTaskInstances(where: UserTaskInstanceArgument, orderBy: UserTaskInstanceOrderBy, pagination: Pagination):  [UserTaskInstance]
 }
 
-input ProcessInstanceFilter {
-  state: [ProcessInstanceState!]
-  id: [String!]
-  parentProcessInstanceId: [String]
-  rootProcessInstanceId: [String]
-  processId: [String!]
-  limit: Int
-  offset: Int
+type ProcessInstance {
+    id: String!
+    processId: String!
+    processName: String
+    parentProcessInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    roles: [String!]
+    state: ProcessInstanceState!
+    endpoint: String!
+    nodes: [NodeInstance!]!
+    variables: String
+    start: DateTime!
+    end: DateTime
+    childProcessInstanceId: [String!]
+}
+
+type ProcessInstanceMeta {
+    id: String!
+    processId: String!
+    processName: String
+    parentProcessInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    roles: [String!]
+    state: ProcessInstanceState!
+    endpoint: String!
+    start: DateTime!
+    end: DateTime
+}
+
+enum ProcessInstanceState {
+    PENDING,
+    ACTIVE,
+    COMPLETED,
+    ABORTED,
+    SUSPENDED,
+    ERROR
+}
+
+type NodeInstance {
+    id: String!
+    name: String!
+    type: String!
+    enter: DateTime!
+    exit: DateTime
+    definitionId: String!
+    nodeId: String!
+}
+
+input ProcessInstanceOrderBy {
+    processId: OrderBy
+    processName: OrderBy
+    rootProcessId: OrderBy
+    state: OrderBy
+    start: OrderBy
+    end: OrderBy
+}
+
+input ProcessInstanceArgument {
+    and: [ProcessInstanceArgument!]
+    or: [ProcessInstanceArgument!]
+    id: IdArgument
+    processId: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    state: ProcessInstanceStateArgument
+    nodes: NodeInstanceArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+}
+
+input ProcessInstanceMetaArgument {
+    id: IdArgument
+    processId: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    state: ProcessInstanceStateArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+}
+
+input NodeInstanceArgument {
+    id: IdArgument
+    name: StringArgument
+    definitionId: StringArgument
+    nodeId: StringArgument
+    type: StringArgument
+    enter: DateArgument
+    exit: DateArgument
+}
+
+input StringArrayArgument {
+    contains: String
+    containsAll: [String!]
+    containsAny: [String!]
+    isNull: Boolean
+}
+
+input IdArgument {
+    in: [String!]
+    equal: String
+    isNull: Boolean
+}
+
+input StringArgument {
+    in: [String!]
+    like: String
+    isNull: Boolean
+    equal: String
+}
+
+input BooleanArgument {
+    isNull: Boolean
+    equal: Boolean
+}
+
+input NumericArgument {
+    in: [Int!]
+    isNull: Boolean
+    equal: Int
+    greaterThan: Int
+    greaterThanEqual: Int
+    lessThan: Int
+    lessThanEqual: Int
+    between: NumericRange
+}
+
+input NumericRange {
+    from: Int!
+    to: Int!
+}
+
+input DateArgument {
+    isNull: Boolean
+    equal: DateTime
+    greaterThan: DateTime
+    greaterThanEqual: DateTime
+    lessThan: DateTime
+    lessThanEqual: DateTime
+    between: DateRange
+}
+
+input DateRange {
+    from: DateTime!
+    to: DateTime!
+}
+
+input ProcessInstanceStateArgument {
+    equal: ProcessInstanceState
+    in: [ProcessInstanceState]
 }
 
 type UserTaskInstance {
-  id: String!
-  description: String
-  name: String
-  priority: String
-  processInstanceId: String!
-  processId: String!
-  rootProcessInstanceId: String
-  rootProcessId: String
-  state: String!
-  actualOwner: String
-  adminGroups: [String!]
-  adminUsers: [String!]
-  completed: DateTime
-  started: DateTime!
-  excludedUsers: [String!]
-  potentialGroups: [String!]
-  potentialUsers: [String!]
-  inputs: String
-  outputs: String
-  referenceName: String 
+    id: String!
+    description: String
+    name: String
+    priority: String
+    processInstanceId: String!
+    processId: String!
+    rootProcessInstanceId: String
+    rootProcessId: String
+    state: String!
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    completed: DateTime
+    started: DateTime!
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    inputs: String
+    outputs: String
+    referenceName: String
 }
 
 type UserTaskInstanceMeta {
-  id: String!
-  description: String
-  name: String
-  priority: String
-  processInstanceId: String!
-  state: String!
-  actualOwner: String
-  adminGroups: [String!]
-  adminUsers: [String!]
-  completed: DateTime
-  started: DateTime!
-  excludedUsers: [String!]
-  potentialGroups: [String!]
-  potentialUsers: [String!]
-  referenceName: String
+    id: String!
+    description: String
+    name: String
+    priority: String
+    processInstanceId: String!
+    state: String!
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    completed: DateTime
+    started: DateTime!
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    referenceName: String
 }
 
-input UserTaskInstanceFilter {
-  state: [String!]
-  id: [String!]
-  processInstanceId: [String!]
-  actualOwner: [String!]
-  potentialUsers: [String!]
-  potentialGroups: [String!]
-  limit: Int
-  offset: Int
+input UserTaskInstanceArgument {
+    and: [UserTaskInstanceArgument!]
+    or: [UserTaskInstanceArgument!]
+    state: StringArgument
+    id: IdArgument
+    description: StringArgument
+    name: StringArgument
+    priority: StringArgument
+    processInstanceId: IdArgument
+    actualOwner: StringArgument
+    potentialUsers: StringArrayArgument
+    potentialGroups: StringArrayArgument
+    excludedUsers: StringArrayArgument
+    adminGroups: StringArrayArgument
+    adminUsers: StringArrayArgument
+    completed: DateArgument
+    started: DateArgument
+    referenceName: StringArgument
+}
+
+input UserTaskInstanceMetaArgument {
+    state: StringArgument
+    id: IdArgument
+    description: StringArgument
+    name: StringArgument
+    priority: StringArgument
+    processInstanceId: IdArgument
+    actualOwner: StringArgument
+    potentialUsers: StringArrayArgument
+    potentialGroups: StringArrayArgument
+    excludedUsers: StringArrayArgument
+    adminGroups: StringArrayArgument
+    adminUsers: StringArrayArgument
+    completed: DateArgument
+    started: DateArgument
+    referenceName: StringArgument
+}
+
+input UserTaskInstanceOrderBy {
+    state: OrderBy
+    actualOwner: OrderBy
+    description: OrderBy
+    name: OrderBy
+    priority: OrderBy
+    processInstanceId: OrderBy
+    completed: OrderBy
+    started: OrderBy
+    referenceName: OrderBy
 }
 
 type Subscription {
-  ProcessInstanceAdded: ProcessInstance!
-  ProcessInstanceUpdated: ProcessInstance!
-  UserTaskInstanceAdded: UserTaskInstance!
-  UserTaskInstanceUpdated: UserTaskInstance!
+    ProcessInstanceAdded: ProcessInstance!
+    ProcessInstanceUpdated: ProcessInstance!
+    UserTaskInstanceAdded: UserTaskInstance!
+    UserTaskInstanceUpdated: UserTaskInstance!
+}
+
+enum OrderBy {
+    ASC,
+    DESC
+}
+
+input Pagination {
+    limit: Int
+    offset: Int
 }

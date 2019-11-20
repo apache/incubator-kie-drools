@@ -26,7 +26,5 @@ public interface CacheService {
 
     Cache<String, UserTaskInstance> getUserTaskInstancesCache();
 
-    Cache<String, String> getProcessIdModelCache();
-
     Cache<String, ObjectNode> getDomainModelCache(String processId);
 }

@@ -16,9 +16,11 @@
 
 package org.kie.kogito.index.graphql;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +36,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
@@ -45,18 +48,23 @@ import io.vertx.axle.core.eventbus.EventBus;
 import io.vertx.axle.core.eventbus.Message;
 import io.vertx.axle.core.eventbus.MessageConsumer;
 import io.vertx.axle.core.eventbus.MessageProducer;
+import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
+import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
+import org.kie.kogito.index.json.DataIndexParsingException;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.query.ProcessInstanceFilter;
-import org.kie.kogito.index.query.QueryService;
+import org.kie.kogito.index.query.Query;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+import static org.kie.kogito.index.query.QueryFilterFactory.equalTo;
 
 @ApplicationScoped
 public class GraphQLSchemaManager {
@@ -66,9 +74,6 @@ public class GraphQLSchemaManager {
     private static final String PROCESS_INSTANCE_UPDATED = "ProcessInstanceUpdated";
     private static final String USER_TASK_INSTANCE_ADDED = "UserTaskInstanceAdded";
     private static final String USER_TASK_INSTANCE_UPDATED = "UserTaskInstanceUpdated";
-
-    @Inject
-    QueryService queryService;
 
     @Inject
     CacheService cacheService;
@@ -82,6 +87,12 @@ public class GraphQLSchemaManager {
     @PostConstruct
     public void setup() {
         schema = createSchema();
+        GraphQLQueryParserRegistry.get().registerParsers(
+                (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
+                (GraphQLInputObjectType) schema.getType("ProcessInstanceMetaArgument"),
+                (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
+                (GraphQLInputObjectType) schema.getType("UserTaskInstanceMetaArgument")
+        );
     }
 
     @PreDestroy
@@ -125,18 +136,43 @@ public class GraphQLSchemaManager {
 
     private Set<String> getChildProcessInstancesValues(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
-        Collection<ProcessInstance> pil = queryService.queryProcessInstances(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(source.getId())).build());
+        Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
+        query.filter(singletonList(equalTo("parentProcessInstanceId", source.getId())));
+        Collection<ProcessInstance> pil = query.execute();
         return pil.stream().map(pi -> pi.getId()).collect(Collectors.toSet());
     }
 
     private Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
-        Map<String, Object> filter = env.getArgument("filter");
-        return queryService.queryProcessInstances(new ProcessInstanceFilterMapper().apply(filter));
+        return executeAdvancedQueryForCache(cacheService.getProcessInstancesCache(), env);
+    }
+
+    private <T> List<T> executeAdvancedQueryForCache(Cache<String, T> cache, DataFetchingEnvironment env) {
+        String inputTypeName = env.getFieldDefinition().getArgument("where").getType().getName();
+
+        Query<T> query = cache.query();
+
+        Map<String, Object> where = env.getArgument("where");
+        query.filter(GraphQLQueryParserRegistry.get().getParser(inputTypeName).apply(where));
+
+        query.sort(new GraphQLQueryOrderByParser().apply(env));
+
+        Map<String, Integer> pagination = env.getArgument("pagination");
+        if (pagination != null) {
+            Integer limit = pagination.get("limit");
+            if (limit != null) {
+                query.limit(limit);
+            }
+            Integer offset = pagination.get("offset");
+            if (offset != null) {
+                query.offset(offset);
+            }
+        }
+
+        return query.execute();
     }
 
     private Collection<UserTaskInstance> getUserTaskInstancesValues(DataFetchingEnvironment env) {
-        Map<String, Object> filter = env.getArgument("filter");
-        return queryService.queryUserTaskInstances(new UserTaskInstanceFilterMapper().apply(filter));
+        return executeAdvancedQueryForCache(cacheService.getUserTaskInstancesCache(), env);
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
@@ -194,8 +230,14 @@ public class GraphQLSchemaManager {
 
     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {
         return env -> {
-            String query = env.getArgument("query");
-            return queryService.queryDomain(processId, query);
+            List result = executeAdvancedQueryForCache(cacheService.getDomainModelCache(processId), env);
+            return (Collection<ObjectNode>) result.stream().map(json -> {
+                try {
+                    return (ObjectNode) getObjectMapper().readTree(json.toString());
+                } catch (IOException e) {
+                    throw new DataIndexParsingException("Failed to parse JSON: " + e.getMessage(), e);
+                }
+            }).collect(toList());
         };
     }
 

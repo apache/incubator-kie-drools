@@ -19,6 +19,8 @@ package org.kie.kogito.index.cache;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
+import org.kie.kogito.index.query.Query;
+
 public interface Cache<K, V> extends ConcurrentMap<K, V> {
 
     void addObjectCreatedListener(Consumer<V> consumer);
@@ -26,4 +28,8 @@ public interface Cache<K, V> extends ConcurrentMap<K, V> {
     void addObjectUpdatedListener(Consumer<V> consumer);
 
     void addObjectRemovedListener(Consumer<K> consumer);
+    
+    Query<V> query();
+    
+    String getRootType();
 }

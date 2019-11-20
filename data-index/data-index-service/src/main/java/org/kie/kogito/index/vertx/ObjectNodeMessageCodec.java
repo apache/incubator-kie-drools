@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
+import org.kie.kogito.index.json.DataIndexParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class ObjectNodeMessageCodec implements MessageCodec<ObjectNode, ObjectNo
             buffer.appendBytes(getObjectMapper().writeValueAsBytes(node));
         } catch (IOException ex) {
             LOGGER.error("Error trying to parse ObjectNode to byte[]: {}", ex.getMessage(), ex);
-            throw new RuntimeException(ex);
+            throw new DataIndexParsingException("Error trying to parse ObjectNode to byte[]: " + ex.getMessage(), ex);
         }
     }
 
@@ -49,7 +50,7 @@ public class ObjectNodeMessageCodec implements MessageCodec<ObjectNode, ObjectNo
             return (ObjectNode) getObjectMapper().readTree(buffer.getBytes());
         } catch (IOException ex) {
             LOGGER.error("Error trying to parse byte[] to ObjectNode: {}", ex.getMessage(), ex);
-            throw new RuntimeException(ex);
+            throw new DataIndexParsingException("Error trying to parse byte[] to ObjectNode: " + ex.getMessage(), ex);
         }
     }
 

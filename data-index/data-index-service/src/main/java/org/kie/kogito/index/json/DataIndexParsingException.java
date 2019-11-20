@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.query;
+package org.kie.kogito.index.json;
 
-import java.util.Collection;
+public class DataIndexParsingException extends RuntimeException {
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
-
-public interface QueryService {
-
-    Collection<ObjectNode> queryDomain(String domain, String query);
-
-    Collection<ProcessInstance> queryProcessInstances(ProcessInstanceFilter filter);
-
-    Collection<UserTaskInstance> queryUserTaskInstances(UserTaskInstanceFilter filter);
+    public DataIndexParsingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

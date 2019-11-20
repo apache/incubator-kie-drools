@@ -52,14 +52,14 @@ public final class TestUtils {
     }
 
     public static String getDealsProtoBufferFile() throws Exception {
-        return getProtoFile("deals.proto");
+        return readFileContent("deals.proto");
     }
 
     public static String getTravelsProtoBufferFile() throws Exception {
-        return getProtoFile("travels.proto");
+        return readFileContent("travels.proto");
     }
 
-    private static String getProtoFile(String file) throws URISyntaxException, IOException {
+    public static String readFileContent(String file) throws URISyntaxException, IOException {
         Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
         return new String(Files.readAllBytes(path));
     }
@@ -87,6 +87,7 @@ public final class TestUtils {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
+        pi.setProcessName("kogito");
         pi.setRootProcessInstanceId(rootProcessInstanceId);
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);

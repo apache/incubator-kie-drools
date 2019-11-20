@@ -94,7 +94,7 @@ public class DateTimeScalarTypeTest {
             dateTimeScalar.getCoercing().serialize("test");
             fail("Method should throw CoercingSerializeException");
         } catch (CoercingSerializeException ex) {
-            assertThat(ex.getMessage()).isEqualTo("Invalid RFC3339 value : 'test'. because of : 'Text 'test' could not be parsed at index 0'");
+            assertThat(ex.getMessage()).isEqualTo("Invalid ISO-8601 value : 'test'. because of : 'Text 'test' could not be parsed at index 0'");
         }
     }
 

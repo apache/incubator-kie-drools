@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,28 +39,25 @@ import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.infinispan.protostream.ProtobufService;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.kie.kogito.index.model.ProcessInstanceState;
-import org.kie.kogito.index.query.ProcessInstanceFilter;
-import org.kie.kogito.index.query.UserTaskInstanceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasItems;
-import static org.kie.kogito.index.GraphQLUtils.toGraphQLString;
+import static org.kie.kogito.index.GraphQLUtils.*;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
+import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -173,10 +169,10 @@ public class IndexingServiceTest {
         KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { and : [ { processInstances : {  id : { equal : \\\"" + processInstanceId + "\\\" } } }, { traveller : { firstName : { like : \\\"Ma*\\\"} } } ] }){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint } } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -197,12 +193,11 @@ public class IndexingServiceTest {
         subProcessStartEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
         indexProcessCloudEvent(subProcessStartEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(subProcessInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), subProcessStartEvent);
-
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), startEvent, subProcessInstanceId);
+        validateProcessInstance(getProcessInstanceByIdAndState(subProcessInstanceId, ACTIVE), subProcessStartEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent, subProcessInstanceId);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.traveller.firstName:'ma*' and t.processInstances.id:'" + subProcessInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { processInstances : {  id : { equal : \\\"" + subProcessInstanceId + "\\\" } }, traveller : { firstName : { like : \\\"Ma*\\\" } } }){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint } } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -230,19 +225,19 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
 
-        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, null, null, null);
+        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         indexProcessCloudEvent(endEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
 
         KogitoUserTaskCloudEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId, processInstanceId, processId, state);
 
         indexUserTaskCloudEvent(firstUserTaskEvent);
 
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(firstTaskId)).build()), firstUserTaskEvent);
+        validateUserTaskInstance(getUserTaskInstanceById(firstTaskId), firstUserTaskEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.userTasks.id:'" + firstTaskId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{Travels( where: { userTasks : { id : { equal : \\\"" + firstTaskId + "\\\" } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -279,10 +274,10 @@ public class IndexingServiceTest {
 
         indexUserTaskCloudEvent(secondUserTaskEvent);
 
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(secondTaskId)).build()), secondUserTaskEvent);
+        validateUserTaskInstance(getUserTaskInstanceById(secondTaskId), secondUserTaskEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.userTasks.id:'" + secondTaskId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{Travels( where: { userTasks : { id : { equal : \\\"" + secondTaskId + "\\\" } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -372,7 +367,7 @@ public class IndexingServiceTest {
         consumer.onUserTaskInstanceDomainEvent(userTaskEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.userTasks.id:'" + taskId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{ Travels( where: { userTasks : { id : { equal : \\\"" + taskId + "\\\" } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -392,7 +387,7 @@ public class IndexingServiceTest {
         consumer.onProcessInstanceDomainEvent(processEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } } ){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -431,7 +426,7 @@ public class IndexingServiceTest {
         consumer.onProcessInstanceDomainEvent(processEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } } ){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -450,7 +445,7 @@ public class IndexingServiceTest {
         consumer.onUserTaskInstanceDomainEvent(userTaskEvent).toCompletableFuture().get();
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.userTasks.id:'" + taskId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{ Travels( where: { userTasks : { id : { equal : \\\"" + taskId + "\\\" } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -494,7 +489,7 @@ public class IndexingServiceTest {
         ).get();
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end }, userTasks { id, description, name, priority, processInstanceId, actualOwner } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -532,12 +527,13 @@ public class IndexingServiceTest {
         KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), startEvent);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.ACTIVE.ordinal())).build()), startEvent);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).processId(singletonList(processId)).build()), startEvent);
+        validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndProcessId(processInstanceId, processId), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndStart(processInstanceId, formatZonedDateTime(startEvent.getData().getStart())), startEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
+                .body("{ \"query\" : \"{ Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } } ){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -554,15 +550,15 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, null, null, null);
+        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         endEvent.getData().setEnd(ZonedDateTime.now());
         endEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
         indexProcessCloudEvent(endEvent);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).state(singletonList(ProcessInstanceState.COMPLETED.ordinal())).build()), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Travels(query: \\\"from org.acme.travels.travels.Travels t where t.processInstances.id:'" + processInstanceId + "'\\\"){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
+                .body("{ \"query\" : \"{Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } }){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
@@ -582,13 +578,12 @@ public class IndexingServiceTest {
         KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ProcessInstanceState.ACTIVE, processInstanceId, processId, processInstanceId);
         indexProcessCloudEvent(event);
 
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().parentProcessInstanceId(singletonList(processInstanceId)).build()), event);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).parentProcessInstanceId(singletonList(null)).build()), endEvent);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).parentProcessInstanceId(emptyList()).build()), endEvent);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().rootProcessInstanceId(singletonList(processInstanceId)).build()), event);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).rootProcessInstanceId(singletonList(null)).build()), endEvent);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(processInstanceId)).build()), endEvent, subProcessInstanceId);
-        validateProcessInstance(toGraphQLString(ProcessInstanceFilter.builder().id(singletonList(subProcessInstanceId)).parentProcessInstanceId(asList(processInstanceId, null)).build()), event);
+        validateProcessInstance(getProcessInstanceByParentProcessInstanceId(processInstanceId), event);
+        validateProcessInstance(getProcessInstanceByIdAndNullParentProcessInstanceId(processInstanceId, true), endEvent);
+        validateProcessInstance(getProcessInstanceByRootProcessInstanceId(processInstanceId), event);
+        validateProcessInstance(getProcessInstanceByIdAndNullRootProcessInstanceId(processInstanceId, true), endEvent);
+        validateProcessInstance(getProcessInstanceById(processInstanceId), endEvent, subProcessInstanceId);
+        validateProcessInstance(getProcessInstanceByIdAndParentProcessInstanceId(subProcessInstanceId, processInstanceId), event);
     }
 
     @Test
@@ -607,14 +602,17 @@ public class IndexingServiceTest {
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).build()), event);
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).actualOwner(singletonList("kogito")).build()), event);
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).potentialGroups(new ArrayList<>(event.getData().getPotentialGroups())).build()), event);
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).potentialUsers(new ArrayList<>(event.getData().getPotentialUsers())).build()), event);
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).state(singletonList(event.getData().getState())).build()), event);
+        validateUserTaskInstance(getUserTaskInstanceById(taskId), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndActualOwner(taskId, "kogito"), event);
+
+        validateUserTaskInstance(getUserTaskInstanceByIdAndPotentialGroups(taskId, new ArrayList<>(event.getData().getPotentialGroups())), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndPotentialUsers(taskId, new ArrayList<>(event.getData().getPotentialUsers())), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndState(taskId, event.getData().getState()), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndStarted(taskId, formatZonedDateTime(event.getData().getStarted())), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndCompleted(taskId, formatZonedDateTime(event.getData().getCompleted())), event);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Deals(query: \\\"from org.acme.deals.Deals d where d.userTasks.id:'" + taskId + "'\\\"){ id, name, review, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed } } }\"}")
+                .body("{ \"query\" : \"{ Deals ( where: { userTasks : { id : { equal : \\\"" + taskId + "\\\" } } } ){ id, name, review, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Deals[0].id", is(processInstanceId))
@@ -636,10 +634,10 @@ public class IndexingServiceTest {
 
         indexUserTaskCloudEvent(event);
 
-        validateUserTaskInstance(toGraphQLString(UserTaskInstanceFilter.builder().id(singletonList(taskId)).actualOwner(singletonList("admin")).build()), event);
+        validateUserTaskInstance(getUserTaskInstanceByIdAndActualOwner(taskId, "admin"), event);
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Deals(query: \\\"from org.acme.deals.Deals d where d.userTasks.id:'" + taskId + "'\\\"){ id, name, review, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed } } }\"}")
+                .body("{ \"query\" : \"{ Deals ( where: { userTasks : { id : { equal : \\\"" + taskId + "\\\" } } } ){ id, name, review, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed } } }\"}")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Deals[0].id", is(processInstanceId))

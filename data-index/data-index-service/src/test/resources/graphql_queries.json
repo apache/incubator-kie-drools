@@ -1,0 +1,110 @@
+{
+  "ProcessInstanceById": {
+    "query": "query ($id: String) { ProcessInstances( where: {  id: {  equal : $id } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndState": {
+    "query": "query ($id: String, $state: ProcessInstanceState) { ProcessInstances( where: {  id: {  equal : $id }, state: { equal : $state } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "state": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndStart": {
+    "query": "query ($id: String, $start: DateTime) { ProcessInstances( where: {  id: {  equal : $id }, start: { equal : $start } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "start": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndProcessId": {
+    "query": "query ($id: String, $processId: String) { ProcessInstances( where: {  id: {  equal : $id }, processId: { equal : $processId } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "processId": "%s"
+    }
+  },
+  "ProcessInstanceByParentProcessInstanceId": {
+    "query": "query ( $parentProcessInstanceId: String ) { ProcessInstances( where: {  parentProcessInstanceId: {  equal : $parentProcessInstanceId } } ){ %s } }",
+    "variables": {
+      "parentProcessInstanceId": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndNullParentProcessInstanceId": {
+    "query": "query ( $id: String, $isNull: Boolean ) { ProcessInstances( where: {  id: {  equal : $id }, parentProcessInstanceId: {  isNull : $isNull } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "isNull": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndParentProcessInstanceId": {
+    "query": "query ( $id: String, $parentProcessInstanceId: String ) { ProcessInstances( where: {  id: {  equal : $id }, parentProcessInstanceId: {  equal : $parentProcessInstanceId } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "parentProcessInstanceId": "%s"
+    }
+  },
+  "ProcessInstanceByRootProcessInstanceId": {
+    "query": "query ( $id: String ) { ProcessInstances( where: {  rootProcessInstanceId: {  equal : $id } } ){ %s } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndNullRootProcessInstanceId": {
+    "query": "query ( $id: String, $isNull: Boolean ) { ProcessInstances( where: {  id: {  equal : $id }, rootProcessInstanceId: {  isNull : $isNull } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "isNull": "%s"
+    }
+  },
+  "UserTaskInstanceById": {
+    "query": "query ( $id: String ) { UserTaskInstances( where: {  id: {  equal : $id } } ){ %s } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
+  "UserTaskInstanceByIdAndActualOwner": {
+    "query": "query ( $id: String, $actualOwner: String ) { UserTaskInstances( where: {  id: {  equal : $id }, actualOwner: { equal: $actualOwner } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "actualOwner": "%s"
+    }
+  },
+  "UserTaskInstanceByIdAndState": {
+    "query": "query ( $id: String, $state: String ) { UserTaskInstances( where: {  id: {  equal : $id }, state: { equal: $state } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "state": "%s"
+    }
+  },
+  "UserTaskInstanceByIdAndStarted": {
+    "query": "query ( $id: String, $started: DateTime ) { UserTaskInstances( where: {  id: {  equal : $id }, started: { lessThanEqual: $started } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "started": "%s"
+    }
+  },
+  "UserTaskInstanceByIdAndCompleted": {
+    "query": "query ( $id: String, $completed: DateTime ) { UserTaskInstances( where: {  id: {  equal : $id }, completed: { greaterThanEqual: $completed } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "completed": "%s"
+    }
+  },
+  "UserTaskInstanceByIdAndPotentialGroups": {
+    "query": "query ( $id: String, $potentialGroups: [String!] ) { UserTaskInstances( where: {  id: {  equal : $id }, potentialGroups: { containsAny: $potentialGroups } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "potentialGroups": []
+    }
+  },
+  "UserTaskInstanceByIdAndPotentialUsers": {
+    "query": "query ( $id: String, $potentialUsers: [String!] ) { UserTaskInstances( where: {  id: {  equal : $id }, potentialUsers: { containsAny: $potentialUsers } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "potentialUsers": []
+    }
+  }
+}

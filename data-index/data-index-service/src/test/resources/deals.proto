@@ -8,29 +8,29 @@ option kogito_id = "deals";
 /* @Indexed */
 message Address {
     option java_package = "org.acme.travels";
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string city = 1;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string country = 2;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string street = 3;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string zipCode = 4;
 }
 
 /* @Indexed */
 message Deals {
     option java_package = "org.acme.deals";
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string id = 1;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string name = 2;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string review = 3;
     optional Traveller traveller = 4;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 5;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 6;
 }
 
@@ -38,12 +38,12 @@ message Deals {
 message Traveller {
     option java_package = "org.acme.travels";
     optional Address address = 1;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string email = 2;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string firstName = 3;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string lastName = 4;
-    /* @Field(store = Store.YES, analyze = Analyze.YES) */
+    /* @Field(store = Store.YES) */
     optional string nationality = 5;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.graphql;
+package org.kie.kogito.index.query;
 
-import java.util.Map;
-import java.util.function.Function;
+public enum SortDirection {
 
-import org.kie.kogito.index.query.ProcessInstanceFilter;
-
-import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
-
-public class ProcessInstanceFilterMapper implements Function<Map<String, Object>, ProcessInstanceFilter> {
-
-    @Override
-    public ProcessInstanceFilter apply(Map<String, Object> params) {
-        return getObjectMapper().convertValue(params, ProcessInstanceFilter.class);
-    }
+    ASC,
+    DESC
 }

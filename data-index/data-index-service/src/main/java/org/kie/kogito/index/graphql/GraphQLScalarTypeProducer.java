@@ -22,6 +22,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -33,11 +34,27 @@ import graphql.schema.GraphQLScalarType;
 @ApplicationScoped
 public class GraphQLScalarTypeProducer {
 
+    public static ZonedDateTime parseDateTime(String s) {
+        try {
+            return ZonedDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        } catch (DateTimeParseException e) {
+            throw new CoercingSerializeException("Invalid ISO-8601 value : '" + s + "'. because of : '" + e.getMessage() + "'");
+        }
+    }
+
+    public String formatDateTime(ZonedDateTime dateTime) {
+        try {
+            return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
+        } catch (DateTimeException e) {
+            throw new CoercingSerializeException("Unable to turn TemporalAccessor into OffsetDateTime because of : '" + e.getMessage() + "'.");
+        }
+    }
+
     @Produces
     public GraphQLScalarType dateTimeScalar() {
         return GraphQLScalarType.newScalar()
                 .name("DateTime")
-                .description("An RFC-3339 compliant DateTime Scalar")
+                .description("An ISO-8601 compliant DateTime Scalar")
                 .coercing(new Coercing() {
                     @Override
                     public Object serialize(Object input) {
@@ -53,24 +70,12 @@ public class GraphQLScalarTypeProducer {
                         } else {
                             throw new CoercingSerializeException("Expected something we can convert to 'java.time.OffsetDateTime' but was '" + (input == null ? "null" : input.getClass().getName()) + "'.");
                         }
-                        try {
-                            return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
-                        } catch (DateTimeException e) {
-                            throw new CoercingSerializeException("Unable to turn TemporalAccessor into OffsetDateTime because of : '" + e.getMessage() + "'.");
-                        }
-                    }
-
-                    private ZonedDateTime parseDateTime(String s) {
-                        try {
-                            return ZonedDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        } catch (DateTimeParseException e) {
-                            throw new CoercingSerializeException("Invalid RFC3339 value : '" + s + "'. because of : '" + e.getMessage() + "'");
-                        }
+                        return formatDateTime(dateTime);
                     }
 
                     @Override
                     public Object parseValue(Object input) {
-                        return null;
+                        return input == null ? null : parseDateTime((String) input).truncatedTo(ChronoUnit.MILLIS).toInstant().toEpochMilli();
                     }
 
                     @Override

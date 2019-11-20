@@ -77,7 +77,7 @@ public class InfinispanCacheManager implements CacheService {
         }
     }
 
-    public void stop(@Observes ShutdownEvent event){
+    public void stop(@Observes ShutdownEvent event) {
         destroy();
     }
 
@@ -110,25 +110,25 @@ public class InfinispanCacheManager implements CacheService {
 
     @Override
     public Cache<String, ProcessInstance> getProcessInstancesCache() {
-        return new CacheImpl<>(getOrCreateCache(PROCESS_INSTANCES_CACHE, cacheTemplateName));
+        return new CacheImpl<>(getOrCreateCache(PROCESS_INSTANCES_CACHE, cacheTemplateName), ProcessInstance.class.getName());
     }
 
     @Override
     public Cache<String, UserTaskInstance> getUserTaskInstancesCache() {
-        return new CacheImpl<>(getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName));
+        return new CacheImpl<>(getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName), UserTaskInstance.class.getName());
     }
 
     public Map<String, String> getProtobufCache() {
         return manager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME);
     }
 
-    @Override
-    public Cache<String, String> getProcessIdModelCache() {
-        return new CacheImpl<>(manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null));
+    public Map<String, String> getProcessIdModelCache() {
+        return manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null);
     }
 
     @Override
     public Cache<String, ObjectNode> getDomainModelCache(String processId) {
-        return new CacheImpl<>(getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat));
+        String rootType = getProcessIdModelCache().get(processId);
+        return rootType == null ? null : new CacheImpl<>(getOrCreateCache(processId + "_domain", cacheTemplateName).withDataFormat(jsonDataFormat), rootType);
     }
 }

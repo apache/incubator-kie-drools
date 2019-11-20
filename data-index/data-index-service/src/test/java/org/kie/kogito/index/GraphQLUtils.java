@@ -19,56 +19,131 @@ package org.kie.kogito.index;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.query.ProcessInstanceFilter;
-import org.kie.kogito.index.query.UserTaskInstanceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.ArrayUtils.insert;
+import static org.kie.kogito.index.TestUtils.readFileContent;
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 public class GraphQLUtils {
 
-    private static final Map<String, Function<Object, String>> VALUE_MAPPERS = new HashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLUtils.class);
     private static final Map<Class, String> QUERY_FIELDS = new HashMap<>();
+    private static final Map<String, String> QUERIES = new HashMap<>();
 
     static {
-        VALUE_MAPPERS.put(ProcessInstanceFilter.class.getName() + ".state", states ->
-                ((List<Integer>) states).stream().map(state -> ProcessInstanceState.fromStatus(state).name()).collect(joining(", "))
-        );
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFiledName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFiledName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).filter(f -> !"error".equals(f.getName())).map(getFiledName()).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstanceId");
-    }
 
-    public static String toGraphQLString(UserTaskInstanceFilter filter) {
-        return toGraphQLString("UserTaskInstances", UserTaskInstance.class, UserTaskInstanceFilter.class, filter);
-    }
-
-    public static String toGraphQLString(ProcessInstanceFilter filter) {
-        return toGraphQLString("ProcessInstances", ProcessInstance.class, ProcessInstanceFilter.class, filter);
-    }
-
-    private static String toGraphQLString(String root, Class targetClass, Class filterClass, Object filter) {
-        StringBuilder query = new StringBuilder();
-        query.append(format("{ \"query\" : \"{ %s", root));
-        if (filter != null) {
-            String filterString = getAllFieldsList(filterClass).filter(getFieldPredicate(filter)).map(getFieldStringFunction(filter)).collect(joining(", "));
-            query.append(format("(filter: { %s } )", filterString));
+        try {
+            JsonNode node = getObjectMapper().readTree(readFileContent("graphql_queries.json"));
+            for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                QUERIES.put(entry.getKey(), entry.getValue().toString());
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Failed to parse graphql_queries.json file: {}", ex.getMessage(), ex);
+            throw new RuntimeException(ex);
         }
-        query.append(format("{ %s } ", QUERY_FIELDS.get(targetClass)));
-        query.append("}\" }");
-        return query.toString();
+    }
+
+    public static String getProcessInstanceById(String id) {
+        return getProcessInstanceQuery("ProcessInstanceById", id);
+    }
+
+    public static String getProcessInstanceByIdAndState(String id, ProcessInstanceState state) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndState", id, state.name());
+    }
+
+    public static String getProcessInstanceByIdAndStart(String id, String start) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndStart", id, start);
+    }
+    
+    public static String getProcessInstanceByIdAndProcessId(String id, String processId) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndProcessId", id, processId);
+    }
+
+    public static String getProcessInstanceByIdAndParentProcessInstanceId(String id, String parentProcessInstanceId) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndParentProcessInstanceId", id, parentProcessInstanceId);
+    }
+
+    public static String getProcessInstanceByParentProcessInstanceId(String parentProcessInstanceId) {
+        return getProcessInstanceQuery("ProcessInstanceByParentProcessInstanceId", parentProcessInstanceId);
+    }
+
+    public static String getProcessInstanceByIdAndNullParentProcessInstanceId(String id, Boolean isNull) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId", id, isNull.toString());
+    }
+
+    public static String getProcessInstanceByIdAndNullRootProcessInstanceId(String id, Boolean isNull) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndNullRootProcessInstanceId", id, isNull.toString());
+    }
+
+    public static String getProcessInstanceByRootProcessInstanceId(String rootProcessInstanceId) {
+        return getProcessInstanceQuery("ProcessInstanceByRootProcessInstanceId", rootProcessInstanceId);
+    }
+
+    public static String getUserTaskInstanceById(String id) {
+        return getUserTaskInstanceQuery("UserTaskInstanceById", id);
+    }
+
+    public static String getUserTaskInstanceByIdAndActualOwner(String id, String actualOwner) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndActualOwner", id, actualOwner);
+    }
+
+    public static String getUserTaskInstanceByIdAndState(String id, String state) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndState", id, state);
+    }
+
+    public static String getUserTaskInstanceByIdAndStarted(String id, String started) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndStarted", id, started);
+    }
+
+    public static String getUserTaskInstanceByIdAndCompleted(String id, String completed) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndCompleted", id, completed);
+    }
+
+    public static String getUserTaskInstanceByIdAndPotentialGroups(String id, List<String> potentialGroups) throws Exception {
+        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialGroups", potentialGroups, "potentialGroups", id);
+    }
+
+    public static String getUserTaskInstanceByIdAndPotentialUsers(String id, List<String> potentialUsers) throws Exception {
+        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, "potentialUsers", id);
+    }
+
+    private static String getUserTaskInstanceWithArray(String query, List<String> values, String variable, String... args) throws Exception {
+        String json = getUserTaskInstanceQuery(query, args);
+        ObjectNode jsonNode = (ObjectNode) getObjectMapper().readTree(json);
+        ArrayNode pg = (ArrayNode) jsonNode.get("variables").get(variable);
+        values.forEach(g -> pg.add(g));
+        return jsonNode.toString();
+    }
+
+    private static String getProcessInstanceQuery(String name, String... args) {
+        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(ProcessInstance.class)));
+    }
+
+    private static String getUserTaskInstanceQuery(String name, String... args) {
+        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(UserTaskInstance.class)));
     }
 
     private static Stream<Field> getAllFieldsList(Class clazz) {
@@ -101,45 +176,8 @@ public class GraphQLUtils {
         };
     }
 
-    private static Function<Field, String> getFieldStringFunction(Object filter) {
-        return field -> {
-            try {
-                Object object = field.get(filter);
-                String fieldKey = field.getDeclaringClass().getTypeName() + "." + field.getName();
-                return field.getName() + ":" + VALUE_MAPPERS.getOrDefault(fieldKey, getObjectString()).apply(object);
-            } catch (Exception ex) {
-                return "";
-            }
-        };
-    }
-
-    private static String getObjectString(Object object) {
-        return object == null ? "null" : object instanceof String ? "\\\"" + object + "\\\"" : object.toString();
-    }
-
-    private static Function<Object, String> getObjectString() {
-        return object -> {
-            if (object instanceof Collection) {
-                return "[ " + ((Collection) object).stream().map(o -> getObjectString(o)).collect(joining(", ")).toString() + " ] ";
-            } else {
-                return getObjectString(object);
-            }
-        };
-    }
-
     //  See https://www.eclemma.org/jacoco/trunk/doc/faq.html    
     private static Predicate<Field> getJacocoPredicate() {
         return field -> !field.getName().equals("$jacocoData");
-    }
-
-    private static Predicate<Field> getFieldPredicate(Object target) {
-        return field -> {
-            try {
-                Object param = FieldUtils.readField(field, target, true);
-                return param != null;
-            } catch (Exception ex) {
-                return false;
-            }
-        };
     }
 }

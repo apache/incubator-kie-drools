@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.graphql;
+package org.kie.kogito.index.query;
 
-import java.util.Map;
-import java.util.function.Function;
+import java.util.List;
 
-import org.kie.kogito.index.query.UserTaskInstanceFilter;
+public interface Query<T> {
 
-import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+    Query limit(Integer limit);
 
-public class UserTaskInstanceFilterMapper implements Function<Map<String, Object>, UserTaskInstanceFilter> {
+    Query offset(Integer offset);
 
-    @Override
-    public UserTaskInstanceFilter apply(Map<String, Object> params) {
-        return getObjectMapper().convertValue(params, UserTaskInstanceFilter.class);
-    }
+    Query filter(List<AttributeFilter> filters);
+
+    Query sort(List<AttributeSort> sortBy);
+    
+    List<T> execute();
+
 }

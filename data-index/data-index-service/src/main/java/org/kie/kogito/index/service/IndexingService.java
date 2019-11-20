@@ -17,7 +17,6 @@
 package org.kie.kogito.index.service;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -55,26 +55,21 @@ public class IndexingService {
         manager.getProcessInstancesCache().put(pi.getId(), pi);
     }
 
-    private String getModelFromProcessId(String processId) {
-        return manager.getProcessIdModelCache().get(processId);
-    }
-
     public void indexUserTaskInstance(UserTaskInstance ut) {
         manager.getUserTaskInstancesCache().put(ut.getId(), ut);
     }
 
     public void indexModel(ObjectNode json) {
         String processId = json.get(PROCESS_ID).asText();
-        String type = getModelFromProcessId(processId);
-        if (type == null) {
+        Cache<String, ObjectNode> cache = manager.getDomainModelCache(processId);
+        if (cache == null) {
 //          Unknown process type, ignore
             LOGGER.debug("Ignoring Kogito cloud event for unknown process: {}", processId);
             return;
         }
 
         String processInstanceId = json.get("id").asText();
-
-        Map<String, ObjectNode> cache = manager.getDomainModelCache(processId);
+        String type = cache.getRootType();
         ObjectNode model = cache.get(processInstanceId);
         if (model == null) {
             ObjectNode builder = getObjectMapper().createObjectNode();
@@ -89,7 +84,7 @@ public class IndexingService {
             if (indexPIArray != null) {
                 json.remove(PROCESS_ID);
                 JsonNode id = indexPIArray.get(0).get("id");
-                if(processInstanceId.equals(id.asText())){
+                if (processInstanceId.equals(id.asText())) {
                     //For processes simply copy all values
                     builder.setAll(json);
                 } else {
