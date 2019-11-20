@@ -17,6 +17,9 @@
 package org.kie.kogito.jobs.management.quarkus;
 
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -67,15 +70,22 @@ public class VertxJobsService implements JobsService {
         DatabindCodec.prettyMapper().registerModule(new JavaTimeModule());
         DatabindCodec.prettyMapper().findAndRegisterModules();
         DatabindCodec.prettyMapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        String[] urlElements = jobServiceUrl.split(":");
+        
         
         if (providedWebClient.isResolvable()) {
             this.client = providedWebClient.get();
             LOGGER.debug("Using provided web client instance");
         } else {        
-            this.client = WebClient.create(vertx,
-                new WebClientOptions().setDefaultHost(urlElements[0]).setDefaultPort(Integer.parseInt(urlElements[1])));
-            LOGGER.debug("Creating new instance of web client for host {} and port {}", urlElements[0], urlElements[1]);
+            try {
+                URL jobServiceURL = new URL(jobServiceUrl);
+                this.client = WebClient.create(vertx,
+                    new WebClientOptions()
+                    .setDefaultHost(jobServiceURL.getHost())
+                    .setDefaultPort(jobServiceURL.getPort()));
+                LOGGER.debug("Creating new instance of web client for host {} and port {}", jobServiceURL.getHost(), jobServiceURL.getPort());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Job service url (kogito.jobs-service.url) is not valid URL", e);
+            }
         }
     }
 
