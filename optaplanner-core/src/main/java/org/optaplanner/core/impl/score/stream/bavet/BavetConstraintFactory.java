@@ -71,7 +71,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
         if (planningIdMemberAccessor == null) {
             throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
                     + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can be made unique ([A,B] vs [B,A]).");
+                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
         }
         // TODO Breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
