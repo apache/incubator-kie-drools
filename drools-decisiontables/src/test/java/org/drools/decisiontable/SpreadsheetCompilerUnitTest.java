@@ -820,4 +820,15 @@ public class SpreadsheetCompilerUnitTest {
                 .containsSequence("accumulate(Person(name == \"John\", $a : age); $max:max($a))",
                         "$p:Person(name == \"John\", age == $max)");
     }
+
+    @Test
+    public void testNewLineInConstraint() {
+        // DROOLS-4788
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile("/data/NewLineInConstraint.xls", InputType.XLS);
+
+        System.out.println(drl);
+
+        assertTrue(drl.contains( "map[\"Key2\"] == var2" ));
+    }
 }
