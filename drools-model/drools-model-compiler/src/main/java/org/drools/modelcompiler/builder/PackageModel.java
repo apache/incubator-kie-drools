@@ -96,7 +96,7 @@ public class PackageModel {
     public static final String DOMAIN_CLASSESS_METADATA_FILE_NAME = "DomainClassesMetadata";
     public static final String DOMAIN_CLASS_METADATA_INSTANCE = "_Metadata_INSTANCE";
 
-    private static final int RULES_DECLARATION_PER_CLASS = 1;
+    private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
     private final String name;
     private final boolean isPattern;
