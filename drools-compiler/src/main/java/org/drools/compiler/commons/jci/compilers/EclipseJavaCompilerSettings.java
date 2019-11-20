@@ -36,6 +36,10 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     public static final String CompilerOptions_VERSION_1_6 = "1.6"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_1_7 = "1.7"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_1_8 = "1.8"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_9 = "9"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_10 = "10"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_11 = "11"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_12 = "12"; //$NON-NLS-1$
 
     public static final String CompilerOptions_GENERATE = "generate";//$NON-NLS-1$
     public static final String CompilerOptions_DO_NOT_GENERATE = "do not generate"; //$NON-NLS-1$
@@ -89,9 +93,10 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         put("1.6", CompilerOptions_VERSION_1_6);
         put("1.7", CompilerOptions_VERSION_1_7);
         put("1.8", CompilerOptions_VERSION_1_8);
-        // TODO use Java 8 options when running on Java 9. This should be fixed when ECJ is upgraded to a
-        // version that supports Java 9
-        put("9", CompilerOptions_VERSION_1_8);
+        put("9", CompilerOptions_VERSION_9);
+        put("10", CompilerOptions_VERSION_10);
+        put("11", CompilerOptions_VERSION_11);
+        put("12", CompilerOptions_VERSION_12);
     }};
     
     private String toNativeVersion( final String pVersion ) {
