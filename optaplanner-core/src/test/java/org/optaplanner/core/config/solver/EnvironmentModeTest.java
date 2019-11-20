@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.AutoCloseableSoftAssertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,8 +27,8 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataChangeMoveWithCorruptedUndoMoveFactory;
-import org.optaplanner.core.impl.testdata.heuristic.move.factory.TestdataCorruptedEntityUndoMoveFactory;
+import org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo.factory.TestdataCorruptedEntityUndoMoveFactory;
+import org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo.factory.TestdataCorruptedUndoMoveFactory;
 import org.optaplanner.core.impl.testdata.phase.custom.TestdataFirstValueInitializer;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataStepScoreListener;
 import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedDifferentValuesCalculator;
@@ -111,7 +112,7 @@ public class EnvironmentModeTest {
         switch (environmentMode) {
             case FULL_ASSERT:
             case FAST_ASSERT:
-                setSolverConfigMoveListFactoryClassToCorrupted(TestdataChangeMoveWithCorruptedUndoMoveFactory.class);
+                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedUndoMoveFactory.class);
                 assertIllegalStateExceptionWhileSolving("corrupted undoMove");
                 break;
             case NON_INTRUSIVE_FULL_ASSERT:
@@ -176,15 +177,15 @@ public class EnvironmentModeTest {
         ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
         ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
 
-        try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
-            for (int i = 0; i < NUMBER_OF_TIMES_RUN; i++) {
-                solver1.solve(inputProblem);
-                solver2.solve(inputProblem);
-                softly.assertThat(listener.getScores()).as("Score steps should be the same "
-                                                                   + "in a reproducible environment mode.")
-                        .isEqualTo(listener2.getScores());
-            }
-        }
+        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
+                .forEach(i -> {
+                    solver1.solve(inputProblem);
+                    solver2.solve(inputProblem);
+                    softly.assertThat(listener.getScores())
+                            .as("Score steps should be the same "
+                                        + "in a reproducible environment mode.")
+                            .isEqualTo(listener2.getScores());
+                }));
     }
 
     private void assertDifferentScoreSeries(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
@@ -194,40 +195,40 @@ public class EnvironmentModeTest {
         ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
         ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
 
-        try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
-            for (int i = 0; i < NUMBER_OF_TIMES_RUN; i++) {
-                solver1.solve(inputProblem);
-                solver2.solve(inputProblem);
-                softly.assertThat(listener.getScores()).as("Score steps should not be the same in a non-reproducible environment mode. "
-                                                                   + "This might be possible because searchSpace is not infinite and "
-                                                                   + "two different random scenarios can have the same results. "
-                                                                   + "Run test again.")
-                        .isNotEqualTo(listener2.getScores());
-            }
-        }
+        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
+                .forEach(i -> {
+                    solver1.solve(inputProblem);
+                    solver2.solve(inputProblem);
+                    softly.assertThat(listener.getScores())
+                            .as("Score steps should not be the same in a non-reproducible environment mode. "
+                                        + "This might be possible because searchSpace is not infinite and "
+                                        + "two different random scenarios can have the same results. "
+                                        + "Run test again.")
+                            .isNotEqualTo(listener2.getScores());
+                }));
     }
 
     private void assertGeneratingSameNumbers(RandomFactory factory1, RandomFactory factory2) {
         Random random = factory1.createRandom();
         Random random2 = factory2.createRandom();
 
-        for (int i = 0; i < EnvironmentModeTest.NUMBER_OF_RANDOM_NUMBERS_GENERATED; i++) {
-            Assertions.assertThat(random.nextInt()).as("Random factories should generate the same results "
-                                                               + "in a reproducible environment mode.")
-                    .isEqualTo(random2.nextInt());
-        }
+        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
+                .forEach(i -> softly.assertThat(random.nextInt())
+                        .as("Random factories should generate the same results "
+                                    + "in a reproducible environment mode.")
+                        .isEqualTo(random2.nextInt())));
     }
 
     private void assertGeneratingDifferentNumbers(RandomFactory factory1, RandomFactory factory2) {
         Random random = factory1.createRandom();
         Random random2 = factory2.createRandom();
 
-        for (int i = 0; i < EnvironmentModeTest.NUMBER_OF_RANDOM_NUMBERS_GENERATED; i++) {
-            Assertions.assertThat(random.nextInt()).as("Random factories should not generate exactly the same results "
-                                                               + "in the non-reproducible environment mode. "
-                                                               + "It can happen but the probability is very low. Run test again")
-                    .isNotEqualTo(random2.nextInt());
-        }
+        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
+                .forEach(i -> softly.assertThat(random.nextInt())
+                        .as("Random factories should not generate exactly the same results "
+                                    + "in the non-reproducible environment mode. "
+                                    + "It can happen but the probability is very low. Run test again")
+                        .isNotEqualTo(random2.nextInt())));
     }
 
     private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {

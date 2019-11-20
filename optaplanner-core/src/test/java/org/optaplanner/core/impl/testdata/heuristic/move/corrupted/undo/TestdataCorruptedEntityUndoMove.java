@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.heuristic.move;
+package org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo;
 
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -14,6 +14,7 @@ public class TestdataCorruptedEntityUndoMove extends AbstractTestdataMove {
 
     @Override
     protected AbstractMove<TestdataSolution> createUndoMove(ScoreDirector<TestdataSolution> scoreDirector) {
+        // Corrupts the undo move by creating a new entity and not undo-ing the value
         return new TestdataCorruptedEntityUndoMove(new TestdataEntity("corrupted"), toValue);
     }
 }
