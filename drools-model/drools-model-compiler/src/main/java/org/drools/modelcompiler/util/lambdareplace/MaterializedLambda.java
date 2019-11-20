@@ -48,15 +48,21 @@ abstract class MaterializedLambda {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        compilationUnit.addImport(ruleClassName, true, true);
-        for(String i : imports) {
-            compilationUnit.addImport(i);
-        }
+        addImports(imports, compilationUnit);
+
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
         return new CreatedClass(compilationUnit, className, packageName);
+    }
+
+    private void addImports(Collection<String> imports, CompilationUnit compilationUnit) {
+        compilationUnit.addImport(ruleClassName, true, true);
+        for(String i : imports) {
+            compilationUnit.addImport(i);
+        }
+        compilationUnit.addImport("org.drools.modelcompiler.dsl.pattern.D");
     }
 
     private void parseParameters() {
