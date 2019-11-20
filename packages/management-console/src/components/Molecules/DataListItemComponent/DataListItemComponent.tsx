@@ -23,6 +23,11 @@ import {
 import { Link } from 'react-router-dom';
 import { useApolloClient } from 'react-apollo';
 /* tslint:disable:no-string-literal */
+
+export interface IProcessInstanceError {
+  nodeDefinitionId : string;
+  message: string;
+}
 export interface IOwnProps {
   id: number;
   instanceID: string;
@@ -34,9 +39,10 @@ export interface IOwnProps {
   state:string;
   managementEnabled: boolean;
   endpoint: string;
+  error: IProcessInstanceError;
 }
 
-const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceState, state, managementEnabled, processID, endpoint, parentInstanceID, processName,start }) => {
+const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceState, state, error, managementEnabled, processID, endpoint, parentInstanceID, processName,start }) => {
   const [expanded, setexpanded] = useState(['kie-datalist-toggle']);
   const [isOpen, setisOpen] = useState(false);
   const [isLoaded, setisLoaded] = useState(false);
@@ -44,7 +50,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
   const [childList, setchildList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
-  const [error, setError] = useState('');
   const [alertTitle, setAlertTitle] = useState('');
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
@@ -62,15 +67,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
         state
         start
         endpoint
+        managementEnabled
+        error {
+          nodeDefinitionId,
+          message
+        }
       }
     }
   `;
   const handleViewError = useCallback(async (_processID, _instanceID, _endpoint) => {
-    const processInstanceId = instanceID;
-    const processId = processID;
     setOpenModal(true);
-    const result = await axios.get(`${endpoint}/management/process/${processId}/instances/${processInstanceId}/error`);
-    setError(result.data);
   },[])
 
   const handleSkip = useCallback(async (_processID, _instanceID, _endpoint) => {
@@ -208,18 +214,18 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            {state === "ERROR" && managementEnabled ? 
+            {state === "ERROR" ? 
               <Dropdown
               isPlain
               position={DropdownPosition.right}
               isOpen={isOpen}
               onSelect={onSelect}
               toggle={<KebabToggle onToggle={onToggle} />}
-              dropdownItems={[
+              dropdownItems={managementEnabled === true ?[
                 <DropdownItem key={1} onClick = {() => handleRetry(processID, instanceID, endpoint)}>Retry</DropdownItem>,
                 <DropdownItem key={2} onClick = {() => handleSkip(processID, instanceID, endpoint)}>Skip</DropdownItem>,
                 <DropdownItem key={3} onClick = {() => handleViewError(processID, instanceID, endpoint) }>View Error</DropdownItem>,
-              ]}
+              ]: [<DropdownItem key={1} onClick = {() => handleViewError(processID, instanceID, endpoint) }>View Error</DropdownItem>,]}
             />:  
             <Dropdown
             isPlain
@@ -235,7 +241,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
           title="Error"
           isOpen={openModal}
           onClose={handleModalToggle}
-          actions={[
+          actions={managementEnabled ===true ?[
               <Button key="confirm1" variant="secondary" onClick={handleSkipButton}>
                 Skip
               </Button>,
@@ -245,9 +251,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
               <Button key="confirm3" variant="primary" onClick={handleModalToggle}>
                 Close
               </Button>
-          ]}
+          ]: [<Button key="confirm3" variant="primary" onClick={handleModalToggle}>
+          Close
+        </Button>]}
           >
-            {error}
+            {error.message}
           </Modal>
 
           </DataListAction>
@@ -271,7 +279,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({ id, instanceID, instanceSt
                   processName={child.processName}
                   start={child.start}
                   state={child.state}
-                  managementEnabled={child.state}
+                  managementEnabled={child.managementEnabled}
+                  error = {child.error}
                   endpoint={child.endpoint}
                 />
               );
