@@ -10,12 +10,13 @@ public class MaterializedLambdaPredicateTest {
 
     @Test
     public void createClassWithOneParameter() {
-        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace")
+        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
                 .create("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35");
 
         //language=JAVA
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
+                "import static rulename.*; " +
                 "" +
                 "public enum LambdaPredicate4DEB93975D9859892B1A5FD4B38E2155 implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person> {\n" +
                 " INSTANCE; \n" +
@@ -31,12 +32,13 @@ public class MaterializedLambdaPredicateTest {
 
     @Test
     public void createClassWithTwoParameters() {
-        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace")
+        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
                 .create("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()");
 
         //language=JAVA
         String expectedResult = "" +
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
+                "import static rulename.*; " +
                 "" +
                 "public enum LambdaPredicateDC57C20B4AF3C2BFEB2552943994B6F7 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 " INSTANCE; \n" +

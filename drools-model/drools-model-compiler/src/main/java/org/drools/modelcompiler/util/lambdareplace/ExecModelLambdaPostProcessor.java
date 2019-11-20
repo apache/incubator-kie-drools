@@ -26,9 +26,13 @@ public class ExecModelLambdaPostProcessor {
 
     Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private String packageName;
+    private String ruleClassName;
+    private Statement inputDSL;
 
-    public PostProcessedExecModel convertLambdas(String packageName, Statement inputDSL) {
+    public PostProcessedExecModel convertLambdas(String packageName, String ruleClassName, Statement inputDSL) {
         this.packageName = packageName;
+        this.ruleClassName = ruleClassName;
+        this.inputDSL = inputDSL;
         Statement clone = inputDSL.clone();
 
         try {
@@ -59,7 +63,7 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = new MaterializedLambdaPredicate(packageName).create(lambdaExpr.toString());
+                CreatedClass aClass = new MaterializedLambdaPredicate(packageName, ruleClassName).create(lambdaExpr.toString());
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

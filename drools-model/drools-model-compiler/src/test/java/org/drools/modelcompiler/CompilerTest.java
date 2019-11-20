@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1984,6 +1985,7 @@ public class CompilerTest extends BaseModelTest {
                 "rule \"rule2\"\n" +
                 "when org.drools.modelcompiler.DataType (\n" +
                 "        field2 == \"BBB\"\n" +
+                "        , fieldDate >= \"27-Oct-2019\"\n" +
                 ")\n" +
                 "then\n" +
                 "    result.setValue(0);\n" +
@@ -1996,9 +1998,12 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(st);
         ksession.insert(st2);
 
+        DataType st3 = new DataType("AA", "CCC", Date.from(Instant.parse("2018-11-30T18:35:24Z")));
+        ksession.insert(st3);
+
         Result r = new Result();
         ksession.setGlobal("result", r);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(2);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals(0, r.getValue());
     }
 }

@@ -33,11 +33,13 @@ public class MaterializedLambdaPredicate {
     private String className;
 
     private final String packageName;
+    private String ruleClassName;
 
     private List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
-    public MaterializedLambdaPredicate(String packageName) {
+    public MaterializedLambdaPredicate(String packageName, String ruleClassName) {
         this.packageName = packageName;
+        this.ruleClassName = ruleClassName;
     }
 
     public CreatedClass create(String expressionString) {
@@ -53,6 +55,7 @@ public class MaterializedLambdaPredicate {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
+        compilationUnit.addImport(ruleClassName, true, true);
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
