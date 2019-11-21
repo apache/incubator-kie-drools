@@ -34,15 +34,19 @@ The data type that you define for a specified cell in a boxed expression determi
 
 In this example, an output column *Credit Score Rating* for a DMN decision table defines a set of custom credit score ratings based on an applicant's credit score.
 --
-. On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+. On the *Data Types* page, click *Add* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
 +
 --
+If you import a data object from your project as a DMN data type and then that object is updated, you must re-import the data object as a DMN data type to apply the changes in your DMN model.
+
+For this example, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+
 .Adding a new data type
 image::dmn/dmn-custom-data-type-add.png[]
 
 If the data type requires a list of items, enable the *List* setting.
 --
-. Click *Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
+. Click *Add Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
 +
 --
 * `"Excellent"`
@@ -53,6 +57,11 @@ If the data type requires a list of items, enable the *List* setting.
 
 .Adding constraints to the new data type
 image::dmn/dmn-custom-data-type-constraints.png[]
+
+To change the order of data type constraints, you can click the left end of the constraint row and drag the row as needed:
+
+.Dragging constraints to change constraint order
+image::dmn/dmn-custom-data-type-constraints-drag.png[]
 
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
 --
@@ -75,7 +84,7 @@ image::dmn/dmn-manage-data-types-blank.png[]
 --
 When you save the new structured data type, the first sub-field appears so that you can begin defining nested data fields in this parent data type. You can use these sub-fields in association with the parent structured data type in boxed expressions, such as nested column headers in decision tables or nested table parameters in context or function expressions.
 
-For additional sub-fields, next to the *Loan_Qualification* data type, select the settings icon (three vertical dots) and select *Insert nested field*:
+For additional sub-fields, select the addition icon next to the *Loan_Qualification* data type:
 
 .Adding a new structured data type with nested fields
 image::dmn/dmn-manage-data-types-structured.png[]
@@ -87,6 +96,11 @@ Click *Save* for each data type that you create.
 
 .Adding nested data types with constraints
 image::dmn/dmn-manage-data-types-structured2.png[]
+
+To change the order or nesting of data types, you can click the left end of the data type row and drag the row as needed:
+
+.Dragging data types to change data type order or nesting
+image::dmn/dmn-manage-data-types-structured2-drag.png[]
 --
 . Return to the decision table and, for each column, click the column header cell, set the data type to the new corresponding custom data type, and define the rule values as needed for the column with the constraints that you specified, if applicable.
 +

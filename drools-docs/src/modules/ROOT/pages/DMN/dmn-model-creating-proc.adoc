@@ -14,7 +14,12 @@ To import an existing DMN file, click *Import Asset*, enter the DMN model name, 
 
 The new DMN file is now listed in the *DMN* panel of the *Project Explorer*, and the DMN decision requirements diagram (DRD) canvas appears.
 
-NOTE: If you imported a DMN file that does not contain layout information, the imported decision requirements diagram (DRD) is formatted automatically in the DMN designer. Click *Save* in the DMN designer to save the DRD layout.
+[NOTE]
+====
+If you imported a DMN file that does not contain layout information, the imported decision requirements diagram (DRD) is formatted automatically in the DMN designer. Click *Save* in the DMN designer to save the DRD layout.
+
+If an imported DRD is not automatically formatted, you can select the *Perform automatic layout* icon in the upper-right toolbar in the DMN designer to format the DRD.
+====
 
 --
 . Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar:
@@ -99,10 +104,14 @@ image::dmn/dmn-input-connection-example.png[]
 image::dmn/dmn-input-connection-example2.png[]
 --
 . Continue adding and defining the remaining DRD components of your decision model. Periodically click *Save* in the DMN designer to save your work.
++
+NOTE: As you periodically save a DRD, the DMN designer performs a static validation of the DMN model and might produce error messages until the model is defined completely. After you finish defining the DMN model completely, if any errors remain, troubleshoot the specified problems accordingly.
+
 . After you add and define all components of the DRD, click *Save* to save and validate the completed DRD.
-//and click the *Play* icon (image:dmn/dmn-play-icon.png[]) in the upper-right toolbar to verify the decision flow. [Disabled for now. Stetson, 26 Nov 2018]
 +
 --
+To adjust the DRD layout, you can select the *Perform automatic layout* icon in the upper-right toolbar of the DMN designer.
+
 The following is an example DRD for a loan prequalification decision model:
 
 .Completed DRD for loan prequalification
