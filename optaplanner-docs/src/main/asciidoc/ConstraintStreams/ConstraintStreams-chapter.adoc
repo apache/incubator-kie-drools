@@ -8,19 +8,22 @@
 :experimental:
 
 
-Constraint streams are a functional programming form of incremental score calculation in plain Java that are easy to read, write, and debug. In OptaPlanner, contraint streams are implemented thorugh the `ConstraintStreams` API.This API should feel familiar if you have worked with Java 8 Streams or SQL.
+Constraint streams are a Functional Programming form of incremental score calculation in plain Java that is easy to
+read, write and debug.
+The API should feel familiar if you've worked with Java 8 Streams or SQL.
 
 [WARNING]
 ====
-The `ConstraintStreams/ConstraintProvider` API is an ongoing project. It works but it has many API gaps. Therefore, it is not yet rich enough to handle complex constraints.
+The ConstraintStreams/ConstraintProvider API is an ongoing project.
+It works but it has many API gaps.
+Therefore, it is not rich enough yet to handle complex constraints.
 <<explainingTheScore,Constraint justifications>> may not function properly.
-//COMMENT: Lukas, what specifically  might not function.  This link is to section 5.6, Explaining the score: which constraints are broken?  Or maybe we don't need to worry about this based on your comment below?
 ====
 
 // TODO Remove the previous sentence when PLANNER-1709 is fixed.
 
-To use constraint streams in your project, implement the `ConstraintProvider` interface and inlcude the following code in your solver configuration:
-//COMMENET: Is adding the code how you implement `ConstraintProvider` or do I need to do both: Implement `ConstraintProvider` and add the code to my solve configuration?
+To use constraint streams in your project, implement the `ConstraintProvider` interface and use the following in your
+solver config:
 
 [source,xml,options="nowrap"]
 ----
@@ -34,9 +37,10 @@ To use constraint streams in your project, implement the `ConstraintProvider` in
 
 
 [[constraintStreamsIntroduction]]
-== `ContraintStreams` API
+== Introduction
 
-You can use the Jave 8 streams API to implement an <<easyJavaScoreCalculation,easy score calculator>> that uses a functional approach, as illustrated in the following example:
+Using Java 8's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
+that uses a functional approach:
 
 [source,java,options="nowrap"]
 ----
@@ -51,12 +55,11 @@ You can use the Jave 8 streams API to implement an <<easyJavaScoreCalculation,ea
     }
 ----
 
-However, this approach scales poorly because it does not perform an <<incrementalScoreCalculation,incremental calculation>>.
-In the previous example,when the planning variable of a single `Talk` intety changes, to recalculate the score the Java streams package must execute the entire stream from scratch.
+However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
+When the planning variable of a single `Talk` changes, to recalculate the score,
+the normal Streams API has to execute the entire stream from scratch.
 
-//COMMENT: Lukas I have made the Java streams API lowercase and not code - it looks like it's a general term that includes specific packages, for exmpl java.util.stream. Let me know if I'm mistaken. Also, if I'm using 'package' incorrectly.
-
-On the other hand, the `ConstraintStreams` API uses <<incrementalScoreCalculation,deltas>>:
+On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>:
 
 ////
 TODO Replace the previous sentence when PLANNER-1709 is fixed.
@@ -64,7 +67,7 @@ TODO Replace the previous sentence when PLANNER-1709 is fixed.
 So it doesn't do <<incrementalScoreCalculation,deltas>>.
 Nor does it support <<explainingTheScore,justifications>>.
 
-On the other hand, the `ConstraintStreams` API uses <<incrementalScoreCalculation,deltas>>
+On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>
 and supports <<explainingTheScore,justifications>>:
 ////
 
@@ -85,17 +88,13 @@ image::ConstraintStreams/constraintStreamJustification.png[align="center"]
 
 
 [[constraintStreamsFilter]]
-== Constraint streams API filter
+== Filter
 
 image::ConstraintStreams/constraintStreamFilter.png[align="center"]
 
 
 [[constraintStreamsJoin]]
-== Constraint streams join BLAH
-//COMMENT: waht is join? For example, parameter, argument, function....
-// COMMENT: Ideally we need to move descriptive text in images out of the images and into the asciidoc. In this example, I would change to this:
-//The `ContraintStreams: join() BLAH is similar to an SQL inner join. If no other joiners are used,it creates a cartesian  product. The follow illustration demonstrates the `ContraintStreams: join() BLAH without joiners."
-// And then maybe talk about the example, what it is doing and so forth. Is 'cartesian product' something our audience knows?
+== Join
 
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
@@ -103,12 +102,15 @@ image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
 
 [[constraintStreamsGroupingAndCollectors]]
+== Grouping and Collectors
 
-== Constraint Stream API grouping and collectors
+Grouping collects items in a stream according to user-provider criteria (also called "group key"), similar to what a
+`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector`s, which provide
+various aggregation functions.
 
-Grouping collects items in a stream according to user-provided criteria, also called a group key. This is similar to what a `GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more collectors, which provide various aggregation functions.
-
-For example, the following code snippet groups all processes by the computer they run on, sums up all of the power required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and then penalizes every computer whose processes consume more power than is available:
+For example, the following code snippet first groups all processes by the computer they run on, sums up all the power
+required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes
+every computer whose processes consume more power than is available.
 
 [source,java,options="nowrap"]
 ----
@@ -126,18 +128,21 @@ image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
 
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
-//COMMENT: Can we be more specific about Bi and Tri?
 
 [collectorsOutOfTheBox]
-=== Out-of-the-box collectors
+=== Out-of-the-box Collectors
 
-The following section describes the collector implementations provided out of the box. This section only describes the
-`int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable result data types, such as `long`, `BigDecimal` or `Duration`. You can see a complete list in the `org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
+The following section focuses on the collector implementations provided out of the box. This section only describes the
+`int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
+result data types, such as `long`, `BigDecimal` or `Duration`. You can find a complete list by exploring the
+`org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
 
 [collectorsCount]
 ==== Collecting `count()`
 
-The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector gives a number of items for two separate groups: one where the talks have unavailable speakers, and one where they do not unavailable speakers.
+The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector
+gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
+don't.
 
 [source,java,options="nowrap"]
 ----
@@ -155,7 +160,8 @@ The return value for this collector is a 32-bit signed integer (`int`). There is
 [collectorsCountDistinct]
 ==== Collecting `countDistinct()`
 
-The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it occurs. For example, the following use of the collector provides  a number of talks in each unique room.
+The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it
+occurs. For example, the following use of the collector gives a number of talks in each unique room.
 
 [source,java,options="nowrap"]
 ----
