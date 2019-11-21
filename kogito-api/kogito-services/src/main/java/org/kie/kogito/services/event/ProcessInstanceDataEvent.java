@@ -21,7 +21,7 @@ import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 
 public class ProcessInstanceDataEvent extends AbstractProcessDataEvent<ProcessInstanceEventBody> {
     
-    public ProcessInstanceDataEvent(String source, Map<String, String> metaData, ProcessInstanceEventBody body) {
+    public ProcessInstanceDataEvent(String source, String addons, Map<String, String> metaData, ProcessInstanceEventBody body) {
         super("ProcessInstanceEvent",  
               source,
               body,
@@ -30,7 +30,8 @@ public class ProcessInstanceDataEvent extends AbstractProcessDataEvent<ProcessIn
               metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
               metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
               metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
-              metaData.get(ProcessInstanceEventBody.STATE_META_DATA));
+              metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
+              addons);
     }
 
 }

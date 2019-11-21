@@ -24,6 +24,7 @@ public class Application implements org.kie.kogito.Application {
                 
             }
             unitOfWorkManager().eventManager().setService(kogitoService);
+            unitOfWorkManager().eventManager().setAddons(config().addons());
         }
     }
 }

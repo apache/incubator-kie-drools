@@ -41,18 +41,21 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
     
     protected String kogitoReferenceId;
     
-    public AbstractProcessDataEvent(String source, 
+    protected String kogitoAddons;
+    
+    public AbstractProcessDataEvent(String source,
                                     T body,
                                     String kogitoProcessinstanceId,
                                     String kogitoParentProcessinstanceId,
                                     String kogitoRootProcessinstanceId,
                                     String kogitoProcessId,
                                     String kogitoRootProcessId,
-                                    String kogitoProcessinstanceState) {
+                                    String kogitoProcessinstanceState,
+                                    String kogitoAddons) {
         
         this.specversion = SPEC_VERSION;
         this.id = UUID.randomUUID().toString();
-        this.source = source;
+        this.source = source;        
         this.type = this.getClass().getSimpleName();
         this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         this.data = body;
@@ -62,7 +65,8 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
         this.kogitoRootProcessinstanceId = kogitoRootProcessinstanceId;
         this.kogitoProcessId = kogitoProcessId;
         this.kogitoRootProcessId = kogitoRootProcessId;
-        this.kogitoProcessinstanceState = kogitoProcessinstanceState;            
+        this.kogitoProcessinstanceState = kogitoProcessinstanceState; 
+        this.kogitoAddons = kogitoAddons;
     }
 
     public AbstractProcessDataEvent(String type,
@@ -73,7 +77,8 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
                              String kogitoRootProcessinstanceId,
                              String kogitoProcessId,
                              String kogitoRootProcessId,
-                             String kogitoProcessinstanceState) {
+                             String kogitoProcessinstanceState,
+                             String kogitoAddons) {
         this.specversion = SPEC_VERSION;
         this.id = UUID.randomUUID().toString();
         this.source = source;
@@ -87,6 +92,7 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
         this.kogitoProcessId = kogitoProcessId;
         this.kogitoRootProcessId = kogitoRootProcessId;
         this.kogitoProcessinstanceState = kogitoProcessinstanceState;
+        this.kogitoAddons = kogitoAddons;
     }
 
     @Override
@@ -149,5 +155,9 @@ public abstract class AbstractProcessDataEvent<T> implements DataEvent<T> {
     
     public void setKogitoReferenceId(String kogitoReferenceId) {
         this.kogitoReferenceId = kogitoReferenceId;
+    }
+    
+    public String getKogitoAddons() {
+        return kogitoAddons;
     }
 }

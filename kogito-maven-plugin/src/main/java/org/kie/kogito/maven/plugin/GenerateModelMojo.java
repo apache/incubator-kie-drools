@@ -176,16 +176,20 @@ public class GenerateModelMojo extends AbstractKieMojo {
         boolean usePersistence = persistence || hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
         boolean useMonitoring = hasClassOnClasspath("org.kie.addons.monitoring.rest.MetricsResource"); 
         
-        ApplicationGenerator appGen =
-                new ApplicationGenerator(appPackageName, targetDirectory)
-                        .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
-                        .withPersistence(usePersistence)
-                        .withMonitoring(useMonitoring);
+        
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
                                                                            null);
+        
+        ApplicationGenerator appGen =
+                new ApplicationGenerator(appPackageName, targetDirectory)
+                        .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
+                        .withPersistence(usePersistence)
+                        .withMonitoring(useMonitoring)
+                        .withClassLoader(projectClassLoader);
+        
         if (generateRuleUnits) {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withKModule(getKModuleModel())

@@ -17,13 +17,23 @@ package org.kie.kogito.codegen;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
+
+import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.Addons;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -33,11 +43,15 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class ConfigGenerator {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigGenerator.class);
     private static final String RESOURCE = "/class-templates/config/ApplicationConfigTemplate.java";
 
     private DependencyInjectionAnnotator annotator;
@@ -48,6 +62,8 @@ public class ConfigGenerator {
     private final String sourceFilePath;
     private final String targetTypeName;
     private final String targetCanonicalName;
+    
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     
     public ConfigGenerator(String packageName) {
         this.packageName = packageName;
@@ -108,7 +124,32 @@ public class ConfigGenerator {
                 cls.addMember(member);
             }
         }
-
+        
+        
+        // add found addons
+        BlockStmt addonsMethodBody = new BlockStmt();
+        MethodDeclaration addonsMethod = new MethodDeclaration()
+                .setName("addons")
+                .setType(Addons.class.getCanonicalName())
+                .setModifiers(Keyword.PUBLIC)
+                .setBody(addonsMethodBody);
+        cls.addMember(addonsMethod);
+        
+        MethodCallExpr asList = new MethodCallExpr(new NameExpr("java.util.Arrays"), "asList");
+        ReturnStmt returnStmt = new ReturnStmt(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, Addons.class.getCanonicalName()), NodeList.nodeList(asList)));
+        
+        addonsMethodBody.addStatement(returnStmt);
+        try {
+            Enumeration<URL> urls = classLoader.getResources("META-INF/kogito.addon");
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                String addon = StringUtils.readFileAsString(new InputStreamReader(url.openStream()));
+                asList.addArgument(new StringLiteralExpr(addon));
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Unexpected exception during loading of kogito.addon files", e);
+        }
+        
         MethodDeclaration initMethod = new MethodDeclaration()
             .addModifier(Keyword.PUBLIC)
             .setName("init")
@@ -135,5 +176,9 @@ public class ConfigGenerator {
     
     public String generatedFilePath() {
         return sourceFilePath;
+    }
+
+    public void withClassLoader(ClassLoader projectClassLoader) {
+        this.classLoader = projectClassLoader;
     }
 }

@@ -444,6 +444,8 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
         assertThat(event.getTime()).doesNotContain("[");
         
+        assertThat(((ProcessInstanceDataEvent)event).getKogitoAddons()).isEqualTo("test");
+        
         return body;
     }
     
@@ -465,6 +467,8 @@ public class PublishEventTest extends AbstractCodegenTest {
         
         assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
         assertThat(event.getTime()).doesNotContain("[");
+        
+        assertThat(((UserTaskInstanceDataEvent)event).getKogitoAddons()).isEqualTo("test");
         
         return body;
     }

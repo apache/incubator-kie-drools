@@ -18,7 +18,28 @@ package org.kie.kogito;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.rules.RuleConfig;
 
+/**
+ * Provides general configuration of Kogito application
+ */
 public interface Config {
+    
+    /**
+     * Provides process specific configuration 
+     * @return process specific configuration or null of no process is found in the application
+     */
     ProcessConfig process();
+    
+    /**
+     * Provides rule specific configuration
+     * @return rule specific configuration or null of no rule is found in the application
+     */
     RuleConfig rule();
+    
+    /**
+     * Provides access to addons in the application.
+     * @return addons available in the application
+     */
+    default Addons addons() {
+        return Addons.EMTPY;
+    }
 }

@@ -15,6 +15,8 @@
 
 package org.kie.kogito.event;
 
+import org.kie.kogito.Addons;
+
 /**
  * Event manager that is entry point for handling events generated
  * during execution.
@@ -50,4 +52,10 @@ public interface EventManager {
      * @param service endpoint of the service
      */
     void setService(String service);
+    
+    /**
+     * Optionally adds available addons in the running service
+     * @param addons addons available in the service
+     */
+    void setAddons(Addons addons);
 }

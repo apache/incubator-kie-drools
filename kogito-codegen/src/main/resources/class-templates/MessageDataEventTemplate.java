@@ -13,6 +13,7 @@ public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
               null,
               null,
               null,
+              null,
               null);
     }
     
@@ -31,7 +32,8 @@ public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
               kogitoRootProcessinstanceId,
               kogitoProcessId,
               kogitoRootProcessId,
-              kogitoProcessinstanceState);
+              kogitoProcessinstanceState,
+              null);
     }
 
 }

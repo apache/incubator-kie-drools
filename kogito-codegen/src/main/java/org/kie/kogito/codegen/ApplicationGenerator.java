@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -26,23 +28,6 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.SourceVersion;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.CatchClause;
-import com.github.javaparser.ast.stmt.TryStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -53,7 +38,16 @@ import org.kie.kogito.event.EventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.javaparser.StaticJavaParser.parse;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class ApplicationGenerator {
 
@@ -80,7 +74,7 @@ public class ApplicationGenerator {
     private List<Labeler> labelers = new ArrayList<>();
 
     private GeneratorContext context = new GeneratorContext();
-    private boolean persistence;
+    private boolean persistence;       
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
         if (packageName == null) {
@@ -209,6 +203,7 @@ public class ApplicationGenerator {
             generators.forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
         }
         this.labelers.forEach(l -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, l.generateLabels()));
+        
         return generatedFiles;
     }
 
@@ -273,5 +268,10 @@ public class ApplicationGenerator {
 
     protected boolean useInjection() {
         return this.annotator != null;
+    }
+
+    public ApplicationGenerator withClassLoader(ClassLoader projectClassLoader) {
+        this.configGenerator.withClassLoader(projectClassLoader);
+        return this;
     }
 }

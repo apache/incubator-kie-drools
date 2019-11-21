@@ -39,8 +39,10 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
     private final String kogitoProcessId;
     private final String kogitoRootProcessId;
     private final String kogitoUserTaskinstanceState;
+    
+    private String kogitoAddons;
 
-    public UserTaskInstanceDataEvent(String source, Map<String, String> metaData, UserTaskInstanceEventBody body) {
+    public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {
         this.specversion = "0.3";
         this.id = UUID.randomUUID().toString();
         this.source = source;
@@ -55,6 +57,8 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
 
         this.kogitoUserTaskinstanceState = metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA);
         this.kogitoUserTaskinstanceId = metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA);
+        
+        this.kogitoAddons = addons;
     }
 
     @Override
@@ -111,4 +115,7 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
         return kogitoUserTaskinstanceState;
     }
 
+    public String getKogitoAddons() {
+        return kogitoAddons;
+    }
 }

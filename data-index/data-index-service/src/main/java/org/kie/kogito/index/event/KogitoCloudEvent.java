@@ -44,6 +44,7 @@ public abstract class KogitoCloudEvent<T> {
     @JsonProperty("kogitoRootProcessId")
     private String rootProcessId;    
     private String kogitoReferenceId;
+    private String kogitoAddons;
 
     public String getSpecVersion() {
         return specVersion;
@@ -149,6 +150,14 @@ public abstract class KogitoCloudEvent<T> {
     
     public void setKogitoReferenceId(String kogitoReferenceId) {
         this.kogitoReferenceId = kogitoReferenceId;
+    }
+    
+    public String getKogitoAddons() {
+        return kogitoAddons;
+    }
+    
+    public void setKogitoAddons(String kogitoAddons) {
+        this.kogitoAddons = kogitoAddons;
     }
 
     @Override

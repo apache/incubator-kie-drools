@@ -32,6 +32,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
@@ -41,10 +42,12 @@ import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 public class ProcessInstanceEventBatch implements EventBatch {
     
     private final String service;
+    private Addons addons;
     private List<ProcessEvent> rawEvents = new ArrayList<>();
 
-    public ProcessInstanceEventBatch(String service) {
+    public ProcessInstanceEventBatch(String service, Addons addons) {
         this.service = service;
+        this.addons = addons;                
     }
 
     @Override
@@ -93,8 +96,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
         
         Collection<DataEvent<?>> processedEvents = new ArrayList<>();
                 
-        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractProcessId(pi.metaData()), pi.metaData(), pi)).forEach(processedEvents::add);
-        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractProcessId(pi.metaData()), pi.metaData(), pi)).forEach(processedEvents::add);
+        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractProcessId(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
+        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractProcessId(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
         
         return processedEvents;
     }

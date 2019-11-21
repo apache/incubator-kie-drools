@@ -37,4 +37,9 @@ public class StaticConfig implements Config {
     public RuleConfig rule() {
         return this.ruleConfig;
     }
+
+    @Override
+    public Addons addons() {
+        return Addons.EMTPY;
+    }
 }
