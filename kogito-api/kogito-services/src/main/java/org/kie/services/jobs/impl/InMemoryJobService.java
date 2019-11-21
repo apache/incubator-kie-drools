@@ -29,6 +29,8 @@ import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.time.TimerInstance;
 
 
@@ -36,17 +38,20 @@ public class InMemoryJobService implements JobsService {
 
     protected final ScheduledThreadPoolExecutor scheduler;
     protected final ProcessRuntime processRuntime;
+    protected final UnitOfWorkManager unitOfWorkManager;
     
     protected ConcurrentHashMap<String, ScheduledFuture<?>> scheduledJobs = new ConcurrentHashMap<>();
     
-    public InMemoryJobService(ProcessRuntime processRuntime) {
+    public InMemoryJobService(ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
         this.scheduler = new ScheduledThreadPoolExecutor(1);
         this.processRuntime = processRuntime;
+        this.unitOfWorkManager = unitOfWorkManager;
     }
     
-    public InMemoryJobService(int threadPoolSize, ProcessRuntime processRuntime) {
+    public InMemoryJobService(int threadPoolSize, ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
         this.scheduler = new ScheduledThreadPoolExecutor(threadPoolSize);
         this.processRuntime = processRuntime;
+        this.unitOfWorkManager = unitOfWorkManager;
     }
     
 
@@ -107,19 +112,23 @@ public class InMemoryJobService implements JobsService {
         @Override
         public void run() {
             try {
-                ProcessInstance pi = processRuntime.getProcessInstance(processInstanceId);
-                if (pi != null) {
-                    String[] ids = id.split("_");
-                    limit--;
-                    pi.signalEvent("timerTriggered", TimerInstance.with(Long.valueOf(ids[1]), id, limit));
-                    
-                    if (limit == 0) {
+                UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
+                    ProcessInstance pi = processRuntime.getProcessInstance(processInstanceId);
+                    if (pi != null) {
+                        String[] ids = id.split("_");
+                        limit--;
+                        pi.signalEvent("timerTriggered", TimerInstance.with(Long.valueOf(ids[1]), id, limit));
+                        
+                        if (limit == 0) {
+                            scheduledJobs.remove(id).cancel(false);
+                        }
+                    } else {
+                        // since owning process instance does not exist cancel timers
                         scheduledJobs.remove(id).cancel(false);
                     }
-                } else {
-                    // since owning process instance does not exist cancel timers
-                    scheduledJobs.remove(id).cancel(false);
-                }
+    
+                    return null;
+                });
             } finally {
                 if (removeAtExecution) {
                     scheduledJobs.remove(id);
@@ -145,11 +154,14 @@ public class InMemoryJobService implements JobsService {
         @Override
         public void run() {
             try {
-                ProcessInstance pi = processRuntime.createProcessInstance(processId, null);
-                if (pi != null) {
-                    processRuntime.startProcessInstance(pi.getId(), "timer");
-                }
-                
+                UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
+                    ProcessInstance pi = processRuntime.createProcessInstance(processId, null);
+                    if (pi != null) {
+                        processRuntime.startProcessInstance(pi.getId(), "timer");
+                    }
+                    
+                    return null;
+                });
                 limit--;
                 if (limit == 0) {
                     scheduledJobs.remove(id).cancel(false);

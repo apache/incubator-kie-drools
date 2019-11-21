@@ -34,6 +34,8 @@ import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
 import org.kie.services.time.TimerInstance;
 import org.slf4j.LoggerFactory;
@@ -77,7 +79,7 @@ public class TimerTest extends AbstractBaseTest  {
 			}
         }).start();
         
-        JobsService jobService = new InMemoryJobService(processRuntime);
+        JobsService jobService = new InMemoryJobService(processRuntime, new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         
         ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getId(), "test");
         String jobId = jobService.scheduleProcessInstanceJob(desc);

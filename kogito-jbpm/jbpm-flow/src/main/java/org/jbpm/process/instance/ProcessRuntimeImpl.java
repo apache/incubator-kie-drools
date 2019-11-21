@@ -95,9 +95,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
 		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
-		initSignalManager();
-		jobService = new InMemoryJobService(this);
+		initSignalManager();		
 		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
+		jobService = new InMemoryJobService(this, unitOfWorkManager);
         processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();                   
@@ -132,9 +132,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();
-		initSignalManager();
-		jobService = new InMemoryJobService(this);
+		initSignalManager();		
 		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
+		jobService = new InMemoryJobService(this, unitOfWorkManager);
         processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();                   
