@@ -27,4 +27,24 @@ public interface DMNEdge extends Edge {
     public QName getDmnElementRef();
 
     public void setDmnElementRef(QName value);
+
+    /**
+     * @since DMN v1.3
+     */
+    QName getSourceElement();
+
+    /**
+     * @since DMN v1.3
+     */
+    void setSourceElement(QName value);
+
+    /**
+     * @since DMN v1.3
+     */
+    QName getTargetElement();
+
+    /**
+     * @since DMN v1.3
+     */
+    void setTargetElement(QName value);
 }

@@ -48,4 +48,14 @@ public interface ItemDefinition extends NamedElement {
 
     String toString();
 
+    /**
+     * @since DMN v1.3
+     */
+    FunctionItem getFunctionItem();
+
+    /**
+     * @since DMN v1.3
+     */
+    void setFunctionItem(FunctionItem value);
+
 }

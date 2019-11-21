@@ -37,6 +37,7 @@ import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
 import org.kie.dmn.core.imports.ImportsTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -412,4 +413,42 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                           getReader("use join.dmn", ImportsTest.class));
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
+
+    @Test
+    public void testDMNv1_3_simple() {
+        List<DMNMessage> validate = validator.validate(getReader("simple.dmn", DMN13specificTest.class),
+                                                       VALIDATE_SCHEMA,
+                                                       VALIDATE_MODEL,
+                                                       VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testDMNv1_3_ch11example1() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
+                                                            VALIDATE_MODEL,
+                                                            VALIDATE_COMPILATION)
+                                             .theseModels(getReader("Financial.dmn", DMN13specificTest.class),
+                                                          getReader("Chapter 11 Example.dmn", DMN13specificTest.class));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
+                                                   p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
+                                                   p.getSourceId().equals("_4bd33d4a-741b-444a-968b-64e1841211e7")));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
+                                                   p.getMessageType().equals(DMNMessageType.INVALID_NAME) &&
+                                                   p.getSourceId().equals("_96b30012-a6e7-4545-89d3-068ec722469c")));
+    }
+
+    @Test
+    public void testDMNv1_3_ch11example2() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
+                                                            VALIDATE_MODEL,
+                                                            VALIDATE_COMPILATION)
+                                             .theseModels(getReader("Recommended Loan Products.dmn", DMN13specificTest.class),
+                                                          getReader("Loan info.dmn", DMN13specificTest.class));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
 }

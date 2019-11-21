@@ -59,11 +59,11 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.v1_1.TDefinitions;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
@@ -112,10 +112,12 @@ public class DMNModelImpl
     }
 
     private void wireTypeRegistry(Definitions definitions) {
-        if (definitions instanceof TDefinitions) {
+        if (definitions instanceof org.kie.dmn.model.v1_1.TDefinitions) {
             types = new DMNTypeRegistryV11();
-        } else {
+        } else if (definitions instanceof org.kie.dmn.model.v1_2.TDefinitions) {
             types = new DMNTypeRegistryV12();
+        } else {
+            types = new DMNTypeRegistryV13();
         }
     }
     

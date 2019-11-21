@@ -32,7 +32,6 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,17 +41,20 @@ public class XStreamMarshaller implements DMNMarshaller {
     private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
     private final org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller xstream11;
     private final org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller xstream12;
+    private final org.kie.dmn.backend.marshalling.v1_3.xstream.XStreamMarshaller xstream13;
     private static final StaxDriver staxDriver = new StaxDriver();
 
     public XStreamMarshaller() {
         xstream11 = new org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller();
         xstream12 = new org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller();
+        xstream13 = new org.kie.dmn.backend.marshalling.v1_3.xstream.XStreamMarshaller();
     }
 
     public XStreamMarshaller (List<DMNExtensionRegister> extensionRegisters) {
         this.extensionRegisters.addAll(extensionRegisters);
         xstream11 = new org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller(extensionRegisters);
         xstream12 = new org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller(extensionRegisters);
+        xstream13 = new org.kie.dmn.backend.marshalling.v1_3.xstream.XStreamMarshaller(extensionRegisters);
     }
 
     @Override
@@ -62,12 +64,21 @@ public class XStreamMarshaller implements DMNMarshaller {
             DMN_VERSION inferDMNVersion = inferDMNVersion(firstStringReader);
 
             Definitions result;
-            if (inferDMNVersion == DMN_VERSION.DMN_v1_2) {
-                result = xstream12.unmarshal(secondStringReader);
-            } else if (inferDMNVersion == DMN_VERSION.DMN_v1_1) {
-                result = xstream11.unmarshal(secondStringReader);
-            } else {
-                result = xstream12.unmarshal(secondStringReader);
+            switch (inferDMNVersion) {
+                case DMN_v1_1:
+                    result = xstream11.unmarshal(secondStringReader);
+                    break;
+                case DMN_v1_2:
+                    result = xstream12.unmarshal(secondStringReader);
+                    break;
+                case DMN_v1_3:
+                    result = xstream13.unmarshal(secondStringReader);
+                    break;
+                case UNKNOWN:
+                default:
+                    result = xstream13.unmarshal(secondStringReader);
+                    break;
+
             }
             return result;
         } catch ( Exception e ) {
@@ -77,15 +88,17 @@ public class XStreamMarshaller implements DMNMarshaller {
     }
 
     public enum DMN_VERSION {
-        UNKOWN, DMN_v1_1, DMN_v1_2;
+        UNKNOWN, DMN_v1_1, DMN_v1_2, DMN_v1_3;
     }
 
     public static DMN_VERSION inferDMNVersion(Reader from) {
         try {
             XMLStreamReader xmlReader = staxDriver.getInputFactory().createXMLStreamReader(from);
             CustomStaxReader customStaxReader = new CustomStaxReader(new QNameMap(), xmlReader);
-            DMN_VERSION result = DMN_VERSION.UNKOWN;
-            if (customStaxReader.getNsContext().values().stream().anyMatch(s -> KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
+            DMN_VERSION result = DMN_VERSION.UNKNOWN;
+            if (customStaxReader.getNsContext().values().stream().anyMatch(s -> org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
+                result = DMN_VERSION.DMN_v1_3;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(s -> org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
                 result = DMN_VERSION.DMN_v1_2;
             } else if (customStaxReader.getNsContext().values().stream().anyMatch(s -> org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
                 result = DMN_VERSION.DMN_v1_1;
@@ -96,7 +109,7 @@ public class XStreamMarshaller implements DMNMarshaller {
         } catch (Exception e) {
             logger.error("Error unmarshalling DMN model from reader.", e);
         }
-        return DMN_VERSION.UNKOWN;
+        return DMN_VERSION.UNKNOWN;
     }
 
     @Override
@@ -112,23 +125,27 @@ public class XStreamMarshaller implements DMNMarshaller {
 
     @Override
     public String marshal(Object o) {
-        if (o instanceof KieDMNModelInstrumentedBase) {
+        if (o instanceof org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase) {
+            return xstream13.marshal(o);
+        } else if (o instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) {
             return xstream12.marshal(o);
         } else if (o instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
             return xstream11.marshal(o);
         } else {
-            return xstream12.marshal(o);
+            return xstream13.marshal(o);
         }
     }
 
     @Override
     public void marshal(Object o, Writer out) {
-        if (o instanceof KieDMNModelInstrumentedBase) {
+        if (o instanceof org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase) {
+            xstream13.marshal(o, out);
+        } else if (o instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) {
             xstream12.marshal(o, out);
         } else if (o instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
             xstream11.marshal(o, out);
         } else {
-            xstream12.marshal(o, out);
+            xstream13.marshal(o, out);
         }
     }
 

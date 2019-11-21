@@ -71,4 +71,24 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge
         this.dmnElementRef = value;
     }
 
+    @Override
+    public QName getSourceElement() {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
+    @Override
+    public void setSourceElement(QName value) {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
+    @Override
+    public QName getTargetElement() {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
+    @Override
+    public void setTargetElement(QName value) {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
 }

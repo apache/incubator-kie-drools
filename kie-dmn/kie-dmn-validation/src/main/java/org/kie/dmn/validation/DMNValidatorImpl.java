@@ -108,6 +108,19 @@ public class DMNValidatorImpl implements DMNValidator {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
+    static final Schema schemav1_3;
+    static {
+        try {
+            schemav1_3 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DC.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DI.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMNDI13.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMN13.xsd"))
+                                      });
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
+        }
+    }
     
     /**
      * A KieContainer is normally available,
@@ -485,7 +498,16 @@ public class DMNValidatorImpl implements DMNValidator {
         try {
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new FileReader(xmlFile));
             Source s = new StreamSource(xmlFile);
-            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchema(s, schemav1_1) : validateSchema(s, schemav1_2);
+            switch (inferDMNVersion) {
+                case DMN_v1_1:
+                    return validateSchema(s, schemav1_1);
+                case DMN_v1_2:
+                    return validateSchema(s, schemav1_2);
+                case DMN_v1_3:
+                case UNKNOWN:
+                default:
+                    return validateSchema(s, schemav1_3);
+            }
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
         }
@@ -498,7 +520,16 @@ public class DMNValidatorImpl implements DMNValidator {
             String xml = buffer.lines().collect(Collectors.joining("\n"));
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new StringReader(xml));
             Source s = new StreamSource(new StringReader(xml));
-            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchema(s, schemav1_1) : validateSchema(s, schemav1_2);
+            switch (inferDMNVersion) {
+                case DMN_v1_1:
+                    return validateSchema(s, schemav1_1);
+                case DMN_v1_2:
+                    return validateSchema(s, schemav1_2);
+                case DMN_v1_3:
+                case UNKNOWN:
+                default:
+                    return validateSchema(s, schemav1_3);
+            }
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
         }

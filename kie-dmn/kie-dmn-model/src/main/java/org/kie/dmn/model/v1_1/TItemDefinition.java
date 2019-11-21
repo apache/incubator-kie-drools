@@ -21,6 +21,7 @@ import java.util.StringJoiner;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.UnaryTests;
 
@@ -91,5 +92,15 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
                 .add("typeLanguage: " + typeLanguage)
                 .add("isCollection: " + isCollection)
                 .toString();
+    }
+
+    @Override
+    public FunctionItem getFunctionItem() {
+        throw new UnsupportedOperationException("Since DMNv1.3");
+    }
+
+    @Override
+    public void setFunctionItem(FunctionItem value) {
+        throw new UnsupportedOperationException("Since DMNv1.3");
     }
 }

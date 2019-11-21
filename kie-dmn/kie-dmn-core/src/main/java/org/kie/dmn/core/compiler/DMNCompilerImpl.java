@@ -90,7 +90,6 @@ import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.kie.internal.io.ResourceFactory;
@@ -666,7 +665,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @return
      */
     public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef, String modelNamespace) {
-        if (localElement instanceof KieDMNModelInstrumentedBase) {
+        if (localElement instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
             if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
             } else {
@@ -678,7 +677,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
             }
-        } else {
+        } else { // DMN v1.2 onwards:
             for (BuiltInType bi : DMNTypeRegistryV12.ITEMDEF_TYPEREF_FEEL_BUILTIN) {
                 for (String biName : bi.getNames()) {
                     if (biName.equals(typeRef.getLocalPart())) {
