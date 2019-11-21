@@ -22,7 +22,7 @@ The DMN model is added to this DMN file, and all DRD nodes from the included mod
 .DMN file with decision components from the included DMN model
 image::dmn/dmn-include-model-list.png[]
 
-All data types from the included model are also listed in the *Data Types* tab for the DMN file:
+All data types from the included model are also listed in read-only mode in the *Data Types* tab for the DMN file:
 
 .DMN file with data types from the included DMN model
 image::dmn/dmn-include-model-data-types.png[]

@@ -40,12 +40,17 @@ A decision table in DMN is a visual representation of one or more rules in a tab
 .Managing data types for a column header value
 image::dmn/dmn-manage-data-types.png[]
 
-. On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+. On the *Data Types* page, click *Add* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
 +
+--
+If you import a data object from your project as a DMN data type and then that object is updated, you must re-import the data object as a DMN data type to apply the changes in your DMN model.
+
+For this example, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+
 .Adding a new data type
 image::dmn/dmn-custom-data-type-add.png[]
-
-. Click *Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
+--
+. Click *Add Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
 +
 --
 * `"Excellent"`
@@ -56,6 +61,11 @@ image::dmn/dmn-custom-data-type-add.png[]
 
 .Adding constraints to the new data type
 image::dmn/dmn-custom-data-type-constraints.png[]
+
+To change the order of data type constraints, you can click the left end of the constraint row and drag the row as needed:
+
+.Dragging constraints to change constraint order
+image::dmn/dmn-custom-data-type-constraints-drag.png[]
 
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
 --

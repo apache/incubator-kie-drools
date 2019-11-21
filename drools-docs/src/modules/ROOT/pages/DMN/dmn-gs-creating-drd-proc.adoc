@@ -25,3 +25,5 @@ image::dmn/dmn-traffic-violations-drd.png[]
 . Click the *Driver* input node, select the *Create DMN Information Requirement* icon and click the *Should the driver be suspended?* decision node to link the two nodes.
 . Click the *Fine* decision node, select the *Create DMN Information Requirement* icon, and select the *Should the driver be suspended?* decision node.
 . Click *Save* and click *Save* again to confirm.
++
+NOTE: As you periodically save a DRD, the DMN designer performs a static validation of the DMN model and might produce error messages until the model is defined completely. After you finish defining the DMN model completely, if any errors remain, troubleshoot the specified problems accordingly.
