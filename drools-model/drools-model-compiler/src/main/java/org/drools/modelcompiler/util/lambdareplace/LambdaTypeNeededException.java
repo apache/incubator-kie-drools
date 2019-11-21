@@ -1,6 +1,6 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
-public class LambdaTypeNeededException extends RuntimeException {
+public class LambdaTypeNeededException extends DoNotConvertLambdaException {
 
     private final String lambda;
 

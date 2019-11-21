@@ -141,5 +141,28 @@ public class ExecModelLambdaPostProcessorTest {
     }
 
 
+    @Test
+    public void doNotConvertConsequence() {
+        String dslInput = "        org.drools.model.Rule rule = D.rule(\"R\").build(expr,\n" +
+                "                                                       D.on(var_$p).execute((org.drools.model.Drools drools, Person $p) -> {\n" +
+                "                                                           $p.setAge($p.getAge() + 1);\n" +
+                "                                                           drools.update($p, mask_$p);\n" +
+                "                                                       }));";
+
+        Statement expression = StaticJavaParser.parseStatement(dslInput);
+
+        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor().convertLambdas("mypackage", "rulename", expression, new ArrayList<>());
+
+        String expectedResult = "        org.drools.model.Rule rule = D.rule(\"R\").build(expr,\n" +
+                                                                        "D.on(var_$p).execute((org.drools.model.Drools drools, Person $p) -> {" +
+                "                                                           $p.setAge($p.getAge() + 1);\n" +
+                "                                                           drools.update($p, mask_$p);\n" +
+                "                                                       }));";
+
+        assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
+
+    }
+
+
 
 }

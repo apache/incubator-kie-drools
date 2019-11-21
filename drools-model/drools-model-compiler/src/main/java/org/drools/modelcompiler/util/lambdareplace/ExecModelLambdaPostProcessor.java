@@ -12,6 +12,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
@@ -20,6 +22,8 @@ import static org.drools.modelcompiler.builder.generator.expression.PatternExpre
 public class ExecModelLambdaPostProcessor {
 
     private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
+
+    Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
     public PostProcessedExecModel convertLambdas(String packageName, String ruleClassName, Statement inputDSL, Collection<String> imports) {
         Statement clone = inputDSL.clone();
@@ -41,11 +45,13 @@ public class ExecModelLambdaPostProcessor {
                     });
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
-                    .forEach(methodCallExpr -> extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName), imports));
+                    .forEach(methodCallExpr -> {
+                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName), imports);
+                    });
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
-        } catch (LambdaTypeNeededException e) {
-            System.out.println(e);
+        } catch (DoNotConvertLambdaException e) {
+            logger.info("Cannot postprocess: " + e);
             return new PostProcessedExecModel(inputDSL);
         }
     }
