@@ -240,30 +240,52 @@ public abstract class AccumulateVisitor {
 
         final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, printConstraint(parameterConverted));
 
-        optNewBinding = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
-                                                                  @Override
-                                                                  public Optional<NewBinding> onSuccess(DrlxParseSuccess result) {
-                                                                      SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
-                                                                      singleResult.setExprBinding(bindExpressionVariable);
-                                                                      final MethodCallExpr binding = expressionBuilder.buildBinding(singleResult);
-                                                                      context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
-                                                                      functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
+        optNewBinding = drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, (SingleDrlxParseSuccess) drlxParseResult));
+    }
 
-                                                                      context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-                                                                      List<String> ids = new ArrayList<>();
-                                                                      ids.add(singleResult.getPatternBinding());
-                                                                      if (input instanceof PatternDescr) {
-                                                                          ids.add(((PatternDescr) input).getIdentifier());
-                                                                      }
-                                                                      return Optional.of(new NewBinding(ids, binding));
-                                                                  }
+    private class ReplaceBindingVisitor implements  ParseResultVisitor<Optional<NewBinding>> {
 
-                                                                  @Override
-                                                                  public Optional<NewBinding> onFail(DrlxParseFail failure) {
-                                                                      return Optional.empty();
-                                                                  }
-                                                              }
-        );
+        private final MethodCallExpr functionDSL;
+        private final String bindingId;
+        private final Class<?> methodCallExprType;
+        private final Class accumulateFunctionResultType;
+        private final String bindExpressionVariable;
+        private final SingleDrlxParseSuccess drlxParseResult;
+
+        ReplaceBindingVisitor(MethodCallExpr functionDSL, String bindingId, Class<?> methodCallExprType, Class accumulateFunctionResultType, String bindExpressionVariable, SingleDrlxParseSuccess drlxParseResult) {
+            this.functionDSL = functionDSL;
+            this.bindingId = bindingId;
+            this.methodCallExprType = methodCallExprType;
+            this.accumulateFunctionResultType = accumulateFunctionResultType;
+            this.bindExpressionVariable = bindExpressionVariable;
+            this.drlxParseResult = drlxParseResult;
+        }
+
+        @Override
+        public Optional<NewBinding> onSuccess(DrlxParseSuccess result) {
+            SingleDrlxParseSuccess singleResult = drlxParseResult;
+            singleResult.setExprBinding(bindExpressionVariable);
+            final MethodCallExpr binding = expressionBuilder.buildBinding(singleResult);
+            context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
+            functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
+
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+
+            // should replace the lambda type also
+            // context.getExpressions().forEach(this::replaceTypeInExprLambda);
+
+            List<String> ids = new ArrayList<>();
+            ids.add(singleResult.getPatternBinding());
+            if (input instanceof PatternDescr) {
+                ids.add(((PatternDescr) input).getIdentifier());
+            }
+            return Optional.of(new NewBinding(ids, binding));
+        }
+
+        @Override
+        public Optional<NewBinding> onFail(DrlxParseFail failure) {
+            return Optional.empty();
+        }
     }
 
     private Expression convertParameter(Expression accumulateFunctionParameter) {
