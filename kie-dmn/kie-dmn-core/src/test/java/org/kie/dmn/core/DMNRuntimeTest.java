@@ -2639,5 +2639,33 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("is it raining?").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("what to do today?").getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED));
     }
+
+    @Test
+    public void testItemDefinitionInXmlns_dmn() {
+        // DROOLS-4797 DMN itemdef resolution in xml namespaces
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDefXmlns_dmn.dmn", this.getClass());
+        verify_testItemDefinitionInXmlns(runtime);
+    }
+
+    @Test
+    public void testItemDefinitionInXmlns_model() {
+        // DROOLS-4797 DMN itemdef resolution in xml namespaces
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDefXmlns_model.dmn", this.getClass());
+        verify_testItemDefinitionInXmlns(runtime);
+    }
+
+    private void verify_testItemDefinitionInXmlns(final DMNRuntime runtime) {
+        final DMNModel dmnModel = runtime.getModel("http://sample.dmn", "MyDecision");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("person", mapOf(entry("name", "John"), entry("age", new BigDecimal(9))));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("greet").getResult(), is("Hello, John"));
+    }
 }
 

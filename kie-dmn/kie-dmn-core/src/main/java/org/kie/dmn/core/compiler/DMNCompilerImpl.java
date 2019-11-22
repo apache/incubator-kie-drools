@@ -691,6 +691,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                     return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
                 }
             }
+            for (String nsKey : localElement.recurseNsKeys()) {
+                String prefix = nsKey + ".";
+                if (typeRef.getLocalPart().startsWith(prefix)) {
+                    return new QName(localElement.getNamespaceURI(nsKey), typeRef.getLocalPart().replace(prefix, ""));
+                }
+            }
             return new QName(modelNamespace, typeRef.getLocalPart());
         }
     }

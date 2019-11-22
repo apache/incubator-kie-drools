@@ -1,0 +1,31 @@
+<dmn:definitions name="MyDecision" id="_123456789" 
+             xmlns="http://sample.dmn" namespace="http://sample.dmn"
+             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/">
+    <dmn:itemDefinition name="tPerson" label="tPerson">
+        <dmn:itemComponent id="_f2d68912-345e-45bf-8791-457f6987bba1" name="name">
+            <dmn:typeRef>string</dmn:typeRef>
+        </dmn:itemComponent>
+        <dmn:itemComponent id="_33a83e8a-0075-44f6-b5cb-752b52a1d044" name="age">
+            <dmn:typeRef>tAge</dmn:typeRef>
+        </dmn:itemComponent>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition name="tAge" label="tAge">
+        <dmn:typeRef>number</dmn:typeRef>
+        <dmn:allowedValues >
+            <dmn:text>&gt;=0</dmn:text>
+        </dmn:allowedValues>
+    </dmn:itemDefinition>
+    <dmn:inputData id="_25b39e30-f727-4ac0-bf2c-55e619d8fdff" name="person">
+        <dmn:variable name="person" id="_b8c91743-b09b-4aec-8175-b0008f05e990" typeRef="tPerson"/>
+    </dmn:inputData>
+    <dmn:decision id="_2583090c-76e0-458b-9081-90b973a9aae7" name="greet">
+        <dmn:variable name="greet" id="_bcb2befd-712b-42ca-9472-b059c5b27f21" typeRef="string"/>
+        <dmn:informationRequirement id="_c017aa9b-27a7-4244-bc20-49643e3495a8">
+            <dmn:requiredInput href="#_25b39e30-f727-4ac0-bf2c-55e619d8fdff"/>
+        </dmn:informationRequirement>
+        <dmn:literalExpression id="_396f94d9-8ba3-4244-93f0-2a9cb94b39b5" typeRef="string" >
+            <dmn:text>"Hello, "+person.name</dmn:text>
+        </dmn:literalExpression>
+    </dmn:decision>
+</dmn:definitions>
