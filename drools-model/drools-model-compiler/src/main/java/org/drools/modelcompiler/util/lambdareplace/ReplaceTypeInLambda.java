@@ -12,17 +12,23 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.EXPR_CALL;
 
 public class ReplaceTypeInLambda {
     public static void replaceTypeInExprLambda(String bindingId, Class accumulateFunctionResultType, Expression expression) {
         expression.findAll(MethodCallExpr.class).forEach(mc -> {
             if(mc.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId)))) {
-                List<LambdaExpr> allLambdas = new ArrayList<>(mc.findAll(LambdaExpr.class)); // Flow DSL
+                List<LambdaExpr> allLambdas = new ArrayList<>();
+
+                if(mc.getNameAsString().equals(EXPR_CALL)) {
+                    allLambdas.addAll(mc.findAll(LambdaExpr.class));
+                }
 
                 Optional<Node> optParent = mc.getParentNode(); // In the Pattern DSL they're in the direct pattern
-                if(optParent.isPresent()) {
+                if(mc.getNameAsString().equals(PATTERN_CALL) && optParent.isPresent()) {
                     MethodCallExpr parent = (MethodCallExpr) optParent.get();
-//                    allLambdas.addAll(parent.findAll(LambdaExpr.class));
+                    allLambdas.addAll(parent.findAll(LambdaExpr.class));
                 }
 
                 allLambdas.forEach(lambdaExpr -> replaceLambdaParameter(accumulateFunctionResultType, lambdaExpr));
