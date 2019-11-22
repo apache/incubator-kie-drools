@@ -6,12 +6,13 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools</artifactId>
-        <version>7.30.0-SNAPSHOT</version>
+        <version>7.31.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>drools-core-reflective</artifactId>
 
     <name>Drools :: Core :: Reflective</name>
+    <packaging>bundle</packaging>
 
     <dependencies>
       <dependency>
@@ -24,4 +25,23 @@
       </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.drools.reflective.*
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <_removeheaders>Private-Package</_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

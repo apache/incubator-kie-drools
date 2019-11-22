@@ -275,6 +275,8 @@
                org.drools.template.parser;resolution:=optional,
                org.drools.persistence.jpa;resolution:=optional,
                org.drools.persistence.jpa.processinstance;resolution:=optional,
+               org.drools.reflective;resolution:=optional,
+               org.drools.reflective.classloader;resolution:=optional,
                org.jbpm.persistence.api;resolution:=optional,
                org.jbpm.marshalling.impl;resolution:=optional,
                org.jbpm.process.instance.impl;resolution:=optional,
