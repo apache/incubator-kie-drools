@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
+import org.kie.kogito.codegen.data.PersonWithList;
 
 public class ReflectionProtoGeneratorTest {
 
@@ -133,6 +134,65 @@ public class ReflectionProtoGeneratorTest {
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
+    }
+
+    @Test
+    public void testPersonWithListProtoFile() {
+
+        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithList.class));
+        assertThat(proto).isNotNull();
+
+        assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
+        assertThat(proto.getSyntax()).isEqualTo("proto2");
+        assertThat(proto.getMessages()).hasSize(1);
+
+        ProtoMessage address = proto.getMessages().get(0);
+        assertThat(address).isNotNull();
+        assertThat(address.getName()).isEqualTo("PersonWithList");
+        assertThat(address.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
+        assertThat(address.getFields()).hasSize(7);
+
+        ProtoField field = address.getFields().get(0);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("adult");
+        assertThat(field.getType()).isEqualTo("bool");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+
+        field = address.getFields().get(1);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("age");
+        assertThat(field.getType()).isEqualTo("int32");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+
+        field = address.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("booleanList");
+        assertThat(field.getType()).isEqualTo("bool");
+        assertThat(field.getApplicability()).isEqualTo("repeated");
+
+        field = address.getFields().get(3);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("integerList");
+        assertThat(field.getType()).isEqualTo("int32");
+        assertThat(field.getApplicability()).isEqualTo("repeated");
+
+        field = address.getFields().get(4);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("longList");
+        assertThat(field.getType()).isEqualTo("int64");
+        assertThat(field.getApplicability()).isEqualTo("repeated");
+
+        field = address.getFields().get(5);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+
+        field = address.getFields().get(6);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("stringList");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("repeated");
     }
     
     @Test

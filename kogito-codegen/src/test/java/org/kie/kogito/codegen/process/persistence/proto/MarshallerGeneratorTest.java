@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
+import org.kie.kogito.codegen.data.PersonWithList;
 import org.kie.kogito.codegen.process.persistence.MarshallerGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -50,7 +51,26 @@ public class MarshallerGeneratorTest {
         Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonMessageMarshaller");
         assertThat(marshallerClass).isPresent();
     }
-    
+
+    @Test
+    public void testPersonWithListMarshallers() throws Exception {
+
+        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithList.class));
+        assertThat(proto).isNotNull();
+        assertThat(proto.getMessages()).hasSize(1);
+
+        System.out.println(proto.getMessages());
+
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
+        assertThat(classes).isNotNull();
+        assertThat(classes).hasSize(1);
+
+        Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonWithListMessageMarshaller");
+        assertThat(marshallerClass).isPresent();
+    }
+
     @Test
     public void testPersonWithAdressMarshallers() throws Exception {
         
@@ -76,6 +96,8 @@ public class MarshallerGeneratorTest {
         Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithAddresses.class));
         assertThat(proto).isNotNull();        
         assertThat(proto.getMessages()).hasSize(2);
+
+        System.out.println(proto.getMessages());
         
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
         

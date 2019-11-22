@@ -22,7 +22,6 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
     public Proto generate(String packageName, Collection<Class<?>> dataModel, String... headers) {
         try {
             Proto proto = new Proto(packageName, headers);
-
             for (Class<?> clazz : dataModel) {
                 messageFromClass(proto, clazz, null, null, null);
             }
@@ -74,9 +73,9 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
         Generated generatedData = clazz.getAnnotation(Generated.class);
         if (generatedData != null) {
-
             name = generatedData.name().isEmpty() ? name : generatedData.name();
         }
+
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
@@ -85,6 +84,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             }
             String fieldTypeString = pd.getPropertyType().getCanonicalName();
             Class<?> fieldType = pd.getPropertyType();
+            String protoType;
             if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
                 fieldTypeString = "Collection";
                 Field f = clazz.getDeclaredField(pd.getName());
@@ -92,11 +92,13 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
                 if (type instanceof ParameterizedType) {
                     ParameterizedType ptype = (ParameterizedType) type;
                     fieldType = (Class<?>) ptype.getActualTypeArguments()[0];
+                    protoType = protoType(fieldType.getCanonicalName());
                 } else {
                     throw new IllegalArgumentException("Field " + f.getName() + " of class " + clazz + " uses collection without type information");
                 }
+            } else {
+                protoType = protoType(fieldTypeString);
             }
-            String protoType = protoType(fieldTypeString);
 
             if (protoType == null) {
                 ProtoMessage another = messageFromClass(proto, fieldType, packageName, messageComment, fieldComment);
