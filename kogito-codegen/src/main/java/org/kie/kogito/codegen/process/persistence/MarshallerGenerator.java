@@ -133,7 +133,7 @@ public class MarshallerGenerator {
                     String methodType = methodType(field.getTypeName());
                     MethodCallExpr write = null;
                     MethodCallExpr read = null;
-                    if (methodType != null) {
+                    if (methodType != null && !field.isRepeated()) {
                         // has a mapped type
                         read = new MethodCallExpr(new NameExpr("reader"), "read" + methodType)
                                 .addArgument(new StringLiteralExpr(field.getName()));
@@ -147,6 +147,10 @@ public class MarshallerGenerator {
                         String customType = javaTypeForMessage(d, field.getTypeName(), serializationContext);
 
                         if (field.isRepeated()) {
+                            if (null == customType || customType.isEmpty()) {
+                                customType = methodType(field.getTypeName());
+                            }
+
                             read = new MethodCallExpr(new NameExpr("reader"), "readCollection")
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList()))
@@ -232,7 +236,7 @@ public class MarshallerGenerator {
                 methodReader = "String";
                 break;
             case "int32":
-                methodReader = "Int";
+                methodReader = "Integer";
                 break;
             case "int64":
                 methodReader = "Long";
