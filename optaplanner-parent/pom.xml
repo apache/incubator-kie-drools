@@ -148,13 +148,6 @@
               </configuration>
             </plugin>
             <plugin>
-              <groupId>net.ltgt.gwt.maven</groupId>
-              <artifactId>gwt-maven-plugin</artifactId>
-              <configuration>
-                <skipCompilation>true</skipCompilation>
-              </configuration>
-            </plugin>
-            <plugin>
               <artifactId>maven-surefire-plugin</artifactId>
               <configuration>
                 <argLine>${surefire.argLine}</argLine>

@@ -23,7 +23,6 @@
   <url>https://www.optaplanner.org</url>
 
   <modules>
-    <module>optaplanner-core-gwt</module>
     <module>optaplanner-workbench-models</module>
   </modules>
 
