@@ -16,15 +16,17 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.spring.boot.autoconfigure.score.constraintprovider.SpringBootTestDataConstraintProvider;
-import org.optaplanner.spring.boot.autoconfigure.testdata.SpringBootTestDataSolution;
+import org.optaplanner.spring.boot.autoconfigure.score.constraintprovider.TestdataSpringConstraintProvider;
+import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringSolution;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import static org.junit.Assert.*;
 
@@ -34,20 +36,50 @@ public class OptaPlannerAutoConfigurationTest {
 
     public OptaPlannerAutoConfigurationTest() {
         this.contextRunner = new ApplicationContextRunner()
-                .withUserConfiguration(TestConfiguration.class)
-                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class));
+                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(TestConfiguration.class);
     }
 
-    @Test @Ignore("The @EntityScan annotation is ignored in tests") // TODO FIXME
-    public void emptyProperties() {
-        contextRunner.run(context -> {
-            assertNotNull(context.getBean(SolverManager.class));
-        });
+    @Test
+    public void withSolverConfigXml_withApplicationProperties() {
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT1S")
+                .run(context -> {
+                    assertNotNull(context.getBean(SolverManager.class));
+                });
+    }
+
+    @Test
+    public void withSolverConfigXml_withoutApplicationProperties() {
+        contextRunner
+                .run(context -> {
+                    assertNotNull(context.getBean(SolverManager.class));
+                });
+    }
+
+    @Test
+    public void withoutSolverConfigXml_withApplicationProperties() {
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT1S")
+                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
+                .run(context -> {
+                    assertNotNull(context.getBean(SolverManager.class));
+                });
+    }
+
+    @Test
+    public void withoutSolverConfigXml_withoutApplicationProperties() {
+        contextRunner
+                .withClassLoader(new FilteredClassLoader(
+                        new ClassPathResource("solverConfig.xml")))
+                .run(context -> {
+                    assertNotNull(context.getBean(SolverManager.class));
+                });
     }
 
     @Configuration
-    // TODO this annotation is ignored
-    @EntityScan(basePackageClasses = {SpringBootTestDataSolution.class, SpringBootTestDataConstraintProvider.class})
+    @EntityScan(basePackageClasses = {TestdataSpringSolution.class, TestdataSpringConstraintProvider.class})
+    @AutoConfigurationPackage
     public static class TestConfiguration {
 
     }

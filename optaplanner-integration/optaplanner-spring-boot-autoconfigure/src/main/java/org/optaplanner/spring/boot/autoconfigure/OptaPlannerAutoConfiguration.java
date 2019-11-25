@@ -83,10 +83,6 @@ public class OptaPlannerAutoConfiguration {
     }
 
     private void applySolverProperties(SolverConfig solverConfig) {
-        SolverProperties solverProperties = optaPlannerProperties.getSolver();
-        if (solverProperties.getEnvironmentMode() != null) {
-            solverConfig.setEnvironmentMode(solverProperties.getEnvironmentMode());
-        }
         EntityScanner entityScanner = new EntityScanner(this.context);
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(entityScanner));
@@ -99,7 +95,13 @@ public class OptaPlannerAutoConfiguration {
             scoreDirectorFactoryConfig.setConstraintProviderClass(findConstraintProviderClass());
             solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         }
-        applyTerminationProperties(solverConfig);
+        SolverProperties solverProperties = optaPlannerProperties.getSolver();
+        if (solverProperties != null) {
+            if (solverProperties.getEnvironmentMode() != null) {
+                solverConfig.setEnvironmentMode(solverProperties.getEnvironmentMode());
+            }
+            applyTerminationProperties(solverConfig, solverProperties);
+        }
     }
 
     private Class<?> findSolutionClass(EntityScanner entityScanner) {
@@ -146,11 +148,14 @@ public class OptaPlannerAutoConfiguration {
         scanner.setResourceLoader(context);
         scanner.addIncludeFilter(new AssignableTypeFilter(ConstraintProvider.class));
 
-        List<Class<? extends ConstraintProvider>> constraintProviderClassList = AutoConfigurationPackages.get(context).stream()
+        List<String> packages = AutoConfigurationPackages.get(context);
+        List<Class<? extends ConstraintProvider>> constraintProviderClassList = packages.stream()
                 .flatMap(basePackage -> scanner.findCandidateComponents(basePackage).stream())
                 .map(candidate -> {
                     try {
-                        return (Class<? extends ConstraintProvider>) ClassUtils.forName(candidate.getBeanClassName(), context.getClassLoader());
+                        Class<? extends ConstraintProvider> clazz = ClassUtils.forName(candidate.getBeanClassName(), context.getClassLoader())
+                                .asSubclass(ConstraintProvider.class);
+                        return clazz;
                     } catch (ClassNotFoundException e) {
                         throw new IllegalStateException("The " + ConstraintProvider.class.getSimpleName() + " class ("
                                 + candidate.getBeanClassName() + ") cannot be found.", e);
@@ -168,21 +173,23 @@ public class OptaPlannerAutoConfiguration {
         return constraintProviderClassList.get(0);
     }
 
-    private void applyTerminationProperties(SolverConfig solverConfig) {
-        TerminationProperties terminationProperties = optaPlannerProperties.getSolver().getTermination();
-        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
-        if (terminationConfig == null) {
-            terminationConfig = new TerminationConfig();
-            solverConfig.setTerminationConfig(terminationConfig);
-        }
-        if (terminationProperties.getSpentLimit() != null) {
-            terminationConfig.setSpentLimit(terminationProperties.getSpentLimit());
-        }
-        if (terminationProperties.getUnimprovedSpentLimit() != null) {
-            terminationConfig.setUnimprovedSpentLimit(terminationProperties.getUnimprovedSpentLimit());
-        }
-        if (terminationProperties.getBestScoreLimit() != null) {
-            terminationConfig.setBestScoreLimit(terminationProperties.getBestScoreLimit());
+    private void applyTerminationProperties(SolverConfig solverConfig, SolverProperties solverProperties) {
+        TerminationProperties terminationProperties = solverProperties.getTermination();
+        if (terminationProperties != null) {
+            TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+            if (terminationConfig == null) {
+                terminationConfig = new TerminationConfig();
+                solverConfig.setTerminationConfig(terminationConfig);
+            }
+            if (terminationProperties.getSpentLimit() != null) {
+                terminationConfig.setSpentLimit(terminationProperties.getSpentLimit());
+            }
+            if (terminationProperties.getUnimprovedSpentLimit() != null) {
+                terminationConfig.setUnimprovedSpentLimit(terminationProperties.getUnimprovedSpentLimit());
+            }
+            if (terminationProperties.getBestScoreLimit() != null) {
+                terminationConfig.setBestScoreLimit(terminationProperties.getBestScoreLimit());
+            }
         }
     }
 

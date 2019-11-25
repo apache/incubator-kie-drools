@@ -20,7 +20,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
-public class SpringBootTestDataEntity {
+public class TestdataSpringEntity {
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private String value;

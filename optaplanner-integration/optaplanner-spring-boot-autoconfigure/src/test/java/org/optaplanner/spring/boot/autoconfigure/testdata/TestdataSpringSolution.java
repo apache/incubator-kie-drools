@@ -18,19 +18,19 @@ package org.optaplanner.spring.boot.autoconfigure.testdata;
 
 import java.util.List;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-@PlanningEntity
-public class SpringBootTestDataSolution {
+@PlanningSolution
+public class TestdataSpringSolution {
 
     @ValueRangeProvider(id = "valueRange")
     private List<String> valueList;
     @PlanningEntityCollectionProperty
-    private List<SpringBootTestDataEntity> entityList;
+    private List<TestdataSpringEntity> entityList;
 
     @PlanningScore
     private SimpleScore score;
@@ -47,11 +47,11 @@ public class SpringBootTestDataSolution {
         this.valueList = valueList;
     }
 
-    public List<SpringBootTestDataEntity> getEntityList() {
+    public List<TestdataSpringEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<SpringBootTestDataEntity> entityList) {
+    public void setEntityList(List<TestdataSpringEntity> entityList) {
         this.entityList = entityList;
     }
 

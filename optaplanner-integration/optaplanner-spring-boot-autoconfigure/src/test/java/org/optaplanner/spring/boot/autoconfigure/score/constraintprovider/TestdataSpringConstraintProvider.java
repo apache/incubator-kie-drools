@@ -21,16 +21,17 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.spring.boot.autoconfigure.testdata.SpringBootTestDataEntity;
+import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
 
-public class SpringBootTestDataConstraintProvider implements ConstraintProvider {
+public class TestdataSpringConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.fromUniquePair(SpringBootTestDataEntity.class,
-                        Joiners.equal(SpringBootTestDataEntity::getValue))
-                        .penalize("Same planning value", SimpleScore.ZERO)
+                factory.from(TestdataSpringEntity.class)
+                        .join(TestdataSpringEntity.class, Joiners.equal(TestdataSpringEntity::getValue))
+                        .filter((a, b) -> a != b)
+                        .penalize("Don't assign 2 entities the same value.", SimpleScore.ONE)
         };
     }
 }
