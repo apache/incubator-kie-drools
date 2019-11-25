@@ -419,7 +419,7 @@ public class ModelGenerator {
     }
 
     private static Class<?> getClassForUnitData( java.lang.reflect.Type type, Class<?> rawClass ) {
-        if (Iterable.class.isAssignableFrom( rawClass ) && type instanceof ParameterizedType) {
+        if (org.kie.api.runtime.rule.DataSource.class.isAssignableFrom( rawClass ) && type instanceof ParameterizedType) {
             return toRawClass( (( ParameterizedType ) type).getActualTypeArguments()[0] );
         }
         if (rawClass.isArray()) {
