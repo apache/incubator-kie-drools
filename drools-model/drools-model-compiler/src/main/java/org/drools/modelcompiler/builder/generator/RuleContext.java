@@ -70,6 +70,7 @@ public class RuleContext {
 
     private RuleUnitDescription ruleUnitDescr;
     private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
 
@@ -180,9 +181,12 @@ public class RuleContext {
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         DeclarationSpec spec = scopedDeclarations.get( getDeclarationKey( id ));
         if (spec == null) {
-            Class<?> unitVarType = ruleUnitVars.get( id );
+            Class<?> unitVarType = ruleUnitVarsOriginalType.get( id );
+            if(unitVarType == null) {
+                unitVarType = ruleUnitVars.get(id);
+            }
             if (unitVarType != null) {
-                spec = new DeclarationSpec( id, unitVarType );
+                spec = new DeclarationSpec(id, unitVarType);
             }
         }
         return Optional.ofNullable( spec );
@@ -214,6 +218,10 @@ public class RuleContext {
 
     public void addRuleUnitVar(String name, Class<?> type) {
         ruleUnitVars.put( name, type );
+    }
+
+    public void addRuleUnitVarOriginalType(String name, Class<?> type) {
+        ruleUnitVarsOriginalType.put( name, type );
     }
 
     public Class<?> getRuleUnitVarType(String name) {
