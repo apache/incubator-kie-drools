@@ -88,7 +88,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     }
 
     public static ProjectClassLoader createProjectClassLoader() {
-        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), null);
+        return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), null);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
@@ -97,9 +97,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider);
+            return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), resourceProvider);
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.INSTANCE.createProjectClassLoader(parent, resourceProvider);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {

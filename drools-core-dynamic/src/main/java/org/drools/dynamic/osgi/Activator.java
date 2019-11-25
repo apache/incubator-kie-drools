@@ -16,11 +16,14 @@
 
 package org.drools.dynamic.osgi;
 
+import org.drools.dynamic.common.DynamicComponentsSupplier;
+import org.drools.reflective.ComponentsFactory;
 import org.kie.internal.osgi.BaseActivator;
 
 public class Activator extends BaseActivator {
 
     public Activator() {
         super( Activator.class.getClassLoader() );
+        ComponentsFactory.INSTANCE.setComponentsSupplier( new DynamicComponentsSupplier() );
     }
 }

@@ -21,26 +21,46 @@ import org.drools.reflective.util.ByteArrayClassLoader;
 
 import static org.kie.api.internal.utils.ServiceUtil.instanceFromNames;
 
-public class ComponentsFactory {
+public enum ComponentsFactory {
 
-    private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicComponentsSupplier";
-    private static final String STATIC_IMPL = "org.drools.statics.common.StaticComponentsSupplier";
+    INSTANCE;
 
-    private static ComponentsSupplier supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
+    private ComponentsSupplier supplier;
 
-    public static ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
-        return supplier.createProjectClassLoader(parent, resourceProvider);
+    public ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
+        return getComponentsSupplier().createProjectClassLoader(parent, resourceProvider);
     }
 
-    public static ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
-        return supplier.createByteArrayClassLoader(parent);
+    public ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
+        return getComponentsSupplier().createByteArrayClassLoader(parent);
     }
 
-    public static Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
-        return supplier.createConsequenceExceptionHandler(className, classLoader);
+    public Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
+        return getComponentsSupplier().createConsequenceExceptionHandler(className, classLoader);
     }
 
-    public static Object createTimerService( String className ) {
-        return supplier.createTimerService( className );
+    public Object createTimerService( String className ) {
+        return getComponentsSupplier().createTimerService( className );
+    }
+
+    public ComponentsSupplier getComponentsSupplier() {
+        if (supplier == null) {
+            supplier = Factory.LazyHolder.INSTANCE;
+        }
+        return supplier;
+    }
+
+    public void setComponentsSupplier( ComponentsSupplier supplier ) {
+        this.supplier = supplier;
+    }
+
+    private static class Factory {
+
+        private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicComponentsSupplier";
+        private static final String STATIC_IMPL = "org.drools.statics.common.StaticComponentsSupplier";
+
+        private static class LazyHolder {
+            private static final ComponentsSupplier INSTANCE = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
+        }
     }
 }
