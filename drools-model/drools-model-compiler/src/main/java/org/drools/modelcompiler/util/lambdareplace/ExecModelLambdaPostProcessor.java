@@ -21,16 +21,33 @@ import static org.drools.modelcompiler.builder.generator.expression.PatternExpre
 
 public class ExecModelLambdaPostProcessor {
 
+    private final String packageName;
+    private final String ruleClassName;
+    private final Statement inputDSL;
+    private final Collection<String> imports;
+    private final Collection<String> staticImports;
     private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
 
     Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
-    public PostProcessedExecModel convertLambdas(String packageName, String ruleClassName, Statement inputDSL, Collection<String> imports) {
+    public ExecModelLambdaPostProcessor(String packageName,
+                                        String ruleClassName,
+                                        Statement inputDSL,
+                                        Collection<String> imports,
+                                        Collection<String> staticImports) {
+        this.packageName = packageName;
+        this.ruleClassName = ruleClassName;
+        this.inputDSL = inputDSL;
+        this.imports = imports;
+        this.staticImports = staticImports;
+    }
+
+    public PostProcessedExecModel convertLambdas() {
         Statement clone = inputDSL.clone();
 
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
-                    .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName), imports));
+                    .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
 
             clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(methodCallExpr -> {
@@ -41,12 +58,12 @@ public class ExecModelLambdaPostProcessor {
                         }
 
                         String returnType = argument.asClassExpr().getTypeAsString();
-                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType), imports);
+                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
                     });
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr -> {
-                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName), imports);
+                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
 
             return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
@@ -60,12 +77,12 @@ public class ExecModelLambdaPostProcessor {
         return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
     }
 
-    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, MaterializedLambda lambdaExtractor, Collection<String> imports) {
+    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, MaterializedLambda lambdaExtractor) {
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = lambdaExtractor.create(lambdaExpr.toString(), imports);
+                CreatedClass aClass = lambdaExtractor.create(lambdaExpr.toString(), imports, staticImports);
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());

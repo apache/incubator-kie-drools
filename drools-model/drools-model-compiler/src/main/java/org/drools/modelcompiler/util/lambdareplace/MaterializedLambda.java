@@ -35,7 +35,7 @@ abstract class MaterializedLambda {
         this.ruleClassName = ruleClassName;
     }
 
-    public CreatedClass create(String expressionString, Collection<String> imports) {
+    public CreatedClass create(String expressionString, Collection<String> imports, Collection<String> staticImports) {
         Expression expression = StaticJavaParser.parseExpression(expressionString);
 
         if (!expression.isLambdaExpr()) {
@@ -48,7 +48,7 @@ abstract class MaterializedLambda {
         parseParameters();
 
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        addImports(imports, compilationUnit);
+        addImports(imports, staticImports, compilationUnit);
 
         EnumDeclaration classDeclaration = create(compilationUnit);
 
@@ -57,10 +57,14 @@ abstract class MaterializedLambda {
         return new CreatedClass(compilationUnit, className, packageName);
     }
 
-    private void addImports(Collection<String> imports, CompilationUnit compilationUnit) {
+    private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
         compilationUnit.addImport(ruleClassName, true, true);
         for(String i : imports) {
             compilationUnit.addImport(i);
+        }
+        for(String si : staticImports) {
+            String replace = si.replace(".*", ""); // JP doesn't want the * in the import
+            compilationUnit.addImport(replace, true, true);
         }
         compilationUnit.addImport("org.drools.modelcompiler.dsl.pattern.D");
     }
