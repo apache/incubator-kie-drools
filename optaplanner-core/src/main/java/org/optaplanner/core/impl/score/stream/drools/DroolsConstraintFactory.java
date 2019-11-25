@@ -18,15 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -44,7 +42,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 import static org.drools.model.DSL.globalOf;
@@ -53,7 +50,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final AtomicInteger createdRuleCounter = new AtomicInteger();
+    private final AtomicLong createdVariableCounter = new AtomicLong();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -102,8 +99,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
         List<DroolsConstraint<Solution_>> droolsConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
-        // Rule library is used to ensure some rules, such as groupBy()s, are shared when their streams are reused.
-        Map<DroolsAbstractConstraintStream<Solution_>, Rule> ruleLibrary = new LinkedHashMap<>();
         for (Constraint constraint : constraints) {
             if (constraint.getConstraintFactory() != this) {
                 throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
@@ -117,9 +112,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
-            droolsConstraint.createRules(ruleLibrary, scoreHolderGlobal);
+            model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
         }
-        ruleLibrary.values().forEach(model::addRule);
         // TODO when trace is active, show the Rule (DRL or exectable model) in logging
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
@@ -134,16 +128,13 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     }
 
     /**
-     * The constraint creating code needs to call this method to retrieve an ID of the rule.
-     * This ID then needs to be used in the rule name for easier debugging.
-     * It is imperative that this method only be called once per every rule created, as it maintains an internal
-     * counter of created rules.
-     * The sequence of IDs returned will start with 1 and continue towards {@link Integer#MAX_VALUE}.
-     * As long as rule creation calls this method in the same order, the rules will always receive the same ID.
-     * @return A unique numeric ID of the rule.
+     * In order to guarantee that all variables have unique names within the context of a rule, we need to be able to
+     * uniquely identify them. This ID supplier is used by all variable-creating code.
+     *
+     * @return supplier that returns a unique number each time it is invoked
      */
-    public int getNextRuleId() {
-        return createdRuleCounter.incrementAndGet();
+    public LongSupplier getVariableIdSupplier() {
+        return createdVariableCounter::incrementAndGet;
     }
 
     @Override

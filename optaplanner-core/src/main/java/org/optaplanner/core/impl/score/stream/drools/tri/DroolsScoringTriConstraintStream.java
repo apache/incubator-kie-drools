@@ -18,17 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
-import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
@@ -85,17 +81,8 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsTriCondition<A, B, C> condition = parent.createCondition();
-        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .build(createRuleItemBuilders(condition, scoreHolderGlobal)
-                        .toArray(new RuleItemBuilder<?>[0]));
-        return Optional.of(rule);
-    }
-
-    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsTriCondition<A, B, C> condition,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsTriCondition<A, B, C> condition = parent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -110,8 +97,8 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public DroolsTriCondition<A, B, C> createCondition() {
-        throw new UnsupportedOperationException("Cannot create TriCondition from a scoring stream.");
+    public DroolsTriCondition<A, B, C> getCondition() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own TriCondition.");
     }
 
     @Override

@@ -329,7 +329,7 @@ public final class ConstraintCollectors {
                     resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
                     return (() -> resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1));
                 },
-                (resultContainer) -> resultContainer.size() == 0 ? null : keySupplier.apply(resultContainer));
+                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
     }
 
     private ConstraintCollectors() {

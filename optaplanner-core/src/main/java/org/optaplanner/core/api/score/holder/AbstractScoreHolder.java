@@ -22,10 +22,12 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
+import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
@@ -47,6 +49,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
     protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
     protected final Map<Object, Indictment> indictmentMap;
     protected final Score_ zeroScore;
+    private BiFunction<List<Object>, Rule, List<Object>> justificationListConverter = null;
 
     protected AbstractScoreHolder(boolean constraintMatchEnabled, Score_ zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
@@ -194,7 +197,13 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
-        return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
+        Activation activation = (Activation) kcontext.getMatch();
+        List<Object> objects = activation.getObjectsDeep();
+        if (justificationListConverter == null) {
+            return objects;
+        } else {
+            return justificationListConverter.apply(objects, kcontext.getRule());
+        }
     }
 
     public class ConstraintActivationUnMatchListener implements Runnable {
@@ -223,5 +232,9 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
                 }
             }
         }
+    }
+
+    public void setJustificationListConverter(BiFunction<List<Object>, Rule, List<Object>> converter) {
+        this.justificationListConverter = converter;
     }
 }

@@ -18,17 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
-import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
@@ -87,17 +83,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     // ************************************************************************
 
     @Override
-    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsBiCondition<A, B> condition = parent.createCondition();
-        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .build(createRuleItemBuilders(condition, scoreHolderGlobal)
-                        .toArray(new RuleItemBuilder<?>[0]));
-        return Optional.of(rule);
-    }
-
-    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsBiCondition<A, B> condition,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsBiCondition<A, B> condition = parent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -112,8 +99,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     }
 
     @Override
-    public DroolsBiCondition<A, B> createCondition() {
-        throw new UnsupportedOperationException("Cannot create BiCondition from a scoring stream.");
+    public DroolsBiCondition<A, B> getCondition() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own BiCondition.");
     }
 
     @Override

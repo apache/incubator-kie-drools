@@ -157,6 +157,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     protected abstract DroolsAbstractConstraintStream<Solution_> getParent();
 
-    public abstract DroolsBiCondition<A, B> createCondition();
+    public abstract DroolsBiCondition<A, B> getCondition();
 
 }

@@ -27,7 +27,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, C> rightParentStream;
-    private final AbstractTriJoiner<A, B, C> triJoiner;
+    private final DroolsTriCondition<A, B, C> condition;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
@@ -35,7 +35,8 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         super(constraintFactory, null);
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
-        this.triJoiner = (AbstractTriJoiner<A, B, C>) triJoiner;
+        this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
+                (AbstractTriJoiner<A, B, C>) triJoiner);
     }
 
     // ************************************************************************
@@ -43,8 +44,8 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public DroolsTriCondition<A, B, C> createCondition() {
-        return leftParentStream.createCondition().andJoin(rightParentStream.createCondition(), triJoiner);
+    public DroolsTriCondition<A, B, C> getCondition() {
+        return condition;
     }
 
     // ************************************************************************

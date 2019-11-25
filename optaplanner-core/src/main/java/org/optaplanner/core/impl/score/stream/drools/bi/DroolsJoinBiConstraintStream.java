@@ -25,7 +25,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, B> rightParentStream;
-    private final AbstractBiJoiner<A, B> biJoiner;
+    private final DroolsBiCondition<A, B> condition;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
@@ -33,12 +33,12 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
         super(constraintFactory);
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
-        this.biJoiner = (AbstractBiJoiner<A, B>) biJoiner;
+        this.condition = parent.getCondition().andJoin(otherStream.getCondition(), (AbstractBiJoiner<A, B>) biJoiner);
     }
 
     @Override
-    public DroolsBiCondition<A, B> createCondition() {
-        return leftParentStream.createCondition().andJoin(rightParentStream.createCondition(), biJoiner);
+    public DroolsBiCondition<A, B> getCondition() {
+        return condition;
     }
 
     public DroolsAbstractUniConstraintStream<Solution_, A> getLeftParentStream() {

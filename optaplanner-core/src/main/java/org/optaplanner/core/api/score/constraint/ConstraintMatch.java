@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 
@@ -39,11 +41,11 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
      * @param justificationList never null, sometimes empty
      * @param score never null
      */
-    public ConstraintMatch(String constraintPackage, String constraintName,
-            List<Object> justificationList, Score score) {
+    public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList,
+            Score score) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.justificationList = justificationList;
+        this.justificationList = Collections.unmodifiableList(justificationList);
         this.score = score;
     }
 
@@ -122,10 +124,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
 
     @Override
     public int hashCode() {
-        return (((17 * 37)
-                + constraintPackage.hashCode()) * 37
-                + constraintName.hashCode()) * 37
-                + justificationList.hashCode();
+        return Objects.hash(constraintPackage, constraintName, justificationList);
     }
 
     @Override

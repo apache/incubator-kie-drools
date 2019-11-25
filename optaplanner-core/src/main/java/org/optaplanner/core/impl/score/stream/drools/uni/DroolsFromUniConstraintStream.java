@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
+    private final DroolsUniCondition<A> condition;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
@@ -31,6 +32,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
         this.fromClass = fromClass;
+        this.condition = new DroolsUniCondition<>(fromClass, constraintFactory.getVariableIdSupplier());
     }
 
     // ************************************************************************
@@ -43,8 +45,8 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     }
 
     @Override
-    public DroolsUniCondition<A> createCondition() {
-        return new DroolsUniCondition<>(fromClass);
+    public DroolsUniCondition<A> getCondition() {
+        return condition;
     }
 
     // ************************************************************************
