@@ -12,6 +12,18 @@
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna run build:prod --stream"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
+  },
   "devDependencies": {
     "lerna": "3.18.1"
   },
