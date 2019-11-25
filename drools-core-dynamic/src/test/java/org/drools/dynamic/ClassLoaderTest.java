@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.dynamic.common;
+package org.drools.dynamic;
 
 import java.util.ArrayList;
 import java.util.List;

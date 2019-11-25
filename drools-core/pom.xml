@@ -271,6 +271,7 @@
             </Export-Package>
             <Import-Package>
                com.sun.tools.xjc.*;resolution:=optional,
+               org.drools.dynamic;resolution:=optional,
                org.drools.persistence.api;resolution:=optional,
                org.drools.template.parser;resolution:=optional,
                org.drools.persistence.jpa;resolution:=optional,

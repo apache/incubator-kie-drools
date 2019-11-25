@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.dynamic.common;
+package org.drools.dynamic;
 
 import java.security.ProtectionDomain;
 

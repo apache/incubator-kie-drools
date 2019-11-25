@@ -25,6 +25,9 @@ public enum ComponentsFactory {
 
     INSTANCE;
 
+    private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicComponentsSupplier";
+    private static final String STATIC_IMPL = "org.drools.statics.StaticComponentsSupplier";
+
     private ComponentsSupplier supplier;
 
     public ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
@@ -45,22 +48,12 @@ public enum ComponentsFactory {
 
     public ComponentsSupplier getComponentsSupplier() {
         if (supplier == null) {
-            supplier = Factory.LazyHolder.INSTANCE;
+            supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
         }
         return supplier;
     }
 
     public void setComponentsSupplier( ComponentsSupplier supplier ) {
         this.supplier = supplier;
-    }
-
-    private static class Factory {
-
-        private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicComponentsSupplier";
-        private static final String STATIC_IMPL = "org.drools.statics.common.StaticComponentsSupplier";
-
-        private static class LazyHolder {
-            private static final ComponentsSupplier INSTANCE = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
-        }
     }
 }

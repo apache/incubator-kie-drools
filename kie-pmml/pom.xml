@@ -123,7 +123,9 @@
         <configuration>
           <instructions>
             <Import-Package>
-              org.drools.ruleunit.api;resolution:=optional,
+              org.drools.ruleunit;resolution:=optional,
+              org.drools.ruleunit.impl;resolution:=optional,
+              org.drools.ruleunit.executor;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>*</Export-Package>

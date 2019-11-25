@@ -14,6 +14,10 @@
 
   <name>Drools :: Core :: Dynamic</name>
 
+  <properties>
+    <java.module.name>org.drools.drools-core-dynamic</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

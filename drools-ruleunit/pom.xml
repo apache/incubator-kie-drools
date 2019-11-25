@@ -14,6 +14,10 @@
     <name>Drools :: RuleUnit</name>
     <packaging>bundle</packaging>
 
+    <properties>
+        <java.module.name>org.drools.drools-ruleunit</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
