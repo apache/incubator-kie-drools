@@ -32,6 +32,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         }
 
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("Exception")));
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new VoidType());
 
