@@ -49,6 +49,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
         pi.setProcessName(reader.readString("processName"));
         pi.setError(reader.readObject("error", ProcessInstanceError.class));
+        pi.setAddons(reader.readCollection("addons", new HashSet<>(), String.class));
         return pi;
     }
 
@@ -68,6 +69,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());
         writer.writeString("processName", pi.getProcessName());
         writer.writeObject("error", pi.getError(), ProcessInstanceError.class);
+        writer.writeCollection("addons", pi.getAddons(), String.class);
     }
 
     @Override

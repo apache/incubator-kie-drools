@@ -63,6 +63,7 @@
   "kogitoRootProcessinstanceId": "",
   "kogitoUserTaskinstanceId": "228d5922-5e88-4bfa-8329-7116a5cbe58b",
   "kogitoUserTaskinstanceState": "Completed",
+  "kogitoAddons": "jobs-management,prometheus-monitoring,process-management",
   "specversion": "0.3",
   "time": "2019-08-30T13:48:37.857915+02:00[Europe/Warsaw]",
   "type": "UserTaskInstanceEvent"

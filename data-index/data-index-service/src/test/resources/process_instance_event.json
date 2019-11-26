@@ -78,6 +78,7 @@
   "kogitoProcessinstanceState": "2",
   "kogitoRootProcessId": "travels",
   "kogitoRootProcessinstanceId": "f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee",
+  "kogitoAddons": "jobs-management,prometheus-monitoring,process-management",
   "specversion": "0.3",
   "time": "2019-08-20T21:26:02.110668+02:00[Europe/Warsaw]",
   "type": "ProcessInstanceEvent"

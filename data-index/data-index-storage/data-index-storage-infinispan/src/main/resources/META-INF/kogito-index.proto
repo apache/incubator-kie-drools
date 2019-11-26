@@ -52,6 +52,8 @@ message ProcessInstance {
     optional string processName = 13;
     /* @Field(store = Store.YES) */
     optional ProcessInstanceError error = 14;
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    repeated string addons = 15;
 }
 
 /* @Indexed */

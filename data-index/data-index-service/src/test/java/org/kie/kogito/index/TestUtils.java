@@ -81,6 +81,7 @@ public final class TestUtils {
                 .kogitoReferenceId(UUID.randomUUID().toString())
                 .schemaURL(URI.create("kogito"))
                 .source(URI.create("http://localhost:8080/" + processId))
+                .kogitoAddons("jobs-management,prometheus-monitoring,process-management")
                 .build();
     }
 

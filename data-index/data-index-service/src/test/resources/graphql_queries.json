@@ -12,6 +12,13 @@
       "state": "%s"
     }
   },
+  "ProcessInstanceByIdAndAddon": {
+    "query": "query ($id: String, $addon: String) { ProcessInstances( where: {  id: {  equal : $id }, addons: { contains : $addon } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "addon": "%s"
+    }
+  },
   "ProcessInstanceByIdAndStart": {
     "query": "query ($id: String, $start: DateTime) { ProcessInstances( where: {  id: {  equal : $id }, start: { equal : $start } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
     "variables": {

@@ -46,9 +46,11 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.hasItems;
 import static org.kie.kogito.index.GraphQLUtils.*;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
@@ -331,6 +333,7 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].childProcessInstanceId", childProcessInstances == null ? isA(Collection.class) : hasItems(childProcessInstances))
                 .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
+                .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
                 .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
                 .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()));
     }
@@ -534,6 +537,7 @@ public class IndexingServiceTest {
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndProcessId(processInstanceId, processId), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndStart(processInstanceId, formatZonedDateTime(startEvent.getData().getStart())), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndAddon(processInstanceId, "process-management"), startEvent);
 
         given().contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ Travels ( where: { processInstances: { id : { equal : \\\"" + processInstanceId + "\\\" } } } ){ id, flight { flightNumber }, hotel { name }, traveller { firstName }, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end } } }\"}")

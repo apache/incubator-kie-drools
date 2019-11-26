@@ -17,6 +17,7 @@
 package org.kie.kogito.index.model;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +27,8 @@ public class ProcessInstance extends ProcessInstanceMeta {
     private JsonNode variables;
     @JsonProperty("nodeInstances")
     private List<NodeInstance> nodes;
-    
+    private Set<String> addons;
+
     private ProcessInstanceError error;
 
     public JsonNode getVariables() {
@@ -53,11 +55,20 @@ public class ProcessInstance extends ProcessInstanceMeta {
         this.error = error;
     }
 
+    public Set<String> getAddons() {
+        return addons;
+    }
+
+    public void setAddons(Set<String> addons) {
+        this.addons = addons;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstance{" +
                 "variables=" + variables +
                 ", nodes=" + nodes +
+                ", addons=" + addons +
                 ", error=" + error +
                 "} " + super.toString();
     }

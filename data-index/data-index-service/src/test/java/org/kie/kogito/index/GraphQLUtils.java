@@ -106,6 +106,10 @@ public class GraphQLUtils {
         return getProcessInstanceQuery("ProcessInstanceByIdAndErrorNode", id, nodeDefinitionId);
     }
 
+    public static String getProcessInstanceByIdAndAddon(String id, String addon) {
+        return getProcessInstanceQuery("ProcessInstanceByIdAndAddon", id, addon);
+    }
+
     public static String getUserTaskInstanceById(String id) {
         return getUserTaskInstanceQuery("UserTaskInstanceById", id);
     }

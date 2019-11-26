@@ -18,9 +18,12 @@ package org.kie.kogito.index.event;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.index.model.ProcessInstance;
+
+import static java.util.Arrays.asList;
 
 public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
 
@@ -60,11 +63,19 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
     }
 
     @Override
+    public void setKogitoAddons(String kogitoAddons) {
+        super.setKogitoAddons(kogitoAddons);
+        if (getData() != null && kogitoAddons != null) {
+            getData().setAddons(new HashSet<>(asList(kogitoAddons.split(","))));
+        }
+    }
+
+    @Override
     public String toString() {
         return "KogitoProcessCloudEvent{" +
-               "state=" + state +
-               ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
-               "} " + super.toString();
+                "state=" + state +
+                ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
+                "} " + super.toString();
     }
 
     public static final class Builder {
@@ -142,6 +153,11 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
 
         public Builder kogitoReferenceId(String kogitoReferenceId) {
             event.setKogitoReferenceId(kogitoReferenceId);
+            return this;
+        }
+
+        public Builder kogitoAddons(String kogitoAddons) {
+            event.setKogitoAddons(kogitoAddons);
             return this;
         }
 

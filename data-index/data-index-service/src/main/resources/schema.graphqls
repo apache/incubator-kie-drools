@@ -26,6 +26,7 @@ type ProcessInstance {
     end: DateTime
     childProcessInstanceId: [String!]
     error: ProcessInstanceError
+    addons: [String!]
 }
 
 type ProcessInstanceMeta {
@@ -97,6 +98,7 @@ input ProcessInstanceArgument {
     roles: StringArrayArgument
     start: DateArgument
     end: DateArgument
+    addons: StringArrayArgument
 }
 
 input ProcessInstanceErrorArgument {
