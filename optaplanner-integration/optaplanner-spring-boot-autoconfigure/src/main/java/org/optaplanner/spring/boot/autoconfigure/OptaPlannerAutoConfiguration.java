@@ -29,6 +29,7 @@ import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,15 +46,21 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnClass(SolverManager.class)
 @ConditionalOnMissingBean(SolverManager.class)
 @EnableConfigurationProperties({OptaPlannerProperties.class})
-public class OptaPlannerAutoConfiguration {
+public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     private final ApplicationContext context;
     private final OptaPlannerProperties optaPlannerProperties;
+    private ClassLoader beanClassLoader;
 
     protected OptaPlannerAutoConfiguration(ApplicationContext context,
             OptaPlannerProperties optaPlannerProperties) {
         this.context = context;
         this.optaPlannerProperties = optaPlannerProperties;
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader beanClassLoader) {
+        this.beanClassLoader = beanClassLoader;
     }
 
     @Bean
@@ -71,20 +78,19 @@ public class OptaPlannerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SolverConfig solverConfig() {
-        ClassLoader classLoader = getClass().getClassLoader();
         String solverConfigXML = optaPlannerProperties.getSolverConfigXML();
         SolverConfig solverConfig;
         if (solverConfigXML != null) {
-            if (classLoader.getResource(solverConfigXML) == null) {
+            if (beanClassLoader.getResource(solverConfigXML) == null) {
                 throw new IllegalStateException("Invalid optaplanner.solverConfigXML property (" + solverConfigXML
                         + "): that classpath resource does not exist.");
             }
-            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML, classLoader);
-        } else if (classLoader.getResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL) != null) {
+            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML, beanClassLoader);
+        } else if (beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL) != null) {
             solverConfig = SolverConfig.createFromXmlResource(
-                    OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL, classLoader);
+                    OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL, beanClassLoader);
         } else {
-            solverConfig = new SolverConfig(classLoader);
+            solverConfig = new SolverConfig(beanClassLoader);
         }
 
         applySolverProperties(solverConfig);

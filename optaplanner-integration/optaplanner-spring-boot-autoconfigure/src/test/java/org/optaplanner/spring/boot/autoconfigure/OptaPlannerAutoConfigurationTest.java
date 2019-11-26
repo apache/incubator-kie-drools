@@ -58,8 +58,8 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
                     assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
-                    // Properties defined in customSpringBootSolverConfig.xml
-                    assertNull(solverConfig.getTerminationConfig().calculateTimeMillisSpentLimit());
+                    // No termination defined
+                    assertNull(solverConfig.getTerminationConfig());
                     assertNotNull(context.getBean(SolverFactory.class));
                 });
     }
