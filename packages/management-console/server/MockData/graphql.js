@@ -93,7 +93,7 @@ module.exports = data = [
         end: "2019-10-22T05:40:44.089Z",
         endpoint: "http://localhost:4000",
         error: {nodeDefinitionId: "a23e6c20-02c2-4c2b-8c5c-e988a0adf823", message: 'some thing went wrong'},
-        managementEnabled: "false",
+        managementEnabled: false,
         variables:
                 '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
         nodes: [
@@ -223,7 +223,7 @@ module.exports = data = [
         childProcessInstanceId: [
             "a23e6c20-02c2-4c2b-8c5c-e988a0adf862",
             "a1e139d5-4e77-48c9-84ae-34578e904e5a",
-            "e4448857-fa0c-403b-ad69-f0a353458b9d"
+            "a23e6c20-02c2-4c2b-8c5c-e988a0adf863",
         ]
     },
     {

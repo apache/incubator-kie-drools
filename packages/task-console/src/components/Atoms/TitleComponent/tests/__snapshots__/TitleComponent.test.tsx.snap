@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title Component Test cases testing snapshot 1`] = `
+<div>
+   Task-Console
+</div>
+`;

@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
+/* tslint:disable */
 export type Scalars = {
   ID: string,
   String: string,
@@ -34,7 +35,7 @@ export type ProcessInstance = {
   roles?: Maybe<Array<Scalars['String']>>,
   state: ProcessInstanceState,
   endpoint: Scalars['String'],
-  nodes: Array<NodeInstance>,
+  nodes: NodeInstance[],
   variables?: Maybe<Scalars['String']>,
   start: Scalars['DateTime'],
   end?: Maybe<Scalars['DateTime']>,
@@ -42,7 +43,7 @@ export type ProcessInstance = {
 };
 
 export type ProcessInstanceFilter = {
-  state?: Maybe<Array<ProcessInstanceState>>,
+  state?: Maybe<ProcessInstanceState[]>,
   id?: Maybe<Array<Scalars['String']>>,
   parentProcessInstanceId?: Maybe<Array<Maybe<Scalars['String']>>>,
   rootProcessInstanceId?: Maybe<Array<Maybe<Scalars['String']>>>,
