@@ -22,13 +22,13 @@ public class TerminationProperties {
 
     /**
      * How long the solver can run. Uses ISO 8601 format, see {@link Duration}.
-     * For example: "PT2M30S" is 2 minutes and 30 seconds.
+     * For example: "30S" is 30 seconds. "5M" is 5 minutes. "2H" is 2 hours.
      */
     private Duration spentLimit;
     /**
      * How long the solver can run without finding a new best solution after finding a new best solution.
      * Uses ISO 8601 format, see {@link Duration}.
-     * For example: "PT30S" is 30 seconds.
+     * For example: "30S" is 30 seconds. "5M" is 5 minutes. "2H" is 2 hours.
      */
     private Duration unimprovedSpentLimit;
     /**
