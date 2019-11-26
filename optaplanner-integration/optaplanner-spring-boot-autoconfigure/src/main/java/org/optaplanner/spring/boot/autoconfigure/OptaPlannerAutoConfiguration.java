@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -56,12 +57,20 @@ public class OptaPlannerAutoConfiguration {
     }
 
     @Bean
-    public SolverManager<?> solverManager() {
-        SolverConfig solverConfig = solverConfig();
+    @ConditionalOnMissingBean
+    public SolverManager<?> solverManager(SolverConfig solverConfig) {
         return SolverManager.create(solverConfig);
     }
 
-    private SolverConfig solverConfig() {
+    @Bean
+    @ConditionalOnMissingBean
+    public SolverFactory<?> solverFactory(SolverConfig solverConfig) {
+        return SolverFactory.create(solverConfig);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SolverConfig solverConfig() {
         ClassLoader classLoader = getClass().getClassLoader();
         String solverConfigXML = optaPlannerProperties.getSolverConfigXML();
         SolverConfig solverConfig;
@@ -182,10 +191,10 @@ public class OptaPlannerAutoConfiguration {
                 solverConfig.setTerminationConfig(terminationConfig);
             }
             if (terminationProperties.getSpentLimit() != null) {
-                terminationConfig.setSpentLimit(terminationProperties.getSpentLimit());
+                terminationConfig.overwriteSpentLimit(terminationProperties.getSpentLimit());
             }
             if (terminationProperties.getUnimprovedSpentLimit() != null) {
-                terminationConfig.setUnimprovedSpentLimit(terminationProperties.getUnimprovedSpentLimit());
+                terminationConfig.overwriteUnimprovedSpentLimit(terminationProperties.getUnimprovedSpentLimit());
             }
             if (terminationProperties.getBestScoreLimit() != null) {
                 terminationConfig.setBestScoreLimit(terminationProperties.getBestScoreLimit());

@@ -34,4 +34,5 @@ public class TestdataSpringConstraintProvider implements ConstraintProvider {
                         .penalize("Don't assign 2 entities the same value.", SimpleScore.ONE)
         };
     }
+
 }

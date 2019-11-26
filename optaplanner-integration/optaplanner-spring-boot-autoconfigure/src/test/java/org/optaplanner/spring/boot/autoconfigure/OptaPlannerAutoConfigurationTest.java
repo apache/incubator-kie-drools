@@ -16,9 +16,17 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
+import java.time.Duration;
+import java.util.Collections;
+
 import org.junit.Test;
-import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.spring.boot.autoconfigure.score.constraintprovider.TestdataSpringConstraintProvider;
+import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringSolution;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -41,39 +49,85 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void withSolverConfigXml_withApplicationProperties() {
+    public void solverConfigXML_none() {
         contextRunner
-                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT1S")
-                .run(context -> {
-                    assertNotNull(context.getBean(SolverManager.class));
-                });
-    }
-
-    @Test
-    public void withSolverConfigXml_withoutApplicationProperties() {
-        contextRunner
-                .run(context -> {
-                    assertNotNull(context.getBean(SolverManager.class));
-                });
-    }
-
-    @Test
-    public void withoutSolverConfigXml_withApplicationProperties() {
-        contextRunner
-                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT1S")
                 .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
                 .run(context -> {
-                    assertNotNull(context.getBean(SolverManager.class));
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertNotNull(solverConfig);
+                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
+                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
+                    assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    // Properties defined in customSpringBootSolverConfig.xml
+                    assertNull(solverConfig.getTerminationConfig().calculateTimeMillisSpentLimit());
+                    assertNotNull(context.getBean(SolverFactory.class));
                 });
     }
 
     @Test
-    public void withoutSolverConfigXml_withoutApplicationProperties() {
+    public void solverConfigXML_default() {
         contextRunner
-                .withClassLoader(new FilteredClassLoader(
-                        new ClassPathResource("solverConfig.xml")))
                 .run(context -> {
-                    assertNotNull(context.getBean(SolverManager.class));
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertNotNull(solverConfig);
+                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
+                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
+                    assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    // Properties defined in solverConfig.xml
+                    assertEquals(2L, solverConfig.getTerminationConfig().getSecondsSpentLimit().longValue());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
+    }
+
+    @Test
+    public void solverConfigXML_property() {
+        contextRunner
+                .withPropertyValues("optaplanner.solverConfigXML=org/optaplanner/spring/boot/autoconfigure/customSpringBootSolverConfig.xml")
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertNotNull(solverConfig);
+                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
+                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
+                    assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    // Properties defined in customSpringBootSolverConfig.xml
+                    assertEquals(3L, solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
+    }
+
+    @Test
+    public void solverProperties() {
+        contextRunner
+                .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
+    }
+
+    @Test
+    public void terminationProperties() {
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT4H")
+                .run(context -> {
+                    TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
+                    assertEquals(Duration.ofHours(4), terminationConfig.getSpentLimit());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.unimproved-spent-limit=PT5H")
+                .run(context -> {
+                    TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
+                    assertEquals(Duration.ofHours(5), terminationConfig.getUnimprovedSpentLimit());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.best-score-limit=6")
+                .run(context -> {
+                    TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
+                    assertEquals(SimpleScore.of(6).toString(), terminationConfig.getBestScoreLimit());
+                    assertNotNull(context.getBean(SolverFactory.class));
                 });
     }
 

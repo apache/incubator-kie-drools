@@ -491,6 +491,15 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
     }
 
+    public void overwriteSpentLimit(Duration spentLimit) {
+        setSpentLimit(spentLimit);
+        setMillisecondsSpentLimit(null);
+        setSecondsSpentLimit(null);
+        setMinutesSpentLimit(null);
+        setHoursSpentLimit(null);
+        setDaysSpentLimit(null);
+    }
+
     public Long calculateTimeMillisSpentLimit() {
         if (millisecondsSpentLimit == null && secondsSpentLimit == null
                 && minutesSpentLimit == null && hoursSpentLimit == null && daysSpentLimit == null) {
@@ -560,6 +569,15 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
             hoursSpentLimit = null;
             daysSpentLimit = null;
         }
+    }
+
+    public void overwriteUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
+        setUnimprovedSpentLimit(unimprovedSpentLimit);
+        setUnimprovedMillisecondsSpentLimit(null);
+        setUnimprovedSecondsSpentLimit(null);
+        setUnimprovedMinutesSpentLimit(null);
+        setUnimprovedHoursSpentLimit(null);
+        setUnimprovedDaysSpentLimit(null);
     }
 
     public Long calculateUnimprovedTimeMillisSpentLimit() {
