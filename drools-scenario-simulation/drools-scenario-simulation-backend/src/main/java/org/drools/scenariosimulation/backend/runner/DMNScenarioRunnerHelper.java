@@ -34,9 +34,9 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -172,11 +172,15 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     @SuppressWarnings("unchecked")
     @Override
     protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+        // simple types
+        if (initialInstance.isPresent() && !(initialInstance.get() instanceof Map)) {
+            return initialInstance.get();
+        }
         Map<String, Object> toReturn = (Map<String, Object>) initialInstance.orElseGet(HashMap::new);
         for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {
 
             // direct mapping already considered
-            if(listObjectEntry.getKey().isEmpty()) {
+            if (listObjectEntry.getKey().isEmpty()) {
                 continue;
             }
 
