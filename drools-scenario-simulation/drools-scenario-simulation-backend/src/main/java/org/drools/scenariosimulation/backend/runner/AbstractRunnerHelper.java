@@ -47,6 +47,8 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.kie.api.runtime.KieContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
@@ -55,6 +57,8 @@ import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.c
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
 
 public abstract class AbstractRunnerHelper {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public void run(KieContainer kieContainer,
                     ScesimModelDescriptor scesimModelDescriptor,
@@ -141,10 +145,12 @@ public abstract class AbstractRunnerHelper {
                                                                            entry.getValue(),
                                                                            expressionEvaluatorFactory);
 
-                Object bean = createObject(getDirectMapping(paramsForBean).getOptional(),factIdentifier.getClassName(), paramsForBean, classLoader);
+                Object bean = createObject(getDirectMapping(paramsForBean).getOptional(), factIdentifier.getClassName(), paramsForBean, classLoader);
 
                 instanceGiven.add(new InstanceGiven(factIdentifier, bean));
             } catch (Exception e) {
+                String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getCanonicalName();
+                logger.error("Error in GIVEN data " + entry.getKey() + ": " + errorMessage, e);
                 hasError = true;
             }
         }
