@@ -24,17 +24,17 @@ import java.util.Optional;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.util.StringUtils;
+import org.drools.ruleunit.executor.InternalRuleUnitExecutor;
 import org.kie.api.KieBase;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
@@ -86,7 +86,7 @@ public class PMMLExecutor {
         RuleUnitExecutor ruleUnitExecutor = RuleUnitExecutor.create().bind(kieBase);
         if (runWithLogging) {
             if (loggingFileName != null) {
-                logger = ((InternalRuleUnitExecutor)ruleUnitExecutor).addFileLogger(loggingFileName);
+                logger = (( InternalRuleUnitExecutor )ruleUnitExecutor).addFileLogger(loggingFileName);
             } else {
                 logger = ((InternalRuleUnitExecutor)ruleUnitExecutor).addConsoleLogger();
             }
@@ -133,7 +133,7 @@ public class PMMLExecutor {
         return packageNames;
     }
 
-    protected Class<? extends RuleUnit> startingRuleUnit(String startingRule, String modelId, String...knownPackageNames) {
+    protected Class<? extends RuleUnit> startingRuleUnit( String startingRule, String modelId, String...knownPackageNames) {
         List<String> possiblePackages = calculatePossiblePackageNames(modelId, knownPackageNames);
         InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) kieBase;
 
@@ -146,7 +146,7 @@ public class PMMLExecutor {
                 if (ruleImpl != null) {
                     RuleUnitDescription descr = internalKnowledgeBase.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
-                        return descr.getRuleUnitClass();
+                        return (Class<? extends RuleUnit>) descr.getRuleUnitClass();
                     }
                 }
             }

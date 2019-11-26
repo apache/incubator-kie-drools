@@ -37,16 +37,15 @@ import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
 import org.drools.core.InitialFact;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulSessionPool;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -68,7 +67,6 @@ import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -487,22 +485,6 @@ public class KieContainerImpl
             throw new RuntimeException(stateless ? "Cannot find a default StatelessKieSession" : "Cannot find a default KieSession");
         }
         return defaultKieSessionModel;
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor() {
-        return new RuleUnitExecutorSession( newKieSession() );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(KieSessionConfiguration conf) {
-        return new RuleUnitExecutorSession( newKieSession( conf ) );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName) {
-        return new RuleUnitExecutorSession( newKieSession( kSessionName ) );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName, KieSessionConfiguration conf) {
-        return new RuleUnitExecutorSession( newKieSession( kSessionName, conf ) );
     }
 
     public StatelessKieSession newStatelessKieSession() {

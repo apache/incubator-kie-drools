@@ -778,4 +778,16 @@ public class NamedEntryPoint
     public String toString() {
         return entryPoint.toString();
     }
+
+    private Object ruleUnit;
+
+    @Override
+    public Object getRuleUnit() {
+        return ruleUnit;
+    }
+
+    @Override
+    public void setRuleUnit(Object ruleUnit) {
+        this.ruleUnit = ruleUnit;
+    }
 }

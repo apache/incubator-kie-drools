@@ -56,7 +56,6 @@ import org.drools.core.time.impl.Timer;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -862,7 +861,7 @@ public class RuleImpl implements Externalizable,
         return ruleUnitClassName;
     }
 
-    public void setRuleUnitClass( Class<? extends RuleUnit> ruleUnit ) {
+    public void setRuleUnitClass( Class<?> ruleUnit ) {
         setRuleUnitClassName( ruleUnit.getName() );
     }
 

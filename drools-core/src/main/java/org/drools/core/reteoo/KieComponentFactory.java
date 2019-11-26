@@ -18,10 +18,8 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
-import org.drools.core.base.DefaultKnowledgeHelperFactory;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
-import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
@@ -211,26 +209,6 @@ public class KieComponentFactory implements Serializable {
     public static TripleFactory getDefaultTripleFactory() {
         return new TripleFactoryImpl();
     }
-
-
-    private KnowledgeHelperFactory knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
-
-    public KnowledgeHelperFactory getKnowledgeHelperFactory() {
-        return knowledgeHelperFactory;
-    }
-
-    public void setKnowledgeHelperFactory(KnowledgeHelperFactory provider) {
-        knowledgeHelperFactory = provider;
-    }
-
-    public void setDefaultKnowledgeHelperFactory() {
-        knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
-    }
-
-    public static KnowledgeHelperFactory getDefaultKnowledgeHelperFactory() {
-        return new DefaultKnowledgeHelperFactory();
-    }
-
 
     private LogicTransformerFactory logicTransformerFactory = new DefaultLogicTransformerFactory();
 

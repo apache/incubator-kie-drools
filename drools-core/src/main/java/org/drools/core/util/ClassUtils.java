@@ -589,10 +589,6 @@ public final class ClassUtils {
         return false;
     }
 
-    public static boolean isIterable(Class<?> clazz) {
-        return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
-    }
-    
     public static boolean isFinal(Class<?> clazz) {
         return Modifier.isFinal( clazz.getModifiers() );
     }

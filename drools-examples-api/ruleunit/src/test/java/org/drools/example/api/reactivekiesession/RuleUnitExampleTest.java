@@ -21,8 +21,8 @@ import org.drools.example.api.ruleunit.PersonRuleUnit;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnitExecutor;
 
 import static org.junit.Assert.assertEquals;
 

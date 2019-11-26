@@ -15,7 +15,6 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -126,7 +125,7 @@ public class PhreakRuleTerminalNode {
     private static int getSalienceValue( TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, AgendaItem leftTuple, InternalWorkingMemory wm ) {
         Salience salience = ruleAgendaItem.getRule().getSalience();
         return salience == null ? 0 : (salience.isDynamic() ?
-                    salience.getValue(new DefaultKnowledgeHelper( leftTuple, wm), rtnNode.getRule(), wm) :
+                    salience.getValue(wm.createKnowledgeHelper( leftTuple ), rtnNode.getRule(), wm) :
                     salience.getValue() );
     }
 

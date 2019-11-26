@@ -30,8 +30,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
@@ -44,6 +42,7 @@ import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.IoUtils;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

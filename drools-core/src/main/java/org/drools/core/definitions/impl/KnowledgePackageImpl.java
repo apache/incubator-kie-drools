@@ -38,7 +38,6 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ProcessPackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
@@ -55,6 +54,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.ClassUtils;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
@@ -658,7 +658,7 @@ public class KnowledgePackageImpl
         for (String implicitImport : implicitImports) {
             typeResolver.addImplicitImport(implicitImport);
         }
-        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(typeResolver);
+        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(this);
     }
 
     public RuleUnitDescriptionLoader getRuleUnitDescriptionLoader() {

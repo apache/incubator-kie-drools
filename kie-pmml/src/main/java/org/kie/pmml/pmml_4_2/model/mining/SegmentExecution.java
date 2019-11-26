@@ -16,19 +16,12 @@
 package org.kie.pmml.pmml_4_2.model.mining;
 
 
-import org.drools.core.base.WrappedStatefulKnowledgeSessionForRHS;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.ruleunit.RuleUnitDescription;
-import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
-import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 
@@ -157,48 +150,6 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 
 	public void setResult(PMML4Result result) {
 		this.result = result;
-	}
-	
-	public void applySegmentModel(PMMLRequestData requestData, 
-			DataSource<PMMLRequestData> data,
-			DataSource<PMML4Result> results, 
-			DataSource<SegmentExecution> segmentExecutions,
-			KnowledgeHelper helper) throws IllegalStateException {
-		
-		if (ruleUnitClassName == null || ruleUnitClassName.trim().isEmpty()) {
-			throw new IllegalStateException("Unable to apply segment model: No rule unit class name is available");
-		}
-		Class<? extends RuleUnit> ruleUnitClass = null;
-		RuleUnitDescriptionRegistry rur = ((KnowledgeBaseImpl)helper.getKieRuntime().getKieBase()).getRuleUnitDescriptionRegistry();
-		RuleUnit ruOld = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
-		RuleUnitDescription rud = rur.getDescription(ruleUnitClassName).orElse(null);
-		if (rud != null) {
-			ruleUnitClass = rud.getRuleUnitClass();
-		} else {
-			throw new IllegalStateException("Unable to apply segment model: Unable to find rule unit");
-		}
-			
-			
-//		if (ruleUnitClass != null) {
-//			helper.run(ruleUnitClass);
-//			PMML4Result result = new PMML4Result(this);
-//			FactHandle requestFH = data.insert(this.requestData);
-//			FactHandle resultsFH = results.insert(result);
-//			
-//			helper.run(ruleUnitClass);
-//			RuleUnit ruNew = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
-//			System.out.println("** Result **");
-//			System.out.println(result);
-//			
-//			// Update the state and let the Mining session know
-//			this.state = SegmentExecutionState.EXECUTING;
-//			FactHandle handle = ((InternalDataSource)segmentExecutions).getFactHandleForObject(this);
-//			segmentExecutions.update(handle, this);
-//
-//			helper.run(ruleUnitClass);
-//			System.out.println("Sub-Model Results");
-//			results.forEach(r -> {System.out.println(r);});
-//		}
 	}
 	
 	public class SegmentEventListener extends DefaultAgendaEventListener {

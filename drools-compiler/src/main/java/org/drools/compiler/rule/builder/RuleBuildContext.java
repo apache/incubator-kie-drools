@@ -33,7 +33,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.util.ClassUtils;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.internal.ruleunit.RuleUnitComponentFactory;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 /**
@@ -185,12 +186,12 @@ public class RuleBuildContext extends PackageBuildContext {
             nameInferredFromResource = true;
         }
 
-        if (ruleUnitClassName != null) {
+        if (RuleUnitComponentFactory.get() != null && ruleUnitClassName != null) {
             TypeResolver typeResolver = getPkg().getTypeResolver();
             boolean unitFound = false;
             Class<?> ruleUnitClass = ClassUtils.safeLoadClass(typeResolver.getClassLoader(), ruleUnitClassName);
             if (ruleUnitClass != null) {
-                unitFound = RuleUnit.class.isAssignableFrom(ruleUnitClass);
+                unitFound = RuleUnitComponentFactory.get().isRuleUnitClass( ruleUnitClass );
                 if (unitFound && nameInferredFromResource) {
                     rule.setRuleUnitClassName(ruleUnitClassName);
                 }
@@ -204,7 +205,11 @@ public class RuleBuildContext extends PackageBuildContext {
     }
 
     public Optional<EntryPointId> getEntryPointId(String name) {
-        return getPkg().getRuleUnitDescriptionLoader().getDescription(getRule()).flatMap(ruDescr -> ruDescr.getEntryPointId(name));
+        return getPkg().getRuleUnitDescriptionLoader().getDescription(getRule()).flatMap(ruDescr -> getEntryPointId(ruDescr, name));
+    }
+
+    public Optional<EntryPointId> getEntryPointId( RuleUnitDescription ruDescr, String name ) {
+        return ruDescr.hasVar( name ) ? Optional.of( new EntryPointId( ruDescr.getEntryPointName(name) ) ) : Optional.empty();
     }
 
     private String extractClassNameFromSourcePath() {

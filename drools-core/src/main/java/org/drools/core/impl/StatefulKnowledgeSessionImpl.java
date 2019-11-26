@@ -247,8 +247,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
 
-    protected transient InternalRuleUnitExecutor ruleUnitExecutor;
-
     private boolean stateless;
 
     private List<AsyncReceiveNode.AsyncReceiveMemory> receiveNodeMemories;
@@ -333,7 +331,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
         if (kBase != null) {
-            bindRuleBase( kBase, agenda, initInitFactHandle );
+            bindRuleBase( this, kBase, agenda, initInitFactHandle );
         }
     }
 
@@ -342,7 +340,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this;
     }
 
-    protected void init(SessionConfiguration config, Environment environment) {
+    public void init(SessionConfiguration config, Environment environment) {
         init( config, environment, 1 );
     }
 
@@ -383,7 +381,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
+    public void bindRuleBase( InternalWorkingMemory workingMemory, InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
 
         this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
@@ -396,7 +394,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         } else {
             this.agenda = agenda;
         }
-        this.agenda.setWorkingMemory(this);
+        this.agenda.setWorkingMemory(workingMemory);
 
         RuleBaseConfiguration conf = kBase.getConfiguration();
         this.sequential = conf.isSequential();
@@ -418,7 +416,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return handleFactory;
     }
 
-    public <T> T getKieRuntime(Class<T> cls) {
+    public void setHandleFactory( FactHandleFactory handleFactory ) {
+        this.handleFactory = handleFactory;
+    }
+
+    public <T> T getKieRuntime( Class<T> cls) {
         return createRuntimeService(cls);
     }
 
@@ -1179,6 +1181,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public RuleEventListenerSupport getRuleEventSupport() {
         return ruleEventListenerSupport;
+    }
+
+
+    public void setRuleEventListenerSupport( RuleEventListenerSupport ruleEventListenerSupport ) {
+        this.ruleEventListenerSupport = ruleEventListenerSupport;
     }
 
     public void addEventListener( final RuleEventListener listener ) {
@@ -2098,28 +2105,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (declarativeAgenda && activation.getActivationFactHandle() != null) {
             getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), this );
         }
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.cancelActivation( activation );
-        }
-    }
-
-    @Override
-    public void onSuspend() {
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.onSuspend();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.onResume();
-        }
-    }
-
-    @Override
-    public InternalRuleUnitExecutor getRuleUnitExecutor() {
-        return ruleUnitExecutor;
     }
 
     @Override

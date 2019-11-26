@@ -57,7 +57,7 @@ when
    $tgtFld: @{targetField}()
    $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() ) from results
 then
-   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   FactHandle fh = ((org.drools.ruleunit.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{targetField}",$tgtFld);
    results.update(fh,$reslt);

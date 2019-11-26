@@ -27,8 +27,8 @@ import java.util.UUID;
 import java.util.concurrent.Semaphore;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.ruleunit.RuleUnitFactory;
+import org.drools.ruleunit.impl.RuleUnitFactory;
+import org.drools.ruleunit.executor.InternalRuleUnitExecutor;
 import org.drools.testcoverage.common.model.LongAddress;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.DebugList;
@@ -45,23 +45,21 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.definition.rule.UnitVar;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
+import org.drools.ruleunit.UnitVar;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,6 +77,10 @@ public class RuleUnitTest {
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
+    private static String getUnitName(Object ruleUnit) {
+        return ruleUnit.getClass().getName();
     }
 
     @Test
@@ -670,7 +672,7 @@ public class RuleUnitTest {
                                                                       new Person("Mario", 42));
 
             final RuleUnit ruleUnit = new RuleUnitFactory().bindVariable("persons", persons)
-                    .getOrCreateRuleUnit(((InternalRuleUnitExecutor) executor), "org.kie.test.MyRuleUnit", kcontainer.getClassLoader());
+                    .getOrCreateRuleUnit((( InternalRuleUnitExecutor ) executor), "org.kie.test.MyRuleUnit", kcontainer.getClassLoader());
 
             assertEquals(1, executor.run(ruleUnit));
 
@@ -1954,7 +1956,7 @@ public class RuleUnitTest {
         final KieContainer kieContainer = KieUtil.getKieContainerFromDrls(kieBaseTestConfiguration,
                                                                           KieSessionTestConfiguration.STATEFUL_PSEUDO,
                                                                           drl);
-        final RuleUnitExecutor executor = kieContainer.newRuleUnitExecutor();
+        final RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
         try {
             assertTrue(executor.getKieSession().getSessionClock() instanceof SessionPseudoClock);
             final RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person("Mario", 42));

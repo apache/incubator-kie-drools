@@ -95,4 +95,12 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     FactHandleFactory getHandleFactory();
 
     EntryPointNode getEntryPointNode();
+
+    default Object getRuleUnit() {
+        return null;
+    }
+
+    default void setRuleUnit(Object ruleUnit) {
+
+    }
 }

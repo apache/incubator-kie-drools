@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.common.ProjectClassLoader;
-import org.kie.api.runtime.rule.DataSource;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.ruleunit.DataSource;
 import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
+
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
@@ -215,7 +216,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "import java.util.List;\n" );
             sb.append( "import " + FeelValue.class.getCanonicalName() + ";\n" );
             sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
-            sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
+            sb.append( "import " ).append( DataSource.class.getCanonicalName() ).append( ";\n" );
             sb.append( "import org.drools.model.*;\n" );
             sb.append( "import org.drools.modelcompiler.dsl.pattern.D;\n" );
             sb.append( "import static " ).append( pkgName ).append( "." ).append( clasName ).append( "UnaryTests.TEST_ARRAY;\n" );

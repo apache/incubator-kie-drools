@@ -63,7 +63,7 @@ import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.rule.Unit;
 
-import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
+import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * This builds the rule structure from an AST.

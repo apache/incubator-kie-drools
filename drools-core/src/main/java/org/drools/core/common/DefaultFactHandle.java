@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -971,11 +970,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         LinkedTuples detached = ( (CompositeLinkedTuples) linkedTuples ).partitionedTuples[i];
         ( (CompositeLinkedTuples) linkedTuples ).partitionedTuples[i] = new SingleLinkedTuples();
         return detached;
-    }
-
-    @Override
-    public InternalDataSource<?> getDataSource() {
-        return parentHandle != null ? parentHandle.getDataSource() : null;
     }
 
     public InternalFactHandle getParentHandle() {

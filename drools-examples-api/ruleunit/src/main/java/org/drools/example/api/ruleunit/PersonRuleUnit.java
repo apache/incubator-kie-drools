@@ -16,8 +16,9 @@
 
 package org.drools.example.api.ruleunit;
 
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
+
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
 
 public class PersonRuleUnit implements RuleUnit {
     private DataSource<Person> persons;

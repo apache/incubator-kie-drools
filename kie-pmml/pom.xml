@@ -46,6 +46,10 @@
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
@@ -118,8 +122,14 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-Activator>org.kie.pmml.pmml_4_2.osgi.Activator</Bundle-Activator>
+            <Import-Package>
+              org.drools.ruleunit;resolution:=optional,
+              org.drools.ruleunit.impl;resolution:=optional,
+              org.drools.ruleunit.executor;resolution:=optional,
+              *
+            </Import-Package>
             <Export-Package>*</Export-Package>
+            <Bundle-Activator>org.kie.pmml.pmml_4_2.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

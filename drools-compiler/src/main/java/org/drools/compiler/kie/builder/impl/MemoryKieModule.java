@@ -32,7 +32,7 @@ import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.common.ResourceProvider;
+import org.drools.reflective.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
