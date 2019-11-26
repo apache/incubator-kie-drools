@@ -78,38 +78,38 @@ function autoRefresh() {
 }
 
 function addLesson() {
-    $.post("/timeTable/addLesson", JSON.stringify({
+    $.post("/lessons", JSON.stringify({
         "subject": $("#lesson_subject").val(),
         "teacher": $("#lesson_teacher").val(),
         "studentGroup": $("#lesson_studentGroup").val()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /timeTable/addLesson.")
+        console.warn("Error on post to /lessons.")
     });
     $('#lessonDialog').modal('toggle');
 }
 
 function addTimeslot() {
-    $.post("/timeTable/addTimeslot", JSON.stringify({
+    $.post("/timeslots", JSON.stringify({
         "dayOfWeek": $("#timeslot_dayOfWeek").val(),
         "startTime": $("#timeslot_startTime").val(),
         "endTime": $("#timeslot_endTime").val()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /timeTable/addTimeslot.")
+        console.warn("Error on post to /timeslots.")
     });
     $('#timeslotDialog').modal('toggle');
 }
 
 function addRoom() {
-    $.post("/timeTable/addRoom", JSON.stringify({
+    $.post("/rooms", JSON.stringify({
         "name": $("#room_name").val()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /timeTable/addRoom.")
+        console.warn("Error on post to /rooms.")
     });
     $('#roomDialog').modal('toggle');
 }

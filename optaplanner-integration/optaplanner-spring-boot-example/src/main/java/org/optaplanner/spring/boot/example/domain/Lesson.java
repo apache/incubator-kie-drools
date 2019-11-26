@@ -16,6 +16,11 @@
 
 package org.optaplanner.spring.boot.example.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -24,11 +29,13 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
+@Entity
 public class Lesson {
 
     @PlanningId
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
-    private long id;
+    private Long id;
 
     @NotBlank
     private String subject;
@@ -38,21 +45,22 @@ public class Lesson {
     private String studentGroup;
 
     @PlanningVariable(valueRangeProviderRefs = "timeslotRange")
+    @ManyToOne
     private Timeslot timeslot;
     @PlanningVariable(valueRangeProviderRefs = "roomRange")
+    @ManyToOne
     private Room room;
 
     private Lesson() {
     }
 
-    public Lesson(long id, String subject, String teacher, String studentGroup) {
-        this.id = id;
+    public Lesson(String subject, String teacher, String studentGroup) {
         this.subject = subject.trim();
         this.teacher = teacher.trim();
         this.studentGroup = studentGroup.trim();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
