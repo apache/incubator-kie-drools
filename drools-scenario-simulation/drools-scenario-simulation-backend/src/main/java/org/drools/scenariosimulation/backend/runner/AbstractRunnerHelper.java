@@ -149,7 +149,8 @@ public abstract class AbstractRunnerHelper {
 
                 instanceGiven.add(new InstanceGiven(factIdentifier, bean));
             } catch (Exception e) {
-                logger.error("Error in GIVEN data " + entry.getKey() + ": " + e.getMessage(), e);
+                String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getCanonicalName();
+                logger.error("Error in GIVEN data " + entry.getKey() + ": " + errorMessage, e);
                 hasError = true;
             }
         }
