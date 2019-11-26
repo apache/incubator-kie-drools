@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
@@ -99,6 +100,8 @@ public class DroolsConstraint<Solution_> implements Constraint {
             return 2;
         } else if (scoringStream instanceof TriConstraintStream) {
             return 3;
+        } else if (scoringStream instanceof QuadConstraintStream) {
+            return 4;
         } else {
             throw new UnsupportedOperationException("Unknown cardinality for constraint stream (" + scoringStream
                     + ").");

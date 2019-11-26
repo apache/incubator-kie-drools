@@ -19,11 +19,14 @@ package org.optaplanner.core.api.score.stream;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
 /**
@@ -97,7 +100,7 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
     }
 
-    // TODO containedBY (inverse contains relationship)
+    // TODO containedBy (inverse contains relationship)
 
     public static <A, Property_> BiJoiner<A, A> intersecting(
             Function<A, ? extends Collection<Property_>> mapping) {
@@ -105,17 +108,17 @@ public final class Joiners {
     }
 
     public static <A, B, Property_> BiJoiner<A, B> intersecting(
-            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
+            Function<A, ? extends Collection<Property_>> leftMapping,
+            Function <B, ? extends Collection<Property_>> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING, rightMapping);
     }
 
-    public static <A, Property_> BiJoiner<A, A> disjoint(
-            Function<A, ? extends Collection<Property_>> mapping) {
+    public static <A, Property_> BiJoiner<A, A> disjoint(Function<A, ? extends Collection<Property_>> mapping) {
         return disjoint(mapping, mapping);
     }
 
-    public static <A, B, Property_> BiJoiner<A, B> disjoint(
-            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
+    public static <A, B, Property_> BiJoiner<A, B> disjoint(Function<A, ? extends Collection<Property_>> leftMapping,
+            Function <B, ? extends Collection<Property_>> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
     }
     */
@@ -135,6 +138,17 @@ public final class Joiners {
     }
 
     // TODO other TriJoiner methods
+
+    // ************************************************************************
+    // QuadJoiner
+    // ************************************************************************
+
+    public static <A, B, C, D, Property_> QuadJoiner<A, B, C, D> equal(
+            TriFunction<A, B, C, Property_> leftMapping, Function <D, Property_> rightMapping) {
+        return new SingleQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+    }
+
+    // TODO other QuadJoiner methods
 
     private Joiners() {}
 

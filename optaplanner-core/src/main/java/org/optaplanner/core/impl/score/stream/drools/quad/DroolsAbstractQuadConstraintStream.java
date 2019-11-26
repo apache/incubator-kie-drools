@@ -14,40 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.tri;
+package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.optaplanner.core.api.function.ToIntTriFunction;
-import org.optaplanner.core.api.function.ToLongTriFunction;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
+import org.optaplanner.core.api.function.ToIntQuadFunction;
+import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
-import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
+import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 
-public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
-        extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
+public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
+        extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
 
-    protected final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
+    protected final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
 
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
+    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent) {
         super(constraintFactory);
-        if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
+        if (parent == null && !(this instanceof DroolsJoinQuadConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
@@ -55,19 +49,9 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public TriConstraintStream<A, B, C> filter(TriPredicate<A, B, C> predicate) {
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsFilterTriConstraintStream<>(constraintFactory, this, predicate);
-        addChildStream(stream);
-        return stream;
-    }
-
-    @Override
-    public <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
-            QuadJoiner<A, B, C, D> joiner) {
+    public QuadConstraintStream<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
-                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
+                new DroolsFilterQuadConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -75,70 +59,70 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            ToIntQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            ToLongQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            ToIntQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            ToLongQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, boolean positive) {
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
@@ -150,8 +134,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         if (parent == null) {
-            DroolsJoinTriConstraintStream<Solution_, A, B, C> joinStream =
-                    (DroolsJoinTriConstraintStream<Solution_, A, B, C>) this;
+            DroolsJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
+                    (DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>) this;
             List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList =
                     joinStream.getLeftParentStream().getFromStreamList();
             List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList =
@@ -163,5 +147,5 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         }
     }
 
-    public abstract DroolsTriCondition<A, B, C> getCondition();
+    public abstract DroolsQuadCondition<A, B, C, D> getCondition();
 }

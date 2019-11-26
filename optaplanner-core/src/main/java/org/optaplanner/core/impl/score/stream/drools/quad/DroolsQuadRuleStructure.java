@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.tri;
+package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,54 +22,57 @@ import java.util.function.LongSupplier;
 
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
-import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
+public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
 
     private final Variable<A> a;
     private final Variable<B> b;
     private final Variable<C> c;
+    private final Variable<D> d;
     private final DroolsPatternBuilder<?> primaryPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
     /**
-     * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
+     * Builds a final version of the ABC pattern as it will no longer be mutated, and turns the D pattern into the new
      * primary pattern.
-     * @param abRuleStructure
-     * @param cRuleStructure
+     * @param abcRuleStructure
+     * @param dRuleStructure
      * @param variableIdSupplier
      */
-    public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
-            DroolsUniRuleStructure<C> cRuleStructure, LongSupplier variableIdSupplier) {
+    public DroolsQuadRuleStructure(DroolsTriRuleStructure<A, B, C> abcRuleStructure,
+            DroolsUniRuleStructure<D> dRuleStructure, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
-        this.a = abRuleStructure.getA();
-        this.b = abRuleStructure.getB();
-        this.c = cRuleStructure.getA();
-        this.primaryPattern = cRuleStructure.getPrimaryPattern();
+        this.a = abcRuleStructure.getA();
+        this.b = abcRuleStructure.getB();
+        this.c = abcRuleStructure.getC();
+        this.d = dRuleStructure.getA();
+        this.primaryPattern = dRuleStructure.getPrimaryPattern();
         /*
          * Assemble the new rule structure in the following order:
-         * - First, the supporting rule items from abRuleStructure.
-         * - Second, the primary pattern from abRuleStructure.
-         * - And finally, the supporting rule items from cRuleStructure.
+         * - First, the supporting rule items from abcRuleStructure.
+         * - Second, the primary pattern from abcRuleStructure.
+         * - And finally, the supporting rule items from dRuleStructure.
          *
          * This makes sure that left-hand side of the rule represented by this object is properly ordered.
          */
         List<RuleItemBuilder<?>> ruleItems =
-                abRuleStructure.rebuildSupportingRuleItems(abRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(cRuleStructure.getSupportingRuleItems());
+                abcRuleStructure.rebuildSupportingRuleItems(abcRuleStructure.getPrimaryPattern().build());
+        ruleItems.addAll(dRuleStructure.getSupportingRuleItems());
         this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
     }
 
-    public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
-            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems,
-            LongSupplier variableIdSupplier) {
+    public DroolsQuadRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
+            Variable<D> dVariable, DroolsPatternBuilder<?> primaryPattern,
+            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
+        this.d = dVariable;
         this.primaryPattern = primaryPattern;
         this.supportingRuleItems = supportingRuleItems;
     }
@@ -84,6 +87,10 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
 
     public Variable<C> getC() {
         return c;
+    }
+
+    public Variable<D> getD() {
+        return d;
     }
 
     @Override

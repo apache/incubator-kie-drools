@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -381,7 +382,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
-    public void groupBy_joined() {
+    public void groupBy_joinedAndFiltered() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
@@ -404,8 +405,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, entity1, entityGroup1),
-                assertMatchWithScore(-1, entity2, entityGroup1));
+                assertMatchWithScore(-1, entityGroup1, entity1),
+                assertMatchWithScore(-1, entityGroup1, entity2));
     }
 
     @Test

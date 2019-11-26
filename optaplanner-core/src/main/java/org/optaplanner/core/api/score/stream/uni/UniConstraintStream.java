@@ -278,14 +278,16 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      * <p>
-     * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongFunction)} or {@link #penalizeBigDecimal(String, Score, Function)} instead.
+     * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongFunction)} or
+     * {@link #penalizeBigDecimal(String, Score, Function)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
     default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -296,7 +298,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
+    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -307,7 +310,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint penalizeLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -318,7 +322,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
+    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -328,8 +333,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
+            Function<A, BigDecimal> matchWeigher) {
+        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                constraintWeight, matchWeigher);
     }
 
     /**
@@ -340,13 +347,15 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
+    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            Function<A, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      * <p>
-     * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongFunction)} or {@link #penalizeConfigurableBigDecimal(String, Function)} instead.
+     * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongFunction)} or
+     * {@link #penalizeConfigurableBigDecimal(String, Function)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -372,7 +381,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint penalizeConfigurableLong(String constraintName, ToLongFunction<A> matchWeigher) {
-        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -382,7 +392,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher);
+    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
+            ToLongFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -392,7 +403,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint penalizeConfigurableBigDecimal(String constraintName, Function<A, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -402,21 +414,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher);
+    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
+            Function<A, BigDecimal> matchWeigher);
 
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      * <p>
-     * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongFunction)} or {@link #rewardBigDecimal(String, Score, Function)} instead.
+     * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongFunction)} or
+     * {@link #rewardBigDecimal(String, Score, Function)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
     default Constraint reward(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -426,7 +441,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
+    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntFunction<A> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
@@ -437,7 +453,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -447,7 +464,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
+    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongFunction<A> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
@@ -457,8 +475,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
+            Function<A, BigDecimal> matchWeigher) {
+        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -468,13 +488,15 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
+    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            Function<A, BigDecimal> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      * <p>
-     * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongFunction)} or {@link #rewardConfigurableBigDecimal(String, Function)} instead.
+     * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongFunction)} or
+     * {@link #rewardConfigurableBigDecimal(String, Function)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -500,7 +522,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint rewardConfigurableLong(String constraintName, ToLongFunction<A> matchWeigher) {
-        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -520,7 +543,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     default Constraint rewardConfigurableBigDecimal(String constraintName, Function<A, BigDecimal> matchWeigher) {
-        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -530,6 +554,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher);
+    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
+            Function<A, BigDecimal> matchWeigher);
 
 }

@@ -214,6 +214,15 @@
           "methodName": "groupBy",
           "elementKind": "method",
           "justification": "Temporarily removed until actually implemented."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Introduced QuadStreams"
         }
       ]
     }

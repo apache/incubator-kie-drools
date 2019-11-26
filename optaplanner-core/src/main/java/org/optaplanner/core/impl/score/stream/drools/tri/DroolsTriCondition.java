@@ -31,8 +31,14 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -52,6 +58,19 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(newRuleStructure);
+    }
+
+    public <D> DroolsQuadCondition<A, B, C, D> andJoin(DroolsUniCondition<D> dCondition,
+            AbstractQuadJoiner<A, B, C, D> quadJoiner) {
+        DroolsUniRuleStructure<D> dRuleStructure = dCondition.getRuleStructure();
+        Variable<D> dVariable = dRuleStructure.getA();
+        DroolsPatternBuilder<Object> cPattern = dRuleStructure.getPrimaryPattern()
+                .expand(p -> p.expr("Filter using " + quadJoiner, ruleStructure.getA(), ruleStructure.getB(),
+                        ruleStructure.getC(), dVariable, (__, a, b, c, d) -> matches(quadJoiner, a, b, c, d)));
+        DroolsUniRuleStructure<D> newDRuleStructure = new DroolsUniRuleStructure<>(dVariable, cPattern,
+                dRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+        return new DroolsQuadCondition<>(new DroolsQuadRuleStructure<>(ruleStructure, newDRuleStructure,
+                ruleStructure.getVariableIdSupplier()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
@@ -84,6 +103,19 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC())
                         .execute(consequenceImpl);
         return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+    }
+
+    private static <A, B, C, D> boolean matches(AbstractQuadJoiner<A, B, C, D> joiner, A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = joiner.getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
