@@ -113,6 +113,13 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
                     assertNotNull(context.getBean(SolverFactory.class));
                 });
+        contextRunner
+                .withPropertyValues("optaplanner.solver.move-thread-count=2")
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertEquals("2", solverConfig.getMoveThreadCount());
+                    assertNotNull(context.getBean(SolverFactory.class));
+                });
     }
 
     @Test

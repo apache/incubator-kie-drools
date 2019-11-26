@@ -124,6 +124,9 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             if (solverProperties.getEnvironmentMode() != null) {
                 solverConfig.setEnvironmentMode(solverProperties.getEnvironmentMode());
             }
+            if (solverProperties.getMoveThreadCount() != null) {
+                solverConfig.setMoveThreadCount(solverProperties.getMoveThreadCount());
+            }
             applyTerminationProperties(solverConfig, solverProperties);
         }
     }

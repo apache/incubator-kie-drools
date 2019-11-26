@@ -17,14 +17,22 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 
 public class SolverProperties {
 
     /**
-     * The environment mode also allows you to detect common bugs in your implementation.
+     * Enable runtime assertions to detect common bugs in your implementation during development.
      * Defaults to {@link EnvironmentMode#REPRODUCIBLE}.
      */
     private EnvironmentMode environmentMode;
+    /**
+     * Enable multithreaded solving for a single problem, which increases CPU consumption.
+     * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.
+     * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
+     * or formula based on the available processor count.
+     */
+    private String moveThreadCount = null;
 
     private TerminationProperties termination = new TerminationProperties();
 
@@ -38,6 +46,14 @@ public class SolverProperties {
 
     public void setEnvironmentMode(EnvironmentMode environmentMode) {
         this.environmentMode = environmentMode;
+    }
+
+    public String getMoveThreadCount() {
+        return moveThreadCount;
+    }
+
+    public void setMoveThreadCount(String moveThreadCount) {
+        this.moveThreadCount = moveThreadCount;
     }
 
     public TerminationProperties getTermination() {
