@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure.score.constraintprovider;
+package org.optaplanner.spring.boot.autoconfigure.solver;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;

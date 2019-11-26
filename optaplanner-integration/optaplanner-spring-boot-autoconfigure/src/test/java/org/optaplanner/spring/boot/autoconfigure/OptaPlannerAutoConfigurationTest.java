@@ -25,7 +25,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.spring.boot.autoconfigure.score.constraintprovider.TestdataSpringConstraintProvider;
+import org.optaplanner.spring.boot.autoconfigure.solver.TestdataSpringConstraintProvider;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringSolution;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
@@ -92,6 +92,15 @@ public class OptaPlannerAutoConfigurationTest {
                     // Properties defined in customSpringBootSolverConfig.xml
                     assertEquals(3L, solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue());
                     assertNotNull(context.getBean(SolverFactory.class));
+                });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void scanAnnotatedClasses() {
+        contextRunner
+                .withPropertyValues("optaplanner.solverConfigXML=org/optaplanner/spring/boot/autoconfigure/scanAnnotatedSpringBootSolverConfig.xml")
+                .run(context -> {
+                    context.getBean(SolverConfig.class);
                 });
     }
 

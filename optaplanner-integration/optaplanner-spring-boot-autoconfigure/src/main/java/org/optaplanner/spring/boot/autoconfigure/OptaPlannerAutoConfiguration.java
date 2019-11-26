@@ -29,6 +29,8 @@ import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -99,6 +101,11 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     private void applySolverProperties(SolverConfig solverConfig) {
         EntityScanner entityScanner = new EntityScanner(this.context);
+        if (solverConfig.getScanAnnotatedClassesConfig() != null) {
+            throw new IllegalArgumentException("Do not use scanAnnotatedClasses with the Spring Boot starter,"
+                    + " because the Spring Boot starter scans too.\n"
+                    + "Maybe delete the scanAnnotatedClasses element in the solver config.");
+        }
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(entityScanner));
         }
@@ -107,7 +114,9 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         }
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-            scoreDirectorFactoryConfig.setConstraintProviderClass(findConstraintProviderClass());
+            scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
+            scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
+            scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
             solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         }
         SolverProperties solverProperties = optaPlannerProperties.getSolver();
@@ -152,8 +161,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return new ArrayList<>(entityClassSet);
     }
 
-    private Class<? extends ConstraintProvider> findConstraintProviderClass() {
-        // Does not use EntityScanner because ConstraintProvider shouldn't be found through @EntityScan
+    private <T> Class<? extends T> findImplementingClass(Class<T> targetClass) {
+        // Does not use EntityScanner because these classes shouldn't be found through @EntityScan
         if (!AutoConfigurationPackages.has(context)) {
             return null;
         }
@@ -161,31 +170,30 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 = new ClassPathScanningCandidateComponentProvider(false);
         scanner.setEnvironment(context.getEnvironment());
         scanner.setResourceLoader(context);
-        scanner.addIncludeFilter(new AssignableTypeFilter(ConstraintProvider.class));
+        scanner.addIncludeFilter(new AssignableTypeFilter(targetClass));
 
         List<String> packages = AutoConfigurationPackages.get(context);
-        List<Class<? extends ConstraintProvider>> constraintProviderClassList = packages.stream()
+        List<Class<? extends T>> classList = packages.stream()
                 .flatMap(basePackage -> scanner.findCandidateComponents(basePackage).stream())
                 .map(candidate -> {
                     try {
-                        Class<? extends ConstraintProvider> clazz = ClassUtils.forName(candidate.getBeanClassName(), context.getClassLoader())
-                                .asSubclass(ConstraintProvider.class);
+                        Class<? extends T> clazz = ClassUtils.forName(candidate.getBeanClassName(), context.getClassLoader())
+                                .asSubclass(targetClass);
                         return clazz;
                     } catch (ClassNotFoundException e) {
-                        throw new IllegalStateException("The " + ConstraintProvider.class.getSimpleName() + " class ("
+                        throw new IllegalStateException("The " + targetClass.getSimpleName() + " class ("
                                 + candidate.getBeanClassName() + ") cannot be found.", e);
                     }
                 })
                 .collect(Collectors.toList());
-
-        if (constraintProviderClassList.size() > 1) {
-            throw new IllegalStateException("Multiple classes (" + constraintProviderClassList
-                    + ") found that implement " + ConstraintProvider.class.getSimpleName() + ".");
+        if (classList.size() > 1) {
+            throw new IllegalStateException("Multiple classes (" + classList
+                    + ") found that implement " + targetClass.getSimpleName() + ".");
         }
-        if (constraintProviderClassList.isEmpty()) {
+        if (classList.isEmpty()) {
             return null;
         }
-        return constraintProviderClassList.get(0);
+        return classList.get(0);
     }
 
     private void applyTerminationProperties(SolverConfig solverConfig, SolverProperties solverProperties) {

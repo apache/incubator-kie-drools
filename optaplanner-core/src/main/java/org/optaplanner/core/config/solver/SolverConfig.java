@@ -623,7 +623,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
                         + scanAnnotatedClassesConfig + ") cannot also have a solutionClass (" + solutionClass
                         + ") or an entityClass (" + entityClassList + ").\n"
-                        + "  Please decide between automatic scanning or manual referencing.");
+                        + "Maybe delete the scanAnnotatedClasses element in the solver config.");
             }
             return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext, classLoader, deprecatedScoreDefinition);
         } else {
