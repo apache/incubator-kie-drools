@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
@@ -21,20 +20,22 @@ import static org.drools.modelcompiler.builder.generator.expression.PatternExpre
 
 public class ExecModelLambdaPostProcessor {
 
+    private final Map<String, CreatedClass> lambdaClasses;
     private final String packageName;
     private final String ruleClassName;
     private final Statement inputDSL;
     private final Collection<String> imports;
     private final Collection<String> staticImports;
-    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
 
     Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
-    public ExecModelLambdaPostProcessor(String packageName,
+    public ExecModelLambdaPostProcessor(Map<String, CreatedClass> lambdaClasses,
+                                        String packageName,
                                         String ruleClassName,
-                                        Statement inputDSL,
                                         Collection<String> imports,
-                                        Collection<String> staticImports) {
+                                        Collection<String> staticImports,
+                                        Statement inputDSL) {
+        this.lambdaClasses = lambdaClasses;
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
         this.inputDSL = inputDSL;
@@ -66,7 +67,7 @@ public class ExecModelLambdaPostProcessor {
                         extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
 
-            return new PostProcessedExecModel(clone).addAllLambdaClasses(lambdaClasses.values());
+            return new PostProcessedExecModel(clone);
         } catch (DoNotConvertLambdaException e) {
             logger.info("Cannot postprocess: " + e);
             return new PostProcessedExecModel(inputDSL);

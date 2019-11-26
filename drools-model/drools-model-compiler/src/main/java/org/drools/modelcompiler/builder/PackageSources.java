@@ -55,12 +55,13 @@ public class PackageSources {
 
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
-
-            ruleSource
-                    .getCreatedClasses()
-                    .stream().map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
-                    .forEach(sources.lambdaClasses::add);
         }
+
+        pkgModel.getLambdaClasses()
+                .values()
+                .stream()
+                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
+                .forEach(sources.lambdaClasses::add);
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));

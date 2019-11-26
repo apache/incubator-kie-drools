@@ -18,18 +18,14 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrinter;
-import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.drools.modelcompiler.util.lambdareplace.PostProcessedExecModel;
 
@@ -77,38 +73,34 @@ public class RuleWriter {
 
                 CompilationUnit postProcessedCU = cu.clone();
 
-                List<CreatedClass> createdClasses = new ArrayList<>();
                 for (Statement statement : postProcessedCU.findAll(Statement.class)) {
-                    createdClasses.addAll(postProcessLambda(statement));
+                    postProcessLambda(statement);
                 }
 
-                rules.add(new RuleFileSource(addFileName, postProcessedCU, createdClasses));
+                rules.add(new RuleFileSource(addFileName, postProcessedCU));
             }
         }
         return rules;
     }
 
-    private List<CreatedClass> postProcessLambda(Statement s) {
+    private void postProcessLambda(Statement s) {
         PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor(
+                pkgModel.getLambdaClasses(),
                 pkgModel.getName(),
                 pkgModel.getRulesFileNameWithPackage(),
-                s,
-                pkgModel.getImports(),
-                pkgModel.getStaticImports()).convertLambdas();
+                pkgModel.getImports(), pkgModel.getStaticImports(), s
+        ).convertLambdas();
         s.replace(postProcessedExecModel.getConvertedStatement());
-        return postProcessedExecModel.getCreatedClasses();
     }
 
     public class RuleFileSource {
 
         protected final CompilationUnit source;
         private final String name;
-        private final Set<CreatedClass> createdClasses = new HashSet<>();
 
-        private RuleFileSource(String name, CompilationUnit source, Collection<CreatedClass> createdClasses) {
+        private RuleFileSource(String name, CompilationUnit source) {
             this.name = name;
             this.source = source;
-            this.createdClasses.addAll(createdClasses);
         }
 
         public String getName() {
@@ -117,10 +109,6 @@ public class RuleWriter {
 
         public String getSource() {
             return prettyPrinter.print(source);
-        }
-
-        public Collection<CreatedClass> getCreatedClasses() {
-            return createdClasses;
         }
     }
 }

@@ -69,6 +69,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
@@ -143,6 +144,7 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
+    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private Set<Class<?>> ruleUnits = new HashSet<>();
 
     private boolean oneClassPerRule;
@@ -363,6 +365,11 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
+
+    public Map<String, CreatedClass> getLambdaClasses() {
+        return lambdaClasses;
+    }
+
 
     public void addRuleUnit(Class<?> ruleUnitType) {
         this.ruleUnits.add(ruleUnitType);
