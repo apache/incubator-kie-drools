@@ -66,8 +66,10 @@ abstract class MaterializedLambda {
             String replace = si;
             if(si.endsWith(".*")) { // JP doesn't want the * in the import
                 replace = si.replace(".*", "");
+                compilationUnit.addImport(replace, true, true);
+            } else {
+                compilationUnit.addImport(replace, true, false);
             }
-            compilationUnit.addImport(replace, true, true);
         }
         compilationUnit.addImport("org.drools.modelcompiler.dsl.pattern.D");
     }
