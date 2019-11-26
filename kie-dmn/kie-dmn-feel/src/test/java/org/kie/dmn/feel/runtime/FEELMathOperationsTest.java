@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class FEELMathOperationsTest extends BaseFEELTest {
 
@@ -67,6 +68,7 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "-1", BigDecimal.valueOf( -1 ), null },
                 { "--1", BigDecimal.valueOf( 1 ), null },
                 { "---1", BigDecimal.valueOf( -1 ), null },
+                { "{ amount : 100000.00, rate : 0.25, term : 36, PMT : (amount *rate/12) / (1 - (1 + rate/12)**-term) }.PMT", EvalHelper.getBigDecimalOrNull( "3975.982590125552338278440100112431" ), null},
         };
         return addAdditionalParameters(cases, false);
     }
