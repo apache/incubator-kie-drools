@@ -35,33 +35,29 @@ import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
  */
 public final class Joiners {
 
+    // TODO Support using non-natural comparators, such as lessThan(leftMapping, rightMapping, comparator).
+
     // ************************************************************************
     // BiJoiner
     // ************************************************************************
 
-    public static <A, Property_> BiJoiner<A, A> equal(
-            Function<A, Property_> mapping) {
+    public static <A, Property_> BiJoiner<A, A> equal(Function<A, Property_> mapping) {
         return equal(mapping, mapping);
     }
 
-    public static <A, B, Property_> BiJoiner<A, B> equal(
-            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping) {
+    public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
+            Function <B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
-    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(
-            Function<A, Property_> mapping) {
+    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(Function<A, Property_> mapping) {
         return lessThan(mapping, mapping);
     }
 
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThan(
-            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping) {
+            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
-
-    // TODO Support using a non-natural comparator:
-//    public static <A, B, Property_> BiJoiner<A, B> lessThan(
-//            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping, Comparable<Property_> comparator);
 
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThanOrEqual(
             Function<A, Property_> mapping) {
@@ -69,7 +65,7 @@ public final class Joiners {
     }
 
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThanOrEqual(
-            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping) {
+            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
     }
 
@@ -79,7 +75,7 @@ public final class Joiners {
     }
 
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThan(
-            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping) {
+            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
@@ -89,7 +85,7 @@ public final class Joiners {
     }
 
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThanOrEqual(
-            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping) {
+            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
@@ -132,12 +128,30 @@ public final class Joiners {
     // TriJoiner
     // ************************************************************************
 
-    public static <A, B, C, Property_> TriJoiner<A, B, C> equal(
-            BiFunction<A, B, Property_> leftMapping, Function <C, Property_> rightMapping) {
+    public static <A, B, C, Property_> TriJoiner<A, B, C> equal(BiFunction<A, B, Property_> leftMapping,
+            Function<C, Property_> rightMapping) {
         return new SingleTriJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
-    // TODO other TriJoiner methods
+    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThan(
+            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
+        return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+    }
+
+    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThanOrEqual(
+            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
+        return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThan(
+            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
+        return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+    }
+
+    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThanOrEqual(
+            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
+        return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
 
     // ************************************************************************
     // QuadJoiner
@@ -148,7 +162,25 @@ public final class Joiners {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
-    // TODO other QuadJoiner methods
+    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThan(
+            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
+        return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+    }
+
+    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThanOrEqual(
+            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
+        return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThan(
+            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
+        return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+    }
+
+    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThanOrEqual(
+            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
+        return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
 
     private Joiners() {}
 
