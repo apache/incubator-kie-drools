@@ -18,7 +18,6 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,9 +44,9 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
+import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
-import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
@@ -65,6 +64,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
@@ -177,7 +177,7 @@ public class DMNScenarioRunnerHelperTest {
     @Test
     public void verifyConditions() {
         ScenarioRunnerData scenarioRunnerData1 = new ScenarioRunnerData();
-        scenarioRunnerData1.addExpect(new ScenarioExpect(personFactIdentifier, Collections.singletonList(firstNameExpectedValue)));
+        scenarioRunnerData1.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(firstNameExpectedValue)));
 
         // test 1 - no decision generated for specific decisionName
         assertThatThrownBy(() -> runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData1, expressionEvaluatorFactory, requestContextMock))
@@ -206,7 +206,7 @@ public class DMNScenarioRunnerHelperTest {
         when(dmnDecisionResultMock.getResult()).thenReturn(resultMap);
 
         ScenarioRunnerData scenarioRunnerData2 = new ScenarioRunnerData();
-        scenarioRunnerData2.addExpect(new ScenarioExpect(personFactIdentifier, Collections.singletonList(firstNameExpectedValue)));
+        scenarioRunnerData2.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(firstNameExpectedValue)));
 
         // test 4 - check are performed (but fail)
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData2, expressionEvaluatorFactory, requestContextMock);
@@ -215,7 +215,7 @@ public class DMNScenarioRunnerHelperTest {
         assertFalse(scenarioRunnerData2.getResults().get(0).getResult());
 
         ScenarioRunnerData scenarioRunnerData3 = new ScenarioRunnerData();
-        scenarioRunnerData3.addExpect(new ScenarioExpect(personFactIdentifier, Collections.singletonList(firstNameExpectedValue)));
+        scenarioRunnerData3.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(firstNameExpectedValue)));
         resultMap.put("firstName", NAME);
 
         // test 5 - check are performed (but success)
@@ -242,7 +242,12 @@ public class DMNScenarioRunnerHelperTest {
         params.put(asList("creator", "surname"), "TestSurname");
         params.put(singletonList("age"), BigDecimal.valueOf(10));
 
-        Object objectRaw = runnerHelper.createObject(Optional.empty(), String.class.getCanonicalName(), params, this.getClass().getClassLoader());
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
         assertTrue(objectRaw instanceof Map);
 
         Map<String, Object> object = (Map<String, Object>) objectRaw;
@@ -252,6 +257,48 @@ public class DMNScenarioRunnerHelperTest {
         Map<String, Object> creator = (Map<String, Object>) object.get("creator");
         assertEquals("TestName", creator.get("name"));
         assertEquals("TestSurname", creator.get("surname"));
+    }
+
+    @Test
+    public void createObjectDirectMappingSimpleType() {
+        Map<List<String>, Object> params = new HashMap<>();
+        String directMappingSimpleTypeValue = "TestName";
+        params.put(emptyList(), directMappingSimpleTypeValue);
+
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertTrue(objectRaw instanceof String);
+
+        assertEquals(directMappingSimpleTypeValue, objectRaw);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createObjectDirectMappingComplexType() {
+        Map<List<String>, Object> params = new HashMap<>();
+        Map<String, Object> directMappingComplexTypeValue = new HashMap<>();
+        directMappingComplexTypeValue.put("key1", "value1");
+        params.put(emptyList(), directMappingComplexTypeValue);
+        params.put(singletonList("key2"), "value2");
+
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                Map.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertTrue(objectRaw instanceof Map);
+
+        Map<String, Object> object = (Map<String, Object>) objectRaw;
+
+        assertEquals("value1", object.get("key1"));
+        assertEquals("value2", object.get("key2"));
     }
 
     @Test
