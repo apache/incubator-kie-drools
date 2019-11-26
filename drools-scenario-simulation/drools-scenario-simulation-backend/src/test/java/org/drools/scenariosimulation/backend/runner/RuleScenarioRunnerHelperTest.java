@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -208,9 +209,9 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, expressionGivenExpressionIdentifier, "# new org.drools.scenariosimulation.backend.model.Dispute(\"dispute description\", 10)");
 
         scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario2.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
+                                                          scenario2.getUnmodifiableFactMappingValues(),
+                                                          classLoader,
+                                                          expressionEvaluatorFactory);
         assertEquals(2, scenario2Inputs.size());
         Optional<Dispute> disputeGivenOptional = scenario2Inputs.stream()
                 .filter(elem -> elem.getValue() instanceof Dispute)
@@ -218,7 +219,6 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .findFirst();
         assertTrue(disputeGivenOptional.isPresent());
         assertEquals(disputeGivenOptional.get().getDescription(), "dispute description");
-
 
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
         assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
@@ -442,6 +442,66 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ResultWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
         assertFalse(directMapping.isSatisfied());
         assertEquals("No direct mapping available", directMapping.getErrorMessage().get());
+    }
+
+    @Test
+    public void createObject() {
+        Map<List<String>, Object> params = new HashMap<>();
+        params.put(singletonList("firstName"), "TestName");
+        params.put(singletonList("age"), 10);
+
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                Person.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+        assertTrue(objectRaw instanceof Person);
+
+        Person object = (Person) objectRaw;
+        assertEquals(10, object.getAge());
+        assertEquals("TestName", object.getFirstName());
+    }
+
+    @Test
+    public void createObjectDirectMappingSimpleType() {
+        Map<List<String>, Object> params = new HashMap<>();
+        String directMappingSimpleTypeValue = "TestName";
+        params.put(Collections.emptyList(), directMappingSimpleTypeValue);
+
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertTrue(objectRaw instanceof String);
+
+        assertEquals(directMappingSimpleTypeValue, objectRaw);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createObjectDirectMappingComplexType() {
+        Map<List<String>, Object> params = new HashMap<>();
+        Person directMappingComplexTypeValue = new Person();
+        directMappingComplexTypeValue.setFirstName("TestName");
+        params.put(emptyList(), directMappingComplexTypeValue);
+        params.put(singletonList("age"), 10);
+
+        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                Map.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertTrue(objectRaw instanceof Person);
+
+        Person object = (Person) objectRaw;
+        assertEquals(10, object.getAge());
+        assertEquals("TestName", object.getFirstName());
     }
 
     @Test
