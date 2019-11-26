@@ -28,9 +28,5 @@ public interface KieContainerFluent {
 
     KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieContainer> customizer);
 
-    RuleUnitExecutorFluent newRuleUnitExecutor();
-
-    RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName);
-
     DMNRuntimeFluent newDMNRuntime();
 }

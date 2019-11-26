@@ -21,10 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.kie.api.runtime.rule.RuleUnit;
-
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unit {
-    Class<? extends RuleUnit> value();
+    Class<?> value();
 }

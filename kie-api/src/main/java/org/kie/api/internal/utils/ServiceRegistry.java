@@ -23,8 +23,9 @@ import org.kie.api.Service;
  *
  */
 public interface ServiceRegistry extends Service {
+
     static ServiceRegistry getInstance() {
-        return ServiceRegistryImpl.LazyHolder.INSTANCE;
+        return ServiceRegistryImpl.getServiceRegistry();
     }
 
     <T> T get(Class<T> cls);

@@ -33,6 +33,94 @@
            "methodName": "setSessionsPool",
            "elementKind": "method",
            "justification": "Allow to declaratively configure a SessionPool in the kmodule.xml"
+         },
+         {
+           "code": "java.annotation.noLongerPresent",
+           "old": "@interface org.kie.api.definition.rule.Unit",
+           "package": "org.kie.api.definition.rule",
+           "classSimpleName": "Unit",
+           "elementKind": "@interface",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.annotation.noLongerPresent",
+           "old": "@interface org.kie.api.definition.rule.UnitVar",
+           "package": "org.kie.api.definition.rule",
+           "classSimpleName": "UnitVar",
+           "elementKind": "@interface",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.method.removed",
+           "old": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor()",
+           "package": "org.kie.api.runtime",
+           "classSimpleName": "KieContainer",
+           "methodName": "newRuleUnitExecutor",
+           "elementKind": "method",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.method.removed",
+           "old": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(java.lang.String)",
+           "package": "org.kie.api.runtime",
+           "classSimpleName": "KieContainer",
+           "methodName": "newRuleUnitExecutor",
+           "elementKind": "method",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.method.removed",
+           "old": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(java.lang.String, org.kie.api.runtime.KieSessionConfiguration)",
+           "package": "org.kie.api.runtime",
+           "classSimpleName": "KieContainer",
+           "methodName": "newRuleUnitExecutor",
+           "elementKind": "method",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.method.removed",
+           "old": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(org.kie.api.runtime.KieSessionConfiguration)",
+           "package": "org.kie.api.runtime",
+           "classSimpleName": "KieContainer",
+           "methodName": "newRuleUnitExecutor",
+           "elementKind": "method",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.class.removed",
+           "old": "interface org.kie.api.runtime.rule.DataSource<T extends java.lang.Object>",
+           "package": "org.kie.api.runtime.rule",
+           "classSimpleName": "DataSource",
+           "elementKind": "interface",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.class.removed",
+           "old": "interface org.kie.api.runtime.rule.RuleUnit",
+           "package": "org.kie.api.runtime.rule",
+           "classSimpleName": "RuleUnit",
+           "elementKind": "interface",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.class.removed",
+           "old": "interface org.kie.api.runtime.rule.RuleUnitExecutor",
+           "package": "org.kie.api.runtime.rule",
+           "classSimpleName": "RuleUnitExecutor",
+           "elementKind": "interface",
+           "justification": "kogito unfork"
+         },
+         {
+           "code": "java.method.returnTypeTypeParametersChanged",
+           "old": "method java.lang.Class<? extends org.kie.api.runtime.rule.RuleUnit> org.kie.api.definition.rule.Unit::value()",
+           "new": "method java.lang.Class<?> org.kie.api.definition.rule.Unit::value()",
+           "oldType": "java.lang.Class<? extends org.kie.api.runtime.rule.RuleUnit>",
+           "newType": "java.lang.Class<?>",
+           "package": "org.kie.api.definition.rule",
+           "classSimpleName": "Unit",
+           "methodName": "value",
+           "elementKind": "method",
+           "justification": "kogito unfork"
          }
       ]
     }
