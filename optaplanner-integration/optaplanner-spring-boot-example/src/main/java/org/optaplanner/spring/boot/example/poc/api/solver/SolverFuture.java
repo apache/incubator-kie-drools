@@ -14,31 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver;
+package org.optaplanner.spring.boot.example.poc.api.solver;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFuture;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultSolverFuture<Solution_> implements SolverFuture<Solution_> {
+// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
+// TODO Clean this up and move this class into optaplanner-core
+public interface SolverFuture<Solution_> {
 
-    private final Solver<Solution_> solver;
+    Solution_ getBestSolution();
 
-    public DefaultSolverFuture(Solver<Solution_> solver) {
-        this.solver = solver;
-    }
-
-    @Override
-    public Solution_ getBestSolution() {
-        return getBestSolution();
-    }
-
-    @Override
-    public void terminateEarly() {
-        solver.terminateEarly();
-    }
+    void terminateEarly();
 
 }

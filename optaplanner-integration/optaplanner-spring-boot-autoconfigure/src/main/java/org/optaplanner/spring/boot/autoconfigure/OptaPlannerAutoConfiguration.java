@@ -25,7 +25,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -45,8 +44,8 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.util.ClassUtils;
 
 @Configuration
-@ConditionalOnClass(SolverManager.class)
-@ConditionalOnMissingBean(SolverManager.class)
+@ConditionalOnClass({SolverConfig.class, SolverFactory.class})
+@ConditionalOnMissingBean({SolverConfig.class, SolverFactory.class})
 @EnableConfigurationProperties({OptaPlannerProperties.class})
 public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
@@ -63,12 +62,6 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     @Override
     public void setBeanClassLoader(ClassLoader beanClassLoader) {
         this.beanClassLoader = beanClassLoader;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public SolverManager<?> solverManager(SolverConfig solverConfig) {
-        return SolverManager.create(solverConfig);
     }
 
     @Bean

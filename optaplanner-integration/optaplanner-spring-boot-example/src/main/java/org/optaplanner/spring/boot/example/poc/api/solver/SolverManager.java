@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.solver;
+package org.optaplanner.spring.boot.example.poc.api.solver;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.solver.DefaultSolverManager;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.spring.boot.example.poc.impl.solver.DefaultSolverManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
+// TODO Clean this up and move this class into optaplanner-core
 public interface SolverManager<Solution_> extends AutoCloseable {
 
-    static <Solution_> SolverManager<Solution_> create(SolverConfig solverConfig) {
-        SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
+    static <Solution_> SolverManager<Solution_> create(SolverFactory<Solution_> solverFactory) {
         return new DefaultSolverManager<>(solverFactory);
     }
 
     SolverFuture solve(Solution_ planningProblem,
             Consumer<Solution_> bestSolutionConsumer);
-
-    // TODO onExceptionThrown default to logger.error
-//    void solve(Object problemId,
-//            Solution_ planningProblem,
-//            Consumer<Solution_> onBestSolutionChanged,
-//            Consumer<Solution_> onSolvingTerminated,
-//            Consumer<Throwable> onExceptionThrown);
 
 }

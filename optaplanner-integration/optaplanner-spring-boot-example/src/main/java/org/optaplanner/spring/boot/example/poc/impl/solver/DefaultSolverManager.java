@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver;
+package org.optaplanner.spring.boot.example.poc.impl.solver;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
+// TODO Clean this up and move this class into optaplanner-core
 public class DefaultSolverManager<Solution_> implements SolverManager<Solution_> {
 
     private final SolverFactory<Solution_> solverFactory;

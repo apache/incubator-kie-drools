@@ -16,10 +16,10 @@
 
 package org.optaplanner.spring.boot.example.service;
 
-import org.optaplanner.core.api.solver.SolverFuture;
-import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverFuture;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +49,7 @@ public class TimeTableService {
                 roomRepository.findAll(),
                 lessonRepository.findAll()
         );
+        // TODO add score
         return timeTable;
     }
 
