@@ -15,6 +15,7 @@ import com.github.javaparser.ast.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
@@ -49,6 +50,13 @@ public class ExecModelLambdaPostProcessor {
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
+
+            clone.findAll(MethodCallExpr.class, mc -> {
+                return INDEXED_BY_CALL.contains(mc.getName().asString());
+            })
+                    .forEach(methodCallExpr1 -> {
+                        convertIndexedByCall(methodCallExpr1);
+                    });
 
             clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::convertIndexedByCall);
