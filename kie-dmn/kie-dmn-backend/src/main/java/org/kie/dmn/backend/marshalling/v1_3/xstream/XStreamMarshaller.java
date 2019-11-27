@@ -59,6 +59,7 @@ import org.kie.dmn.model.v1_3.TDefinitions;
 import org.kie.dmn.model.v1_3.TElementCollection;
 import org.kie.dmn.model.v1_3.TExpression;
 import org.kie.dmn.model.v1_3.TFunctionDefinition;
+import org.kie.dmn.model.v1_3.TGroup;
 import org.kie.dmn.model.v1_3.TImport;
 import org.kie.dmn.model.v1_3.TImportedValues;
 import org.kie.dmn.model.v1_3.TInformationItem;
@@ -226,6 +227,7 @@ public class XStreamMarshaller
         xStream.alias("expression", TExpression.class);
         xStream.alias("formalParameter", TInformationItem.class);
         xStream.alias("functionDefinition", TFunctionDefinition.class);
+        xStream.alias("group", TGroup.class);
         xStream.alias("impactedPerformanceIndicator", TDMNElementReference.class);
         xStream.alias("impactingDecision", TDMNElementReference.class);
         xStream.alias("import", TImport.class);
@@ -333,6 +335,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new DecisionTableConverter( xStream ) );
         xStream.registerConverter(new DefinitionsConverter( xStream ) );
         xStream.registerConverter(new DMNElementReferenceConverter( xStream ) );
+        xStream.registerConverter(new GroupConverter( xStream ) );
         xStream.registerConverter(new FunctionDefinitionConverter( xStream ) );
         xStream.registerConverter(new ImportConverter( xStream ) );
         xStream.registerConverter(new ImportedValuesConverter( xStream ) );
