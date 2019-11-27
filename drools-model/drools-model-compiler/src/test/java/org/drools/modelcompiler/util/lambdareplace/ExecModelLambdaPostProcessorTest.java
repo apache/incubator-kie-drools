@@ -7,18 +7,22 @@ import java.util.HashMap;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class ExecModelLambdaPostProcessorTest {
 
+    @Before
+    public void configJP() {
+        StaticJavaParser.getConfiguration().setCharacterEncoding(Charset.defaultCharset());
+    }
+
     @Test
     public void convertPatternLambdaExprLambda() throws Exception {
 
-        CompilationUnit inputCU = StaticJavaParser.parseResource(this.getClass().getClassLoader(),
-                                                                    "org/drools/modelcompiler/util/lambdareplace/PatternTestHarness.java",
-                                                                    Charset.defaultCharset());
+        CompilationUnit inputCU = StaticJavaParser.parseResource("org/drools/modelcompiler/util/lambdareplace/PatternTestHarness.java");
 
         CompilationUnit clone = inputCU.clone();
 
@@ -37,7 +41,6 @@ public class ExecModelLambdaPostProcessorTest {
                 .orElseThrow(RuntimeException::new);
 
         assertEquals(expectedResult, actual);
-
     }
 
 //    @Test
@@ -61,7 +64,4 @@ public class ExecModelLambdaPostProcessorTest {
 //        assertEquals(StaticJavaParser.parseStatement(expectedResult), StaticJavaParser.parseStatement(postProcessedExecModel.getConvertedBlockAsString()));
 //
 //    }
-
-
-
 }
