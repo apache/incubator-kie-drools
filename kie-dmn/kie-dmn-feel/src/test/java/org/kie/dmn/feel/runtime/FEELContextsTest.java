@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -62,7 +63,10 @@ public class FEELContextsTest extends BaseFEELTest {
                 {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first name+\"!\"}.salutation", "Hello Bob!", null},
                 {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null},
                 {"{ \"a\" : 1, b : 2, \"c\": a+b}.c", BigDecimal.valueOf( 3 ), null},
-
+                {"[{a: {b: [1]}}, {a: {b: [2.1, 2.2]}}, {a: {b: [3]}}, {a: {b: [4, 5]}}].a.b", Arrays.asList(Arrays.asList(new BigDecimal( 1 )),
+                                                                                                             Arrays.asList(new BigDecimal( "2.1" ), new BigDecimal("2.2")),
+                                                                                                             Arrays.asList(new BigDecimal( 3 )),
+                                                                                                             Arrays.asList(new BigDecimal( 4 ), new BigDecimal( 5 ))), null},
         };
         return addAdditionalParameters(cases, false);
     }

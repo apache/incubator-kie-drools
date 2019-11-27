@@ -49,6 +49,9 @@ public class FEEL12ExtendedFunctionsTest extends BaseFEELTest {
                 { "stddev( [ 47 ] )", null, FEELEvent.Severity.ERROR },
                 { "stddev( 47 )", null, FEELEvent.Severity.ERROR },
                 { "stddev( [ ] )", null, FEELEvent.Severity.ERROR },
+                { "mode( 6, 3, 9, 6, 6 )",  Arrays.asList( BigDecimal.valueOf( 6 ) ), null },
+                { "mode( [6, 1, 9, 6, 1] )",  Arrays.asList(BigDecimal.valueOf( 1 ),  BigDecimal.valueOf( 6 ) ), null },
+                { "mode( [ ] )",  Arrays.asList(  ), null },
         };
         return addAdditionalParameters(cases, false);
     }
