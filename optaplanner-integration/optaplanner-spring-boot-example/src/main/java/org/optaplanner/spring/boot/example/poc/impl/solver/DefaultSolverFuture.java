@@ -35,7 +35,7 @@ public class DefaultSolverFuture<Solution_> implements SolverFuture<Solution_> {
 
     @Override
     public Solution_ getBestSolution() {
-        return getBestSolution();
+        return solver.getBestSolution();
     }
 
     @Override
