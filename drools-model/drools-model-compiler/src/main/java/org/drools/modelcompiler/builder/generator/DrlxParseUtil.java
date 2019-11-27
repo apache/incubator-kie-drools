@@ -263,19 +263,6 @@ public class DrlxParseUtil {
         return classes.contains(type);
     }
 
-    public static Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type ) {
-        if (type == int.class) {
-            return new IntegerLiteralExpr( expr.getValue() );
-        }
-        if (type == long.class) {
-            return new LongLiteralExpr( expr.getValue().endsWith( "l" ) ? expr.getValue() : expr.getValue() + "l" );
-        }
-        if (type == double.class) {
-            return new DoubleLiteralExpr( expr.getValue().endsWith( "d" ) ? expr.getValue() : expr.getValue() + "d" );
-        }
-        throw new RuntimeException("Unknown literal: " + expr);
-    }
-
     public static Class<?> getLiteralExpressionType( LiteralExpr expr ) {
         if (expr instanceof BooleanLiteralExpr) {
             return boolean.class;
