@@ -130,44 +130,43 @@ public class MarshallerGenerator {
 
                 for (FieldDescriptor field : msg.getFields()) {
 
-                    String methodType = methodType(field.getTypeName());
+                    String protoStreamMethodType = protoStreamMethodType(field.getTypeName());
                     MethodCallExpr write = null;
                     MethodCallExpr read = null;
-                    if (methodType != null && !field.isRepeated()) {
+                    if (protoStreamMethodType != null && !field.isRepeated()) {
                         // has a mapped type
-                        read = new MethodCallExpr(new NameExpr("reader"), "read" + methodType)
+                        read = new MethodCallExpr(new NameExpr("reader"), "read" + protoStreamMethodType)
                                 .addArgument(new StringLiteralExpr(field.getName()));
-                        String accessor = methodType.equals("Boolean") ? "is" : "get";
-                        write = new MethodCallExpr(new NameExpr("writer"), "write" + methodType)
+                        String accessor = protoStreamMethodType.equals("Boolean") ? "is" : "get";
+                        write = new MethodCallExpr(new NameExpr("writer"), "write" + protoStreamMethodType)
                                 .addArgument(new StringLiteralExpr(field.getName()))
                                 .addArgument(new MethodCallExpr(new NameExpr("t"), accessor + StringUtils.capitalize(field.getName())));
                     } else {
-
-                        // custom type
-                        String customType = javaTypeForMessage(d, field.getTypeName(), serializationContext);
+                        // custom types 
+                        String customTypeName = javaTypeForMessage(d, field.getTypeName(), serializationContext);
 
                         if (field.isRepeated()) {
-                            if (null == customType || customType.isEmpty()) {
-                                customType = methodType(field.getTypeName());
+                            if (null == customTypeName || customTypeName.isEmpty()) {
+                                customTypeName = primaryTypeClassName(field.getTypeName());
                             }
 
                             read = new MethodCallExpr(new NameExpr("reader"), "readCollection")
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList()))
-                                    .addArgument(new NameExpr(customType + ".class"));
+                                    .addArgument(new NameExpr(customTypeName + ".class"));
                             write = new MethodCallExpr(new NameExpr("writer"), "writeCollection")
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.capitalize(field.getName())))
-                                    .addArgument(new NameExpr(customType + ".class"));
+                                    .addArgument(new NameExpr(customTypeName + ".class"));
                         } else {
 
                             read = new MethodCallExpr(new NameExpr("reader"), "readObject")
                                     .addArgument(new StringLiteralExpr(field.getName()))
-                                    .addArgument(new NameExpr(customType + ".class"));
+                                    .addArgument(new NameExpr(customTypeName + ".class"));
                             write = new MethodCallExpr(new NameExpr("writer"), "writeObject")
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.capitalize(field.getName())))
-                                    .addArgument(new NameExpr(customType + ".class"));
+                                    .addArgument(new NameExpr(customTypeName + ".class"));
                         }
                     }
 
@@ -228,7 +227,7 @@ public class MarshallerGenerator {
         return null;
     }
 
-    protected String methodType(String type) {
+    protected String protoStreamMethodType(String type) {
         String methodReader = null;
 
         switch (type) {
@@ -236,7 +235,7 @@ public class MarshallerGenerator {
                 methodReader = "String";
                 break;
             case "int32":
-                methodReader = "Integer";
+                methodReader = "Int";
                 break;
             case "int64":
                 methodReader = "Long";
@@ -255,5 +254,34 @@ public class MarshallerGenerator {
         }
 
         return methodReader;
+    }
+
+    protected String primaryTypeClassName(String type) {
+        String className = null;
+
+        switch (type) {
+            case "string":
+                className = "String";
+                break;
+            case "int32":
+                className = "Integer";
+                break;
+            case "int64":
+                className = "Long";
+                break;
+            case "double":
+                className = "Double";
+                break;
+            case "float":
+                className = "Float";
+                break;
+            case "bool":
+                className = "Boolean";
+                break;
+            default:
+                className = null;
+        }
+
+        return className;
     }
 }
