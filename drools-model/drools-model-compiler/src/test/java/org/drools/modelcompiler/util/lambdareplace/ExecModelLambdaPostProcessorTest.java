@@ -10,7 +10,9 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ExecModelLambdaPostProcessorTest {
 
@@ -40,7 +42,8 @@ public class ExecModelLambdaPostProcessorTest {
                 .map(m -> m.setName("testMethod"))
                 .orElseThrow(RuntimeException::new);
 
-        assertEquals(expectedResult, actual);
+        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
+
     }
 
 //    @Test

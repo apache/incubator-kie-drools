@@ -11,10 +11,12 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.EXPR_CALL;
 
@@ -26,7 +28,6 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
     private final CompilationUnit clone;
-
 
     Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
@@ -50,25 +51,37 @@ public class ExecModelLambdaPostProcessor {
                     .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
 
             clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-                    .forEach(methodCallExpr -> {
-                        Expression argument = methodCallExpr.getArgument(0);
+                    .forEach(this::convertIndexedByCall);
 
-                        if (!argument.isClassExpr()) {
-                            throw new RuntimeException();
-                        }
-
-                        String returnType = argument.asClassExpr().getTypeAsString();
-                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
-                    });
+            clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
+                    .forEach(this::convertIndexedByCall);
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr -> {
                         extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
-
         } catch (DoNotConvertLambdaException e) {
             logger.info("Cannot postprocess: " + e);
         }
+    }
+
+    private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
+        Expression argument = methodCallExpr.getArgument(0);
+
+        if (!argument.isClassExpr()) {
+            throw new RuntimeException();
+        }
+
+        String returnType = getType(argument).asString();
+        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+    }
+
+    protected Type getType(Expression argument) {
+        Type type = argument.asClassExpr().getType();
+        if (type.isPrimitiveType()) {
+            return type.asPrimitiveType().toBoxedType();
+        }
+        return type;
     }
 
     private Expression lambdaInstance(ClassOrInterfaceType type) {
