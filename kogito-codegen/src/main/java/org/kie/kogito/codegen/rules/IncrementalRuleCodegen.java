@@ -36,6 +36,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
@@ -69,8 +71,6 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
-
-    private String packageName;
 
     public static IncrementalRuleCodegen ofPath( Path basePath) {
         try {
@@ -138,6 +138,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private KieModuleModel kieModuleModel;
     private boolean hotReloadMode = false;
+    private String packageName;
+    private final boolean decisionTableSupported;
+
 
     @Deprecated
     public IncrementalRuleCodegen(Path basePath, Collection<File> files, ResourceType resourceType) {
@@ -149,6 +152,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         this.kieModuleModel = new KieModuleModelImpl();
         setDefaultsforEmptyKieModule(kieModuleModel);
         this.contextClassLoader = getClass().getClassLoader();
+        this.decisionTableSupported = DecisionTableFactory.getDecisionTableProvider() != null;
     }
 
     @Override
@@ -167,6 +171,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     public List<GeneratedFile> generate() {
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
+        if (!decisionTableSupported &&
+                resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
+            throw new MissingDecisionTableDependencyError();
+        }
 
         moduleGenerator = new RuleUnitContainerGenerator();
         moduleGenerator.withDependencyInjection(annotator);
@@ -181,8 +189,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         batch.build();
 
         if (modelBuilder.hasErrors()) {
-            ApplicationGenerator.logger.error( modelBuilder.getErrors().toString() );
-            return Collections.emptyList();
+            throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
         boolean hasRuleUnits = false;
