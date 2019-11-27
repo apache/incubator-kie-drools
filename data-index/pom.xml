@@ -19,4 +19,41 @@
   </modules>
 
 
+  <dependencyManagement>
+    <dependencies>
+      <!--
+        kogito-deps-bom and kogito-bom are duplicate in kogito-runtimes
+        we have to re-import it here, to override the versions in quarkus-bom.
+        Please notice this is only a partial fix, because kogito-extension
+        resides *inside* quarkus: if kogito-codegen changes some API,
+        then these submodules may break.
+
+        Solution would be to explicitly import all the quarkus dependencies here,
+        instead of importing them via bom.
+      -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-deps-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
 </project>

@@ -77,13 +77,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
