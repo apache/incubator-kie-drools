@@ -27,7 +27,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
-import org.drools.modelcompiler.util.lambdareplace.PostProcessedExecModel;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
@@ -73,24 +72,19 @@ public class RuleWriter {
 
                 CompilationUnit postProcessedCU = cu.clone();
 
-                for (Statement statement : postProcessedCU.findAll(Statement.class)) {
-                    postProcessLambda(statement);
-                }
+                new ExecModelLambdaPostProcessor(
+                        pkgModel.getLambdaClasses(),
+                        pkgModel.getName(),
+                        pkgModel.getRulesFileNameWithPackage(),
+                        pkgModel.getImports(),
+                        pkgModel.getStaticImports(),
+                        postProcessedCU
+                ).convertLambdas();
 
                 rules.add(new RuleFileSource(addFileName, postProcessedCU));
             }
         }
         return rules;
-    }
-
-    private void postProcessLambda(Statement s) {
-        PostProcessedExecModel postProcessedExecModel = new ExecModelLambdaPostProcessor(
-                pkgModel.getLambdaClasses(),
-                pkgModel.getName(),
-                pkgModel.getRulesFileNameWithPackage(),
-                pkgModel.getImports(), pkgModel.getStaticImports(), s
-        ).convertLambdas();
-        s.replace(postProcessedExecModel.getConvertedStatement());
     }
 
     public class RuleFileSource {

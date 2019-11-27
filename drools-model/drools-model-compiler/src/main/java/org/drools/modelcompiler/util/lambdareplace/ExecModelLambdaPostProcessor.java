@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,10 @@ public class ExecModelLambdaPostProcessor {
     private final Map<String, CreatedClass> lambdaClasses;
     private final String packageName;
     private final String ruleClassName;
-    private final Statement inputDSL;
     private final Collection<String> imports;
     private final Collection<String> staticImports;
+    private final CompilationUnit clone;
+
 
     Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
@@ -34,18 +35,16 @@ public class ExecModelLambdaPostProcessor {
                                         String ruleClassName,
                                         Collection<String> imports,
                                         Collection<String> staticImports,
-                                        Statement inputDSL) {
+                                        CompilationUnit clone) {
         this.lambdaClasses = lambdaClasses;
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
-        this.inputDSL = inputDSL;
         this.imports = imports;
         this.staticImports = staticImports;
+        this.clone = clone;
     }
 
-    public PostProcessedExecModel convertLambdas() {
-        Statement clone = inputDSL.clone();
-
+    public void convertLambdas() {
         try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
@@ -67,10 +66,8 @@ public class ExecModelLambdaPostProcessor {
                         extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
 
-            return new PostProcessedExecModel(clone);
         } catch (DoNotConvertLambdaException e) {
             logger.info("Cannot postprocess: " + e);
-            return new PostProcessedExecModel(inputDSL);
         }
     }
 
