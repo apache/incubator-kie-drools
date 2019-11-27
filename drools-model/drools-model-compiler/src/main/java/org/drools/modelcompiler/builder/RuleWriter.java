@@ -24,9 +24,11 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.modelcompiler.util.lambdareplace.DoNotConvertLambdaException;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
@@ -38,6 +40,8 @@ public class RuleWriter {
     private final PackageModel pkgModel;
     private final String rulesFileName;
     private final PackageModel.RuleSourceResult rulesSource;
+
+    Logger logger = LoggerFactory.getLogger(RuleWriter.class.getCanonicalName());
 
     public RuleWriter(String rulesFileName, PackageModel.RuleSourceResult rulesSource, PackageModel pkgModel) {
         this.rulesFileName = rulesFileName;
@@ -70,18 +74,22 @@ public class RuleWriter {
 
                 String addFileName = classOptional.get().getNameAsString();
 
-                CompilationUnit postProcessedCU = cu.clone();
+                try {
+                    CompilationUnit postProcessedCU = cu.clone();
+                    new ExecModelLambdaPostProcessor(
+                            pkgModel.getLambdaClasses(),
+                            pkgModel.getName(),
+                            pkgModel.getRulesFileNameWithPackage(),
+                            pkgModel.getImports(),
+                            pkgModel.getStaticImports(),
+                            postProcessedCU
+                    ).convertLambdas();
+                    rules.add(new RuleFileSource(addFileName, postProcessedCU));
 
-                new ExecModelLambdaPostProcessor(
-                        pkgModel.getLambdaClasses(),
-                        pkgModel.getName(),
-                        pkgModel.getRulesFileNameWithPackage(),
-                        pkgModel.getImports(),
-                        pkgModel.getStaticImports(),
-                        postProcessedCU
-                ).convertLambdas();
-
-                rules.add(new RuleFileSource(addFileName, postProcessedCU));
+                } catch (DoNotConvertLambdaException e) {
+                    logger.error("Cannot externalize lambdas", e);
+                    rules.add(new RuleFileSource(addFileName, cu));
+                }
             }
         }
         return rules;

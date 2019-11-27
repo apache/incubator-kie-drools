@@ -12,13 +12,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.EXPR_CALL;
 
 public class ExecModelLambdaPostProcessor {
@@ -29,8 +27,6 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
     private final CompilationUnit clone;
-
-    Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
     public ExecModelLambdaPostProcessor(Map<String, CreatedClass> lambdaClasses,
                                         String packageName,
@@ -47,16 +43,11 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public void convertLambdas() {
-        try {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
 
-            clone.findAll(MethodCallExpr.class, mc -> {
-                return INDEXED_BY_CALL.contains(mc.getName().asString());
-            })
-                    .forEach(methodCallExpr1 -> {
-                        convertIndexedByCall(methodCallExpr1);
-                    });
+            clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString()))
+                    .forEach(this::convertIndexedByCall);
 
             clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::convertIndexedByCall);
@@ -68,9 +59,6 @@ public class ExecModelLambdaPostProcessor {
                     .forEach(methodCallExpr -> {
                         extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
-        } catch (DoNotConvertLambdaException e) {
-            logger.info("Cannot postprocess: " + e);
-        }
     }
 
     private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
