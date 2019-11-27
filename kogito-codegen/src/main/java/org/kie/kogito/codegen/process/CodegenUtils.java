@@ -1,6 +1,7 @@
 package org.kie.kogito.codegen.process;
 
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
@@ -16,6 +17,8 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+
 public class CodegenUtils {
 
     
@@ -23,20 +26,34 @@ public class CodegenUtils {
         md.getParameters().forEach(p -> p.setType(dataType));
     }
     
+    //Defaults the "to be interpolated type" to $Type$.
     public static void interpolateTypes(ClassOrInterfaceType t, String dataClazzName) {
-        SimpleName returnType = t.asClassOrInterfaceType().getName();
-        interpolateTypes(returnType, dataClazzName);
-        t.getTypeArguments().ifPresent(ta -> interpolateTypeArguments(ta, dataClazzName));
+        SimpleName returnType = t.getName();
+        Map<String, String> interpolatedTypes = new HashMap<>();
+        interpolatedTypes.put("$Type$", dataClazzName);
+        interpolateTypes(returnType, interpolatedTypes);
+        t.getTypeArguments().ifPresent(ta -> interpolateTypeArguments(ta, interpolatedTypes));
     }
 
-    public static void interpolateTypes(SimpleName returnType, String dataClazzName) {
-        String identifier = returnType.getIdentifier();
-        returnType.setIdentifier(identifier.replace("$Type$", dataClazzName));
+    public static void interpolateTypes(ClassOrInterfaceType t, Map<String, String> typeInterpolations) {
+        SimpleName returnType = t.getName();
+        interpolateTypes(returnType, typeInterpolations);
+        t.getTypeArguments().ifPresent(ta -> interpolateTypeArguments(ta, typeInterpolations));
     }
 
-    public static void interpolateTypeArguments(NodeList<Type> ta, String dataClazzName) {
+    public static void interpolateTypes(SimpleName returnType, Map<String, String> typeInterpolations) {
+        typeInterpolations.entrySet().stream().forEach(entry -> {
+            String identifier = returnType.getIdentifier();
+            String keyValue = entry.getKey();
+            String valueValue = entry.getValue();
+            String newIdentifier = identifier.replace(keyValue, valueValue);
+            returnType.setIdentifier(newIdentifier);
+        });
+    }
+
+    public static void interpolateTypeArguments(NodeList<Type> ta, Map<String, String> typeInterpolations) {
         ta.stream().map(Type::asClassOrInterfaceType)
-                .forEach(t -> interpolateTypes(t, dataClazzName));
+                .forEach(t -> interpolateTypes(t, typeInterpolations));
     }
     
     public static boolean isProcessField(FieldDeclaration fd) {
