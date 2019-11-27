@@ -16,9 +16,11 @@
 
 package org.kie.dmn.model.api;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -59,4 +61,14 @@ public interface DMNModelInstrumentedBase {
      * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
      */
     Map<String, String> getNsContext();
+
+    default Set<String> recurseNsKeys() {
+        Set<String> res = new HashSet<>();
+        if (getParent() != null) {
+            res.addAll(getParent().recurseNsKeys());
+        }
+        res.addAll(getNsContext().keySet());
+        return res;
+    }
+
 }

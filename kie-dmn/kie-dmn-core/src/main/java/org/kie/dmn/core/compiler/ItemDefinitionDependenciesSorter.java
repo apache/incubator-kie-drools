@@ -73,9 +73,7 @@ public class ItemDefinitionDependenciesSorter {
     
     private static boolean recurseFind(ItemDefinition o1, QName qname2) {
         if ( o1.getTypeRef() != null ) {
-            if ( o1.getTypeRef().equals(qname2) ) {
-                return true;
-            }
+            return extFastEqUsingNSPrefix(o1, qname2);
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
             if ( recurseFind(ic, qname2) ) {
@@ -85,11 +83,29 @@ public class ItemDefinitionDependenciesSorter {
         return false;
     }
     
+    private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName qname2) {
+        if (o1.getTypeRef().equals(qname2)) {
+            return true;
+        }
+        if (o1.getTypeRef().getLocalPart().endsWith(qname2.getLocalPart())) {
+            for (String nsKey : o1.recurseNsKeys()) {
+                String ns = o1.getNamespaceURI(nsKey);
+                if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
+                    continue;
+                }
+                String prefix = nsKey + ".";
+                if (o1.getTypeRef().getLocalPart().startsWith(prefix) &&
+                    o1.getTypeRef().getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static boolean directFind(ItemDefinition o1, QName qname2) {
         if ( o1.getTypeRef() != null ) {
-            if ( o1.getTypeRef().equals(qname2) ) {
-                return true;
-            }
+            return extFastEqUsingNSPrefix(o1, qname2);
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
             if ( ic.getTypeRef() == null ) {
