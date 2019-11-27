@@ -15,6 +15,7 @@ import org.drools.model.constraints.SingleConstraint6;
 import org.drools.model.constraints.SingleConstraint7;
 import org.drools.model.constraints.SingleConstraint8;
 import org.drools.model.constraints.SingleConstraint9;
+import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr10ViewItemImpl;
@@ -36,6 +37,10 @@ public interface SingleConstraint extends Constraint {
     Variable[] getVariables();
 
     PredicateN getPredicate();
+
+    default Predicate1 getPredicate1() {
+        throw new UnsupportedOperationException();
+    }
 
     Index getIndex();
 
