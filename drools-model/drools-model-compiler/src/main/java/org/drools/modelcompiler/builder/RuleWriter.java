@@ -88,6 +88,7 @@ public class RuleWriter {
 
                 } catch (DoNotConvertLambdaException e) {
                     logger.error("Cannot externalize lambdas", e);
+                    pkgModel.getLambdaClasses().clear();
                     rules.add(new RuleFileSource(addFileName, cu));
                 }
             }
