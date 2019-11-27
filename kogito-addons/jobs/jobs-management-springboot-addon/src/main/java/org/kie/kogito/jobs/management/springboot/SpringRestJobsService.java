@@ -68,6 +68,8 @@ public class SpringRestJobsService implements JobsService {
         Job job = JobBuilder.builder()
                 .id(description.id())
                 .expirationTime(description.expirationTime().get())
+                .repeatInterval(description.expirationTime().repeatInterval())
+                .repeatLimit(description.expirationTime().repeatLimit())
                 .priority(0)
                 .callbackEndpoint(callback)
                 .processId(description.processId())
@@ -75,7 +77,6 @@ public class SpringRestJobsService implements JobsService {
                 .rootProcessId(description.rootProcessId())
                 .rootProcessInstanceId(description.rootProcessInstanceId())
                 .build();
-
         
         ResponseEntity<String> result = restTemplate.postForEntity(jobServiceUrl + "/job", job, String.class);
         if (result.getStatusCode().ordinal() == 200) {

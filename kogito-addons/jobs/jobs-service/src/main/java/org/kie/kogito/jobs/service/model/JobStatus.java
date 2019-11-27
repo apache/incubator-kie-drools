@@ -20,6 +20,7 @@ public enum JobStatus {
     ERROR,//final
     EXECUTED,//final
     SCHEDULED,//active
+    PERIODIC_SCHEDULED,//active
     RETRY,//active
     CANCELED//final
 }

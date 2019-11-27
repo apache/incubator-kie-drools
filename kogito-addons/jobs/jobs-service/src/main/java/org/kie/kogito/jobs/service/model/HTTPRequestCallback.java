@@ -16,8 +16,10 @@
 
 package org.kie.kogito.jobs.service.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class HTTPRequestCallback {
@@ -37,13 +39,16 @@ public class HTTPRequestCallback {
     private String url;
     private HTTPMethod method;
     private Map<String, String> headers;
+    private Map<String, String> queryParams;
     private String body;
 
-    public HTTPRequestCallback(String url, HTTPMethod method, Map<String, String> headers, String body) {
+    public HTTPRequestCallback(String url, HTTPMethod method, Map<String, String> headers, String body, Map<String,
+            String> queryParams) {
         this.url = url;
         this.method = method;
         this.headers = headers;
         this.body = body;
+        this.queryParams = queryParams;
     }
 
     public String getUrl() {
@@ -60,6 +65,10 @@ public class HTTPRequestCallback {
 
     public String getBody() {
         return body;
+    }
+
+    public Map<String, String> getQueryParams() {
+        return queryParams;
     }
 
     @Override
@@ -88,11 +97,12 @@ public class HTTPRequestCallback {
                 .add("url='" + url + "'")
                 .add("method=" + method)
                 .add("headers=" + headers)
+                .add("queryParams=" + queryParams)
                 .add("body='" + body + "'")
                 .toString();
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -102,6 +112,7 @@ public class HTTPRequestCallback {
         private HTTPMethod method;
         private Map<String, String> headers;
         private String body;
+        private Map<String, String> queryParams = new HashMap<>();
 
         public Builder url(String url) {
             this.url = url;
@@ -128,8 +139,18 @@ public class HTTPRequestCallback {
             return this;
         }
 
+        public Builder queryParams(Map<String, String> queryParams) {
+            this.queryParams = queryParams;
+            return this;
+        }
+
+        public Builder addQueryParam(String name, String value) {
+            Optional.ofNullable(value).ifPresent(v -> queryParams.put(name, v));
+            return this;
+        }
+
         public HTTPRequestCallback build() {
-            return new HTTPRequestCallback(url, method, headers, body);
+            return new HTTPRequestCallback(url, method, headers, body, queryParams);
         }
     }
 }

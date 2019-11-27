@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.api;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Job describes the actual entity that should be scheduled and executed
@@ -50,10 +51,15 @@ public class Job {
     private String processId;
     private String rootProcessId;
 
+    private Long repeatInterval;
+    private Integer repeatLimit;
+
     public Job() {
     }
 
-    public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint, String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId) {
+    public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
+               String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
+               Long repeatInterval, Integer repeatLimit) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
@@ -62,6 +68,8 @@ public class Job {
         this.rootProcessInstanceId = rootProcessInstanceId;
         this.processId = processId;
         this.rootProcessId = rootProcessId;
+        this.repeatInterval = repeatInterval;
+        this.repeatLimit = repeatLimit;
     }
 
     public String getId() {
@@ -128,6 +136,22 @@ public class Job {
         this.rootProcessId = rootProcessId;
     }
 
+    public Long getRepeatInterval() {
+        return repeatInterval;
+    }
+
+    public void setRepeatInterval(Long repeatInterval) {
+        this.repeatInterval = repeatInterval;
+    }
+
+    public Integer getRepeatLimit() {
+        return repeatLimit;
+    }
+
+    public void setRepeatLimit(Integer repeatLimit) {
+        this.repeatLimit = repeatLimit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -144,18 +168,31 @@ public class Job {
                 Objects.equals(getProcessInstanceId(), job.getProcessInstanceId()) &&
                 Objects.equals(getRootProcessInstanceId(), job.getRootProcessInstanceId()) &&
                 Objects.equals(getProcessId(), job.getProcessId()) &&
-                Objects.equals(getRootProcessId(), job.getRootProcessId());
+                Objects.equals(getRootProcessId(), job.getRootProcessId()) &&
+                Objects.equals(getRepeatLimit(), job.getRepeatLimit()) &&
+                Objects.equals(getRepeatInterval(), job.getRepeatInterval());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getExpirationTime(), getPriority(), getCallbackEndpoint(), getProcessInstanceId(), getRootProcessInstanceId(), getProcessId(), getRootProcessId());
+        return Objects.hash(getId(), getExpirationTime(), getPriority(), getCallbackEndpoint(), getProcessInstanceId(),
+                            getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getRepeatLimit(),
+                            getRepeatInterval());
     }
 
     @Override
     public String toString() {
-        return "Job [id=" + id + ", expirationTime=" + expirationTime + ", priority=" + priority + ", callbackEndpoint=" + callbackEndpoint + ", processInstanceId=" + processInstanceId + ", rootProcessInstanceId=" +
-               rootProcessInstanceId + ", processId=" + processId + ", rootProcessId=" + rootProcessId + "]";
+        return new StringJoiner(", ", Job.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("expirationTime=" + expirationTime)
+                .add("priority=" + priority)
+                .add("callbackEndpoint='" + callbackEndpoint + "'")
+                .add("processInstanceId='" + processInstanceId + "'")
+                .add("rootProcessInstanceId='" + rootProcessInstanceId + "'")
+                .add("processId='" + processId + "'")
+                .add("rootProcessId='" + rootProcessId + "'")
+                .add("repeatInterval=" + repeatInterval)
+                .add("repeatLimit=" + repeatLimit)
+                .toString();
     }
-
 }

@@ -102,6 +102,8 @@ public class VertxJobsService implements JobsService {
         final Job job = JobBuilder.builder()
                 .id(description.id())
                 .expirationTime(description.expirationTime().get())
+                .repeatInterval(description.expirationTime().repeatInterval())
+                .repeatLimit(description.expirationTime().repeatLimit())
                 .priority(0)
                 .callbackEndpoint(callback)
                 .processId(description.processId())

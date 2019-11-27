@@ -42,7 +42,7 @@ public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
         writer.writeInt("retries", scheduledJob.getRetries());
         writer.writeString("status", scheduledJob.getStatus().name());
         writer.writeInstant("lastUpdate", zonedDateTimeToInstant(scheduledJob.getLastUpdate()));
-
+        writer.writeInt("executionCounter", scheduledJob.getExecutionCounter());
     }
 
     @Override
@@ -52,12 +52,14 @@ public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
         Integer retries = reader.readInt("retries");
         JobStatus status = JobStatus.valueOf(reader.readString("status"));
         ZonedDateTime lastUpdate = instantToZonedDateTime(reader.readInstant("lastUpdate"));
+        Integer executionCounter = reader.readInt("executionCounter");
         return ScheduledJob.builder()
                 .scheduledId(scheduledId)
                 .retries(retries)
                 .status(status)
                 .job(job)
                 .lastUpdate(lastUpdate)
+                .executionCounter(executionCounter)
                 .build();
     }
 }

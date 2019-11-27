@@ -35,7 +35,8 @@ public class DefaultErrorMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-        LOGGER.error("Sending error response", exception);
+        LOGGER.error("Handling HTTP Error {}", exception);
+
         return Response.status(Optional.ofNullable(exception)
                                        .filter(WebApplicationException.class::isInstance)
                                        .map(WebApplicationException.class::cast)

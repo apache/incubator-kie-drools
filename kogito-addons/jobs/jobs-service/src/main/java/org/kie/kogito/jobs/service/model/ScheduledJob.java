@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.service.model;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.utils.DateUtil;
@@ -29,19 +30,22 @@ public class ScheduledJob {
     private Integer retries;
     private JobStatus status;
     private ZonedDateTime lastUpdate;
+    private Integer executionCounter;
     private JobExecutionResponse executionResponse;
 
     public ScheduledJob() {
     }
 
     public ScheduledJob(Job job, String scheduledId, Integer retries, JobStatus status, ZonedDateTime lastUpdate,
-                        JobExecutionResponse executionResponse) {
+                        JobExecutionResponse executionResponse, Integer executionCounter) {
+        this();
         this.job = job;
         this.scheduledId = scheduledId;
         this.retries = retries;
         this.status = status;
         this.lastUpdate = lastUpdate;
         this.executionResponse = executionResponse;
+        this.executionCounter = executionCounter;
     }
 
     public Job getJob() {
@@ -68,20 +72,31 @@ public class ScheduledJob {
         return executionResponse;
     }
 
+    public Integer getExecutionCounter() {
+        return executionCounter;
+    }
+
+    public Optional<Long> hasInterval() {
+        return Optional.of(getJob())
+                .map(Job::getRepeatInterval)
+                .filter(interval -> interval > 0);
+    }
+
     public static ScheduledJobBuilder builder() {
         return new ScheduledJobBuilder();
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ScheduledJob{");
-        sb.append("job=").append(job);
-        sb.append(", scheduledId='").append(scheduledId).append('\'');
-        sb.append(", retries=").append(retries);
-        sb.append(", status=").append(status);
-        sb.append(", lastUpdate=").append(lastUpdate);
-        sb.append('}');
-        return sb.toString();
+        return new StringJoiner(", ", ScheduledJob.class.getSimpleName() + "[", "]")
+                .add("job=" + job)
+                .add("scheduledId='" + scheduledId + "'")
+                .add("retries=" + retries)
+                .add("status=" + status)
+                .add("lastUpdate=" + lastUpdate)
+                .add("executionResponse=" + executionResponse)
+                .add("executionCounter=" + executionCounter)
+                .toString();
     }
 
     public static class ScheduledJobBuilder {
@@ -92,6 +107,7 @@ public class ScheduledJob {
         private JobStatus status;
         private ZonedDateTime lastUpdate;
         private JobExecutionResponse executionResponse;
+        private Integer executionCounter = 1;
 
         public ScheduledJobBuilder job(Job job) {
             this.job = job;
@@ -108,6 +124,11 @@ public class ScheduledJob {
             return this;
         }
 
+        public ScheduledJobBuilder incrementExecutionCounter() {
+            this.executionCounter++;
+            return this;
+        }
+
         public ScheduledJobBuilder incrementRetries() {
             this.retries++;
             return this;
@@ -117,7 +138,9 @@ public class ScheduledJob {
             return job(scheduledJob.getJob())
                     .scheduledId(scheduledJob.getScheduledId())
                     .retries(scheduledJob.getRetries())
-                    .status(scheduledJob.getStatus());
+                    .status(scheduledJob.getStatus())
+                    .executionResponse(scheduledJob.getExecutionResponse())
+                    .executionCounter(scheduledJob.getExecutionCounter());
         }
 
         public ScheduledJobBuilder status(JobStatus status) {
@@ -130,13 +153,18 @@ public class ScheduledJob {
             return this;
         }
 
-        public ScheduledJobBuilder lastUpdate(JobExecutionResponse executionResponse) {
+        public ScheduledJobBuilder executionResponse(JobExecutionResponse executionResponse) {
             this.executionResponse = executionResponse;
             return this;
         }
 
+        public ScheduledJobBuilder executionCounter(Integer executionCounter) {
+            this.executionCounter = executionCounter;
+            return this;
+        }
+
         public ScheduledJob build() {
-            return new ScheduledJob(job, scheduledId, retries, status, getLastUpdate(), executionResponse);
+            return new ScheduledJob(job, scheduledId, retries, status, getLastUpdate(), executionResponse, executionCounter);
         }
 
         private ZonedDateTime getLastUpdate() {

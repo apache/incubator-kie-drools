@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.vertx.axle.core.Vertx;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
@@ -50,8 +51,20 @@ public class VertxJobScheduler extends BaseTimerJobScheduler {
                 .buildRs();
     }
 
-    private long setTimer(Duration delay, Job job) {vertx.setPeriodic(1000, i->{});
+    @Override
+    public PublisherBuilder<String> doPeriodicSchedule(Duration interval, Job job) {
+        LOGGER.debug("Job Periodic Scheduling {}", job);
+        return ReactiveStreams
+                .of(setPeriodicTimer(interval, job))
+                .map(String::valueOf);
+    }
+
+    private long setTimer(Duration delay, Job job) {
         return vertx.setTimer(delay.toMillis(), scheduledId -> execute(job));
+    }
+
+    private long setPeriodicTimer(Duration interval, Job job) {
+        return vertx.setPeriodic(interval.toMillis(), scheduledId -> execute(job));
     }
 
     @Override

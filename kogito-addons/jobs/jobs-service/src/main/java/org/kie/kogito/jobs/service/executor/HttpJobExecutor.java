@@ -29,15 +29,16 @@ import io.smallrye.reactive.messaging.annotations.Emitter;
 import io.smallrye.reactive.messaging.annotations.OnOverflow;
 import io.vertx.axle.core.Vertx;
 import io.vertx.axle.core.buffer.Buffer;
+import io.vertx.axle.ext.web.client.HttpRequest;
 import io.vertx.axle.ext.web.client.HttpResponse;
 import io.vertx.axle.ext.web.client.WebClient;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.service.stream.AvailableStreams;
 import org.kie.kogito.jobs.service.converters.HttpConverters;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
+import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.stream.AvailableStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +77,16 @@ public class HttpJobExecutor implements JobExecutor {
     }
 
     private CompletionStage<HttpResponse<Buffer>> executeCallback(HTTPRequestCallback request) {
-        LOGGER.info("Executing callback {}", request);
+        LOGGER.debug("Executing callback {}", request);
         final URL url = httpConverters.convertURL(request.getUrl());
-        return client.request(httpConverters.convertHttpMethod(request.getMethod()),
-                              url.getPort(),
-                              url.getHost(),
-                              url.getPath())
-                .send();
+        final HttpRequest<Buffer> clientRequest = client.request(httpConverters.convertHttpMethod(request.getMethod()),
+                                                                 url.getPort(),
+                                                                 url.getHost(),
+                                                                 url.getPath());
+        Optional.ofNullable(request.getQueryParams())
+                .ifPresent(params -> clientRequest.queryParams().addAll(params));
+
+        return clientRequest.send();
     }
 
     private String getResponseCode(HttpResponse<Buffer> response) {
@@ -91,8 +95,8 @@ public class HttpJobExecutor implements JobExecutor {
                 .orElse(null);
     }
 
-    private PublisherBuilder<JobExecutionResponse> handleResponse(JobExecutionResponse response) {
-        LOGGER.info("handle response {}", response);
+    private <T extends JobExecutionResponse> PublisherBuilder<T> handleResponse(T response) {
+        LOGGER.debug("handle response {}", response);
         return ReactiveStreams.of(response)
                 .map(JobExecutionResponse::getCode)
                 .flatMap(code -> code.equals("200")
@@ -100,47 +104,60 @@ public class HttpJobExecutor implements JobExecutor {
                         : handleError(response));
     }
 
-    private PublisherBuilder<JobExecutionResponse> handleError(JobExecutionResponse response) {
+    private <T extends JobExecutionResponse> PublisherBuilder<T> handleError(T response) {
         LOGGER.info("handle error {}", response);
         return ReactiveStreams.of(response)
                 .peek(jobErrorEmitter::send)
-                .peek(r -> LOGGER.info("Error executing job {}.", r));
+                .peek(r -> LOGGER.debug("Error executing job {}.", r));
     }
 
-    private PublisherBuilder<JobExecutionResponse> handleSuccess(JobExecutionResponse response) {
+    private <T extends JobExecutionResponse> PublisherBuilder<T> handleSuccess(T response) {
         LOGGER.info("handle success {}", response);
         return ReactiveStreams.of(response)
                 .peek(jobSuccessEmitter::send)
-                .peek(r -> LOGGER.info("Success executing job {}.", r));
+                .peek(r -> LOGGER.debug("Success executing job {}.", r));
     }
 
     @Override
-    public CompletionStage<Job> execute(Job job) {
-        //Using just POST method for now
-        final HTTPRequestCallback callback = HTTPRequestCallback.builder()
-                .url(job.getCallbackEndpoint())
-                .method(HTTPRequestCallback.HTTPMethod.POST)
-                .build();
+    public CompletionStage<ScheduledJob> execute(CompletionStage<ScheduledJob> futureJob) {
+        return futureJob
+                .thenCompose(job -> {
+                    //Using just POST method for now
+                    final HTTPRequestCallback callback = HTTPRequestCallback.builder()
+                            .url(job.getJob().getCallbackEndpoint())
+                            .method(HTTPRequestCallback.HTTPMethod.POST)
+                            //in case of repeatable jobs add the limit parameter
+                            .addQueryParam("limit", job
+                                    .hasInterval()
+                                    .map(interval -> getRepeatableJobCountDown(job))
+                                    .map(String::valueOf)
+                                    .orElse(null))
+                            .build();
 
-        return ReactiveStreams.fromCompletionStage(executeCallback(callback))
-                .map(response -> JobExecutionResponse.builder()
-                        .message(response.statusMessage())
-                        .code(getResponseCode(response))
-                        .now()
-                        .jobId(job.getId())
-                        .build())
-                .flatMap(this::handleResponse)
-                .findFirst()
-                .run()
-                .thenApply(response -> job)
-                .exceptionally(ex -> {
-                    LOGGER.error("Generic error executing job {}", job, ex);
-                    jobErrorEmitter.send(JobExecutionResponse.builder()
-                                                 .message(ex.getMessage())
-                                                 .now()
-                                                 .jobId(job.getId())
-                                                 .build());
-                    return job;
+                    return ReactiveStreams.fromCompletionStage(executeCallback(callback))
+                            .map(response -> JobExecutionResponse.builder()
+                                    .message(response.statusMessage())
+                                    .code(getResponseCode(response))
+                                    .now()
+                                    .jobId(job.getJob().getId())
+                                    .build())
+                            .flatMap(this::handleResponse)
+                            .findFirst()
+                            .run()
+                            .thenApply(response -> response.map(r -> job).orElse(null))
+                            .exceptionally(ex -> {
+                                LOGGER.error("Generic error executing job {}", job, ex);
+                                jobErrorEmitter.send(JobExecutionResponse.builder()
+                                                             .message(ex.getMessage())
+                                                             .now()
+                                                             .jobId(job.getJob().getId())
+                                                             .build());
+                                return job;
+                            });
                 });
+    }
+
+    private int getRepeatableJobCountDown(ScheduledJob job) {
+        return job.getJob().getRepeatLimit() - job.getExecutionCounter();
     }
 }

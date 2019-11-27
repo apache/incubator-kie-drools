@@ -44,6 +44,8 @@ public class JobMarshaller extends BaseMarshaller<Job> {
         writer.writeString("processInstanceId", job.getProcessInstanceId());
         writer.writeString("rootProcessId", job.getRootProcessId());
         writer.writeString("rootProcessInstanceId", job.getRootProcessInstanceId());
+        writer.writeLong("repeatInterval", job.getRepeatInterval());
+        writer.writeInt("repeatLimit", job.getRepeatLimit());
     }
 
     @Override
@@ -56,6 +58,8 @@ public class JobMarshaller extends BaseMarshaller<Job> {
         String processInstanceId = reader.readString("processInstanceId");
         String rootProcessId = reader.readString("rootProcessId");
         String rootProcessInstanceId = reader.readString("rootProcessInstanceId");
+        Long repeatInterval = reader.readLong("repeatInterval");
+        Integer repeatLimit = reader.readInt("repeatLimit");
         return JobBuilder.builder()
                 .callbackEndpoint(callbackEndpoint)
                 .id(id)
@@ -65,6 +69,8 @@ public class JobMarshaller extends BaseMarshaller<Job> {
                 .processInstanceId(processInstanceId)
                 .rootProcessId(rootProcessId)
                 .rootProcessInstanceId(rootProcessInstanceId)
+                .repeatInterval(repeatInterval)
+                .repeatLimit(repeatLimit)
                 .build();
     }
 }

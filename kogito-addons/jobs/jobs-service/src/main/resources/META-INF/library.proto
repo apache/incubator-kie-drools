@@ -6,6 +6,7 @@ message ScheduledJob {
   optional int32 retries = 3; // no native Date type available in Protobuf
   required string status = 4;
   optional int64 lastUpdate = 5;
+  optional int32 executionCounter = 6;
 }
 
 message Job {
@@ -17,4 +18,6 @@ message Job {
   optional string processInstanceId = 6;
   optional string rootProcessId = 7;
   optional string rootProcessInstanceId = 8;
+  optional int64 repeatInterval = 9;
+  optional int32 repeatLimit = 10;
 }

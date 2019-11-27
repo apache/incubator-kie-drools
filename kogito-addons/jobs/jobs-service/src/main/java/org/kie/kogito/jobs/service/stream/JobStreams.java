@@ -49,14 +49,13 @@ public class JobStreams {
         LOGGER.warn("Error received {}", error);
         jobScheduler.handleJobExecutionError(error)
                 .findFirst()
-                .run()
-                .thenAccept(job -> LOGGER.info("Rescheduled {}", job.orElse(null)));
+                .run();
     }
 
     @Incoming(AvailableStreams.JOB_SUCCESS)
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
     public void jobSuccessProcessor(JobExecutionResponse response) {
-        LOGGER.warn("Success received {}", response);
+        LOGGER.debug("Success received {}", response);
         jobScheduler.handleJobExecutionSuccess(response)
                 .findFirst()
                 .run();

@@ -24,6 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -37,8 +38,8 @@ public class CallbackResourceTest {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public CompletionStage<String> post() {
-        LOGGER.debug("post received");
+    public CompletionStage<String> post(@QueryParam("limit") String limit) {
+        LOGGER.debug("post received with 'limit' param = {}", limit);
         return CompletableFuture.completedFuture("Post Success");
     }
 
