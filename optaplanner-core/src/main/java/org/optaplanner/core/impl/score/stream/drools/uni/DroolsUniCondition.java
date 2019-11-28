@@ -165,7 +165,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         .bind(collectingOnVar, a -> (A) a))
                 .build();
         ExprViewItem<Object> accumulate = DSL.accumulate(innerNewACollectingPattern,
-                accFunction(() -> new DroolsGroupByInvoker<>(collector)).as(setOfPairsVar));
+                accFunction(() -> new DroolsGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
+                        .as(setOfPairsVar));
         // Load one pair from the list.
         Variable<DroolsGroupByAccumulator.Pair> onePairVar = ruleStructure.createVariable(
                 DroolsGroupByAccumulator.Pair.class, "pair", from(setOfPairsVar));

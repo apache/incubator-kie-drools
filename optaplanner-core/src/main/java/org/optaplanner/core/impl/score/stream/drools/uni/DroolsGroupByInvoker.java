@@ -28,14 +28,20 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
+import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
 
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
+    private final Variable<A> groupKeyVar;
+    private final Variable<B> collectingVar;
 
-    public DroolsGroupByInvoker(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> groupKeyVar,
+            Variable<B> collectingVar) {
         this.collector = collector;
+        this.groupKeyVar = groupKeyVar;
+        this.collectingVar = collectingVar;
     }
 
     @Override
@@ -54,9 +60,27 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
             Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
         InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
         Object handleObject = handle.getObject();
-        final B toCollect = (B) innerDeclarations[1].getValue(internalWorkingMemory, handleObject);
-        final A groupKey = (A) innerDeclarations[2].getValue(internalWorkingMemory, handleObject);
+        final A groupKey = (A) getDeclarationForVariable(groupKeyVar, innerDeclarations)
+                .getValue(internalWorkingMemory, handleObject);
+        final B toCollect = (B) getDeclarationForVariable(collectingVar, innerDeclarations)
+                .getValue(internalWorkingMemory, handleObject);
         ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
+    }
+
+    /**
+     * Declarations in Drools appear to show up in random order. Therefore, we need to match the proper declaration
+     * not by directly addressing within the array, but by looking it up based on the associated variable.
+     * @param variable
+     * @param declarations
+     * @return
+     */
+    private static Declaration getDeclarationForVariable(Variable<?> variable, Declaration... declarations) {
+        for (Declaration declaration: declarations) {
+            if (declaration.getIdentifier().equals(variable.getName())) {
+                return declaration;
+            }
+        }
+        throw new IllegalStateException("Could not find declaration for variable (" + variable + ").");
     }
 
     @Override
