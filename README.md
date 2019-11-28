@@ -1,3 +1,9 @@
+An open source rule engine, [DMN engine](https://drools.org/learn/dmn.html) and complex event processing (CEP) engine for Java™ and the JVM Platform.
+
+Drools is a business rule management system with a forward-chaining and backward-chaining inference based rules engine, allowing fast and reliable evaluation of business rules and complex event processing. A rule engine is also a fundamental building block to create an expert system which, in artificial intelligence, is a computer system that emulates the decision-making ability of a human expert.
+
+Be sure to check out the Drools' project [website](https://drools.org) and [documentation](https://drools.org/learn/documentation.html)!
+
 Developing Drools and jBPM
 ==========================
 
