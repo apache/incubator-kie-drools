@@ -62,7 +62,7 @@ public class PackageModelWriter {
         return packageModel.getGeneratedPOJOsSource().stream().map(pojo -> new DeclaredTypeWriter(pojo, packageModel)).collect(Collectors.toList());
     }
 
-    static class DomainClassesMetadata {
+    public static class DomainClassesMetadata {
 
         private final String name, source;
 

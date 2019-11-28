@@ -43,8 +43,8 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.SelfDateExtractor;
 import org.drools.core.spi.SelfNumberExtractor;
-import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 
+import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.isFinal;
 import static org.drools.core.util.ClassUtils.isInterface;
@@ -584,10 +584,5 @@ public class Pattern
 
     private static boolean isIterable(Class<?> clazz) {
         return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
-    }
-
-    private static boolean isDataSource(Class<?> clazz) {
-        RuleUnitComponentFactory ruleUnitComponent = RuleUnitComponentFactory.get();
-        return ruleUnitComponent != null && ruleUnitComponent.isDataSourceClass( clazz );
     }
 }

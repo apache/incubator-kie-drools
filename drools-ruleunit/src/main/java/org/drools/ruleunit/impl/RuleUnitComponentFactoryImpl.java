@@ -45,4 +45,9 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
     public boolean isDataSourceClass( Class<?> ruleUnitClass ) {
         return DataSource.class.isAssignableFrom(ruleUnitClass);
     }
+
+    @Override
+    public boolean isLegacyRuleUnit() {
+        return true;
+    }
 }
