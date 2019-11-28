@@ -125,14 +125,14 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void terminationProperties() {
         contextRunner
-                .withPropertyValues("optaplanner.solver.termination.spent-limit=PT4H")
+                .withPropertyValues("optaplanner.solver.termination.spent-limit=4h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
                     assertEquals(Duration.ofHours(4), terminationConfig.getSpentLimit());
                     assertNotNull(context.getBean(SolverFactory.class));
                 });
         contextRunner
-                .withPropertyValues("optaplanner.solver.termination.unimproved-spent-limit=PT5H")
+                .withPropertyValues("optaplanner.solver.termination.unimproved-spent-limit=5h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
                     assertEquals(Duration.ofHours(5), terminationConfig.getUnimprovedSpentLimit());
