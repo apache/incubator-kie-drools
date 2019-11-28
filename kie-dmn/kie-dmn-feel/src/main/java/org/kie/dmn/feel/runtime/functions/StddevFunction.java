@@ -38,6 +38,12 @@ public class StddevFunction
         if ( list == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "list", "the list cannot be null" ) );
         }
+        if (list.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "the list cannot be empty"));
+        }
+        if (list.size() == 1) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "sample standard deviation of a single sample is undefined"));
+        }
         int n = list.size();
         BigDecimal[] numbers = new BigDecimal[n];
         for ( int i = 0; i < n; i++ ) {
