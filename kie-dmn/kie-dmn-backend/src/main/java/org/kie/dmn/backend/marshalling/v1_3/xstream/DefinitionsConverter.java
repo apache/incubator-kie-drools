@@ -32,6 +32,7 @@ import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.ElementCollection;
+import org.kie.dmn.model.api.Group;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InputData;
 import org.kie.dmn.model.api.ItemDefinition;
@@ -153,6 +154,8 @@ public class DefinitionsConverter
                 nodeName = "association";
             } else if (a instanceof TextAnnotation) {
                 nodeName = "textAnnotation";
+            } else if (a instanceof Group) {
+                nodeName = "group";
             }
             writeChildrenNode(writer, context, a, nodeName);
         }

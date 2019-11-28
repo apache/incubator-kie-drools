@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:include1="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"              xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" id="_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" name="Chapter 11 Example" namespace="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" exporter="DMN Modeler" exporterVersion="6.2.2.1" triso:logoChoice="None">
+    <semantic:decision id="_93c12f5d-2daa-4f5a-9193-9de1c489f9c2" name="decision1">
+        <semantic:variable name="decision1" id="_6165ec81-9d22-40ff-b256-c1f68a81c9f7" typeRef="string"/>
+        <semantic:informationRequirement id="_de751fc0-007f-4bac-ae0b-1578e56b85eb">
+            <semantic:requiredInput href="#_1e4c828e-e785-4e07-9699-44c38d5dcde6"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_6afb73e9-ed10-4fd8-aa4e-451e78c9d1e9" typeRef="string" triso:expressionId="_af225670-4a7e-41e3-8c81-92e3896a7800">
+            <semantic:text>"Hello, "+name</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:inputData id="_1e4c828e-e785-4e07-9699-44c38d5dcde6" name="name">
+        <semantic:variable name="name" id="_73321327-c20c-4302-bf3e-c2737700533d" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:group id="_f23093f4-62f8-4470-a431-93b3c1971df7" name="this is the group name"/>
+    <semantic:textAnnotation id="_cfb4de40-98a2-41df-8f5b-4d3ea3b51054">
+        <semantic:text>this is textAnnotation text</semantic:text>
+    </semantic:textAnnotation>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_c6a9f11b-a019-4066-8e33-d14014bc2bb8" triso:modelElementRef="_f23a8b1a-ac43-4d9d-9634-a5477d7ee34e" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_dc3c4dfc-58b6-42f8-8a10-2e49e9634011" dmnElementRef="_93c12f5d-2daa-4f5a-9193-9de1c489f9c2">
+                <dc:Bounds x="313" y="139" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_92db2603-a0ac-4ea2-8b9d-3fdf15905c35_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_e225a571-8671-4f0b-a94a-3512ab395b37" dmnElementRef="_f23093f4-62f8-4470-a431-93b3c1971df7">
+                <dc:Bounds x="222.5" y="69" width="362" height="228"/>
+                <dmndi:DMNLabel sharedStyle="LS_92db2603-a0ac-4ea2-8b9d-3fdf15905c35_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_8e2740d5-c5b2-4a37-9f22-74f5170b5361" dmnElementRef="_1e4c828e-e785-4e07-9699-44c38d5dcde6">
+                <dc:Bounds x="321.7588291168213" y="359" width="135.48234176635742" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_92db2603-a0ac-4ea2-8b9d-3fdf15905c35_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_8a1b6080-04ad-43c7-b183-0956dc51a451" dmnElementRef="_de751fc0-007f-4bac-ae0b-1578e56b85eb">
+                <di:waypoint x="389.5" y="359"/>
+                <di:waypoint x="389.5" y="199"/>
+                <dmndi:DMNLabel sharedStyle="LS_92db2603-a0ac-4ea2-8b9d-3fdf15905c35_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_92db2603-a0ac-4ea2-8b9d-3fdf15905c35_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
