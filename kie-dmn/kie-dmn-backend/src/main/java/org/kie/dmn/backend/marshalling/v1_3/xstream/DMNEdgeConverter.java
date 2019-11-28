@@ -29,6 +29,8 @@ import org.kie.dmn.model.api.dmndi.DMNLabel;
 public class DMNEdgeConverter extends EdgeConverter {
 
     private static final String DMN_ELEMENT_REF = "dmnElementRef";
+    private static final String SOURCE_ELEMENT  = "sourceElement";
+    private static final String TARGET_ELEMENT  = "targetElement";
     private static final String DMN_LABEL = "DMNLabel";
 
     public DMNEdgeConverter(XStream xstream) {
@@ -52,9 +54,17 @@ public class DMNEdgeConverter extends EdgeConverter {
         DMNEdge concrete = (DMNEdge) parent;
 
         String dmnElementRef = reader.getAttribute(DMN_ELEMENT_REF);
+        String sourceElement = reader.getAttribute(SOURCE_ELEMENT);
+        String targetElement = reader.getAttribute(TARGET_ELEMENT);
 
         if (dmnElementRef != null) {
             concrete.setDmnElementRef(new QName(dmnElementRef));
+        }
+        if (sourceElement != null) {
+            concrete.setSourceElement(new QName(sourceElement));
+        }
+        if (targetElement != null) {
+            concrete.setTargetElement(new QName(targetElement));
         }
     }
 
@@ -75,6 +85,12 @@ public class DMNEdgeConverter extends EdgeConverter {
         DMNEdge concrete = (DMNEdge) parent;
         if (concrete.getDmnElementRef() != null) {
             writer.addAttribute(DMN_ELEMENT_REF, concrete.getDmnElementRef().toString());
+        }
+        if (concrete.getSourceElement() != null) {
+            writer.addAttribute(SOURCE_ELEMENT, concrete.getSourceElement().toString());
+        }
+        if (concrete.getTargetElement() != null) {
+            writer.addAttribute(TARGET_ELEMENT, concrete.getTargetElement().toString());
         }
     }
 
