@@ -2667,5 +2667,28 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("greet").getResult(), is("Hello, John"));
     }
+
+    @Test
+    public void testBindingContextTypeCheck() {
+        // DROOLS-4825 DMN v1.3 verify DMN13-132 type conversions
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_3/DMN13-132.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "DMN13-132");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
+                   dmnResult.getMessages(DMNMessage.Severity.ERROR)
+                            .stream()
+                            .filter(m -> m.getSourceId().equals("_decision_003"))
+                            .count(),
+                   is(1L));
+        assertThat(dmnResult.getDecisionResultByName("decision_003").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
+        assertThat(dmnResult.getDecisionResultByName("decision_003").getResult(), nullValue());
+    }
 }
 
