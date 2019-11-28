@@ -41,17 +41,6 @@
   <dependencyManagement>
     <dependencies>
 
-      <dependency><!-- TODO move this into optaplanner-bom -->
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-spring-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency><!-- TODO move this into optaplanner-bom -->
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <dependency><!-- TODO move this into kie-parent -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>

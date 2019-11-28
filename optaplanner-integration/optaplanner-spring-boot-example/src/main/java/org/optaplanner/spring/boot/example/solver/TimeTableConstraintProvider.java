@@ -16,6 +16,8 @@
 
 package org.optaplanner.spring.boot.example.solver;
 
+import java.time.Duration;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -31,7 +33,8 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 roomConflict(constraintFactory),
                 teacherConflict(constraintFactory),
                 studentGroupConflict(constraintFactory),
-                teacherRoomStability(constraintFactory)
+                teacherRoomStability(constraintFactory),
+                teacherTimeEfficiency(constraintFactory)
         };
     }
 
@@ -63,15 +66,20 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
         return constraintFactory
                 .fromUniquePair(Lesson.class,
                         Joiners.equal(Lesson::getTeacher))
-                .filter((a, b) -> a.getRoom() != b.getRoom())
+                .filter((lesson1, lesson2) -> lesson1.getRoom() != lesson2.getRoom())
                 .penalize("Teacher room stability", HardSoftScore.ONE_SOFT);
     }
 
-//    private Constraint minimizeTeacherWorkDays(ConstraintFactory constraintFactory) {
-//        return constraintFactory
-//                .from(Lesson.class)
-//                .groupBy(Lesson::getTeacher, countDistinct((Lesson lesson) -> lesson.getTimeslot().getDayOfWeek()))
-//                .penalize("Minimize teacher work days", HardSoftScore.ONE_SOFT);
-//    }
+    private Constraint teacherTimeEfficiency(ConstraintFactory constraintFactory) {
+        return constraintFactory
+                .from(Lesson.class)
+                .join(Lesson.class, Joiners.equal(Lesson::getTeacher))
+                .filter((lesson1, lesson2) -> {
+                    Duration between = Duration.between(lesson1.getTimeslot().getEndTime(),
+                            lesson2.getTimeslot().getStartTime());
+                    return !between.isNegative() && between.compareTo(Duration.ofMinutes(30)) <= 0;
+                })
+                .reward("Teacher time efficiency", HardSoftScore.ONE_SOFT);
+    }
 
 }
