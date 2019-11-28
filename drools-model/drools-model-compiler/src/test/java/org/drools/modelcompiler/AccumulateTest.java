@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Adult;
@@ -49,8 +50,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -1663,5 +1663,33 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 38));
         ksession.insert(new Person("Mario", 45));
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testCoercionInAccumulate() {
+        String str =
+                        "global java.util.List result;\n" +
+                        "rule \"Row 1 moveToBiggerCities\"\n" +
+                        "  dialect \"mvel\"\n" +
+                                "  when\n" +
+                        "    $count : Integer( intValue() > 5 , intValue() <= 10 ) " +
+                        "      from accumulate ( Integer(), count(1)) \n" +
+                        "  then\n" +
+                        " result.add($count);" +
+                        "end";
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(str);
+        ksession.setGlobal("result", result);
+
+        IntStream.range(1, 7).forEach(ksession::insert);
+
+        ksession.fireAllRules();
+
+        assertEquals(6, result.iterator().next().longValue());
+
+
+
     }
 }

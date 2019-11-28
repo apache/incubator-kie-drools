@@ -460,7 +460,7 @@ public class GuidedDecisionTableTest {
     public void testMoveToBiggerCitiesTooBigGapBetweenCitySizes() throws Exception {
         org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52 unmarshal =
                 org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence.getInstance().unmarshal(
-                        new String(Files.readAllBytes(Paths.get("/Users/luca/git/drools/drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/moveToBiggerCities.gdst")))
+                        new String(Files.readAllBytes(Paths.get("/home/lmolteni/git/drools/drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/moveToBiggerCities.gdst")))
                 );
         String drl = org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence.getInstance().marshal(unmarshal);
 
