@@ -62,9 +62,9 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
     private Constraint teacherRoomStability(ConstraintFactory constraintFactory) {
         return constraintFactory
                 .fromUniquePair(Lesson.class,
-                        Joiners.equal(Lesson::getTeacher),
-                        Joiners.equal(Lesson::getRoom))
-                .reward("Teacher room stability", HardSoftScore.ONE_SOFT);
+                        Joiners.equal(Lesson::getTeacher))
+                .filter((a, b) -> a.getRoom() != b.getRoom())
+                .penalize("Teacher room stability", HardSoftScore.ONE_SOFT);
     }
 
 //    private Constraint minimizeTeacherWorkDays(ConstraintFactory constraintFactory) {
