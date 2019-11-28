@@ -36,4 +36,6 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     SolverFuture solve(Solution_ planningProblem,
             Consumer<Solution_> bestSolutionConsumer);
 
+    void reloadProblem();
+
 }

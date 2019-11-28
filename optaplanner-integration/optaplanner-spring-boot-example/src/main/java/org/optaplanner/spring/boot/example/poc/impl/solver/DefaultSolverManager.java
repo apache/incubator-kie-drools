@@ -56,10 +56,15 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
             try {
                 solver.solve(planningProblem);
             } catch (Exception e) {
-                e.printStackTrace(); // TODO generated
+                e.printStackTrace();
             }
         });
         return solverFuture;
+    }
+
+    @Override
+    public void reloadProblem() {
+        System.out.println("Reload problem in SolverManager event"); // TODO
     }
 
     @Override

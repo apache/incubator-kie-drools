@@ -66,4 +66,9 @@ public class Timeslot {
         return endTime;
     }
 
+    @Override
+    public String toString() {
+        return startTime.toString();
+    }
+
 }

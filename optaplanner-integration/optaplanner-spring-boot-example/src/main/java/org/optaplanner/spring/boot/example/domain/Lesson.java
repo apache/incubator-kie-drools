@@ -92,4 +92,9 @@ public class Lesson {
         this.room = room;
     }
 
+    @Override
+    public String toString() {
+        return subject + "(" + id + ")";
+    }
+
 }
