@@ -61,12 +61,13 @@ public class InMessageRefHandler extends BaseAbstractHandler implements Handler 
         if (messages == null) {
             throw new IllegalArgumentException("No messages found");
         }
-        Message message = messages.get(messageId);
-        if (message == null) {
-            throw new IllegalArgumentException("Could not find message " + messageId);
-        }
         Operation operation = (Operation) parser.getParent();
-        operation.setMessage(message);
+        Message message = messages.get(messageId);
+        if (message != null) {
+            operation.setMessage(message);
+        }
+        
+        
 		return parser.getCurrent();
 	}
 

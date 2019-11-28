@@ -27,4 +27,19 @@ public class HelloService {
         System.out.println("Service invoked with " + name + " on service " + this.toString());
         return "Goodbye " + name.toString() + "!";
     }
+    
+    public String helloMulti(String name, String lastName) {
+        System.out.println("Service invoked with " + name + " and " + lastName + " on service " + this.toString());
+        return "Hello (first and lastname) " + name.toString() + " " + lastName + "!";
+    }
+    
+    public void helloNoOutput(String name, Integer age) {
+        System.out.println("Service invoked with " + name + " " + age + " on service " + this.toString());
+        
+    }
+    
+    public String helloOutput(String name, Integer age) {
+        System.out.println("Service invoked with " + name + " " + age + " on service " + this.toString());
+        return "Hello " + name.toString() + " " + age + "!";
+    }
 }

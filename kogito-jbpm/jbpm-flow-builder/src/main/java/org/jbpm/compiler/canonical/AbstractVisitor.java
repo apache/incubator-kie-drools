@@ -16,8 +16,17 @@
 
 package org.jbpm.compiler.canonical;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -33,15 +42,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.jbpm.process.core.ParameterDefinition;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Node;
-
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public abstract class AbstractVisitor {
 
@@ -147,10 +147,6 @@ public abstract class AbstractVisitor {
                 continue; // interfaceImplementationRef ?
             }
             addFactoryMethodWithArgs(body, variableName, "workParameter", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue().toString()));
-        }
-
-        for (ParameterDefinition parameter : work.getParameterDefinitions()) {
-            addFactoryMethodWithArgs(body, variableName, "workParameterDefinition", new StringLiteralExpr(parameter.getName()), new StringLiteralExpr(parameter.getType().getStringType()));
         }
     }
 

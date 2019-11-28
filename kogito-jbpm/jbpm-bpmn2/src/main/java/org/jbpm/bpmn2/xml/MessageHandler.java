@@ -86,7 +86,10 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
         Message message = new Message(id); 
         message.setType(itemDefinition.getStructureRef());
         message.setName(name);
-        messages.put(id, message);
+        
+        if (message.getType() != null && !message.getType().isEmpty()) {
+            messages.put(id, message);
+        }
 		return message;
 	}
 

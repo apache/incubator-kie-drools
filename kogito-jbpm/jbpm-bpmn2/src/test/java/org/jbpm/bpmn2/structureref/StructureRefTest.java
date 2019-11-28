@@ -154,27 +154,6 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testNoStructureRef() throws Exception {
-        Person person = new Person();
-        person.setId(1L);
-
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-NoStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-
-        Map<String, Object> res = new HashMap<String, Object>();
-        res.put("testHT", person);
-        ksession.getWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getId(), res);
-
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
-    }
-
-    @Test
     public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);

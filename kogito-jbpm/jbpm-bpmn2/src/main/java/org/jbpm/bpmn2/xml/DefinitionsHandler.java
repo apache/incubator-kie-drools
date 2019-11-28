@@ -125,7 +125,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		        if (workItemNode.getWork().getParameter("Operation") == null) {
 		            workItemNode.getWork().setParameter("Operation", operation.getName());
 		        }
-		        if (workItemNode.getWork().getParameter("ParameterType") == null) {
+		        if (workItemNode.getWork().getParameter("ParameterType") == null && operation.getMessage() != null) {
 		            workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
 		        }
 		        // parameters to support web service invocation 

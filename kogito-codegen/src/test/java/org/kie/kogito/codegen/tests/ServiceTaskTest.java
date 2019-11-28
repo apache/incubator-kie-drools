@@ -139,5 +139,98 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         // should no throw
         generateCodeProcessesOnly("servicetask/ServiceProcessInferMethod.bpmn2");
     }
+    
+    @Test
+    public void testMultiParamServiceProcessTask() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/MultiParamServiceProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("ServiceProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("s", "john");
+        parameters.put("x", "doe");
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("s", "x");
+        assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Hello (first and lastname) john doe!");
+    }
+    
+    @Test
+    public void testMultiParamConstantServiceProcessTask() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/MultiParamServiceProcessConstant.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("ServiceProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("s", "john");
+        parameters.put("x", "doe");
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("s", "x");
+        assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Hello (first and lastname) john Test!");
+    }
+    
+    @Test
+    public void testMultiParamServiceProcessTaskNoOutput() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/MultiParamServiceProcessNoOutput.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("MultiParamServiceProcessNoOutput");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", "john");
+        parameters.put("age", 35);
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("name", "age");
+        
+    }
 
+    @Test
+    public void testMultiParamServiceCustomResultProcessTask() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/MultiParamCustomResultServiceTask.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("services");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", "john");
+        parameters.put("age", 35);
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(3).containsKeys("name", "age");
+        
+        assertThat(result.toMap().get("result")).isNotNull().isEqualTo("Hello john 35!");
+        
+    }
 }

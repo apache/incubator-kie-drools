@@ -3,7 +3,7 @@
   <bpmn2:itemDefinition id="_isRecontactItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_MessageCustomerResponseItem" structureRef="Object"/>
   <bpmn2:signal id="_10aec353-53f9-3409-aa71-c38654c3d402" name="cancel"/>
-  <bpmn2:itemDefinition id="CustomerResponseType"/>
+  <bpmn2:itemDefinition id="CustomerResponseType" structureRef="Object"/>
   <bpmn2:message id="CustomerResponse" itemRef="CustomerResponseType"/>
   <bpmn2:process id="timerWithEventBasedGateway" drools:packageName="org.jbpm" drools:version="1.0" name="timerWithEventBasedGateway">
     <bpmn2:property id="isRecontact" itemSubjectRef="_isRecontactItem"/>

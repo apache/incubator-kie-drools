@@ -18,6 +18,11 @@ package org.jbpm.compiler.canonical;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -26,17 +31,22 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.WorkItem;
@@ -81,17 +91,27 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
 
             NodeValidator.of("workItemNode", workItemNode.getName())
                     .notEmpty("interfaceName", interfaceName)
-                    .notEmpty("operationName", operationName)
-                    .notEmpty("type", type)
+                    .notEmpty("operationName", operationName)                    
                     .validate();
 
             workName = interfaceName + "." + operationName;
 
-            if (isDefaultParameterType(type)) {
-                type = inferParameterType(workItemNode.getName(),  interfaceName, operationName, type);
+            Map<String, String> parameters = null;
+            if (type != null) {
+                if (isDefaultParameterType(type)) {
+                    type = inferParameterType(workItemNode.getName(),  interfaceName, operationName, type);
+                }
+                
+                parameters = Collections.singletonMap("Parameter", type);
+            } else {
+                parameters = new LinkedHashMap<>();
+                
+                for (ParameterDefinition def : workItemNode.getWork().getParameterDefinitions()) {
+                    parameters.put(def.getName(), def.getType().getStringType());
+                }
             }
             
-            CompilationUnit handlerClass = generateHandlerClassForService(interfaceName, operationName, type, "Parameter");
+            CompilationUnit handlerClass = generateHandlerClassForService(interfaceName, operationName, parameters, workItemNode.getOutAssociations());
             
             metadata.getGeneratedHandlers().put(workName, handlerClass);
         }
@@ -118,15 +138,15 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         return type.equals("java.lang.Object") || type.equals("Object");
     }
 
-    protected CompilationUnit generateHandlerClassForService(String interfaceName, String operation, String paramType, String paramName) {
+    protected CompilationUnit generateHandlerClassForService(String interfaceName, String operation, Map<String, String> parameters, List<DataAssociation> outAssociations) {
         CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.handlers");        
         
-        compilationUnit.getTypes().add(classDeclaration(interfaceName, operation, paramType, paramName));
+        compilationUnit.getTypes().add(classDeclaration(interfaceName, operation, parameters, outAssociations));
         
         return compilationUnit;
     }
     
-    public ClassOrInterfaceDeclaration classDeclaration(String interfaceName, String operation, String paramType, String paramName) {
+    public ClassOrInterfaceDeclaration classDeclaration(String interfaceName, String operation, Map<String, String> parameters, List<DataAssociation> outAssociations) {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(interfaceName.substring(interfaceName.lastIndexOf(".") + 1) + "_" + operation + "Handler")
                 .setModifiers(Modifier.Keyword.PUBLIC)
@@ -147,18 +167,35 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
                 .addParameter(WorkItemManager.class.getCanonicalName(), "workItemManager");
         
         
-        MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramName));
-        MethodCallExpr callService = new MethodCallExpr(new NameExpr("service"), operation).addArgument(new CastExpr(new ClassOrInterfaceType(null, paramType), getParamMethod));
-        VariableDeclarationExpr resultField = new VariableDeclarationExpr()
-                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, Object.class.getCanonicalName()), "result", callService));
         
-        executeWorkItemBody.addStatement(resultField);
+        MethodCallExpr callService = new MethodCallExpr(new NameExpr("service"), operation);
+        
+        
+        for (Entry<String, String> paramEntry : parameters.entrySet()) {
+            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramEntry.getKey()));
+            callService.addArgument(new CastExpr(new ClassOrInterfaceType(null, paramEntry.getValue()), getParamMethod));
+        }
+        Expression results = null;
+        if (outAssociations.isEmpty()) {
+            
+            executeWorkItemBody.addStatement(callService);
+            results = new NullLiteralExpr();
+            
+        } else {
+            VariableDeclarationExpr resultField = new VariableDeclarationExpr()
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, Object.class.getCanonicalName()), "result", callService));
+            
+            executeWorkItemBody.addStatement(resultField);
+        
+            results = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
+                    .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0)))
+                    .addArgument(new NameExpr("result"));
+        }
         
         MethodCallExpr completeWorkItem = new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
                 .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getId"))
-                .addArgument(new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
-                             .addArgument(new StringLiteralExpr("Result"))
-                             .addArgument(new NameExpr("result")));        
+                .addArgument(results);
+        
         executeWorkItemBody.addStatement(completeWorkItem);
         
         // abortWorkItem method

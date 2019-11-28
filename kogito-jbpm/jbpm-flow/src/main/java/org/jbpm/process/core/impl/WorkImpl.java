@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,8 +33,8 @@ public class WorkImpl implements Work, Serializable {
     private static final long serialVersionUID = 510l;
     
     private String name;
-    private Map<String, Object> parameters = new HashMap<String, Object>();
-    private Map<String, ParameterDefinition> parameterDefinitions = new HashMap<String, ParameterDefinition>();
+    private Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+    private Map<String, ParameterDefinition> parameterDefinitions = new LinkedHashMap<String, ParameterDefinition>();
     
     public void setName(String name) {
         this.name = name;
@@ -83,7 +85,7 @@ public class WorkImpl implements Work, Serializable {
     }
 
     public Set<ParameterDefinition> getParameterDefinitions() {
-        return new HashSet<ParameterDefinition>(parameterDefinitions.values());
+        return new LinkedHashSet<ParameterDefinition>(parameterDefinitions.values());
     }
 
     public String[] getParameterNames() {

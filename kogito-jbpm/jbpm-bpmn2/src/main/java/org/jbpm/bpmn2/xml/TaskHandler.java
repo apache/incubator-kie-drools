@@ -17,16 +17,21 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.impl.WorkImpl;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -48,8 +53,8 @@ public class TaskHandler extends AbstractNodeHandler {
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 	private Map<String, ItemDefinition> itemDefinitions; 
 	
-	 Map<String, String> dataTypeInputs = new HashMap<String, String>();
-     Map<String, String> dataTypeOutputs = new HashMap<String, String>();
+	 Map<String, String> dataTypeInputs = new LinkedHashMap<String, String>();
+     Map<String, String> dataTypeOutputs = new LinkedHashMap<String, String>();
 
     protected Node createNode(Attributes attrs) {
         return new WorkItemNode();
@@ -96,6 +101,15 @@ public class TaskHandler extends AbstractNodeHandler {
                 workItemNode.setMetaData("isForCompensation", isForCompensation );
             }
         }  
+        
+        for (Entry<String, String> entryInputTypes : dataTypeInputs.entrySet()) {
+            
+        
+            ParameterDefinition parameterDefinition = new ParameterDefinitionImpl();
+            parameterDefinition.setName(entryInputTypes.getKey());
+            parameterDefinition.setType(new ObjectDataType(entryInputTypes.getValue()));
+            work.addParameterDefinition(parameterDefinition);
+        }
 	}
     
     protected String getTaskName(final Element element) {
