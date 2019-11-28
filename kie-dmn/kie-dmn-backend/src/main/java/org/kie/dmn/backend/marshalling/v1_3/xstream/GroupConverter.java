@@ -17,7 +17,6 @@
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -29,11 +28,6 @@ public class GroupConverter extends ArtifactConverter {
     public static final String NAME = "name";
 
     @Override
-    protected void assignChildElement(Object parent, String nodeName, Object child) {
-        super.assignChildElement(parent, nodeName, child);
-    }
-
-    @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes(reader, parent);
         Group grp = (Group) parent;
@@ -41,11 +35,6 @@ public class GroupConverter extends ArtifactConverter {
         String name = reader.getAttribute(NAME);
         
         grp.setName(name);
-    }
-
-    @Override
-    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
-        super.writeChildren(writer, context, parent);
     }
 
     @Override
