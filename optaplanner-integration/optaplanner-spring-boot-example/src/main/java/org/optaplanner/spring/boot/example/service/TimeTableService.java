@@ -21,6 +21,7 @@ import org.optaplanner.spring.boot.example.domain.TimeTable;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverFuture;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,7 @@ public class TimeTableService {
     private SolverFuture solverFuture = null;
 
     // To try, open http://localhost:8080/timeTable
-    @RequestMapping()
+    @GetMapping()
     public TimeTable refreshTimeTable() {
         TimeTable timeTable = new TimeTable(
                 timeslotRepository.findAll(),
