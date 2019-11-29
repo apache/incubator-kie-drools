@@ -91,6 +91,11 @@ public class UnmarshalMarshalTest {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "group.dmn");
     }
 
+    @Test
+    public void testV13_dmnedge() throws Exception {
+        testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "dmnedge.dmn");
+    }
+
     public void testRoundTripV13(String subdir, String xmlfile) throws Exception {
         testRoundTrip(subdir, xmlfile, MARSHALLER, DMN13_SCHEMA_SOURCE);
     }
