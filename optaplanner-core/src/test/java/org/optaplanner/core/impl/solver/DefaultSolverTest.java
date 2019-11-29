@@ -101,6 +101,25 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
+    @Test
+    public void solveChainedEmptyEntityList() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")
+                ));
+        SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
+
+        TestdataChainedSolution solution = new TestdataChainedSolution("s1");
+        solution.setChainedAnchorList(Arrays.asList(new TestdataChainedAnchor("v1"), new TestdataChainedAnchor("v2")));
+        solution.setChainedEntityList(Collections.emptyList());
+
+        solution = solver.solve(solution);
+        assertNotNull(solution);
+        assertEquals(true, solution.getScore().isSolutionInitialized());
+        assertSame(solution, solver.getBestSolution());
+    }
+
     @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
@@ -110,6 +129,22 @@ public class DefaultSolverTest {
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        solution = solver.solve(solution);
+        assertNotNull(solution);
+        assertEquals(false, solution.getScore().isSolutionInitialized());
+        assertSame(solution, solver.getBestSolution());
+    }
+
+    @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
+    public void solveChainedEmptyValueList() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class);
+        SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
+
+        TestdataChainedSolution solution = new TestdataChainedSolution("s1");
+        solution.setChainedAnchorList(Collections.emptyList());
+        solution.setChainedEntityList(Arrays.asList(new TestdataChainedEntity("e1"), new TestdataChainedEntity("e2")));
 
         solution = solver.solve(solution);
         assertNotNull(solution);
