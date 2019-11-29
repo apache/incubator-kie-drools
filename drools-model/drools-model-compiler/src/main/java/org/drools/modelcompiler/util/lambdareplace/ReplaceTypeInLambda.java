@@ -17,13 +17,17 @@ import static org.drools.modelcompiler.builder.generator.expression.FlowExpressi
 
 public class ReplaceTypeInLambda {
 
+    private ReplaceTypeInLambda() {
+
+    }
+
     public static void replaceTypeInExprLambda(String bindingId, Class accumulateFunctionResultType, Expression expression) {
         expression.findAll(MethodCallExpr.class).forEach(mc -> {
             if (mc.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId)))) {
                 List<LambdaExpr> allLambdas = new ArrayList<>();
 
                 if (mc.getNameAsString().equals(EXPR_CALL)) {
-                    allLambdas.addAll(mc.findAll(LambdaExpr.class));
+                    allLambdas.addAll(expression.findAll(LambdaExpr.class));
                 }
 
                 Optional<Node> optParent = mc.getParentNode(); // In the Pattern DSL they're in the direct pattern
