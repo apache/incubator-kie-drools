@@ -2,6 +2,7 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -44,7 +45,7 @@ public class ExecModelLambdaPostProcessor {
 
     public void convertLambdas() {
             clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()))
-                    .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, new MaterializedLambdaPredicate(packageName, ruleClassName)));
+                    .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, () -> new MaterializedLambdaPredicate(packageName, ruleClassName)));
 
             clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::convertIndexedByCall);
@@ -57,7 +58,7 @@ public class ExecModelLambdaPostProcessor {
 
             clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
                     .forEach(methodCallExpr -> {
-                        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaConsequence(packageName, ruleClassName));
+                        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName));
                     });
     }
 
@@ -69,7 +70,7 @@ public class ExecModelLambdaPostProcessor {
         }
 
         String returnType = getType(argument).asString();
-        extractLambdaFromMethodCall(methodCallExpr, new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
     protected Type getType(Expression argument) {
@@ -84,12 +85,12 @@ public class ExecModelLambdaPostProcessor {
         return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
     }
 
-    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, MaterializedLambda lambdaExtractor) {
+    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Supplier<MaterializedLambda> lambdaExtractor) {
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = lambdaExtractor.create(lambdaExpr.toString(), imports, staticImports);
+                CreatedClass aClass = lambdaExtractor.get().create(lambdaExpr.toString(), imports, staticImports);
                 lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
                 ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
