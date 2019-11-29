@@ -20,15 +20,37 @@ import java.nio.charset.StandardCharsets;
 
 public class GeneratedFile {
 
+    public enum Type {
+        APPLICATION,
+        PROCESS,
+        PROCESS_INSTANCE,
+        REST,
+        RULE,
+        QUERY,
+        MODEL,
+        CLASS,
+        MESSAGE_CONSUMER,
+        MESSAGE_PRODUCER;
+    }
+
     private final String path;
     private final byte[] data;
+    private final Type type;
 
     public GeneratedFile(String path, String data) {
-        this.path = path;
-        this.data = data.getBytes( StandardCharsets.UTF_8);
+        this(Type.RULE, path, data);
     }
 
     private GeneratedFile(String path, byte[] data) {
+        this(Type.RULE, path, data);
+    }
+
+    public GeneratedFile(Type type, String path, String data) {
+        this(type, path, data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private GeneratedFile(Type type, String path, byte[] data) {
+        this.type = type;
         this.path = path;
         this.data = data;
     }
@@ -39,6 +61,10 @@ public class GeneratedFile {
 
     public String getPath() {
         return path;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     @Override

@@ -40,8 +40,6 @@ import static java.util.stream.Collectors.groupingBy;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
-;
-
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
     private final boolean isPattern;
@@ -63,7 +61,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             // if the KieBase belongs to a different kmodule it is not necessary to build it
             return null;
         }
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration( kBaseModel, kModule ), kModule.getReleaseId(), isPattern);
+        ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, getBuilderConfiguration( kBaseModel, kModule ), kModule.getReleaseId(), isPattern, false);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }
@@ -78,6 +76,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             final ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getPackageSources() );
             modelFiles.addAll(result.getModelFiles());
             final String[] sources = result.getSources();
+
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 

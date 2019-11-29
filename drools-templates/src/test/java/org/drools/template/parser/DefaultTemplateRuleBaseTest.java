@@ -15,7 +15,10 @@
 
 package org.drools.template.parser;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -23,10 +26,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.Constraint;
 import org.junit.Test;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -68,8 +67,8 @@ public class DefaultTemplateRuleBaseTest {
         DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);
         InternalKnowledgePackage[] packages = ((KnowledgeBaseImpl)ruleBase.newStatefulSession().getKieBase()).getPackages();
         assertEquals(1, packages.length);
-        Map<String, String> globals = packages[0].getGlobals();
-        assertEquals(DefaultGenerator.class.getName(), globals.get("generator"));
+        Map<String, Class<?>> globals = packages[0].getGlobals();
+        assertEquals(DefaultGenerator.class, globals.get("generator"));
         Collection<org.kie.api.definition.rule.Rule> rules = packages[0].getRules();
         assertEquals(1, rules.size());
         assertEquals("template1", rules.iterator().next().getName());

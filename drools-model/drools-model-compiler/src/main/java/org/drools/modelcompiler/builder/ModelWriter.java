@@ -29,12 +29,8 @@ public class ModelWriter {
         List<String> modelFiles = new ArrayList<>();
 
         for (PackageSources pkgSources : packageSources) {
-            generatedFiles.addAll( pkgSources.getPojoSources() );
-            generatedFiles.addAll( pkgSources.getAccumulateSources() );
-            generatedFiles.add( pkgSources.getMainSource() );
-            generatedFiles.addAll( pkgSources.getRuleSources() );
-            generatedFiles.add( pkgSources.getDomainClassSource() );
-            modelFiles.add( pkgSources.getModelName() );
+            pkgSources.collectGeneratedFiles( generatedFiles );
+            modelFiles.addAll( pkgSources.getModelNames() );
         }
 
         List<String> sourceFiles = new ArrayList<>();

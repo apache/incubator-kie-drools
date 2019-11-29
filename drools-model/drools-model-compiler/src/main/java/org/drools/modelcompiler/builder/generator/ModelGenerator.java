@@ -69,6 +69,8 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
@@ -147,6 +149,8 @@ public class ModelGenerator {
             }
         }
 
+        HashSet<RuleUnitDescription> ruleUnitDescriptions = new HashSet<>();
+
         for (RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
             context.setDialectFromAttributes(packageDescr.getAttributes());
@@ -154,24 +158,31 @@ public class ModelGenerator {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
                 processRule(kbuilder, packageModel, packageDescr, descr, context);
+                RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
+                if (ruleUnitDescr != null) ruleUnitDescriptions.add(ruleUnitDescr);
             }
         }
-    }
 
+        for (RuleUnitDescription rud : ruleUnitDescriptions) {
+            packageModel.addRuleUnit(rud.getRuleUnitClass());
+        }
+    }
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, RuleContext context) {
         context.setDescr(ruleDescr);
         context.addGlobalDeclarations(packageModel.getGlobals());
+        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
-
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createUnitData(context, ruleUnitDescr, ruleVariablesBlock );
+
+        if (isLegacyRuleUnit()) {
+            createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
+        }
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
@@ -212,7 +223,7 @@ public class ModelGenerator {
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
         ruleVariablesBlock.addStatement( new ReturnStmt("rule") );
-        packageModel.putRuleMethod(ruleMethodName, ruleMethod);
+        packageModel.putRuleMethod(ruleUnitDescr != null ? ruleUnitDescr.getRuleUnitClass().getSimpleName() : DEFAULT_RULE_UNIT, ruleMethod);
     }
 
     private static AndDescr getExtendedLhs(PackageDescr packageDescr, RuleDescr ruleDescr) {

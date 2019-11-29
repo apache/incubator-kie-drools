@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -27,7 +28,6 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -37,12 +37,17 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class RuleContext {
 
@@ -114,7 +119,8 @@ public class RuleContext {
             }
             String drlFile = descr.getResource().getSourcePath();
             if (drlFile != null) {
-                unitName = drlFile.substring( 0, drlFile.length() - ".drl".length() ).replaceAll( "/", "." );
+                String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
+                unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
                 useNamingConvention = true;
             }
         }
@@ -125,6 +131,26 @@ public class RuleContext {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
             addCompilationError( new UnknownRuleUnitError( unitName ) );
+        }
+    }
+
+    private void processUnitData() {
+        findUnitDescr();
+        if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
+            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
+                String unitVarName = unitVar.getKey();
+                java.lang.reflect.Type type = unitVar.getValue().getGenericReturnType();
+                Class<?> rawClass = toRawClass( type );
+                Class<?> resolvedType = ruleUnitDescr.getDatasourceType( unitVarName ).orElse( rawClass );
+
+                Type declType = classToReferenceType( rawClass );
+                addRuleUnitVar( unitVarName, resolvedType );
+
+                getPackageModel().addGlobal( unitVarName, rawClass );
+                if ( isDataSource( rawClass ) ) {
+                    getPackageModel().addEntryPoint( unitVarName );
+                }
+            }
         }
     }
 
@@ -304,7 +330,7 @@ public class RuleContext {
 
     public void setDescr(RuleDescr descr) {
         this.descr = descr;
-        findUnitDescr();
+        processUnitData();
     }
 
     public String getRuleName() {
@@ -384,7 +410,7 @@ public class RuleContext {
             return empty();
         }
     }
-  
+
     public Boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }

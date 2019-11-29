@@ -27,18 +27,14 @@ public class PackageSources {
 
     private static final Logger logger = LoggerFactory.getLogger(PackageSources.class);
 
-    private List<GeneratedFile> pojoSources = new ArrayList<>();
-    private List<GeneratedFile> accumulateSources = new ArrayList<>();
-    private List<GeneratedFile> ruleSources = new ArrayList<>();
+    protected List<GeneratedFile> pojoSources = new ArrayList<>();
+    protected List<GeneratedFile> accumulateSources = new ArrayList<>();
+    protected List<GeneratedFile> ruleSources = new ArrayList<>();
 
-    private GeneratedFile mainSource;
-    private GeneratedFile domainClassSource;
+    protected GeneratedFile mainSource;
+    protected GeneratedFile domainClassSource;
 
-    private String modelName;
-
-    private Collection<Class<?>> ruleUnits;
-
-    private String rulesFileName;
+    private Collection<String> modelNames;
 
     public static PackageSources dumpSources(PackageModel pkgModel) {
         PackageSources sources = new PackageSources();
@@ -54,7 +50,7 @@ public class PackageSources {
 
         RuleWriter rules = packageModelWriter.getRules();
         sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
-        sources.modelName = rules.getClassName();
+        sources.modelNames = rules.getClassNames();
 
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
@@ -63,43 +59,14 @@ public class PackageSources {
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
 
-        sources.rulesFileName = pkgModel.getRulesFileName();
         return sources;
     }
 
-    public List<GeneratedFile> getPojoSources() {
-        return pojoSources;
+    public Collection<String> getModelNames() {
+        return modelNames;
     }
 
-    public List<GeneratedFile> getAccumulateSources() {
-        return accumulateSources;
-    }
-
-    public List<GeneratedFile> getRuleSources() {
-        return ruleSources;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public GeneratedFile getMainSource() {
-        return mainSource;
-    }
-
-    public GeneratedFile getDomainClassSource() {
-        return domainClassSource;
-    }
-
-    public Collection<Class<?>> getRuleUnits() {
-        return ruleUnits;
-    }
-
-    public String getRulesFileName() {
-        return rulesFileName;
-    }
-
-    private static String logSource(String source) {
+    protected static String logSource(String source) {
         if ( logger.isDebugEnabled() ) {
             logger.debug( "=====" );
             logger.debug( source );
@@ -107,5 +74,13 @@ public class PackageSources {
         }
         return source;
     }
-}
 
+    public void collectGeneratedFiles( List<GeneratedFile> generatedFiles ) {
+        // add logging
+        generatedFiles.addAll( pojoSources );
+        generatedFiles.addAll( accumulateSources );
+        generatedFiles.add( mainSource );
+        generatedFiles.addAll( ruleSources );
+        generatedFiles.add( domainClassSource );
+    }
+}

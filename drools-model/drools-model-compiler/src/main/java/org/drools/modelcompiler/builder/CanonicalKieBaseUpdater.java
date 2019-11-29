@@ -64,10 +64,12 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
         Map<String, AtomicInteger> globalsCounter = new HashMap<>();
 
-
+        // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
+        newKM.setIncrementalUpdate( true );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+        newKM.setIncrementalUpdate( false );
 
         removeResources(pkgbuilder);
 
@@ -149,14 +151,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                     if (kpkg != null && (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED)) {
                         switch (change.getType()) {
                             case GLOBAL:
-                                try {
-                                    globalsCounter.computeIfAbsent( changedItemName, name -> ctx.kBase.getGlobals().get(name) == null ? new AtomicInteger( 1 ) : new AtomicInteger( 0 ) ).incrementAndGet();
-                                    Class<?> globalClass = kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) );
-                                    oldKpkg.addGlobal( changedItemName, globalClass );
-                                    ctx.kBase.addGlobal( changedItemName, globalClass );
-                                } catch (ClassNotFoundException e) {
-                                    throw new RuntimeException( e );
-                                }
+                                globalsCounter.computeIfAbsent( changedItemName, name -> ctx.kBase.getGlobals().get(name) == null ? new AtomicInteger( 1 ) : new AtomicInteger( 0 ) ).incrementAndGet();
+                                Class<?> globalClass = kpkg.getGlobals().get(changedItemName);
+                                oldKpkg.addGlobal( changedItemName, globalClass );
+                                ctx.kBase.addGlobal( changedItemName, globalClass );
                                 break;
                             case RULE:
                                 RuleImpl addedRule = kpkg.getRule( changedItemName );

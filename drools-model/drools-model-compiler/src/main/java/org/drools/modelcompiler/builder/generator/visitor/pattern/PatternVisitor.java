@@ -15,6 +15,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
 
 public class PatternVisitor {
@@ -61,7 +62,7 @@ public class PatternVisitor {
     private DSLNode parsePatternWithClass(PatternDescr pattern, String className) {
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
-        String queryName = "query_" + className;
+        String queryName = QUERY_METHOD_PREFIX + className;
         final MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName );
         // Expression is a query, get bindings from query parameter type
         if ( queryMethod != null ) {
@@ -96,7 +97,7 @@ public class PatternVisitor {
             if (ruleUnitVarType == null) {
                 throw new IllegalArgumentException("Unknown declaration: " + firstPart.getField());
             }
-            patternType = ruleUnitVarType.getSimpleName();
+            patternType = ruleUnitVarType.getCanonicalName();
         }
 
         PatternDescr normalizedPattern = new PatternDescr();

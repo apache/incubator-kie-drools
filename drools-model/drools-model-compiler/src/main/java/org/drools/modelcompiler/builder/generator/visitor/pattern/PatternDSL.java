@@ -40,6 +40,8 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class PatternDSL implements DSLNode {
 
+    public static final String GENERATED_PATTERN_PREFIX = "GENERATED_";
+
     protected final RuleContext context;
     protected final PackageModel packageModel;
     protected final PatternDescr pattern;
@@ -86,7 +88,7 @@ public abstract class PatternDSL implements DSLNode {
             final String patternNameAggregated = findFirstInnerBinding(constraintDescrs, patternType)
                     .map(ib -> context.getAggregatePatternMap().putIfAbsent(ib, generatedName))
                     .orElse(generatedName);
-            pattern.setIdentifier(patternNameAggregated);
+            pattern.setIdentifier(GENERATED_PATTERN_PREFIX + patternNameAggregated);
         }
     }
 

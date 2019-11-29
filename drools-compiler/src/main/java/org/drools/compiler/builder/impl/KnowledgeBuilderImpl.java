@@ -1517,29 +1517,21 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll(newPkg.getImports());
 
-        String lastType = null;
-        try {
-            // merge globals
-            if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
-                Map<String, String> pkgGlobals = pkg.getGlobals();
-                // Add globals
-                for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
-                    final String identifier = entry.getKey();
-                    final String type = entry.getValue();
-                    lastType = type;
-                    if (pkgGlobals.containsKey(identifier) && !pkgGlobals.get(identifier).equals(type)) {
-                        throw new RuntimeException(pkg.getName() + " cannot be integrated");
-                    } else {
-                        pkg.addGlobal(identifier,
-                                      this.rootClassLoader.loadClass(type));
-                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convenience
-                        this.globals.put(identifier,
-                                         this.rootClassLoader.loadClass(type));
-                    }
+        // merge globals
+        if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
+            Map<String, Class<?>> pkgGlobals = pkg.getGlobals();
+            // Add globals
+            for (final Map.Entry<String, Class<?>> entry : newPkg.getGlobals().entrySet()) {
+                final String identifier = entry.getKey();
+                final Class<?> type = entry.getValue();
+                if (pkgGlobals.containsKey(identifier) && !pkgGlobals.get(identifier).equals(type)) {
+                    throw new RuntimeException(pkg.getName() + " cannot be integrated");
+                } else {
+                    pkg.addGlobal(identifier, type);
+                    // this isn't a package merge, it's adding to the rulebase, but I've put it here for convenience
+                    this.globals.put(identifier, type );
                 }
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Unable to resolve class '" + lastType + "'");
         }
 
         // merge the type declarations
