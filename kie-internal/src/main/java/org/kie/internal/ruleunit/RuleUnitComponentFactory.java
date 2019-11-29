@@ -34,4 +34,6 @@ public interface RuleUnitComponentFactory {
 
     boolean isRuleUnitClass( Class<?> ruleUnitClass );
     boolean isDataSourceClass( Class<?> ruleUnitClass );
+
+    boolean isLegacyRuleUnit();
 }
