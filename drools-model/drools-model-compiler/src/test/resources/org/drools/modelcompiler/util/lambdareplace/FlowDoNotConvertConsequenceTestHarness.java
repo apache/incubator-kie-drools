@@ -36,7 +36,7 @@ class FlowDoNotConvertConsequenceTestHarness {
                        expr("exprC", olderV, markAge, (Person p1, Integer age) -> p1.getAge() > age)
                                .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, (Person person1) -> person1.getAge(), int.class::cast)
                                .reactOn("age"),
-                       on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
+                       on(olderV, markV).execute((Drools drools, Person p1, Person p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
                 );
     }
 
@@ -56,7 +56,7 @@ class FlowDoNotConvertConsequenceTestHarness {
                        expr("exprC", olderV, markAge, mypackage.LambdaPredicateD27508B746925618D36E184D99E8CFF4.INSTANCE)
                                .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractor57148B6C957469EB75DC3BF92FE9F648.INSTANCE, int.class::cast)
                                .reactOn("age"),
-                       on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
+                       on(olderV, markV).execute((Drools drools, Person p1, Person p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
                 );
     }
 }

@@ -27,6 +27,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.util.lambdareplace.DoNotConvertLambdaException;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
+import org.drools.modelcompiler.util.lambdareplace.LambdaTypeNeededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,16 +77,18 @@ public class RuleWriter {
 
                 try {
                     CompilationUnit postProcessedCU = cu.clone();
-//                    new ExecModelLambdaPostProcessor(
-//                            pkgModel.getLambdaClasses(),
-//                            pkgModel.getName(),
-//                            pkgModel.getRulesFileNameWithPackage(),
-//                            pkgModel.getImports(),
-//                            pkgModel.getStaticImports(),
-//                            postProcessedCU
-//                    ).convertLambdas();
+                    new ExecModelLambdaPostProcessor(
+                            pkgModel.getLambdaClasses(),
+                            pkgModel.getName(),
+                            pkgModel.getRulesFileNameWithPackage(),
+                            pkgModel.getImports(),
+                            pkgModel.getStaticImports(),
+                            postProcessedCU
+                    ).convertLambdas();
                     rules.add(new RuleFileSource(addFileName, postProcessedCU));
 
+                } catch (LambdaTypeNeededException e) {
+                    throw e;
                 } catch (DoNotConvertLambdaException e) {
                     logger.error("Cannot externalize lambdas", e);
                     pkgModel.getLambdaClasses().clear();
