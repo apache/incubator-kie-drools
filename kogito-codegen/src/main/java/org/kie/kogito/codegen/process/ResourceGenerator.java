@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.drools.core.util.StringUtils;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;

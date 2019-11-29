@@ -17,10 +17,11 @@ package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
 
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GeneratedFileTest {
 
@@ -37,12 +38,12 @@ public class GeneratedFileTest {
 
     @Test
     public void relativePath() {
-        assertThat(testFile.relativePath()).isEqualTo(TEST_RELATIVE_PATH);
+        assertThat(testFile.getPath()).isEqualTo(TEST_RELATIVE_PATH);
     }
 
     @Test
     public void contents() {
-        assertThat(testFile.contents()).isEqualTo(TEST_CONTENTS);
+        assertThat(testFile.getData()).isEqualTo(TEST_CONTENTS);
     }
 
     @Test

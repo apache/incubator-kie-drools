@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.Processes;
 

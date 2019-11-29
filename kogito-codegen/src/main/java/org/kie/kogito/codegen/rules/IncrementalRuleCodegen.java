@@ -18,12 +18,10 @@ package org.kie.kogito.codegen.rules;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +35,11 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.builder.KieModuleModelMethod;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
-import org.drools.modelcompiler.builder.ModelSourceClass;
-import org.drools.modelcompiler.builder.PackageSources;
-import org.drools.modelcompiler.builder.ProjectSourceClass;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -59,7 +53,7 @@ import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.kie.kogito.conf.Clock;
@@ -182,7 +176,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         KnowledgeBuilderConfigurationImpl configuration =
                 new KnowledgeBuilderConfigurationImpl(contextClassLoader);
 
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl( configuration, dummyReleaseId, true, hotReloadMode );
+        ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>( KogitoPackageSources::dumpSources, configuration, dummyReleaseId, true, hotReloadMode );
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         resources.forEach(f -> batch.add(f, f.getResourceType()));
@@ -195,17 +189,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         boolean hasRuleUnits = false;
         Map<Class<?>, String> unitsMap = new HashMap<>();
 
-        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
         Map<String, String> modelsByUnit = new HashMap<>();
 
-        for (PackageSources pkgSources : modelBuilder.getPackageSources()) {
+        for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
             pkgSources.getModelsByUnit().forEach( (unit, model) -> modelsByUnit.put( ruleUnit2KieBaseName( unit ), model ) );
 
-            addGeneratedFiles( generatedFiles, pkgSources.getPojoSources() );
-            addGeneratedFiles( generatedFiles, pkgSources.getAccumulateSources() );
-            addGeneratedFile( generatedFiles, pkgSources.getMainSource() );
-            addGeneratedFiles( generatedFiles, pkgSources.getRuleSources() );
-            addGeneratedFile( generatedFiles, pkgSources.getDomainClassSource() );
+            pkgSources.collectGeneratedFiles( generatedFiles );
 
             if (pkgSources.getReflectConfigSource() != null) {
                 addGeneratedFile( generatedFiles, pkgSources.getReflectConfigSource(), "../../classes/" );
@@ -259,7 +249,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                     generatedFiles.add(new GeneratedFile(
                             GeneratedFile.Type.RULE,
                             "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
-                            log( cu.toString() ).getBytes( StandardCharsets.UTF_8 ) ));
+                            log( cu.toString() ) ));
                 }
             }
         }

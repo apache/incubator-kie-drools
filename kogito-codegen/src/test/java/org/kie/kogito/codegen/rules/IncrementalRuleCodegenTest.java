@@ -23,12 +23,11 @@ import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DecisionTableProvider;
-import org.junit.jupiter.api.BeforeAll;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
-import org.kie.kogito.codegen.GeneratedFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

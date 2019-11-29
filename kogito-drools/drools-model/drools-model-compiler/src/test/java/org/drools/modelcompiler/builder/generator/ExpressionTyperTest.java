@@ -44,7 +44,7 @@ public class ExpressionTyperTest {
     @Before
     public void setUp() throws Exception {
         imports = new HashSet<>();
-        packageModel = new PackageModel("", null, false, null, new DRLIdGenerator());
+        packageModel = new PackageModel("", "", null, false, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
         ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, true);
         ruleContext.setDescr(ruleDescr);

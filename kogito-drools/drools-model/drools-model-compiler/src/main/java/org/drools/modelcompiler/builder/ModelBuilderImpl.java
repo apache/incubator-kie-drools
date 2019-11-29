@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -44,18 +45,20 @@ import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileTy
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
-public class ModelBuilderImpl extends KnowledgeBuilderImpl {
+public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 
     private final DRLIdGenerator exprIdGenerator = new DRLIdGenerator();
 
+    private final Function<PackageModel, T> sourcesGenerator;
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private final ReleaseId releaseId;
     private final boolean isPattern;
     private final boolean oneClassPerRule;
-    private final Collection<PackageSources> packageSources = new ArrayList<>();
+    private final Collection<T> packageSources = new ArrayList<>();
 
-    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
+    public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
         super(configuration);
+        this.sourcesGenerator = sourcesGenerator;
         this.releaseId = releaseId;
         this.isPattern = isPattern;
         this.oneClassPerRule = oneClassPerRule;
@@ -116,8 +119,9 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             setAssetFilter(null);
 
             PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
+            pkgModel.setOneClassPerRule( oneClassPerRule );
             if (getResults( ResultSeverity.ERROR ).isEmpty()) {
-                packageSources.add( PackageSources.dumpSources( pkgModel, oneClassPerRule ) );
+                packageSources.add( sourcesGenerator.apply( pkgModel ) );
             }
         }
     }
@@ -170,7 +174,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         generateModel(this, pkg, packageDescr, model, isPattern);
     }
 
-    public Collection<PackageSources> getPackageSources() {
+    public Collection<T> getPackageSources() {
         return packageSources;
     }
 }

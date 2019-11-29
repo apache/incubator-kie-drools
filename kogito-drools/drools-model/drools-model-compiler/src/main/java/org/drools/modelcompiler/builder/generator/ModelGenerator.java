@@ -159,7 +159,6 @@ public class ModelGenerator {
             }
         }
 
-
         for (RuleUnitDescription rud : ruleUnitDescriptions) {
             Class<? extends RuleUnitData> ruc = rud.getRuleUnitClass();
             packageModel.addRuleUnit(ruc);

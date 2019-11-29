@@ -37,6 +37,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -62,6 +63,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static java.util.stream.Collectors.joining;
@@ -72,6 +74,7 @@ import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
@@ -118,7 +121,7 @@ public class PackageModel {
 
     private List<MethodDeclaration> functions = new ArrayList<>();
 
-    private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
+    private List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
     private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private Set<Class<?>> domainClasses = new HashSet<>();
@@ -134,8 +137,16 @@ public class PackageModel {
     private final String pkgUUID;
     private Set<Class<?>> ruleUnits = new HashSet<>();
 
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this("", name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+    private boolean oneClassPerRule;
+
+    public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this.name = name;
+        this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
+        this.isPattern = isPattern;
+        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
+        this.configuration = configuration;
+        this.exprIdGenerator = exprIdGenerator;
+        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
@@ -146,6 +157,14 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+    }
+
+    public boolean isOneClassPerRule() {
+        return oneClassPerRule;
+    }
+
+    public void setOneClassPerRule( boolean oneClassPerRule ) {
+        this.oneClassPerRule = oneClassPerRule;
     }
 
     public String getPackageUUID() {
@@ -290,11 +309,11 @@ public class PackageModel {
         this.functions.addAll(functions);
     }
 
-    public void addGeneratedPOJO(ClassOrInterfaceDeclaration pojo) {
+    public void addGeneratedPOJO(TypeDeclaration pojo) {
         this.generatedPOJOs.add(pojo);
     }
 
-    public List<ClassOrInterfaceDeclaration> getGeneratedPOJOsSource() {
+    public List<TypeDeclaration> getGeneratedPOJOsSource() {
         return generatedPOJOs;
     }
 
@@ -391,7 +410,7 @@ public class PackageModel {
         }
     }
 
-    public RuleSourceResult getRulesSource(boolean oneClassPerRule) {
+    public RuleSourceResult getRulesSource() {
         boolean hasRuleUnit = !ruleUnits.isEmpty();
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( name );

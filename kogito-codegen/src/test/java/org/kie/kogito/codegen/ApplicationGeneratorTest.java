@@ -37,6 +37,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
@@ -44,8 +45,10 @@ import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ApplicationGeneratorTest {
 
@@ -271,8 +274,8 @@ public class ApplicationGeneratorTest {
             assertThat(generatedFile).isNotNull();
             assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
             if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
-                assertThat(generatedFile.relativePath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
-                assertThat(generatedFile.contents()).isEqualTo(expectedApplicationContent);
+                assertThat(generatedFile.getPath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
+                assertThat(generatedFile.getData()).isEqualTo(expectedApplicationContent);
             }
         }
     }

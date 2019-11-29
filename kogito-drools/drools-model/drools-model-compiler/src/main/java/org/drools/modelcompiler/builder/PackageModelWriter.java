@@ -30,11 +30,11 @@ public class PackageModelWriter {
     private final RuleWriter ruleWriter;
     private final DomainClassesMetadata domainClassesMetadata;
 
-    public PackageModelWriter(PackageModel packageModel, boolean oneClassPerRule) {
+    public PackageModelWriter(PackageModel packageModel) {
         this.packageModel = packageModel;
         this.declaredTypes = toDeclaredTypeWriters(packageModel);
         this.accumulateClasses = toAccumulateClassWriters(packageModel);
-        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(oneClassPerRule), packageModel);
+        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(), packageModel);
         this.domainClassesMetadata = new DomainClassesMetadata(packageModel);
     }
 
@@ -62,7 +62,7 @@ public class PackageModelWriter {
         return packageModel.getGeneratedPOJOsSource().stream().map(pojo -> new DeclaredTypeWriter(pojo, packageModel)).collect(Collectors.toList());
     }
 
-    static class DomainClassesMetadata {
+    public static class DomainClassesMetadata {
 
         private final String name, source;
 

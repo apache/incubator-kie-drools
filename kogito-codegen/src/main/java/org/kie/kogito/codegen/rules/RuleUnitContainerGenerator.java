@@ -37,7 +37,7 @@ import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -103,7 +103,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
                         new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()),
                         "ruleRuntimeBuilder")
                                      .setInitializer(new ObjectCreationExpr()
-                                                             .setType(CanonicalModelKieProject.PROJECT_RUNTIME_CLASS)));
+                                                             .setType(ProjectSourceClass.PROJECT_RUNTIME_CLASS)));
         declarations.add(kieRuntimeFieldDeclaration);
 
         // declare method ruleRuntimeBuilder()

@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -25,18 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
-import javax.lang.model.SourceVersion;
-
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
-import org.kie.kogito.Config;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.metadata.Labeler;
-import org.kie.kogito.codegen.metadata.MetaDataWriter;
-import org.kie.kogito.codegen.metadata.PrometheusLabeler;
-import org.kie.kogito.event.EventPublisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -48,6 +34,18 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import javax.lang.model.SourceVersion;
+import org.drools.modelcompiler.builder.GeneratedFile;
+import org.kie.kogito.Config;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.metadata.Labeler;
+import org.kie.kogito.codegen.metadata.MetaDataWriter;
+import org.kie.kogito.codegen.metadata.PrometheusLabeler;
+import org.kie.kogito.event.EventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ApplicationGenerator {
 

@@ -1,12 +1,17 @@
-package org.drools.modelcompiler.builder;
+package org.kie.kogito.codegen.rules;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 
 public class ProjectSourceClass {
+
+    public static final String PROJECT_RUNTIME_CLASS = "org.drools.project.model.ProjectRuntime";
+    private static final String PROJECT_RUNTIME_RESOURCE_CLASS = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".class";
+    private static final String PROJECT_RUNTIME_SOURCE = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".java";
 
     final KieModuleModelMethod modelMethod;
     private String dependencyInjection = "";
@@ -51,6 +56,6 @@ public class ProjectSourceClass {
     }
 
     public String getName() {
-        return CanonicalModelKieProject.PROJECT_RUNTIME_SOURCE;
+        return PROJECT_RUNTIME_SOURCE;
     }
 }

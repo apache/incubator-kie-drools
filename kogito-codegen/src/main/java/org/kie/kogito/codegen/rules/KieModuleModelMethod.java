@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder;
+package org.kie.kogito.codegen.rules;
 
 import java.util.Collection;
 import java.util.HashMap;

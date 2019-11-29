@@ -51,7 +51,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.Process;

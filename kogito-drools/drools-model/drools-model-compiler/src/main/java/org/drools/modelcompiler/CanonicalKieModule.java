@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 import org.drools.compiler.addon.DependencyFilter;
 import org.drools.compiler.addon.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -57,7 +56,6 @@ import org.drools.core.util.StringUtils;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
 import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.classloader.ProjectClassLoader;
@@ -85,11 +83,13 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
-import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_RESOURCE_CLASS;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
+
+    public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
+    private static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
 
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
@@ -149,7 +149,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private static CanonicalKieModuleModel getModuleModel(ClassLoader classLoader) {
-        return createInstance( classLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
+        return createInstance( classLoader, PROJECT_MODEL_CLASS );
     }
 
     @Override
@@ -221,6 +221,7 @@ public class CanonicalKieModule implements InternalKieModule {
                 }
                 KieBaseModelImpl includeKBaseModel = ( KieBaseModelImpl ) kieProject.getKieBaseModel( include );
                 CanonicalKieModule canonicalInclude = (CanonicalKieModule) includeModule;
+                canonicalInclude.setModuleClassLoader((ProjectClassLoader)kieProject.getClassLoader());
                 models.addAll( canonicalInclude.getModelForKBase( includeKBaseModel ) );
                 processes.addAll( findProcesses( includeModule, includeKBaseModel ) );
             }

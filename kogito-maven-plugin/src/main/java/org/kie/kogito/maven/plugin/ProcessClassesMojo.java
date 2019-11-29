@@ -43,9 +43,9 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -123,9 +123,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 String[] sources = new String[generatedFiles.size()];
                 int index = 0;
                 for (GeneratedFile entry : generatedFiles) {
-                    String fileName = entry.relativePath();
+                    String fileName = entry.getPath();
                     sources[index++] = fileName;
-                    srcMfs.write(fileName, entry.contents());
+                    srcMfs.write(fileName, entry.getData());
                 }
 
 

@@ -2,9 +2,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -16,8 +14,6 @@ import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 
 public class ModelWriter {
 
-    public static final String CDI_ANNOTATION = "@javax.enterprise.context.ApplicationScoped";
-
     private final String basePath;
 
     public ModelWriter() {
@@ -28,21 +24,13 @@ public class ModelWriter {
         this.basePath = basePath;
     }
 
-    public Result writeModel(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, Collection<PackageSources> packageSources) {
+    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageSources> packageSources) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
-        Map<String, String> modelFiles = new HashMap<>();
+        List<String> modelFiles = new ArrayList<>();
 
         for (PackageSources pkgSources : packageSources) {
-            generatedFiles.addAll( pkgSources.getPojoSources() );
-            generatedFiles.addAll( pkgSources.getAccumulateSources() );
-            generatedFiles.add( pkgSources.getMainSource() );
-            generatedFiles.addAll( pkgSources.getRuleSources() );
-            generatedFiles.add( pkgSources.getDomainClassSource() );
-            modelFiles.putAll( pkgSources.getModelsByUnit() );
-
-            if (pkgSources.getReflectConfigSource() != null) {
-                trgMfs.write( pkgSources.getReflectConfigSource().getPath(), pkgSources.getReflectConfigSource().getData() );
-            }
+            pkgSources.collectGeneratedFiles( generatedFiles );
+            modelFiles.addAll( pkgSources.getModelNames() );
         }
 
         List<String> sourceFiles = new ArrayList<>();
@@ -70,22 +58,22 @@ public class ModelWriter {
     public static class Result {
 
         private final List<String> sourceFiles;
-        private final Map<String, String> modelFiles;
+        private final List<String> modelFiles;
 
-        public Result(List<String> sourceFiles, Map<String, String> modelFiles) {
+        public Result(List<String> sourceFiles, List<String> modelFiles) {
             this.sourceFiles = sourceFiles;
             this.modelFiles = modelFiles;
         }
 
-        public List<String> getSources() {
-            return sourceFiles;
+        public String[] getSources() {
+            return sourceFiles.toArray(new String[sourceFiles.size()]);
         }
 
         public List<String> getSourceFiles() {
             return sourceFiles;
         }
 
-        public Map<String, String> getModelFiles() {
+        public List<String> getModelFiles() {
             return modelFiles;
         }
     }

@@ -19,8 +19,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.GeneratedFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

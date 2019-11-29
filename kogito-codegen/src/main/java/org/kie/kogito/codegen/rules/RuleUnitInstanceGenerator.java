@@ -34,12 +34,13 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
 import org.drools.core.util.ClassUtils;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.api.runtime.KieSession;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
-import org.kie.kogito.conf.EntryPoint;
 import org.kie.kogito.conf.DefaultEntryPoint;
-import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.conf.EntryPoint;
+
+import static org.drools.reflective.util.ClassUtils.isDataSource;
 
 public class RuleUnitInstanceGenerator implements FileGenerator {
 
@@ -118,7 +119,7 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
                     continue;
                 }
 
-                if ( DataSource.class.isAssignableFrom( m.getReturnType() ) ) {
+                if ( isDataSource( m.getReturnType() ) ) {
 
                     //  value.$method())
                     Expression fieldAccessor =

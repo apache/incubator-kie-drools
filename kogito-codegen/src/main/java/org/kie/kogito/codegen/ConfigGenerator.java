@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.Enumeration;
 
 import org.drools.core.util.StringUtils;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
 import org.kie.kogito.Addons;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;

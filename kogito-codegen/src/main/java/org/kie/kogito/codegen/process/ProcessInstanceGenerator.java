@@ -31,7 +31,7 @@ import com.github.javaparser.ast.type.VoidType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.kie.api.runtime.process.ProcessRuntime;
-import org.drools.modelcompiler.builder.BodyDeclarationComparator;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class ProcessInstanceGenerator {

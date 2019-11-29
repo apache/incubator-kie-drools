@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder;
+package org.kie.kogito.codegen;
 
 import java.util.Comparator;
 

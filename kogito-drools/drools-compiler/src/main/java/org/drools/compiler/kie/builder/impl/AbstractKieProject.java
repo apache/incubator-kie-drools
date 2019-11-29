@@ -232,7 +232,9 @@ public abstract class AbstractKieProject implements KieProject {
                 allIncludesAreValid = false;
                 continue;
             }
-            addFiles( assets, getKieBaseModel(include), includeModule, useFolders );
+            if (compileIncludedKieBases()) {
+                addFiles( assets, getKieBaseModel( include ), includeModule, useFolders );
+            }
         }
 
         if (!allIncludesAreValid) {

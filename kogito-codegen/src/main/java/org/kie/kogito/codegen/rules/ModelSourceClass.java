@@ -1,15 +1,18 @@
-package org.drools.modelcompiler.builder;
+package org.kie.kogito.codegen.rules;
 
 import java.util.Map;
 
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.util.Drools;
 import org.drools.model.Model;
+import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.ReleaseId;
 
 import static java.util.stream.Collectors.joining;
 
 public class ModelSourceClass {
+
+    private static final String PROJECT_MODEL_SOURCE = CanonicalKieModule.PROJECT_MODEL_CLASS.replace('.', '/') + ".java";
 
     private final Map<String, String> modelsByUnit;
     private final KieModuleModelMethod modelMethod;
@@ -25,7 +28,7 @@ public class ModelSourceClass {
     }
 
     public String getName() {
-        return CanonicalModelKieProject.PROJECT_MODEL_SOURCE;
+        return PROJECT_MODEL_SOURCE;
     }
 
     public String generate() {
