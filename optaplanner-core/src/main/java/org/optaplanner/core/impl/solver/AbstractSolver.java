@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Common code between {@link DefaultSolver} and child solvers (such as {@link PartitionSolver}.
@@ -43,6 +45,8 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  * @see DefaultSolver
  */
 public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
     protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
@@ -82,6 +86,12 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     }
 
     protected void runPhases(DefaultSolverScope<Solution_> solverScope) {
+        if (solverScope.getSolutionDescriptor().getMovableEntityCount(solverScope.getScoreDirector()) == 0) {
+            logger.info("Skipped all phases ({}): out of {} planning entities, none are movable (non-pinned).",
+                    phaseList.size(),
+                    solverScope.getSolutionDescriptor().getEntityCount(solverScope.getWorkingSolution()));
+            return;
+        }
         Iterator<Phase<Solution_>> it = phaseList.iterator();
         while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
             Phase<Solution_> phase = it.next();

@@ -43,6 +43,12 @@ public class TestdataImmovableEntity extends TestdataObject {
         super(code);
     }
 
+    public TestdataImmovableEntity(String code, boolean locked, boolean pinned) {
+        this(code);
+        this.locked = locked;
+        this.pinned = pinned;
+    }
+
     public TestdataImmovableEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;

@@ -43,8 +43,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
 

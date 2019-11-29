@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+@FunctionalInterface
 public interface ProblemFactChange<Solution_> {
 
     /**

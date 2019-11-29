@@ -63,8 +63,8 @@ public class EnvironmentModeTest {
 
     @Before
     public void setUpSolverConfig() {
-        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig();
-        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
+        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
+            .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
@@ -240,8 +240,8 @@ public class EnvironmentModeTest {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
 
-        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig();
-        initializerPhaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
+        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
+                .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);

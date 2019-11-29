@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -1079,27 +1081,30 @@ public class SolutionDescriptor<Solution_> {
     }
 
     /**
+     * @param scoreDirector never null
+     * @return {@code >= 0}
+     */
+    public int getMovableEntityCount(ScoreDirector<Solution_> scoreDirector) {
+        return extractAllEntitiesStream(scoreDirector.getWorkingSolution())
+                .mapToInt(entity -> findEntityDescriptorOrFail(entity.getClass()).isMovable(scoreDirector, entity)
+                        ? 1 : 0)
+                .sum();
+    }
+
+    /**
      * @param solution never null
      * @return {@code >= 0}
      */
     public long getGenuineVariableCount(Solution_ solution) {
-        long variableCount = 0L;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
-            Object entity = it.next();
-            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            variableCount += entityDescriptor.getGenuineVariableCount();
-        }
-        return variableCount;
+        return extractAllEntitiesStream(solution)
+                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).getGenuineVariableCount())
+                .sum();
     }
 
     public long getMaximumValueCount(Solution_ solution) {
-        long maximumValueCount = 0L;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
-            Object entity = it.next();
-            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            maximumValueCount = Math.max(maximumValueCount, entityDescriptor.getMaximumValueCount(solution, entity));
-        }
-        return maximumValueCount;
+        return extractAllEntitiesStream(solution)
+                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).getMaximumValueCount(solution, entity))
+                .max().orElse(0L);
     }
 
     /**
@@ -1121,33 +1126,17 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public long getProblemScale(Solution_ solution) {
-        long problemScale = 0L;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
-            Object entity = it.next();
-            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            problemScale += entityDescriptor.getProblemScale(solution, entity);
-        }
-        return problemScale;
+        return extractAllEntitiesStream(solution)
+                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).getProblemScale(solution, entity))
+                .sum();
     }
 
     public int countUninitializedVariables(Solution_ solution) {
-        int count = 0;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
-            Object entity = it.next();
-            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            count += entityDescriptor.countUninitializedVariables(entity);
-        }
-        return count;
-    }
-
-    public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Solution_ solution) {
-        int count = 0;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
-            Object entity = it.next();
-            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
-        }
-        return count;
+        long count = extractAllEntitiesStream(solution)
+                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity))
+                .sum();
+        // Score.initScore is an int
+        return Math.toIntExact(count);
     }
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
@@ -1164,6 +1153,22 @@ public class SolutionDescriptor<Solution_> {
             iteratorList.add(entityCollection.iterator());
         }
         return Iterators.concat(iteratorList.iterator());
+    }
+
+    public Stream<Object> extractAllEntitiesStream(Solution_ solution) {
+        List<Stream<Object>> streamList = new ArrayList<>(
+                entityMemberAccessorMap.size() + entityCollectionMemberAccessorMap.size());
+        for (MemberAccessor memberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(memberAccessor, solution);
+            if (entity != null) {
+                streamList.add(Stream.of(entity));
+            }
+        }
+        for (MemberAccessor memberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(memberAccessor, solution, false);
+            streamList.add(entityCollection.stream());
+        }
+        return streamList.stream().flatMap(Function.identity());
     }
 
     private Object extractMemberObject(MemberAccessor memberAccessor, Solution_ solution) {
