@@ -28,7 +28,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
         boolean hasDroolsParameter = lambdaParameters.stream().anyMatch(this::isDroolsParameter);
         if(hasDroolsParameter) {
-            throw new DroolsNeededInConsequenceException();
+            throw new DroolsNeededInConsequenceException(lambdaExpr.toString());
         }
 
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);

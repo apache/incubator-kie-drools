@@ -5,6 +5,7 @@ public class LambdaTypeNeededException extends DoNotConvertLambdaException {
     private final String lambda;
 
     public LambdaTypeNeededException(String lambda) {
+        super(lambda);
         this.lambda = lambda;
     }
 
