@@ -1968,7 +1968,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testCustomer() {
+    public void testMaterializeLambda() {
         String str =
 
                 "import " + DataType.class.getCanonicalName() + ";\n" +
