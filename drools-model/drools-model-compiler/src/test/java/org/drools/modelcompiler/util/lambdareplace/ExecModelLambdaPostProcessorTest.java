@@ -52,7 +52,7 @@ public class ExecModelLambdaPostProcessorTest {
     }
 
 
-    @Test
+    @Test(expected = DroolsNeededInConsequenceException.class)
     public void convertFlowLambdaDoNotConvertConsequence() throws Exception {
 
         CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowDoNotConvertConsequenceTestHarness.java");

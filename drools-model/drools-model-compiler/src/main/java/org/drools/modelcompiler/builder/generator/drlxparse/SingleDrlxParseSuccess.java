@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -39,6 +40,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
@@ -208,6 +210,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public Class<?> getPatternType() {
         return patternType;
+    }
+
+    public com.github.javaparser.ast.type.Type getPatternJPType() {
+        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType(patternType).getCanonicalName());
     }
 
     public boolean isPatternBindingUnification() {

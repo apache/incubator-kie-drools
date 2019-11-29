@@ -28,6 +28,8 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -190,6 +192,10 @@ public class RuleContext {
             }
         }
         return Optional.ofNullable( spec );
+    }
+
+    public DeclarationSpec getDeclarationByIdWithException(String id) {
+        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
     }
 
     private String getDeclarationKey( String id ) {

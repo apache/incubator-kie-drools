@@ -39,9 +39,11 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.UnknownType;
+import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -238,15 +240,27 @@ public abstract class AbstractExpressionBuilder {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(clazz), NodeList.nodeList(initExpression));
     }
 
-    protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {
+    protected void addIndexedByDeclaration(TypedExpression left,
+                                           TypedExpression right,
+                                           boolean leftContainsThis,
+                                           MethodCallExpr indexedByDSL,
+                                           Collection<String> usedDeclarations,
+                                           java.lang.reflect.Type leftType,
+                                           SingleDrlxParseSuccess drlxParseResult) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
-        indexedByRightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
         final TypedExpression expression;
-        if (!leftContainsThis) {
-            expression = left;
-        } else {
+        String declarationName = usedDeclarations.iterator().next();
+        Type type;
+        if (leftContainsThis) {
             expression = right;
+        } else {
+            expression = left;
         }
+
+        DeclarationSpec declarationById = context.getDeclarationByIdWithException(declarationName);
+        type = declarationById.getBoxedType();
+        indexedByRightOperandExtractor.addParameter(new Parameter(type, declarationName));
+        indexedByRightOperandExtractor.setEnclosingParameters(true);
         final Expression narrowed = narrowExpressionToType(expression, leftType);
         indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedByRightOperandExtractor);

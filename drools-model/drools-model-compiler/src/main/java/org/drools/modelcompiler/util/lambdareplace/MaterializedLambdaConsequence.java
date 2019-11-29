@@ -26,7 +26,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
 
     @Override
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
-        boolean hasDroolsParameter = lambdaParameters.stream().anyMatch(p -> "org.drools.model.Drools".equals(p.type.asString()));
+        boolean hasDroolsParameter = lambdaParameters.stream().anyMatch(this::isDroolsParameter);
         if(hasDroolsParameter) {
             throw new DroolsNeededInConsequenceException();
         }
@@ -46,6 +46,11 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
             BlockStmt clone = (BlockStmt) body.clone();
             methodDeclaration.setBody(clone);
         }
+    }
+
+    private boolean isDroolsParameter(LambdaParameter p) {
+        String anObject = p.type.asString();
+        return "org.drools.model.Drools".equals(anObject) || "Drools".equals(anObject);
     }
 
     @Override

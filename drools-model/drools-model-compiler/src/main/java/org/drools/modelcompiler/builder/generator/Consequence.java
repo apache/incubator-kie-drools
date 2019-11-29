@@ -29,7 +29,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
