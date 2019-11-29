@@ -13,6 +13,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.EXPR_CALL;
 
 public class ReplaceTypeInLambda {
@@ -27,6 +28,11 @@ public class ReplaceTypeInLambda {
                 List<LambdaExpr> allLambdas = new ArrayList<>();
 
                 if (mc.getNameAsString().equals(EXPR_CALL)) {
+                    allLambdas.addAll(expression.findAll(LambdaExpr.class));
+                }
+
+                Optional<Expression> optScope = mc.getScope();
+                if (optScope.isPresent() && optScope.get().asMethodCallExpr().getNameAsString().equals(BIND_CALL) ) {
                     allLambdas.addAll(expression.findAll(LambdaExpr.class));
                 }
 
