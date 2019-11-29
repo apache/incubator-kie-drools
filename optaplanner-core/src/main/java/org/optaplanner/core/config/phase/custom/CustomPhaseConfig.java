@@ -23,6 +23,7 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -31,6 +32,7 @@ import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -45,6 +47,8 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> customProperties = null;
+    /** @deprecated Use {@link Solver#addProblemFactChange(ProblemFactChange)} instead.*/
+    @Deprecated
     protected Boolean forceUpdateBestSolution = null;
 
     // ************************************************************************
@@ -67,10 +71,12 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         this.customProperties = customProperties;
     }
 
+    @Deprecated
     public Boolean getForceUpdateBestSolution() {
         return forceUpdateBestSolution;
     }
 
+    @Deprecated
     public void setForceUpdateBestSolution(Boolean forceUpdateBestSolution) {
         this.forceUpdateBestSolution = forceUpdateBestSolution;
     }

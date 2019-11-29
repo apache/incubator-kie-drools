@@ -778,21 +778,12 @@ Configure multiple `customPhaseCommandClass` instances to run them in sequence.
 ====
 If the changes of a `CustomPhaseCommand` do not result in a better score, the best solution will not be changed
 (so effectively nothing will have changed for the next `Phase` or `CustomPhaseCommand`).
-To force such changes anyway, use `forceUpdateBestSolution`:
-
-[source,xml,options="nowrap"]
-----
-  <customPhase>
-    <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
-    <forceUpdateBestSolution>true</forceUpdateBestSolution>
-  </customPhase>
-----
 ====
 
 [NOTE]
 ====
 If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running,
-it will wait to terminate until the `CustomPhaseCommand` is complete.
+it waits to terminate until the `CustomPhaseCommand` is complete.
 This may take a significant amount of time.
 The built-in solver phases do not have this issue.
 ====
