@@ -121,7 +121,7 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).containsSequence("/* Say", "Hello */", "/* Say", "Goobye */");
+        Assertions.assertThat(drl).containsSubsequence("/* Say", "Hello */", "/* Say", "Goobye */");
         Assertions.assertThat(drl).doesNotContain("// Say");
     }
 
@@ -132,7 +132,7 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).containsSequence("/* Do these actions:",
+        Assertions.assertThat(drl).containsSubsequence("/* Do these actions:",
                                                     "- Print Greeting",
                                                     "- Set params: {message:'bye cruel world', status:'bye'} */",
                                                     "/* Print message: \"Bye!\"",
