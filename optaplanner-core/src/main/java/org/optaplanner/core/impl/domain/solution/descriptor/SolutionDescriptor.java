@@ -1156,19 +1156,18 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public Stream<Object> extractAllEntitiesStream(Solution_ solution) {
-        List<Stream<Object>> streamList = new ArrayList<>(
-                entityMemberAccessorMap.size() + entityCollectionMemberAccessorMap.size());
+        Stream<Object> stream = Stream.empty();
         for (MemberAccessor memberAccessor : entityMemberAccessorMap.values()) {
             Object entity = extractMemberObject(memberAccessor, solution);
             if (entity != null) {
-                streamList.add(Stream.of(entity));
+                stream = Stream.concat(stream, Stream.of(entity));
             }
         }
         for (MemberAccessor memberAccessor : entityCollectionMemberAccessorMap.values()) {
             Collection<Object> entityCollection = extractMemberCollectionOrArray(memberAccessor, solution, false);
-            streamList.add(entityCollection.stream());
+            stream = Stream.concat(stream, entityCollection.stream());
         }
-        return streamList.stream().flatMap(Function.identity());
+        return stream;
     }
 
     private Object extractMemberObject(MemberAccessor memberAccessor, Solution_ solution) {
