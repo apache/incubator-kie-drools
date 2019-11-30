@@ -175,7 +175,6 @@ public class CloudComputerPanel extends JPanel {
         memoryBar.clearProcessValues();
         int usedNetworkBandwidth = 0;
         networkBandwidthBar.clearProcessValues();
-        int colorIndex = 0;
         for (CloudProcess process : processList) {
             usedCpuPower += process.getRequiredCpuPower();
             cpuPowerBar.addProcessValue(process.getRequiredCpuPower());
@@ -183,7 +182,6 @@ public class CloudComputerPanel extends JPanel {
             memoryBar.addProcessValue(process.getRequiredMemory());
             usedNetworkBandwidth += process.getRequiredNetworkBandwidth();
             networkBandwidthBar.addProcessValue(process.getRequiredNetworkBandwidth());
-            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
         }
         boolean used = processList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
