@@ -6,11 +6,11 @@
 [[cloudBalancingDomainModelDesign]]
 == Domain model design
 
-Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify contraints, improve performance, and increase flexibility for future needs.
+Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify constraints, improve performance, and increase flexibility for future needs.
 
 To create a domain model, define all the objects that represent the input data for the problem. In this simple example, the objects are processes and computers.
 
-A separate object in the domain model must represent a full data set of problem, which contains the input data as well as a solution. In this example, this object holds a list of computers and a list of processes. Each process is assigned to a compter; the distribution of processes between computers is the solution.
+A separate object in the domain model must represent a full data set of problem, which contains the input data as well as a solution. In this example, this object holds a list of computers and a list of processes. Each process is assigned to a computer; the distribution of processes between computers is the solution.
 
 . Draw a class diagram of your domain model.
 . Normalize it to remove duplicate data.
@@ -128,7 +128,7 @@ The `CloudBalance` class has a [path]_@PlanningSolution_
 * It represents both the planning problem and (if it is initialized) the planning solution.
 * To save a solution, OptaPlanner initializes a new instance of the class.
 
-. The `processList` property holds a list of processes. OptaPlanner can change the processes, allocating them to different computers. Therefore, a process is a planing entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+. The `processList` property holds a list of processes. OptaPlanner can change the processes, allocating them to different computers. Therefore, a process is a planning entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
 
 . The `computerList` property holds a list of computers. OptaPlanner can not change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
 

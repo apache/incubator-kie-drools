@@ -71,7 +71,7 @@ INFO  Solving ended: time spent (41), best score (0), score calculation speed (5
 
 Notice that a log message includes the `toString()` method of the `Move` implementation which returns for example $$"$$``Queen-1 {Row-0 -> Row-3}``".
 
-A naive Local Search configuration solves the four queens problem in three steps, by evaluating only 37 possible solutions (three steps with 12 moves each + one starting solution), which is only fraction of all 256 possible solutions.
+A naive Local Search configuration solves the four queens problem in three steps, by evaluating only 37 possible solutions (three steps with 12 moves each + one starting solution), which is only a fraction of all 256 possible solutions.
 It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.
 By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's even a lot more efficient.
 
@@ -245,7 +245,7 @@ Even if it picks one of those moves, the next step might go back to the original
 image::LocalSearch/hillClimbingGetsStuckInLocalOptimaNQueens04.png[align="center"]
 
 Improvements upon Hill Climbing (such as Tabu Search, Simulated Annealing and Late Acceptance) address the problem of being stuck in local optima.
-Therefore, it's recommend to never use Hill Climbing, unless you're absolutely sure there are no local optima in your planning problem.
+Therefore, it's recommended to never use Hill Climbing, unless you're absolutely sure there are no local optima in your planning problem.
 
 
 [[hillClimbingConfigure]]
@@ -410,7 +410,7 @@ Sometimes it's useful to combine tabu types:
 ----
 
 If the tabu size is too small, the solver can still get stuck in a local optimum.
-On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing of the walls.
+On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing off the walls.
 Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
 
 
@@ -743,7 +743,7 @@ Plug in a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector
 
 [IMPORTANT]
 ====
-Extending `Config` classes is not covered by the backwards compatbility gaurantee.
+Extending `Config` classes is not covered by the backwards compatibility guarantee.
 Whenever possible, it's better to just use <<customPropertiesConfiguration,custom properties>> instead.
 ====
 

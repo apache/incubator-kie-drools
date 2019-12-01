@@ -171,7 +171,7 @@ and copy it with the copy constructor for each user request:
 [[automaticScanningForAnnotations]]
 ==== Automatic scanning for annotations
 
-Instead of the declaring the classes that have a `@PlanningSolution` or `@PlanningEntity` manually:
+Instead of declaring classes that have a `@PlanningSolution` or `@PlanningEntity` manually:
 
 [source,xml,options="nowrap"]
 ----
@@ -631,7 +631,7 @@ A `Solution` is initialized if all of its planning entities are initialized.
 
 A planning value is a possible value for a genuine planning variable.
 Usually, a planning value is a problem fact, but it can also be any object, for example a ``double``.
-It can even be another planning entity or even a interface implemented by both a planning entity and a problem fact.
+It can even be another planning entity or even an interface implemented by both a planning entity and a problem fact.
 
 A planning value range is the set of possible planning values for a planning variable.
 This set can be a countable (for example row ``1``, ``2``, `3` or ``4``) or uncountable (for example any `double` between `0.0` and ``1.0``).
@@ -744,7 +744,7 @@ By limiting the value range specifically of one planning entity, you are effecti
 This can have the benefit of severely lowering the number of possible solutions; however, it can also take away the freedom of the optimization algorithms to temporarily break that constraint in order to escape from a local optimum.
 ====
 
-A planning entity should _not_ use other planning entities to determinate its value range.
+A planning entity should _not_ use other planning entities to determine its value range.
 That would only try to make the planning entity solve the planning problem itself and interfere with the optimization algorithms.
 
 Every entity has its own `List` instance, unless multiple entities have the same value range.
@@ -913,7 +913,7 @@ A planning variable that is chained either:
 * Directly points to a problem fact (or planning entity), which is called an __anchor__.
 * Points to another planning entity with the same planning variable, which recursively points to an anchor.
 
-Here are some example of valid and invalid chains:
+Here are some examples of valid and invalid chains:
 
 image::PlannerConfiguration/chainPrinciples.png[align="center"]
 
@@ -1097,7 +1097,7 @@ Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>>
 ==== `Score` of asSolution (`@PlanningScore`)
 
 A `Solution` requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
-The score property is `null` if the the score hasn't been calculated yet.
+The score property is `null` if the score hasn't been calculated yet.
 The `score` property is typed to the specific `Score` implementation of your use case.
 For example, `NQueens` uses a <<simpleScore,SimpleScore>>:
 

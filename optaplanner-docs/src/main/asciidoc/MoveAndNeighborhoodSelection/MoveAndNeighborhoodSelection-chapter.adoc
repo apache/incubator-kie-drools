@@ -26,7 +26,7 @@ For example, on that original solution, these are all possible ``changeMove``s:
 
 image::MoveAndNeighborhoodSelection/possibleMovesNQueens04.png[align="center"]
 
-If we ignore the four ``changeMove``s that have no impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
+If we ignore the four ``changeMove``s that have no impact and are therefore not doable, we can see that the number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
 As the problem scales out, the number of possible moves increases far less than the number of possible solutions.
 
@@ -199,7 +199,7 @@ image::MoveAndNeighborhoodSelection/swapMove.png[align="center"]
 Although a `SwapMove` on a single variable is essentially just two ``ChangeMove``s,
 it's often the winning step in cases that the first of the two ``ChangeMove``s would not win
 because it leaves the solution in a state with broken hard constraints.
-For example: swapping the room of two lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
+For example: swapping the room of two lectures doesn't bring the solution in an intermediate state where both lectures are in the same room which breaks a hard constraint.
 
 Simplest configuration:
 
@@ -402,7 +402,7 @@ In this case, the entity being operated on need not be `Comparable`. The given `
 [[tailChainSwapMoveSelector]]
 ==== `TailChainSwapMoveSelector` or 2-opt
 
-A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
+A _tailChain_ is a set of planning entities with a chained planning variable which form the last part of a chain.
 The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
 In academic papers, this is often called a 2-opt move.
 

@@ -57,7 +57,7 @@ In a typical project (following the Maven directory structure), that DRL file wo
 
 [NOTE]
 ====
-The `<scoreDrl>` element expects a classpath resource, as defined by ``ClassLoader.getResource(String)``, it does not accept a ``File``, nor an URL, nor a webapp resource.
+The `<scoreDrl>` element expects a classpath resource, as defined by ``ClassLoader.getResource(String)``, it does not accept a ``File``, nor a URL, nor a webapp resource.
 See below to use a `File` instead.
 ====
 
@@ -300,4 +300,4 @@ end
 
 Notice how `addSoftConstraintMatch()` specifies that it's a soft constraint,
 and needs a negative number to penalize each match. Otherwise it would reward such matches.
-The parameter `($capacity - $studentSize)` always results into a negative number because `studentSize > $capacity`.
+The parameter `($capacity - $studentSize)` always results in a negative number because `studentSize > $capacity`.

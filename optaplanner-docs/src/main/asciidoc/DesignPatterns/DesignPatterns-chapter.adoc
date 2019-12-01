@@ -48,7 +48,7 @@ Optaplanner does not currently support a `@PlanningVariable` annotation on a col
 ====
 
 +
-For example, in the Employee Rostering starter applicaion the `ShiftAssignment` class is the many-to-many relationship between `Shift` and `Employee`.
+For example, in the Employee Rostering starter application the `ShiftAssignment` class is the many-to-many relationship between `Shift` and `Employee`.
 `Shift` contains every shift time that needs to be filled with an employee.
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
@@ -170,7 +170,7 @@ Overlap of two entities is determined by comparing their start and end time grai
 
 This pattern also works well with a coarser time granularity (such as days, half days, hours, ...).
 With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore <<searchSpaceSize,the search space>>) can become too high, which reduces efficiency and scalability.
-However, such solution is not impossible, as shown in <<cheapTimeScheduling,cheap time scheduling>>.
+However, such a solution is not impossible, as shown in <<cheapTimeScheduling,cheap time scheduling>>.
 
 
 [[chainedThroughTimePattern]]
@@ -224,7 +224,7 @@ Each bucket has a capacity, depending on the FTE (Full Time Equivalent), holiday
 For example, a bucket usually has 40 hours for a full time employee and 20 hours for a half time employee
 but only 8 hours on a specific week if the employee takes vacation the rest of that week.
 
-Each task is assigned to a bucket, which determines the employee and the course-grained time period for working on it.
+Each task is assigned to a bucket, which determines the employee and the coarse-grained time period for working on it.
 _The tasks within one bucket are not ordered_: it's up to the employee to decide the order.
 This gives the employee more autonomy, but makes it harder to do certain optimization,
 such as minimize travel time between task locations.
@@ -234,7 +234,7 @@ such as minimize travel time between task locations.
 == Multi-stage Planning
 
 For practical or organizational reasons (such as Conway's law), complex planning problems are often broken down in multiple stages.
-A typical example is train scheduling, where one department decides where and when a train will arrive or depart, and another departments assigns the operators to the actual train cars/locomotives.
+A typical example is train scheduling, where one department decides where and when a train will arrive or depart, and another department assigns the operators to the actual train cars/locomotives.
 
 Each stage has its own solver configuration (and therefore its own ``SolverFactory``). Do not confuse it with <<solverPhase,multi-phase solving>> which uses a one-solver configuration.
 
@@ -250,7 +250,7 @@ There are two common usage patterns of OptaPlanner in the cloud:
 * *Batch planning*:
 Typically runs at night for hours to solve each tenant's dataset
 and deliver each schedule for the upcoming day(s) or week(s).
-Only the final best solution is send back to the client.
+Only the final best solution is sent back to the client.
 This is a good fit for a serverless cloud architecture.
 
 * *Real-time planning*:

@@ -377,7 +377,7 @@ must always be in sync with those defined in the `@PlanningScore` annotation in 
 }
 ----
 
-This JSON implies the `hardLevelsSize` is 2 and thet `softLevelsSize` is 3,
+This JSON implies the `hardLevelsSize` is 2 and the `softLevelsSize` is 3,
 which must be in sync with the `@PlanningScore` annotation:
 
 [source,java,options="nowrap"]
@@ -486,7 +486,7 @@ However, in this approach the war file can easily grow to several MB in size, wh
 but too heavyweight for frequent redeployments (especially over a slow network connection).
 
 The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
-Let's create an module called __org.optaplanner__:
+Let's create a module called __org.optaplanner__:
 
 . Navigate to the directory ``${WILDFLY_HOME}/modules/system/layers/base/``. This directory contains the JBoss modules of WildFly. Create directory structure `org/optaplanner/main` for our new module.
 .. Copy `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars into that new directory. Use "mvn dependency:tree" on each optaplanner artifact to discover all dependencies.
@@ -644,7 +644,7 @@ but as the implementation matures, this should become obsolete.
 The feature should be kept available as a reassurance for the humans,
 and in the event that the business changes dramatically before the score constraints are adjusted accordingly.
 
-For this reason, it is recommended the human planner is actively involved in your project.
+For this reason, it is recommended that the human planner is actively involved in your project.
 
 image::Integration/keepTheUserInControl.png[align="center"]
 
@@ -674,7 +674,7 @@ Understand these guidelines to decide the hardware for a OptaPlanner service:
 **** Usually, this is around 300 to 500MB above the dataset size, _regardless of the problem scale_ (except with <<nearbySelection,nearby selection>> and caching move selector, neither are used by default).
 * **CPU power**: More is better.
 ** Improving CPU speed directly increases the <<scoreCalculationSpeed,score calculation speed>>.
-*** If the CPU power is twice as fast, it takes half the time to find the same result. However, this does not guarantee that it finds a better result in the same time, nor that it finds a similar result for a problem twice as a big in the same time.
+*** If the CPU power is twice as fast, it takes half the time to find the same result. However, this does not guarantee that it finds a better result in the same time, nor that it finds a similar result for a problem twice as big in the same time.
 *** Increasing CPU power usually does not resolve scaling issues, because planning problems scale exponentially. Power tweaking the solver configuration has far better results for scaling issues than throwing hardware at it.
 ** During the `solve()` method, the CPU power will max out until it returns (except in <<daemon,daemon mode>> or if your <<SolverEventListener,SolverEventListener>> writes the best solution to disk or the network).
 * **Number of CPU cores**: one CPU core per active Solver, plus at least one one for the operating system.

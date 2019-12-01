@@ -172,8 +172,8 @@ When two scores are compared, each of the score constraints are compared individ
 Pareto scoring can even be combined with score levels and score constraint weighting.
 
 Consider this example with positive constraints, where we want to get the most apples and oranges.
-Since it is impossible to compare apples and oranges, we can not weight them against each other.
-Yet, despite that we can not compare them, we can state that two apples are better then one apple.
+Since it is impossible to compare apples and oranges, we can not weigh them against each other.
+Yet, despite that we can not compare them, we can state that two apples are better than one apple.
 Similarly, we can state that two apples and one orange are better than just one orange.
 So despite our inability to compare some Scores conclusively (at which point we declare them equal), we can find a set of optimal scores.
 Those are called pareto optimal.
@@ -915,7 +915,7 @@ Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning en
 
 This can give a good performance gain in some use cases, not just because the score calculation is faster,
 but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
-However, usually this not a good idea because there is a real risk of trading short term benefits for long term harm:
+However, usually this is not a good idea because there is a real risk of trading short term benefits for long term harm:
 
 * Many optimization algorithms rely on the freedom to break hard constraints when changing planning entities,
 to get out of local optima.

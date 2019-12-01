@@ -59,13 +59,13 @@ Soft constraints (unless configured otherwise):
  to avoid having most participants going to the same room.
 * Generic purpose timeslot and room tags
 ** Speaker preferred timeslot tag: If a speaker has a preferred timeslot tag, then all his/her talks should be assigned to a timeslot with that tag.
-** Speaker undesired timeslot tag: If a speaker has a undesired timeslot tag, then all his/her talks should not be assigned to a timeslot with that tag.
+** Speaker undesired timeslot tag: If a speaker has an undesired timeslot tag, then all his/her talks should not be assigned to a timeslot with that tag.
 ** Talk preferred timeslot tag: If a talk has a preferred timeslot tag, then it should be assigned to a timeslot with that tag.
-** Talk undesired timeslot tag: If a talk has a undesired timeslot tag, then it should not be assigned to a timeslot with that tag.
+** Talk undesired timeslot tag: If a talk has an undesired timeslot tag, then it should not be assigned to a timeslot with that tag.
 ** Speaker preferred room tag: If a speaker has a preferred room tag, then all his/her talks should be assigned to a room with that tag.
-** Speaker undesired room tag: If a speaker has a undesired room tag, then all his/her talks should not be assigned to a room with that tag.
+** Speaker undesired room tag: If a speaker has an undesired room tag, then all his/her talks should not be assigned to a room with that tag.
 ** Talk preferred room tag: If a talk has a preferred room tag, then it should be assigned to a room with that tag.
-** Talk undesired room tag: If a talk has a undesired room tag, then it should not be assigned to a room with that tag.
+** Talk undesired room tag: If a talk has an undesired room tag, then it should not be assigned to a room with that tag.
 
 Every constraint can be configured to use a different score level (hard/medium/soft) or a different score weight.
 
