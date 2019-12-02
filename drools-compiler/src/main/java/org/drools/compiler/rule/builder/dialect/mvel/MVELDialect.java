@@ -91,7 +91,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 

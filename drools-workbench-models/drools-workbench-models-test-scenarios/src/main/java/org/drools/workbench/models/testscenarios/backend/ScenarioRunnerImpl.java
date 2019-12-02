@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.workbench.models.testscenarios.backend.populators.FactPopulator;
 import org.drools.workbench.models.testscenarios.backend.populators.FactPopulatorFactory;
@@ -37,7 +38,6 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.mvel2.MVEL;
 
 /**

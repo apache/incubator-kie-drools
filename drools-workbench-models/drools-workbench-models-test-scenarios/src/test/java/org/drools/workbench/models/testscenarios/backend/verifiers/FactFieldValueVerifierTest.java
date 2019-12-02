@@ -25,7 +25,7 @@ import org.drools.workbench.models.testscenarios.backend.SqlDateWrapper;
 import org.drools.workbench.models.testscenarios.backend.StringCollection;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import static org.mockito.Mockito.mock;
 

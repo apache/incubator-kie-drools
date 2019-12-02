@@ -27,7 +27,7 @@ import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.workbench.models.testscenarios.backend.util.FieldTypeResolver;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;

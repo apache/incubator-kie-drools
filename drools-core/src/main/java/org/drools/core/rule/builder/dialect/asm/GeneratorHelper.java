@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -31,8 +33,6 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.asm.MethodComparator;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

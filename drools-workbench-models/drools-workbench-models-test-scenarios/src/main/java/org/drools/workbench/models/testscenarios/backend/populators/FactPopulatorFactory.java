@@ -19,7 +19,7 @@ package org.drools.workbench.models.testscenarios.backend.populators;
 import java.util.Map;
 
 import org.drools.workbench.models.testscenarios.shared.FactData;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class FactPopulatorFactory {
 

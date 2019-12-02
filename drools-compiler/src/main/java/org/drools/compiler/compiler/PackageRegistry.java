@@ -22,7 +22,7 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
 import org.kie.api.io.Resource;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class PackageRegistry {
 

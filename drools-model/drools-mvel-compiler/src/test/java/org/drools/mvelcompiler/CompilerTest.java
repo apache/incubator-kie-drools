@@ -8,12 +8,12 @@ import java.util.function.Consumer;
 
 import org.drools.Gender;
 import org.drools.Person;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 interface CompilerTest {
 

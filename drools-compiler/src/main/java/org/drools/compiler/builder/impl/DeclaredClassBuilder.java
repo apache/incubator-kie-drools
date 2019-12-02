@@ -24,7 +24,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 

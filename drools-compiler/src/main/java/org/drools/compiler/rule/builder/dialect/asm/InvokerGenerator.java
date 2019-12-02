@@ -24,7 +24,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
 import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mvel2.asm.MethodVisitor;
 
 import static org.mvel2.asm.Opcodes.ACC_FINAL;

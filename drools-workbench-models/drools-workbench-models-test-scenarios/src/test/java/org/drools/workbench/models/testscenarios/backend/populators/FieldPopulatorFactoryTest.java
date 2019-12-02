@@ -22,14 +22,14 @@ import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class FieldPopulatorFactoryTest {
 

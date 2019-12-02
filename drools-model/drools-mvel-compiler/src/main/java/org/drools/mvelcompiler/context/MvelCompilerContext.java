@@ -3,7 +3,7 @@ package org.drools.mvelcompiler.context;
 import java.util.Optional;
 
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class MvelCompilerContext {
 

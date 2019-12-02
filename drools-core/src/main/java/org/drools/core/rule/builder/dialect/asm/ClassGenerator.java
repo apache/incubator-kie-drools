@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -32,8 +34,6 @@ import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.workbench.models.testscenarios.backend.ScenarioRunnerImpl.getImports;
 import static org.drools.workbench.models.testscenarios.backend.populators.DummyFactPopulator.factDataToObjects;
