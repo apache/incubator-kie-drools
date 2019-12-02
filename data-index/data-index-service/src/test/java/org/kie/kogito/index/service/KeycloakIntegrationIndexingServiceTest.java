@@ -37,6 +37,9 @@ public class KeycloakIntegrationIndexingServiceTest {
     @BeforeAll
     public static void setup() {
         System.setProperty("quarkus.oidc.enabled", "true");
+        System.setProperty("quarkus.http.auth.policy.role-policy1.roles-allowed", "confidential");
+        System.setProperty("quarkus.http.auth.permission.roles1.paths", "/graphql");
+        System.setProperty("quarkus.http.auth.permission.roles1.policy", "role-policy1");
     }
 
     @Test
@@ -45,7 +48,7 @@ public class KeycloakIntegrationIndexingServiceTest {
         given().auth().oauth2(getAccessToken("alice"))
                 .when().get("/graphiql/")
                 .then()
-                .statusCode(403);
+                .statusCode(404);
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .auth().oauth2(getAccessToken("alice"))
@@ -58,10 +61,9 @@ public class KeycloakIntegrationIndexingServiceTest {
     public void testNoTokenProvided() {
         given().when().get("/graphiql/")
                 .then()
-                .statusCode(401);
+                .statusCode(404);
 
-        given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().get("/graphql")
                 .then()
                 .statusCode(401);
@@ -73,7 +75,8 @@ public class KeycloakIntegrationIndexingServiceTest {
         given().auth().oauth2(getAccessToken("jdoe"))
                 .when().get("/graphiql/")
                 .then()
-                .statusCode(200);
+                .statusCode(404);
+
         given().auth().oauth2(getAccessToken("jdoe"))
                 .contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
