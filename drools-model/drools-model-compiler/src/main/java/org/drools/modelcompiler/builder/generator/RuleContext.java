@@ -74,7 +74,7 @@ public class RuleContext {
     private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
     private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<String, String> aggregatePatternMap = new HashMap<>();
+    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
     private Boolean isNestedInsideOr = false;
@@ -387,7 +387,7 @@ public class RuleContext {
         return namedConsequences;
     }
 
-    public Map<String, String> getAggregatePatternMap() {
+    public Map<AggregateKey, String> getAggregatePatternMap() {
         return aggregatePatternMap;
     }
 
