@@ -22,6 +22,10 @@ public interface Model {
 
     String getName();
 
+    default String getPackageName() {
+        return getName();
+    }
+
     List<Global> getGlobals();
 
     List<Rule> getRules();

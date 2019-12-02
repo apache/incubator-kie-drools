@@ -592,9 +592,16 @@ public class PackageModel {
             BodyDeclaration<?> modelNameMethod = parseBodyDeclaration(
                     "    @Override\n" +
                             "    public String getName() {\n" +
-                            "        return super.getName() + \". " + ruleUnitName + "\";\n" +
+                            "        return super.getName() + \"." + ruleUnitName + "\";\n" +
                             "    }\n" );
             rulesClass.addMember( modelNameMethod );
+
+            BodyDeclaration<?> modelPackageNameMethod = parseBodyDeclaration(
+                    "    @Override\n" +
+                            "    public String getPackageName() {\n" +
+                            "        return super.getName();\n" +
+                            "    }\n" );
+            rulesClass.addMember( modelPackageNameMethod );
         }
 
         createAndAddGetRulesMethod( rulesClass );
