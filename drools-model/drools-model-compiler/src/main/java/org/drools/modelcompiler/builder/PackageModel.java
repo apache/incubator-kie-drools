@@ -200,6 +200,10 @@ public class PackageModel {
     public String getPathName() {
         return name.replace('.', '/');
     }
+
+    public String getRulesFileNameWithPackage() {
+        return name + "." + rulesFileName;
+    }
     
     public DRLIdGenerator getExprIdGenerator() {
         return exprIdGenerator;
