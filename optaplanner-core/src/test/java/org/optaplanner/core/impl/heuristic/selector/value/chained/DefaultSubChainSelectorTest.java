@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -37,12 +38,64 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotNull;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 public class DefaultSubChainSelectorTest {
+
+    @Test
+    public void notChainedVariableDescriptor() {
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+        GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        when(variableDescriptor.isChained()).thenReturn(false);
+
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
+                .withMessageContaining("chained");
+    }
+
+    @Test
+    public void neverEndingValueSelector() {
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+        GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        when(variableDescriptor.isChained()).thenReturn(true);
+        when(valueSelector.isNeverEnding()).thenReturn(true);
+
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
+                .withMessageContaining("neverEnding");
+    }
+
+    @Test
+    public void minimumSubChainSizeIsZero() {
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+        GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        when(variableDescriptor.isChained()).thenReturn(true);
+
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 0, 1))
+                .withMessageContaining("at least 1");
+    }
+
+    @Test
+    public void minimumSubChainSizeIsGreaterThanMaximumSubChainSize() {
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+        GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        when(variableDescriptor.isChained()).thenReturn(true);
+
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 2, 1))
+                .withMessageContaining("at least maximumSubChainSize");
+    }
 
     @Test
     public void calculateSubChainSelectionSize() {
@@ -239,8 +292,8 @@ public class DefaultSubChainSelectorTest {
 
     private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
         assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertEquals(true, subChainSelector.isCountable());
-        assertEquals(false, subChainSelector.isNeverEnding());
+        assertTrue(subChainSelector.isCountable());
+        assertFalse(subChainSelector.isNeverEnding());
         assertEquals(codes.length, subChainSelector.getSize());
     }
 
@@ -285,7 +338,10 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertAllCodesOfSubChainSelector(subChainSelector,
-                "[a1, a2]", "[a1, a2, a3]", "[a2, a3]", "[a2, a3, a4]", "[a3, a4]", "[b1, b2]");
+                "[a1, a2]", "[a1, a2, a3]",
+                "[a2, a3]", "[a2, a3, a4]",
+                "[a3, a4]",
+                "[b1, b2]");
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -523,8 +579,8 @@ public class DefaultSubChainSelectorTest {
         }
         assertTrue(subChainCountMap.isEmpty());
         assertTrue(iterator.hasNext());
-        assertEquals(true, subChainSelector.isCountable());
-        assertEquals(true, subChainSelector.isNeverEnding());
+        assertTrue(subChainSelector.isCountable());
+        assertTrue(subChainSelector.isNeverEnding());
         assertEquals((long) selectionSize, subChainSelector.getSize());
     }
 
@@ -538,5 +594,5 @@ public class DefaultSubChainSelectorTest {
             subChainCountMap.put(subChain, count + 1);
         }
     }
-
 }
+
