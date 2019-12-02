@@ -25,9 +25,9 @@ image::dmn/dmn-decision-boxed-expression-options.png[]
 .Managing data types for a column header value
 image::dmn/dmn-manage-data-types.png[]
 
-You can also set and manage custom data types for a specified decision node or business knowledge model node by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
+You can also set and manage custom data types for a specified decision node or business knowledge model node by selecting the *Properties* icon in the upper-right corner of the DMN designer:
 
-.Managing data types in diagram properties
+.Managing data types in decision requirements diagram (DRD) properties
 image::dmn/dmn-manage-data-types1a.png[]
 
 The data type that you define for a specified cell in a boxed expression determines the structure of the data that you use within that associated table, column, or field in the boxed expression.
@@ -66,7 +66,7 @@ image::dmn/dmn-custom-data-type-constraints-drag.png[]
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
 --
 
-. Click *OK* to save the constraints and click *Save* to save the data type.
+. Click *OK* to save the constraints and click the check mark to the right of the data type to save the data type.
 
 . Return to the *Credit Score Rating* decision table, click the *Credit Score Rating* column header, set the data type to this new custom data type, and define the rule values for that column with the rating constraints that you specified.
 +
@@ -92,7 +92,7 @@ image::dmn/dmn-manage-data-types-structured.png[]
 . For this example, under the structured *Loan_Qualification* data type, add a *Qualification* field with `"Qualified"` and `"Not Qualified"` enumeration constraints, and a *Reason* field with no constraints. Add also a simple *Back_End_Ratio* and a *Front_End_Ratio* data type, both with `"Sufficient"` and `"Insufficient"` enumeration constraints.
 +
 --
-Click *Save* for each data type that you create.
+Click the check mark to the right of each data type that you create to save your changes.
 
 .Adding nested data types with constraints
 image::dmn/dmn-manage-data-types-structured2.png[]
