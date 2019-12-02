@@ -16,7 +16,10 @@
 
 package org.drools.modelcompiler.builder;
 
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.model.Model;
@@ -24,7 +27,10 @@ import org.drools.modelcompiler.CanonicalKiePackages;
 import org.drools.modelcompiler.KiePackagesBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.KieBaseOption;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
 
 public class KieBaseBuilder {
 
@@ -39,7 +45,7 @@ public class KieBaseBuilder {
         this(null, conf);
     }
 
-    public KieBaseBuilder(KieBaseModelImpl kBaseModel, KieBaseConfiguration conf) {
+    public KieBaseBuilder(KieBaseModel kBaseModel, KieBaseConfiguration conf) {
         this.conf = conf;
         this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase";
     }
@@ -51,18 +57,36 @@ public class KieBaseBuilder {
     }
 
     public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseOption... options ) {
+        return createKieBaseFromModel( Collections.singleton( model ), options );
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseConfiguration kieBaseConf ) {
+        return createKieBaseFromModel( Collections.singleton( model ), kieBaseConf );
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseOption... options ) {
         KieBaseConfiguration kieBaseConf = KieServices.get().newKieBaseConfiguration();
         if (options != null) {
             for (KieBaseOption option : options) {
                 kieBaseConf.setOption( option );
             }
         }
-        return createKieBaseFromModel( model, kieBaseConf );
+        return createKieBaseFromModel( models, kieBaseConf );
     }
 
-    public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseConfiguration kieBaseConf ) {
+    public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseConfiguration kieBaseConf ) {
         KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
-        builder.addModel( model );
+        models.forEach( builder::addModel );
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseModel kieBaseModel ) {
+        RuleBaseConfiguration kieBaseConf = new RuleBaseConfiguration();
+        kieBaseConf.setEventProcessingMode(kieBaseModel.getEventProcessingMode());
+        kieBaseConf.setSessionPoolSize(kieBaseModel.getSessionsPool().getSize());
+
+        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
+        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getName()) ).forEach( builder::addModel );
+        return new KieBaseBuilder(kieBaseModel, kieBaseConf).createKieBase(builder.build());
     }
 }
