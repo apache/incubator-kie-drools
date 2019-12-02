@@ -24,7 +24,7 @@ image::dmn/dmn-designer-preview.png[]
 --
 
 DRD properties and design::
-In the upper-right corner of the DMN designer, select the *Diagram properties* icon to modify the identifying information, data types, and appearance of a selected DRD, DRD node, or boxed expression cell:
+In the upper-right corner of the DMN designer, select the *Properties* icon to modify the identifying information, data types, and appearance of a selected DRD, DRD node, or boxed expression cell:
 +
 --
 .DRD node properties

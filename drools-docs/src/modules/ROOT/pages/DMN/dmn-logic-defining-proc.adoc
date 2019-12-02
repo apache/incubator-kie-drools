@@ -70,7 +70,7 @@ image::dmn/dmn-custom-data-type-constraints-drag.png[]
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
 --
 
-. Click *OK* to save the constraints and click *Save* to save the data type.
+. Click *OK* to save the constraints and click the check mark to the right of the data type to save the data type.
 . Return to the *Credit Score Rating* decision table, click the *Credit Score Rating* column header, and set the data type to this new custom data type.
 . Use the *Credit Score.FICO* input column to define credit score values or ranges of values, and use the *Credit Score Rating* column to specify one of the corresponding ratings you defined in the *Credit_Score_Rating* data type.
 +
