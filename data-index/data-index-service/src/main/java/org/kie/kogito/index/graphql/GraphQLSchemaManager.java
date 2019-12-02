@@ -89,9 +89,8 @@ public class GraphQLSchemaManager {
         schema = createSchema();
         GraphQLQueryParserRegistry.get().registerParsers(
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
-                (GraphQLInputObjectType) schema.getType("ProcessInstanceMetaArgument"),
                 (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
-                (GraphQLInputObjectType) schema.getType("UserTaskInstanceMetaArgument")
+                (GraphQLInputObjectType) schema.getType("KogitoMetadataArgument")
         );
     }
 

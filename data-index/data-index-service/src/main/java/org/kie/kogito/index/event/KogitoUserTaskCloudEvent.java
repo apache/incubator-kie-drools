@@ -29,7 +29,7 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
 
     @JsonProperty("kogitoUserTaskinstanceState")
     private String state;
-    
+
     public static Builder builder() {
         return new Builder();
     }
@@ -48,6 +48,14 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public void setTime(ZonedDateTime time) {
+        super.setTime(time);
+        if (getData() != null && time != null) {
+            getData().setLastUpdate(time);
+        }
     }
 
     @Override

@@ -32,8 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLNonNull.nonNull;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 
 public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper {
 
@@ -66,10 +65,8 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
 
             domain.getFieldDefinitions().forEach(field -> {
                 LOGGER.debug("GraphQL mapping field: {}", field);
-                if (PROCESS_INSTANCES_DOMAIN_ATTRIBUTE.equals(field.getName())) {
-                    builder.field(newInputObjectField().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(new GraphQLTypeReference("ProcessInstanceMetaArgument"))).build();
-                } else if (USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE.equals(field.getName())) {
-                    builder.field(newInputObjectField().name(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).type(new GraphQLTypeReference("UserTaskInstanceMetaArgument"))).build();
+                if (KOGITO_DOMAIN_ATTRIBUTE.equals(field.getName())) {
+                    builder.field(newInputObjectField().name(KOGITO_DOMAIN_ATTRIBUTE).type(new GraphQLTypeReference("KogitoMetadataArgument"))).build();
                 } else if ("id".equals(field.getName())) {
                     builder.field(newInputObjectField().name("id").type(new GraphQLTypeReference("IdArgument"))).build();
                 } else {

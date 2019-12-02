@@ -33,15 +33,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.index.Constants.ID;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
 public class IndexingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
-    private static final String PROCESS_ID = "processId";
 
     @Inject
     CacheService manager;
@@ -60,7 +63,7 @@ public class IndexingService {
     }
 
     public void indexModel(ObjectNode json) {
-        String processId = json.get(PROCESS_ID).asText();
+        String processId = json.remove(PROCESS_ID).asText();
         Cache<String, ObjectNode> cache = manager.getDomainModelCache(processId);
         if (cache == null) {
 //          Unknown process type, ignore
@@ -68,57 +71,71 @@ public class IndexingService {
             return;
         }
 
-        String processInstanceId = json.get("id").asText();
+        String processInstanceId = json.get(ID).asText();
         String type = cache.getRootType();
         ObjectNode model = cache.get(processInstanceId);
+        ObjectNode builder = getObjectMapper().createObjectNode();
+        builder.put("_type", type);
         if (model == null) {
-            ObjectNode builder = getObjectMapper().createObjectNode();
-            builder.put("_type", type);
-            json.remove(PROCESS_ID);
             builder.setAll(json);
-            cache.put(processInstanceId, builder);
         } else {
-            ObjectNode builder = getObjectMapper().createObjectNode();
-            builder.put("_type", type);
-            ArrayNode indexPIArray = (ArrayNode) json.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
-            if (indexPIArray != null) {
-                json.remove(PROCESS_ID);
-                JsonNode id = indexPIArray.get(0).get("id");
-                if (processInstanceId.equals(id.asText())) {
-                    //For processes simply copy all values
-                    builder.setAll(json);
-                } else {
-                    //For sub-process merge with current values
-                    builder.setAll(model);
-                    builder.setAll(json);
-                }
-                ArrayNode utArray = (ArrayNode) model.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
-                if (utArray != null) {
-                    builder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, utArray);
-                }
-                copyJsonArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, model, builder, indexPIArray);
-            }
-            ArrayNode indexTIArray = (ArrayNode) json.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
-            if (indexTIArray != null) {
+            copyAllEventData(json, processInstanceId, model, builder);
+            ObjectNode kogito = indexKogitoDomain((ObjectNode) json.get(KOGITO_DOMAIN_ATTRIBUTE), (ObjectNode) model.get(KOGITO_DOMAIN_ATTRIBUTE));
+            builder.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
+        }
+        cache.put(processInstanceId, builder);
+    }
+
+    private void copyAllEventData(ObjectNode json, String processInstanceId, ObjectNode model, ObjectNode builder) {
+        ArrayNode indexPIArray = (ArrayNode) json.get(KOGITO_DOMAIN_ATTRIBUTE).get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
+        if (indexPIArray == null) {
+            builder.setAll(model);
+        } else {
+            JsonNode id = indexPIArray.get(0).get(ID);
+            if (processInstanceId.equals(id.asText())) {
+                //For processes simply copy all values
+                builder.setAll(json);
+            } else {
+                //For sub-process merge with current values
                 builder.setAll(model);
-                copyJsonArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, model, builder, indexTIArray);
+                builder.setAll(json);
             }
-            cache.put(processInstanceId, builder);
         }
     }
 
-    private void copyJsonArray(String attribute, ObjectNode model, ObjectNode builder, ArrayNode arrayNode) {
-        ArrayNode arrayBuilder = getObjectMapper().createArrayNode().addAll(arrayNode);
-        ArrayNode jsonArray = model.withArray(attribute);
-        if (jsonArray != null) {
-            String indexTaskId = arrayNode.get(0).get("id").asText();
-            jsonArray.forEach(ti -> {
-                if (!indexTaskId.equals(ti.get("id").asText())) {
-                    arrayBuilder.add(ti);
-                }
-            });
+    private ObjectNode indexKogitoDomain(ObjectNode kogitoEvent, ObjectNode kogitoCache) {
+        ObjectNode kogitoBuilder = getObjectMapper().createObjectNode();
+        kogitoBuilder.set(LAST_UPDATE, kogitoEvent.get(LAST_UPDATE));
+
+        ArrayNode indexPIArray = (ArrayNode) kogitoEvent.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
+        if (indexPIArray != null) {
+            
+            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray((ArrayNode) kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE), indexPIArray));
+            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE));
         }
-        builder.remove(attribute);
-        builder.set(attribute, arrayBuilder);
+
+        ArrayNode indexTIArray = (ArrayNode) kogitoEvent.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+        if (indexTIArray != null) {
+            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray((ArrayNode) kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE), indexTIArray));
+            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE));
+        }
+
+        return kogitoBuilder;
+    }
+
+    private ArrayNode copyToArray(ArrayNode arrayCache, ArrayNode arrayEvent) {
+        if (arrayCache == null) {
+            return getObjectMapper().createArrayNode().add(arrayEvent.get(0));
+        }
+        String indexId = arrayEvent.get(0).get(ID).asText();
+        for (int i = 0; i < arrayCache.size(); i++) {
+            if (indexId.equals(arrayCache.get(i).get(ID).asText())) {
+                arrayCache.set(i, arrayEvent.get(0));
+                return arrayCache;
+            }
+        }
+
+        arrayCache.add(arrayEvent.get(0));
+        return arrayCache;
     }
 }

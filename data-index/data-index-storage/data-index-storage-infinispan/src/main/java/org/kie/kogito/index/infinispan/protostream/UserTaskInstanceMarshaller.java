@@ -52,6 +52,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         ut.setInputs(jsonFromString(reader.readString("inputs")));
         ut.setOutputs(jsonFromString(reader.readString("outputs")));
         ut.setReferenceName(reader.readString("referenceName"));
+        ut.setLastUpdate(dateToZonedDateTime(reader.readDate("lastUpdate")));
         return ut;
     }
 
@@ -77,6 +78,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         writer.writeString("inputs", ut.getInputs() == null ? null : ut.getInputs().toString());
         writer.writeString("outputs", ut.getOutputs() == null ? null : ut.getOutputs().toString());
         writer.writeString("referenceName", ut.getReferenceName());
+        writer.writeDate("lastUpdate", zonedDateTimeToDate(ut.getLastUpdate()));
     }
 
     @Override

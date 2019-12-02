@@ -19,12 +19,15 @@ package org.kie.kogito.index.json;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
 
+import static org.kie.kogito.index.Constants.ID;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.LAST_UPDATE;
+import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
@@ -38,15 +41,18 @@ public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudE
 
         UserTaskInstance ut = event.getData();
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put("id", event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
-        json.put("processId", event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
-        json.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(ut));
+        json.put(ID, event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
+        json.put(PROCESS_ID, event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+        ObjectNode kogito = getObjectMapper().createObjectNode();
+        kogito.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
+        kogito.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(ut));
+        json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
         return json;
     }
 
     private ObjectNode getUserTaskJson(UserTaskInstance ut) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put("id", ut.getId());
+        json.put(ID, ut.getId());
         json.put("processInstanceId", ut.getProcessInstanceId());
         json.put("state", ut.getState());
         if (ut.getDescription() != null) {
@@ -71,6 +77,9 @@ public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudE
         }
         if (ut.getStarted() != null) {
             json.put("started", ut.getStarted().toInstant().toEpochMilli());
+        }
+        if (ut.getLastUpdate() != null) {
+            json.put(LAST_UPDATE, ut.getLastUpdate().toInstant().toEpochMilli());
         }
         return json;
     }

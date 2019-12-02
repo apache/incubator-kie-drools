@@ -43,6 +43,7 @@ public class UserTaskInstanceMeta {
     private Set<String> potentialGroups;
     private Set<String> potentialUsers;
     private String referenceName;
+    private ZonedDateTime lastUpdate;
 
     public String getId() {
         return id;
@@ -168,6 +169,14 @@ public class UserTaskInstanceMeta {
         this.referenceName = referenceName;
     }
 
+    public ZonedDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(ZonedDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     @Override
     public String toString() {
         return "UserTaskInstanceMeta{" +
@@ -186,6 +195,7 @@ public class UserTaskInstanceMeta {
                 ", potentialGroups=" + potentialGroups +
                 ", potentialUsers=" + potentialUsers +
                 ", referenceName='" + referenceName + '\'' +
+                ", lastUpdate=" + lastUpdate +
                 '}';
     }
 }

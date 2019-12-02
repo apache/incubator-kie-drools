@@ -29,9 +29,7 @@ message Deals {
     optional string review = 3;
     optional Traveller traveller = 4;
     /* @Field(store = Store.YES) */
-    repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 5;
-    /* @Field(store = Store.YES) */
-    repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 6;
+    optional org.kie.kogito.index.model.KogitoMetadata metadata = 5;
 }
 
 /* @Indexed */

@@ -69,11 +69,8 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                             case "NumericArgument":
                                 parser.mapAttribute(field.getName(), mapNumericArgument(field.getName()));
                                 break;
-                            case "ProcessInstanceMetaArgument":
-                                parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), GraphQLQueryParserRegistry.get().getParser("ProcessInstanceMetaArgument")));
-                                break;
-                            case "UserTaskInstanceMetaArgument":
-                                parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), GraphQLQueryParserRegistry.get().getParser("UserTaskInstanceMetaArgument")));
+                            case "KogitoMetadataArgument":
+                                parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), GraphQLQueryParserRegistry.get().getParser("KogitoMetadataArgument")));
                                 break;
                             default:
                                 parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), new GraphQLQueryMapper().apply((GraphQLInputObjectType) field.getType())));

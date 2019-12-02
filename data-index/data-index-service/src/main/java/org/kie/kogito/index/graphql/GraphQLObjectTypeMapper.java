@@ -21,21 +21,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import graphql.Scalars;
-import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import org.kie.kogito.index.domain.AttributeDescriptor;
 import org.kie.kogito.index.domain.DomainDescriptor;
-import org.kie.kogito.index.model.ProcessInstanceMeta;
-import org.kie.kogito.index.model.UserTaskInstanceMeta;
+import org.kie.kogito.index.model.KogitoMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 
 public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, GraphQLObjectType> {
 
@@ -76,10 +73,8 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
         return builder ->
                 domain.getAttributes().forEach(field -> {
                     LOGGER.debug("GraphQL mapping field: {}", field);
-                    if (ProcessInstanceMeta.class.getName().equals(field.getTypeName())) {
-                        builder.field(newFieldDefinition().name(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("ProcessInstanceMeta")))).build();
-                    } else if (UserTaskInstanceMeta.class.getName().equals(field.getTypeName())) {
-                        builder.field(newFieldDefinition().name(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).type(GraphQLList.list(schema.getObjectType("UserTaskInstanceMeta")))).build();
+                    if (KogitoMetadata.class.getName().equals(field.getTypeName())) {
+                        builder.field(newFieldDefinition().name(KOGITO_DOMAIN_ATTRIBUTE).type(schema.getObjectType("KogitoMetadata"))).build();
                     } else {
                         GraphQLOutputType type;
                         switch (field.getTypeName()) {

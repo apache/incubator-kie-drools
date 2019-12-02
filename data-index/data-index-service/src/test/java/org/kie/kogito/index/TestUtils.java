@@ -76,12 +76,12 @@ public final class TestUtils {
                 .contentType("application/json")
                 .processInstanceId(processInstanceId)
                 .type("ProcessInstanceEvent")
-                .time(ZonedDateTime.now())
                 .data(getProcessInstance(processId, processInstanceId, status.ordinal(), rootProcessInstanceId, rootProcessId))
                 .kogitoReferenceId(UUID.randomUUID().toString())
                 .schemaURL(URI.create("kogito"))
                 .source(URI.create("http://localhost:8080/" + processId))
                 .kogitoAddons("jobs-management,prometheus-monitoring,process-management")
+                .time(ZonedDateTime.now())
                 .build();
     }
 
@@ -143,8 +143,8 @@ public final class TestUtils {
                 .processInstanceId(processInstanceId)
                 .type("UserTaskInstanceEvent")
                 .source(URI.create("http://localhost:8080/"))
-                .time(ZonedDateTime.now())
                 .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state))
+                .time(ZonedDateTime.now())
                 .build();
     }
 

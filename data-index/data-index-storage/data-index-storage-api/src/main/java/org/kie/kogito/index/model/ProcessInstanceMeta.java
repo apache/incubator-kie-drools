@@ -38,6 +38,7 @@ public class ProcessInstanceMeta {
     private String rootProcessId;
     @JsonProperty("parentInstanceId")
     private String parentProcessInstanceId;
+    private ZonedDateTime lastUpdate;
 
     public String getId() {
         return id;
@@ -133,6 +134,14 @@ public class ProcessInstanceMeta {
         this.processName = processName;
     }
 
+    public ZonedDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(ZonedDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstanceMeta{" +
@@ -147,6 +156,7 @@ public class ProcessInstanceMeta {
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
                 ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
+                ", lastUpdated=" + lastUpdate +
                 '}';
     }
 }

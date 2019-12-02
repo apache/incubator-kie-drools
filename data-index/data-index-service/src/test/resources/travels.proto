@@ -74,10 +74,8 @@ message Travels {
 	optional Trip trip = 5; 
 	/* @Field(store = Store.YES) */ 
 	optional VisaApplication visaApplication = 6; 
-	/* @Field(store = Store.YES) */ 
-	repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 7; 
-	/* @Field(store = Store.YES) */ 
-	repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 8; 
+	/* @Field(store = Store.YES) */
+	optional org.kie.kogito.index.model.KogitoMetadata metadata = 7;
 }
 /* @Indexed */ 
 message Trip { 

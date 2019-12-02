@@ -125,10 +125,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
                                         "option kogito_model = \"" + generatedData.name() +"\";", 
                                         "option kogito_id = \"" + processId +"\";");
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
-            modelMessage.addField("repeated", "org.kie.kogito.index.model.ProcessInstanceMeta", "processInstances")
-                    .setComment(INDEX_COMMENT);
-            modelMessage.addField("repeated", "org.kie.kogito.index.model.UserTaskInstanceMeta", "userTasks")
-                    .setComment(INDEX_COMMENT);
+            modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata").setComment(INDEX_COMMENT);
             
             Path protoFilePath = Paths.get(targetDirectory, "classes", "/persistence/" + processId + ".proto");
 

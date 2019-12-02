@@ -32,8 +32,6 @@ message VisaApplications {
 	optional string id = 1; 
 	/* @Field(store = Store.YES) */ 
 	optional VisaApplication visaApplication = 2; 
-	/* @Field(store = Store.YES) */ 
-	repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 3; 
-	/* @Field(store = Store.YES) */ 
-	repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 4; 
+    /* @Field(store = Store.YES) */
+    optional org.kie.kogito.index.model.KogitoMetadata metadata = 3;
 }

@@ -27,6 +27,23 @@ type ProcessInstance {
     childProcessInstanceId: [String!]
     error: ProcessInstanceError
     addons: [String!]
+    lastUpdate: DateTime!
+}
+
+type KogitoMetadata {
+    lastUpdate: DateTime!
+    processInstances: [ProcessInstanceMeta]
+    userTasks: [UserTaskInstanceMeta]
+}
+
+input KogitoMetadataOrderBy {
+    lastUpdate: OrderBy
+}
+
+input KogitoMetadataArgument {
+    lastUpdate: DateArgument
+    processInstances: ProcessInstanceMetaArgument
+    userTasks: UserTaskInstanceMetaArgument
 }
 
 type ProcessInstanceMeta {
@@ -41,6 +58,7 @@ type ProcessInstanceMeta {
     endpoint: String!
     start: DateTime!
     end: DateTime
+    lastUpdate: DateTime!
 }
 
 type ProcessInstanceError {
@@ -75,6 +93,7 @@ input ProcessInstanceOrderBy {
     start: OrderBy
     end: OrderBy
     error: ProcessInstanceErrorOrderBy
+    lastUpdate: OrderBy
 }
 
 input ProcessInstanceErrorOrderBy {
@@ -99,6 +118,7 @@ input ProcessInstanceArgument {
     start: DateArgument
     end: DateArgument
     addons: StringArrayArgument
+    lastUpdate: DateArgument
 }
 
 input ProcessInstanceErrorArgument {
@@ -212,6 +232,7 @@ type UserTaskInstance {
     inputs: String
     outputs: String
     referenceName: String
+    lastUpdate: DateTime!
 }
 
 type UserTaskInstanceMeta {
@@ -230,6 +251,7 @@ type UserTaskInstanceMeta {
     potentialGroups: [String!]
     potentialUsers: [String!]
     referenceName: String
+    lastUpdate: DateTime!
 }
 
 input UserTaskInstanceArgument {
@@ -250,6 +272,7 @@ input UserTaskInstanceArgument {
     completed: DateArgument
     started: DateArgument
     referenceName: StringArgument
+    lastUpdate: DateArgument
 }
 
 input UserTaskInstanceMetaArgument {
@@ -280,6 +303,7 @@ input UserTaskInstanceOrderBy {
     completed: OrderBy
     started: OrderBy
     referenceName: OrderBy
+    lastUpdate: OrderBy
 }
 
 type Subscription {

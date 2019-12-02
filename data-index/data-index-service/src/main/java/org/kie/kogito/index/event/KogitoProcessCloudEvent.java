@@ -71,6 +71,14 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
     }
 
     @Override
+    public void setTime(ZonedDateTime time) {
+        super.setTime(time);
+        if (getData() != null && time != null) {
+            getData().setLastUpdate(time);
+        }
+    }
+
+    @Override
     public String toString() {
         return "KogitoProcessCloudEvent{" +
                 "state=" + state +

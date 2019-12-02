@@ -138,12 +138,32 @@ public class GraphQLUtils {
         return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, "potentialUsers", id);
     }
 
+    public static String geTravelsByUserTaskId(String id) {
+        return getQuery("TravelsByUserTaskId", id);
+    }
+
+    public static String getTravelsByProcessInstanceId(String id) {
+        return getQuery("TravelsByProcessInstanceId", id);
+    }
+
+    public static String getTravelsByProcessInstanceIdAndTravellerFirstName(String id, String name) {
+        return getQuery("TravelsByProcessInstanceIdAndTravellerFirstName", id, name);
+    }
+
+    public static String getDealsByTaskId(String id) {
+        return getQuery("DealsByTaskId", id);
+    }
+
     private static String getUserTaskInstanceWithArray(String query, List<String> values, String variable, String... args) throws Exception {
         String json = getUserTaskInstanceQuery(query, args);
         ObjectNode jsonNode = (ObjectNode) getObjectMapper().readTree(json);
         ArrayNode pg = (ArrayNode) jsonNode.get("variables").get(variable);
         values.forEach(g -> pg.add(g));
         return jsonNode.toString();
+    }
+
+    private static String getQuery(String name, String... args) {
+        return format(QUERIES.get(name), args);
     }
 
     private static String getProcessInstanceQuery(String name, String... args) {

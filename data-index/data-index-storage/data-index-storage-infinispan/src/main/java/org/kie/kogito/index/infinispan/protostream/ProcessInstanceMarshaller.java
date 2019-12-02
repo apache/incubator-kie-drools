@@ -50,6 +50,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setProcessName(reader.readString("processName"));
         pi.setError(reader.readObject("error", ProcessInstanceError.class));
         pi.setAddons(reader.readCollection("addons", new HashSet<>(), String.class));
+        pi.setLastUpdate(dateToZonedDateTime(reader.readDate("lastUpdate")));
         return pi;
     }
 
@@ -70,6 +71,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString("processName", pi.getProcessName());
         writer.writeObject("error", pi.getError(), ProcessInstanceError.class);
         writer.writeCollection("addons", pi.getAddons(), String.class);
+        writer.writeDate("lastUpdate", zonedDateTimeToDate(pi.getLastUpdate()));
     }
 
     @Override

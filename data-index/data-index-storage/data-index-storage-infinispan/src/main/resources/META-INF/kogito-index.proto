@@ -3,6 +3,16 @@ package org.kie.kogito.index.model;
 option indexed_by_default = true;
 
 /* @Indexed */
+message KogitoMetadata {
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 1;
+    /* @Field(store = Store.YES) */
+    repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 2;
+    /* @Field(store = Store.YES) */
+    repeated org.kie.kogito.index.model.UserTaskInstanceMeta userTasks = 3;
+}
+
+/* @Indexed */
 message ProcessInstanceMeta {
     /* @Field(store = Store.YES) */
     optional string id = 1;
@@ -24,6 +34,8 @@ message ProcessInstanceMeta {
     optional string parentProcessInstanceId = 10;
     /* @Field(store = Store.YES) */
     optional string processName = 11;
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 12;
 }
 
 /* @Indexed */
@@ -54,6 +66,8 @@ message ProcessInstance {
     optional ProcessInstanceError error = 14;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     repeated string addons = 15;
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 16;
 }
 
 /* @Indexed */
@@ -118,6 +132,8 @@ message UserTaskInstance {
     optional string outputs = 19;
     /* @Field(store = Store.YES) */
     optional string referenceName = 20;
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 21;
 }
 
 /* @Indexed */
@@ -150,4 +166,6 @@ message UserTaskInstanceMeta {
     repeated string potentialUsers = 14;
     /* @Field(store = Store.YES) */
     optional string referenceName = 15;
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 16;
 }

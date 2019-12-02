@@ -101,8 +101,8 @@ public class WebSocketSubscriptionTest {
 
         protobufService.registerProtoBufferType(getTravelsProtoBufferFile());
 
-        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.ACTIVE, "subscription { TravelsAdded { id, traveller { firstName }, processInstances { state } } }", "TravelsAdded");
-        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.COMPLETED, "subscription { TravelsUpdated { id, traveller { firstName }, processInstances { state } } }", "TravelsUpdated");
+        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.ACTIVE, "subscription { TravelsAdded { id, traveller { firstName }, metadata { processInstances { state } } } }", "TravelsAdded");
+        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.COMPLETED, "subscription { TravelsUpdated { id, traveller { firstName }, metadata { processInstances { state } } } }", "TravelsUpdated");
     }
 
     private void assertDomainSubscription(String processId, String processInstanceId, ProcessInstanceState state, String subscription, String subscriptionName) throws Exception {
@@ -120,7 +120,7 @@ public class WebSocketSubscriptionTest {
         assertThatJson(json.toString()).and(
                 a -> a.node("type").isEqualTo("data"),
                 a -> a.node("payload.data." + subscriptionName + ".id").isEqualTo(processInstanceId),
-                a -> a.node("payload.data." + subscriptionName + ".processInstances[0].state").isEqualTo(state.name()),
+                a -> a.node("payload.data." + subscriptionName + ".metadata.processInstances[0].state").isEqualTo(state.name()),
                 a -> a.node("payload.data." + subscriptionName + ".traveller.firstName").isEqualTo("Maciej"));
     }
 

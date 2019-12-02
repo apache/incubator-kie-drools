@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static org.kie.kogito.index.Constants.*;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 
 @ApplicationScoped
 public class ProtobufService {
@@ -98,10 +98,9 @@ public class ProtobufService {
         } catch (IllegalArgumentException ex) {
             throw new ProtobufValidationException(format("Could not find message with name: %s in proto file, e, please review option kogito_model", fullTypeName));
         }
-        
-        validateDescriptorField(messageName, descriptor, PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
-        validateDescriptorField(messageName, descriptor, USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
-        
+
+        validateDescriptorField(messageName, descriptor, KOGITO_DOMAIN_ATTRIBUTE);
+
         Map<String, String> cache = manager.getProtobufCache();
         cache.put(processId + ".proto", content);
         manager.getProcessIdModelCache().put(processId, fullTypeName);

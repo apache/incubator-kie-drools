@@ -18,11 +18,14 @@ package org.kie.kogito.index.json;
 
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstance;
 
+import static org.kie.kogito.index.Constants.ID;
+import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.LAST_UPDATE;
+import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
@@ -36,9 +39,12 @@ public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEve
             ProcessInstance pi = event.getData();
 
             ObjectNode json = getObjectMapper().createObjectNode();
-            json.put("id", event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
-            json.put("processId", event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
-            json.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event, pi));
+            json.put(ID, event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
+            json.put(PROCESS_ID, event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+            ObjectNode kogito = getObjectMapper().createObjectNode();
+            kogito.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
+            kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event, pi));
+            json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
             json.setAll((ObjectNode) event.getData().getVariables());
             return json;
         }
@@ -46,8 +52,8 @@ public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEve
 
     private ObjectNode getProcessJson(KogitoProcessCloudEvent event, ProcessInstance pi) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put("id", pi.getId());
-        json.put("processId", pi.getProcessId());
+        json.put(ID, pi.getId());
+        json.put(PROCESS_ID, pi.getProcessId());
         if (pi.getRootProcessInstanceId() != null) {
             json.put("rootProcessInstanceId", pi.getRootProcessInstanceId());
         }
@@ -66,6 +72,9 @@ public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEve
         }
         if (pi.getEnd() != null) {
             json.put("end", pi.getEnd().toInstant().toEpochMilli());
+        }
+        if (pi.getLastUpdate() != null) {
+            json.put(LAST_UPDATE, pi.getLastUpdate().toInstant().toEpochMilli());
         }
         return json;
     }
