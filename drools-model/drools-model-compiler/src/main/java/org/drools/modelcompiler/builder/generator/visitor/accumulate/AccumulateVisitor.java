@@ -333,6 +333,7 @@ public abstract class AccumulateVisitor {
                 singleResult.setExprBinding(bindExpressionVariable);
 
                 context.addDeclarationReplacing(new DeclarationSpec(singleResult.getPatternBinding(), exprRawClass));
+                context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, exprRawClass, expression));
 
                 functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
                 final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, singleResult.getUsedDeclarations(), singleResult.getExpr());
@@ -354,6 +355,7 @@ public abstract class AccumulateVisitor {
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
         Class accumulateFunctionResultType = accumulateFunction.getResultType();
         context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+        context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
     }
 
     private static MethodReferenceExpr createAccSupplierExpr(AccumulateFunction accumulateFunction) {
