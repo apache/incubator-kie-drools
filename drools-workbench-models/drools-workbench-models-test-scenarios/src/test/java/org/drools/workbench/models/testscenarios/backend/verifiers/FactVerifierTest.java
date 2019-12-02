@@ -26,7 +26,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

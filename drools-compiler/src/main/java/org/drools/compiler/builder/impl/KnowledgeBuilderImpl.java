@@ -159,7 +159,7 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;

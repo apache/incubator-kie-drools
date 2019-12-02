@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -42,8 +44,6 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.kie.soup.project.datamodel.imports.Import;
 
 import static java.util.Arrays.asList;

@@ -23,7 +23,7 @@ import org.drools.core.rule.LineMappings;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
 

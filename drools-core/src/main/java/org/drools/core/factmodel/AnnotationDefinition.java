@@ -18,7 +18,7 @@ package org.drools.core.factmodel;
 
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.Role;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import java.io.Externalizable;
 import java.io.IOException;

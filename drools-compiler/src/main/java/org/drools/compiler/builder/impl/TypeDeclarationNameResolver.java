@@ -28,7 +28,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class TypeDeclarationNameResolver {
 

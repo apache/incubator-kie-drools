@@ -35,7 +35,7 @@ import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 /**
  * A context for the current build

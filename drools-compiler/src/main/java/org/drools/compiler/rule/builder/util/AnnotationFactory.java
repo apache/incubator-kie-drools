@@ -16,7 +16,7 @@
 package org.drools.compiler.rule.builder.util;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;

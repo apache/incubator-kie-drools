@@ -63,7 +63,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import static org.junit.Assert.*;
 

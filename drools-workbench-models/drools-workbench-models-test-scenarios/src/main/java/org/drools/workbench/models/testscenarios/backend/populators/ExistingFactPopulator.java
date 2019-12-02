@@ -23,7 +23,7 @@ import java.util.Map;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 class ExistingFactPopulator extends FactPopulatorBase {
 

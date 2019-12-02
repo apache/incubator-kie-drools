@@ -23,7 +23,7 @@ import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import java.io.IOException;
 

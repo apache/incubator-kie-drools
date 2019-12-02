@@ -49,14 +49,6 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-support</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-canonical-model</artifactId>
     </dependency>

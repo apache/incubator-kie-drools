@@ -18,9 +18,9 @@ package org.drools.ruleunit;
 
 import java.util.Collections;
 
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitUtil;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public final class RuleUnitTestUtil {
 

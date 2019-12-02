@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.Field;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 public class FactAssignmentFieldPopulator
         extends FieldPopulator {

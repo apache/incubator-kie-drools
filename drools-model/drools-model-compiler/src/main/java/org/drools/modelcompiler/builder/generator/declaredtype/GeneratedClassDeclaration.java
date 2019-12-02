@@ -36,7 +36,7 @@ import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;

@@ -24,7 +24,7 @@ import org.drools.workbench.models.testscenarios.backend.verifiers.FactVerifier;
 import org.drools.workbench.models.testscenarios.backend.verifiers.RuleFiredVerifier;
 import org.drools.workbench.models.testscenarios.shared.*;
 import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;

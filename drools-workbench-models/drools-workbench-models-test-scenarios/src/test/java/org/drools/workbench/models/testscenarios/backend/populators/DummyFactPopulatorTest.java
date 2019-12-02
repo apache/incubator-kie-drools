@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.workbench.models.testscenarios.backend.Person;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.workbench.models.testscenarios.backend.populators.DummyFactPopulator.factDataToObjects;
 import static org.junit.Assert.assertEquals;

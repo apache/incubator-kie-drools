@@ -18,7 +18,7 @@ package org.drools.workbench.models.testscenarios.backend;
 
 import org.junit.runner.notification.RunListener;
 import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.addon.TypeResolver;
 
 import java.util.Map;
 

@@ -16,19 +16,19 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DrlxParseUtilTest {
 

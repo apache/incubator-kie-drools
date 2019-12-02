@@ -15,14 +15,19 @@
 
 package org.drools.verifier.jarloader;
 
-import com.google.common.collect.TreeMultimap;
-
-import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarInputStream;
+
+import com.google.common.collect.TreeMultimap;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.util.asm.ClassFieldInspector;
 
 public class PackageHeaderLoader {
 

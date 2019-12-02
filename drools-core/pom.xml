@@ -61,10 +61,6 @@
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-reflective</artifactId>
     </dependency>
