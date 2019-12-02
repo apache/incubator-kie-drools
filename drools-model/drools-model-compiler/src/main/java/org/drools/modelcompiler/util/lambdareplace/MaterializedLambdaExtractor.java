@@ -13,6 +13,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaExtractor extends MaterializedLambda {
@@ -37,8 +38,8 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
     }
 
-    private ClassOrInterfaceType returnTypeJP() {
-        return parseClassOrInterfaceType(returnType);
+    private Type returnTypeJP() {
+        return parseType(returnType);
     }
 
     @Override
