@@ -1696,7 +1696,7 @@ public class AccumulateTest extends BaseModelTest {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List result; \n" +
-                        "rule \"minimumWorkingDays\"\n" +
+                        "rule \"rule\"\n" +
                         "    when\n" +
                         "        Person($age : age)\n" +
                         "        $count : Number(intValue <= $age) from accumulate(\n" +
