@@ -46,10 +46,10 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseTimerJobScheduler.class);
 
-    @ConfigProperty(name = "kogito.job-service.backoffRetryMillis", defaultValue = "1000")
+    @ConfigProperty(name = "kogito.jobs-service.backoffRetryMillis", defaultValue = "1000")
     long backoffRetryMillis;
 
-    @ConfigProperty(name = "kogito.job-service.maxIntervalLimitToRetryMillis", defaultValue = "60000")
+    @ConfigProperty(name = "kogito.jobs-service.maxIntervalLimitToRetryMillis", defaultValue = "60000")
     long maxIntervalLimitToRetryMillis;
 
     @Inject

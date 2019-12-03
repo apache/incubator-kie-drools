@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class InfinispanConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanConfiguration.class);
-    public static final String PERSISTENCE_CONFIG_KEY = "kogito.job-service.persistence";
+    public static final String PERSISTENCE_CONFIG_KEY = "kogito.jobs-service.persistence";
     private final Configuration config = new ConfigurationBuilder().build();
 
     /**
