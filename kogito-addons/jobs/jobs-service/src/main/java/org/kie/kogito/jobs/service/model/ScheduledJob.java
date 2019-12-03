@@ -23,9 +23,8 @@ import java.util.StringJoiner;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
-public class ScheduledJob {
+public class ScheduledJob extends Job {
 
-    private Job job;
     private String scheduledId;
     private Integer retries;
     private JobStatus status;
@@ -36,20 +35,24 @@ public class ScheduledJob {
     public ScheduledJob() {
     }
 
-    public ScheduledJob(Job job, String scheduledId, Integer retries, JobStatus status, ZonedDateTime lastUpdate,
-                        JobExecutionResponse executionResponse, Integer executionCounter) {
-        this();
-        this.job = job;
+    private ScheduledJob(Job job, String scheduledId, Integer retries, JobStatus status, ZonedDateTime lastUpdate,
+                         JobExecutionResponse executionResponse, Integer executionCounter) {
+        super(job.getId(),
+              job.getExpirationTime(),
+              job.getPriority(),
+              job.getCallbackEndpoint(),
+              job.getProcessInstanceId(),
+              job.getRootProcessInstanceId(),
+              job.getProcessId(),
+              job.getRootProcessId(),
+              job.getRepeatInterval(),
+              job.getRepeatLimit());
         this.scheduledId = scheduledId;
         this.retries = retries;
         this.status = status;
         this.lastUpdate = lastUpdate;
         this.executionResponse = executionResponse;
         this.executionCounter = executionCounter;
-    }
-
-    public Job getJob() {
-        return job;
     }
 
     public String getScheduledId() {
@@ -77,8 +80,7 @@ public class ScheduledJob {
     }
 
     public Optional<Long> hasInterval() {
-        return Optional.of(getJob())
-                .map(Job::getRepeatInterval)
+        return Optional.ofNullable(getRepeatInterval())
                 .filter(interval -> interval > 0);
     }
 
@@ -89,7 +91,6 @@ public class ScheduledJob {
     @Override
     public String toString() {
         return new StringJoiner(", ", ScheduledJob.class.getSimpleName() + "[", "]")
-                .add("job=" + job)
                 .add("scheduledId='" + scheduledId + "'")
                 .add("retries=" + retries)
                 .add("status=" + status)
@@ -135,7 +136,7 @@ public class ScheduledJob {
         }
 
         public ScheduledJobBuilder of(ScheduledJob scheduledJob) {
-            return job(scheduledJob.getJob())
+            return job(scheduledJob)
                     .scheduledId(scheduledJob.getScheduledId())
                     .retries(scheduledJob.getRetries())
                     .status(scheduledJob.getStatus())

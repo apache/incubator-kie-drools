@@ -124,7 +124,7 @@ public class HttpJobExecutor implements JobExecutor {
                 .thenCompose(job -> {
                     //Using just POST method for now
                     final HTTPRequestCallback callback = HTTPRequestCallback.builder()
-                            .url(job.getJob().getCallbackEndpoint())
+                            .url(job.getCallbackEndpoint())
                             .method(HTTPRequestCallback.HTTPMethod.POST)
                             //in case of repeatable jobs add the limit parameter
                             .addQueryParam("limit", job
@@ -139,7 +139,7 @@ public class HttpJobExecutor implements JobExecutor {
                                     .message(response.statusMessage())
                                     .code(getResponseCode(response))
                                     .now()
-                                    .jobId(job.getJob().getId())
+                                    .jobId(job.getId())
                                     .build())
                             .flatMap(this::handleResponse)
                             .findFirst()
@@ -150,7 +150,7 @@ public class HttpJobExecutor implements JobExecutor {
                                 jobErrorEmitter.send(JobExecutionResponse.builder()
                                                              .message(ex.getMessage())
                                                              .now()
-                                                             .jobId(job.getJob().getId())
+                                                             .jobId(job.getId())
                                                              .build());
                                 return job;
                             });
@@ -158,6 +158,6 @@ public class HttpJobExecutor implements JobExecutor {
     }
 
     private int getRepeatableJobCountDown(ScheduledJob job) {
-        return job.getJob().getRepeatLimit() - job.getExecutionCounter();
+        return job.getRepeatLimit() - job.getExecutionCounter();
     }
 }

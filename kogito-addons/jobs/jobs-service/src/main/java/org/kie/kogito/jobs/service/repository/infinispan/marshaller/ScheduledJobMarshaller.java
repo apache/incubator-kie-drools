@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 
 import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 
@@ -36,24 +37,57 @@ public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
     }
 
     @Override
-    public void writeTo(ProtoStreamWriter writer, ScheduledJob scheduledJob) throws IOException {
-        writer.writeString("scheduledId", scheduledJob.getScheduledId());
-        writer.writeObject("job", scheduledJob.getJob(), Job.class);
-        writer.writeInt("retries", scheduledJob.getRetries());
-        writer.writeString("status", scheduledJob.getStatus().name());
-        writer.writeInstant("lastUpdate", zonedDateTimeToInstant(scheduledJob.getLastUpdate()));
-        writer.writeInt("executionCounter", scheduledJob.getExecutionCounter());
+    public void writeTo(ProtoStreamWriter writer, ScheduledJob job) throws IOException {
+        writer.writeString("id", job.getId());
+        writer.writeString("callbackEndpoint", job.getCallbackEndpoint());
+        writer.writeInstant("expirationTime", zonedDateTimeToInstant(job.getExpirationTime()));
+        writer.writeInt("priority", job.getPriority());
+        writer.writeString("processId", job.getProcessId());
+        writer.writeString("processInstanceId", job.getProcessInstanceId());
+        writer.writeString("rootProcessId", job.getRootProcessId());
+        writer.writeString("rootProcessInstanceId", job.getRootProcessInstanceId());
+        writer.writeLong("repeatInterval", job.getRepeatInterval());
+        writer.writeInt("repeatLimit", job.getRepeatLimit());
+
+        writer.writeString("scheduledId", job.getScheduledId());
+        writer.writeInt("retries", job.getRetries());
+        writer.writeString("status", job.getStatus().name());
+        writer.writeInstant("lastUpdate", zonedDateTimeToInstant(job.getLastUpdate()));
+        writer.writeInt("executionCounter", job.getExecutionCounter());
     }
 
     @Override
     public ScheduledJob readFrom(ProtoStreamReader reader) throws IOException {
+        String id = reader.readString("id");
+        String callbackEndpoint = reader.readString("callbackEndpoint");
+        ZonedDateTime expirationTime = instantToZonedDateTime(reader.readInstant("expirationTime"));
+        Integer priority = reader.readInt("priority");
+        String processId = reader.readString("processId");
+        String processInstanceId = reader.readString("processInstanceId");
+        String rootProcessId = reader.readString("rootProcessId");
+        String rootProcessInstanceId = reader.readString("rootProcessInstanceId");
+        Long repeatInterval = reader.readLong("repeatInterval");
+        Integer repeatLimit = reader.readInt("repeatLimit");
+        Job job = JobBuilder.builder()
+                .callbackEndpoint(callbackEndpoint)
+                .id(id)
+                .expirationTime(expirationTime)
+                .priority(priority)
+                .processId(processId)
+                .processInstanceId(processInstanceId)
+                .rootProcessId(rootProcessId)
+                .rootProcessInstanceId(rootProcessInstanceId)
+                .repeatInterval(repeatInterval)
+                .repeatLimit(repeatLimit)
+                .build();
+
         String scheduledId = reader.readString("scheduledId");
-        Job job = reader.readObject("job", Job.class);
         Integer retries = reader.readInt("retries");
         JobStatus status = JobStatus.valueOf(reader.readString("status"));
         ZonedDateTime lastUpdate = instantToZonedDateTime(reader.readInstant("lastUpdate"));
         Integer executionCounter = reader.readInt("executionCounter");
         return ScheduledJob.builder()
+                .job(job)
                 .scheduledId(scheduledId)
                 .retries(retries)
                 .status(status)

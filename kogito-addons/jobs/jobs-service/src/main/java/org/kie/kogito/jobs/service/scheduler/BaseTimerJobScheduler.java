@@ -120,7 +120,6 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
 
     private boolean validLimit(ScheduledJob job) {
         return Optional.of(job)
-                .map(ScheduledJob::getJob)
                 .map(Job::getRepeatLimit)
                 .filter(limit -> job.getExecutionCounter() < limit)
                 .isPresent();
@@ -132,7 +131,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .flatMap(job -> job.hasInterval()
                         .filter(interval -> JobStatus.SCHEDULED.equals(job.getStatus()))
                         //schedule periodic job for the first time, if previous status is SCHEDULED
-                        .map(interval -> doPeriodicSchedule(Duration.ofMillis(interval), job.getJob())
+                        .map(interval -> doPeriodicSchedule(Duration.ofMillis(interval), job)
                                 .map(scheduledId -> ScheduledJob
                                         .builder()
                                         .of(job)
@@ -183,7 +182,6 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
 
     private PublisherBuilder<ScheduledJob> handleExpirationTime(ScheduledJob scheduledJob) {
         return ReactiveStreams.of(scheduledJob)
-                .map(ScheduledJob::getJob)
                 .map(Job::getExpirationTime)
                 .flatMapCompletionStage(time -> isExpired(time)
                         ? handleExpiredJob(scheduledJob)
@@ -208,7 +206,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .flatMap(scheduledJob -> handleExpirationTime(scheduledJob)
                         .map(ScheduledJob::getStatus)
                         .filter(s -> !JobStatus.ERROR.equals(s))
-                        .map(time -> doSchedule(Duration.ofMillis(backoffRetryMillis), scheduledJob.getJob()))
+                        .map(time -> doSchedule(Duration.ofMillis(backoffRetryMillis), scheduledJob))
                         .flatMapRsPublisher(p -> p)
                         .map(scheduleId -> ScheduledJob
                                 .builder()
@@ -229,7 +227,6 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                                    .build())
                 //final state, removing the job
                 .map(j -> Optional.of(j)
-                        .map(ScheduledJob::getJob)
                         .map(Job::getId)
                         .map(id -> jobRepository
                                 .delete(id)
@@ -260,7 +257,6 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                                 .status(JobStatus.CANCELED)
                                 .build()))
                 //final state, removing the job
-                .map(ScheduledJob::getJob)
                 .map(Job::getId)
                 .flatMapCompletionStage(jobRepository::delete)
                 .findFirst()

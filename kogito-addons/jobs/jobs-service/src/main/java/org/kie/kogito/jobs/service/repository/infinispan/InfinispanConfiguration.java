@@ -19,10 +19,12 @@ package org.kie.kogito.jobs.service.repository.infinispan;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.Priority;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.interceptor.Interceptor;
 
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -33,7 +35,8 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ApplicationScoped
+@Priority(Interceptor.Priority.PLATFORM_BEFORE)
+@Singleton
 public class InfinispanConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanConfiguration.class);

@@ -28,9 +28,4 @@ public class MarshallersProducer {
     public MessageMarshaller scheduledJobMarshaller() {
         return new ScheduledJobMarshaller();
     }
-
-    @Produces
-    public MessageMarshaller jobMarshaller() {
-        return new JobMarshaller();
-    }
 }

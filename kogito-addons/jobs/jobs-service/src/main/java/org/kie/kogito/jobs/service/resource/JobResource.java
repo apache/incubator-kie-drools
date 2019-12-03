@@ -40,10 +40,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-@Path("/job")
+@Path(JobResource.JOBS_PATH)
 public class JobResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobResource.class);
+    public static final String JOBS_PATH = "/jobs";
 
     @Inject
     VertxJobScheduler scheduler;
@@ -54,10 +55,9 @@ public class JobResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public CompletionStage<Job> create(Job job) {
+    public CompletionStage<ScheduledJob> create(Job job) {
         LOGGER.debug("REST create {}", job);
         return ReactiveStreams.fromPublisher(scheduler.schedule(job))
-                .map(ScheduledJob::getJob)
                 .findFirst()
                 .run()
                 .thenApply(j -> j.orElseThrow(() -> new RuntimeException("Failed to schedule job " + job)));
@@ -66,26 +66,24 @@ public class JobResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public CompletionStage<Job> delete(@PathParam("id") String id) {
+    public CompletionStage<ScheduledJob> delete(@PathParam("id") String id) {
         LOGGER.debug("REST delete id {}", id);
         return scheduler
                 .cancel(id)
                 .thenApply(result -> Optional
                         .ofNullable(result)
-                        .map(ScheduledJob::getJob)
                         .orElseThrow(() -> new NotFoundException("Failed to cancel job scheduling for jobId " + id)));
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public CompletionStage<Job> get(@PathParam("id") String id) {
+    public CompletionStage<ScheduledJob> get(@PathParam("id") String id) {
         LOGGER.debug("REST get {}", id);
         return jobRepository
                 .get(id)
                 .thenApply(result -> Optional
                         .ofNullable(result)
-                        .map(ScheduledJob::getJob)
                         .orElseThrow(() -> new NotFoundException("Job not found id " + id)));
     }
 

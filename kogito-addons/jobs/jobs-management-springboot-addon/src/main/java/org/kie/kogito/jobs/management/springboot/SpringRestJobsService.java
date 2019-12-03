@@ -35,9 +35,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class SpringRestJobsService implements JobsService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringRestJobsService.class);
-    
+    public static final String JOBS_PATH = "/jobs";
+
     @Value("${kogito.jobs-service.url}")
     String jobServiceUrl;
     
@@ -78,7 +79,7 @@ public class SpringRestJobsService implements JobsService {
                 .rootProcessInstanceId(description.rootProcessInstanceId())
                 .build();
         
-        ResponseEntity<String> result = restTemplate.postForEntity(jobServiceUrl + "/job", job, String.class);
+        ResponseEntity<String> result = restTemplate.postForEntity(jobServiceUrl + JOBS_PATH, job, String.class);
         if (result.getStatusCode().ordinal() == 200) {
             LOGGER.debug("Creating of the job {} done with status code {} ", job, result.getStatusCode());
         }
@@ -89,7 +90,7 @@ public class SpringRestJobsService implements JobsService {
     public boolean cancelJob(String id) {
         
         try {
-            restTemplate.delete(jobServiceUrl + "/job/{id}", id);        
+            restTemplate.delete(jobServiceUrl + JOBS_PATH+ "/{id}", id);
             
             return true;
         } catch (RestClientException e) {

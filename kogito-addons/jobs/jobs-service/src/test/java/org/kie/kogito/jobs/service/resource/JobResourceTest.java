@@ -16,14 +16,16 @@
 
 package org.kie.kogito.jobs.service.resource;
 
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.IOException;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.api.Job;
@@ -32,13 +34,9 @@ import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -55,9 +53,9 @@ public class JobResourceTest {
     @Test
     void create() throws Exception {
         final Job job = getJob("1");
-        final Job response = create(jobToJson(job))
+        final ScheduledJob response = create(jobToJson(job))
                 .extract()
-                .as(Job.class);
+                .as(ScheduledJob.class);
         assertEquals(job, response);
     }
 
@@ -66,7 +64,7 @@ public class JobResourceTest {
                 .contentType(ContentType.JSON)
                 .body(body)
                 .when()
-                .post("/job")
+                .post(JobResource.JOBS_PATH)
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
@@ -91,14 +89,14 @@ public class JobResourceTest {
         final String id = "2";
         final Job job = getJob(id);
         create(jobToJson(job));
-        final Job response = given().pathParam("id", id)
+        final ScheduledJob response = given().pathParam("id", id)
                 .when()
-                .delete("/job/{id}")
+                .delete(JobResource.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract()
-                .as(Job.class);
+                .as(ScheduledJob.class);
         assertEquals(job, response);
     }
 
@@ -107,18 +105,17 @@ public class JobResourceTest {
         final String id = "3";
         final Job job = getJob(id);
         create(jobToJson(job));
-        final Job scheduledJob = given()
+        final ScheduledJob scheduledJob = given()
                 .pathParam("id", id)
                 .when()
-                .get("/job/{id}")
+                .get(JobResource.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .assertThat()
                 .extract()
-                .as(Job.class);
+                .as(ScheduledJob.class);
         assertEquals(scheduledJob, job);
-
     }
 
     @Test
@@ -129,14 +126,14 @@ public class JobResourceTest {
         final ScheduledJob scheduledJob = given()
                 .pathParam("id", id)
                 .when()
-                .get("/job/scheduled/{id}")
+                .get(JobResource.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .assertThat()
                 .extract()
                 .as(ScheduledJob.class);
-        assertEquals(scheduledJob.getJob(), job);
+        assertEquals(scheduledJob, job);
         assertEquals(0, scheduledJob.getRetries());
         assertEquals(JobStatus.SCHEDULED, scheduledJob.getStatus());
         assertNotNull(scheduledJob.getScheduledId());

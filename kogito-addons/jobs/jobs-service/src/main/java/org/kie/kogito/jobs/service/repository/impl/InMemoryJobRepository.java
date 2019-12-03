@@ -48,7 +48,7 @@ public class InMemoryJobRepository extends BaseReactiveJobRepository implements 
     @Override
     public CompletionStage<ScheduledJob> save(ScheduledJob job) {
         return runAsync(() -> {
-            jobMap.put(job.getJob().getId(), job);
+            jobMap.put(job.getId(), job);
             return job;
         });
     }

@@ -46,7 +46,8 @@ import io.vertx.ext.web.client.WebClientOptions;
 public class VertxJobsService implements JobsService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxJobsService.class);
-    
+    public static final String JOBS_PATH = "/jobs";
+
     @Inject
     Vertx vertx;
     
@@ -112,7 +113,7 @@ public class VertxJobsService implements JobsService {
                 .rootProcessInstanceId(description.rootProcessInstanceId())
                 .build();
 
-        client.post("/job").sendJson(job, res -> {
+        client.post(JOBS_PATH).sendJson(job, res -> {
             
             if (res.succeeded() && res.result().statusCode() == 200) {
                 LOGGER.debug("Creating of the job {} done with status code {} ", job, res.result().statusCode());
@@ -126,7 +127,7 @@ public class VertxJobsService implements JobsService {
 
     @Override
     public boolean cancelJob(String id) {
-        client.delete("/job/" + id).send(res -> {
+        client.delete(JOBS_PATH + "/" + id).send(res -> {
             if (res.succeeded() && (res.result().statusCode() == 200 || res.result().statusCode() == 404)) {
                 LOGGER.debug("Canceling of the job {} done with status code {} ", id, res.result().statusCode());
             } else {
