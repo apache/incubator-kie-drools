@@ -4,8 +4,7 @@
 For this example, create a new project called `traffic-violation`. A project is a container for assets such as data objects, DMN assets, and test scenarios. This example project that you are creating is similar to the existing *Traffic_Violation* sample project in {CENTRAL}.
 
 .Procedure
-. Log in to {CENTRAL}.
-. Go to *Menu* -> *Design* -> *Projects*.
+. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*.
 +
 
 {PRODUCT} provides a default space called *MySpace*, as shown in the following image. You can use the default space to create and test example projects.

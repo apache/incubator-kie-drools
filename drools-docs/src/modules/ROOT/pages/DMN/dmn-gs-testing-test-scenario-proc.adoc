@@ -13,7 +13,7 @@ image::dmn/dmn-gs-traffic-violation-test-scenarios.png[]
 . On the *traffic-violation* project's home screen, click *Add Asset* to open the *Add Asset* screen.
 . Click *Test Scenario* to open the *Create new Test Scenario* dialog.
 .. Enter `Violation Scenarios` in the *Test Scenario* field.
-.. From the *Package* list, select `org.kie.example.traffic.traffic_violations`.
+.. From the *Package* list, select `org.kie.example.traffic.traffic_violation`.
 .. Select `DMN` as the *Source type*.
 .. Click the *Choose DMN asset* text field and select the path to the DMN asset.
 .. Click *Ok* to open the *Violation Scenarios* test scenario in the *Test Scenarios* designer.
@@ -25,7 +25,7 @@ image::dmn/dmn-gs-traffic-violation-test-scenarios.png[]
 * *Type*: `"speed"`
 * *Speed Limit*: `100`
 * *Actual Speed*: `120`
-* *Points* (under *Expect* column header): `3`
+* *Points*: `3`
 * *Amount*: `500`
 * *Should the driver be suspended?*: `"No"`
 +
@@ -36,7 +36,7 @@ Right-click the first row and select *Insert row below* to add another row.
 * *Type*: `"speed"`
 * *Speed Limit*: `100`
 * *Actual Speed*: `150`
-* *Points* (under *Expect* column header): `7`
+* *Points*: `7`
 * *Amount*: `1000`
 * *Should the driver be suspended?*: `"No"`
 +
@@ -47,7 +47,7 @@ Right-click the second row and select *Insert row below* to add another row.
 * *Type*: `"parking"`
 * *Speed Limit*: leave blank
 * *Actual Speed*: leave blank
-* *Points* (under *Expect* column header): `1`
+* *Points*: `1`
 * *Amount*: `100`
 * *Should the driver be suspended?*: `"No"`
 +
@@ -58,7 +58,7 @@ Right-click the third row and select *Insert row below* to add another row.
 * *Type*: `"driving under the influence"`
 * *Speed Limit*: leave blank
 * *Actual Speed*: leave blank
-* *Points* (under *Expect* column header): `5`
+* *Points*: `5`
 * *Amount*: `1000`
 * *Should the driver be suspended?*: `"No"`
 +
@@ -69,11 +69,11 @@ Right-click the fourth row and select *Insert row below* to add another row.
 * *Type*: `"speed"`
 * *Speed Limit*: `100`
 * *Actual Speed*: `140`
-* *Points* (under *Expect* column header): `7`
+* *Points*: `7`
 * *Amount*: `1000`
 * *Should the driver be suspended?*: `"Yes"`
-. Click *Save* to open the *Confirm Save* dialog box and click *Save* again.
-. Click the play button to check whether the test scenarios pass or fail.
+. Click *Save*.
+. Click the *Play* icon image:dmn/dmn-play-icon.png[] to check whether the test scenarios pass or fail.
 +
 .Test scenario execution result for the traffic violations example
 image::dmn/dmn-gs-test-scenarios-execution-results.png[]
