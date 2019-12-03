@@ -1689,7 +1689,36 @@ public class AccumulateTest extends BaseModelTest {
 
         assertEquals(6, result.iterator().next().longValue());
 
+    }
 
+    @Test
+    public void testCoercionInAccumulate2() {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List result; \n" +
+                        "rule \"minimumWorkingDays\"\n" +
+                        "    when\n" +
+                        "        $course : Person($age : age)\n" +
+                        "        $count : Number(intValue <= $age) from accumulate(\n" +
+                        "            $integer : Integer(),\n" +
+                        "            count($integer)\n" +
+                        "        )\n" +
+                        "    then\n" +
+                        "       result.add($count);\n" +
+                        "end\n";
 
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(drl);
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("Luca", 35));
+
+        ksession.insert(1);
+        ksession.insert(2);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, result.iterator().next().longValue());
     }
 }
