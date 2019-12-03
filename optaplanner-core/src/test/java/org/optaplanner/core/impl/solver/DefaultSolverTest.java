@@ -24,14 +24,11 @@ import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -120,6 +117,7 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
+    // TODO https://issues.jboss.org/browse/PLANNER-1738
     @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
