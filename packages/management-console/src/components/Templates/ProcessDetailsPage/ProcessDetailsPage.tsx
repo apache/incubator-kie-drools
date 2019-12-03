@@ -1,8 +1,8 @@
-import {useQuery} from '@apollo/react-hooks';
-import {Breadcrumb, BreadcrumbItem, Grid, GridItem, Page, PageSection, Title} from '@patternfly/react-core';
+import { useQuery } from '@apollo/react-hooks';
+import { Breadcrumb, BreadcrumbItem, Grid, GridItem, Page, PageSection, Title } from '@patternfly/react-core';
 import gql from 'graphql-tag';
 import React from 'react';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessDiagram from '../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram';
 import ProcessDetailsProcessVariables
@@ -10,7 +10,7 @@ import ProcessDetailsProcessVariables
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
 
-const ProcessDetailsPage = ({match}) => {
+const ProcessDetailsPage = ({ match }) => {
     const id = match.params.instanceID;
     const GET_QUERY = gql`
         query getQuery($id: [String!]) {
@@ -36,13 +36,9 @@ const ProcessDetailsPage = ({match}) => {
             }
         }
     `;
-    const {data, loading, error} = useQuery(GET_QUERY, {
-        variables: {id: [id]}
+    const { data, loading, error } = useQuery(GET_QUERY, {
+        variables: { id: [id] }
     });
-
-    const PageSectionStyle = {
-        height: '100%'
-    };
 
     {
         if (loading) {
@@ -52,7 +48,7 @@ const ProcessDetailsPage = ({match}) => {
     return (
         <>
             <Page>
-                <PageSection style={PageSectionStyle}>
+                <PageSection isFilled={true}>
                     <Grid gutter="md" span={12} lg={6} xl={4}>
                         <GridItem span={12}>
                             <Breadcrumb>
@@ -63,17 +59,17 @@ const ProcessDetailsPage = ({match}) => {
                         </GridItem>
                         <GridItem span={12}>
                             <Title headingLevel="h1" size="4xl">
-                                {data.ProcessInstances[0].processName} 
+                                {data.ProcessInstances[0].processName}
                             </Title>
                         </GridItem>
                         <GridItem>
-                            <ProcessDetails loading={loading} data={data}/>
+                            <ProcessDetails loading={loading} data={data} />
                         </GridItem>
                         <GridItem>
-                            <ProcessDetailsProcessVariables loading={loading} data={data}/>
+                            <ProcessDetailsProcessVariables loading={loading} data={data} />
                         </GridItem>
                         <GridItem>
-                            <ProcessDetailsTimeline loading={loading} data={data.ProcessInstances}/>
+                            <ProcessDetailsTimeline loading={loading} data={data.ProcessInstances} />
                         </GridItem>
                     </Grid>
                 </PageSection>
