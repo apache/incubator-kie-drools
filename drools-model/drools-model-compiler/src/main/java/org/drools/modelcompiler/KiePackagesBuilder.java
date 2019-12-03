@@ -147,6 +147,7 @@ import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class KiePackagesBuilder {
 
@@ -381,7 +382,7 @@ public class KiePackagesBuilder {
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
-        if (ctx.getRule().getRuleUnitClassName() != null) {
+        if (isLegacyRuleUnit() && ctx.getRule().getRuleUnitClassName() != null) {
             lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ), Condition.Type.PATTERN ) );
         }
         addSubConditions( ctx, lhs, view.getSubConditions());
