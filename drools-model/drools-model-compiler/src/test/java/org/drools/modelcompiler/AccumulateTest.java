@@ -1698,10 +1698,10 @@ public class AccumulateTest extends BaseModelTest {
                         "global java.util.List result; \n" +
                         "rule \"minimumWorkingDays\"\n" +
                         "    when\n" +
-                        "        $course : Person($age : age)\n" +
+                        "        Person($age : age)\n" +
                         "        $count : Number(intValue <= $age) from accumulate(\n" +
-                        "            $integer : Integer(),\n" +
-                        "            count($integer)\n" +
+                        "            $i : Integer(),\n" +
+                        "            count($i)\n" +
                         "        )\n" +
                         "    then\n" +
                         "       result.add($count);\n" +
@@ -1716,9 +1716,10 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.insert(1);
         ksession.insert(2);
+        ksession.insert(3);
 
         ksession.fireAllRules();
 
-        assertEquals(2, result.iterator().next().longValue());
+        assertEquals(3, result.iterator().next().longValue());
     }
 }
