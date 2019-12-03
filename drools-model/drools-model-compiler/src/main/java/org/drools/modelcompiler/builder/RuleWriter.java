@@ -78,14 +78,16 @@ public class RuleWriter {
 
                 try {
                     CompilationUnit postProcessedCU = cu.clone();
-                    new ExecModelLambdaPostProcessor(
-                            pkgModel.getLambdaClasses(),
-                            pkgModel.getName(),
-                            pkgModel.getRulesFileNameWithPackage(),
-                            pkgModel.getImports(),
-                            pkgModel.getStaticImports(),
-                            postProcessedCU
-                    ).convertLambdas();
+                    if(pkgModel.getRuleUnits().isEmpty()) {
+                        new ExecModelLambdaPostProcessor(
+                                pkgModel.getLambdaClasses(),
+                                pkgModel.getName(),
+                                pkgModel.getRulesFileNameWithPackage(),
+                                pkgModel.getImports(),
+                                pkgModel.getStaticImports(),
+                                postProcessedCU
+                        ).convertLambdas();
+                    }
                     rules.add(new RuleFileSource(addFileName, postProcessedCU));
                 } catch (DoNotConvertLambdaException e) {
                     logger.info("Cannot externalize lambdas {}", e.getMessage());
