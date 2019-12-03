@@ -68,6 +68,12 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core-dynamic</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
