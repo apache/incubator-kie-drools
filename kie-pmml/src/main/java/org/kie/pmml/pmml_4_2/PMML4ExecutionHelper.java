@@ -60,6 +60,7 @@ public class PMML4ExecutionHelper {
     private DataSource<? extends AbstractPMMLData> miningModelPojo;
     private Map<String, DataSource<? extends Object>> externalDataSources;
     private PMML4Result baseResultHolder;
+    private List<PMML4Result> results;
     private boolean includeMiningDataSources;
     private boolean used;
     private String loggerFileName;
@@ -199,6 +200,10 @@ public class PMML4ExecutionHelper {
         this.modelName = modelName;
     }
 
+    public List<PMML4Result> getResults() {
+        return this.results;
+    }
+
     /**
      * Returns a copy of the possible package names
      * NOTE: Do not attempt to use this copy to add package names
@@ -296,12 +301,19 @@ public class PMML4ExecutionHelper {
             try {
                 PMMLRuleUnit ru = (PMMLRuleUnit) ruleUnitClass.newInstance();
                 ModelApplier ma = ru.getModelApplier();
-                this.baseResultHolder = ma.applyModel(request, executor.getKieSession().getKieBase(), ru);
+                results = ma.applyModel(request, executor.getKieSession().getKieBase(), ru);
+                if (results != null) {
+                    if (results.size() > 1) {
+                        baseResultHolder = results.stream()
+                                                  .filter(r -> r.getSegmentationId() == null && r.getSegmentId() == null)
+                                                  .findFirst().orElse(null);
+                    } else {
+                        baseResultHolder = (!results.isEmpty()) ? results.get(0) : null;
+                    }
+                } else {
+                    baseResultHolder = null;
+                }
                 return baseResultHolder;
-                //                ModelInitializer mi = ru.getModelInitializer();
-                //                if (mi != null) {
-                //                    mi.initializeModelSession(executor.getKieSession());
-                //                }
             } catch (InstantiationException e) {
                 throw new RuntimeException("InstantiationException while attempting to create PMMLRuleUnit instance - " + modelName, e);
             } catch (IllegalAccessException e) {

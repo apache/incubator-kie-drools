@@ -1,12 +1,17 @@
 @declare{'miningModelApplier'}
 package @{packageName};
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.kie.api.KieBase;
 import org.kie.api.pmml.*;
 import org.kie.pmml.pmml_4_2.model.*;
+import org.kie.pmml.pmml_4_2.model.mining.*;
 import org.dmg.pmml.pmml_4_2.descr.*;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
@@ -29,11 +34,13 @@ import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.common.DefaultFactHandle;
 import @{miningPojoClass};
 
-public class @{className} implements ModelApplier {
+public class @{className} implements MiningModelApplier {
    private static final String MODEL_NAME = "@{modelName}";
-   private static final String[] modelIds = {
-      @foreach{seg: segments}"@{seg.segmentId}"
-      @end{","} };
+   private static final String EXECUTED_SEGMENTS_COUNT = "segmentsExecuted";
+   private static final String segmentKeys[] = {
+      @foreach{seg: segments}"@{seg.owner.segmentationId}_@{seg.segmentId}"@end{","}
+   }; 
+   private Map<String,SegmentExecution> segmentExecutions;
    private @{miningPojoClass} miningObject;
    private PMMLRuleUnit ruleUnit;
    private KieBase kbase;
@@ -42,42 +49,55 @@ public class @{className} implements ModelApplier {
       // Empty constructor
    }
    
-   public PMML4Result applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
+   public List<PMML4Result> applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
       PMML4Result result = new PMML4Result(request.getCorrelationId());
+      List<PMML4Result> results = null;
+      this.segmentExecutions = new HashMap<>();
       this.ruleUnit = ruleUnit;
       this.kbase = kbase;
       miningObject = new @{miningPojoClass}(request);
+      @foreach{seg: segments}
+      this.segmentExecutions.put( "@{seg.owner.segmentationId}_@{seg.segmentId}",
+                                  new SegmentExecution( request.getCorrelationId(),
+                                  "@{seg.owner.segmentationId}",
+                                  "@{seg.segmentId}",
+                                  @{seg.segmentIndex},
+                                  "@{seg.segmentRuleUnit}") );
+                                                        
+      @end{}
       
       @if{ modelMethod == "SELECT_FIRST" }
       result = processSelectFirst(result, request);
       @elseif{ modelMethod == "SELECT_ALL" }
-      List<PMML4Result> results = processSelectAll(request);
-      if (results != null) {
-         results.forEach(res -> { System.out.println(res); } );
-         result = results.get(0);
-      }
+      results = processSelectAll(request);
       @elseif{ modelMethod == "MODEL_CHAIN" }
       result = processModelChain(request);
       @end{}
 
 
 
-      return result;
+      return results != null ? results : Arrays.asList(result);
    }
+   
+   @Override
+   public Map<String,SegmentExecution> getSegmentExecutions() {
+      return segmentExecutions;
+   }
+   
    
    private PMML4Result processSelectFirst(PMML4Result result, PMMLRequestData requestData) {
       boolean selected = false;
+      List<PMML4Result> results = new ArrayList<>();
       @foreach{seg: segments}
       if (!selected && canFireSegment@{seg.segmentId}()) {
-         try {
-            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
-            result = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
-            selected = true;
-         } catch (ClassNotFoundException cnf) {
-            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processSelectFirst for mining model [@{modelName}]");
-         }
+         Class<?> ruleUnitClass = @{seg.segmentRuleUnit}.class;
+         results.addAll(submitSegment@{seg.segmentId}(ruleUnitClass,requestData));
+         selected = true;
       }
       @end{}
+      if (!results.isEmpty()) {
+         result = results.get(0);
+      }
       return result;
    }
    
@@ -85,15 +105,8 @@ public class @{className} implements ModelApplier {
       List<PMML4Result> results = new ArrayList<>();
       @foreach{seg: segments}
       if (canFireSegment@{seg.segmentId}()) {
-         try {
-            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
-            PMML4Result result = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
-            if (result != null) {
-               results.add(result);
-            }
-         } catch (ClassNotFoundException cnf) {
-            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processSelectAll for mining model [@{modelName}]");
-         }
+         Class<?> ruleUnitClass = @{seg.segmentRuleUnit}.class;
+         results.addAll(submitSegment@{seg.segmentId}(ruleUnitClass,requestData));
       }
       @end{}
       return results;
@@ -102,22 +115,33 @@ public class @{className} implements ModelApplier {
    private PMML4Result processModelChain(PMMLRequestData requestData) {
       PMML4Result result = new PMML4Result(requestData.getCorrelationId());
       PMML4Result segResult = null;
+      int count = 0;
       @foreach{seg: segments}
       if (canFireSegment@{seg.segmentId}()) {
-         try {
-            Class<?> ruleUnitClass = Class.forName("@{seg.segmentRuleUnit}");
-            if (segResult != null) {
-               @foreach{fld: seg.model.miningFields}@if{ !fld.inDictionary }
-               requestData.addRequestParam("@{fld.name}",segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
-               miningObject.setV@{fld.compactUpperCaseName}( (@{fld.type})segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
-               @end{}@end{}
+         Class<?> ruleUnitClass = @{seg.segmentRuleUnit}.class;
+         if (segResult != null) {
+            @foreach{fld: seg.model.miningFields}@if{ !fld.inDictionary }
+            requestData.addRequestParam("@{fld.name}",segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
+            miningObject.setV@{fld.compactUpperCaseName}( (@{fld.type})segResult.getResultValue("@{fld.compactUpperCaseName}","value") );
+            @end{}@end{}
+         }
+         List<PMML4Result> subModelResults = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
+         if (subModelResults != null) {
+            if (subModelResults.size() > 1) {
+               segResult = subModelResults.stream().filter( r -> r.getSegmentationId() == null && r.getSegmentId() == null ).findFirst().orElse(null);
+            } else {
+               segResult = (!subModelResults.isEmpty()) ? subModelResults.get(0) : null;
             }
-            segResult = submitSegment@{seg.segmentId}(ruleUnitClass,requestData);
-            segResult.getResultVariables().entrySet().forEach( e -> {
+         } else {
+            segResult = null;
+         }
+         Map<String,Object> resultsMap = segResult != null ? segResult.getResultVariables() : null;
+         if (resultsMap != null && !resultsMap.isEmpty()) {
+            resultsMap.entrySet().forEach( e -> {
                result.addResultVariable(e.getKey(),e.getValue());
             });
-         } catch (ClassNotFoundException cnf) {
-            throw new RuntimeException("Unable to find class [@{seg.segmentRuleUnit}] to use in processModelChain for mining model [@{modelName}]");
+         } else {
+            System.out.println("!!! Empty results map !!!");
          }
       }
       @end{}
@@ -126,14 +150,15 @@ public class @{className} implements ModelApplier {
    }
    
    @foreach{ seg: segments }
-   private PMML4Result submitSegment@{seg.segmentId}(Class<?> ruleUnitClass, PMMLRequestData requestData) {
+   private List<PMML4Result> submitSegment@{seg.segmentId}(Class<?> ruleUnitClass, PMMLRequestData requestData) {
       PMML4Result baseResult = null;
+      List<PMML4Result> segmentResults = null;
       try {
          if (PMMLRuleUnit.class.isAssignableFrom(ruleUnitClass)) {
             PMMLRuleUnit ru = (PMMLRuleUnit) ruleUnitClass.newInstance();
             ModelApplier ma = (ru != null) ? ru.getModelApplier() : null;
             if (ma != null) {
-               baseResult = ma.applyModel(requestData, kbase, ru);
+               segmentResults = ma.applyModel(requestData, kbase, ru);
             }
          } else if (RuleUnit.class.isAssignableFrom(ruleUnitClass)) {
             PMMLRequestData rdata = new PMMLRequestData(requestData.getCorrelationId(), "@{seg.model.modelId}");
@@ -143,6 +168,8 @@ public class @{className} implements ModelApplier {
             Class<? extends RuleUnit> ruc = (Class<? extends RuleUnit>)ruleUnitClass.newInstance().getClass();
             @{seg.model.miningPojoClassName} modelObject = new @{seg.model.miningPojoClassName}(rdata);
             baseResult = new PMML4Result(requestData.getCorrelationId());
+            baseResult.setSegmentationId("@{seg.owner.segmentationId}");
+            baseResult.setSegmentId("@{seg.segmentId}");
             RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
             executor.getKieSession().insert(modelObject);
             turnOnLogging(executor);
@@ -152,13 +179,29 @@ public class @{className} implements ModelApplier {
             rqstData.insert(rdata);
             results.insert(baseResult);
             int count = executor.run(ruc);
+            segmentResults = new ArrayList<>();
+            
+            for ( Iterator<PMML4Result> iter = results.iterator(); iter.hasNext(); ) {
+               Object o = iter.next();
+               if (PMML4Result.class.isAssignableFrom(o.getClass())) {
+                  PMML4Result segRes = (PMML4Result)o;
+                  if (segRes.getSegmentationId() != null && segRes.getSegmentId() != null) {
+                     String execId = segRes.getSegmentationId() + "_" + segRes.getSegmentId();
+                     SegmentExecution segEx = this.segmentExecutions.get(execId);
+                     if (segEx != null) {
+                        segEx.setResult(segRes);
+                     }
+                  }
+                  segmentResults.add(segRes);
+               }
+            }
          }
       } catch (InstantiationException e) {
          throw new RuntimeException("InstantiationException while attempting to create PMMLRuleUnit instance - @{modelName}", e);
       } catch (IllegalAccessException e) {
          throw new RuntimeException("IllegalAccessException while attempting to create a PMMLRuleUnit instance - @{modelName}", e);
       }
-      return baseResult;
+      return segmentResults;
    } 
    
    

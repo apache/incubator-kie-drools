@@ -16,6 +16,9 @@
 package org.kie.pmml.pmml_4_2.model.mining;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.base.WrappedStatefulKnowledgeSessionForRHS;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.ruleunit.RuleUnitDescription;
@@ -27,10 +30,10 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
 
 @PropertyReactive
 public class SegmentExecution implements Comparable<SegmentExecution> {
@@ -41,10 +44,11 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 	private SegmentExecutionState state;
 	private String ruleUnitClassName;
 	private PMMLRequestData requestData;
-	private PMML4Result result;
+    private List<PMML4Result> results;
 	
 	
 	public SegmentExecution() {
+        this.results = new ArrayList<>();
 	}
 	
 	
@@ -60,6 +64,7 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.WAITING;
 		this.ruleUnitClassName = ruleUnitClassName;
+        this.results = new ArrayList<>();
 	}
 
 
@@ -76,6 +81,7 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.valueOf(state);
 		this.ruleUnitClassName = ruleUnitClassName;
+        this.results = new ArrayList<>();
 	}
 	
 	
@@ -149,14 +155,25 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 
 
 
-	public PMML4Result getResult() {
-		return result;
+    public List<PMML4Result> getResults() {
+        return results;
 	}
 
+    public void setResult(PMML4Result result) {
+        // does nothing
+        // only here until the rules that call it are taken out of the codebase
+    }
+
+    public PMML4Result getResult() {
+        // does nothing
+        // only here until the rules that call it are taken out of the codebase
+        return null;
+    }
 
 
-	public void setResult(PMML4Result result) {
-		this.result = result;
+
+    public void setResults(List<PMML4Result> results) {
+        this.results = results;
 	}
 	
 	public void applySegmentModel(PMMLRequestData requestData, 

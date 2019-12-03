@@ -264,7 +264,16 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
                     }
                     if (ru != null) {
                         ModelApplier ma = ru.getModelApplier();
-                        resultHolder = ma.applyModel(requestData, kbase, ru);
+                        List<PMML4Result> results = ma.applyModel(requestData, kbase, ru);
+                        if (results != null) {
+                            if (results.size() > 1) {
+                                resultHolder = results.stream().filter(r -> r.getSegmentationId() == null && r.getSegmentId() == null).findFirst().orElse(null);
+                            } else {
+                                resultHolder = results.get(0);
+                            }
+                        } else {
+                            resultHolder.setResultCode("ERROR-5");
+                        }
                     }
                 } else {
                     RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);

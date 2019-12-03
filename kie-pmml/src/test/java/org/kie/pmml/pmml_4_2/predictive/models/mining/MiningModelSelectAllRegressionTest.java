@@ -19,7 +19,6 @@ package org.kie.pmml.pmml_4_2.predictive.models.mining;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Test;
@@ -31,8 +30,6 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
-import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
-import org.kie.pmml.pmml_4_2.model.mining.SegmentExecutionState;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -82,11 +79,14 @@ public class MiningModelSelectAllRegressionTest {
         helper.submitRequest(request);
         final Map<String, Double> expected = expectedResults(input1, input2, input3);
         final Map<String, Double> executedSegments = new HashMap<>();
-        for (Iterator<SegmentExecution> iter = helper.getChildModelSegments().iterator(); iter.hasNext(); ) {
-            SegmentExecution cms = iter.next();
-            executedSegments.put(cms.getSegmentId(),
-                                 cms.getResult().getResultValue(OUTPUT_FIELD_NAME, "value", Double.class).orElse(null));
-        }
+        //        for (Iterator<SegmentExecution> iter = helper.getChildModelSegments().iterator(); iter.hasNext(); ) {
+        //            SegmentExecution cms = iter.next();
+        //            executedSegments.put(cms.getSegmentId(),
+        //                                 cms.getResult().getResultValue(OUTPUT_FIELD_NAME, "value", Double.class).orElse(null));
+        //        }
+        helper.getResults().forEach(r -> {
+            executedSegments.put(r.getSegmentId(), r.getResultValue(OUTPUT_FIELD_NAME, "value", Double.class).orElse(null));
+        });
         compareMaps(expected, executedSegments);
     }
 

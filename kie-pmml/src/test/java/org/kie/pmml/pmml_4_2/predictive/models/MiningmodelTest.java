@@ -18,6 +18,7 @@ package org.kie.pmml.pmml_4_2.predictive.models;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.impl.InternalRuleUnitExecutor;
@@ -39,6 +40,7 @@ import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class MiningmodelTest extends DroolsAbstractPMMLTest {
@@ -103,8 +105,11 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 assertEquals("null",token.getCurrent());
             }
         });
+        List<PMML4Result> resultsList = helper.getResults();
+        System.out.println(resultsList != null ? resultsList.size() : "No results in list!");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testWithScorecard() {
         PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScorecardMine",
@@ -117,32 +122,56 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 .addParameter("validLicense", true, Boolean.class)
                 .build();
         PMML4Result resultHolder = helper.submitRequest(request);
+        assertEquals(request.getCorrelationId(), resultHolder.getCorrelationId());
+        assertEquals("OK", resultHolder.getResultCode());
+        assertNull(resultHolder.getSegmentationId());
 
-        helper.getResultData().forEach(rd -> {
-            assertEquals(request.getCorrelationId(),rd.getCorrelationId());
-            assertEquals("OK",rd.getResultCode());
-            if (rd.getSegmentationId() == null) {
-                ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
-                assertNotNull(sc);
-                Map map = sc.getRanking();
-                assertNotNull(map);
-                assertTrue(map instanceof LinkedHashMap);
+        ScoreCard sc = resultHolder.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
+        assertNotNull(sc);
+        Map<String, Double> map = sc.getRanking();
+        assertNotNull(map);
+        assertTrue(map instanceof LinkedHashMap);
 
-                LinkedHashMap ranking = (LinkedHashMap) map;
+        LinkedHashMap<String, Double> ranking = (LinkedHashMap<String, Double>) map;
+        assertTrue(ranking.containsKey("LX00"));
+        assertTrue(ranking.containsKey("RES"));
+        assertTrue(ranking.containsKey("CX2"));
+        assertEquals(-1.0, ranking.get("LX00"), 1e-02);
+        assertEquals(-10.0, ranking.get("RES"), 1e-02);
+        assertEquals(-30.0, ranking.get("CX2"), 1e-02);
 
-                assertTrue(ranking.containsKey("LX00"));
-                assertTrue(ranking.containsKey("RES"));
-                assertTrue(ranking.containsKey("CX2"));
-                assertEquals(-1.0, ranking.get("LX00"));
-                assertEquals(-10.0, ranking.get("RES"));
-                assertEquals(-30.0, ranking.get("CX2"));
+        Iterator<String> iter = ranking.keySet().iterator();
+        assertEquals("LX00", iter.next());
+        assertEquals("RES", iter.next());
+        assertEquals("CX2", iter.next());
+        assertEquals(1, helper.getResults().size());
 
-                Iterator iter = ranking.keySet().iterator();
-                assertEquals("LX00", iter.next());
-                assertEquals("RES", iter.next());
-                assertEquals("CX2", iter.next());
-            }
-        });
+        //        helper.getResultData().forEach(rd -> {
+        //            assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+        //            assertEquals("OK",rd.getResultCode());
+        //            if (rd.getSegmentationId() == null) {
+        //                ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
+        //                assertNotNull(sc);
+        //                Map map = sc.getRanking();
+        //                assertNotNull(map);
+        //                assertTrue(map instanceof LinkedHashMap);
+        //
+        //                LinkedHashMap ranking = (LinkedHashMap) map;
+        //
+        //                assertTrue(ranking.containsKey("LX00"));
+        //                assertTrue(ranking.containsKey("RES"));
+        //                assertTrue(ranking.containsKey("CX2"));
+        //                assertEquals(-1.0, ranking.get("LX00"));
+        //                assertEquals(-10.0, ranking.get("RES"));
+        //                assertEquals(-30.0, ranking.get("CX2"));
+        //
+        //                Iterator iter = ranking.keySet().iterator();
+        //                assertEquals("LX00", iter.next());
+        //                assertEquals("RES", iter.next());
+        //                assertEquals("CX2", iter.next());
+        //            }
+        //        });
+        //        checkExecutedSegmentsCount(resultHolder, 1);
     }
 
     @Test
@@ -174,7 +203,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 assertEquals(0.010635,regProbValueA,1e-6);
             }
         });
-
+        checkExecutedSegmentsCount(helper.getResults(), 1);
     }
 
     @Test
@@ -191,7 +220,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 .build();
         PMML4Result resultHolder = helper.submitRequest(request);
 
-        helper.getResultData().forEach(rd -> {
+        helper.getResults().forEach(rd -> {
             assertEquals("OK",rd.getResultCode());
             assertEquals(request.getCorrelationId(),rd.getCorrelationId());
             ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
@@ -228,6 +257,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
             }
 
         });
+        checkExecutedSegmentsCount(helper.getResults(), 2);
     }
 
     @Test
@@ -255,6 +285,8 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         assertNotNull(oscore);
         assertEquals("Well",qual);
         assertEquals(56.345,oscore,1e-6);
+
+        //        checkExecutedSegmentsCount(helper.getResults(), 2);
     }
 
     @Test
@@ -305,5 +337,10 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
             }
         }
         assertEquals(total_length, sepal_length, 1e-6);
+    }
+
+    private void checkExecutedSegmentsCount(List<PMML4Result> resultsList, int expectedCount) {
+        assertNotNull(resultsList);
+        assertEquals(resultsList.size(), expectedCount);
     }
 }

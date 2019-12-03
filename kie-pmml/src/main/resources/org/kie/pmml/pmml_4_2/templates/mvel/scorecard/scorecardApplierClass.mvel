@@ -1,6 +1,9 @@
 @declare{'scorecardApplierClass'}
 package @{packageName};
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.api.KieBase;
 import org.kie.api.pmml.*;
 import org.kie.pmml.pmml_4_2.model.ScoreCard;
@@ -31,7 +34,7 @@ public class @{className} implements ModelApplier {
    
    
    
-   public PMML4Result applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
+   public List<PMML4Result> applyModel(PMMLRequestData request, KieBase kbase, PMMLRuleUnit ruleUnit) {
       PMML4Result result = new PMML4Result(request.getCorrelationId());
       RuleUnitExecutor executor = null;
       if (kbase != null) {
@@ -61,7 +64,7 @@ public class @{className} implements ModelApplier {
             }
          }
       }
-      return result;
+      return Arrays.asList(result);
    }
    
    private void turnOnLogging(RuleUnitExecutor executor) {
