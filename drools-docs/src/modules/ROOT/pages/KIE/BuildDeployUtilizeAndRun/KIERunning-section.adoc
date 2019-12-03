@@ -189,7 +189,7 @@ image::KIE/BuildDeployUtilizeAndRun/ExecutionResults.png[align="center"]
 
 
 The `CommandExecutor` allows for commands to be executed on those sessions, the only difference being that the StatelessKieSession executes `fireAllRules()` at the end before disposing the session.
-The commands can be created using the `CommandExecutor` .The Javadocs provide the full list of the allowed comands using the ``CommandExecutor``.
+The commands can be created using the `CommandExecutor` .The Javadocs provide the full list of the allowed commands using the ``CommandExecutor``.
 
 setGlobal and getGlobal are two commands relevant to both Drools and jBPM.
 
