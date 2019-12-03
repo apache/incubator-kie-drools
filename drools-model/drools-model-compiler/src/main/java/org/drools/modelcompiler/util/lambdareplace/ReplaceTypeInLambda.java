@@ -32,7 +32,7 @@ public class ReplaceTypeInLambda {
                 }
 
                 Optional<Expression> optScope = mc.getScope();
-                if (optScope.isPresent() && optScope.get().asMethodCallExpr().getNameAsString().equals(BIND_CALL) ) {
+                if (optScope.isPresent() && optScope.get().asMethodCallExpr().getNameAsString().equals(BIND_CALL)) {
                     allLambdas.addAll(expression.findAll(LambdaExpr.class));
                 }
 
@@ -41,14 +41,18 @@ public class ReplaceTypeInLambda {
                     List<LambdaExpr> all = expression.findAll(LambdaExpr.class);
                     allLambdas.addAll(all);
                 }
-                allLambdas.forEach(lambdaExpr -> replaceLambdaParameter(accumulateFunctionResultType, lambdaExpr));
+                allLambdas.forEach(lambdaExpr -> replaceLambdaParameter(accumulateFunctionResultType, lambdaExpr, bindingId));
             }
         });
-}
+    }
 
-    private static void replaceLambdaParameter(Class accumulateFunctionResultType, LambdaExpr lambdaExpr) {
+    private static void replaceLambdaParameter(Class accumulateFunctionResultType, LambdaExpr lambdaExpr, String bindingId) {
         for (Parameter a : lambdaExpr.getParameters()) {
-            a.setType(StaticJavaParser.parseClassOrInterfaceType(accumulateFunctionResultType.getCanonicalName()));
+
+            if (!a.getType().isUnknownType() &&
+                    (a.getNameAsString().equals("_this") || a.getNameAsString().equals(bindingId))) {
+                a.setType(StaticJavaParser.parseClassOrInterfaceType(accumulateFunctionResultType.getCanonicalName()));
+            }
         }
     }
 }
