@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -79,9 +80,16 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            
             if (pd.getName().equals("class")) {
                 continue;
             }
+            // ignore static and/or transient fields
+            int mod = clazz.getDeclaredField(pd.getName()).getModifiers();
+            if (Modifier.isStatic(mod) || Modifier.isTransient(mod)) {
+                continue;
+            }
+            
             String fieldTypeString = pd.getPropertyType().getCanonicalName();
             Class<?> fieldType = pd.getPropertyType();
             String protoType;

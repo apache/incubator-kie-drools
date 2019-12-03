@@ -23,6 +23,10 @@ public class Person {
     private int age;
     private boolean adult;
 
+    private transient String ignoreMe;
+
+    private static String staticallyIgnoreMe;
+
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
@@ -52,13 +56,29 @@ public class Person {
         this.adult = adult;
     }
 
+    public String getIgnoreMe() {
+        return ignoreMe;
+    }
+
+    public void setIgnoreMe(String ignoreMe) {
+        this.ignoreMe = ignoreMe;
+    }
+
+    public static String getStaticallyIgnoreMe() {
+        return staticallyIgnoreMe;
+    }
+
+    public static void setStaticallyIgnoreMe(String staticallyIgnoreMe) {
+        Person.staticallyIgnoreMe = staticallyIgnoreMe;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", adult=" + adult +
-                '}';
+               "name='" + name + '\'' +
+               ", age=" + age +
+               ", adult=" + adult +
+               '}';
     }
 
     @Override
@@ -71,8 +91,8 @@ public class Person {
         }
         Person person = (Person) o;
         return age == person.age &&
-                adult == person.adult &&
-                Objects.equals(name, person.name);
+               adult == person.adult &&
+               Objects.equals(name, person.name);
     }
 
     @Override
