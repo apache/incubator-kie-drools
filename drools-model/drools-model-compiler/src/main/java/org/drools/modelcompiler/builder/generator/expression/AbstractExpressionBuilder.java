@@ -39,9 +39,11 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.UnknownType;
+import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -51,6 +53,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
+import static java.util.Optional.ofNullable;
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
@@ -147,7 +150,10 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
+        return drlxParseResult.isStatic() ? expr :
+                generateLambdaWithoutParameters(usedDeclarations,
+                                                expr,
+                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()));
     }
 
     boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
@@ -234,23 +240,35 @@ public abstract class AbstractExpressionBuilder {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(clazz), NodeList.nodeList(initExpression));
     }
 
-    protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {
+    protected void addIndexedByDeclaration(TypedExpression left,
+                                           TypedExpression right,
+                                           boolean leftContainsThis,
+                                           MethodCallExpr indexedByDSL,
+                                           Collection<String> usedDeclarations,
+                                           java.lang.reflect.Type leftType,
+                                           SingleDrlxParseSuccess drlxParseResult) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
-        indexedByRightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
         final TypedExpression expression;
-        if (!leftContainsThis) {
-            expression = left;
-        } else {
+        String declarationName = usedDeclarations.iterator().next();
+        Type type;
+        if (leftContainsThis) {
             expression = right;
+        } else {
+            expression = left;
         }
+
+        DeclarationSpec declarationById = context.getDeclarationByIdWithException(declarationName);
+        type = declarationById.getBoxedType();
+        indexedByRightOperandExtractor.addParameter(new Parameter(type, declarationName));
+        indexedByRightOperandExtractor.setEnclosingParameters(true);
         final Expression narrowed = narrowExpressionToType(expression, leftType);
         indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
     }
 
     protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
-        Optional<Class<?>> leftType = Optional.ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
-        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> leftType = ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> rightType = ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
 
         // Use Number.class if they're both Numbers but different in order to use best possible type in the index
         Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {

@@ -28,6 +28,8 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -71,8 +73,9 @@ public class RuleContext {
 
     private RuleUnitDescription ruleUnitDescr;
     private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<String, String> aggregatePatternMap = new HashMap<>();
+    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
     private Boolean isNestedInsideOr = false;
@@ -177,12 +180,19 @@ public class RuleContext {
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         DeclarationSpec spec = scopedDeclarations.get( getDeclarationKey( id ));
         if (spec == null) {
-            Class<?> unitVarType = ruleUnitVars.get( id );
+            Class<?> unitVarType = ruleUnitVarsOriginalType.get( id );
+            if(unitVarType == null) {
+                unitVarType = ruleUnitVars.get(id);
+            }
             if (unitVarType != null) {
-                spec = new DeclarationSpec( id, unitVarType );
+                spec = new DeclarationSpec(id, unitVarType);
             }
         }
         return Optional.ofNullable( spec );
+    }
+
+    public DeclarationSpec getDeclarationByIdWithException(String id) {
+        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
     }
 
     private String getDeclarationKey( String id ) {
@@ -211,6 +221,10 @@ public class RuleContext {
 
     public void addRuleUnitVar(String name, Class<?> type) {
         ruleUnitVars.put( name, type );
+    }
+
+    public void addRuleUnitVarOriginalType(String name, Class<?> type) {
+        ruleUnitVarsOriginalType.put( name, type );
     }
 
     public Class<?> getRuleUnitVarType(String name) {
@@ -370,7 +384,7 @@ public class RuleContext {
         return namedConsequences;
     }
 
-    public Map<String, String> getAggregatePatternMap() {
+    public Map<AggregateKey, String> getAggregatePatternMap() {
         return aggregatePatternMap;
     }
 

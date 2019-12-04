@@ -109,7 +109,7 @@ public class FromVisitor {
             asListCall.addArgument(expr);
         }
 
-        fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true , Optional.empty()) );
         return of(fromCall);
     }
 
@@ -130,7 +130,7 @@ public class FromVisitor {
             }
         }
 
-        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty() ) );
         return of( fromCall );
     }
 
@@ -221,7 +221,7 @@ public class FromVisitor {
     }
 
     private Expression addNoArgLambdaToFromExpression( String expression, MethodCallExpr fromCall ) {
-        fromCall.addArgument( generateLambdaWithoutParameters( Collections.emptyList(), DrlxParseUtil.parseExpression( expression ).getExpr(), true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( Collections.emptyList(), DrlxParseUtil.parseExpression( expression ).getExpr(), true, Optional.empty()) );
         return fromCall;
     }
 

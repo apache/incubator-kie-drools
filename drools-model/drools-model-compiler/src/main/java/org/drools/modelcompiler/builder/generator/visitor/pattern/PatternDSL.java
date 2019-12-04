@@ -16,6 +16,7 @@ import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
+import org.drools.modelcompiler.builder.generator.AggregateKey;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -86,7 +87,7 @@ public abstract class PatternDSL implements DSLNode {
         if (pattern.getIdentifier() == null) {
             final String generatedName = generateName("pattern_" + patternType.getSimpleName());
             final String patternNameAggregated = findFirstInnerBinding(constraintDescrs, patternType)
-                    .map(ib -> context.getAggregatePatternMap().putIfAbsent(ib, generatedName))
+                    .map(ib -> context.getAggregatePatternMap().putIfAbsent(new AggregateKey(ib, patternType), generatedName))
                     .orElse(generatedName);
             pattern.setIdentifier(GENERATED_PATTERN_PREFIX + patternNameAggregated);
         }
