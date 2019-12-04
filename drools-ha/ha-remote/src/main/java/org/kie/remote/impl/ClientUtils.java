@@ -34,7 +34,9 @@ public class ClientUtils {
         } finally {
             try {
                 props.load(in);
-                in.close();
+                if(in != null) {
+                    in.close();
+                }
             } catch (IOException ioe) {
             }
         }

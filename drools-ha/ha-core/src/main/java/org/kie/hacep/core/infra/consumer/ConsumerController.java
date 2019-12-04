@@ -60,6 +60,7 @@ public class ConsumerController {
             try {
                 thread.join();
             }catch (InterruptedException ex){
+                thread.interrupt();
                 throw new RuntimeException(ex);
             }
         }

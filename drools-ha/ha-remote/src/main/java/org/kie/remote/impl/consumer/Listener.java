@@ -60,6 +60,7 @@ public class Listener {
             try {
                 t.join();
             }catch (InterruptedException ex){
+                t.interrupt();
                 throw new RuntimeException(ex);
             }
         }

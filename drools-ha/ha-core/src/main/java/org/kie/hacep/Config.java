@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import org.kie.remote.CommonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +60,10 @@ public class Config {
     private static final String CONF = "infra.properties";
     private static final String SNAPSHOT_CONSUMER_CONF = "snapshot_consumer.properties";
     private static final String SNAPSHOT_PRODUCER_CONF = "snapshot_producer.properties";
+
+    private Config(){
+        throw new IllegalStateException("Config is a utility class");
+    }
 
     public static String getBootStrapServers() {
         StringBuilder sb = new StringBuilder();
@@ -115,7 +118,9 @@ public class Config {
             } finally {
                 try {
                     config.load(in);
-                    in.close();
+                    if(in != null){
+                        in.close();
+                    }
                 } catch (IOException ioe) {
                     logger.error(ioe.getMessage(),
                                  ioe);

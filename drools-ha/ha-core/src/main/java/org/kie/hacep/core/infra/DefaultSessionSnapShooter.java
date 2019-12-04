@@ -106,7 +106,7 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
                 } catch (IOException | ClassNotFoundException e) {
                     logger.error(e.getMessage(), e);
                 }
-                if(kSession == null) {//Snapshot topic empty
+                if(kSession == null && kieContainer != null) {//Snapshot topic empty
                     kSession = kieContainer.newKieSession();
                 }
                 return new SnapshotInfos(kSession,

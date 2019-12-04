@@ -80,7 +80,9 @@ public class CommonConfig {
         } finally {
             try {
                 config.load(in);
-                in.close();
+                if(in != null){
+                    in.close();
+                }
             } catch (IOException ioe) {
                 logger.error(ioe.getMessage(),
                              ioe);

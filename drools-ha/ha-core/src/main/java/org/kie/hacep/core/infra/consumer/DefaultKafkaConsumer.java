@@ -218,8 +218,8 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
             try {
                 mainThread.join();
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(),
-                             e);
+                mainThread.interrupt();
+                logger.error(e.getMessage(), e);
             }
         }));
 

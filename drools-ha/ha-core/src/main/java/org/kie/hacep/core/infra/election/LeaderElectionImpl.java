@@ -45,9 +45,9 @@ public class LeaderElectionImpl implements LeaderElection {
     private KubernetesLockConfiguration lockConfiguration;
     private State currentState = State.REPLICA;
     private ScheduledExecutorService serializedExecutor;
-    private volatile LeaderInfo latestLeaderInfo;
-    private volatile ConfigMap latestConfigMap;
-    private volatile Set<String> latestMembers;
+    private LeaderInfo latestLeaderInfo;
+    private ConfigMap latestConfigMap;
+    private Set<String> latestMembers;
     private List<LeadershipCallback> callbacks;
 
     public LeaderElectionImpl(KubernetesClient kubernetesClient, KubernetesLockConfiguration lockConfiguration, State initialState) {
@@ -191,8 +191,7 @@ public class LeaderElectionImpl implements LeaderElection {
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
-            logger.warn("Thread interrupted",
-                        e);
+            logger.warn("Thread interrupted", e);
         }
         if (logger.isInfoEnabled()) {
             logger.info("{} Current pod is becoming the new LEADER now...",
