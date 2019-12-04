@@ -307,7 +307,7 @@ public class ModelGenerator {
         Expression salienceExpr = parseExpression( value );
         Optional<TypedExpression> typedExpression = expressionTyper.toTypedExpression(salienceExpr).getTypedExpression();
         if (typedExpression.isPresent()) {
-            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true);
+            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true, Optional.empty());
             MethodCallExpr supplyCall = new MethodCallExpr(null, SUPPLY_CALL);
             expressionTyperContext.getUsedDeclarations().stream()
                     .map(context::getVarExpr)
@@ -401,9 +401,10 @@ public class ModelGenerator {
 
     private static void addUnitData(RuleContext context, String unitVar, java.lang.reflect.Type type, BlockStmt ruleBlock) {
         Class<?> rawClass = toRawClass(type);
-        Type declType = classToReferenceType( toRawClass(type) );
+        Type declType = classToReferenceType( rawClass );
 
         context.addRuleUnitVar( unitVar, getClassForUnitData( type, rawClass ) );
+        context.addRuleUnitVarOriginalType( unitVar, rawClass );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);

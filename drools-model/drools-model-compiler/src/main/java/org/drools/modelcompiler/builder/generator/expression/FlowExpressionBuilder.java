@@ -15,7 +15,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -157,16 +156,19 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             TypedExpression left = drlxParseResult.getLeft();
             TypedExpression right = drlxParseResult.getRight();
 
-            LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
-            indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
+            LambdaExpr indexedByLeftOperandExtractor = new LambdaExpr();
+            indexedByLeftOperandExtractor.setEnclosingParameters(true);
             boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
-            indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
+            TypedExpression typedExpression = leftContainsThis ? left : right;
+            indexedByLeftOperandExtractor.setEnclosingParameters(true);
+            indexedByLeftOperandExtractor.addParameter(new Parameter(drlxParseResult.getPatternJPType(), THIS_PLACEHOLDER));
+            indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
             indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
-            indexedByDSL.addArgument(indexedBy_leftOperandExtractor);
+            indexedByDSL.addArgument(indexedByLeftOperandExtractor);
             indexedByDSL.addArgument("" + null);
             return indexedByDSL;
         }
@@ -182,24 +184,26 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             return exprDSL;
         }
 
-        FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr("org.drools.model.Index.ConstraintType" ), drlxParseResult.getDecodeConstraintType().toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
-        LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
-        indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
+        FieldAccessExpr indexedByConstraintType = new FieldAccessExpr(new NameExpr("org.drools.model.Index.ConstraintType" ), drlxParseResult.getDecodeConstraintType().toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
+        LambdaExpr indexedByLeftOperandExtractor = new LambdaExpr();
+        indexedByLeftOperandExtractor.setEnclosingParameters(true);
         boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
-        indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()) );
+        TypedExpression typedExpression = leftContainsThis ? left : right;
+        indexedByLeftOperandExtractor.addParameter(new Parameter(drlxParseResult.getPatternJPType(), THIS_PLACEHOLDER));
+        indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()) );
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
         indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
-        indexedByDSL.addArgument( indexedBy_constraintType );
+        indexedByDSL.addArgument( indexedByConstraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
-        indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
+        indexedByDSL.addArgument( indexedByLeftOperandExtractor );
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations ) ) {
             indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         } else {
-            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType, drlxParseResult);
         }
 
         return indexedByDSL;

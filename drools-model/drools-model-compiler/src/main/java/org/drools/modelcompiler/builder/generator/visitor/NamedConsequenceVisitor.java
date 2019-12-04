@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -85,7 +86,7 @@ public class NamedConsequenceVisitor {
                         }
                     }
 
-                    when.addArgument(generateLambdaWithoutParameters(parseSuccess1.getUsedDeclarations(), parseSuccess.getExpr(), true));
+                    when.addArgument(generateLambdaWithoutParameters(parseSuccess1.getUsedDeclarations(), parseSuccess.getExpr(), true, Optional.empty()));
                 });
 
             } else {

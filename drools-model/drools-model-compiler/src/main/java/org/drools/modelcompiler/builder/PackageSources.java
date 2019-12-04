@@ -30,6 +30,7 @@ public class PackageSources {
     protected List<GeneratedFile> pojoSources = new ArrayList<>();
     protected List<GeneratedFile> accumulateSources = new ArrayList<>();
     protected List<GeneratedFile> ruleSources = new ArrayList<>();
+    protected List<GeneratedFile> lambdaClasses = new ArrayList<>();
 
     protected GeneratedFile mainSource;
     protected GeneratedFile domainClassSource;
@@ -55,6 +56,12 @@ public class PackageSources {
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
         }
+
+        pkgModel.getLambdaClasses()
+                .values()
+                .stream()
+                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
+                .forEach(sources.lambdaClasses::add);
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
@@ -82,5 +89,6 @@ public class PackageSources {
         generatedFiles.add( mainSource );
         generatedFiles.addAll( ruleSources );
         generatedFiles.add( domainClassSource );
+        generatedFiles.addAll(lambdaClasses );
     }
 }

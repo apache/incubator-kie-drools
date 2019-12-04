@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -46,6 +47,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
@@ -1963,5 +1965,45 @@ public class CompilerTest extends BaseModelTest {
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
+
+    @Test
+    public void testMaterializeLambda() {
+        String str =
+
+                "import " + DataType.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global org.drools.modelcompiler.domain.Result result;\n" +
+                "rule \"rule1\"\n" +
+                "when org.drools.modelcompiler.DataType (\n" +
+                "        field1 == \"FF\"\n" +
+                "        , field2 == \"BBB\"\n" +
+                ")\n" +
+                "then\n" +
+                "    result.setValue(0);\n" +
+                "end\n" +
+                "rule \"rule2\"\n" +
+                "when org.drools.modelcompiler.DataType (\n" +
+                "        field2 == \"BBB\"\n" +
+                "        , fieldDate >= \"27-Oct-2019\"\n" +
+                ")\n" +
+                "then\n" +
+                "    result.setValue(0);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        DataType st = new DataType("FF", "BBB");
+        DataType st2 = new DataType("FF", "CCC");
+        ksession.insert(st);
+        ksession.insert(st2);
+
+        DataType st3 = new DataType("AA", "CCC", Date.from(Instant.parse("2018-11-30T18:35:24Z")));
+        ksession.insert(st3);
+
+        Result r = new Result();
+        ksession.setGlobal("result", r);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertEquals(0, r.getValue());
     }
 }

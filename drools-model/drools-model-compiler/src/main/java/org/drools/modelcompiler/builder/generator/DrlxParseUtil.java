@@ -82,6 +82,7 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.core.addon.TypeResolver;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -449,15 +450,18 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
-        return generateLambdaWithoutParameters(usedDeclarations, expr, false);
+        return generateLambdaWithoutParameters(usedDeclarations, expr, false, Optional.empty());
     }
 
     public static Expression generateLambdaWithoutParameters(Expression expr) {
         Collection<String> usedDeclarations = expr.findAll( NameExpr.class ).stream().map( NameExpr::getName ).map( SimpleName::getIdentifier ).collect( toList() );
-        return generateLambdaWithoutParameters(usedDeclarations, expr, true);
+        return generateLambdaWithoutParameters(usedDeclarations, expr, true, Optional.empty());
     }
 
-    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
+    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations,
+                                                             Expression expr,
+                                                             boolean skipFirstParamAsThis,
+                                                             Optional<Class<?>> patternClass) {
         DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
         if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
             return expr;
@@ -465,7 +469,13 @@ public class DrlxParseUtil {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {
-            lambdaExpr.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
+            Type type;
+            if(patternClass.isPresent() && usedDeclarations.isEmpty() && patternClass.filter(c -> !Object.class.equals(c)).isPresent()) {
+                type = StaticJavaParser.parseClassOrInterfaceType(patternClass.get().getCanonicalName());
+            } else {
+                type = new UnknownType();
+            }
+            lambdaExpr.addParameter(new Parameter(type, THIS_PLACEHOLDER));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
         lambdaExpr.setBody( new ExpressionStmt(expr) );
