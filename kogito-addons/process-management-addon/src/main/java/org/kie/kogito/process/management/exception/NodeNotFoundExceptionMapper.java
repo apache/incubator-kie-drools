@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.management;
+package org.kie.kogito.process.management.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,19 +25,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.process.ProcessInstanceExecutionException;
+import org.kie.kogito.process.NodeNotFoundException;
 
 @Provider
-public class ProcessInstanceExecutionExceptionMapper implements ExceptionMapper<ProcessInstanceExecutionException> {
+public class NodeNotFoundExceptionMapper implements ExceptionMapper<NodeNotFoundException> {
 
     @Override
-    public Response toResponse(ProcessInstanceExecutionException exception) {
-        Map<String, String> data = new HashMap<>();
-        data.put("id", exception.getProcessInstanceId());
-        data.put("failedNodeId", exception.getFailedNodeId());
-        data.put("message", exception.getErrorMessage());
+    public Response toResponse(NodeNotFoundException exception) {
+        Map<String, String> data = new HashMap<>();        
+        data.put("message", exception.getMessage());
+        data.put("processInstanceId", exception.getProcessInstanceId());
+        data.put("nodeId", exception.getNodeId());
         
-        return Response.serverError().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
+        return Response.status(Response.Status.NOT_FOUND).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
     }
 
 }

@@ -53,6 +53,19 @@ public interface ProcessInstance<T> {
     void start(String trigger, String referenceId);
     
     /**
+     * Starts process instance from given node
+     * @param nodeId node id that should be used as the first node
+     */
+    void startFrom(String nodeId);
+    
+    /**
+     * Starts process instance from given node
+     * @param nodeId node id that should be used as the first node
+     * @param referenceId optional reference id that points to a another  component triggering this instance
+     */
+    void startFrom(String nodeId, String referenceId);
+    
+    /**
      * Sends given signal into this process instance
      * @param signal signal to be processed
      */
@@ -133,5 +146,11 @@ public interface ProcessInstance<T> {
      * @return returns process error
      */
     Optional<ProcessError> error();
+    
+    void triggerNode(String nodeId);
+    
+    void cancelNodeInstance(String nodeInstanceId);
+    
+    void retriggerNodeInstance(String nodeInstanceId);
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.management;
+package org.kie.kogito.process.management.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +25,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
+import org.kie.kogito.process.NodeInstanceNotFoundException;
 
 @Provider
-public class InvalidLifeCyclePhaseExceptionMapper implements ExceptionMapper<InvalidLifeCyclePhaseException> {
+public class NodeInstanceNotFoundExceptionMapper implements ExceptionMapper<NodeInstanceNotFoundException> {
 
     @Override
-    public Response toResponse(InvalidLifeCyclePhaseException exception) {
+    public Response toResponse(NodeInstanceNotFoundException exception) {
         Map<String, String> data = new HashMap<>();        
         data.put("message", exception.getMessage());
+        data.put("processInstanceId", exception.getProcessInstanceId());
+        data.put("nodeInstanceId", exception.getNodeInstanceId());
         
-        return Response.status(Response.Status.BAD_REQUEST).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
+        return Response.status(Response.Status.NOT_FOUND).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
     }
 
 }

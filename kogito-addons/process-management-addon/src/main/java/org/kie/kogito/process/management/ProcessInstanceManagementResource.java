@@ -17,11 +17,13 @@
 package org.kie.kogito.process.management;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -31,24 +33,30 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
-@Path("/management/process")
+@Path("/management/processes")
 public class ProcessInstanceManagementResource {
 
     @Inject
     Processes processes;
+    
+    @Inject
+    Application application;
     
     @GET
     @Path("{processId}/instances/{processInstanceId}/error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInstanceInError(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         
-        return executeOnInstanceInError(processId, processInstanceId, (processInstance) -> {
+        return executeOnInstanceInError(processId, processInstanceId, processInstance -> {
                 ProcessError error = processInstance.error().get();
                 
                 Map<String, String> data = new HashMap<>();
@@ -64,12 +72,28 @@ public class ProcessInstanceManagementResource {
             });
     }
     
+    @GET
+    @Path("{processId}/instances/{processInstanceId}/nodeInstances")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWorkItemsInProcessInstance(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
+        
+        return executeOnInstance(processId, processInstanceId, processInstance -> {
+            List<WorkItem> workItems = processInstance.workItems();
+                                   
+                return Response
+                        .status(Response.Status.OK)
+                        .entity(workItems)
+                        .build();
+                
+            });
+    }
+    
     @POST
     @Path("{processId}/instances/{processInstanceId}/retrigger")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retriggerInstanceInError(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         
-        return executeOnInstanceInError(processId, processInstanceId, (processInstance) -> {
+        return executeOnInstanceInError(processId, processInstanceId, processInstance -> {
                 processInstance.error().get().retrigger();
                 
                 if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -85,7 +109,7 @@ public class ProcessInstanceManagementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response skipInstanceInError(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         
-        return executeOnInstanceInError(processId, processInstanceId, (processInstance) -> {
+        return executeOnInstanceInError(processId, processInstanceId, processInstance -> {
                 processInstance.error().get().skip();
                 
                 if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -96,34 +120,127 @@ public class ProcessInstanceManagementResource {
             });
     }
     
+    @POST
+    @Path("{processId}/instances/{processInstanceId}/nodes/{nodeId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response triggerNodeInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeId") String nodeId) {
+        
+        return executeOnInstance(processId, processInstanceId, processInstance -> {
+            processInstance.triggerNode(nodeId);
+            
+            if (processInstance.status() == ProcessInstance.STATE_ERROR) {
+                throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+            } else {
+                return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
+            }
+        });
+    }
+    
+    @POST
+    @Path("{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retriggerNodeInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeInstanceId") String nodeInstanceId) {
+        
+        return executeOnInstance(processId, processInstanceId, processInstance -> {
+            processInstance.retriggerNodeInstance(nodeInstanceId);
+            
+            if (processInstance.status() == ProcessInstance.STATE_ERROR) {
+                throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+            } else {
+                return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
+            }
+        });
+    }
+    
+    @DELETE
+    @Path("{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cancelNodeInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeInstanceId") String nodeInstanceId) {
+        
+        return executeOnInstance(processId, processInstanceId, processInstance -> {
+            processInstance.cancelNodeInstance(nodeInstanceId);
+            
+            if (processInstance.status() == ProcessInstance.STATE_ERROR) {
+                throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+            } else {
+                return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
+            }
+        });
+    }
+    
+    @DELETE
+    @Path("{processId}/instances/{processInstanceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cancelProcessInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
+        
+        return executeOnInstance(processId, processInstanceId, processInstance -> {
+            processInstance.abort();
+            
+            if (processInstance.status() == ProcessInstance.STATE_ERROR) {
+                throw new ProcessInstanceExecutionException(processInstance.id(), processInstance.error().get().failedNodeId(), processInstance.error().get().errorMessage());
+            } else {
+                return Response.status(Response.Status.OK).entity(processInstance.variables()).build();
+            }
+        });
+    }
+    
     /*
      * Helper methods
      */
     
     protected Response executeOnInstanceInError(String processId, String processInstanceId, Function<ProcessInstance<?>, Response> supplier) {
         if (processId == null || processInstanceId == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Process id and Process instance id must be given").build();
+            return Response.status(Status.BAD_REQUEST).entity(PROCESS_AND_INSTANCE_REQUIRED).build();
         }
         
         
         Process<?> process = processes.processById(processId);        
         if (process == null) {
-            return Response.status(Status.NOT_FOUND).entity("Process with id " + processId + " not found").build();
+            return Response.status(Status.NOT_FOUND).entity(String.format(PROCESS_NOT_FOUND, processId)).build();
+        }
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);        
+            if (processInstanceFound.isPresent()) {
+                ProcessInstance<?> processInstance = processInstanceFound.get();
+                
+                
+                if (processInstance.error().isPresent()) {
+                    return supplier.apply(processInstance);
+                } else {
+                    return Response.status(Status.BAD_REQUEST).entity(String.format(PROCESS_INSTANCE_NOT_IN_ERROR, processInstanceId)).build();
+                }
+            } else {
+                return Response.status(Status.NOT_FOUND).entity(String.format(PROCESS_INSTANCE_NOT_FOUND, processInstanceId)).build();
+            }
+        });
+    }
+    
+    protected Response executeOnInstance(String processId, String processInstanceId, Function<ProcessInstance<?>, Response> supplier) {
+        if (processId == null || processInstanceId == null) {
+            return Response.status(Status.BAD_REQUEST).entity(PROCESS_AND_INSTANCE_REQUIRED).build();
         }
         
-        Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);        
-        if (processInstanceFound.isPresent()) {
-            ProcessInstance<?> processInstance = processInstanceFound.get();
-            
-            
-            if (processInstance.error().isPresent()) {
-                return supplier.apply(processInstance);
-            } else {
-                return Response.status(Status.BAD_REQUEST).entity("Process instance with id " + processInstanceId + " is not in error state").build();
-            }
-        } else {
-            return Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
+        
+        Process<?> process = processes.processById(processId);        
+        if (process == null) {
+            return Response.status(Status.NOT_FOUND).entity(String.format(PROCESS_NOT_FOUND, processId)).build();
         }
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);        
+            if (processInstanceFound.isPresent()) {
+                ProcessInstance<?> processInstance = processInstanceFound.get();
+
+                return supplier.apply(processInstance);
+    
+            } else {
+                return Response.status(Status.NOT_FOUND).entity(String.format(PROCESS_INSTANCE_NOT_FOUND, processInstanceId)).build();
+            }
+        });
     }
+    
+    private static final String PROCESS_AND_INSTANCE_REQUIRED = "Process id and Process instance id must be given";
+    private static final String PROCESS_NOT_FOUND = "Process with id %s not found";
+    private static final String PROCESS_INSTANCE_NOT_FOUND = "Process instance with id %s not found";
+    private static final String PROCESS_INSTANCE_NOT_IN_ERROR = "Process instance with id %s is not in error state";
     
 }

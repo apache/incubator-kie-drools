@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -488,5 +489,110 @@ public class UserTaskTest extends AbstractCodegenTest {
         // there must be two distinct paths for user tasks
         assertThat(completeTaskPaths).hasSize(2).containsOnly("@javax.ws.rs.Path(value=/{id}/FirstTask/{workItemId})", 
                                                                  "@javax.ws.rs.Path(value=/{id}/SecondTask/{workItemId})");
+    }
+    
+    @Test
+    public void testBasicUserTaskProcessCancelAndTriggerNode() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("UserTasksProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
+        
+        List<WorkItem> workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        WorkItem wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("SecondTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        
+        String firstSecondTaskNodeInstanceId = wi.getNodeInstanceId();
+        
+        processInstance.cancelNodeInstance(wi.getNodeInstanceId());
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        processInstance.triggerNode("UserTask_2");
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("SecondTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        // since it was triggered again it must have different node instance id
+        assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+    
+    @Test
+    public void testBasicUserTaskProcessCancelAndRetriggerNode() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("UserTasksProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
+        
+        List<WorkItem> workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        WorkItem wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("SecondTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        
+        String firstSecondTaskNodeInstanceId = wi.getNodeInstanceId();
+        
+        processInstance.retriggerNodeInstance(wi.getNodeInstanceId());
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+                
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("SecondTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        // since it was retriggered it must have different node instance id
+        assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }

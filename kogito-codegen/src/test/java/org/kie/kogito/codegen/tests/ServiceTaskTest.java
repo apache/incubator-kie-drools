@@ -78,6 +78,28 @@ public class ServiceTaskTest extends AbstractCodegenTest {
     }
     
     @Test
+    public void testServiceProcessDifferentOperationsTaskFromAnotherNode() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("servicetask/ServiceProcessDifferentOperations.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("ServiceProcessDifferentOperations");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("s", "john");
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.startFrom("_A1EE8114-BF7B-4DAF-ABD7-62EEDCFAEFD4");
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("s");
+        assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Goodbye john!");
+    }
+    
+    @Test
     public void testServiceProcessSameOperationsTask() throws Exception {
         
         Application app = generateCodeProcessesOnly("servicetask/ServiceProcessSameOperations.bpmn2");        

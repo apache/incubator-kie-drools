@@ -20,6 +20,8 @@ import java.util.Map;
 public interface WorkItem {
 
     String getId();
+    
+    String getNodeInstanceId();
 
     String getName();
     

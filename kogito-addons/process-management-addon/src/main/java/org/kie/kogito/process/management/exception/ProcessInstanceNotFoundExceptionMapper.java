@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.management;
+package org.kie.kogito.process.management.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +25,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.process.ProcessInstanceNotFoundException;
 
 @Provider
-public class NotAuthorizedExceptionMapper implements ExceptionMapper<NotAuthorizedException> {
+public class ProcessInstanceNotFoundExceptionMapper implements ExceptionMapper<ProcessInstanceNotFoundException> {
 
     @Override
-    public Response toResponse(NotAuthorizedException exception) {
+    public Response toResponse(ProcessInstanceNotFoundException exception) {
         Map<String, String> data = new HashMap<>();        
         data.put("message", exception.getMessage());
+        data.put("processInstanceId", exception.getProcessInstanceId());
         
-        return Response.status(Response.Status.FORBIDDEN).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
+        return Response.status(Response.Status.NOT_FOUND).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
     }
 
 }

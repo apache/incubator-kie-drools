@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.management;
+package org.kie.kogito.process.management.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +25,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.process.workitem.InvalidTransitionException;
+import org.kie.kogito.process.workitem.NotAuthorizedException;
 
 @Provider
-public class InvalidTransitionExceptionMapper implements ExceptionMapper<InvalidTransitionException> {
+public class NotAuthorizedExceptionMapper implements ExceptionMapper<NotAuthorizedException> {
 
     @Override
-    public Response toResponse(InvalidTransitionException exception) {
+    public Response toResponse(NotAuthorizedException exception) {
         Map<String, String> data = new HashMap<>();        
         data.put("message", exception.getMessage());
         
-        return Response.status(Response.Status.BAD_REQUEST).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
+        return Response.status(Response.Status.FORBIDDEN).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(data).build();
     }
 
 }

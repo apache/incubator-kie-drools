@@ -26,16 +26,21 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.instance.NodeInstance;
+import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.MutableProcessInstances;
+import org.kie.kogito.process.NodeInstanceNotFoundException;
+import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
@@ -196,7 +201,69 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return Optional.empty();
     }
 
+    @Override
+    public void startFrom(String nodeId) {
+        startFrom(nodeId, null);
+    }
     
+    @Override
+    public void startFrom(String nodeId, String referenceId) {
+        
+        ((WorkflowProcessInstance)legacyProcessInstance).setState(STATE_ACTIVE);
+        ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
+        if (referenceId != null) {
+            ((WorkflowProcessInstance)legacyProcessInstance).setReferenceId(referenceId); 
+        }
+        triggerNode(nodeId);
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
+        unbind(variables, legacyProcessInstance.getVariables());
+        if (legacyProcessInstance != null) {
+            this.status = legacyProcessInstance.getState();
+        }
+    }
+
+    @Override
+    public void triggerNode(String nodeId) {
+        WorkflowProcessInstanceImpl wfpi = ((WorkflowProcessInstanceImpl)legacyProcessInstance());
+        RuleFlowProcess rfp = ((RuleFlowProcess)wfpi.getProcess());
+ 
+        Node node = rfp.getNodesRecursively()
+                .stream()
+                .filter(ni -> nodeId.equals(ni.getMetaData().get("UniqueId"))).findFirst().orElseThrow(() -> new NodeNotFoundException(this.id, nodeId));
+        
+        Node parentNode = rfp.getParentNode(node.getId());
+        
+        NodeInstanceContainer nodeInstanceContainerNode = parentNode == null ? wfpi : ((NodeInstanceContainer) wfpi.getNodeInstance(parentNode));
+        
+        nodeInstanceContainerNode.getNodeInstance(node).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    }
+
+    @Override
+    public void cancelNodeInstance(String nodeInstanceId) {
+        NodeInstance nodeInstance = ((WorkflowProcessInstanceImpl)legacyProcessInstance())
+                .getNodeInstances(true)
+                .stream()
+                .filter(ni -> ni.getId().equals(nodeInstanceId))
+                .findFirst()
+                .orElseThrow(() -> new NodeInstanceNotFoundException(this.id, nodeInstanceId));
+                
+        ((NodeInstanceImpl)nodeInstance).cancel();
+        removeOnFinish();
+    }
+
+    @Override
+    public void retriggerNodeInstance(String nodeInstanceId) {
+        NodeInstance nodeInstance = ((WorkflowProcessInstanceImpl)legacyProcessInstance())
+                .getNodeInstances(true)
+                .stream()
+                .filter(ni -> ni.getId().equals(nodeInstanceId))
+                .findFirst()
+                .orElseThrow(() -> new NodeInstanceNotFoundException(this.id, nodeInstanceId));
+                
+        ((NodeInstanceImpl)nodeInstance).retrigger(true);
+        removeOnFinish();
+    }
+
     private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance() {
         if (this.legacyProcessInstance == null) {
             this.legacyProcessInstance = reloadSupplier.get();
@@ -215,7 +282,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId) && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
                 .findFirst()
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
-        return new BaseWorkItem(workItemInstance.getWorkItem().getId(), 
+        return new BaseWorkItem(workItemInstance.getId(),
+                                workItemInstance.getWorkItem().getId(), 
                                 (String)workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()), 
                                 workItemInstance.getWorkItem().getState(),
                                 workItemInstance.getWorkItem().getPhaseId(),
@@ -229,7 +297,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
-                .map(ni -> new BaseWorkItem(((WorkItemNodeInstance)ni).getWorkItemId(), 
+                .map(ni -> new BaseWorkItem(ni.getId(),
+                                            ((WorkItemNodeInstance)ni).getWorkItemId(), 
                                             (String)((WorkItemNodeInstance)ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()), 
                                             ((WorkItemNodeInstance)ni).getWorkItem().getState(),
                                             ((WorkItemNodeInstance)ni).getWorkItem().getPhaseId(),

@@ -47,7 +47,12 @@ public class $Type$MessageConsumer {
                     } else {  
                         LOGGER.debug("Received message without reference id, staring new process instance with trigger '{}'", trigger);
                         ProcessInstance<$Type$> pi = process.createInstance(model);
-                        pi.start(trigger, eventData.getKogitoProcessinstanceId());  
+                        
+                        if (eventData.getKogitoStartFromNode() != null) {
+                            pi.startFrom(eventData.getKogitoStartFromNode(), eventData.getKogitoProcessinstanceId());
+                        } else {
+                            pi.start(trigger, eventData.getKogitoProcessinstanceId());
+                        }
                     }
                     return null;
                 });

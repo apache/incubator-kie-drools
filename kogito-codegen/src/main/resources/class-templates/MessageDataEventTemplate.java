@@ -5,6 +5,8 @@ import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
 public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
     
+    private String kogitoStartFromNode;
+    
     public $TypeName$() {
         super(null,
               null,
@@ -36,4 +38,12 @@ public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
               null);
     }
 
+    
+    public void setKogitoStartFromNode(String kogitoStartFromNode) {
+        this.kogitoStartFromNode = kogitoStartFromNode;
+    }
+    
+    public String getKogitoStartFromNode() {
+        return this.kogitoStartFromNode;
+    }
 }

@@ -116,4 +116,21 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
             }
         }
     }
+    
+    protected Node getContainerNode(Node currentNode, org.jbpm.workflow.core.NodeContainer nodeContainer, long nodeId) {
+        for (Node node : nodeContainer.getNodes()) {
+            if (nodeId == node.getId()) {
+                return currentNode;
+            } else {
+                if (node instanceof org.jbpm.workflow.core.NodeContainer) {
+                    return getContainerNode(node, (org.jbpm.workflow.core.NodeContainer) node, nodeId);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Node getParentNode(long nodeId) {
+        return getContainerNode(null, nodeContainer, nodeId);
+    }
 }

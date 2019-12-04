@@ -13,6 +13,8 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 
@@ -35,7 +37,7 @@ public class $Type$Resource {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)    
-    public $Type$ createResource_$name$($Type$ resource) {
+    public $Type$ createResource_$name$(@Context HttpHeaders httpHeaders, $Type$ resource) {
         if (resource == null) {
             resource = new $Type$();
         }
@@ -43,7 +45,14 @@ public class $Type$Resource {
 
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.createInstance(value);
-            pi.start();
+            String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
+            
+            if (startFromNode != null) {
+                pi.startFrom(startFromNode);
+            } else {
+            
+                pi.start();
+            }
             return getModel(pi);
         });
     }

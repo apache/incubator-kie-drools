@@ -36,11 +36,14 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -54,6 +57,7 @@ public class ProcessInstanceManagementResourceTest {
     @SuppressWarnings("rawtypes")
     private ProcessInstance processInstance;
     private ProcessError error;
+    private Application application;
     
     @BeforeAll
     public static void configureEnvironment() {
@@ -73,7 +77,7 @@ public class ProcessInstanceManagementResourceTest {
         when((responseBuilder).entity(any())).thenReturn(responseBuilder);
         when((responseBuilder).build()).thenReturn(response);
                 
-                
+        application = mock(Application.class);
         processes = mock(Processes.class);
         Process process = mock(Process.class);
         ProcessInstances instances = mock(ProcessInstances.class);
@@ -89,6 +93,7 @@ public class ProcessInstanceManagementResourceTest {
         when(error.failedNodeId()).thenReturn("xxxxx");
         when(error.errorMessage()).thenReturn("Test error message");
         
+        when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
     }
     
     @Test
@@ -96,6 +101,7 @@ public class ProcessInstanceManagementResourceTest {
         
         ProcessInstanceManagementResource resource = new ProcessInstanceManagementResource();
         resource.processes = this.processes;
+        resource.application = this.application;
         
         Response response = resource.getInstanceInError("test", "xxxxx");
         assertThat(response).isNotNull();
@@ -114,6 +120,7 @@ public class ProcessInstanceManagementResourceTest {
         
         ProcessInstanceManagementResource resource = new ProcessInstanceManagementResource();
         resource.processes = this.processes;
+        resource.application = this.application;
         
         doAnswer(new Answer<Void>() {
 
@@ -141,6 +148,7 @@ public class ProcessInstanceManagementResourceTest {
         
         ProcessInstanceManagementResource resource = new ProcessInstanceManagementResource();
         resource.processes = this.processes;
+        resource.application = this.application;
         
         doAnswer(new Answer<Void>() {
 
