@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory;
 
 public class SnapshotOnDemandUtils {
 
+    private SnapshotOnDemandUtils(){}
+
     private final static Logger logger = LoggerFactory.getLogger(SnapshotOnDemandUtils.class);
 
     public static SnapshotInfos askASnapshotOnDemand(EnvConfig config, SessionSnapshooter snapshooter) {
@@ -132,7 +134,7 @@ public class SnapshotOnDemandUtils {
         return msg;
     }
 
-    private static KafkaConsumer getConfiguredSnapshotConsumer(EnvConfig envConfig) {
+    public static KafkaConsumer getConfiguredSnapshotConsumer(EnvConfig envConfig) {
         KafkaConsumer<String, byte[]> consumer = new KafkaConsumer(Config.getSnapshotConsumerConfig());
         List<PartitionInfo> partitionsInfo = consumer.partitionsFor(envConfig.getSnapshotTopicName());
         List<TopicPartition> partitions = null;

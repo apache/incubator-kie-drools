@@ -30,15 +30,15 @@ public class FactCountCommand extends AbstractCommand implements VisitableComman
         this.entryPoint = entryPoint;
     }
 
+    @Override
+    public boolean isPermittedForReplicas() { return false; }
+
     public String getEntryPoint() {
         return entryPoint;
     }
 
     @Override
     public void accept(VisitorCommand visitor) { visitor.visit(this); }
-
-    @Override
-    public boolean isPermittedForReplicas() { return false; }
 
     @Override
     public String toString() {

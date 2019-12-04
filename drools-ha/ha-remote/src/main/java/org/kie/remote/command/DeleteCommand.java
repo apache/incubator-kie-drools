@@ -29,10 +29,10 @@ public class DeleteCommand extends WorkingMemoryActionCommand implements Visitab
     }
 
     @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+    public boolean isPermittedForReplicas() { return true; }
 
     @Override
-    public boolean isPermittedForReplicas() { return true; }
+    public void accept(VisitorCommand visitor) { visitor.visit(this); }
 
     @Override
     public String toString() {

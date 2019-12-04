@@ -30,8 +30,6 @@ import org.kie.remote.impl.producer.Sender;
 
 public class RemoteKieSessionImpl extends RemoteEntryPointImpl implements RemoteKieSession {
 
-    public static final String DEFAULT_ENTRY_POINT = "DEFAULT"; // EntryPointId.DEFAULT.getEntryPointId();
-
     private final Map<String, RemoteEntryPoint> entryPoints = new HashMap<>();
 
     public RemoteKieSessionImpl( Properties configuration) {
@@ -39,7 +37,7 @@ public class RemoteKieSessionImpl extends RemoteEntryPointImpl implements Remote
     }
 
     public RemoteKieSessionImpl(Properties configuration, TopicsConfig envConfig) {
-        super(new Sender(configuration), DEFAULT_ENTRY_POINT, envConfig, new Listener(configuration));
+        super(new Sender(configuration), EntryPointUtil.DEFAULT_ENTRY_POINT, envConfig, new Listener(configuration));
         sender.start();
     }
 

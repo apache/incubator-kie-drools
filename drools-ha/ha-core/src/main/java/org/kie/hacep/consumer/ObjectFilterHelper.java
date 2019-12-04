@@ -28,7 +28,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 
 public class ObjectFilterHelper {
 
-    public static Collection<? extends Object> getObjectsFilterByNamedQuery(String namedQuery, String objectName, Object[] params, KieSession kieSession){
+    public static Collection<?> getObjectsFilterByNamedQuery(String namedQuery, String objectName, Object[] params, KieSession kieSession){
         QueryResults results = kieSession.getQueryResults(namedQuery, params);
         Iterator<QueryResultsRow> rowsIter = results.iterator();
         List objects = new ArrayList(results.size());
@@ -39,7 +39,7 @@ public class ObjectFilterHelper {
         return objects;
     }
 
-    public static Collection<? extends Object> getObjectsFilterByClassType(Class clazzType, KieSession kieSession){
+    public static Collection<?> getObjectsFilterByClassType(Class clazzType, KieSession kieSession){
         return kieSession.getObjects(new ClassObjectFilter(clazzType));
     }
 }

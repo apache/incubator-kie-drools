@@ -28,8 +28,6 @@ import org.kie.remote.command.UpdateKJarCommand;
 import org.kie.remote.impl.consumer.Listener;
 import org.kie.remote.impl.producer.Sender;
 
-import static org.kie.remote.impl.RemoteKieSessionImpl.DEFAULT_ENTRY_POINT;
-
 public class RemoteStreamingKieSessionImpl extends RemoteStreamingEntryPointImpl implements RemoteStreamingKieSession {
 
     private final Map<String, RemoteStreamingEntryPoint> entryPoints = new HashMap<>();
@@ -39,7 +37,7 @@ public class RemoteStreamingKieSessionImpl extends RemoteStreamingEntryPointImpl
     }
 
     public RemoteStreamingKieSessionImpl( Properties configuration, TopicsConfig envConfig) {
-        super(new Sender(configuration), DEFAULT_ENTRY_POINT, envConfig, new Listener(configuration));
+        super(new Sender(configuration), EntryPointUtil.DEFAULT_ENTRY_POINT, envConfig, new Listener(configuration));
         sender.start();
         // a streaming session is fireUntilHalt by default
         fireUntilHalt();
