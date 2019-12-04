@@ -1,9 +1,20 @@
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import { Breadcrumb, BreadcrumbItem, Card, DataList, Grid, GridItem, PageSection, TextContent, TextVariants, Text } from '@patternfly/react-core';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  DataList,
+  Grid,
+  GridItem,
+  PageSection,
+  TextContent,
+  TextVariants,
+  Text
+} from '@patternfly/react-core';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
 import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
@@ -29,8 +40,13 @@ const DataListComponent: React.FC<{}> = () => {
   const client = useApolloClient();
   /* tslint:disable:no-string-literal */
   const GET_INSTANCES = gql`
-    query getInstances($parentProcessId: [String],$state:[ProcessInstanceState!]) {
-      ProcessInstances(filter: { parentProcessInstanceId: $parentProcessId,state:$state }) {
+    query getInstances($state: [ProcessInstanceState!]) {
+      ProcessInstances(
+        where: {
+          parentProcessInstanceId: { isNull: true }
+          state: { in: $state }
+        }
+      ) {
         id
         processId
         processName
@@ -38,10 +54,10 @@ const DataListComponent: React.FC<{}> = () => {
         roles
         state
         start
-        managementEnabled
+        addons
         endpoint
         error {
-          nodeDefinitionId,
+          nodeDefinitionId
           message
         }
       }
@@ -50,7 +66,6 @@ const DataListComponent: React.FC<{}> = () => {
 
   const { loading, error, data } = useQuery(GET_INSTANCES, {
     variables: {
-      parentProcessId: [null],
       state: ['ACTIVE']
     },
     fetchPolicy: 'network-only'
@@ -128,15 +143,14 @@ const DataListComponent: React.FC<{}> = () => {
     const filterData = await client.query({
       query: GET_INSTANCES,
       variables: {
-        parentProcessId: [null],
         state: arr
       },
       fetchPolicy: 'network-only'
-    })
-    setInitData(filterData['data'])
+    });
+    setInitData(filterData['data']);
   };
 
-  const removeChecked = async (id) => {
+  const removeChecked = async id => {
     const newCheckedArray = checkedArray.filter(x => x !== id);
     setCheckedArray(newCheckedArray);
     await onFilterClick(newCheckedArray);
@@ -165,7 +179,9 @@ const DataListComponent: React.FC<{}> = () => {
       <PageSection variant="light">
         <DataListTitleComponent />
         <Breadcrumb>
-          <BreadcrumbItem><Link to={'/'}>Home</Link></BreadcrumbItem>
+          <BreadcrumbItem>
+            <Link to={'/'}>Home</Link>
+          </BreadcrumbItem>
           <BreadcrumbItem isActive>Process Instances</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
@@ -187,7 +203,6 @@ const DataListComponent: React.FC<{}> = () => {
                     removeCheck={removeChecked}
                   />
                   <DataList aria-label="Expandable data list example">
-
                     {!loading &&
                       initData !== undefined &&
                       initData['ProcessInstances'].map((item, index) => {
@@ -202,23 +217,27 @@ const DataListComponent: React.FC<{}> = () => {
                             processName={item.processName}
                             start={item.start}
                             state={item.state}
-                            managementEnabled={item.managementEnabled}
+                            addons={item.addons}
                             error={item.error}
                             endpoint={item.endpoint}
                           />
                         );
                       })}
-                    {
-                      loading && (<div className="spinner-center"> <p>spinner</p> </div>)
-                    }
-
-                  </DataList> </>) : (
-                  <div className="error-text">
-                    <TextContent>
-                      <Text component={TextVariants.h6}>No data to display</Text>
-                    </TextContent>
-                  </div>
-                )}
+                    {loading && (
+                      <div className="spinner-center">
+                         <p>spinner</p> 
+                      </div>
+                    )}
+                  </DataList>
+                   
+                </>
+              ) : (
+                <div className="error-text">
+                  <TextContent>
+                    <Text component={TextVariants.h6}>No data to display</Text>
+                  </TextContent>
+                </div>
+              )}
             </Card>
           </GridItem>
         </Grid>

@@ -42,7 +42,7 @@ exports[`Process Details Page component Sample test case 1`] = `
       "link": MockLink {
         "addTypename": false,
         "mockedResponsesByKey": Object {
-          "{\\"query\\":\\"query getQuery($id: [String!]) {\\\\n  ProcessInstances(filter: {id: $id}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+          "{\\"query\\":\\"query getQuery($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
             Object {
               "request": Object {
                 "query": Object {
@@ -65,7 +65,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                                 "kind": "Argument",
                                 "name": Object {
                                   "kind": "Name",
-                                  "value": "filter",
+                                  "value": "where",
                                 },
                                 "value": Object {
                                   "fields": Array [
@@ -76,11 +76,23 @@ exports[`Process Details Page component Sample test case 1`] = `
                                         "value": "id",
                                       },
                                       "value": Object {
-                                        "kind": "Variable",
-                                        "name": Object {
-                                          "kind": "Name",
-                                          "value": "id",
-                                        },
+                                        "fields": Array [
+                                          Object {
+                                            "kind": "ObjectField",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "equal",
+                                            },
+                                            "value": Object {
+                                              "kind": "Variable",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                            },
+                                          },
+                                        ],
+                                        "kind": "ObjectValue",
                                       },
                                     },
                                   ],
@@ -244,16 +256,10 @@ exports[`Process Details Page component Sample test case 1`] = `
                           "directives": Array [],
                           "kind": "VariableDefinition",
                           "type": Object {
-                            "kind": "ListType",
-                            "type": Object {
-                              "kind": "NonNullType",
-                              "type": Object {
-                                "kind": "NamedType",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "String",
-                                },
-                              },
+                            "kind": "NamedType",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "String",
                             },
                           },
                           "variable": Object {
@@ -269,7 +275,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 237,
+                    "end": 278,
                     "start": 0,
                   },
                 },
@@ -405,7 +411,7 @@ exports[`Process Details Page component Sample test case 1`] = `
         "link": MockLink {
           "addTypename": false,
           "mockedResponsesByKey": Object {
-            "{\\"query\\":\\"query getQuery($id: [String!]) {\\\\n  ProcessInstances(filter: {id: $id}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+            "{\\"query\\":\\"query getQuery($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
               Object {
                 "request": Object {
                   "query": Object {
@@ -428,7 +434,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                                   "kind": "Argument",
                                   "name": Object {
                                     "kind": "Name",
-                                    "value": "filter",
+                                    "value": "where",
                                   },
                                   "value": Object {
                                     "fields": Array [
@@ -439,11 +445,23 @@ exports[`Process Details Page component Sample test case 1`] = `
                                           "value": "id",
                                         },
                                         "value": Object {
-                                          "kind": "Variable",
-                                          "name": Object {
-                                            "kind": "Name",
-                                            "value": "id",
-                                          },
+                                          "fields": Array [
+                                            Object {
+                                              "kind": "ObjectField",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "equal",
+                                              },
+                                              "value": Object {
+                                                "kind": "Variable",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "id",
+                                                },
+                                              },
+                                            },
+                                          ],
+                                          "kind": "ObjectValue",
                                         },
                                       },
                                     ],
@@ -607,16 +625,10 @@ exports[`Process Details Page component Sample test case 1`] = `
                             "directives": Array [],
                             "kind": "VariableDefinition",
                             "type": Object {
-                              "kind": "ListType",
-                              "type": Object {
-                                "kind": "NonNullType",
-                                "type": Object {
-                                  "kind": "NamedType",
-                                  "name": Object {
-                                    "kind": "Name",
-                                    "value": "String",
-                                  },
-                                },
+                              "kind": "NamedType",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "String",
                               },
                             },
                             "variable": Object {
@@ -632,7 +644,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 237,
+                      "end": 278,
                       "start": 0,
                     },
                   },

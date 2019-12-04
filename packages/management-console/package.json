@@ -103,6 +103,7 @@
     "tslint-react-hooks": "^2.2.1",
     "typescript": "^3.6.2",
     "url-loader": "^2.1.0",
+    "uuid": "^3.3.3",
     "waait": "^1.0.5",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",

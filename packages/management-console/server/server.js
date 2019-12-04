@@ -4,7 +4,8 @@ var cors = require('cors')
 const app = express();
 const {ApolloServer, gql} = require("apollo-server-express");
 // GraphQL - Apollo
-
+const {GraphQLScalarType} = require('graphql');
+const uuidv1 = require('uuid/v1');
 
 // Config
 const config = require('./config');
@@ -15,19 +16,19 @@ const controller = require('./MockData/controllers');
 const typeDefs = require('./MockData/types');
 
 function setPort(port = 4000) {
-  app.set('port', parseInt(port, 10));
+    app.set('port', parseInt(port, 10));
 }
 
 function listen() {
-  const port = app.get('port') || config.port;
-  app.listen(port, () => {
-    console.log(`The server is running and listening at http://localhost:${port}`);
-  });
+    const port = app.get('port') || config.port;
+    app.listen(port, () => {
+        console.log(`The server is running and listening at http://localhost:${port}`);
+    });
 }
 
 app.use(cors({
-  origin: config.corsDomain, // Be sure to switch to your production domain
-  optionsSuccessStatus: 200
+    origin: config.corsDomain, // Be sure to switch to your production domain
+    optionsSuccessStatus: 200
 }));
 
 //Rest Api's
@@ -36,34 +37,64 @@ app.get('/management/process/:processId/instances/:processInstanceId/error', con
 app.get('/management/process/:processId/instances/:processInstanceId/skip', controller.callSkip)
 app.get('/management/process/:processId/instances/:processInstanceId/retrigger', controller.callRetrigger)
 
-
-
 // Provide resolver functions for your schema fields
 const resolvers = {
     Query: {
-        ProcessInstances: (parent, args, context, info) => {
+        ProcessInstances: (parent, args) => {
             const result = data.filter(datum => {
-                console.log("args", args["filter"].id);
-                console.log("args", args["filter"].parentProcessInstanceId);
-                console.log("data", datum.parentProcessInstanceId);
-                if (args["filter"].id) {
-                    return (datum.id == args["filter"].id);
-                } else if (args["filter"].parentProcessInstanceId[0] == null) {
-                    return (datum.parentProcessInstanceId == args["filter"].parentProcessInstanceId[0] && args["filter"].state.includes(datum.state))
-                } else if (args["filter"].parentProcessInstanceId[0] !== null) {
-                    return (datum.parentProcessInstanceId == args["filter"].parentProcessInstanceId[0]);
+                console.log("args", args["where"]);
+                if (args["where"].id && args["where"].id.equal) {
+                    return datum.id == args["where"].id.equal;
+                } else if (args["where"].parentProcessInstanceId.equal) {
+                    return datum.parentProcessInstanceId == args["where"].parentProcessInstanceId.equal;
+                } else if (args["where"].parentProcessInstanceId.isNull) {
+                    return (datum.parentProcessInstanceId == null && args["where"].state.in.includes(datum.state))
+                } else {
+                    return false;
                 }
             });
+            console.log("result length: " + result.length);
             return result;
         }
-    }
+    },
+    DateTime: new GraphQLScalarType({
+        name: 'DateTime',
+        description: 'DateTime custom scalar type',
+        parseValue(value) {
+            return value;
+        },
+        serialize(value) {
+            return value;
+        },
+        parseLiteral(ast) {
+            return null;
+        },
+    })
 };
-  const server = new ApolloServer({typeDefs, resolvers});
 
-  server.applyMiddleware({app});
+const mocks = {
+    DateTime: () => new Date().toUTCString(),
+    Travels: () => ({
+        id: () => uuidv1()
+    }),
+    VisaApplications: () => ({
+        id: () => uuidv1()
+    })
+};
 
-module.exports =  {
-  getApp: () => aasdasdadpp,
-  setPort,
-  listen
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    mocks,
+    mockEntireSchema: false,
+    introspection: true,
+    playground: true
+});
+
+server.applyMiddleware({app});
+
+module.exports = {
+    getApp: () => app,
+    setPort,
+    listen
 };
