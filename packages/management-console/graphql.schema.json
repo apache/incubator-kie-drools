@@ -18,11 +18,31 @@
             "description": "",
             "args": [
               {
-                "name": "filter",
+                "name": "where",
                 "description": "",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "ProcessInstanceFilter",
+                  "name": "ProcessInstanceArgument",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": "",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ProcessInstanceOrderBy",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "pagination",
+                "description": "",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "Pagination",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -45,11 +65,31 @@
             "description": "",
             "args": [
               {
-                "name": "filter",
+                "name": "where",
                 "description": "",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "UserTaskInstanceFilter",
+                  "name": "UserTaskInstanceArgument",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": "",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UserTaskInstanceOrderBy",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "pagination",
+                "description": "",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "Pagination",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -75,12 +115,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "ProcessInstanceFilter",
+        "name": "ProcessInstanceArgument",
         "description": "",
         "fields": null,
         "inputFields": [
           {
-            "name": "state",
+            "name": "and",
             "description": "",
             "type": {
               "kind": "LIST",
@@ -89,8 +129,26 @@
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "ENUM",
-                  "name": "ProcessInstanceState",
+                  "kind": "INPUT_OBJECT",
+                  "name": "ProcessInstanceArgument",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "or",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ProcessInstanceArgument",
                   "ofType": null
                 }
               }
@@ -101,45 +159,9 @@
             "name": "id",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "parentProcessInstanceId",
-            "description": "",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "rootProcessInstanceId",
-            "description": "",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -147,6 +169,157 @@
             "name": "processId",
             "description": "",
             "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processName",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "parentProcessInstanceId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "rootProcessInstanceId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "rootProcessId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ProcessInstanceStateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "error",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ProcessInstanceErrorArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "nodes",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "NodeInstanceArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "endpoint",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "roles",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "start",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "end",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "addons",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "IdArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "in",
+            "description": "",
+            "type": {
               "kind": "LIST",
               "name": null,
               "ofType": {
@@ -162,22 +335,136 @@
             "defaultValue": null
           },
           {
-            "name": "limit",
+            "name": "equal",
             "description": "",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "offset",
+            "name": "isNull",
             "description": "",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Boolean",
               "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "String",
+        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Boolean",
+        "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "StringArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "in",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "like",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "isNull",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProcessInstanceStateArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "ProcessInstanceState",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "in",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ProcessInstanceState",
+                "ofType": null
+              }
             },
             "defaultValue": null
           }
@@ -234,11 +521,486 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "ProcessInstanceErrorArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "nodeDefinitionId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "message",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "NodeInstanceArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "definitionId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "nodeId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "type",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "enter",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "exit",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "DateArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "isNull",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "greaterThan",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "greaterThanEqual",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lessThan",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lessThanEqual",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "between",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateRange",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "SCALAR",
-        "name": "String",
-        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "name": "DateTime",
+        "description": "An ISO-8601 compliant DateTime Scalar",
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "DateRange",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "from",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "to",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "StringArrayArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "contains",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "containsAll",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "containsAny",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "isNull",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProcessInstanceOrderBy",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "processId",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processName",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "rootProcessId",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "start",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "end",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "error",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ProcessInstanceErrorOrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OrderBy",
+        "description": "",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "ASC",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DESC",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProcessInstanceErrorOrderBy",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "nodeDefinitionId",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "message",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "Pagination",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "limit",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "offset",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
@@ -473,6 +1235,54 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "error",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProcessInstanceError",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "addons",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -600,23 +1410,52 @@
         "possibleTypes": null
       },
       {
-        "kind": "SCALAR",
-        "name": "DateTime",
-        "description": "An RFC-3339 compliant DateTime Scalar",
-        "fields": null,
+        "kind": "OBJECT",
+        "name": "ProcessInstanceError",
+        "description": "",
+        "fields": [
+          {
+            "name": "nodeDefinitionId",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "inputFields": null,
-        "interfaces": null,
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserTaskInstanceFilter",
+        "name": "UserTaskInstanceArgument",
         "description": "",
         "fields": null,
         "inputFields": [
           {
-            "name": "state",
+            "name": "and",
             "description": "",
             "type": {
               "kind": "LIST",
@@ -625,11 +1464,39 @@
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "UserTaskInstanceArgument",
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "or",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UserTaskInstanceArgument",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -637,17 +1504,39 @@
             "name": "id",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "priority",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -655,17 +1544,9 @@
             "name": "processInstanceId",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -673,17 +1554,9 @@
             "name": "actualOwner",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -691,17 +1564,9 @@
             "name": "potentialUsers",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -709,36 +1574,189 @@
             "name": "potentialGroups",
             "description": "",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "limit",
-            "description": "",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "offset",
+            "name": "excludedUsers",
             "description": "",
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "adminGroups",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "adminUsers",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "started",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "referenceName",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserTaskInstanceOrderBy",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "actualOwner",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "priority",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processInstanceId",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "started",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "referenceName",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
               "ofType": null
             },
             "defaultValue": null
@@ -1049,6 +2067,22 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1475,16 +2509,6 @@
             "deprecationReason": null
           }
         ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Boolean",
-        "description": "The `Boolean` scalar type represents `true` or `false`.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -1941,6 +2965,96 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "BooleanArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "isNull",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "KogitoMetadata",
+        "description": "",
+        "fields": [
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "processInstances",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ProcessInstanceMeta",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userTasks",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UserTaskInstanceMeta",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "ProcessInstanceMeta",
         "description": "",
@@ -2101,6 +3215,22 @@
               "kind": "SCALAR",
               "name": "DateTime",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2351,10 +3481,508 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "KogitoMetadataArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processInstances",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ProcessInstanceMetaArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "userTasks",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserTaskInstanceMetaArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProcessInstanceMetaArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processName",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "parentProcessInstanceId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "rootProcessInstanceId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "rootProcessId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ProcessInstanceStateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "endpoint",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "roles",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "start",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "end",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserTaskInstanceMetaArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "state",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "priority",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "processInstanceId",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "actualOwner",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "potentialUsers",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "potentialGroups",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "excludedUsers",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "adminGroups",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "adminUsers",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArrayArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "started",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "referenceName",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "KogitoMetadataOrderBy",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderBy",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "NumericArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "in",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "isNull",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "greaterThan",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "greaterThanEqual",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lessThan",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "lessThanEqual",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "between",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "NumericRange",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "NumericRange",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "from",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "to",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       }
