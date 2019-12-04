@@ -20,6 +20,7 @@ public class MaterializedLambdaExtractorTest {
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
+                "@org.drools.model.MaterializedLambda() " +
                 "public enum LambdaExtractor133AF281814F16840FE105EF6D339F8A implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
                 " INSTANCE; \n" +
                 "        @Override()\n" +

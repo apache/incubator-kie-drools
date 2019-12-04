@@ -92,10 +92,11 @@ abstract class MaterializedLambda {
     }
 
     private EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration classOrInterfaceDeclaration = compilationUnit.addEnum(className);
-        classOrInterfaceDeclaration.setImplementedTypes(createImplementedType());
-        classOrInterfaceDeclaration.addEntry(new EnumConstantDeclaration("INSTANCE"));
-        return classOrInterfaceDeclaration;
+        EnumDeclaration lambdaClass = compilationUnit.addEnum(className);
+        lambdaClass.addAnnotation(org.drools.model.MaterializedLambda.class.getCanonicalName());
+        lambdaClass.setImplementedTypes(createImplementedType());
+        lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
+        return lambdaClass;
     }
 
     protected NodeList<ClassOrInterfaceType> createImplementedType() {

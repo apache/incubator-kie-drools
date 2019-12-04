@@ -19,7 +19,8 @@ public class MaterializedLambdaConsequenceTest {
                 "package org.drools.modelcompiler.util.lambdareplace;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
-                "" +
+                "\n"+
+                "@org.drools.model.MaterializedLambda() " +
                 "public enum LambdaConsequence2FABA51719447471EAF65717A3CB3A94 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 "INSTANCE;\n" +
                 "        @Override()\n" +
