@@ -29,41 +29,29 @@ public class ExecModelLambdaPostProcessorTest {
 
         new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
 
-        MethodDeclaration expectedResult = getMethodChangingName(inputCU, "PatternTestHarness", "expectedOutput");
-        MethodDeclaration actual = getMethodChangingName(clone, "PatternTestHarness", "inputMethod");
+        String PATTERN_HARNESS = "PatternTestHarness";
+        MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");
+        MethodDeclaration actual = getMethodChangingName(clone, PATTERN_HARNESS, "inputMethod");
 
         assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
     }
 
     @Test
-    public void convertFlowLambda() throws Exception {
+    public void convertFlowLambdaDoNotConvertConsequenceWhenDrools() throws Exception {
 
-        CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowTestHarness.java");
+        CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowConsequenceTestHarness.java");
         CompilationUnit clone = inputCU.clone();
 
         new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
 
-        MethodDeclaration expectedResult = getMethodChangingName(inputCU, "FlowTestHarness", "expectedOutput");
-        MethodDeclaration actual = getMethodChangingName(clone, "FlowTestHarness", "inputMethod");
-
-        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
-    }
-
-    @Test
-    public void convertFlowLambdaDoNotConvertConsequence() throws Exception {
-
-        CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowDoNotConvertConsequenceTestHarness.java");
-        CompilationUnit clone = inputCU.clone();
-
-        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
-
-        MethodDeclaration expectedResultNotConverted = getMethodChangingName(inputCU, "FlowDoNotConvertConsequenceTestHarness", "expectedOutputNotConverted");
-        MethodDeclaration actualNotConverted = getMethodChangingName(clone, "FlowDoNotConvertConsequenceTestHarness", "inputMethodNotConverted");
+        String FLOW_HARNESS = "FlowTestHarness";
+        MethodDeclaration expectedResultNotConverted = getMethodChangingName(inputCU, FLOW_HARNESS, "expectedOutputNotConverted");
+        MethodDeclaration actualNotConverted = getMethodChangingName(clone, FLOW_HARNESS, "inputMethodNotConverted");
 
         assertThat(actualNotConverted.toString(), equalToIgnoringWhiteSpace(expectedResultNotConverted.toString()));
 
-        MethodDeclaration expectedResultConverted = getMethodChangingName(inputCU, "FlowDoNotConvertConsequenceTestHarness", "expectedOutputConverted");
-        MethodDeclaration actualConverted = getMethodChangingName(clone, "FlowDoNotConvertConsequenceTestHarness", "inputMethodConverted");
+        MethodDeclaration expectedResultConverted = getMethodChangingName(inputCU, FLOW_HARNESS, "expectedOutputConverted");
+        MethodDeclaration actualConverted = getMethodChangingName(clone, FLOW_HARNESS, "inputMethodConverted");
 
         assertThat(actualConverted.toString(), equalToIgnoringWhiteSpace(expectedResultConverted.toString()));
     }

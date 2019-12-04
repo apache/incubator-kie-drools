@@ -18,7 +18,7 @@ import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 
-class FlowDoNotConvertConsequenceTestHarness {
+class FlowTestHarness {
 
     public void inputMethodNotConverted() {
         Variable<Person> markV = declarationOf(Person.class);
