@@ -13,6 +13,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.RuleWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -21,6 +24,8 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.EXPR_CALL;
 
 public class ExecModelLambdaPostProcessor {
+
+    Logger logger = LoggerFactory.getLogger(RuleWriter.class.getCanonicalName());
 
     private final Map<String, CreatedClass> lambdaClasses;
     private final String packageName;
@@ -90,11 +95,15 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
 
-                CreatedClass aClass = lambdaExtractor.get().create(lambdaExpr.toString(), imports, staticImports);
-                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+                try {
+                    CreatedClass aClass = lambdaExtractor.get().create(lambdaExpr.toString(), imports, staticImports);
+                    lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
-                ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-                a.replace(lambdaInstance(type));
+                    ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
+                    a.replace(lambdaInstance(type));
+                } catch(DoNotConvertLambdaException e) {
+                    logger.info("Cannot externalize lambdas {}", e.getMessage());
+                }
             }
         });
     }

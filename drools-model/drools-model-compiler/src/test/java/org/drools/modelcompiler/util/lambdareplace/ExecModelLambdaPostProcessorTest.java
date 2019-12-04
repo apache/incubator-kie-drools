@@ -33,7 +33,6 @@ public class ExecModelLambdaPostProcessorTest {
         MethodDeclaration actual = getMethodChangingName(clone, "PatternTestHarness", "inputMethod");
 
         assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
-
     }
 
     @Test
@@ -48,11 +47,9 @@ public class ExecModelLambdaPostProcessorTest {
         MethodDeclaration actual = getMethodChangingName(clone, "FlowTestHarness", "inputMethod");
 
         assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
-
     }
 
-
-    @Test(expected = DroolsNeededInConsequenceException.class)
+    @Test
     public void convertFlowLambdaDoNotConvertConsequence() throws Exception {
 
         CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowDoNotConvertConsequenceTestHarness.java");
@@ -60,11 +57,15 @@ public class ExecModelLambdaPostProcessorTest {
 
         new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
 
-        MethodDeclaration expectedResult = getMethodChangingName(inputCU, "FlowDoNotConvertConsequenceTestHarness", "expectedOutput");
-        MethodDeclaration actual = getMethodChangingName(clone, "FlowDoNotConvertConsequenceTestHarness", "inputMethod");
+        MethodDeclaration expectedResultNotConverted = getMethodChangingName(inputCU, "FlowDoNotConvertConsequenceTestHarness", "expectedOutputNotConverted");
+        MethodDeclaration actualNotConverted = getMethodChangingName(clone, "FlowDoNotConvertConsequenceTestHarness", "inputMethodNotConverted");
 
-        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
+        assertThat(actualNotConverted.toString(), equalToIgnoringWhiteSpace(expectedResultNotConverted.toString()));
 
+        MethodDeclaration expectedResultConverted = getMethodChangingName(inputCU, "FlowDoNotConvertConsequenceTestHarness", "expectedOutputConverted");
+        MethodDeclaration actualConverted = getMethodChangingName(clone, "FlowDoNotConvertConsequenceTestHarness", "inputMethodConverted");
+
+        assertThat(actualConverted.toString(), equalToIgnoringWhiteSpace(expectedResultConverted.toString()));
     }
 
     private MethodDeclaration getMethodChangingName(CompilationUnit inputCU, String className, String methodName) {
