@@ -190,29 +190,6 @@ public final class EnvConfig {
         return this;
     }
 
-    public EnvConfig clone() {
-        EnvConfig envConfig = new EnvConfig();
-        envConfig.eventsTopicName = this.eventsTopicName;
-        envConfig.namespace = this.namespace;
-        envConfig.controlTopicName = this.controlTopicName;
-        envConfig.snapshotTopicName = this.snapshotTopicName;
-        envConfig.kieSessionInfosTopicName = this.kieSessionInfosTopicName;
-        envConfig.printerType = this.printerType;
-        envConfig.test = this.test;
-        envConfig.local = this.local;
-        envConfig.pollTimeout = this.pollTimeout;
-        envConfig.pollSnapshotTimeout = this.pollSnapshotTimeout;
-        envConfig.iterationBetweenSnapshot = this.iterationBetweenSnapshot;
-        envConfig.skipOnDemanSnapshot = this.skipOnDemanSnapshot;
-        envConfig.maxSnapshotAge = this.maxSnapshotAge;
-        envConfig.maxSnapshotRequestAttempts = this.maxSnapshotRequestAttempts;
-        envConfig.pollUnit = this.pollUnit;
-        envConfig.pollUnitSnapshot = this.pollUnitSnapshot;
-        envConfig.updatableKJar = this.updatableKJar;
-        envConfig.kjarGAV = this.kjarGAV;
-        return envConfig;
-    }
-
     public String getNamespace() {
         return namespace;
     }

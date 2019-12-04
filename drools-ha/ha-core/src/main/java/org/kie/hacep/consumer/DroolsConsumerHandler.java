@@ -168,7 +168,7 @@ public class DroolsConsumerHandler implements ConsumerHandler {
             try {
                 visitable.accept(commandHandler);
             } catch (Throwable e) {
-                GlobalStatus.nodeLive = false;
+                GlobalStatus.setNodeLive(false);
                 throw e;
             }
         }

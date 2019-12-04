@@ -134,7 +134,7 @@ public class LeaderElectionImpl implements LeaderElection {
                                 logPrefix());
                 }
             }
-        } else if (!GlobalStatus.canBecomeLeader) {
+        } else if (!GlobalStatus.isCanBecomeLeader()) {
             // Node is waiting for an initial state to use as starting point
             logger.info("{} Pod is not initialized yet (waiting snapshot) so cannot try to become leader",
                         logPrefix());

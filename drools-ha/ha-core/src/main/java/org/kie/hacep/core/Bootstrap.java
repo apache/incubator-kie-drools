@@ -48,7 +48,7 @@ public class Bootstrap {
         if(!envConfig.isUnderTest()) {
             leaderElection();
         }
-        GlobalStatus.nodeReady = true;
+        GlobalStatus.setNodeReady(true);
         logger.info("CONFIGURE on start engine:{}", envConfig);
     }
 
@@ -59,7 +59,7 @@ public class Bootstrap {
             try {
                 leadership.stop();
             } catch (Exception e) {
-                GlobalStatus.nodeLive = false;
+                GlobalStatus.setNodeLive(false);
                 throw new RuntimeException(e.getMessage(), e);
             }
             logger.info("Stop leaderElection");
@@ -74,7 +74,7 @@ public class Bootstrap {
         logger.info("Stop eventProducer");
         eventProducer = null;
         consumerController = null;
-        GlobalStatus.nodeLive = false;
+        GlobalStatus.setNodeLive(false);
     }
 
     // only for tests
