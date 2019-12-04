@@ -22,8 +22,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LocalMessageSystem {
 
+    private Logger logger = LoggerFactory.getLogger(LocalMessageSystem.class);
     private Map<String, BlockingQueue<Object>> queues = new HashMap<>();
 
     private LocalMessageSystem() { }
@@ -33,7 +37,9 @@ public class LocalMessageSystem {
     }
 
     public void put(String topic, Object message) {
-        queueForTopic(topic).offer( message );
+        if(!queueForTopic(topic).offer( message )){
+            logger.info("msg :{} not added in the topic:{}", message, topic);
+        }
     }
 
     public Object peek(String topic) {
@@ -48,6 +54,7 @@ public class LocalMessageSystem {
         try {
             return queueForTopic(topic).poll(durationMillis, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new RuntimeException( e );
         }
     }

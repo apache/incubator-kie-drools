@@ -192,6 +192,7 @@ public class LeaderElectionImpl implements LeaderElection {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             logger.warn("Thread interrupted", e);
+            Thread.currentThread().interrupt();
         }
         if (logger.isInfoEnabled()) {
             logger.info("{} Current pod is becoming the new LEADER now...",

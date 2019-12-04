@@ -59,8 +59,8 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
     private volatile String processingKey = "";
     private volatile long processingKeyOffset, lastProcessedControlOffset, lastProcessedEventOffset;
     private volatile boolean started, exit = false;
-    private volatile State currentState = State.REPLICA;
-    private volatile PolledTopic polledTopic = PolledTopic.CONTROL;
+    private State currentState = State.REPLICA;
+    private PolledTopic polledTopic = PolledTopic.CONTROL;
     private int iterationBetweenSnapshot;
     private List<ConsumerRecord<String, T>> eventsBuffer;
     private List<ConsumerRecord<String, T>> controlBuffer;
