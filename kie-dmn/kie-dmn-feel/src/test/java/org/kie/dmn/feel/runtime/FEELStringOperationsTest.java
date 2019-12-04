@@ -33,9 +33,17 @@ public class FEELStringOperationsTest extends BaseFEELTest {
                 { "\"foo\"+\"bar\"", "foobar" , null},
                 // string escapes
                 { "\"string with \\\"quotes\\\"\"", "string with \"quotes\"", null},
-                { "\"a\\b\\t\\n\\f\\r\\\"\\'\\\\\\u2202b\"", "a\b\t\n\f\r\"\'\\\u2202b", null}
+                { "\"a\\b\\t\\n\\f\\r\\\"\\'\\\\\\u2202b\"", "a\b\t\n\f\r\"\'\\\u2202b", null},
+                {"string length(\"foo\") = 3", Boolean.TRUE, null},
+                {"string length(\"🐎ab\") = 3", Boolean.TRUE, null},
+                {"string length(\"\uD83D\uDC0Eab\") = 3", Boolean.TRUE, null},
+                {"string length(\"\\uD83D\\uDC0Eab\") = 3", Boolean.TRUE, null},
+                {"substring(\"🐎ab\", 2) = \"ab\"", Boolean.TRUE, null},
+                {"substring(\"foobar\",3) = \"obar\"", Boolean.TRUE, null},
+                {"substring(\"foobar\",3,3) =\"oba\" ", Boolean.TRUE, null},
+                {"substring(\"foobar\", -2, 1) = \"a\"", Boolean.TRUE, null},
+                {"substring(\"\\U01F40Eab\", 2) = \"ab\"", Boolean.TRUE, null},
         };
         return addAdditionalParameters(cases, false);
     }
 }
-
