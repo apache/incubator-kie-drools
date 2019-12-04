@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { AboutModal, Button, TextContent, TextList, TextListItem } from '@patternfly/react-core';
+import {
+  AboutModal,
+  Button,
+  TextContent,
+  TextList,
+  TextListItem
+} from '@patternfly/react-core';
 import './AboutModal.css';
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
 }
 
-const AboutModalBox: React.FC<IOwnProps> = ({ isOpenProp, handleModalToggleProp }) => {
+const AboutModalBox: React.FC<IOwnProps> = ({
+  isOpenProp,
+  handleModalToggleProp
+}) => {
   return (
     <AboutModal
       isOpen={isOpenProp}
@@ -27,7 +36,9 @@ const AboutModalBox: React.FC<IOwnProps> = ({ isOpenProp, handleModalToggleProp 
           <TextListItem component="dt">User Name</TextListItem>
           <TextListItem component="dd">Administrator</TextListItem>
           <TextListItem component="dt">User Role</TextListItem>
-          <TextListItem component="dd">EvmRole-super_administrator</TextListItem>
+          <TextListItem component="dd">
+            EvmRole-super_administrator
+          </TextListItem>
           <TextListItem component="dt">Browser Version</TextListItem>
           <TextListItem component="dd">601.2</TextListItem>
           <TextListItem component="dt">Browser OS</TextListItem>

@@ -6,7 +6,9 @@ const ProcessDetailsProcessDiagram = () => {
   return (
     <Card>
       <CardHeader>
-        <Title headingLevel="h3" size="xl">Process Diagram</Title>
+        <Title headingLevel="h3" size="xl">
+          Process Diagram
+        </Title>
       </CardHeader>
       <CardBody>
         <img src={url} />

@@ -39,16 +39,28 @@ const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
   ];
   return (
     <React.Fragment>
-      <AboutModalBox isOpenProp={modalToggle} handleModalToggleProp={handleModalToggle} />
+      <AboutModalBox
+        isOpenProp={modalToggle}
+        handleModalToggleProp={handleModalToggle}
+      />
       <Toolbar>
         <ToolbarGroup>
-          <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
+          <ToolbarItem
+            className={css(
+              accessibleStyles.screenReader,
+              accessibleStyles.visibleOnMd
+            )}
+          >
             <Dropdown
               isPlain
               position="right"
               onSelect={onDropdownSelect}
               isOpen={isDropdownOpen}
-              toggle={<DropdownToggle onToggle={onDropdownToggle}>User</DropdownToggle>}
+              toggle={
+                <DropdownToggle onToggle={onDropdownToggle}>
+                  User
+                </DropdownToggle>
+              }
               dropdownItems={userDropdownItems}
             />
           </ToolbarItem>

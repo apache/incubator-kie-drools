@@ -1,20 +1,27 @@
 import { TimeAgo } from '@n1ru4l/react-time-ago';
-import { Card, CardBody, CardFooter, CardHeader, Title } from '@patternfly/react-core';
-import { ServicesIcon, UserIcon } from '@patternfly/react-icons'
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Title
+} from '@patternfly/react-core';
+import { ServicesIcon, UserIcon } from '@patternfly/react-icons';
 import React from 'react';
 import './ProcessDetailsTimeline.css';
 
 export interface IOwnProps {
-  loading: boolean,
-  data: any
+  loading: boolean;
+  data: any;
 }
 
 const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
-
   return (
     <Card>
       <CardHeader>
-        <Title headingLevel="h3" size="xl">Timeline</Title>
+        <Title headingLevel="h3" size="xl">
+          Timeline
+        </Title>
       </CardHeader>
       <CardBody>
         <div className="timeline-container">
@@ -23,7 +30,10 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
               return (
                 <div className="timeline-item" key={content.id}>
                   <div className="timeline-item-content">
-                    <TimeAgo date={new Date(`${content.exit}`)} render={({ error, value }) => <span>{value}</span>} />
+                    <TimeAgo
+                      date={new Date(`${content.exit}`)}
+                      render={({ error, value }) => <span>{value}</span>}
+                    />
                     <p>{content.name}</p>
                     <span className="circle">
                       {content.type === 'HumanTaskNode' ? (

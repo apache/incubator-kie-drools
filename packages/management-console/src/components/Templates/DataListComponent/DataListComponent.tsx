@@ -185,7 +185,7 @@ const DataListComponent: React.FC<{}> = () => {
           <BreadcrumbItem isActive>Process Instances</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
-      <PageSection isFilled={true}>
+      <PageSection>
         <Grid gutter="md">
           <GridItem span={12}>
             <Card className="dataList">
@@ -225,19 +225,19 @@ const DataListComponent: React.FC<{}> = () => {
                       })}
                     {loading && (
                       <div className="spinner-center">
-                         <p>spinner</p> 
+                        <p>spinner</p>
                       </div>
                     )}
                   </DataList>
-                   
+
                 </>
               ) : (
-                <div className="error-text">
-                  <TextContent>
-                    <Text component={TextVariants.h6}>No data to display</Text>
-                  </TextContent>
-                </div>
-              )}
+                  <div className="error-text">
+                    <TextContent>
+                      <Text component={TextVariants.h6}>No data to display</Text>
+                    </TextContent>
+                  </div>
+                )}
             </Card>
           </GridItem>
         </Grid>

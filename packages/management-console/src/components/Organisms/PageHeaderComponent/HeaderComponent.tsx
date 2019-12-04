@@ -7,7 +7,13 @@ import BrandComponent from '../../Atoms/BrandComponent/BrandComponent';
 interface IOwnProps {}
 
 const HeaderComponent: React.FC<IOwnProps> = () => {
-  return <PageHeader logo={<BrandComponent />} toolbar={<PageToolbarComponent />} avatar={<Avatar />}  />;
+  return (
+    <PageHeader
+      logo={<BrandComponent />}
+      toolbar={<PageToolbarComponent />}
+      avatar={<Avatar />}
+    />
+  );
 };
 
 export default HeaderComponent;

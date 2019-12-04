@@ -117,7 +117,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       setAlertType('danger');
       setAlertMessage(
         'Process execution failed to skip node which in error state. Message: ' +
-          JSON.stringify(error.message)
+        JSON.stringify(error.message)
       );
       setAlertVisible(true);
     }
@@ -142,7 +142,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         setAlertType('danger');
         setAlertMessage(
           'Process execution failed to re executed node which is error state. Message: ' +
-            JSON.stringify(error.message)
+          JSON.stringify(error.message)
         );
         setAlertVisible(true);
       }
@@ -173,9 +173,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     const newExpanded =
       index >= 0
         ? [
-            ...expanded.slice(0, index),
-            ...expanded.slice(index + 1, expanded.length)
-          ]
+          ...expanded.slice(0, index),
+          ...expanded.slice(index + 1, expanded.length)
+        ]
         : [...expanded, _id];
     setexpanded(newExpanded);
     if (!isLoaded) {
@@ -240,8 +240,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     render={({ _error, value }) => <span>{value}</span>}
                   />
                 ) : (
-                  ''
-                )}
+                    ''
+                  )}
               </DataListCell>,
               <DataListCell key={3}>{instanceState}</DataListCell>
             ]}
@@ -271,53 +271,53 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 dropdownItems={
                   addons.includes('process-management')
                     ? [
-                        <DropdownItem
-                          key={1}
-                          onClick={() =>
-                            handleRetry(processID, instanceID, endpoint)
-                          }
-                        >
-                          Retry
+                      <DropdownItem
+                        key={1}
+                        onClick={() =>
+                          handleRetry(processID, instanceID, endpoint)
+                        }
+                      >
+                        Retry
                         </DropdownItem>,
-                        <DropdownItem
-                          key={2}
-                          onClick={() =>
-                            handleSkip(processID, instanceID, endpoint)
-                          }
-                        >
-                          Skip
+                      <DropdownItem
+                        key={2}
+                        onClick={() =>
+                          handleSkip(processID, instanceID, endpoint)
+                        }
+                      >
+                        Skip
                         </DropdownItem>,
-                        <DropdownItem
-                          key={3}
-                          onClick={() =>
-                            handleViewError(processID, instanceID, endpoint)
-                          }
-                        >
-                          View Error
+                      <DropdownItem
+                        key={3}
+                        onClick={() =>
+                          handleViewError(processID, instanceID, endpoint)
+                        }
+                      >
+                        View Error
                         </DropdownItem>
-                      ]
+                    ]
                     : [
-                        <DropdownItem
-                          key={1}
-                          onClick={() =>
-                            handleViewError(processID, instanceID, endpoint)
-                          }
-                        >
-                          View Error
+                      <DropdownItem
+                        key={1}
+                        onClick={() =>
+                          handleViewError(processID, instanceID, endpoint)
+                        }
+                      >
+                        View Error
                         </DropdownItem>
-                      ]
+                    ]
                 }
               />
             ) : (
-              <Dropdown
-                isPlain
-                position={DropdownPosition.right}
-                isOpen={isOpen}
-                onSelect={onSelect}
-                toggle={<KebabToggle isDisabled onToggle={onToggle} />}
-                dropdownItems={[]}
-              />
-            )}
+                <Dropdown
+                  isPlain
+                  position={DropdownPosition.right}
+                  isOpen={isOpen}
+                  onSelect={onSelect}
+                  toggle={<KebabToggle isDisabled onToggle={onToggle} />}
+                  dropdownItems={[]}
+                />
+              )}
             <Modal
               isLarge
               title="Error"
@@ -326,37 +326,37 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               actions={
                 addons.includes('process-management')
                   ? [
-                      <Button
-                        key="confirm1"
-                        variant="secondary"
-                        onClick={handleSkipButton}
-                      >
-                        Skip
+                    <Button
+                      key="confirm1"
+                      variant="secondary"
+                      onClick={handleSkipButton}
+                    >
+                      Skip
                       </Button>,
-                      <Button
-                        key="confirm2"
-                        variant="secondary"
-                        onClick={handleRetryButton}
-                      >
-                        Retry
+                    <Button
+                      key="confirm2"
+                      variant="secondary"
+                      onClick={handleRetryButton}
+                    >
+                      Retry
                       </Button>,
-                      <Button
-                        key="confirm3"
-                        variant="primary"
-                        onClick={handleModalToggle}
-                      >
-                        Close
+                    <Button
+                      key="confirm3"
+                      variant="primary"
+                      onClick={handleModalToggle}
+                    >
+                      Close
                       </Button>
-                    ]
+                  ]
                   : [
-                      <Button
-                        key="confirm3"
-                        variant="primary"
-                        onClick={handleModalToggle}
-                      >
-                        Close
+                    <Button
+                      key="confirm3"
+                      variant="primary"
+                      onClick={handleModalToggle}
+                    >
+                      Close
                       </Button>
-                    ]
+                  ]
               }
             >
               {error.message}
