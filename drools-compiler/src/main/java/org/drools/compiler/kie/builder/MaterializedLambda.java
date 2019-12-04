@@ -1,4 +1,4 @@
-package org.drools.model;
+package org.drools.compiler.kie.builder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,8 +1,6 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,7 +91,7 @@ abstract class MaterializedLambda {
 
     private EnumDeclaration create(CompilationUnit compilationUnit) {
         EnumDeclaration lambdaClass = compilationUnit.addEnum(className);
-        lambdaClass.addAnnotation(org.drools.model.MaterializedLambda.class.getCanonicalName());
+        lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
         return lambdaClass;

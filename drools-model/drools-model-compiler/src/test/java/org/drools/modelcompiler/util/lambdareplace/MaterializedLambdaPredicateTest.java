@@ -21,7 +21,7 @@ public class MaterializedLambdaPredicateTest {
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
-                "@org.drools.model.MaterializedLambda() " +
+                "@org.drools.compiler.kie.builder.MaterializedLambda() " +
                 "public enum LambdaPredicate4DEB93975D9859892B1A5FD4B38E2155 implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person> {\n" +
                 " INSTANCE; \n" +
                 "        @Override()\n" +
@@ -45,7 +45,7 @@ public class MaterializedLambdaPredicateTest {
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
-                "@org.drools.model.MaterializedLambda() " +
+                "@org.drools.compiler.kie.builder.MaterializedLambda() " +
                 "public enum LambdaPredicateDC57C20B4AF3C2BFEB2552943994B6F7 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 " INSTANCE; \n" +
                 "        @Override()\n" +

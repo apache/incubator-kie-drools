@@ -18,11 +18,13 @@ package org.drools.reflective.classloader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
@@ -224,6 +226,17 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         store.put(resourceName, bytecode);
         if (CACHE_NON_EXISTING_CLASSES) {
             nonExistingClasses.remove(name);
+        }
+    }
+
+    public boolean isClassInUse(String className, Class<? extends Annotation> annotationClazz) {
+        Class<?> clazz = loadedClasses.get(className);
+
+        boolean clazzFound = clazz != null;
+        if(annotationClazz != null) {
+            return clazzFound && !clazz.isAnnotationPresent(annotationClazz);
+        } else {
+            return clazzFound;
         }
     }
 
