@@ -37,8 +37,10 @@ public final class EnvConfig {
     private long maxSnapshotAge;
     private boolean test;
     private boolean local;
-    private PollUnit pollUnit, pollUnitSnapshot;
-    private Duration pollDuration, pollSnapshotDuration;
+    private PollUnit pollUnit;
+    private PollUnit pollUnitSnapshot;
+    private Duration pollDuration;
+    private Duration pollSnapshotDuration;
     private final static String sec ="sec";
     private final static String millisec ="millisec";
     private boolean updatableKJar;

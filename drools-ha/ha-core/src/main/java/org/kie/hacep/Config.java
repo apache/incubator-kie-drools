@@ -54,7 +54,10 @@ public class Config {
     public static final String KJAR_GAV = "KJARGAV";
     public static final String DEFAULT_MAX_SNAPSHOT_REQUEST_ATTEMPTS = "10";
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
-    private static Properties consumerConf, producerConf, snapshotConsumerConf, snapshotProducerConf;
+    private static Properties consumerConf ;
+    private static Properties producerConf;
+    private static Properties snapshotConsumerConf;
+    private static Properties snapshotProducerConf;
     private static final String CONSUMER_CONF = "consumer.properties";
     private static final String PRODUCER_CONF = "producer.properties";
     private static final String CONF = "infra.properties";
@@ -115,6 +118,7 @@ public class Config {
             try {
                 in = Config.class.getClassLoader().getResourceAsStream(fileName);
             } catch (Exception e) {
+                logger.info(e.getMessage());
             } finally {
                 try {
                     config.load(in);
