@@ -140,7 +140,7 @@ public class RuleContext {
 
     private void processUnitData() {
         findUnitDescr();
-        if (ruleUnitDescr != null) {
+        if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
             for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
                 String unitVarName = unitVar.getName();
                 Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
