@@ -29,14 +29,14 @@ public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
     public ReflectiveRuleUnitVariable(String name, Method getterMethod) {
         Objects.requireNonNull(name, "Invalid name was given: null");
 
-        if (getterMethod.getDeclaringClass() == RuleUnit.class) {
+        if (getterMethod.getDeclaringClass() != RuleUnit.class) {
             throw new IllegalArgumentException(
                     String.format("The given method '%s' is not from a RuleUnit instance", getterMethod));
         }
 
-        if (getterMethod.getParameterCount() == 0) {
+        if (getterMethod.getParameterCount() != 0) {
             throw new IllegalArgumentException(
-                    String.format("The given method '%s' not from a RuleUnit instance", getterMethod));
+                    String.format("The given method '%s' is not from a RuleUnit instance", getterMethod));
         }
 
         if (getterMethod.getName().equals("getClass")) {
