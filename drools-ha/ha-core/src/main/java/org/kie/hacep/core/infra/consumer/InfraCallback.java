@@ -20,16 +20,17 @@ import org.kie.hacep.core.infra.election.State;
 
 public class InfraCallback implements LeadershipCallback {
 
-    private LeadershipCallback consumer;
+  private LeadershipCallback consumer;
 
-    public InfraCallback() { }
+  public InfraCallback() {
+  }
 
-    public void setConsumer(LeadershipCallback newConsumer) {
-        this.consumer = newConsumer;
-    }
+  public void setConsumer(LeadershipCallback newConsumer) {
+    this.consumer = newConsumer;
+  }
 
-    @Override
-    public void updateStatus(State state) {
-        consumer.updateStatus(state);
-    }
+  @Override
+  public void updateStatus(State state) {
+    consumer.updateStatus(state);
+  }
 }

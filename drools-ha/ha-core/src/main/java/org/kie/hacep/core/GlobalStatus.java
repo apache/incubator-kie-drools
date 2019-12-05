@@ -20,31 +20,31 @@ package org.kie.hacep.core;
  */
 public class GlobalStatus {
 
-    public static boolean isNodeReady() {
-        return nodeReady;
-    }
+  private static volatile boolean nodeReady = false;
+  private static volatile boolean nodeLive = true;
+  private static volatile boolean canBecomeLeader = true;
 
-    public static void setNodeReady(boolean nodeReady) {
-        GlobalStatus.nodeReady = nodeReady;
-    }
+  public static boolean isNodeReady() {
+    return nodeReady;
+  }
 
-    public static boolean isNodeLive() {
-        return nodeLive;
-    }
+  public static void setNodeReady(boolean nodeReady) {
+    GlobalStatus.nodeReady = nodeReady;
+  }
 
-    public static void setNodeLive(boolean nodeLive) {
-        GlobalStatus.nodeLive = nodeLive;
-    }
+  public static boolean isNodeLive() {
+    return nodeLive;
+  }
 
-    public static boolean isCanBecomeLeader() {
-        return canBecomeLeader;
-    }
+  public static void setNodeLive(boolean nodeLive) {
+    GlobalStatus.nodeLive = nodeLive;
+  }
 
-    public static void setCanBecomeLeader(boolean canBecomeLeader) {
-        GlobalStatus.canBecomeLeader = canBecomeLeader;
-    }
+  public static boolean isCanBecomeLeader() {
+    return canBecomeLeader;
+  }
 
-    private static volatile boolean nodeReady = false;
-    private static volatile boolean nodeLive = true;
-    private static volatile boolean canBecomeLeader = true;
+  public static void setCanBecomeLeader(boolean canBecomeLeader) {
+    GlobalStatus.canBecomeLeader = canBecomeLeader;
+  }
 }

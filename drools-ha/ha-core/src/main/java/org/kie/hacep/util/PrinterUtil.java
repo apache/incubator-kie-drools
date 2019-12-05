@@ -21,30 +21,31 @@ import org.slf4j.LoggerFactory;
 
 public class PrinterUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(PrinterUtil.class);
+  private static final Logger logger = LoggerFactory.getLogger(PrinterUtil.class);
 
-    public static Printer getPrinter( EnvConfig config){
-        if(config.getPrinterType().equals(PrinterLogImpl.class.getName())){
-            return new PrinterLogImpl();
-        }else{
-            Printer returnInstance;
-            try {
-                returnInstance = (Printer) Class.forName(config.getPrinterType()).newInstance();
-            }catch (Exception ex){
-                logger.error("Printer:{} not found, using PrinterLog", ex.getMessage());
-                return new PrinterLogImpl();
-            }
-            return returnInstance;
-        }
+  public static Printer getPrinter(EnvConfig config) {
+    if (config.getPrinterType().equals(PrinterLogImpl.class.getName())) {
+      return new PrinterLogImpl();
+    } else {
+      Printer returnInstance;
+      try {
+        returnInstance = (Printer) Class.forName(config.getPrinterType()).newInstance();
+      } catch (Exception ex) {
+        logger.error("Printer:{} not found, using PrinterLog",
+                     ex.getMessage());
+        return new PrinterLogImpl();
+      }
+      return returnInstance;
     }
+  }
 
-    public static Logger getKafkaLoggerForTest(EnvConfig config){
-        if (config.isLocal()) {
-            return logger;
-        }
-        if (config.isUnderTest() && !config.getPrinterType().equals(PrinterLogImpl.class.getName())) {
-            return LoggerFactory.getLogger("org.hacep");
-        }
-        return null;
+  public static Logger getKafkaLoggerForTest(EnvConfig config) {
+    if (config.isLocal()) {
+      return logger;
     }
+    if (config.isUnderTest() && !config.getPrinterType().equals(PrinterLogImpl.class.getName())) {
+      return LoggerFactory.getLogger("org.hacep");
+    }
+    return null;
+  }
 }

@@ -21,9 +21,11 @@ import org.kie.hacep.core.KieSessionContext;
 
 public interface SessionSnapshooter {
 
-    void serialize(KieSessionContext kieSessionContext, String lastInsertedEventkey, long lastInsertedEventOffset);
+  void serialize(KieSessionContext kieSessionContext,
+                 String lastInsertedEventkey,
+                 long lastInsertedEventOffset);
 
-    SnapshotInfos deserialize();
+  SnapshotInfos deserialize();
 
-    LocalDateTime getLastSnapshotTime();
+  LocalDateTime getLastSnapshotTime();
 }

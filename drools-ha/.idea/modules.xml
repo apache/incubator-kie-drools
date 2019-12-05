@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/drools-ha.iml" filepath="$PROJECT_DIR$/drools-ha.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ha-core/ha-core.iml" filepath="$PROJECT_DIR$/ha-core/ha-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ha-remote/ha-remote.iml" filepath="$PROJECT_DIR$/ha-remote/ha-remote.iml" />
+    </modules>
+  </component>
+</project>

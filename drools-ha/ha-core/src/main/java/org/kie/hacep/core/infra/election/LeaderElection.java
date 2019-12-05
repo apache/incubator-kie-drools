@@ -19,9 +19,9 @@ import java.util.List;
 
 public interface LeaderElection {
 
-    void start() throws Exception;
+  void start() throws Exception;
 
-    void stop() throws Exception;
+  void stop() throws Exception;
 
-    void addCallbacks(List<LeadershipCallback> callbacks);
+  void addCallbacks(List<LeadershipCallback> callbacks);
 }

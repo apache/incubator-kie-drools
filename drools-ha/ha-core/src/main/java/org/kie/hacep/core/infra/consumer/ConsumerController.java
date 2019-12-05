@@ -15,55 +15,56 @@
  */
 package org.kie.hacep.core.infra.consumer;
 
-import org.kie.remote.impl.producer.Producer;
 import org.kie.hacep.EnvConfig;
 import org.kie.hacep.consumer.DroolsConsumerHandler;
 import org.kie.hacep.core.infra.election.LeadershipCallback;
+import org.kie.remote.impl.producer.Producer;
 
 public class ConsumerController {
 
-    private EventConsumer consumer;
-    private InfraCallback callback;
-    private Thread thread;
+  private EventConsumer consumer;
+  private InfraCallback callback;
+  private Thread thread;
 
-    public ConsumerController( EnvConfig envConfig, Producer producer ) {
-        this.callback = new InfraCallback();
-        this.consumer = EventConsumer.get(envConfig);
-        this.callback.setConsumer(consumer);
-        this.consumer.initConsumer(new DroolsConsumerHandler(producer, envConfig));
+  public ConsumerController(EnvConfig envConfig,
+                            Producer producer) {
+    this.callback = new InfraCallback();
+    this.consumer = EventConsumer.get(envConfig);
+    this.callback.setConsumer(consumer);
+    this.consumer.initConsumer(new DroolsConsumerHandler(producer,
+                                                         envConfig));
+  }
+
+  public void start() {
+    consumeEvents();
+  }
+
+  public void stop() {
+    consumer.stop();
+    stopConsumeEvents();
+  }
+
+  public EventConsumer getConsumer() {
+    return consumer;
+  }
+
+  public LeadershipCallback getCallback() {
+    return callback;
+  }
+
+  private void consumeEvents() {
+    thread = new Thread(new ConsumerThread(this));
+    thread.start();
+  }
+
+  private void stopConsumeEvents() {
+    if (thread != null) {
+      try {
+        thread.join();
+      } catch (InterruptedException ex) {
+        thread.interrupt();
+        throw new RuntimeException(ex);
+      }
     }
-
-    public void start() {
-        consumeEvents();
-    }
-
-    public void stop() {
-        consumer.stop();
-        stopConsumeEvents();
-    }
-
-    public EventConsumer getConsumer() {
-        return consumer;
-    }
-
-    public LeadershipCallback getCallback() {
-        return callback;
-    }
-
-    private void consumeEvents() {
-        thread = new Thread(new ConsumerThread(this));
-        thread.start();
-    }
-
-    private void stopConsumeEvents(){
-        if ( thread != null) {
-            try {
-                thread.join();
-            }catch (InterruptedException ex){
-                thread.interrupt();
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
+  }
 }

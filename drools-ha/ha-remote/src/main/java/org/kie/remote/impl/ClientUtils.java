@@ -15,7 +15,6 @@
  */
 package org.kie.remote.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -27,20 +26,9 @@ public class ClientUtils {
 
     public static Properties getConfiguration(String filename) {
         Properties props = new Properties();
-        InputStream in = null;
-        try {
-            in = ClientUtils.class.getClassLoader().getResourceAsStream(filename);
-        } catch (Exception e) {
-        } finally {
-            try {
-                props.load(in);
-                if(in != null) {
-                    in.close();
-                }
-            } catch (IOException ioe) {
-            }
-        }
-
+        try(InputStream in = ClientUtils.class.getClassLoader().getResourceAsStream(filename)){
+            props.load(in);
+        }catch (Exception e) {}
         return props;
     }
 }

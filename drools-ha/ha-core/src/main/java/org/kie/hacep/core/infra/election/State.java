@@ -16,7 +16,7 @@
 package org.kie.hacep.core.infra.election;
 
 public enum State {
-    REPLICA,
-    BECOMING_LEADER,
-    LEADER
+  REPLICA,
+  BECOMING_LEADER,
+  LEADER
 }

@@ -16,5 +16,6 @@
 package org.kie.hacep;
 
 public enum PollUnit {
-    SECOND, MILLISECOND;
+  SECOND,
+  MILLISECOND
 }

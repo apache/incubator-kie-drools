@@ -24,46 +24,44 @@ import org.kie.remote.util.LocalMessageSystem;
 
 public class LocalConsumer implements EventConsumer {
 
-    private final LocalMessageSystem queue = LocalMessageSystem.get();
+  private final LocalMessageSystem queue = LocalMessageSystem.get();
+  private final EnvConfig envConfig;
+  private ConsumerHandler consumerHandler;
+  private State currentState;
 
-    private final EnvConfig envConfig;
+  public LocalConsumer(EnvConfig config) {
+    this.envConfig = config;
+  }
 
-    private ConsumerHandler consumerHandler;
+  @Override
+  public void initConsumer(ConsumerHandler consumerHandler) {
+    this.consumerHandler = consumerHandler;
+  }
 
-    private State currentState;
-
-    public LocalConsumer( EnvConfig config ) {
-        this.envConfig = config;
+  @Override
+  public void poll() {
+    String topic = envConfig.getEventsTopicName();
+    while (true) {
+      RemoteCommand command = (RemoteCommand) queue.poll(topic, envConfig.getPollTimeout());
+      if (command != null) {
+        consumerHandler.process(command, currentState);
+      } else {
+        break;
+      }
     }
+  }
 
-    @Override
-    public void initConsumer( ConsumerHandler consumerHandler ) {
-        this.consumerHandler = consumerHandler;
+  @Override
+  public void stop() {
+  }
+
+  @Override
+  public synchronized void updateStatus(State state) {
+    this.currentState = state;
+    if (state == State.REPLICA) {
+      DroolsExecutor.setAsReplica();
+    } else {
+      DroolsExecutor.setAsLeader();
     }
-
-    @Override
-    public void poll() {
-        String topic = envConfig.getEventsTopicName();
-        while (true) {
-            RemoteCommand command = ( RemoteCommand ) queue.poll(topic, envConfig.getPollTimeout());
-            if (command != null) {
-                consumerHandler.process( command, currentState );
-            } else {
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void stop() { }
-
-    @Override
-    public synchronized void updateStatus( State state ) {
-        this.currentState = state;
-        if (state == State.REPLICA) {
-            DroolsExecutor.setAsReplica();
-        } else {
-            DroolsExecutor.setAsLeader();
-        }
-    }
+  }
 }

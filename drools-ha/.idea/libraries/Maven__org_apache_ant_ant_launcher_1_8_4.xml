@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.ant:ant-launcher:1.8.4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.4/ant-launcher-1.8.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.4/ant-launcher-1.8.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.4/ant-launcher-1.8.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

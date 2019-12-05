@@ -28,60 +28,65 @@ import org.kie.hacep.core.infra.SnapshotInfos;
 
 public class KieSessionContext {
 
-    private KieSession kieSession;
+  private KieSession kieSession;
 
-    private SessionPseudoClock clock;
+  private SessionPseudoClock clock;
 
-    private FactHandlesManager fhManager;
+  private FactHandlesManager fhManager;
 
-    private KieContainer kieContainer;
+  private KieContainer kieContainer;
 
-    public KieSession getKieSession() {
-        return kieSession;
+  public KieSession getKieSession() {
+    return kieSession;
+  }
+
+  public KieContainer getKieContainer() {
+    return kieContainer;
+  }
+
+  public Optional<String> getKjarGAVUsed() {
+    ReleaseId releaseId = kieContainer.getReleaseId();
+    String gav = null;
+    if (releaseId != null) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(releaseId.getGroupId()).append(":").append(releaseId.getArtifactId()).append(":").append(releaseId.getVersion());
+      gav = sb.toString();
     }
+    return Optional.ofNullable(gav);
+  }
 
-    public KieContainer getKieContainer(){
-        return kieContainer;
-    }
+  public void initFromSnapshot(SnapshotInfos infos) {
+    setKieSessionAndKieContainer(infos.getKieSession(),
+                                 infos.getKieContainer());
+    this.fhManager = infos.getFhManager();
+  }
 
-    public Optional<String> getKjarGAVUsed(){
-        ReleaseId releaseId = kieContainer.getReleaseId();
-        String gav = null;
-        if(releaseId!= null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(releaseId.getGroupId()).append(":").append(releaseId.getArtifactId()).append(":").append(releaseId.getVersion());
-            gav = sb.toString();
-        }
-        return Optional.ofNullable(gav);
-    }
+  public void init(KieContainer kieContainer,
+                   KieSession newKiesession) {
+    setKieSessionAndKieContainer(newKiesession,
+                                 kieContainer);
+    this.fhManager = new FactHandlesManager(newKiesession);
+  }
 
-    public void initFromSnapshot(SnapshotInfos infos) {
-        setKieSessionAndKieContainer(infos.getKieSession(), infos.getKieContainer());
-        this.fhManager = infos.getFhManager();
+  private void setKieSessionAndKieContainer(KieSession kieSession,
+                                            KieContainer kieContainer) {
+    this.kieSession = kieSession;
+    this.kieContainer = kieContainer;
+    SessionClock clock = kieSession.getSessionClock();
+    if (clock instanceof SessionPseudoClock) {
+      this.clock = (SessionPseudoClock) clock;
     }
+  }
 
-    public void init(KieContainer kieContainer, KieSession newKiesession) {
-        setKieSessionAndKieContainer(newKiesession, kieContainer);
-        this.fhManager = new FactHandlesManager(newKiesession);
-    }
+  public FactHandlesManager getFhManager() {
+    return fhManager;
+  }
 
-    private void setKieSessionAndKieContainer(KieSession kieSession, KieContainer kieContainer) {
-        this.kieSession = kieSession;
-        this.kieContainer = kieContainer;
-        SessionClock clock = kieSession.getSessionClock();
-        if (clock instanceof SessionPseudoClock) {
-            this.clock = (SessionPseudoClock) clock;
-        }
+  public void setClockAt(long time) {
+    if (clock == null) {
+      throw new IllegalStateException("Drools HACEP is not running with a pseudo-clock");
     }
-
-    public FactHandlesManager getFhManager() {
-        return fhManager;
-    }
-
-    public void setClockAt(long time) {
-        if (clock == null) {
-            throw new IllegalStateException( "Drools HACEP is not running with a pseudo-clock" );
-        }
-        clock.advanceTime(time - clock.getCurrentTime(), TimeUnit.MILLISECONDS);
-    }
+    clock.advanceTime(time - clock.getCurrentTime(),
+                      TimeUnit.MILLISECONDS);
+  }
 }

@@ -25,27 +25,30 @@ import org.slf4j.LoggerFactory;
 
 public class KieContainerUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(KieContainerUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(KieContainerUtils.class);
 
-    public static KieContainer getKieContainer(EnvConfig envConfig, KieServices srv){
-        KieContainer kieContainer;
-        if(srv != null) {
-            if (envConfig.isUpdatableKJar()) {
-                kieContainer = srv.newKieContainer(GAVUtils.getReleaseID(envConfig.getKJarGAV(), srv));
-                KieScanner scanner = srv.newKieScanner(kieContainer);
-                scanner.scanNow();
-                if (logger.isInfoEnabled()) {
-                    logger.info("Created new KieContainer with KJar:{} from maven repo", envConfig.getKJarGAV());
-                }
-            } else {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Creating new Kie Session with the KJar deployed with the app");
-                }
-                kieContainer = srv.newKieClasspathContainer();
-            }
-            return kieContainer;
-        }else{
-            throw new RuntimeException("KieServices is null");
+  public static KieContainer getKieContainer(EnvConfig envConfig,
+                                             KieServices srv) {
+    KieContainer kieContainer;
+    if (srv != null) {
+      if (envConfig.isUpdatableKJar()) {
+        kieContainer = srv.newKieContainer(GAVUtils.getReleaseID(envConfig.getKJarGAV(),
+                                                                 srv));
+        KieScanner scanner = srv.newKieScanner(kieContainer);
+        scanner.scanNow();
+        if (logger.isInfoEnabled()) {
+          logger.info("Created new KieContainer with KJar:{} from maven repo",
+                      envConfig.getKJarGAV());
         }
+      } else {
+        if (logger.isInfoEnabled()) {
+          logger.info("Creating new Kie Session with the KJar deployed with the app");
+        }
+        kieContainer = srv.newKieClasspathContainer();
+      }
+      return kieContainer;
+    } else {
+      throw new RuntimeException("KieServices is null");
     }
+  }
 }

@@ -28,18 +28,23 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 
 public class ObjectFilterHelper {
 
-    public static Collection<?> getObjectsFilterByNamedQuery(String namedQuery, String objectName, Object[] params, KieSession kieSession){
-        QueryResults results = kieSession.getQueryResults(namedQuery, params);
-        Iterator<QueryResultsRow> rowsIter = results.iterator();
-        List objects = new ArrayList(results.size());
-        while(rowsIter.hasNext()){
-            QueryResultsRow row = rowsIter.next();
-            objects.add(row.get(objectName));
-        }
-        return objects;
+  public static Collection<?> getObjectsFilterByNamedQuery(String namedQuery,
+                                                           String objectName,
+                                                           Object[] params,
+                                                           KieSession kieSession) {
+    QueryResults results = kieSession.getQueryResults(namedQuery,
+                                                      params);
+    Iterator<QueryResultsRow> rowsIter = results.iterator();
+    List objects = new ArrayList(results.size());
+    while (rowsIter.hasNext()) {
+      QueryResultsRow row = rowsIter.next();
+      objects.add(row.get(objectName));
     }
+    return objects;
+  }
 
-    public static Collection<?> getObjectsFilterByClassType(Class clazzType, KieSession kieSession){
-        return kieSession.getObjects(new ClassObjectFilter(clazzType));
-    }
+  public static Collection<?> getObjectsFilterByClassType(Class clazzType,
+                                                          KieSession kieSession) {
+    return kieSession.getObjects(new ClassObjectFilter(clazzType));
+  }
 }

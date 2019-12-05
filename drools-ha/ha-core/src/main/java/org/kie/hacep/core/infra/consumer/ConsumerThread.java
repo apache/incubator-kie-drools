@@ -17,13 +17,13 @@ package org.kie.hacep.core.infra.consumer;
 
 public class ConsumerThread implements Runnable {
 
-    private ConsumerController bag;
+  private ConsumerController bag;
 
-    public ConsumerThread(ConsumerController bag) {
-        this.bag = bag;
-    }
+  public ConsumerThread(ConsumerController bag) {
+    this.bag = bag;
+  }
 
-    public void run() {
-        bag.getConsumer().poll();
-    }
+  public void run() {
+    bag.getConsumer().poll();
+  }
 }

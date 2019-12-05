@@ -20,13 +20,13 @@ import org.kie.hacep.core.infra.election.LeadershipCallback;
 
 public interface EventConsumer extends LeadershipCallback {
 
-    void initConsumer(ConsumerHandler consumerHandler);
+  static EventConsumer get(EnvConfig config) {
+    return config.isLocal() ? new LocalConsumer(config) : new DefaultKafkaConsumer(config);
+  }
 
-    void poll();
+  void initConsumer(ConsumerHandler consumerHandler);
 
-    void stop();
+  void poll();
 
-    static EventConsumer get(EnvConfig config) {
-        return config.isLocal() ? new LocalConsumer( config ) : new DefaultKafkaConsumer( config );
-    }
+  void stop();
 }

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.2.Final">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/spec/javax/ws/rs/jboss-jaxrs-api_2.1_spec/1.0.2.Final/jboss-jaxrs-api_2.1_spec-1.0.2.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/spec/javax/ws/rs/jboss-jaxrs-api_2.1_spec/1.0.2.Final/jboss-jaxrs-api_2.1_spec-1.0.2.Final-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/spec/javax/ws/rs/jboss-jaxrs-api_2.1_spec/1.0.2.Final/jboss-jaxrs-api_2.1_spec-1.0.2.Final-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

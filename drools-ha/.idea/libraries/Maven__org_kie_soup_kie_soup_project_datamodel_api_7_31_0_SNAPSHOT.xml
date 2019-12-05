@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.kie.soup:kie-soup-project-datamodel-api:7.31.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kie/soup/kie-soup-project-datamodel-api/7.31.0-SNAPSHOT/kie-soup-project-datamodel-api-7.31.0-20191202.134101-16.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kie/soup/kie-soup-project-datamodel-api/7.31.0-SNAPSHOT/kie-soup-project-datamodel-api-7.31.0-20191202.134101-16-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kie/soup/kie-soup-project-datamodel-api/7.31.0-SNAPSHOT/kie-soup-project-datamodel-api-7.31.0-20191202.134101-16-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

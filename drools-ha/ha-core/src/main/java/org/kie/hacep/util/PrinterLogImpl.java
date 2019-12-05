@@ -30,35 +30,34 @@ import org.slf4j.LoggerFactory;
 
 public class PrinterLogImpl implements Printer {
 
-    private static Logger logger = LoggerFactory.getLogger(PrinterLogImpl.class);
+  private static Logger logger = LoggerFactory.getLogger(PrinterLogImpl.class);
 
-    @Override
-    public void prettyPrinter(String caller, ConsumerRecord consumerRecord,
-                              boolean processed) {
-        if (consumerRecord != null) {
-            logger.info("Caller:{} - Processed:{} - Topic: {} - Partition: {} - Offset: {} - Value: {}\n",
-                        caller,
-                        processed,
-                        consumerRecord.topic(),
-                        consumerRecord.partition(),
-                        consumerRecord.offset(),
-                        !(consumerRecord.value() instanceof byte[]) ? consumerRecord.value() : "bytes[]");
-        }
-
+  @Override
+  public void prettyPrinter(String caller,
+                            ConsumerRecord consumerRecord,
+                            boolean processed) {
+    if (consumerRecord != null) {
+      logger.info("Caller:{} - Processed:{} - Topic: {} - Partition: {} - Offset: {} - Value: {}\n",
+                  caller,
+                  processed,
+                  consumerRecord.topic(),
+                  consumerRecord.partition(),
+                  consumerRecord.offset(),
+                  !(consumerRecord.value() instanceof byte[]) ? consumerRecord.value() : "bytes[]");
     }
+  }
 
-
-    public Map<TopicPartition, Long> getOffsets(String topic) {
-        KafkaConsumer consumer = new KafkaConsumer(Config.getConsumerConfig("OffsetConsumer"));
-        consumer.subscribe(Arrays.asList(topic));
-        List<PartitionInfo> infos = consumer.partitionsFor(topic);
-        List<TopicPartition> tps = new ArrayList<>();
-        for (PartitionInfo info : infos) {
-            tps.add(new TopicPartition(topic, info.partition()));
-        }
-        Map<TopicPartition, Long> offsets = consumer.endOffsets(tps);
-        consumer.close();
-        return offsets;
+  public Map<TopicPartition, Long> getOffsets(String topic) {
+    KafkaConsumer consumer = new KafkaConsumer(Config.getConsumerConfig("OffsetConsumer"));
+    consumer.subscribe(Arrays.asList(topic));
+    List<PartitionInfo> infos = consumer.partitionsFor(topic);
+    List<TopicPartition> tps = new ArrayList<>();
+    for (PartitionInfo info : infos) {
+      tps.add(new TopicPartition(topic,
+                                 info.partition()));
     }
-
+    Map<TopicPartition, Long> offsets = consumer.endOffsets(tps);
+    consumer.close();
+    return offsets;
+  }
 }

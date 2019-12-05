@@ -21,41 +21,43 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public class ItemToProcess implements Serializable {
 
-    private String key;
-    private Object object;
-    private long offset;
+  private String key;
+  private Object object;
+  private long offset;
 
-    public ItemToProcess(String key,
-                         long offset,
-                         Object object) {
-        this.key = key;
-        this.object = object;
-        this.offset = offset;
-    }
+  public ItemToProcess(String key,
+                       long offset,
+                       Object object) {
+    this.key = key;
+    this.object = object;
+    this.offset = offset;
+  }
 
-    public String getKey() {
-        return key;
-    }
+  public static ItemToProcess getItemToProcess(ConsumerRecord record) {
+    return new ItemToProcess(record.key().toString(),
+                             record.offset(),
+                             record.value());
+  }
 
-    public Object getObject() {
-        return object;
-    }
+  public String getKey() {
+    return key;
+  }
 
-    public long getOffset() {
-        return offset;
-    }
+  public Object getObject() {
+    return object;
+  }
 
-    public static ItemToProcess getItemToProcess(ConsumerRecord record){
-        return new ItemToProcess(record.key().toString(), record.offset(), record.value());
-    }
+  public long getOffset() {
+    return offset;
+  }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ItemToProcess{");
-        sb.append("key='").append(key).append('\'');
-        sb.append(", object=").append(object);
-        sb.append(", offset=").append(offset);
-        sb.append('}');
-        return sb.toString();
-    }
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("ItemToProcess{");
+    sb.append("key='").append(key).append('\'');
+    sb.append(", object=").append(object);
+    sb.append(", offset=").append(offset);
+    sb.append('}');
+    return sb.toString();
+  }
 }

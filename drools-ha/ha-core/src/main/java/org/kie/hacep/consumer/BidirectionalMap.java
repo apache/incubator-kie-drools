@@ -21,28 +21,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializable {
-    private final Map<V, K> inversedMap = new HashMap<V, K>();
 
-    @Override
-    public V remove(Object key) {
-        V val = super.remove(key);
-        inversedMap.remove(val);
-        return val;
-    }
+  private final Map<V, K> inversedMap = new HashMap<V, K>();
 
-    @Override
-    public V put(K key, V value) {
-        inversedMap.put(value, key);
-        return super.put(key, value);
-    }
+  @Override
+  public V remove(Object key) {
+    V val = super.remove(key);
+    inversedMap.remove(val);
+    return val;
+  }
 
-    public K getKey(V value) {
-        return inversedMap.get(value);
-    }
+  @Override
+  public V put(K key,
+               V value) {
+    inversedMap.put(value,
+                    key);
+    return super.put(key,
+                     value);
+  }
 
-    public K removeValue(V value) {
-        K key = inversedMap.get(value);
-        super.remove( key );
-        return key;
-    }
+  public K getKey(V value) {
+    return inversedMap.get(value);
+  }
+
+  public K removeValue(V value) {
+    K key = inversedMap.get(value);
+    super.remove(key);
+    return key;
+  }
 }

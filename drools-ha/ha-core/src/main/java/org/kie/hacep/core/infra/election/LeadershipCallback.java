@@ -17,5 +17,5 @@ package org.kie.hacep.core.infra.election;
 
 public interface LeadershipCallback {
 
-    void updateStatus(State state);
+  void updateStatus(State state);
 }

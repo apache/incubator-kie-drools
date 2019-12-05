@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.kafka:kafka-clients:2.2.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/2.2.1/kafka-clients-2.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/2.2.1/kafka-clients-2.2.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/2.2.1/kafka-clients-2.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
