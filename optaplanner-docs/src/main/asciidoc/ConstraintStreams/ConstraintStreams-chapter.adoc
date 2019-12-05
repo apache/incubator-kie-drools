@@ -22,8 +22,96 @@ Therefore, it is not rich enough yet to handle complex constraints.
 
 // TODO Remove the previous sentence when PLANNER-1709 is fixed.
 
-To use constraint streams in your project, implement the `ConstraintProvider` interface and use the following in your
-solver config:
+
+[[constraintStreamsIntroduction]]
+== Introduction
+
+Using Java 8's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
+that uses a functional approach:
+
+[source,java,options="nowrap"]
+----
+    private int doNotAssignAnn() {
+        int softScore = 0;
+        schedule.getShiftList().stream()
+                .filter(Shift::isEmployeeAnn)
+                .forEach(shift -> {
+                    softScore -= 1;
+                });
+        return softScore;
+    }
+----
+
+However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
+When the planning variable of a single `Shift` changes, to recalculate the score,
+the normal Streams API has to execute the entire stream from scratch.
+The ConstraintStreams API enables you to write similar code in pure Java, while reaping the performance benefits of
+incremental score calculation.
+This is an example of the same code, using the Constraint Streams API:
+
+// TODO Rewrite the above paragraph PLANNER-1709 is fixed, mentioning constraint justification as another benefit.
+
+[source,java,options="nowrap"]
+----
+    private Constraint doNotAssignAnn(ConstraintFactory factory) {
+        return factory.from(Shift.class)
+                .filter(Shift::isEmployeeAnn)
+                .penalize("Don't assign Ann", HardSoftScore.ONE_SOFT);
+    }
+----
+
+This constraint stream iterates over all instances of class `Shift` in the <<problemFacts,problem facts>> and
+<<planningEntity,planning entities>> in the <<planningProblemAndPlanningSolution,planning problem>>.
+It finds every `Shift` which is assigned to employee `Ann` and for every such instance (also called a match), it adds a
+soft penalty of `1` to the overall <<calculateTheScore,score>>.
+The following figure illustrates this process on a problem with 4 different shifts:
+
+image::ConstraintStreams/constraintStreamIntroduction.png[align="center"]
+
+If any of the instances change during solving, the constraint stream automatically detects the change
+and only recalculates the minimum necessary portion of the problem that is affected by the change.
+The following figure illustrates this <<incrementalScoreCalculation,incremental score calculation>>:
+
+image::ConstraintStreams/constraintStreamIncrementalCalculation.png[align="center"]
+
+////
+TODO Include and describe the following image when PLANNER-1709 is fixed.
+image::ConstraintStreams/constraintStreamJustification.png[align="center"]
+////
+
+
+[[constraintStreamsConfiguration]]
+== Creating a constraint stream
+
+To use the ConstraintStreams API in your project, first write a pure Java `ConstraintProvider` implementation similar
+to the following example.
+
+[source,java,options="nowrap"]
+----
+    public class MyConstraintProvider implements ConstraintProvider {
+
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory factory) {
+            return new Constraint[] {
+                    penalizeEveryShift(factory)
+            };
+        }
+
+        private Constraint penalizeEveryShift(ConstraintFactory factory) {
+            return factory.from(Shift.class)
+                .penalize("Penalize a shift", HardSoftScore.ONE_SOFT);
+        }
+
+    }
+----
+
+[NOTE]
+====
+This example contains one constraint, `penalizeEveryShift(...)`.
+However, you can include as many as you require.
+====
+
+Add the following code to your solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -36,77 +124,212 @@ solver config:
 ----
 
 
-[[constraintStreamsIntroduction]]
-== Introduction
+[[constraintStreamsCardinality]]
+== Constraint stream cardinality
 
-Using Java 8's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
-that uses a functional approach:
-
-[source,java,options="nowrap"]
-----
-    private int speakerUnavailableTimeslot() {
-        int softScore = 0;
-        schedule.getTalkList().stream()
-                .filter(Talk::hasAnyUnavailableSpeaker)
-                .forEach(talk -> {
-                    softScore -= talk.getDurationInMinutes();
-                });
-        return softScore;
-    }
-----
-
-However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
-When the planning variable of a single `Talk` changes, to recalculate the score,
-the normal Streams API has to execute the entire stream from scratch.
-
-On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>:
-
-////
-TODO Replace the previous sentence when PLANNER-1709 is fixed.
-
-So it doesn't do <<incrementalScoreCalculation,deltas>>.
-Nor does it support <<explainingTheScore,justifications>>.
-
-On the other hand, the ConstraintStreams API uses <<incrementalScoreCalculation,deltas>>
-and supports <<explainingTheScore,justifications>>:
-////
+Constraint stream cardinality is a measure of how many objects a single constraint match consists of.
+The simplest constraint stream has a cardinality of 1, meaning each constraint match only consists of 1 object.
+Therefore, it is called a `UniConstraintStream`:
 
 [source,java,options="nowrap"]
 ----
-    private Constraint speakerUnavailableTimeslot(ConstraintFactory factory) {
-        return factory.from(Talk.class)
-                .filter(Talk::hasAnyUnavailableSpeaker)
-                .penalize("Speaker unavailable timeslot",
-                        HardSoftScore.ONE_SOFT,
-                        Talk::getDurationInMinutes);
+    private Constraint doNotAssignAnn(ConstraintFactory factory) {
+        return factory.from(Shift.class) // Returns UniStream<Shift>.
+                ...
     }
 ----
 
-image::ConstraintStreams/constraintStreamIntroduction.png[align="center"]
-image::ConstraintStreams/constraintStreamIncrementalCalculation.png[align="center"]
-image::ConstraintStreams/constraintStreamJustification.png[align="center"]
+Some constraint stream <<constraintStreamsBuildingBlocks, building blocks>> can increase stream cardinality, such as
+<<constraintStreamsJoin,join>> or <<constraintStreamsGroupingAndCollectors,groupBy>>:
+
+[source,java,options="nowrap"]
+----
+    private Constraint doNotAssignAnn(ConstraintFactory factory) {
+        return factory.from(Shift.class) // Returns Uni<Shift>.
+                .join(Employee.class)    // Returns Bi<Shift, Employee>.
+                .join(DayOff.class)      // Returns Tri<Shift, Employee, DayOff>.
+                .join(Country.class)     // Returns Quad<Shift, Employee, DayOff, Country>.
+                ...
+    }
+----
+
+The latter can also decrease stream cardinality:
+
+[source,java,options="nowrap"]
+----
+    private Constraint doNotAssignAnn(ConstraintFactory factory) {
+        return factory.from(Shift.class) // Returns UniStream<Shift>.
+                .join(Employee.class) // Returns BiStream<Shift, Employee>.
+                .groupBy((shift, employee) -> employee) // Returns UniStream<Employee>.
+                ...
+    }
+----
+
+The following constraint stream cardinalities are currently supported:
+
+|===
+|Cardinality|Prefix|Defining interface
+|1          |   Uni|`UniConstraintStream<A>`
+|2          |    Bi|`BiConstraintStream<A, B>`
+|3          |   Tri|`TriConstraintStream<A, B, C>`
+|4          |  Quad|`QuadConstraintStream<A, B, C, D>`
+|===
+
+
+[[constraintStreamsBuildingBlocks]]
+== Building blocks
+
+Constraint streams are chains of different operations, called building blocks.
+Each constraint stream starts with a `from(...)` building block and is terminated by either a penalty or a reward.
+The following example shows the simplest possible constraint stream:
+
+[source,java,options="nowrap"]
+----
+    private Constraint penalizeInitializedShifts(ConstraintFactory factory) {
+        return factory.from(Shift.class)
+                .penalize("Initialized shift", HardSoftScore.ONE_SOFT);
+    }
+----
+
+This constraint stream iterates over all known and initialized instances of `Shift`.
+To include uninitialized instances, replace the `from()` building block with `fromUnfiltered()`:
+
+[source,java,options="nowrap"]
+----
+    private Constraint penalizeAllShifts(ConstraintFactory factory) {
+        return factory.fromUnfiltered(Shift.class)
+                .penalize("A shift", HardSoftScore.ONE_SOFT);
+    }
+----
+
+
+[[constraintStreamsPenaltiesRewards]]
+=== Penalties and rewards
+
+The purpose of constraint streams is to build up a <<whatIsAScore,score>> for a <<planningProblemAndPlanningSolution,solution>>.
+To do this, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
+building block.
+The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
+Penalties and rewards have several components:
+
+- Constraint package is the Java package that contains the constraint.
+The default value is the package that contains the `ConstraintProvider` implementation or the value from
+<<constraintConfiguration,constraint configuration>>, if implemented.
+- Constraint name is the human readable descriptive name for the constraint, which
+(together with the constraint package) must be unique within the entire `ConstraintProvider` implementation.
+- Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
+Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`.
+- Constraint match weigher is an optional function indicating how many times the constraint weight should be applied in
+the score.
+The penalty or reward score impact is the constraint weight multiplied by the match weight.
+The default value is `1`.
+
+The ConstraintStreams API supports many different types of penalties.
+Browse the API in your IDE for the full list of method overloads.
+Here are some examples:
+
+- Simple penalty (`penalize("Constraint name", SimpleScore.ONE)`) makes the score worse by `1` per every match in the
+constraint stream.
+The score type must be the same type as used on the `@PlanningScore` annotated member on the planning solution.
+- Dynamic penalty (`penalize("Constraint name", SimpleScore.ONE, Shift::getHours)`) makes the score worse by the number
+of hours in every matching `Shift` in the constraint stream.
+This is an example of using a constraint match weigher.
+- Configurable penalty (`penalizeConfigurable("Constraint name")`) makes the score worse using constraint weights
+defined in <<constraintConfiguration,constraint configuration>>.
+- Configurable dynamic penalty(`penalizeConfigurable("Constraint name", Shift::getHours)`) makes the score worse using
+constraint weights defined in <<constraintConfiguration,constraint configuration>>, multiplied by the number of hours in
+every matching `Shift` in the constraint stream.
+
+By replacing the keyword `penalize` by `reward` in the name of these building blocks, you will get operations that
+affect score in the opposite direction.
 
 
 [[constraintStreamsFilter]]
-== Filter
+=== Filtering
+
+Filtering enables you to reduce the number of constraint matches in your stream.
+It first enumerate all constraint matches and then applies a predicate to filter some matches out.
+The predicate is a function that only returns `true` if the match is to continue in the stream.
+The following constraint stream removes all of Beth's shifts from all `Shift` matches:
+
+[source,java,options="nowrap"]
+----
+    private Constraint penalizeAnnShifts(ConstraintFactory factory) {
+        return factory.from(Shift.class)
+                .filter(shift -> shift.getEmployeeName().equals("Ann"))
+                .penalize("Ann's shift", SimpleScore.ONE);
+    }
+----
+
+The following example retrieves a list of shifts where an employee has asked for a day off from a bi-constraint match
+of `Shift`and `DayOff`:
+
+[source,java,options="nowrap"]
+----
+    private Constraint penalizeShiftsOnOffDays(ConstraintFactory factory) {
+        return factory.from(Shift.class)
+                .join(DayOff.class)
+                .filter((shift, dayOff) -> shift.date == dayOff.date && shift.employee == dayOff.employee)
+                .penalize("Shift on an off-day", SimpleScore.ONE);
+    }
+----
+
+The following figure illustrates both these examples:
 
 image::ConstraintStreams/constraintStreamFilter.png[align="center"]
 
+[NOTE]
+====
+For performance reasons, using the <<constraintStreamsJoin,join>> building block with the appropriate `Joiner`s is
+preferrable when possible.
+Using a `Joiner` creates only the constraint matches that are necessary, while filtered join creates all possible
+constraint matches and only then filters some of them out.
+====
+
+The following functions are required for filtering constraint streams of different cardinality:
+
+|===
+|Cardinality|Filtering Predicate
+|1          |`java.util.function.Predicate<A>`
+|2          |`java.util.function.BiPredicate<A, B>`
+|3          |`org.optaplanner.core.api.function.TriPredicate<A, B, C>`
+|4          |`org.optaplanner.core.api.function.QuadPredicate<A, B, C, D>`
+|===
+
 
 [[constraintStreamsJoin]]
-== Join
+=== Joining
+
+Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to the inner join
+operation in SQL. As the following figure illustrates, a join creates a cartesian product of the streams being joined:
 
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
+Doing this is inefficient because the resulting stream might contain constraint matches that are of no interest to your
+constraint.
+Use `Joiner` to restrict your joins only to the matches you are actually interested in, as illustrated in the following
+figure:
+
 image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
+
+The following `Joiner` types are supported:
+
+- `equalTo` for joining constraint matches where they `equals()` one another.
+- `greaterThan`, `greaterThanOrEqual`, `lessThan` and `lessThanOrEqual` for joining `Comparable` constraint matches per
+the prescribed ordering.
+
+For a full list of all supported `Joiner` implementations and their various overloads, refer to the
+`org.optaplanner.core.api.score.stream.Joiners` class.
 
 
 [[constraintStreamsGroupingAndCollectors]]
-== Grouping and Collectors
+=== Grouping and collectors
 
 Grouping collects items in a stream according to user-provider criteria (also called "group key"), similar to what a
-`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector`s, which provide
-various aggregation functions.
+`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector` instances, which
+provide various aggregation functions. The following figure illustrates a simple `groupBy()` operation:
+
+image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
 
 For example, the following code snippet first groups all processes by the computer they run on, sums up all the power
 required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes
@@ -124,13 +347,18 @@ every computer whose processes consume more power than is available.
     }
 ----
 
-image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
+[NOTE]
+====
+Information might be lost during grouping.
+In the previous example, `filter()` and all subsequent operations no longer have direct access to the original
+`CloudProcess` instance.
+====
 
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
 [collectorsOutOfTheBox]
-=== Out-of-the-box Collectors
+==== Out-of-the-box collectors
 
 The following section focuses on the collector implementations provided out of the box. This section only describes the
 `int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
@@ -138,7 +366,7 @@ result data types, such as `long`, `BigDecimal` or `Duration`. You can find a co
 `org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
 
 [collectorsCount]
-==== Collecting `count()`
+===== Collecting `count()`
 
 The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector
 gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
@@ -158,7 +386,7 @@ don't.
 The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
 
 [collectorsCountDistinct]
-==== Collecting `countDistinct()`
+===== Collecting `countDistinct()`
 
 The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it
 occurs. For example, the following use of the collector gives a number of talks in each unique room.
@@ -177,7 +405,7 @@ occurs. For example, the following use of the collector gives a number of talks 
 The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
 
 [collectorsSum]
-==== Collecting `sum()`
+===== Collecting `sum()`
 
 To sum the values of a particular property of all elements in the group, use the `ConstraintCollectors.sum(...)`
 collector. The following code snippet first groups all processes by the computer they run on and sums up all the power
@@ -204,7 +432,7 @@ The return value for this collector is a 32-bit signed integer (`int`). There ar
 
 
 [collectorsMinMax]
-==== Minimums and maximums
+===== Minimums and maximums
 
 To extract the minimum or maximum of a group, use the `ConstraintCollectors.min(...)` and
 `ConstraintCollectors.max(...)` collectors respectively.
@@ -229,12 +457,14 @@ The following example finds a computer which runs the most power-demanding proce
 [[constraintStreamsImplementations]]
 == Variant implementation types
 
-Constraint streams come in two flavours, a default implementation using Drools under the hood and a pure Java-based
-implementation called _Bavet_. Drools-based implementation is more feature-complete.
+Constraint streams come in two flavors, a default implementation using Drools under the hood and a pure Java-based
+implementation called _Bavet_.
+The Drools-based implementation is more feature-complete.
+Both of these variants implement the same `ConstraintProvider` API.
+No Java code changes are necessary to switch between the two.
 
-Bavet is an experimental implementation focusing on raw speed, which often significantly outperforms the Drools
-implementation, or even Drools itself.
-However, it lacks features.
+Bavet is an experimental implementation that focuses on raw speed and provides superior performance.
+However, it lacks features and therefore many of the <<examplesOverview,examples>> are not supported.
 To try it out, implement the `ConstraintProvider` interface and use the following in your solver config:
 
 [source,xml,options="nowrap"]
