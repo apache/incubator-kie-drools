@@ -87,7 +87,7 @@ function solve() {
             autoRefreshIntervalId = setInterval(autoRefresh, 2000);
         }
     }).fail(function() {
-        console.warn("Error on post to /timeTable/solve.")
+        showError("Start solving failed.");
     });
 }
 
@@ -104,19 +104,20 @@ function stopSolving() {
     $.post("/timeTable/stopSolving", function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /timeTable/stopSolving.")
+        showError("Stop solving failed.");
     });
 }
 
 function addLesson() {
+    var subject = $("#lesson_subject").val();
     $.post("/lessons", JSON.stringify({
-        "subject": $("#lesson_subject").val(),
+        "subject": subject,
         "teacher": $("#lesson_teacher").val(),
         "studentGroup": $("#lesson_studentGroup").val()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /lessons.")
+        showError("Adding lesson (" + subject + ") failed.");
     });
     $('#lessonDialog').modal('toggle');
 }
@@ -125,7 +126,7 @@ function deleteLesson(lesson) {
     $.delete("/lessons/" + lesson.id, function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on delete to /lessons/" + lesson.id +".")
+        showError("Deleting lesson (" + lesson.name + ") failed.");
     });
 }
 
@@ -137,7 +138,7 @@ function addTimeslot() {
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /timeslots.")
+        showError("Adding timeslot failed.");
     });
     $('#timeslotDialog').modal('toggle');
 }
@@ -146,35 +147,44 @@ function deleteTimeslot(timeslot) {
     $.delete("/timeslots/" + timeslot.id, function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on delete to /timeslots/" + timeslot.id +".")
+        showError("Deleting timeslot (" + timeslot.name + ") failed.");
     });
 }
 
 function addRoom() {
+    var name = $("#room_name").val();
     $.post("/rooms", JSON.stringify({
-        "name": $("#room_name").val()
+        "name": name
     }), function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on post to /rooms.")
+        showError("Adding room (" + name + ") failed.");
     });
-    $('#roomDialog').modal('toggle');
+    $("#roomDialog").modal('toggle');
 }
 
 function deleteRoom(room) {
     $.delete("/rooms/" + room.id, function () {
         refreshTimeTable();
     }).fail(function() {
-        console.warn("Error on delete to /rooms/" + room.id +".")
+        showError("Deleting room (" + room.name + ") failed.");
     });
 }
 
-function deleteRoom(room) {
-    $.delete("/rooms/" + room.id, function () {
-        refreshTimeTable();
-    }).fail(function() {
-        console.warn("Error on delete to /rooms/" + room.id +".")
-    });
+function showError(content) {
+    console.error(content);
+    var notification = $("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" style=\"min-width: 20rem\">"
+            + "<div class=\"toast-header bg-danger\">"
+            + "<strong class=\"mr-auto text-dark\">Error</strong>"
+            + "<button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">"
+            + "<span aria-hidden=\"true\">&times;</span>"
+            + "</button>"
+            + "</div>"
+            + "<div class=\"toast-body\">" + content + "</div>"
+            + "</div>");
+    $("#notificationPanel").append(notification);
+    notification.toast({delay: 3000});
+    notification.toast('show');
 }
 
 $(document).ready( function() {
