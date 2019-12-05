@@ -80,7 +80,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     
     @Override
     public void withOutgoingMessage(NodeWithAnnotations<?> node, String channel) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("io.smallrye.reactive.messaging.annotations.Stream"), new StringLiteralExpr(channel)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("io.smallrye.reactive.messaging.annotations.Channel"), new StringLiteralExpr(channel)));
     }
     
     @Override
