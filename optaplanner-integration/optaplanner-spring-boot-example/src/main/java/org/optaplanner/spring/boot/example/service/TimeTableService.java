@@ -18,7 +18,6 @@ package org.optaplanner.spring.boot.example.service;
 
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
-import org.optaplanner.spring.boot.example.poc.api.solver.SolverFuture;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/timeTable")
 public class TimeTableService {
 
+    public static final Long TENANT_ID = 1L;
+
     @Autowired
     private TimeslotRepository timeslotRepository;
     @Autowired
@@ -38,32 +39,42 @@ public class TimeTableService {
     private LessonRepository lessonRepository;
 
     @Autowired
-    private SolverManager<TimeTable> solverManager;
-
-    private SolverFuture solverFuture = null;
+    private SolverManager<TimeTable, Long> solverManager;
 
     // To try, open http://localhost:8080/timeTable
     @GetMapping()
-    public TimeTable refreshTimeTable() {
-        TimeTable timeTable = new TimeTable(
-                timeslotRepository.findAll(),
-                roomRepository.findAll(),
-                lessonRepository.findAll()
-        );
-        // TODO add score
+    public TimeTable getTimeTableView() {
+        TimeTable timeTable = getTimeTable();
+        // TODO add to response: score, solving status, indictments etc
         return timeTable;
+    }
+
+    private TimeTable getTimeTable() {
+        return new TimeTable(
+                    timeslotRepository.findAll(),
+                    roomRepository.findAll(),
+                    lessonRepository.findAll());
     }
 
     @PostMapping("/solve")
     public void solve() {
-        TimeTable problemTimeTable = refreshTimeTable();
-        // TODO Race condition if room is added while solving and new best solutions still occur
-        solverFuture = solverManager.solve(problemTimeTable, solutionTimeTable -> {
-            for (Lesson lesson : solutionTimeTable.getLessonList()) {
-                // TODO this is awfully naive with optimistic locking
-                lessonRepository.save(lesson);
-            }
-        });
+        solverManager.solveObserving(TENANT_ID, this::getTimeTable, this::saveSolution);
+    }
+
+    public void saveSolution(TimeTable solution) {
+        for (Lesson lesson : solution.getLessonList()) {
+            // TODO this is awfully naive with optimistic locking
+            lessonRepository.save(lesson);
+        }
+    }
+
+    public void reloadProblem() {
+        solverManager.reloadProblem(TENANT_ID, this::getTimeTable);
+    }
+
+    @PostMapping("/stopSolving")
+    public void stopSolving() {
+        solverManager.terminateEarly(TENANT_ID);
     }
 
 }

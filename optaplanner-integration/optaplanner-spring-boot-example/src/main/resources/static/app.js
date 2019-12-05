@@ -57,7 +57,7 @@ function refreshTimeTable() {
     });
 }
 
-function solveTimeTable() {
+function solve() {
     $.post("/timeTable/solve", function () {
         autoRefreshCount = 16;
         if (autoRefreshIntervalId == null) {
@@ -75,6 +75,14 @@ function autoRefresh() {
         clearInterval(autoRefreshIntervalId);
         autoRefreshIntervalId = null;
     }
+}
+
+function stopSolving() {
+    $.post("/timeTable/stopSolving", function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on post to /timeTable/stopSolving.")
+    });
 }
 
 function addLesson() {
@@ -125,7 +133,10 @@ $(document).ready( function() {
         refreshTimeTable();
     });
     $("#solveButton").click(function() {
-        solveTimeTable();
+        solve();
+    });
+    $("#stopSolvingButton").click(function() {
+        stopSolving();
     });
     $("#addLessonSubmitButton").click(function() {
         addLesson();

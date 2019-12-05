@@ -30,7 +30,7 @@ public class PocSolverManagerProducer {
     // TODO Move this method into OptaPlannerAutoConfiguration
     @Bean
     @ConditionalOnMissingBean
-    public <Solution_> SolverManager<Solution_> solverManager(SolverFactory<Solution_> solverFactory) {
+    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverFactory<Solution_> solverFactory) {
         // TODO supply ThreadFactory
         return SolverManager.create(solverFactory);
     }

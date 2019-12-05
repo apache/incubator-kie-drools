@@ -16,16 +16,23 @@
 
 package org.optaplanner.spring.boot.example.poc.api.solver;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
-// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
-// TODO Clean this up and move this class into optaplanner-core
-public interface SolverFuture<Solution_> {
+public interface SolverJob<Solution_, ProblemId_> {
 
-    Solution_ getBestSolution();
+    ProblemId_ getProblemId();
+
+    void reloadProblem(Supplier<Solution_> problemSupplier);
+
+    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     void terminateEarly();
 

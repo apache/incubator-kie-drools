@@ -16,26 +16,41 @@
 
 package org.optaplanner.spring.boot.example.poc.impl.solver;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.spring.boot.example.poc.api.solver.SolverFuture;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
-// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
-// TODO Clean this up and move this class into optaplanner-core
-public class DefaultSolverFuture<Solution_> implements SolverFuture<Solution_> {
+public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_> {
 
+    private final ProblemId_ problemId;
     private final Solver<Solution_> solver;
 
-    public DefaultSolverFuture(Solver<Solution_> solver) {
+    public DefaultSolverJob(ProblemId_ problemId, Solver<Solution_> solver) {
+        this.problemId = problemId;
         this.solver = solver;
     }
 
     @Override
-    public Solution_ getBestSolution() {
-        return solver.getBestSolution();
+    public ProblemId_ getProblemId() {
+        return problemId;
+    }
+
+    @Override
+    public void reloadProblem(Supplier<Solution_> problemSupplier) {
+//        solver.reloadProblem(problemSupplier);
+    }
+
+    @Override
+    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+        solver.addProblemFactChange(problemFactChange);
     }
 
     @Override

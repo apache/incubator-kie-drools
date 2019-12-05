@@ -16,29 +16,42 @@
 
 package org.optaplanner.spring.boot.example.poc.impl.solver;
 
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
-// THIS IS JUST A PROOF OF CONCEPT IN THE EXAMPLE FOR 7.30.0.Final. THIS CLASS WILL BECOME OBSOLETE VERY SOON.
-// TODO Clean this up and move this class into optaplanner-core
-public class DefaultSolverManager<Solution_> implements SolverManager<Solution_> {
+public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SolverFactory<Solution_> solverFactory;
     private ExecutorService executorService;
 
+    private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
+
     public DefaultSolverManager(SolverFactory<Solution_> solverFactory) {
         this.solverFactory = solverFactory;
         validateSolverFactory();
-        executorService = Executors.newSingleThreadExecutor();
+        int solverThreadCount = 1;
+        executorService = Executors.newFixedThreadPool(solverThreadCount);
+        problemIdToSolverJobMap = new ConcurrentHashMap<>(solverThreadCount * 10);
     }
 
     private void validateSolverFactory() {
@@ -46,25 +59,65 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public DefaultSolverFuture solve(Solution_ planningProblem,
-            Consumer<Solution_> bestSolutionConsumer) {
+    public SolverJob<Solution_, ProblemId_> solveObserving(ProblemId_ problemId,
+            Supplier<Solution_> problemSupplier, Consumer<Solution_> bestSolutionConsumer) {
         Solver<Solution_> solver = solverFactory.buildSolver();
         // TODO consumption should happen on different thread than solver thread, doing skipAhead and throttling
         solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
-        DefaultSolverFuture solverFuture = new DefaultSolverFuture<>(solver);
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap
+                .compute(problemId, (key, oldSolverJob) -> {
+           if (oldSolverJob != null) {
+               // TODO Handle gracefully
+               throw new IllegalStateException("Already solving!");
+           } else {
+               return new DefaultSolverJob<>(problemId, solver);
+           }
+        });
         executorService.submit(() -> {
             try {
-                solver.solve(planningProblem);
+                Solution_ problem = problemSupplier.get();
+                solver.solve(problem);
             } catch (Exception e) {
+                // TODO
                 e.printStackTrace();
+            } finally {
+                problemIdToSolverJobMap.remove(problemId);
             }
         });
-        return solverFuture;
+        return solverJob;
     }
 
     @Override
-    public void reloadProblem() {
-        System.out.println("Reload problem in SolverManager event"); // TODO
+    public void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        if (solverJob == null) {
+            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+            logger.debug("Ignoring reloadProblem() call because problemId ({}) is not solving.", problemId);
+            return;
+        }
+        solverJob.reloadProblem(problemSupplier);
+    }
+
+    @Override
+    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        if (solverJob == null) {
+            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
+            return;
+        }
+        solverJob.addProblemFactChange(problemFactChange);
+    }
+
+    @Override
+    public void terminateEarly(ProblemId_ problemId) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        if (solverJob == null) {
+            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+            logger.debug("Ignoring terminateEarly() call because problemId ({}) is not solving.", problemId);
+            return;
+        }
+        solverJob.terminateEarly();
     }
 
     @Override

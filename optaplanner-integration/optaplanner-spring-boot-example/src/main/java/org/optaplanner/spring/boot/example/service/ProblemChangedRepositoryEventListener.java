@@ -18,9 +18,7 @@ package org.optaplanner.spring.boot.example.service;
 
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.Room;
-import org.optaplanner.spring.boot.example.domain.TimeTable;
 import org.optaplanner.spring.boot.example.domain.Timeslot;
-import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
@@ -33,27 +31,27 @@ import org.springframework.stereotype.Component;
 public class ProblemChangedRepositoryEventListener {
 
     @Autowired
-    private SolverManager<TimeTable> solverManager;
+    private TimeTableService timeTableService;
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void timeslotCreateSaveDelete(Timeslot timeslot) {
-        solverManager.reloadProblem();
+        timeTableService.reloadProblem();
     }
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void roomCreateSaveDelete(Room room) {
-        solverManager.reloadProblem();
+        timeTableService.reloadProblem();
     }
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void lessonCreateSaveDelete(Lesson lesson) {
-        solverManager.reloadProblem();
+        timeTableService.reloadProblem();
     }
 
 }
