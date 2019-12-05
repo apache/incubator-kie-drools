@@ -102,7 +102,7 @@ public class ExecModelLambdaPostProcessor {
                     ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
                     a.replace(lambdaInstance(type));
                 } catch(DoNotConvertLambdaException e) {
-                    logger.info("Cannot externalize lambdas {}", e.getMessage());
+                    logger.debug("Cannot externalize lambdas {}", e.getMessage());
                 }
             }
         });

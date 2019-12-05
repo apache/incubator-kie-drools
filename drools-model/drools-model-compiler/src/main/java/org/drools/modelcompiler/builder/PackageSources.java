@@ -45,13 +45,18 @@ public class PackageSources {
             sources.pojoSources.add(new GeneratedFile(declaredType.getName(), logSource( declaredType.getSource() )));
         }
 
+        RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
+        sources.modelNames = rules.getClassNames();
+        return sources;
+    }
+
+    protected static RuleWriter writeRules( PackageModel pkgModel, PackageSources sources, PackageModelWriter packageModelWriter ) {
         for (AccumulateClassWriter accumulateClassWriter : packageModelWriter.getAccumulateClasses()) {
             sources.accumulateSources.add(new GeneratedFile(accumulateClassWriter.getName(), logSource( accumulateClassWriter.getSource() )));
         }
 
         RuleWriter rules = packageModelWriter.getRules();
         sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
-        sources.modelNames = rules.getClassNames();
 
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
@@ -65,8 +70,7 @@ public class PackageSources {
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
-
-        return sources;
+        return rules;
     }
 
     public Collection<String> getModelNames() {
