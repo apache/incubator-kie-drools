@@ -402,8 +402,8 @@ public class ModelGenerator {
 
   private static void addUnitData(RuleContext context, RuleUnitVariable unitVar, BlockStmt ruleBlock) {
         Type declType = classToReferenceType(unitVar.getBoxedVarType());
-        context.addRuleUnitVar( unitVar.getName(), unitVar.getType() );
-        context.addRuleUnitVarOriginalType( unitVar.getName(), unitVar.getDataSourceParameterType() );
+        context.addRuleUnitVar( unitVar.getName(), unitVar.getDataSourceParameterType() );
+        context.addRuleUnitVarOriginalType( unitVar.getName(), unitVar.getType() );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);

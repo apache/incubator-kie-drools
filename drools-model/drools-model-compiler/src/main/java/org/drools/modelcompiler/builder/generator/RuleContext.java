@@ -147,7 +147,7 @@ public class RuleContext {
                 addRuleUnitVar( unitVarName, resolvedType );
 
                 getPackageModel().addGlobal( unitVarName, unitVar.getType() );
-                if ( isDataSource( unitVar.getType() ) ) {
+                if ( unitVar.isDataSource() ) {
                     getPackageModel().addEntryPoint( unitVarName );
                 }
             }
