@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
@@ -303,7 +304,7 @@ public class KieContainerImpl
     }
 
     private boolean isClassInUse(ClassLoader rootClassLoader, String className) {
-        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
+        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className, MaterializedLambda.class);
     }
 
     private Collection<Class<?>> reinitModifiedClasses( InternalKieModule newKM, List<String> modifiedClasses, ClassLoader classLoader, boolean modifyingUsedClass ) {

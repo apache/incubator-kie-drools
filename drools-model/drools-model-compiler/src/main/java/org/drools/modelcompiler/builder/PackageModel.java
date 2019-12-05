@@ -38,15 +38,20 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -58,18 +63,22 @@ import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Rule;
+import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
@@ -135,6 +144,7 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
+    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private Set<Class<?>> ruleUnits = new HashSet<>();
 
     private boolean oneClassPerRule;
@@ -189,6 +199,10 @@ public class PackageModel {
 
     public String getPathName() {
         return name.replace('.', '/');
+    }
+
+    public String getRulesFileNameWithPackage() {
+        return name + "." + rulesFileName;
     }
     
     public DRLIdGenerator getExprIdGenerator() {
@@ -355,6 +369,11 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
+
+    public Map<String, CreatedClass> getLambdaClasses() {
+        return lambdaClasses;
+    }
+
 
     public void addRuleUnit(Class<?> ruleUnitType) {
         this.ruleUnits.add(ruleUnitType);
@@ -608,10 +627,22 @@ public class PackageModel {
 
         int ruleCount = ruleMethodsInUnit.size();
         boolean requiresMultipleRulesLists = ruleCount >= RULES_DECLARATION_PER_CLASS-1;
+        boolean parallelRulesLoad = ruleCount >= (RULES_DECLARATION_PER_CLASS*3-1);
+        MethodCallExpr parallelRulesGetter = null;
+
 
         MethodCallExpr rules = buildRulesField( rulesClass );
         if (requiresMultipleRulesLists) {
-            addRulesList( rulesListInitializerBody, "rulesList" );
+            rulesClass.addImplementedType(RulesSupplier.class);
+            if (parallelRulesLoad) {
+                parallelRulesGetter = new MethodCallExpr( new NameExpr( RulesSupplier.class.getCanonicalName() ), "getRules" );
+                parallelRulesGetter.addArgument( new ThisExpr() );
+                rulesListInitializerBody.addStatement( new AssignExpr( new NameExpr( "this.rules" ), parallelRulesGetter, AssignExpr.Operator.ASSIGN) );
+            } else {
+                MethodCallExpr add = new MethodCallExpr( new NameExpr( "rules" ), "addAll" );
+                add.addArgument( "getRulesList()" );
+                rulesListInitializerBody.addStatement( add );
+            }
         }
 
         ruleMethodsInUnit.parallelStream().forEach( DrlxParseUtil::transformDrlNameExprToNameExpr);
@@ -635,7 +666,16 @@ public class PackageModel {
             if (count % RULES_DECLARATION_PER_CLASS == RULES_DECLARATION_PER_CLASS-1) {
                 int index = count / RULES_DECLARATION_PER_CLASS;
                 rules = buildRulesField(results, index);
-                addRulesList( rulesListInitializerBody, rulesFileName + "Rules" + index + ".rulesList" );
+
+                ObjectCreationExpr newObject = new ObjectCreationExpr(null, parseClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
+
+                if (parallelRulesLoad) {
+                    parallelRulesGetter.addArgument( newObject );
+                } else {
+                    MethodCallExpr add = new MethodCallExpr( new NameExpr( "rules" ), "addAll" );
+                    add.addArgument( new MethodCallExpr( newObject, "getRulesList" ) );
+                    rulesListInitializerBody.addStatement( add );
+                }
             }
 
             // manage in main class init block:
@@ -644,7 +684,7 @@ public class PackageModel {
 
         BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
                 parseBodyDeclaration("List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
-                parseBodyDeclaration("List<org.drools.model.Rule> rules = rulesList;");
+                parseBodyDeclaration("List<org.drools.model.Rule> rules = getRulesList();");
         rulesClass.addMember(rulesList);
     }
 
@@ -695,12 +735,6 @@ public class PackageModel {
         rulesListInitializerBody.addStatement( add );
     }
 
-    private void addRulesList( BlockStmt rulesListInitializerBody, String listName ) {
-        MethodCallExpr add = new MethodCallExpr(new NameExpr("rules"), "addAll");
-        add.addArgument(listName);
-        rulesListInitializerBody.addStatement(add);
-    }
-
     private MethodCallExpr buildRulesField(RuleSourceResult results, int index) {
         CompilationUnit cu = new CompilationUnit();
         results.withClass(cu);
@@ -710,14 +744,16 @@ public class PackageModel {
         cu.addImport(Rule.class.getCanonicalName());
         String currentRulesMethodClassName = rulesFileName + "Rules" + index;
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
+        rulesClass.addImplementedType(RulesSupplier.class);
         return buildRulesField( rulesClass );
     }
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
         ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
-        VariableDeclarator rulesVar = new VariableDeclarator( rulesType, "rulesList", rulesInit );
-        rulesClass.addMember( new FieldDeclaration( NodeList.nodeList( publicModifier(), staticModifier()), rulesVar ) );
+        MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
+        rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
+        rulesClass.addMember( rulesGetter );
         return rulesInit;
     }
 

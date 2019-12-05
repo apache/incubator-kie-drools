@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d" id="_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d" exporter="DMN Modeler" exporterVersion="6.5.1" triso:logoChoice="Default">
+    <semantic:decision id="_a2fe56e6-f5c2-4905-94b6-c5e15257c4a6" name="decision">
+        <semantic:variable name="decision" id="_d6dad043-97dc-405a-9825-836785516344" typeRef="number"/>
+        <semantic:literalExpression id="_0b103dcf-b157-4470-98c4-c6e13a8ecdd0" typeRef="number" triso:expressionId="_83376e8f-7d77-473b-95a3-47d995268508">
+            <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_d5862161-bdde-4c30-9526-95ad205728bf" name="model">
+        <semantic:variable name="model" id="_4b4c8589-89c3-4e47-9175-472d6169a19e" typeRef="number"/>
+        <semantic:literalExpression id="_0bb6abef-19d0-4edd-83cc-4aab1142a3d3" typeRef="number" triso:expressionId="_a33e488b-ff8b-44b9-9ada-045ef3fb105f">
+            <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_c467e0b9-0308-40d2-8313-82f1743959ba" name="decision - model">
+        <semantic:variable name="decision - model" id="_8cb5a786-2b16-4104-a170-9cb5379d9c9f" typeRef="string"/>
+        <semantic:literalExpression id="_06a36593-3b0b-4571-8a85-9833d275a87b" typeRef="string" triso:expressionId="_184c568a-2549-4af6-956f-fe6587c7e981">
+            <semantic:text>"DMN"</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_36a1274e-0470-45df-8dc8-5f6a9b2efb49" name="decision1">
+        <semantic:variable name="decision1" id="_849fef06-57f1-4d81-9c21-4eb9a715465e" typeRef="Any"/>
+        <semantic:informationRequirement id="_3f5cd66a-1dc1-4f39-ab18-f3ed78650ee0">
+            <semantic:requiredDecision href="#_d5862161-bdde-4c30-9526-95ad205728bf"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_f301f9de-0797-42b3-9d2c-e7425eb3fa35">
+            <semantic:requiredDecision href="#_a2fe56e6-f5c2-4905-94b6-c5e15257c4a6"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_5acb36f9-497a-4b8d-b7ed-ce200c8cb404">
+            <semantic:requiredDecision href="#_c467e0b9-0308-40d2-8313-82f1743959ba"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_ba761dc1-1b77-41fa-872e-5c1c0fb4403d" typeRef="Any" triso:expressionId="_1dcd366f-c166-4ed9-b84a-427345beb418">
+            <semantic:text>decision - model</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>

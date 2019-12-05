@@ -26,6 +26,8 @@ import java.util.Optional;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.modelcompiler.util.lambdareplace.DoNotConvertLambdaException;
+import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
@@ -69,7 +71,18 @@ public class RuleWriter {
 
                 String addFileName = classOptional.get().getNameAsString();
 
-                rules.add(new RuleFileSource(addFileName, cu));
+                CompilationUnit postProcessedCU = cu.clone();
+                if (pkgModel.getRuleUnits().isEmpty()) {
+                    new ExecModelLambdaPostProcessor(
+                            pkgModel.getLambdaClasses(),
+                            pkgModel.getName(),
+                            pkgModel.getRulesFileNameWithPackage(),
+                            pkgModel.getImports(),
+                            pkgModel.getStaticImports(),
+                            postProcessedCU
+                    ).convertLambdas();
+                }
+                rules.add(new RuleFileSource(addFileName, postProcessedCU));
             }
         }
         return rules;

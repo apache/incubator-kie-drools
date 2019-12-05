@@ -303,13 +303,13 @@ public class EvalTest {
                 "\n" +
                 "global java.util.List results\n" +
                 "\n" +
-                "function boolean test( Object o1, Object o2 ) {\n" +
+                "function boolean testEqual( Object o1, Object o2 ) {\n" +
                 "    return o1.equals(o2);\n" +
                 "}\n" +
                 "\n" +
                 "rule \"TestRule\"\n" +
                 "when\n" +
-                "    $i : Integer( eval( test( $i,\n" +
+                "    $i : Integer( eval( testEqual( $i,\n" +
                 "                              $i ) ) )\n" +
                 "then\n" +
                 "    results.add( $i );\n" +

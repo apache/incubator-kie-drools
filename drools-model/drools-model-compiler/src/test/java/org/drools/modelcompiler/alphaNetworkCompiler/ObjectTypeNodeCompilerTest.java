@@ -246,4 +246,22 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.fireAllRules();
         assertTrue(luca.getAge() == 40);
     }
+
+    @Test
+    public void testAlphaConstraintNagate() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    Person( !(age > 18) )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            ksession.insert(new Person("Mario", 45));
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

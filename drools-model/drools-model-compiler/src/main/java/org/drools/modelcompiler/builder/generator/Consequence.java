@@ -29,7 +29,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
@@ -45,10 +44,10 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static java.util.stream.Collectors.toSet;
-
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -216,9 +215,13 @@ public class Consequence {
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
         if (requireDrools) {
-            executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
+            executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
-        verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
+        verifiedDeclUsedInRHS.stream().map(x -> {
+            DeclarationSpec declarationById = context.getDeclarationById(x).get();
+
+            return new Parameter(declarationById.getBoxedType(), x);
+        }).forEach(executeLambda::addParameter);
         executeLambda.setBody(ruleConsequence);
         return executeCall;
     }

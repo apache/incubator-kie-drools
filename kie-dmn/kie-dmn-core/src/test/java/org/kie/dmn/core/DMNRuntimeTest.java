@@ -2669,6 +2669,36 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @Test
+    public void testOpInNames1() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("OpInNames1.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("decision1").getResult(), is("make and model"));
+    }
+
+    @Test
+    public void testOpInNames2() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("OpInNames2.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("decision1").getResult(), is("DMN"));
+    }
+
+    @Test
     public void testBindingContextTypeCheck() {
         // DROOLS-4825 DMN v1.3 verify DMN13-132 type conversions
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_3/DMN13-132.dmn", this.getClass());

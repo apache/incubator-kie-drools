@@ -479,7 +479,7 @@ public class OrTest {
     }
 
     @Test
-    public void testVariableBindingWithOR() {
+    public void testVariableBindingWithOR() throws Exception{
         // JBRULES-3390
         final String drl1 = "package org.drools.compiler.integrationtests.operators; \n" +
                 "declare A\n" +
@@ -502,6 +502,7 @@ public class OrTest {
         assertFalse(kbuilder.getResults().getMessages().isEmpty());
 
         final String drl2 = "package org.drools.compiler.integrationtests.operators; \n" +
+                "global java.util.List results\n" +
                 "declare A\n" +
                 "end\n" +
                 "declare B\n" +
@@ -515,11 +516,37 @@ public class OrTest {
                 "   A( ) and ( B( $field : field ) or C( $field : field ) ) " +
                 ")\n" +
                 "then\n" +
-                "    System.out.println($field);\n" +
+                "    results.add($field); "+
                 "end\n";
 
         kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl2);
         assertTrue(kbuilder.getResults().getMessages().isEmpty());
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("or-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl2);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+
+            FactType aType = kbase.getFactType("org.drools.compiler.integrationtests.operators", "A");
+            Object aInstance = aType.newInstance();
+            ksession.insert(aInstance);
+
+            FactType cType = kbase.getFactType("org.drools.compiler.integrationtests.operators", "C");
+            Object cInstance = cType.newInstance();
+            cType.set(cInstance, "field", 5);
+            ksession.insert(cInstance);
+
+            final List<Integer> results = new ArrayList<>();
+            ksession.setGlobal("results", results);
+
+            ksession.fireAllRules();
+
+            assertEquals(1, results.size());
+            assertTrue(results.contains(5));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test

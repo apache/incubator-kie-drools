@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class GeneratedFile {
 
@@ -72,5 +73,22 @@ public class GeneratedFile {
         return "GeneratedFile{" +
                 "path='" + path + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GeneratedFile that = (GeneratedFile) o;
+        return path.equals(that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path);
     }
 }
