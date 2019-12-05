@@ -34,6 +34,8 @@ import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
+import static org.drools.reflective.util.ClassUtils.getter2property;
+
 public class RuleUnitDescriptionImpl implements RuleUnitDescription {
     private final Class<? extends RuleUnit> ruleUnitClass;
     private final Map<String, ReflectiveRuleUnitVariable> varDeclarations = new HashMap<>();
@@ -144,9 +146,14 @@ public class RuleUnitDescriptionImpl implements RuleUnitDescription {
 
     private void indexUnitVars() {
         for (Method m : ruleUnitClass.getMethods()) {
-            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 && !"getUnitIdentity".equals(m.getName())) {
-                ReflectiveRuleUnitVariable v = new ReflectiveRuleUnitVariable(m);
-                varDeclarations.put(v.getName(), v);
+            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0
+                    && !"getUnitIdentity".equals(m.getName())
+                    && !"getClass".equals(m.getName())) {
+                String id = getter2property(m.getName());
+                if (id != null) {
+                    ReflectiveRuleUnitVariable v = new ReflectiveRuleUnitVariable(id, m);
+                    varDeclarations.put(v.getName(), v);
+                }
             }
         }
     }
