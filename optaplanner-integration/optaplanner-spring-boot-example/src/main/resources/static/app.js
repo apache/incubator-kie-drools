@@ -30,12 +30,28 @@ function refreshTimeTable() {
         var headerRow = $("<tr>").appendTo(thead);
         headerRow.append($("<th>Timeslot</th>"));
         $.each(timeTable.roomList, function (index, room) {
-            headerRow.append($("<th>" + room.name + "</th>"));
+            headerRow.append($("<th>"
+                    + "<span>" + room.name + "</span>"
+                    + "<button id=\"deleteRoomButton-" + room.id + "\" type=\"button\" class=\"ml-2 mb-1 btn btn-light btn-sm p-1\">"
+                    + "<small class=\"fas fa-trash\"></small>"
+                    + "</button>"
+                    + "</th>"));
+            $("#deleteRoomButton-" + room.id).click(function() {
+                deleteRoom(room);
+            });
         });
 
         $.each(timeTable.timeslotList, function (index, timeslot) {
             var row = $("<tr>").appendTo(timeTableByRoom);
-            row.append($("<th>" + timeslot.dayOfWeek + " " + timeslot.startTime + "-" + timeslot.endTime + "</th>"));
+            row.append($("<th class=\"align-middle\">"
+                    + "<span>" + timeslot.dayOfWeek + " " + timeslot.startTime + "-" + timeslot.endTime + "</span>"
+                    + "<button id=\"deleteTimeslotButton-" + timeslot.id + "\" type=\"button\" class=\"ml-2 mb-1 btn btn-light btn-sm p-1\">"
+                    + "<small class=\"fas fa-trash\"></small>"
+                    + "</button>"
+                    + "</th>"));
+            $("#deleteTimeslotButton-" + timeslot.id).click(function() {
+                deleteTimeslot(timeslot);
+            });
             $.each(timeTable.roomList, function (index, room) {
                 row.append($("<td id=\"timeslot" + timeslot.id + "room" + room.id + "\"></td>"));
             });
@@ -43,12 +59,12 @@ function refreshTimeTable() {
 
         $.each(timeTable.lessonList, function (index, lesson) {
             var lessonElement = $("<div class=\"card lesson\"><div class=\"card-body p-2\">"
-                    + "<button id=\"deleteLessonButton-" + lesson.id + "\" type=\"button\" class=\"btn btn-light btn-sm p-1 float-right\">"
+                    + "<button id=\"deleteLessonButton-" + lesson.id + "\" type=\"button\" class=\"ml-2 btn btn-light btn-sm p-1 float-right\">"
                     + "<small class=\"fas fa-trash\"></small>"
                     + "</button>"
                     + "<h5 class=\"card-title mb-1\">" + lesson.subject + "</h5>"
                     + "<p class=\"card-text text-muted ml-2 mb-1\">by " + lesson.teacher + "</p>"
-                    + "<small class=\"card-text text-muted ml-2 align-bottom float-right\">" + lesson.id + "</small>"
+                    + "<small class=\"ml-2 mt-1 card-text text-muted align-bottom float-right\">" + lesson.id + "</small>"
                     + "<p class=\"card-text ml-2\">" + lesson.studentGroup + "</p>"
                     + "</div></div>");
             if (lesson.timeslot == null || lesson.room == null) {
@@ -126,6 +142,14 @@ function addTimeslot() {
     $('#timeslotDialog').modal('toggle');
 }
 
+function deleteTimeslot(timeslot) {
+    $.delete("/timeslots/" + timeslot.id, function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on delete to /timeslots/" + timeslot.id +".")
+    });
+}
+
 function addRoom() {
     $.post("/rooms", JSON.stringify({
         "name": $("#room_name").val()
@@ -135,6 +159,22 @@ function addRoom() {
         console.warn("Error on post to /rooms.")
     });
     $('#roomDialog').modal('toggle');
+}
+
+function deleteRoom(room) {
+    $.delete("/rooms/" + room.id, function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on delete to /rooms/" + room.id +".")
+    });
+}
+
+function deleteRoom(room) {
+    $.delete("/rooms/" + room.id, function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on delete to /rooms/" + room.id +".")
+    });
 }
 
 $(document).ready( function() {
