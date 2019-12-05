@@ -43,8 +43,12 @@ function refreshTimeTable() {
 
         $.each(timeTable.lessonList, function (index, lesson) {
             var lessonElement = $("<div class=\"card lesson\"><div class=\"card-body p-2\">"
+                    + "<button id=\"deleteLessonButton-" + lesson.id + "\" type=\"button\" class=\"btn btn-light btn-sm p-1 float-right\">"
+                    + "<small class=\"fas fa-trash\"></small>"
+                    + "</button>"
                     + "<h5 class=\"card-title mb-1\">" + lesson.subject + "</h5>"
                     + "<p class=\"card-text text-muted ml-2 mb-1\">by " + lesson.teacher + "</p>"
+                    + "<small class=\"card-text text-muted ml-2 align-bottom float-right\">" + lesson.id + "</small>"
                     + "<p class=\"card-text ml-2\">" + lesson.studentGroup + "</p>"
                     + "</div></div>");
             if (lesson.timeslot == null || lesson.room == null) {
@@ -52,6 +56,9 @@ function refreshTimeTable() {
             } else {
                 $("#timeslot" + lesson.timeslot.id + "room" + lesson.room.id).append(lessonElement);
             }
+            $("#deleteLessonButton-" + lesson.id).click(function() {
+                deleteLesson(lesson);
+            });
         });
 
     });
@@ -98,6 +105,14 @@ function addLesson() {
     $('#lessonDialog').modal('toggle');
 }
 
+function deleteLesson(lesson) {
+    $.delete("/lessons/" + lesson.id, function () {
+        refreshTimeTable();
+    }).fail(function() {
+        console.warn("Error on delete to /lessons/" + lesson.id +".")
+    });
+}
+
 function addTimeslot() {
     $.post("/timeslots", JSON.stringify({
         "dayOfWeek": $("#timeslot_dayOfWeek").val(),
@@ -129,6 +144,25 @@ $(document).ready( function() {
             'Accept': 'application/json'
         }
     });
+    // Extend jQuery to support $.put() and $.delete()
+    jQuery.each( [ "put", "delete" ], function( i, method ) {
+        jQuery[method] = function (url, data, callback, type) {
+            if (jQuery.isFunction(data)) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+            return jQuery.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
+
+
     $("#refreshButton").click(function() {
         refreshTimeTable();
     });
