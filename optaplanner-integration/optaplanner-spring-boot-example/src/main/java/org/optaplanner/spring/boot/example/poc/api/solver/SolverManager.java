@@ -48,6 +48,8 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     SolverJob<Solution_, ProblemId_> solveObserving(ProblemId_ problemId, Supplier<Solution_> problemSupplier,
             Consumer<Solution_> bestSolutionConsumer);
 
+    SolverStatus getSolverStatus(ProblemId_ problemId);
+
     void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier);
 
     void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);

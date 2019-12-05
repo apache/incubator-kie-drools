@@ -16,26 +16,9 @@
 
 package org.optaplanner.spring.boot.example.poc.api.solver;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
-
-/**
- * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
- */
-public interface SolverJob<Solution_, ProblemId_> {
-
-    ProblemId_ getProblemId();
-
-    SolverStatus getSolverStatus();
-
-    void reloadProblem(Supplier<Solution_> problemSupplier);
-
-    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
-
-    void terminateEarly();
+public enum SolverStatus {
+    SOLVING_SCHEDULED,
+    SOLVING_ACTIVE,
+    NOT_SOLVING;
 
 }

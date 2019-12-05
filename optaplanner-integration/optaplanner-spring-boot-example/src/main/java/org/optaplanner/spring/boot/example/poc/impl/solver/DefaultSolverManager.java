@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,15 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
             }
         });
         return solverJob;
+    }
+
+    @Override
+    public SolverStatus getSolverStatus(ProblemId_ problemId) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        if (solverJob == null) {
+            return SolverStatus.NOT_SOLVING;
+        }
+        return solverJob.getSolverStatus();
     }
 
     @Override

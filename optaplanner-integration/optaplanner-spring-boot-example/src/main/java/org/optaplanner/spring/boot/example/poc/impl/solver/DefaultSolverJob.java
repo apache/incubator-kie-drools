@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -44,8 +45,15 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
     }
 
     @Override
+    public SolverStatus getSolverStatus() {
+        // TODO
+        return SolverStatus.SOLVING_ACTIVE;
+    }
+
+    @Override
     public void reloadProblem(Supplier<Solution_> problemSupplier) {
-//        solver.reloadProblem(problemSupplier);
+        // TODO
+        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
     }
 
     @Override

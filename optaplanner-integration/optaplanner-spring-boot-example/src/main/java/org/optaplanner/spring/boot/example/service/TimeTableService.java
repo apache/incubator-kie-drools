@@ -18,7 +18,9 @@ package org.optaplanner.spring.boot.example.service;
 
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
+import org.optaplanner.spring.boot.example.domain.TimeTableView;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
+import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +45,11 @@ public class TimeTableService {
 
     // To try, open http://localhost:8080/timeTable
     @GetMapping()
-    public TimeTable getTimeTableView() {
+    public TimeTableView getTimeTableView() {
         TimeTable timeTable = getTimeTable();
         solverManager.updateScore(timeTable);
-        // TODO add to response: score, solving status, indictments etc
-        return timeTable;
+        SolverStatus solverStatus = solverManager.getSolverStatus(TENANT_ID);
+        return new TimeTableView(timeTable, solverStatus);
     }
 
     private TimeTable getTimeTable() {
