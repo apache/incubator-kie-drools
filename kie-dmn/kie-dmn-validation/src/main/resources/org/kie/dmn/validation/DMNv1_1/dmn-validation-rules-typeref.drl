@@ -52,7 +52,7 @@ end
 
 rule TYPEREF_NO_FEEL_TYPE_p1
 when
-  $o: Expression( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+  $o: Expression( !(this instanceof UnaryTests), typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRDElement().getIdentifierString() );
 end
@@ -80,7 +80,7 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
 when
-  $o: Expression( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != getURIFEEL(), $typeRef : typeRef )
+  $o: Expression( !(this instanceof UnaryTests), typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import($importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"

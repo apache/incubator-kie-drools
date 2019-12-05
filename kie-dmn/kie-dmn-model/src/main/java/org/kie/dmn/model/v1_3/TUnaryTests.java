@@ -18,7 +18,7 @@ package org.kie.dmn.model.v1_3;
 
 import org.kie.dmn.model.api.UnaryTests;
 
-public class TUnaryTests extends TDMNElement implements UnaryTests {
+public class TUnaryTests extends TExpression implements UnaryTests {
 
     protected String text;
     protected String expressionLanguage;
@@ -42,5 +42,4 @@ public class TUnaryTests extends TDMNElement implements UnaryTests {
     public void setExpressionLanguage(String value) {
         this.expressionLanguage = value;
     }
-
 }
