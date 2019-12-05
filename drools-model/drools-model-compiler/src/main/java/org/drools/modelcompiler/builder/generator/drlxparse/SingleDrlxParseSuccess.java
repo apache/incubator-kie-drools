@@ -28,6 +28,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
@@ -262,6 +263,9 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
             }
             if (expr instanceof EnclosedExpr ) {
                 return isEnclosedExprValid( (( EnclosedExpr ) expr).getInner());
+            }
+            if (expr instanceof UnaryExpr && ((UnaryExpr) expr).getOperator() == UnaryExpr.Operator.LOGICAL_COMPLEMENT) {
+                return true;
             }
             return right != null;
         }

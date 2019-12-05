@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.testcoverage.common.model.AFact;
+import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -99,4 +100,26 @@ public class NotTest {
         }
     }
 
+    @Test
+    public void testNegatedConstaintInNot() {
+
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    not( Person( !(age > 18) ) )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("negated-not-test", kieBaseTestConfiguration, drl);
+
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.insert(new Person("Mario", 45));
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
