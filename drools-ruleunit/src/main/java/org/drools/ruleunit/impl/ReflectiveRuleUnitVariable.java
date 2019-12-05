@@ -107,4 +107,13 @@ public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ReflectiveRuleUnitVariable{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", dataSourceParameterType=" + dataSourceParameterType +
+                '}';
+    }
 }
