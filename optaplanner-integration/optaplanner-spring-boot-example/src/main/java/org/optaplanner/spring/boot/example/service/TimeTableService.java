@@ -45,6 +45,7 @@ public class TimeTableService {
     @GetMapping()
     public TimeTable getTimeTableView() {
         TimeTable timeTable = getTimeTable();
+        solverManager.updateScore(timeTable);
         // TODO add to response: score, solving status, indictments etc
         return timeTable;
     }

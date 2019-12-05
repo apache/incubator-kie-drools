@@ -27,6 +27,8 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
@@ -118,6 +120,15 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
             return;
         }
         solverJob.terminateEarly();
+    }
+
+    @Override
+    public void updateScore(Solution_ solution) {
+        ScoreDirectorFactory<Solution_> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
+        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(solution);
+            scoreDirector.calculateScore();
+        }
     }
 
     @Override

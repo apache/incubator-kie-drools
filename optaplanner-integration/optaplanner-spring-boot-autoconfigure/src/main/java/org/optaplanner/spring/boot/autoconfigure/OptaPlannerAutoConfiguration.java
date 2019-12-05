@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -30,6 +32,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -210,6 +213,13 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 terminationConfig.setBestScoreLimit(terminationProperties.getBestScoreLimit());
             }
         }
+    }
+
+
+    @Bean
+    @ConditionalOnClass(ObjectMapper.class)
+    Module jacksonModule() {
+        return OptaPlannerJacksonModule.createModule();
     }
 
 }

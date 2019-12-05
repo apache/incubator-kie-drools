@@ -54,4 +54,6 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     void terminateEarly(ProblemId_ problemId);
 
+    void updateScore(Solution_ solution);
+
 }

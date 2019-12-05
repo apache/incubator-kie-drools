@@ -68,7 +68,7 @@ public class Timeslot {
 
     @Override
     public String toString() {
-        return startTime.toString();
+        return dayOfWeek + " " + startTime.toString();
     }
 
 }
