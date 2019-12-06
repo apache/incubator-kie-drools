@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.impl.solver.DefaultSolverManager;
 
 /**
@@ -52,7 +51,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier);
 
-    void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);
+//    void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);
 
     void terminateEarly(ProblemId_ problemId);
 

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.service;
+package org.optaplanner.spring.boot.example.persistence;
 
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.Room;
 import org.optaplanner.spring.boot.example.domain.Timeslot;
+import org.optaplanner.spring.boot.example.solver.TimeTableSolverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
@@ -31,27 +32,27 @@ import org.springframework.stereotype.Component;
 public class ProblemChangedRepositoryEventListener {
 
     @Autowired
-    private TimeTableService timeTableService;
+    private TimeTableSolverService timeTableSolverService;
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void timeslotCreateSaveDelete(Timeslot timeslot) {
-        timeTableService.reloadProblem();
+        timeTableSolverService.reloadProblem();
     }
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void roomCreateSaveDelete(Room room) {
-        timeTableService.reloadProblem();
+        timeTableSolverService.reloadProblem();
     }
 
     @HandleAfterCreate
     @HandleAfterSave
     @HandleAfterDelete
     private void lessonCreateSaveDelete(Lesson lesson) {
-        timeTableService.reloadProblem();
+        timeTableSolverService.reloadProblem();
     }
 
 }

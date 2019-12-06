@@ -35,4 +35,5 @@ public class TimeTableView {
     public SolverStatus getSolverStatus() {
         return solverStatus;
     }
+
 }

@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -34,7 +33,7 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     void reloadProblem(Supplier<Solution_> problemSupplier);
 
-    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
+//    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     void terminateEarly();
 

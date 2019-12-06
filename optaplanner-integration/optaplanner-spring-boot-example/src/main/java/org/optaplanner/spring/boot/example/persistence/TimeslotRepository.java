@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.service;
+package org.optaplanner.spring.boot.example.persistence;
 
 import java.util.List;
 

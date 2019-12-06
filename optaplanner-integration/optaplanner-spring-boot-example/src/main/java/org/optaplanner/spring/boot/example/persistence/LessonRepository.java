@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.service;
+package org.optaplanner.spring.boot.example.persistence;
 
 import java.util.List;
 
-import org.optaplanner.spring.boot.example.domain.Room;
+import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface RoomRepository extends PagingAndSortingRepository<Room, Long> {
+public interface LessonRepository extends PagingAndSortingRepository<Lesson, Long> {
 
     @Override
-    List<Room> findAll();
+    List<Lesson> findAll();
 
 }
