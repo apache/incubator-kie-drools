@@ -66,6 +66,7 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.core.addon.TypeResolver;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static java.util.stream.Collectors.toList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -393,27 +394,25 @@ public class ModelGenerator {
 
     private static void createUnitData(RuleContext context, RuleUnitDescription ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
         if (ruleUnitDescr != null) {
-            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
-                addUnitData(context, unitVar.getKey(), unitVar.getValue().getGenericReturnType(), ruleVariablesBlock);
+            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
+                addUnitData(context, unitVar, ruleVariablesBlock);
             }
         }
     }
 
-    private static void addUnitData(RuleContext context, String unitVar, java.lang.reflect.Type type, BlockStmt ruleBlock) {
-        Class<?> rawClass = toRawClass(type);
-        Type declType = classToReferenceType( rawClass );
-
-        context.addRuleUnitVar( unitVar, getClassForUnitData( type, rawClass ) );
-        context.addRuleUnitVarOriginalType( unitVar, rawClass );
+  private static void addUnitData(RuleContext context, RuleUnitVariable unitVar, BlockStmt ruleBlock) {
+        Type declType = classToReferenceType(unitVar.getBoxedVarType());
+        context.addRuleUnitVar( unitVar.getName(), unitVar.getDataSourceParameterType() );
+        context.addRuleUnitVarOriginalType( unitVar.getName(), unitVar.getType() );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar), Modifier.finalModifier());
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar.getName()), Modifier.finalModifier());
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
         unitDataCall.addArgument(new ClassExpr( declType ));
-        unitDataCall.addArgument(new StringLiteralExpr(unitVar));
+        unitDataCall.addArgument(new StringLiteralExpr(unitVar.getName()));
 
         AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);

@@ -41,6 +41,7 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.addon.TypeResolver;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -140,17 +141,13 @@ public class RuleContext {
     private void processUnitData() {
         findUnitDescr();
         if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
-            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
-                String unitVarName = unitVar.getKey();
-                java.lang.reflect.Type type = unitVar.getValue().getGenericReturnType();
-                Class<?> rawClass = toRawClass( type );
-                Class<?> resolvedType = ruleUnitDescr.getDatasourceType( unitVarName ).orElse( rawClass );
-
-                Type declType = classToReferenceType( rawClass );
+            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
+                String unitVarName = unitVar.getName();
+                Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
                 addRuleUnitVar( unitVarName, resolvedType );
 
-                getPackageModel().addGlobal( unitVarName, rawClass );
-                if ( isDataSource( rawClass ) ) {
+                getPackageModel().addGlobal( unitVarName, unitVar.getType() );
+                if ( unitVar.isDataSource() ) {
                     getPackageModel().addEntryPoint( unitVarName );
                 }
             }
