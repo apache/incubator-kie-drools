@@ -293,8 +293,17 @@ literal
     :	IntegerLiteral          #numberLiteral
     |	FloatingPointLiteral    #numberLiteral
     |	BooleanLiteral          #boolLiteral
+    |   atLiteral               #atLiteralLabel
     |	StringLiteral           #stringLiteral
     |	NULL                #nullLiteral
+    ;
+    
+atLiteral
+    : AT atLiteralValue
+    ;
+    
+atLiteralValue 
+    : StringLiteral 
     ;
 
 BooleanLiteral
@@ -738,6 +747,7 @@ NOT
     : 'not'
     ;
 
+AT  : '@';
 
 Identifier
     : NameStartChar NameStartCharOrPart*

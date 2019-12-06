@@ -509,7 +509,7 @@ public class CompiledFEELSupport {
                 "notifyCompilationError",
                 new NodeList<>(
                         new NameExpr("feelExprCtx"),
-                        new StringLiteralExpr(msg)));
+                        Expressions.stringLiteral(msg)));
     }
 
     // thread-unsafe, but this is single-threaded so it's ok
