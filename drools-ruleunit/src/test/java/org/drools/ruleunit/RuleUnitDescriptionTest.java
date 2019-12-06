@@ -32,6 +32,7 @@ import org.drools.ruleunit.impl.RuleUnitDescriptionImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyObject;
@@ -112,13 +113,12 @@ public class RuleUnitDescriptionTest {
 
     @Test
     public void getUnitVarAccessors() {
-        final Map<String, Method> unitVarAccessors = ruleUnitDescr.getUnitVarAccessors();
+        final Collection<? extends RuleUnitVariable> unitVarAccessors = ruleUnitDescr.getUnitVarDeclarations();
         Assertions.assertThat(unitVarAccessors).isNotEmpty();
         Assertions.assertThat(unitVarAccessors).hasSize(5);
-        Assertions.assertThat(unitVarAccessors).containsKeys("bound", "number", "numbersArray", "stringList", "simpleFactList");
-        Assertions.assertThat(unitVarAccessors.values())
+        Assertions.assertThat(unitVarAccessors)
                 .extracting("name", String.class)
-                .containsExactlyInAnyOrder("getBound", "getNumber", "getNumbersArray", "getStringList", "getSimpleFactList");
+                .containsExactlyInAnyOrder("bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test

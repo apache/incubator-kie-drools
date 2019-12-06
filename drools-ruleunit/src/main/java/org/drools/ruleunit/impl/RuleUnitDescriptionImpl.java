@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 
 package org.drools.ruleunit.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +24,7 @@ import java.util.Optional;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.util.ClassUtils;
+import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.datasources.BindableArray;
 import org.drools.ruleunit.datasources.BindableDataProvider;
 import org.drools.ruleunit.datasources.BindableIterable;
@@ -35,16 +32,15 @@ import org.drools.ruleunit.datasources.BindableObject;
 import org.drools.ruleunit.executor.RuleUnitSessionImpl;
 import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.drools.ruleunit.RuleUnit;
+import org.kie.internal.ruleunit.RuleUnitVariable;
+
+import static org.drools.reflective.util.ClassUtils.getter2property;
 
 public class RuleUnitDescriptionImpl implements RuleUnitDescription {
     private final Class<? extends RuleUnit> ruleUnitClass;
+    private final Map<String, ReflectiveRuleUnitVariable> varDeclarations = new HashMap<>();
 
-    private final Map<String, Class<?>> datasourceTypes = new HashMap<>();
-
-    private final Map<String, Method> varAccessors = new HashMap<>();
-
-    public RuleUnitDescriptionImpl( KiePackage pkg, Class<?> ruleUnitClass ) {
+    public RuleUnitDescriptionImpl(KiePackage pkg, Class<?> ruleUnitClass) {
         this.ruleUnitClass = (Class<? extends RuleUnit>) ruleUnitClass;
         indexUnitVars();
     }
@@ -53,42 +49,53 @@ public class RuleUnitDescriptionImpl implements RuleUnitDescription {
         return ruleUnitClass;
     }
 
-    public Optional<EntryPointId> getEntryPointId( String name ) {
-        return varAccessors.containsKey( name ) ? Optional.of( new EntryPointId( getEntryPointName(name) ) ) : Optional.empty();
+    public Optional<EntryPointId> getEntryPointId(String name ) {
+        return varDeclarations.containsKey( name ) ? Optional.of( new EntryPointId( getEntryPointName(name) ) ) : Optional.empty();
     }
 
-    public Optional<Class<?>> getDatasourceType( String name ) {
-        return Optional.ofNullable( datasourceTypes.get( name ) );
+
+    @Override
+    public Optional<Class<?>> getDatasourceType(String name) {
+        return Optional.ofNullable(varDeclarations.get(name))
+                .filter(RuleUnitVariable::isDataSource)
+                .map(RuleUnitVariable::getDataSourceParameterType);
     }
 
-    public Optional<Class<?>> getVarType( String name ) {
-        return Optional.ofNullable( varAccessors.get( name ) ).map( Method::getReturnType );
+
+    @Override
+    public Optional<Class<?>> getVarType(String name) {
+        return Optional.ofNullable(varDeclarations.get(name)).map(RuleUnitVariable::getType);
     }
 
-    public boolean hasVar( String name ) {
-        return varAccessors.containsKey( name );
+    @Override
+    public boolean hasVar(String name) {
+        return varDeclarations.containsKey(name);
     }
 
+    @Override
     public Collection<String> getUnitVars() {
-        return varAccessors.keySet();
+        return varDeclarations.keySet();
     }
 
-    public Map<String, Method> getUnitVarAccessors() {
-        return varAccessors;
+    @Override
+    public Collection<? extends RuleUnitVariable> getUnitVarDeclarations() {
+        return varDeclarations.values();
     }
 
-    public boolean hasDataSource( String name ) {
-        return varAccessors.containsKey( name );
+    @Override
+    public boolean hasDataSource(String name) {
+        RuleUnitVariable ruleUnitVariable = varDeclarations.get(name);
+        return ruleUnitVariable != null && ruleUnitVariable.isDataSource();
     }
 
-    public void bindDataSources( RuleUnitSessionImpl wm, RuleUnit ruleUnit ) {
-        varAccessors.forEach( (name, method) -> bindDataSource( wm, ruleUnit, name, method ) );
+    public void bindDataSources(RuleUnitSessionImpl wm, RuleUnit ruleUnit ) {
+        varDeclarations.values().forEach( v -> bindDataSource( wm, ruleUnit, v ) );
     }
 
-    private void bindDataSource( RuleUnitSessionImpl wm, RuleUnit ruleUnit, String name, Method method ) {
-        WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
+    private void bindDataSource( RuleUnitSessionImpl wm, RuleUnit ruleUnit, ReflectiveRuleUnitVariable v ) {
+        WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint(getEntryPointName(v.getName()) );
         if (entryPoint != null) {
-            BindableDataProvider dataSource = findDataSource( ruleUnit, method );
+            BindableDataProvider dataSource = findDataSource( ruleUnit, v );
             if (dataSource != null) {
                 entryPoint.setRuleUnit( ruleUnit );
                 dataSource.bind( ruleUnit, entryPoint );
@@ -97,35 +104,28 @@ public class RuleUnitDescriptionImpl implements RuleUnitDescription {
     }
 
     public void unbindDataSources( RuleUnitSessionImpl wm, RuleUnit ruleUnit ) {
-        varAccessors.values().forEach( method -> unbindDataSource( ruleUnit, method ) );
+        varDeclarations.values().forEach( v -> unbindDataSource( ruleUnit, v ) );
     }
 
-    private void unbindDataSource( RuleUnit ruleUnit, Method method ) {
-        BindableDataProvider dataSource = findDataSource( ruleUnit, method );
+    private void unbindDataSource( RuleUnit ruleUnit, ReflectiveRuleUnitVariable v ) {
+        BindableDataProvider dataSource = findDataSource( ruleUnit, v );
         if (dataSource != null) {
             dataSource.unbind( ruleUnit );
         }
     }
 
     public Object getValue(RuleUnit ruleUnit, String identifier) {
-        Method m = varAccessors.get(identifier);
-        if (m != null) {
-            try {
-                return m.invoke( ruleUnit );
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException( e );
-            }
-        }
-        return null;
+        ReflectiveRuleUnitVariable v = varDeclarations.get(identifier);
+        return v == null ? null : v.getValue(ruleUnit);
     }
 
     private BindableDataProvider findDataSource( RuleUnit ruleUnit, String name ) {
-        return findDataSource( ruleUnit, varAccessors.get( name ) );
+        return findDataSource( ruleUnit, varDeclarations.get( name ) );
     }
 
-    private BindableDataProvider findDataSource( RuleUnit ruleUnit, Method m ) {
+    private BindableDataProvider findDataSource(RuleUnit ruleUnit, ReflectiveRuleUnitVariable m ) {
         try {
-            Object value = m.invoke( ruleUnit );
+            Object value = m.getValue( ruleUnit );
             if (value == null) {
                 return null;
             }
@@ -146,23 +146,13 @@ public class RuleUnitDescriptionImpl implements RuleUnitDescription {
 
     private void indexUnitVars() {
         for (Method m : ruleUnitClass.getMethods()) {
-            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 && !"getUnitIdentity".equals(m.getName())) {
-                String id = ClassUtils.getter2property(m.getName());
-                if (id != null && !id.equals( "class" )) {
-                    varAccessors.put( id, m );
-
-                    Class<?> returnClass = m.getReturnType();
-                    if (returnClass.isArray()) {
-                        datasourceTypes.put( id, returnClass.getComponentType() );
-                    } else if (Iterable.class.isAssignableFrom( returnClass )) {
-                        Type returnType = m.getGenericReturnType();
-                        Class<?> sourceType = returnType instanceof ParameterizedType ?
-                                (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
-                                Object.class;
-                        datasourceTypes.put( id, sourceType );
-                    } else {
-                        datasourceTypes.put( id, returnClass );
-                    }
+            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0
+                    && !"getUnitIdentity".equals(m.getName())
+                    && !"getClass".equals(m.getName())) {
+                String id = getter2property(m.getName());
+                if (id != null) {
+                    ReflectiveRuleUnitVariable v = new ReflectiveRuleUnitVariable(id, m);
+                    varDeclarations.put(v.getName(), v);
                 }
             }
         }
