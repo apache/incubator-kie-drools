@@ -46,42 +46,25 @@ public class EventProducer<T> implements Producer {
   }
 
   @Override
-  public <T> void produceSync(String topicName,
-                              String key,
-                              ResultMessage<T> object) {
-    internalProduceSync(topicName,
-                        key,
-                        object);
+  public <T> void produceSync(String topicName, String key, ResultMessage<T> object) {
+    internalProduceSync(topicName, key, object);
   }
 
   @Override
-  public void produceSync(String topicName,
-                          String key,
-                          Message object) {
-    internalProduceSync(topicName,
-                        key,
-                        object);
+  public void produceSync(String topicName, String key, Message object) {
+    internalProduceSync(topicName, key, object);
   }
 
-  protected void internalProduceSync(String topicName,
-                                     String key,
-                                     Object object) {
+  protected void internalProduceSync(String topicName, String key, Object object) {
     try {
-      producer.send(getFreshProducerRecord(topicName,
-                                           key,
-                                           object)).get();
+      producer.send(getFreshProducerRecord(topicName, key, object)).get();
     } catch (InterruptedException | ExecutionException e) {
-      logger.error("Error in produceSync!",
-                   e);
+      logger.error("Error in produceSync!", e);
       Thread.currentThread().interrupt();
     }
   }
 
-  private ProducerRecord<String, T> getFreshProducerRecord(String topicName,
-                                                           String key,
-                                                           Object object) {
-    return new ProducerRecord<>(topicName,
-                                key,
-                                (T) serialize(object));
+  private ProducerRecord<String, T> getFreshProducerRecord(String topicName, String key, Object object) {
+    return new ProducerRecord<>(topicName, key, (T) serialize(object));
   }
 }

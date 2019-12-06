@@ -30,6 +30,8 @@ public class SerializationUtil {
 
   private static Logger logger = LoggerFactory.getLogger(SerializationUtil.class);
 
+  private SerializationUtil(){}
+
   public static byte[] serialize(Object obj) {
     try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
       try (ObjectOutputStream o = new ObjectOutputStream(b)) {
@@ -37,9 +39,7 @@ public class SerializationUtil {
       }
       return b.toByteArray();
     } catch (IOException io) {
-      logger.error(io.getMessage(),
-                   io);
-      throw new RuntimeException(io);
+      throw new SerializationException(io.getMessage(), io);
     }
   }
 
@@ -48,9 +48,7 @@ public class SerializationUtil {
       ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(bytez));
       return (T) in.readObject();
     } catch (IOException | ClassNotFoundException e) {
-      logger.error(e.getMessage(),
-                   e);
-      throw new RuntimeException(e);
+      throw new RuntimeException(e.getMessage(), e);
     }
   }
 }

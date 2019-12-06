@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.remote.util;
 
-package org.kie.remote.command;
+public class LocalMessageSystemException extends RuntimeException {
 
-import java.io.Serializable;
-
-public abstract class AbstractCommand implements RemoteCommand, Serializable {
-
-  private String id;
-
-  private long timestamp;
-
-  protected AbstractCommand() {
+  public LocalMessageSystemException(String msg){
+    super(msg);
   }
 
-  protected AbstractCommand(String id) {
-    this.id = id;
-    this.timestamp = System.currentTimeMillis();
+  public LocalMessageSystemException(String msg, Throwable t){
+    super(msg, t);
   }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  @Override
-  public long getTimestamp() {
-    return timestamp;
-  }
-
 }

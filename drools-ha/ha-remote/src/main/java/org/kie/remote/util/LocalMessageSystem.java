@@ -38,12 +38,9 @@ public class LocalMessageSystem {
                                   k -> new LinkedBlockingQueue<>());
   }
 
-  public void put(String topic,
-                  Object message) {
+  public void put(String topic, Object message) {
     if (!queueForTopic(topic).offer(message)) {
-      logger.info("msg :{} not added in the topic:{}",
-                  message,
-                  topic);
+      logger.info("msg :{} not added in the topic:{}", message, topic);
     }
   }
 
@@ -55,14 +52,12 @@ public class LocalMessageSystem {
     return queueForTopic(topic).poll();
   }
 
-  public Object poll(String topic,
-                     int durationMillis) {
+  public Object poll(String topic, int durationMillis) {
     try {
-      return queueForTopic(topic).poll(durationMillis,
-                                       TimeUnit.MILLISECONDS);
+      return queueForTopic(topic).poll(durationMillis, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new RuntimeException(e);
+      throw new LocalMessageSystemException(e.getMessage(), e);
     }
   }
 

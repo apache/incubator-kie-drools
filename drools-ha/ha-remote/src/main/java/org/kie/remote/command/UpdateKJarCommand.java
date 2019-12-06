@@ -18,9 +18,7 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class UpdateKJarCommand extends AbstractCommand implements VisitableCommand,
-                                                                  RemoteCommand,
-                                                                  Serializable {
+public class UpdateKJarCommand extends AbstractCommand implements VisitableCommand, RemoteCommand, Serializable {
 
   private String kJarGAV;
   private String groupID;

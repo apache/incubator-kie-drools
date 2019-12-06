@@ -38,18 +38,15 @@ public class ConsumerUtils {
 
   private static Logger logger = LoggerFactory.getLogger(ConsumerUtils.class);
 
-  private ConsumerUtils() {
-  }
+  private ConsumerUtils() { }
 
-  public static KafkaConsumer getConsumer(String topic,
-                                          Properties properties) {
+  public static KafkaConsumer getConsumer(String topic, Properties properties) {
     KafkaConsumer consumer = new KafkaConsumer(properties);
     List<PartitionInfo> infos = consumer.partitionsFor(topic);
     List<TopicPartition> partitions = new ArrayList<>();
     if (infos != null) {
       for (PartitionInfo partition : infos) {
-        partitions.add(new TopicPartition(topic,
-                                          partition.partition()));
+        partitions.add(new TopicPartition(topic, partition.partition()));
       }
     }
     consumer.assign(partitions);
@@ -64,8 +61,7 @@ public class ConsumerUtils {
     }
     Set<TopicPartition> assignments = consumer.assignment();
     for (TopicPartition part : assignments) {
-      consumer.seek(part,
-                    lastOffset - 1);
+      consumer.seek(part, lastOffset - 1);
     }
     return consumer;
   }
@@ -78,8 +74,7 @@ public class ConsumerUtils {
 
     ControlMessage lastMessage = new ControlMessage();
     try {
-      ConsumerRecords records = consumer.poll(Duration.of(pollTimeout,
-                                                          ChronoUnit.MILLIS));
+      ConsumerRecords records = consumer.poll(Duration.of(pollTimeout, ChronoUnit.MILLIS));
       for (Object item : records) {
         ConsumerRecord<String, byte[]> record = (ConsumerRecord<String, byte[]>) item;
         lastMessage = deserialize(record.value());
