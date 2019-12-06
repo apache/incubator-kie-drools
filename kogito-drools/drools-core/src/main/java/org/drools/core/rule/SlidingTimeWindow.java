@@ -132,7 +132,7 @@ public class SlidingTimeWindow
         }
 
         queue.add( handle );
-        if ( queue.peek() == handle ) {
+        if ( handle.equals( queue.peek() ) ) {
             // update next expiration time
             updateNextExpiration( handle,
                                   workingMemory,
@@ -151,8 +151,8 @@ public class SlidingTimeWindow
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
-        if ( queue.getExpiringHandle() != handle ) {
-            if ( queue.peek() == handle ) {
+        if ( !handle.equals( queue.getExpiringHandle() ) ) {
+            if ( handle.equals( queue.peek() ) ) {
                 // it was the head of the queue
                 queue.poll();
                 // update next expiration time
@@ -162,9 +162,9 @@ public class SlidingTimeWindow
                                       nodeId);
             } else {
                 queue.remove( handle );
-                if ( queue.isEmpty() && queue.getJobHandle() != null ) {
-                    workingMemory.getTimerService().removeJob( queue.getJobHandle() );
-                }
+            }
+            if ( queue.isEmpty() && queue.getJobHandle() != null ) {
+                workingMemory.getTimerService().removeJob( queue.getJobHandle() );
             }
         }
     }
@@ -214,6 +214,12 @@ public class SlidingTimeWindow
                 // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
                 workingMemory.queueWorkingMemoryAction(new BehaviorExpireWMAction(nodeId, this, context));
             } else {
+                // if there exists already another job it meeans that the new one to be created
+                // has to be triggered before the existing one and then we can remove the old one
+                if ( context.getJobHandle() != null ) {
+                    workingMemory.getTimerService().removeJob( context.getJobHandle() );
+                }
+
                 JobContext jobctx = new BehaviorJobContext( nodeId, workingMemory, this, context);
                 JobHandle handle = clock.scheduleJob( job,
                                                       jobctx,
