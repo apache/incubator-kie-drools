@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,7 +88,6 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CAL
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
@@ -417,16 +414,6 @@ public class ModelGenerator {
 
         AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
-    }
-
-    private static Class<?> getClassForUnitData( java.lang.reflect.Type type, Class<?> rawClass ) {
-        if (Iterable.class.isAssignableFrom( rawClass ) && type instanceof ParameterizedType) {
-            return toRawClass( (( ParameterizedType ) type).getActualTypeArguments()[0] );
-        }
-        if (rawClass.isArray()) {
-            return rawClass.getComponentType();
-        }
-        return rawClass;
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
