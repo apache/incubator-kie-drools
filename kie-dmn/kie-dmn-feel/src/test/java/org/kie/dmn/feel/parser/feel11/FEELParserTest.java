@@ -23,6 +23,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
@@ -163,6 +164,46 @@ public class FEELParserTest {
         assertThat( bool, is( instanceOf( BooleanNode.class ) ) );
         assertThat( bool.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertLocation( inputExpression, bool );
+    }
+
+    @Test
+    public void testAtLiteralDate() {
+        String inputExpression = "@\"2016-07-29\"";
+        BaseNode bool = parse(inputExpression);
+
+        assertThat(bool, is(instanceOf(AtLiteralNode.class)));
+        assertThat(bool.getResultType(), is(BuiltInType.DATE));
+        assertLocation(inputExpression, bool);
+    }
+
+    @Test
+    public void testAtLiteralTime() {
+        String inputExpression = "@\"23:59:00\"";
+        BaseNode bool = parse(inputExpression);
+
+        assertThat(bool, is(instanceOf(AtLiteralNode.class)));
+        assertThat(bool.getResultType(), is(BuiltInType.TIME));
+        assertLocation(inputExpression, bool);
+    }
+
+    @Test
+    public void testAtLiteralDateAndTime() {
+        String inputExpression = "@\"2016-07-29T05:48:23\"";
+        BaseNode bool = parse(inputExpression);
+
+        assertThat(bool, is(instanceOf(AtLiteralNode.class)));
+        assertThat(bool.getResultType(), is(BuiltInType.DATE_TIME));
+        assertLocation(inputExpression, bool);
+    }
+
+    @Test
+    public void testAtLiteralDuration() {
+        String inputExpression = "@\"P2Y2M\"";
+        BaseNode bool = parse(inputExpression);
+
+        assertThat(bool, is(instanceOf(AtLiteralNode.class)));
+        assertThat(bool.getResultType(), is(BuiltInType.DURATION));
+        assertLocation(inputExpression, bool);
     }
 
     @Test
