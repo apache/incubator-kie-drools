@@ -17,11 +17,13 @@ import {
   Dropdown,
   DropdownItem,
   DropdownPosition,
+  Bullseye,
   KebabToggle,
   Modal
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { useApolloClient } from 'react-apollo';
+import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 
 /* tslint:disable:no-string-literal */
 
@@ -29,13 +31,10 @@ export interface IProcessInstanceError {
   nodeDefinitionId: string;
   message: string;
 }
-
-export interface IOwnProps {
-  id: number;
-  instanceID: string;
-  instanceState: string;
-  processID: string;
-  parentInstanceID: string | null;
+interface IProcessInstance {
+  id: string;
+  processId: string;
+  parentProcessInstanceId: string | null;
   processName: string;
   start: string;
   state: string;
@@ -43,25 +42,19 @@ export interface IOwnProps {
   endpoint: string;
   error: IProcessInstanceError;
 }
+export interface IOwnProps {
+  id: number;
+  processInstanceData: IProcessInstance;
+}
 
 const DataListItemComponent: React.FC<IOwnProps> = ({
-  id,
-  instanceID,
-  instanceState,
-  state,
-  error,
-  addons,
-  processID,
-  endpoint,
-  parentInstanceID,
-  processName,
-  start
+  processInstanceData
 }) => {
   const [expanded, setexpanded] = useState(['kie-datalist-toggle']);
   const [isOpen, setisOpen] = useState(false);
   const [isLoaded, setisLoaded] = useState(false);
   const [isChecked, setisChecked] = useState(false);
-  const [childList, setchildList] = useState([]);
+  const [childList, setChildList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
@@ -99,12 +92,12 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   );
 
   const handleSkip = useCallback(async (_processID, _instanceID, _endpoint) => {
-    const processInstanceId = instanceID;
-    const processId = processID;
+    const processInstanceId = processInstanceData.id;
+    const processId = processInstanceData.processId;
 
     try {
       const result = await axios.get(
-        `${endpoint}/management/process/${processId}/instances/${processInstanceId}/skip`
+        `${processInstanceData.endpoint}/management/process/${processId}/instances/${processInstanceId}/skip`
       );
       setAlertTitle('Skip operation');
       setAlertType('success');
@@ -125,11 +118,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
 
   const handleRetry = useCallback(
     async (_processID, _instanceID, _endpoint) => {
-      const processInstanceId = instanceID;
-      const processId = processID;
+      const processInstanceId = processInstanceData.id;
+      const processId = processInstanceData.processId;
       try {
         const result = await axios.get(
-          `${endpoint}/management/process/${processId}/instances/${processInstanceId}/retrigger`
+          `${processInstanceData.endpoint}/management/process/${processId}/instances/${processInstanceId}/retrigger`
         );
         setAlertTitle('Retry operation');
         setAlertType('success');
@@ -179,25 +172,36 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         : [...expanded, _id];
     setexpanded(newExpanded);
     if (!isLoaded) {
-      const data = await client.query({
-        query: GET_CHILD_INSTANCES,
-        variables: {
-          instanceId: instanceID
-        },
-        fetchPolicy: 'network-only'
-      });
-      setchildList(data['data']);
-      setisLoaded(true);
+      const data = await client
+        .query({
+          query: GET_CHILD_INSTANCES,
+          variables: {
+            instanceId: processInstanceData.id
+          },
+          fetchPolicy: 'network-only'
+        })
+        .then(result => {
+          setChildList(result.data);
+          setisLoaded(true);
+        });
     }
   };
   const handleSkipButton = async () => {
     setOpenModal(!openModal);
-    await handleSkip(processID, instanceID, endpoint);
+    await handleSkip(
+      processInstanceData.processId,
+      processInstanceData.id,
+      processInstanceData.endpoint
+    );
   };
 
   const handleRetryButton = async () => {
     setOpenModal(!openModal);
-    await handleRetry(processID, instanceID, endpoint);
+    await handleRetry(
+      processInstanceData.processId,
+      processInstanceData.id,
+      processInstanceData.endpoint
+    );
   };
 
   return (
@@ -232,18 +236,20 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           />
           <DataListItemCells
             dataListCells={[
-              <DataListCell key={1}>{processName}</DataListCell>,
+              <DataListCell key={1}>
+                {processInstanceData.processName}
+              </DataListCell>,
               <DataListCell key={2}>
-                {start ? (
+                {processInstanceData.start ? (
                   <TimeAgo
-                    date={new Date(`${start}`)}
+                    date={new Date(`${processInstanceData.start}`)}
                     render={({ _error, value }) => <span>{value}</span>}
                   />
                 ) : (
                     ''
                   )}
               </DataListCell>,
-              <DataListCell key={3}>{instanceState}</DataListCell>
+              <DataListCell key={3}>{processInstanceData.state}</DataListCell>
             ]}
           />
 
@@ -252,7 +258,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            <Link to={'/ProcessInstances/' + instanceID}>
+            <Link to={'/ProcessInstances/' + processInstanceData.id}>
               <Button variant="secondary">Details</Button>
             </Link>
           </DataListAction>
@@ -261,7 +267,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            {state === 'ERROR' ? (
+            {processInstanceData.state === 'ERROR' ? (
               <Dropdown
                 isPlain
                 position={DropdownPosition.right}
@@ -269,12 +275,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 onSelect={onSelect}
                 toggle={<KebabToggle onToggle={onToggle} />}
                 dropdownItems={
-                  addons.includes('process-management')
+                  processInstanceData.addons.includes('process-management')
                     ? [
                       <DropdownItem
                         key={1}
                         onClick={() =>
-                          handleRetry(processID, instanceID, endpoint)
+                          handleRetry(
+                            processInstanceData.processId,
+                            processInstanceData.id,
+                            processInstanceData.endpoint
+                          )
                         }
                       >
                         Retry
@@ -282,7 +292,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                       <DropdownItem
                         key={2}
                         onClick={() =>
-                          handleSkip(processID, instanceID, endpoint)
+                          handleSkip(
+                            processInstanceData.processId,
+                            processInstanceData.id,
+                            processInstanceData.endpoint
+                          )
                         }
                       >
                         Skip
@@ -290,7 +304,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                       <DropdownItem
                         key={3}
                         onClick={() =>
-                          handleViewError(processID, instanceID, endpoint)
+                          handleViewError(
+                            processInstanceData.processId,
+                            processInstanceData.id,
+                            processInstanceData.endpoint
+                          )
                         }
                       >
                         View Error
@@ -300,7 +318,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                       <DropdownItem
                         key={1}
                         onClick={() =>
-                          handleViewError(processID, instanceID, endpoint)
+                          handleViewError(
+                            processInstanceData.processId,
+                            processInstanceData.id,
+                            processInstanceData.endpoint
+                          )
                         }
                       >
                         View Error
@@ -324,7 +346,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               isOpen={openModal}
               onClose={handleModalToggle}
               actions={
-                addons.includes('process-management')
+                processInstanceData.addons.includes('process-management')
                   ? [
                     <Button
                       key="confirm1"
@@ -359,7 +381,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                   ]
               }
             >
-              {error.message}
+              {processInstanceData.error.message}
             </Modal>
           </DataListAction>
         </DataListItemRow>
@@ -375,19 +397,15 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 <DataListItemComponent
                   id={index}
                   key={child.id}
-                  instanceState={child.state}
-                  instanceID={child.id}
-                  processID={child.processId}
-                  parentInstanceID={child.parentProcessInstanceId}
-                  processName={child.processName}
-                  start={child.start}
-                  state={child.state}
-                  addons={child.addons}
-                  error={child.error}
-                  endpoint={child.endpoint}
+                  processInstanceData={child}
                 />
               );
             })}
+          {!isLoaded && (
+            <Bullseye>
+              <SpinnerComponent spinnerText="Loading process instances..." />
+            </Bullseye>
+          )}
         </DataListContent>
       </DataListItem>
     </React.Fragment>

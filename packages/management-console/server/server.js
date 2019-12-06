@@ -50,10 +50,14 @@ app.get(
   controller.callRetrigger
 );
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    ProcessInstances: (parent, args) => {
+    ProcessInstances: async (parent, args) => {
       const result = data.filter(datum => {
         console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
@@ -72,6 +76,7 @@ const resolvers = {
           return false;
         }
       });
+      await timeout(2000);
       console.log('result length: ' + result.length);
       return result;
     }

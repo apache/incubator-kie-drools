@@ -1,35 +1,22 @@
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import {
   Breadcrumb,
   BreadcrumbItem,
   Card,
-  DataList,
   Grid,
   GridItem,
-  PageSection,
-  TextContent,
-  TextVariants,
-  Text
+  PageSection
 } from '@patternfly/react-core';
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
 import DataListToolbarComponent from '../../Molecules/DataListToolbarComponent/DataListToolbarComponent';
 import './DataList.css';
+import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
 
-enum ProcessInstanceState {
-  Pending = 'PENDING',
-  Active = 'ACTIVE',
-  Completed = 'COMPLETED',
-  Aborted = 'ABORTED',
-  Suspended = ' SUSPENDED',
-  Error = 'ERROR'
-}
-
-const DataListComponent: React.FC<{}> = () => {
+const DataListContainer: React.FC<{}> = () => {
   const [isActiveChecked, setIsActiveChecked] = useState<boolean>(true);
   const [isCompletedChecked, setIsCompletedChecked] = useState<boolean>(false);
   const [isAbortChecked, setisAbortChecked] = useState<boolean>(false);
@@ -37,7 +24,10 @@ const DataListComponent: React.FC<{}> = () => {
   const [isSuspendedChecked, setisSuspendedChecked] = useState<boolean>(false);
   const [initData, setInitData] = useState<any>([]);
   const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const client = useApolloClient();
+
   /* tslint:disable:no-string-literal */
   const GET_INSTANCES = gql`
     query getInstances($state: [ProcessInstanceState!]) {
@@ -63,17 +53,6 @@ const DataListComponent: React.FC<{}> = () => {
       }
     }
   `;
-
-  const { loading, error, data } = useQuery(GET_INSTANCES, {
-    variables: {
-      state: ['ACTIVE']
-    },
-    fetchPolicy: 'network-only'
-  });
-
-  useEffect(() => {
-    setInitData(data);
-  }, [data]);
 
   const handleChange = (checked, event) => {
     if (event.target.name === 'isActiveChecked') {
@@ -140,14 +119,20 @@ const DataListComponent: React.FC<{}> = () => {
   };
 
   const onFilterClick = async (arr = checkedArray) => {
-    const filterData = await client.query({
-      query: GET_INSTANCES,
-      variables: {
-        state: arr
-      },
-      fetchPolicy: 'network-only'
-    });
-    setInitData(filterData['data']);
+    setIsLoading(true);
+    setIsError(false);
+    await client
+      .query({
+        query: GET_INSTANCES,
+        variables: {
+          state: arr
+        },
+        fetchPolicy: 'network-only'
+      })
+      .then(result => {
+        setIsLoading(result.loading);
+        setInitData(result.data);
+      });
   };
 
   const removeChecked = async id => {
@@ -167,9 +152,6 @@ const DataListComponent: React.FC<{}> = () => {
     }
   };
 
-  if (loading) return <p>Loading....</p>;
-  if (error) return <p>oops.. some error</p>;
-
   const BreadcrumbStyle = {
     paddingBottom: '20px'
   };
@@ -182,62 +164,32 @@ const DataListComponent: React.FC<{}> = () => {
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
           </BreadcrumbItem>
-          <BreadcrumbItem isActive>Process Instances</BreadcrumbItem>
+          <BreadcrumbItem isActive>Process instances</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
       <PageSection>
         <Grid gutter="md">
           <GridItem span={12}>
             <Card className="dataList">
-              {data.ProcessInstances.length > 0 ? (
-                <>
-                  <DataListToolbarComponent
-                    isActive={isActiveChecked}
-                    isComplete={isCompletedChecked}
-                    isAborted={isAbortChecked}
-                    isError={isErrorChecked}
-                    isSuspended={isSuspendedChecked}
-                    handleChange={handleChange}
-                    checkedArray={checkedArray}
-                    filterClick={onFilterClick}
-                    removeCheck={removeChecked}
-                  />
-                  <DataList aria-label="Expandable data list example">
-                    {!loading &&
-                      initData !== undefined &&
-                      initData['ProcessInstances'].map((item, index) => {
-                        return (
-                          <DataListItemComponent
-                            id={index}
-                            key={item.id}
-                            instanceState={item.state}
-                            instanceID={item.id}
-                            processID={item.processId}
-                            parentInstanceID={item.parentProcessInstanceId}
-                            processName={item.processName}
-                            start={item.start}
-                            state={item.state}
-                            addons={item.addons}
-                            error={item.error}
-                            endpoint={item.endpoint}
-                          />
-                        );
-                      })}
-                    {loading && (
-                      <div className="spinner-center">
-                        <p>spinner</p>
-                      </div>
-                    )}
-                  </DataList>
-
-                </>
-              ) : (
-                  <div className="error-text">
-                    <TextContent>
-                      <Text component={TextVariants.h6}>No data to display</Text>
-                    </TextContent>
-                  </div>
-                )}
+              {!isError && (
+                <DataListToolbarComponent
+                  isActive={isActiveChecked}
+                  isComplete={isCompletedChecked}
+                  isAborted={isAbortChecked}
+                  isError={isErrorChecked}
+                  isSuspended={isSuspendedChecked}
+                  handleChange={handleChange}
+                  checkedArray={checkedArray}
+                  filterClick={onFilterClick}
+                  removeCheck={removeChecked}
+                />
+              )}
+              <DataListComponent
+                initData={initData}
+                setInitData={setInitData}
+                isLoading={isLoading}
+                setIsError={setIsError}
+              />
             </Card>
           </GridItem>
         </Grid>
@@ -246,4 +198,4 @@ const DataListComponent: React.FC<{}> = () => {
   );
 };
 
-export default DataListComponent;
+export default DataListContainer;

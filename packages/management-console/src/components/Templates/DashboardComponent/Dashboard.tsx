@@ -2,7 +2,7 @@ import { Page, SkipToContent } from '@patternfly/react-core';
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import HeaderComponent from '../../Organisms/PageHeaderComponent/HeaderComponent';
-import DataListComponent from '../DataListComponent/DataListComponent';
+import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import './Dashboard.css';
 
@@ -25,7 +25,7 @@ const Dashboard: React.FC<{}> = () => {
           path="/"
           render={() => <Redirect to="/ProcessInstances" />}
         />
-        <Route exact path="/ProcessInstances" component={DataListComponent} />
+        <Route exact path="/ProcessInstances" component={DataListContainer} />
         <Route
           exact
           path="/ProcessInstances/:instanceID"

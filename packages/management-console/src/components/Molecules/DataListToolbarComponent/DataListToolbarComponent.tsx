@@ -128,7 +128,7 @@ const DataListToolbarComponent: React.FC<IOwnProps> = ({
 
   return (
     <React.Fragment>
-      <Toolbar className="pf-u-justify-content-space-between pf-u-mx-xl pf-u-my-md">
+      <Toolbar>
         <ToolbarGroup>
           <ToolbarItem>
             <Dropdown

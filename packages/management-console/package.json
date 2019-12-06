@@ -30,7 +30,7 @@
     "@n1ru4l/react-time-ago": "^1.1.0",
     "@patternfly/patternfly": "^2.27.1",
     "@patternfly/react-charts": "^4.7.9",
-    "@patternfly/react-core": "^3.87.3",
+    "@patternfly/react-core": "^3.124.1",
     "@patternfly/react-icons": "^3.14.3",
     "@patternfly/react-styles": "^3.5.13",
     "@patternfly/react-table": "^2.17.5",
@@ -50,7 +50,8 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scrollbar": "^0.5.6",
-    "react-time-ago": "^5.0.7"
+    "react-time-ago": "^5.0.7",
+    "yarn": "^1.19.1"
   },
   "devDependencies": {
     "@apollo/react-testing": "^3.1.3",
