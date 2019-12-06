@@ -27,37 +27,40 @@ import org.slf4j.LoggerFactory;
 
 public class LocalListenerThread implements ListenerThread {
 
-    private static Logger logger = LoggerFactory.getLogger(LocalListenerThread.class);
+  private static Logger logger = LoggerFactory.getLogger(LocalListenerThread.class);
 
-    private final LocalMessageSystem queue = LocalMessageSystem.get();
+  private final LocalMessageSystem queue = LocalMessageSystem.get();
 
-    private TopicsConfig topicsConfig;
-    private Map<String, CompletableFuture<Object>> requestsStore;
+  private TopicsConfig topicsConfig;
+  private Map<String, CompletableFuture<Object>> requestsStore;
 
-    private volatile boolean running = true;
+  private volatile boolean running = true;
 
-    public LocalListenerThread(TopicsConfig topicsConfig, Map<String, CompletableFuture<Object>> requestsStore) {
-        this.topicsConfig = topicsConfig;
-        this.requestsStore = requestsStore;
+  public LocalListenerThread(TopicsConfig topicsConfig,
+                             Map<String, CompletableFuture<Object>> requestsStore) {
+    this.topicsConfig = topicsConfig;
+    this.requestsStore = requestsStore;
+  }
+
+  @Override
+  public void run() {
+    while (running) {
+      Object msg = queue.poll(topicsConfig.getKieSessionInfosTopicName());
+      if (msg instanceof ResultMessage) {
+        complete(requestsStore,
+                 (ResultMessage) msg,
+                 logger);
+      } else if (msg != null) {
+        throw new IllegalStateException("Wrong type of response message: found " +
+                                                msg.getClass().getCanonicalName() +
+                                                " instead of " +
+                                                ResultMessage.class.getCanonicalName());
+      }
     }
+  }
 
-    @Override
-    public void run() {
-        while (running) {
-            Object msg = queue.poll(topicsConfig.getKieSessionInfosTopicName());
-            if (msg instanceof ResultMessage) {
-                complete(requestsStore, (ResultMessage) msg, logger);
-            } else if (msg != null) {
-                throw new IllegalStateException("Wrong type of response message: found " +
-                                                        msg.getClass().getCanonicalName() +
-                                                        " instead of " +
-                                                        ResultMessage.class.getCanonicalName());
-            }
-        }
-    }
-
-    @Override
-    public void stop() {
-        running = false;
-    }
+  @Override
+  public void stop() {
+    running = false;
+  }
 }

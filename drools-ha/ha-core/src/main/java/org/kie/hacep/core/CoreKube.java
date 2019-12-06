@@ -49,9 +49,9 @@ public class CoreKube {
       logger.info("PodName: {}",
                   podName);
     }
-    KubernetesLockConfiguration configuration = new KubernetesLockConfiguration(namespace);
-    configuration.setPodName(podName);
-    return configuration;
+    KubernetesLockConfiguration newConfiguration = new KubernetesLockConfiguration(namespace);
+    newConfiguration.setPodName(podName);
+    return newConfiguration;
   }
 
   public LeaderElection getLeaderElection() {

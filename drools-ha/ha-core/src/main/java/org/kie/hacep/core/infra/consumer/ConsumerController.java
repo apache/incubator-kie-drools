@@ -26,11 +26,13 @@ public class ConsumerController {
   private InfraCallback callback;
   private Thread thread;
 
-  public ConsumerController(EnvConfig envConfig, Producer producer) {
+  public ConsumerController(EnvConfig envConfig,
+                            Producer producer) {
     this.callback = new InfraCallback();
     this.consumer = EventConsumer.get(envConfig);
     this.callback.setConsumer(consumer);
-    this.consumer.initConsumer(new DroolsConsumerHandler(producer, envConfig));
+    this.consumer.initConsumer(new DroolsConsumerHandler(producer,
+                                                         envConfig));
   }
 
   public void start() {

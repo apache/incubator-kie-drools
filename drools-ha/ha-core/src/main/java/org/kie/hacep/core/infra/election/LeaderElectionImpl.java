@@ -63,16 +63,21 @@ public class LeaderElectionImpl implements LeaderElection {
 
   public void start() {
     if (serializedExecutor == null) {
-      logger.debug("{} Starting leadership election...",
-                   logPrefix());
+      if (logger.isDebugEnabled()) {
+        logger.debug("{} Starting leadership election...",
+                     logPrefix());
+      }
       serializedExecutor = Executors.newSingleThreadScheduledExecutor();
       serializedExecutor.execute(this::refreshStatus);
     }
   }
 
   public void stop() {
-    logger.debug("{} Stopping leadership election...",
-                 logPrefix());
+    if (logger.isDebugEnabled()) {
+      logger.debug("{} Stopping leadership election...",
+                   logPrefix());
+    }
+
     if (serializedExecutor != null) {
       serializedExecutor.shutdownNow();
     }
@@ -109,8 +114,11 @@ public class LeaderElectionImpl implements LeaderElection {
    * to acquire the leadership if possible.
    */
   private void refreshStatusNotLeader() {
-    logger.debug("{} Pod is not leader, pulling new data from the cluster",
-                 logPrefix());
+    if (logger.isDebugEnabled()) {
+      logger.debug("{} Pod is not leader, pulling new data from the cluster",
+                   logPrefix());
+    }
+
     boolean pulled = lookupNewLeaderInfo();
     if (!pulled) {
       rescheduleAfterDelay();
@@ -140,14 +148,18 @@ public class LeaderElectionImpl implements LeaderElection {
       }
     } else if (!GlobalStatus.isCanBecomeLeader()) {
       // Node is waiting for an initial state to use as starting point
-      logger.info("{} Pod is not initialized yet (waiting snapshot) so cannot try to become leader",
-                  logPrefix());
+      if (logger.isInfoEnabled()) {
+        logger.info("{} Pod is not initialized yet (waiting snapshot) so cannot try to become leader",
+                    logPrefix());
+      }
       rescheduleAfterDelay();
       return;
     } else if (!this.latestLeaderInfo.hasValidLeader()) {
       // There's a previous leader and it's invalid
-      logger.info("{} Leadership has been lost by old owner. Trying to acquire the leadership...",
-                  logPrefix());
+      if (logger.isInfoEnabled()) {
+        logger.info("{} Leadership has been lost by old owner. Trying to acquire the leadership...",
+                    logPrefix());
+      }
       boolean acquired = tryAcquireLeadership();
       if (acquired) {
         if (logger.isInfoEnabled()) {

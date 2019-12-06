@@ -26,82 +26,84 @@ import org.slf4j.LoggerFactory;
 
 public class CommonConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommonConfig.class);
-    public static final String DEFAULT_NAMESPACE = "default";
-    public static final String DEFAULT_EVENTS_TOPIC = "events";
-    public static final String DEFAULT_KIE_SESSION_INFOS_TOPIC = "kiesessioninfos";
-    public static final int DEFAULT_POLL_TIMEOUT_MS = 1000;
+  private static final Logger logger = LoggerFactory.getLogger(CommonConfig.class);
+  public static final String DEFAULT_NAMESPACE = "default";
+  public static final String DEFAULT_EVENTS_TOPIC = "events";
+  public static final String DEFAULT_KIE_SESSION_INFOS_TOPIC = "kiesessioninfos";
+  public static final int DEFAULT_POLL_TIMEOUT_MS = 1000;
 
-    public static final String KEY_SERIALIZER_KEY = "key.serializer";
-    public static final String VALUE_SERIALIZER_KEY = "value.serializer";
-    public static final String KEY_DESERIALIZER_KEY = "key.deserializer";
-    public static final String VALUE_DESERIALIZER_KEY = "value.deserializer";
-    private static Properties producerConf;
-    private static final String PRODUCER_CONF = "producer.properties";
+  public static final String KEY_SERIALIZER_KEY = "key.serializer";
+  public static final String VALUE_SERIALIZER_KEY = "value.serializer";
+  public static final String KEY_DESERIALIZER_KEY = "key.deserializer";
+  public static final String VALUE_DESERIALIZER_KEY = "value.deserializer";
+  private static Properties producerConf;
+  private static final String PRODUCER_CONF = "producer.properties";
 
-    public static final String LOCAL_MESSAGE_SYSTEM_CONF = "local.message.system";
+  public static final String LOCAL_MESSAGE_SYSTEM_CONF = "local.message.system";
 
-    public static final String SKIP_LISTENER_AUTOSTART = "skip.listener.autostart";
+  public static final String SKIP_LISTENER_AUTOSTART = "skip.listener.autostart";
 
-    private static Properties config;
+  private static Properties config;
 
-    public static synchronized Properties getStatic() {
-        if(config == null) {
-            config = new Properties();
-            config.put(KEY_SERIALIZER_KEY, "org.apache.kafka.common.serialization.StringSerializer");
-            config.put(VALUE_SERIALIZER_KEY, "org.apache.kafka.common.serialization.ByteArraySerializer");
-            config.put(KEY_DESERIALIZER_KEY, "org.apache.kafka.common.serialization.StringDeserializer");
-            config.put(VALUE_DESERIALIZER_KEY, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
-            config.put(ConsumerConfig.GROUP_ID_CONFIG, "drools");
-        }
-        return config;
+  private CommonConfig() {
+  }
+
+  public static synchronized Properties getStatic() {
+    if (config == null) {
+      config = new Properties();
+      config.put(KEY_SERIALIZER_KEY,
+                 "org.apache.kafka.common.serialization.StringSerializer");
+      config.put(VALUE_SERIALIZER_KEY,
+                 "org.apache.kafka.common.serialization.ByteArraySerializer");
+      config.put(KEY_DESERIALIZER_KEY,
+                 "org.apache.kafka.common.serialization.StringDeserializer");
+      config.put(VALUE_DESERIALIZER_KEY,
+                 "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+      config.put(ConsumerConfig.GROUP_ID_CONFIG,
+                 "drools");
     }
+    return config;
+  }
 
-    public static Properties getTestProperties() {
-        Properties props = new Properties();
-        props.put( LOCAL_MESSAGE_SYSTEM_CONF, true );
-        return props;
-    }
+  public static Properties getTestProperties() {
+    Properties props = new Properties();
+    props.put(LOCAL_MESSAGE_SYSTEM_CONF,
+              true);
+    return props;
+  }
 
-    public static Properties getProducerConfig(String caller) {
-        if(producerConf == null){
-            producerConf = getDefaultConfigFromProps(PRODUCER_CONF);
-        }
-        logConfig(caller,producerConf);
-        return producerConf;
+  public static Properties getProducerConfig(String caller) {
+    if (producerConf == null) {
+      producerConf = getDefaultConfigFromProps(PRODUCER_CONF);
     }
+    logConfig(caller,
+              producerConf);
+    return producerConf;
+  }
 
-    public static Properties getDefaultConfigFromProps(String fileName) {
-        Properties config = new Properties();
-        InputStream in = null;
-        try {
-            in = CommonConfig.class.getClassLoader().getResourceAsStream(fileName);
-        } catch (Exception e) {
-        } finally {
-            try {
-                config.load(in);
-                if(in != null){
-                    in.close();
-                }
-            } catch (IOException ioe) {
-                logger.error(ioe.getMessage(),
-                             ioe);
-            }
-        }
-        return config;
+  public static Properties getDefaultConfigFromProps(String fileName) {
+    Properties config = new Properties();
+    try (InputStream in = CommonConfig.class.getClassLoader().getResourceAsStream(fileName);) {
+      config.load(in);
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage(),
+                   ioe);
     }
+    return config;
+  }
 
-    private static void logConfig(String subject,Properties producerProperties) {
-        if (logger.isInfoEnabled()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("\n");
-            sb.append(subject);
-            sb.append("\n{\n");
-            for (Map.Entry<Object, Object> entry : producerProperties.entrySet()) {
-                sb.append(" ").append(entry.getKey().toString()).append(":").append(entry.getValue()).append("  \n");
-            }
-            sb.append("\n}\n");
-            logger.info(sb.toString());
-        }
+  private static void logConfig(String subject,
+                                Properties producerProperties) {
+    if (logger.isInfoEnabled()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("\n");
+      sb.append(subject);
+      sb.append("\n{\n");
+      for (Map.Entry<Object, Object> entry : producerProperties.entrySet()) {
+        sb.append(" ").append(entry.getKey().toString()).append(":").append(entry.getValue()).append("  \n");
+      }
+      sb.append("\n}\n");
+      logger.info(sb.toString());
     }
+  }
 }

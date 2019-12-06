@@ -21,42 +21,47 @@ import java.util.Arrays;
 public class ListObjectsCommandNamedQuery extends ListObjectsCommand implements VisitableCommand,
                                                                                 Serializable {
 
-    private String namedQuery;
-    private String objectName;
-    private Object[] params;
+  private String namedQuery;
+  private String objectName;
+  private Object[] params;
 
-    public ListObjectsCommandNamedQuery(){}
+  public ListObjectsCommandNamedQuery() {
+  }
 
-    public ListObjectsCommandNamedQuery(String entryPoint, String namedQuery,
-                                        String objectName,
-                                        Object... params) {
-        super(entryPoint);
-        this.namedQuery = namedQuery;
-        this.namedQuery = namedQuery;
-        this.objectName = objectName;
-        this.params = params;
-    }
+  public ListObjectsCommandNamedQuery(String entryPoint,
+                                      String namedQuery,
+                                      String objectName,
+                                      Object... params) {
+    super(entryPoint);
+    this.namedQuery = namedQuery;
+    this.objectName = objectName;
+    this.params = params;
+  }
 
-    public String getNamedQuery() { return namedQuery; }
+  public String getNamedQuery() {
+    return namedQuery;
+  }
 
-    public String getObjectName() {
-        return objectName;
-    }
+  public String getObjectName() {
+    return objectName;
+  }
 
-    public Object[] getParams() {
-        return params;
-    }
+  public Object[] getParams() {
+    return params;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ListObjectsCommandNamedQuery{");
-        sb.append("namedQuery='").append(namedQuery).append('\'');
-        sb.append(", objectName='").append(objectName).append('\'');
-        sb.append(", params=").append(Arrays.toString(params));
-        sb.append('}');
-        return sb.toString();
-    }
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("ListObjectsCommandNamedQuery{");
+    sb.append("namedQuery='").append(namedQuery).append('\'');
+    sb.append(", objectName='").append(objectName).append('\'');
+    sb.append(", params=").append(Arrays.toString(params));
+    sb.append('}');
+    return sb.toString();
+  }
 }

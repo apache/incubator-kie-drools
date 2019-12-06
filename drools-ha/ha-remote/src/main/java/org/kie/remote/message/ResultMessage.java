@@ -18,5 +18,5 @@ package org.kie.remote.message;
 
 public interface ResultMessage<T> extends Message {
 
-    T getResult();
+  T getResult();
 }

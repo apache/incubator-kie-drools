@@ -23,92 +23,93 @@ import java.util.function.Supplier;
 
 public abstract class DroolsExecutor {
 
-    private static boolean isLeader = false;
+  private static boolean isLeader = false;
 
-    protected Queue<Object> executionResults = new ArrayDeque<>();
+  protected Queue<Object> executionResults = new ArrayDeque<>();
 
-    public static DroolsExecutor getInstance() {
-        return isLeader ? Leader.INSTANCE : Slave.INSTANCE;
+  public static DroolsExecutor getInstance() {
+    return isLeader ? Leader.INSTANCE : Slave.INSTANCE;
+  }
+
+  public static void setAsLeader() {
+    isLeader = true;
+  }
+
+  public static void setAsReplica() {
+    isLeader = false;
+  }
+
+  public abstract boolean isLeader();
+
+  public abstract void execute(Runnable f);
+
+  public abstract <R> R execute(Supplier<R> f);
+
+  public Queue<Object> getAndReset() {
+    throw new UnsupportedOperationException();
+  }
+
+  public void appendSideEffects(Queue<Object> sideEffects) {
+    throw new UnsupportedOperationException();
+  }
+
+  public static class Leader extends DroolsExecutor {
+
+    private static final Leader INSTANCE = new Leader();
+
+    @Override
+    public boolean isLeader() {
+      return true;
     }
 
-    public static void setAsLeader() {
-        isLeader = true;
+    @Override
+    public void execute(Runnable f) {
+      f.run();
+      executionResults.add(EmptyResult.INSTANCE);
     }
 
-    public static void setAsReplica() {
-        isLeader = false;
+    @Override
+    public <R> R execute(Supplier<R> f) {
+      R result = f.get();
+      executionResults.add(result);
+      return result;
     }
 
-    public abstract boolean isLeader();
-
-    public abstract void execute( Runnable f );
-
-    public abstract <R> R execute( Supplier<R> f );
-
+    @Override
     public Queue<Object> getAndReset() {
-        throw new UnsupportedOperationException();
+      Queue<Object> results = executionResults;
+      executionResults = new ArrayDeque<>();
+      return results;
+    }
+  }
+
+  public static class Slave extends DroolsExecutor {
+
+    private static final Slave INSTANCE = new Slave();
+
+    @Override
+    public boolean isLeader() {
+      return false;
     }
 
+    @Override
+    public void execute(Runnable f) {
+      executionResults.poll();
+    }
+
+    @Override
+    public <R> R execute(Supplier<R> f) {
+      return (R) executionResults.poll();
+    }
+
+    @Override
     public void appendSideEffects(Queue<Object> sideEffects) {
-        throw new UnsupportedOperationException();
+      executionResults.addAll(sideEffects);
     }
+  }
 
-    public static class Leader extends DroolsExecutor {
+  public static class EmptyResult implements Serializable {
 
-        private static final Leader INSTANCE = new Leader();
-
-        @Override
-        public boolean isLeader() {
-            return true;
-        }
-
-        @Override
-        public void execute( Runnable f ) {
-            f.run();
-            executionResults.add( EmptyResult.INSTANCE );
-        }
-
-        @Override
-        public <R> R execute( Supplier<R> f ) {
-            R result = f.get();
-            executionResults.add( result );
-            return result;
-        }
-
-        @Override
-        public Queue<Object> getAndReset() {
-            Queue<Object> results = executionResults;
-            executionResults = new ArrayDeque<>();
-            return results;
-        }
-    }
-
-    public static class Slave extends DroolsExecutor {
-
-        private static final Slave INSTANCE = new Slave();
-
-        @Override
-        public boolean isLeader() {
-            return false;
-        }
-
-        @Override
-        public void execute( Runnable f ) {
-            executionResults.poll();
-        }
-
-        @Override
-        public <R> R execute( Supplier<R> f ) {
-            return ( R ) executionResults.poll();
-        }
-
-        @Override
-        public void appendSideEffects(Queue<Object> sideEffects) {
-            executionResults.addAll(sideEffects);
-        }
-    }
-
-    public static class EmptyResult implements Serializable {
-        public static final EmptyResult INSTANCE = new EmptyResult();
-    }
+    public static final EmptyResult INSTANCE = new EmptyResult();
+  }
 }

@@ -35,6 +35,7 @@ import org.kie.hacep.EnvConfig;
 import org.kie.hacep.consumer.KieContainerUtils;
 import org.kie.hacep.core.KieSessionContext;
 import org.kie.hacep.core.infra.utils.SnapshotOnDemandUtils;
+import org.kie.hacep.exceptions.InitializeException;
 import org.kie.hacep.message.SnapshotMessage;
 import org.kie.remote.impl.producer.EventProducer;
 import org.kie.remote.util.SerializationUtil;
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultSessionSnapShooter implements SessionSnapshooter {
 
-  private final String key = "LAST-SNAPSHOT";
+  public final static String KEY = "LAST-SNAPSHOT";
   private final Logger logger = LoggerFactory.getLogger(DefaultSessionSnapShooter.class);
   private EnvConfig envConfig;
 
@@ -51,12 +52,15 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
     this.envConfig = envConfig;
   }
 
-  public void serialize(KieSessionContext kieSessionContext, String lastInsertedEventkey, long lastInsertedEventOffset) {
+  public void serialize(KieSessionContext kieSessionContext,
+                        String lastInsertedEventkey,
+                        long lastInsertedEventOffset) {
     KieMarshallers marshallers = KieServices.get().getMarshallers();
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       EventProducer<byte[]> producer = new EventProducer<>();
       producer.start(Config.getSnapshotProducerConfig());
-      marshallers.newMarshaller(kieSessionContext.getKieSession().getKieBase()).marshall(out, kieSessionContext.getKieSession());
+      marshallers.newMarshaller(kieSessionContext.getKieSession().getKieBase()).marshall(out,
+                                                                                         kieSessionContext.getKieSession());
       /* We are storing the last inserted key and offset together with the session's bytes */
       byte[] bytes = out.toByteArray();
       SnapshotMessage message = new SnapshotMessage(UUID.randomUUID().toString(),
@@ -66,10 +70,13 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
                                                     lastInsertedEventkey,
                                                     lastInsertedEventOffset,
                                                     LocalDateTime.now());
-      producer.produceSync(envConfig.getSnapshotTopicName(), key, message);
+      producer.produceSync(envConfig.getSnapshotTopicName(),
+                           KEY,
+                           message);
       producer.stop();
     } catch (IOException e) {
-      logger.error(e.getMessage(), e);
+      logger.error(e.getMessage(),
+                   e);
     }
   }
 
@@ -92,10 +99,14 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
 
           KieSessionConfiguration conf = srv.newKieSessionConfiguration();
           conf.setOption(ClockTypeOption.get("pseudo"));
-          kieContainer = KieContainerUtils.getKieContainer(envConfig, srv);
-          kSession = srv.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in, conf, null);
+          kieContainer = KieContainerUtils.getKieContainer(envConfig,
+                                                           srv);
+          kSession = srv.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in,
+                                                                                              conf,
+                                                                                              null);
         } catch (IOException | ClassNotFoundException e) {
-          logger.error(e.getMessage(), e);
+          logger.error(e.getMessage(),
+                       e);
         }
         if (kSession == null && kieContainer != null) {//Snapshot topic empty
           kSession = kieContainer.newKieSession();
@@ -109,7 +120,7 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
                                  snapshotMsg.getKjarGAV());
       }
     } else {
-      throw new RuntimeException("KieServices is null");
+      throw new InitializeException("KieServices is null");
     }
     return null;
   }

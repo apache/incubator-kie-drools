@@ -18,31 +18,32 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class GetKJarGAVCommand extends AbstractCommand implements VisitableCommand, Serializable {
+public class GetKJarGAVCommand extends AbstractCommand implements VisitableCommand,
+                                                                  Serializable {
 
-    private String entryPoint;
+  private String entryPoint;
 
-    public GetKJarGAVCommand(String entryPoint){
-        super(UUID.randomUUID().toString());
-        this.entryPoint = entryPoint;
-    }
+  public GetKJarGAVCommand(String entryPoint) {
+    super(UUID.randomUUID().toString());
+    this.entryPoint = entryPoint;
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() {
-        return false;
-    }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return false;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) {
-        visitor.visit(this);
-    }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    public String getEntryPoint() {
-        return entryPoint;
-    }
+  public String getEntryPoint() {
+    return entryPoint;
+  }
 
-    @Override
-    public String toString() {
-        return "GetKJarGAV { entryPoint='" + entryPoint + '}';
-    }
+  @Override
+  public String toString() {
+    return "GetKJarGAV { entryPoint='" + entryPoint + '}';
+  }
 }

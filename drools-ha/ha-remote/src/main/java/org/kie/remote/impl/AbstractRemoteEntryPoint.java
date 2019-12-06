@@ -33,59 +33,59 @@ import org.kie.remote.impl.producer.Sender;
 
 public abstract class AbstractRemoteEntryPoint implements RemoteWorkingMemory {
 
-    protected final Sender sender;
-    protected final String entryPoint;
-    protected TopicsConfig topicsConfig;
+  protected final Sender sender;
+  protected final String entryPoint;
+  protected TopicsConfig topicsConfig;
 
-    public AbstractRemoteEntryPoint( Sender sender, String entryPoint, TopicsConfig topicsConfig) {
-        this.sender = sender;
-        this.entryPoint = entryPoint;
-        this.topicsConfig = topicsConfig;
-    }
+  public AbstractRemoteEntryPoint(Sender sender,
+                                  String entryPoint,
+                                  TopicsConfig topicsConfig) {
+    this.sender = sender;
+    this.entryPoint = entryPoint;
+    this.topicsConfig = topicsConfig;
+  }
 
-    @Override
-    public String getEntryPointId() {
-        return entryPoint;
-    }
+  @Override
+  public String getEntryPointId() {
+    return entryPoint;
+  }
 
-    @Override
-    public CompletableFuture<Collection<? extends Object>> getObjects() {
-        ListObjectsCommand command = new ListObjectsCommand(entryPoint);
-        return executeCommand( command );
-    }
+  @Override
+  public CompletableFuture<Collection> getObjects() {
+    ListObjectsCommand command = new ListObjectsCommand(entryPoint);
+    return executeCommand(command);
+  }
 
-    @Override
-    public <T> CompletableFuture<Collection<T>> getObjects(Class<T> clazztype) {
-        ListObjectsCommand command = new ListObjectsCommandClassType(entryPoint, clazztype);
-        return executeCommand( command );
-    }
+  @Override
+  public <T> CompletableFuture<Collection<T>> getObjects(Class<T> clazztype) {
+    ListObjectsCommand command = new ListObjectsCommandClassType(entryPoint, clazztype);
+    return executeCommand(command);
+  }
 
-    @Override
-    public CompletableFuture<Collection<? extends Object>> getObjects(String namedQuery, String objectName, Object... params) {
-        ListObjectsCommand command = new ListObjectsCommandNamedQuery(entryPoint, namedQuery, objectName, params);
-        return executeCommand( command );
-    }
+  @Override
+  public CompletableFuture<Collection> getObjects(String namedQuery, String objectName, Object... params) {
+    ListObjectsCommand command = new ListObjectsCommandNamedQuery(entryPoint, namedQuery, objectName, params);
+    return executeCommand(command);
+  }
 
-    @Override
-    public CompletableFuture<Long> getFactCount() {
-        FactCountCommand command = new FactCountCommand(entryPoint );
-        return executeCommand( command );
-    }
+  @Override
+  public CompletableFuture<Long> getFactCount() {
+    FactCountCommand command = new FactCountCommand(entryPoint);
+    return executeCommand(command);
+  }
 
-    @Override
-    public <T> CompletableFuture<T> getObject(RemoteFactHandle<T> remoteFactHandle) {
-        GetObjectCommand command = new GetObjectCommand(remoteFactHandle);
-        return executeCommand(command);
-    }
+  @Override
+  public <T> CompletableFuture<T> getObject(RemoteFactHandle<T> remoteFactHandle) {
+    GetObjectCommand command = new GetObjectCommand(remoteFactHandle);
+    return executeCommand(command);
+  }
 
+  protected <T> CompletableFuture<T> executeCommand(AbstractCommand command) {
+    CompletableFuture callback = new CompletableFuture<>();
+    getRequestsStore().put(command.getId(), callback);
+    sender.sendCommand(command, topicsConfig.getEventsTopicName());
+    return callback;
+  }
 
-
-    protected <T> CompletableFuture<T> executeCommand(AbstractCommand command ) {
-        CompletableFuture callback = new CompletableFuture<>();
-        getRequestsStore().put( command.getId(), callback );
-        sender.sendCommand( command, topicsConfig.getEventsTopicName() );
-        return callback;
-    }
-
-    protected abstract Map<String, CompletableFuture<Object>> getRequestsStore();
+  protected abstract Map<String, CompletableFuture<Object>> getRequestsStore();
 }

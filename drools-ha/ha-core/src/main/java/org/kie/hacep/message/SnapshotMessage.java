@@ -35,7 +35,8 @@ public class SnapshotMessage extends AbstractMessage implements Serializable {
   private String kjarGAV;
 
   /* Empty constructor for serialization */
-  public SnapshotMessage() { }
+  public SnapshotMessage() {
+  }
 
   public SnapshotMessage(String id,
                          String kjarGAV,

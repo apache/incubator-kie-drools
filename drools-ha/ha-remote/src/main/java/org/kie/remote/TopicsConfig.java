@@ -19,48 +19,53 @@ import java.util.Optional;
 
 public class TopicsConfig {
 
-    private String eventsTopicName;
-    private String kieSessionInfosTopicName;
+  private String eventsTopicName;
+  private String kieSessionInfosTopicName;
 
-    public static TopicsConfig getDefaultTopicsConfig(){
-        return anTopicsConfig().
-                withKieSessionInfosTopicName(Optional.ofNullable(System.getenv(CommonConfig.DEFAULT_KIE_SESSION_INFOS_TOPIC)).orElse(CommonConfig.DEFAULT_KIE_SESSION_INFOS_TOPIC)).
-                withEventsTopicName(Optional.ofNullable(System.getenv(CommonConfig.DEFAULT_EVENTS_TOPIC)).orElse(CommonConfig.DEFAULT_EVENTS_TOPIC)).build();
-    }
+  public static TopicsConfig getDefaultTopicsConfig() {
+    return anTopicsConfig().
+            withKieSessionInfosTopicName(Optional.ofNullable(System.getenv(CommonConfig.DEFAULT_KIE_SESSION_INFOS_TOPIC)).orElse(CommonConfig.DEFAULT_KIE_SESSION_INFOS_TOPIC)).
+            withEventsTopicName(Optional.ofNullable(System.getenv(CommonConfig.DEFAULT_EVENTS_TOPIC)).orElse(CommonConfig.DEFAULT_EVENTS_TOPIC)).build();
+  }
 
-    private TopicsConfig() { }
+  private TopicsConfig() {
+  }
 
-    public static TopicsConfig anTopicsConfig() { return new TopicsConfig(); }
+  public static TopicsConfig anTopicsConfig() {
+    return new TopicsConfig();
+  }
 
+  public TopicsConfig withEventsTopicName(String eventsTopicName) {
+    this.eventsTopicName = eventsTopicName;
+    return this;
+  }
 
-    public TopicsConfig withEventsTopicName(String eventsTopicName) {
-        this.eventsTopicName = eventsTopicName;
-        return this;
-    }
+  public TopicsConfig withKieSessionInfosTopicName(String kieSessionInfosTopicName) {
+    this.kieSessionInfosTopicName = kieSessionInfosTopicName;
+    return this;
+  }
 
-    public TopicsConfig withKieSessionInfosTopicName(String kieSessionInfosTopicName) {
-        this.kieSessionInfosTopicName = kieSessionInfosTopicName;
-        return this;
-    }
+  public TopicsConfig build() {
+    TopicsConfig TopicsConfig = new TopicsConfig();
+    TopicsConfig.eventsTopicName = this.eventsTopicName;
+    TopicsConfig.kieSessionInfosTopicName = this.kieSessionInfosTopicName;
+    return TopicsConfig;
+  }
 
-    public TopicsConfig build() {
-        TopicsConfig TopicsConfig = new TopicsConfig();
-        TopicsConfig.eventsTopicName = this.eventsTopicName;
-        TopicsConfig.kieSessionInfosTopicName = this.kieSessionInfosTopicName;
-        return TopicsConfig;
-    }
+  public String getEventsTopicName() {
+    return eventsTopicName;
+  }
 
-    public String getEventsTopicName() { return eventsTopicName; }
+  public String getKieSessionInfosTopicName() {
+    return kieSessionInfosTopicName;
+  }
 
-    public String getKieSessionInfosTopicName() { return kieSessionInfosTopicName; }
-
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("TopicsConfig{");
-        sb.append(", eventsTopicName='").append(eventsTopicName).append('\'');
-        sb.append(", kieSessionInfosTopicName='").append(kieSessionInfosTopicName).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("TopicsConfig{");
+    sb.append(", eventsTopicName='").append(eventsTopicName).append('\'');
+    sb.append(", kieSessionInfosTopicName='").append(kieSessionInfosTopicName).append('\'');
+    sb.append('}');
+    return sb.toString();
+  }
 }

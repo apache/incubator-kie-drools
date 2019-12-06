@@ -15,13 +15,15 @@
  */
 package org.kie.hacep.exceptions;
 
-public class InitializeException extends RuntimeException  {
+public class InitializeException extends RuntimeException {
 
-  public InitializeException(String msg){
+  public InitializeException(String msg) {
     super(msg);
   }
 
-  public InitializeException(String msg, Throwable t){
-    super(msg, t);
+  public InitializeException(String msg,
+                             Throwable t) {
+    super(msg,
+          t);
   }
 }

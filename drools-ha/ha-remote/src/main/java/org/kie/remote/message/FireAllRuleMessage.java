@@ -17,37 +17,37 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class FireAllRuleMessage extends AbstractMessage
-        implements Serializable, ResultMessage<Long> {
+        implements Serializable,
+                   ResultMessage<Long> {
 
-    private long counter;
+  private long counter;
 
-    /* Empty constructor for serialization */
-    public FireAllRuleMessage(){}
+  /* Empty constructor for serialization */
+  public FireAllRuleMessage() {
+  }
 
-    public FireAllRuleMessage(String id, long counter) {
-        super(id);
-        this.counter = counter;
-    }
+  public FireAllRuleMessage(String id,
+                            long counter) {
+    super(id);
+    this.counter = counter;
+  }
 
-    @Override
-    public Long getResult() {
-        return getCounter();
-    }
+  @Override
+  public Long getResult() {
+    return getCounter();
+  }
 
-    public long getCounter() {
-        return counter;
-    }
+  public long getCounter() {
+    return counter;
+  }
 
-    @Override
-    public String toString() {
-        return "FireAllRuleMessage{" +
-                "counter=" + counter +
-                ", id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "FireAllRuleMessage{" +
+            "counter=" + counter +
+            ", id='" + id + '\'' +
+            ", timestamp=" + timestamp +
+            '}';
+  }
 }

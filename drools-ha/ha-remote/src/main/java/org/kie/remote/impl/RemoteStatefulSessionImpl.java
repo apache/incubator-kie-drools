@@ -29,41 +29,47 @@ import org.kie.remote.impl.producer.Sender;
 
 public class RemoteStatefulSessionImpl implements RemoteStatefulSession {
 
-    private final Sender sender;
-    private final Listener listener;
-    private final TopicsConfig topicsConfig;
+  private final Sender sender;
+  private final Listener listener;
+  private final TopicsConfig topicsConfig;
 
-    public RemoteStatefulSessionImpl( Sender sender, Listener listener, TopicsConfig topicsConfig ) {
-        this.sender = sender;
-        this.listener = listener;
-        this.topicsConfig = topicsConfig;
-    }
+  public RemoteStatefulSessionImpl(Sender sender,
+                                   Listener listener,
+                                   TopicsConfig topicsConfig) {
+    this.sender = sender;
+    this.listener = listener;
+    this.topicsConfig = topicsConfig;
+  }
 
-    @SuppressWarnings("unchecked conversion")
-    @Override
-    public CompletableFuture<Long> fireAllRules() {
-        FireAllRulesCommand command = new FireAllRulesCommand();
-        CompletableFuture<Long> callback = new CompletableFuture<>();
-        ((Map) getRequestsStore()).put( command.getId(), callback );
-        sender.sendCommand( command, topicsConfig.getEventsTopicName() );
-        return callback;
-    }
+  @SuppressWarnings("unchecked conversion")
+  @Override
+  public CompletableFuture<Long> fireAllRules() {
+    FireAllRulesCommand command = new FireAllRulesCommand();
+    CompletableFuture<Long> callback = new CompletableFuture<>();
+    ((Map) getRequestsStore()).put(command.getId(),
+                                   callback);
+    sender.sendCommand(command,
+                       topicsConfig.getEventsTopicName());
+    return callback;
+  }
 
-    public Map<String, CompletableFuture<Object>> getRequestsStore() {
-        return listener.getRequestsStore();
-    }
+  public Map<String, CompletableFuture<Object>> getRequestsStore() {
+    return listener.getRequestsStore();
+  }
 
-    @Override
-    public void fireUntilHalt() {
-        sender.sendCommand(new FireUntilHaltCommand(), topicsConfig.getEventsTopicName());
-    }
+  @Override
+  public void fireUntilHalt() {
+    sender.sendCommand(new FireUntilHaltCommand(),
+                       topicsConfig.getEventsTopicName());
+  }
 
-    @Override
-    public void halt() {
-        sender.sendCommand(new HaltCommand(), topicsConfig.getEventsTopicName());
-    }
+  @Override
+  public void halt() {
+    sender.sendCommand(new HaltCommand(),
+                       topicsConfig.getEventsTopicName());
+  }
 
-    public void stop() {
-        listener.stopConsumeEvents();
-    }
+  public void stop() {
+    listener.stopConsumeEvents();
+  }
 }

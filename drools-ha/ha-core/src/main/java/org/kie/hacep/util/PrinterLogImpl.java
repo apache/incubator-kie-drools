@@ -26,14 +26,15 @@ public class PrinterLogImpl implements Printer {
   @Override
   public void prettyPrinter(String caller, ConsumerRecord consumerRecord, boolean processed) {
     if (consumerRecord != null) {
-      logger.info("Caller:{} - Processed:{} - Topic: {} - Partition: {} - Offset: {} - Value: {}\n",
-                  caller,
-                  processed,
-                  consumerRecord.topic(),
-                  consumerRecord.partition(),
-                  consumerRecord.offset(),
-                  !(consumerRecord.value() instanceof byte[]) ? consumerRecord.value() : "bytes[]");
+      if (logger.isInfoEnabled()) {
+        logger.info("Caller:{} - Processed:{} - Topic: {} - Partition: {} - Offset: {} - Value: {}\n",
+                    caller,
+                    processed,
+                    consumerRecord.topic(),
+                    consumerRecord.partition(),
+                    consumerRecord.offset(),
+                    !(consumerRecord.value() instanceof byte[]) ? consumerRecord.value() : "bytes[]");
+      }
     }
   }
-
 }

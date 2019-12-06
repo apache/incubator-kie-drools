@@ -18,39 +18,37 @@ package org.kie.remote.message;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class ListKieSessionObjectMessage extends AbstractMessage
         implements Serializable,
                    ResultMessage<Collection<? extends Object>> {
 
-    private Collection<? extends Object> objects;
+  private Collection<? extends Object> objects;
 
-    /* Empty constructor for serialization */
-    public ListKieSessionObjectMessage() {
-    }
+  /* Empty constructor for serialization */
+  public ListKieSessionObjectMessage() {
+  }
 
-    public ListKieSessionObjectMessage(String id, Collection<? extends Object> objects) {
-        super(id);
-        this.objects = objects;
-    }
+  public ListKieSessionObjectMessage(String id,
+                                     Collection<? extends Object> objects) {
+    super(id);
+    this.objects = objects;
+  }
 
-    @Override
-    public Collection<? extends Object> getResult() {
-        return getObjects();
-    }
+  @Override
+  public Collection<? extends Object> getResult() {
+    return getObjects();
+  }
 
-    public Collection<? extends Object> getObjects() {
-        return objects;
-    }
+  public Collection<? extends Object> getObjects() {
+    return objects;
+  }
 
-    @Override
-    public String toString() {
-        return "ListKieSessionObjectMessage{" +
-                "objects=" + objects +
-                ", id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ListKieSessionObjectMessage{" +
+            "objects=" + objects +
+            ", id='" + id + '\'' +
+            ", timestamp=" + timestamp +
+            '}';
+  }
 }

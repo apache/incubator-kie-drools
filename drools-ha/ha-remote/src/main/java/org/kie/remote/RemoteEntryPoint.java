@@ -18,30 +18,26 @@ package org.kie.remote;
 
 public interface RemoteEntryPoint extends RemoteWorkingMemory {
 
-    /**
-     * Inserts a new fact into this entry point
-     *
-     * @param object
-     *        the fact to be inserted
-     *
-     * @return the fact handle created for the given fact
-     */
-    <T> RemoteFactHandle<T> insert(T object);
+  /**
+   * Inserts a new fact into this entry point
+   * @param object the fact to be inserted
+   * @return the fact handle created for the given fact
+   */
+  <T> RemoteFactHandle<T> insert(T object);
 
-    /**
-     * Retracts the fact for which the given FactHandle was assigned
-     * regardless if it has been explicitly or logically inserted.
-     *
-     * @param handle the handle whose fact is to be retracted.
-     */
-    <T> void delete(RemoteFactHandle<T> handle);
+  /**
+   * Retracts the fact for which the given FactHandle was assigned
+   * regardless if it has been explicitly or logically inserted.
+   * @param handle the handle whose fact is to be retracted.
+   */
+  <T> void delete(RemoteFactHandle<T> handle);
 
-    /**
-     * Updates the fact for which the given FactHandle was assigned with the new
-     * fact set as the second parameter in this method.
-     *
-     * @param handle the FactHandle for the fact to be updated.
-     * @param object the new value for the fact being updated.
-     */
-    <T> void update(RemoteFactHandle<T> handle, T object);
+  /**
+   * Updates the fact for which the given FactHandle was assigned with the new
+   * fact set as the second parameter in this method.
+   * @param handle the FactHandle for the fact to be updated.
+   * @param object the new value for the fact being updated.
+   */
+  <T> void update(RemoteFactHandle<T> handle,
+                  T object);
 }

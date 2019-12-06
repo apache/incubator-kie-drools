@@ -18,42 +18,41 @@ package org.kie.remote.message;
 import java.io.Serializable;
 import java.util.Queue;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.Message;
+public class ControlMessage extends AbstractMessage implements Serializable,
+                                                               Message {
 
-public class ControlMessage extends AbstractMessage implements Serializable, Message {
+  protected long offset;
+  protected Queue<Object> sideEffects;
 
-    protected long offset;
-    protected Queue<Object> sideEffects;
+  /* Empty constructor for serialization */
+  public ControlMessage() {
+  }
 
-    /* Empty constructor for serialization */
-    public ControlMessage() {}
+  public ControlMessage(String id,
+                        Queue<Object> sideEffects) {
+    super(id);
+    this.sideEffects = sideEffects;
+  }
 
-    public ControlMessage( String id,
-                           Queue<Object> sideEffects) {
-        super(id);
-        this.sideEffects = sideEffects;
-    }
+  public long getOffset() {
+    return offset;
+  }
 
-    public long getOffset() {
-        return offset;
-    }
+  public void setOffset(long offset) {
+    this.offset = offset;
+  }
 
-    public void setOffset(long offset) {
-        this.offset = offset;
-    }
+  public Queue<Object> getSideEffects() {
+    return sideEffects;
+  }
 
-    public Queue<Object> getSideEffects() {
-        return sideEffects;
-    }
-
-    @Override
-    public String toString() {
-        return "ControlMessage{" +
-                "offset=" + offset +
-                ", sideEffects=" + sideEffects +
-                ", id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ControlMessage{" +
+            "offset=" + offset +
+            ", sideEffects=" + sideEffects +
+            ", id='" + id + '\'' +
+            ", timestamp=" + timestamp +
+            '}';
+  }
 }

@@ -30,52 +30,61 @@ import org.kie.remote.impl.producer.Sender;
 
 public class RemoteKieSessionImpl extends RemoteEntryPointImpl implements RemoteKieSession {
 
-    private final Map<String, RemoteEntryPoint> entryPoints = new HashMap<>();
+  private final Map<String, RemoteEntryPoint> entryPoints = new HashMap<>();
 
-    public RemoteKieSessionImpl( Properties configuration) {
-        this(configuration, TopicsConfig.getDefaultTopicsConfig());
-    }
+  public RemoteKieSessionImpl(Properties configuration) {
+    this(configuration,
+         TopicsConfig.getDefaultTopicsConfig());
+  }
 
-    public RemoteKieSessionImpl(Properties configuration, TopicsConfig envConfig) {
-        super(new Sender(configuration), EntryPointUtil.DEFAULT_ENTRY_POINT, envConfig, new Listener(configuration));
-        sender.start();
-    }
+  public RemoteKieSessionImpl(Properties configuration,
+                              TopicsConfig envConfig) {
+    super(new Sender(configuration),
+          EntryPointUtil.DEFAULT_ENTRY_POINT,
+          envConfig,
+          new Listener(configuration));
+    sender.start();
+  }
 
-    @Override
-    public void close() {
-        sender.stop();
-        delegate.stop();
-    }
+  @Override
+  public void close() {
+    sender.stop();
+    delegate.stop();
+  }
 
-    @Override
-    public RemoteEntryPoint getEntryPoint( String name ) {
-        return entryPoints.computeIfAbsent( name, k -> new RemoteEntryPointImpl(sender, k, topicsConfig, delegate) );
-    }
+  @Override
+  public RemoteEntryPoint getEntryPoint(String name) {
+    return entryPoints.computeIfAbsent(name,
+                                       k -> new RemoteEntryPointImpl(sender,
+                                                                     k,
+                                                                     topicsConfig,
+                                                                     delegate));
+  }
 
-    @Override
-    public CompletableFuture<Long> fireAllRules() {
-        return delegate.fireAllRules();
-    }
+  @Override
+  public CompletableFuture<Long> fireAllRules() {
+    return delegate.fireAllRules();
+  }
 
-    @Override
-    public void fireUntilHalt() {
-        delegate.fireUntilHalt();
-    }
+  @Override
+  public void fireUntilHalt() {
+    delegate.fireUntilHalt();
+  }
 
-    @Override
-    public void halt() {
-        delegate.halt();
-    }
+  @Override
+  public void halt() {
+    delegate.halt();
+  }
 
-    @Override
-    public CompletableFuture<Boolean> updateKJarGAV(String kJar) {
-        UpdateKJarCommand command = new UpdateKJarCommand(kJar);
-        return executeCommand(command);
-    }
+  @Override
+  public CompletableFuture<Boolean> updateKJarGAV(String kJar) {
+    UpdateKJarCommand command = new UpdateKJarCommand(kJar);
+    return executeCommand(command);
+  }
 
-    @Override
-    public CompletableFuture<String> getKJarGAV() {
-        GetKJarGAVCommand command = new GetKJarGAVCommand(entryPoint);
-        return executeCommand(command);
-    }
+  @Override
+  public CompletableFuture<String> getKJarGAV() {
+    GetKJarGAVCommand command = new GetKJarGAVCommand(entryPoint);
+    return executeCommand(command);
+  }
 }

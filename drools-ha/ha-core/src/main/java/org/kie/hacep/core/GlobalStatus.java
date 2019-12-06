@@ -24,6 +24,9 @@ public class GlobalStatus {
   private static volatile boolean nodeLive = true;
   private static volatile boolean canBecomeLeader = true;
 
+  private GlobalStatus() {
+  }
+
   public static boolean isNodeReady() {
     return nodeReady;
   }

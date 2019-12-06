@@ -17,11 +17,13 @@ package org.kie.hacep.exceptions;
 
 public class ConfigurationException extends RuntimeException {
 
-    public ConfigurationException(String msg, Throwable t){
-      super(msg, t);
-    }
+  public ConfigurationException(String msg,
+                                Throwable t) {
+    super(msg,
+          t);
+  }
 
-  public ConfigurationException(String msg){
+  public ConfigurationException(String msg) {
     super(msg);
   }
 }

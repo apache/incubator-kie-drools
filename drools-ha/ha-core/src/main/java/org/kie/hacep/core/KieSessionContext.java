@@ -72,9 +72,9 @@ public class KieSessionContext {
                                             KieContainer kieContainer) {
     this.kieSession = kieSession;
     this.kieContainer = kieContainer;
-    SessionClock clock = kieSession.getSessionClock();
-    if (clock instanceof SessionPseudoClock) {
-      this.clock = (SessionPseudoClock) clock;
+    SessionClock sessionClock = kieSession.getSessionClock();
+    if (sessionClock instanceof SessionPseudoClock) {
+      this.clock = (SessionPseudoClock) sessionClock;
     }
   }
 

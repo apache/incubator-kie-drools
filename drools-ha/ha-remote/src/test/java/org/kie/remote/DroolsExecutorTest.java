@@ -25,82 +25,82 @@ import org.junit.Test;
 
 public class DroolsExecutorTest {
 
-    private static final int ITERATIONS = 3;
-    private static final String[] TEST_SIDE_EFFECTS = { "effect1", "effect2" };
+  private static final int ITERATIONS = 3;
+  private static final String[] TEST_SIDE_EFFECTS = {"effect1", "effect2"};
 
-    @Test
-    public void testGetMaster() {
-        final DroolsExecutor master = getMasterExecutor();
+  @Test
+  public void testGetMaster() {
+    final DroolsExecutor master = getMasterExecutor();
 
-        Assertions.assertThat(master).isInstanceOf( DroolsExecutor.Leader.class);
+    Assertions.assertThat(master).isInstanceOf(DroolsExecutor.Leader.class);
+  }
+
+  @Test
+  public void testGetSlave() {
+    final DroolsExecutor slave = getSlaveExecutor();
+
+    Assertions.assertThat(slave).isInstanceOf(DroolsExecutor.Slave.class);
+  }
+
+  @Test
+  public void testExecuteRunnableOnMaster() {
+    final DroolsExecutor master = getMasterExecutor();
+
+    for (int i = 0; i < ITERATIONS; i++) {
+      master.execute(new DummyRunnable());
     }
 
-    @Test
-    public void testGetSlave() {
-        final DroolsExecutor slave = getSlaveExecutor();
+    final Queue<Object> results = master.getAndReset();
+    Assertions.assertThat(results).isNotNull();
+    Assertions.assertThat(results.size()).isEqualTo(ITERATIONS);
+    Assertions.assertThat(results).containsOnly(DroolsExecutor.EmptyResult.INSTANCE);
 
-        Assertions.assertThat(slave).isInstanceOf(DroolsExecutor.Slave.class);
+    Assertions.assertThat(master.getAndReset()).isEmpty();
+  }
+
+  @Test
+  public void testExecuteSupplierOnMaster() {
+    final DroolsExecutor master = getMasterExecutor();
+
+    final String testString = "test string";
+    final String resultString = master.execute(() -> testString);
+    Assertions.assertThat(resultString).isEqualTo(testString);
+
+    final Queue<Object> results = master.getAndReset();
+    Assertions.assertThat(results).isNotNull();
+    Assertions.assertThat(results).hasSize(1);
+    Assertions.assertThat(results.poll()).isEqualTo(testString);
+
+    Assertions.assertThat(master.getAndReset()).isEmpty();
+  }
+
+  @Test
+  public void testExecuteOnSlave() {
+    final DroolsExecutor slave = getSlaveExecutor();
+    final Queue<Object> sideEffects = new ArrayDeque<>(Arrays.asList(TEST_SIDE_EFFECTS));
+    slave.appendSideEffects(sideEffects);
+
+    slave.execute(new DummyRunnable());
+    Assertions.assertThat(slave.execute(() -> "test"))
+            .isNotNull()
+            .isEqualTo(TEST_SIDE_EFFECTS[1]);
+    Assertions.assertThat(slave.execute(() -> "test")).isNull();
+  }
+
+  private static DroolsExecutor getMasterExecutor() {
+    DroolsExecutor.setAsLeader();
+    return DroolsExecutor.getInstance();
+  }
+
+  private static DroolsExecutor getSlaveExecutor() {
+    DroolsExecutor.setAsReplica();
+    return DroolsExecutor.getInstance();
+  }
+
+  private class DummyRunnable implements Runnable {
+
+    @Override
+    public void run() {
     }
-
-    @Test
-    public void testExecuteRunnableOnMaster() {
-        final DroolsExecutor master = getMasterExecutor();
-
-        for (int i = 0; i < ITERATIONS; i++) {
-            master.execute(new DummyRunnable());
-        }
-
-        final Queue<Object> results = master.getAndReset();
-        Assertions.assertThat(results).isNotNull();
-        Assertions.assertThat(results.size()).isEqualTo(ITERATIONS);
-        Assertions.assertThat(results).containsOnly(DroolsExecutor.EmptyResult.INSTANCE);
-
-        Assertions.assertThat(master.getAndReset()).isEmpty();
-    }
-
-    @Test
-    public void testExecuteSupplierOnMaster() {
-        final DroolsExecutor master = getMasterExecutor();
-
-        final String testString = "test string";
-        final String resultString = master.execute(() -> testString);
-        Assertions.assertThat(resultString).isEqualTo(testString);
-
-        final Queue<Object> results = master.getAndReset();
-        Assertions.assertThat(results).isNotNull();
-        Assertions.assertThat(results).hasSize(1);
-        Assertions.assertThat(results.poll()).isEqualTo(testString);
-
-        Assertions.assertThat(master.getAndReset()).isEmpty();
-    }
-
-    @Test
-    public void testExecuteOnSlave() {
-        final DroolsExecutor slave = getSlaveExecutor();
-        final Queue<Object> sideEffects = new ArrayDeque<>(Arrays.asList(TEST_SIDE_EFFECTS));
-        slave.appendSideEffects(sideEffects);
-
-        slave.execute(new DummyRunnable());
-        Assertions.assertThat(slave.execute(() -> "test"))
-                .isNotNull()
-                .isEqualTo(TEST_SIDE_EFFECTS[1]);
-        Assertions.assertThat(slave.execute(() -> "test")).isNull();
-    }
-
-    private static DroolsExecutor getMasterExecutor() {
-        DroolsExecutor.setAsLeader();
-        return DroolsExecutor.getInstance();
-    }
-
-    private static DroolsExecutor getSlaveExecutor() {
-        DroolsExecutor.setAsReplica();
-        return DroolsExecutor.getInstance();
-    }
-
-    private class DummyRunnable implements Runnable {
-
-        @Override
-        public void run() {
-        }
-    }
+  }
 }

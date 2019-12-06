@@ -17,39 +17,37 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class GetObjectMessage extends AbstractMessage
         implements Serializable,
                    ResultMessage<Object> {
 
-    private Object object;
+  private Object object;
 
-    /* Empty constructor for serialization */
-    public GetObjectMessage() {
-    }
+  /* Empty constructor for serialization */
+  public GetObjectMessage() {
+  }
 
-    public GetObjectMessage(String id, Object object) {
-        super(id);
-        this.object = object;
-    }
+  public GetObjectMessage(String id,
+                          Object object) {
+    super(id);
+    this.object = object;
+  }
 
-    @Override
-    public Object getResult() {
-        return getObject();
-    }
+  @Override
+  public Object getResult() {
+    return getObject();
+  }
 
-    public Object getObject() {
-        return object;
-    }
+  public Object getObject() {
+    return object;
+  }
 
-    @Override
-    public String toString() {
-        return "GetObjectMessage{" +
-                "object=" + object +
-                ", id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "GetObjectMessage{" +
+            "object=" + object +
+            ", id='" + id + '\'' +
+            ", timestamp=" + timestamp +
+            '}';
+  }
 }

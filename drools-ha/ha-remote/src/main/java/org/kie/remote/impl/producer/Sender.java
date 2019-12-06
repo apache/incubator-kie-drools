@@ -22,25 +22,28 @@ import org.kie.remote.impl.ClientUtils;
 
 public class Sender {
 
-    private Producer producer;
-    private Properties configuration;
+  private Producer producer;
+  private Properties configuration;
 
-    public Sender(Properties configuration) {
-        this.configuration = configuration != null && !configuration.isEmpty() ?
-                configuration :
-                ClientUtils.getConfiguration(ClientUtils.PRODUCER_CONF);
-        this.producer = Producer.get(configuration);
-    }
+  public Sender(Properties configuration) {
+    this.configuration = configuration != null && !configuration.isEmpty() ?
+            configuration :
+            ClientUtils.getConfiguration(ClientUtils.PRODUCER_CONF);
+    this.producer = Producer.get(configuration);
+  }
 
-    public void start() {
-        producer.start(configuration);
-    }
+  public void start() {
+    producer.start(configuration);
+  }
 
-    public void stop() {
-        producer.stop();
-    }
+  public void stop() {
+    producer.stop();
+  }
 
-    public void sendCommand(RemoteCommand command, String topicName) {
-        producer.produceSync(topicName, command.getId(), command);
-    }
+  public void sendCommand(RemoteCommand command,
+                          String topicName) {
+    producer.produceSync(topicName,
+                         command.getId(),
+                         command);
+  }
 }

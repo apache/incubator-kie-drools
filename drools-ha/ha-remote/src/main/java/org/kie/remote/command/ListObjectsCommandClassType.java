@@ -20,25 +20,31 @@ import java.io.Serializable;
 public class ListObjectsCommandClassType extends ListObjectsCommand implements VisitableCommand,
                                                                                Serializable {
 
-    private Class clazzType;
+  private Class clazzType;
 
-    public ListObjectsCommandClassType(){}
+  public ListObjectsCommandClassType() {
+  }
 
-    public ListObjectsCommandClassType(String entryPoint, Class clazzType) {
-        super(entryPoint);
-        this.clazzType = clazzType;
-    }
+  public ListObjectsCommandClassType(String entryPoint,
+                                     Class clazzType) {
+    super(entryPoint);
+    this.clazzType = clazzType;
+  }
 
-    public Class getClazzType() { return clazzType; }
+  public Class getClazzType() {
+    return clazzType;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ListObjectCommandClassType{");
-        sb.append("clazzType=").append(clazzType);
-        sb.append('}');
-        return sb.toString();
-    }
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("ListObjectCommandClassType{");
+    sb.append("clazzType=").append(clazzType);
+    sb.append('}');
+    return sb.toString();
+  }
 }

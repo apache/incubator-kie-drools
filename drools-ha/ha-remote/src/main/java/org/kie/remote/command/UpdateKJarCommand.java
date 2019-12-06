@@ -18,44 +18,52 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class UpdateKJarCommand extends AbstractCommand implements VisitableCommand, RemoteCommand, Serializable {
+public class UpdateKJarCommand extends AbstractCommand implements VisitableCommand,
+                                                                  RemoteCommand,
+                                                                  Serializable {
 
-    private String kJarGAV;
-    private String groupID, artifactID, version;
+  private String kJarGAV;
+  private String groupID,
+  private String artifactID;
+  private String version;
 
-    public UpdateKJarCommand(String kjarGAV){
-        super(UUID.randomUUID().toString());
-        this.kJarGAV = kjarGAV;
-        String parts[]= this.kJarGAV.split(":");
-        groupID = parts[0];
-        artifactID = parts[1];
-        version = parts[2];
-    }
+  public UpdateKJarCommand(String kjarGAV) {
+    super(UUID.randomUUID().toString());
+    this.kJarGAV = kjarGAV;
+    String[] parts = this.kJarGAV.split(":");
+    groupID = parts[0];
+    artifactID = parts[1];
+    version = parts[2];
+  }
 
-    public String getKJarGAV(){
-        return kJarGAV;
-    }
+  public String getKJarGAV() {
+    return kJarGAV;
+  }
 
-    public String getGroupID() {
-        return groupID;
-    }
+  public String getGroupID() {
+    return groupID;
+  }
 
-    public String getArtifactID() {
-        return artifactID;
-    }
+  public String getArtifactID() {
+    return artifactID;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() { return true; }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return true;
+  }
 
-    @Override
-    public String toString() {
-        return "UpdateKJarCommand with KJar GAV:"+ kJarGAV ;
-    }
+  @Override
+  public String toString() {
+    return "UpdateKJarCommand with KJar GAV:" + kJarGAV;
+  }
 }

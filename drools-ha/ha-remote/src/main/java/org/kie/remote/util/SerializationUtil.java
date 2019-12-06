@@ -28,27 +28,29 @@ import org.slf4j.LoggerFactory;
 
 public class SerializationUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(SerializationUtil.class);
+  private static Logger logger = LoggerFactory.getLogger(SerializationUtil.class);
 
-    public static byte[] serialize(Object obj) {
-        try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
-            try (ObjectOutputStream o = new ObjectOutputStream(b)) {
-                o.writeObject(obj);
-            }
-            return b.toByteArray();
-        } catch (IOException io) {
-            logger.error(io.getMessage(), io);
-            throw new RuntimeException( io );
-        }
+  public static byte[] serialize(Object obj) {
+    try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
+      try (ObjectOutputStream o = new ObjectOutputStream(b)) {
+        o.writeObject(obj);
+      }
+      return b.toByteArray();
+    } catch (IOException io) {
+      logger.error(io.getMessage(),
+                   io);
+      throw new RuntimeException(io);
     }
+  }
 
-    public static <T> T deserialize(byte[] bytez) {
-        try {
-            ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(bytez));
-            return (T) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException( e );
-        }
+  public static <T> T deserialize(byte[] bytez) {
+    try {
+      ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(bytez));
+      return (T) in.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+      logger.error(e.getMessage(),
+                   e);
+      throw new RuntimeException(e);
     }
+  }
 }

@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.hacep.util;
+package org.kie.hacep.exceptions;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+public class ShutdownException extends RuntimeException {
 
-public interface Printer {
+  public ShutdownException(String msg) {
+    super(msg);
+  }
 
-  void prettyPrinter(String caller,
-                     ConsumerRecord consumerRecord,
-                     boolean processed);
+  public ShutdownException(String msg,
+                           Throwable t) {
+    super(msg,
+          t);
+  }
 }

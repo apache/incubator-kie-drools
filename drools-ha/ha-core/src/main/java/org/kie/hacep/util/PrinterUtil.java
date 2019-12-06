@@ -23,6 +23,9 @@ public class PrinterUtil {
 
   private static final Logger logger = LoggerFactory.getLogger(PrinterUtil.class);
 
+  private PrinterUtil() {
+  }
+
   public static Printer getPrinter(EnvConfig config) {
     if (config.getPrinterType().equals(PrinterLogImpl.class.getName())) {
       return new PrinterLogImpl();
@@ -31,7 +34,8 @@ public class PrinterUtil {
       try {
         returnInstance = (Printer) Class.forName(config.getPrinterType()).newInstance();
       } catch (Exception ex) {
-        logger.error("Printer:{} not found, using PrinterLog", ex.getMessage());
+        logger.error("Printer:{} not found, using PrinterLog",
+                     ex.getMessage());
         return new PrinterLogImpl();
       }
       return returnInstance;

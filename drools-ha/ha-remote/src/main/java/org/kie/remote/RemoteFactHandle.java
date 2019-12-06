@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 public interface RemoteFactHandle<T> extends Serializable {
 
-    String getId();
+  String getId();
 
-    T getObject();
+  T getObject();
 }

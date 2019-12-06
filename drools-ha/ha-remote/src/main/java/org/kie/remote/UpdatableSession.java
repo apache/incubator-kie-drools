@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UpdatableSession {
 
-    CompletableFuture<String> getKJarGAV();
+  CompletableFuture<String> getKJarGAV();
 
-    CompletableFuture<Boolean> updateKJarGAV(String kjar);
+  CompletableFuture<Boolean> updateKJarGAV(String kjar);
 }

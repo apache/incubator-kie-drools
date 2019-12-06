@@ -17,7 +17,6 @@ package org.kie.remote.impl.producer;
 
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.Callback;
 import org.kie.remote.message.Message;
 import org.kie.remote.message.ResultMessage;
 
@@ -26,19 +25,24 @@ import static org.kie.remote.util.ConfigurationUtil.readBoolean;
 
 public interface Producer {
 
-    void start(Properties properties);
+  void start(Properties properties);
 
-    void stop();
+  void stop();
 
-    <T> void produceSync(String topicName, String key, ResultMessage<T> object);
+  <T> void produceSync(String topicName,
+                       String key,
+                       ResultMessage<T> object);
 
-    void produceSync(String topicName, String key, Message object);
+  void produceSync(String topicName,
+                   String key,
+                   Message object);
 
-    static Producer get(Properties configuration) {
-        return get(readBoolean(configuration, LOCAL_MESSAGE_SYSTEM_CONF));
-    }
+  static Producer get(Properties configuration) {
+    return get(readBoolean(configuration,
+                           LOCAL_MESSAGE_SYSTEM_CONF));
+  }
 
-    static Producer get(boolean isLocal) {
-        return isLocal ? new LocalProducer() : new EventProducer();
-    }
+  static Producer get(boolean isLocal) {
+    return isLocal ? new LocalProducer() : new EventProducer();
+  }
 }

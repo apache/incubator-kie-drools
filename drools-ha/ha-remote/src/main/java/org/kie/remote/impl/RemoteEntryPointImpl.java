@@ -29,39 +29,59 @@ import org.kie.remote.impl.producer.Sender;
 
 public class RemoteEntryPointImpl extends AbstractRemoteEntryPoint implements RemoteEntryPoint {
 
-    protected final RemoteStatefulSessionImpl delegate;
+  protected final RemoteStatefulSessionImpl delegate;
 
-    protected RemoteEntryPointImpl(Sender sender, String entryPoint, TopicsConfig topicsConfig, Listener listener) {
-        super(sender, entryPoint, topicsConfig);
-        delegate = new RemoteStatefulSessionImpl( sender, listener, topicsConfig );
-    }
+  protected RemoteEntryPointImpl(Sender sender,
+                                 String entryPoint,
+                                 TopicsConfig topicsConfig,
+                                 Listener listener) {
+    super(sender,
+          entryPoint,
+          topicsConfig);
+    delegate = new RemoteStatefulSessionImpl(sender,
+                                             listener,
+                                             topicsConfig);
+  }
 
-    protected RemoteEntryPointImpl(Sender sender, String entryPoint, TopicsConfig topicsConfig, RemoteStatefulSessionImpl delegate) {
-        super(sender, entryPoint, topicsConfig);
-        this.delegate = delegate;
-    }
+  protected RemoteEntryPointImpl(Sender sender,
+                                 String entryPoint,
+                                 TopicsConfig topicsConfig,
+                                 RemoteStatefulSessionImpl delegate) {
+    super(sender,
+          entryPoint,
+          topicsConfig);
+    this.delegate = delegate;
+  }
 
-    @Override
-    public <T> RemoteFactHandle<T> insert(T obj) {
-        RemoteFactHandle factHandle = new RemoteFactHandleImpl( obj );
-        InsertCommand command = new InsertCommand( factHandle, entryPoint );
-        sender.sendCommand(command, topicsConfig.getEventsTopicName());
-        return factHandle;
-    }
+  @Override
+  public <T> RemoteFactHandle<T> insert(T obj) {
+    RemoteFactHandle factHandle = new RemoteFactHandleImpl(obj);
+    InsertCommand command = new InsertCommand(factHandle,
+                                              entryPoint);
+    sender.sendCommand(command,
+                       topicsConfig.getEventsTopicName());
+    return factHandle;
+  }
 
-    @Override
-    public <T> void delete( RemoteFactHandle<T> handle ) {
-        DeleteCommand command = new DeleteCommand( handle, entryPoint );
-        sender.sendCommand(command, topicsConfig.getEventsTopicName());
-    }
+  @Override
+  public <T> void delete(RemoteFactHandle<T> handle) {
+    DeleteCommand command = new DeleteCommand(handle,
+                                              entryPoint);
+    sender.sendCommand(command,
+                       topicsConfig.getEventsTopicName());
+  }
 
-    @Override
-    public <T> void update( RemoteFactHandle<T> handle, T object ) {
-        UpdateCommand command = new UpdateCommand( handle, object, entryPoint );
-        sender.sendCommand(command, topicsConfig.getEventsTopicName());
-    }
+  @Override
+  public <T> void update(RemoteFactHandle<T> handle,
+                         T object) {
+    UpdateCommand command = new UpdateCommand(handle,
+                                              object,
+                                              entryPoint);
+    sender.sendCommand(command,
+                       topicsConfig.getEventsTopicName());
+  }
 
-    protected Map<String, CompletableFuture<Object>> getRequestsStore() {
-        return delegate.getRequestsStore();
-    }
+  protected Map<String, CompletableFuture<Object>> getRequestsStore() {
+    return delegate.getRequestsStore();
+  }
 }

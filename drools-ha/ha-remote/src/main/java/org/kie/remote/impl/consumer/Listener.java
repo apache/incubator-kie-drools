@@ -27,43 +27,45 @@ import static org.kie.remote.util.ConfigurationUtil.readBoolean;
 
 public class Listener {
 
-    private final Map<String, CompletableFuture<Object>> requestsStore = new ConcurrentHashMap<>();
+  private final Map<String, CompletableFuture<Object>> requestsStore = new ConcurrentHashMap<>();
 
-    private final ListenerThread listenerThread;
+  private final ListenerThread listenerThread;
 
-    private Properties configuration;
-    private Thread t;
+  private Properties configuration;
+  private Thread t;
 
-    public Listener(Properties configuration) {
-        this.configuration = configuration;
-        listenerThread = ListenerThread.get( TopicsConfig.getDefaultTopicsConfig(), requestsStore, configuration );
-        if (!readBoolean(configuration, SKIP_LISTENER_AUTOSTART)) {
-            start();
-        }
+  public Listener(Properties configuration) {
+    this.configuration = configuration;
+    listenerThread = ListenerThread.get(TopicsConfig.getDefaultTopicsConfig(),
+                                        requestsStore,
+                                        configuration);
+    if (!readBoolean(configuration,
+                     SKIP_LISTENER_AUTOSTART)) {
+      start();
     }
+  }
 
-    public Listener start() {
-        t = new Thread(listenerThread);
-        t.setDaemon( true );
-        t.start();
-        return this;
+  public Listener start() {
+    t = new Thread(listenerThread);
+    t.setDaemon(true);
+    t.start();
+    return this;
+  }
+
+  public Map<String, CompletableFuture<Object>> getRequestsStore() {
+    return requestsStore;
+  }
+
+  public void stopConsumeEvents() {
+    listenerThread.stop();
+    requestsStore.clear();
+    if (t != null) {
+      try {
+        t.join();
+      } catch (InterruptedException ex) {
+        t.interrupt();
+        throw new RuntimeException(ex);
+      }
     }
-
-    public Map<String, CompletableFuture<Object>> getRequestsStore() {
-        return requestsStore;
-    }
-
-    public void stopConsumeEvents() {
-        listenerThread.stop();
-        requestsStore.clear();
-        if (t != null) {
-            try {
-                t.join();
-            }catch (InterruptedException ex){
-                t.interrupt();
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
+  }
 }

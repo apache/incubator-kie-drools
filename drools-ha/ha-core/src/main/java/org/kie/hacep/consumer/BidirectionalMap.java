@@ -32,9 +32,12 @@ public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializabl
   }
 
   @Override
-  public V put(K key, V value) {
-    inversedMap.put(value, key);
-    return super.put(key, value);
+  public V put(K key,
+               V value) {
+    inversedMap.put(value,
+                    key);
+    return super.put(key,
+                     value);
   }
 
   public K getKey(V value) {

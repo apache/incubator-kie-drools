@@ -15,18 +15,24 @@
  */
 package org.kie.hacep;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class EnvConfigTest {
 
-    @Test
-    public void defaultConfigEnvTest(){
-        EnvConfig config = EnvConfig.getDefaultEnvConfig();
-        assertEquals( "default", config.getNamespace());
-        assertEquals( "control", config.getControlTopicName());
-        assertEquals( "events", config.getEventsTopicName());
-        assertEquals( "kiesessioninfos", config.getKieSessionInfosTopicName());
-        assertEquals( "snapshot", config.getSnapshotTopicName());
-    }
+  @Test
+  public void defaultConfigEnvTest() {
+    EnvConfig config = EnvConfig.getDefaultEnvConfig();
+    assertEquals("default",
+                 config.getNamespace());
+    assertEquals("control",
+                 config.getControlTopicName());
+    assertEquals("events",
+                 config.getEventsTopicName());
+    assertEquals("kiesessioninfos",
+                 config.getKieSessionInfosTopicName());
+    assertEquals("snapshot",
+                 config.getSnapshotTopicName());
+  }
 }

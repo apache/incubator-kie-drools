@@ -18,22 +18,26 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class FireUntilHaltCommand extends AbstractCommand implements VisitableCommand, Serializable {
+public class FireUntilHaltCommand extends AbstractCommand implements VisitableCommand,
+                                                                     Serializable {
 
-    public FireUntilHaltCommand() {
-        super(UUID.randomUUID().toString());
-    }
+  public FireUntilHaltCommand() {
+    super(UUID.randomUUID().toString());
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() { return true; }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return true;
+  }
 
-    @Override
-    public String toString() {
-        return "Fire until halt of " + getId();
-    }
-
+  @Override
+  public String toString() {
+    return "Fire until halt of " + getId();
+  }
 }
 

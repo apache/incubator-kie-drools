@@ -18,7 +18,7 @@ package org.kie.remote.message;
 
 public interface Message {
 
-    String getId();
+  String getId();
 
-    long getTimestamp();
+  long getTimestamp();
 }

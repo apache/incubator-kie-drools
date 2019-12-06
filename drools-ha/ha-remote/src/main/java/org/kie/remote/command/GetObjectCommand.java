@@ -16,7 +16,6 @@
 package org.kie.remote.command;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.UUID;
 
 import org.kie.remote.RemoteFactHandle;
@@ -24,35 +23,35 @@ import org.kie.remote.RemoteFactHandle;
 public class GetObjectCommand extends AbstractCommand implements VisitableCommand,
                                                                  Serializable {
 
-    private RemoteFactHandle remoteFactHandle;
+  private RemoteFactHandle remoteFactHandle;
 
-    public GetObjectCommand() {
-        super(UUID.randomUUID().toString());
-    }
+  public GetObjectCommand() {
+    super(UUID.randomUUID().toString());
+  }
 
-    public GetObjectCommand(RemoteFactHandle remoteFactHandle) {
-        super( UUID.randomUUID().toString() );
-        this.remoteFactHandle = remoteFactHandle;
-    }
+  public GetObjectCommand(RemoteFactHandle remoteFactHandle) {
+    super(UUID.randomUUID().toString());
+    this.remoteFactHandle = remoteFactHandle;
+  }
 
-    public RemoteFactHandle getRemoteFactHandle() {
-        return remoteFactHandle;
-    }
+  public RemoteFactHandle getRemoteFactHandle() {
+    return remoteFactHandle;
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() {
-        return false;
-    }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return false;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) {
-        visitor.visit(this);
-    }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public String toString() {
-        return "GetObjectCommand{" +
-                "remoteFactHandle=" + remoteFactHandle +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "GetObjectCommand{" +
+            "remoteFactHandle=" + remoteFactHandle +
+            '}';
+  }
 }

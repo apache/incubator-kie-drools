@@ -27,47 +27,55 @@ import org.slf4j.LoggerFactory;
 
 public class LocalMessageSystem {
 
-    private Logger logger = LoggerFactory.getLogger(LocalMessageSystem.class);
-    private Map<String, BlockingQueue<Object>> queues = new HashMap<>();
+  private Logger logger = LoggerFactory.getLogger(LocalMessageSystem.class);
+  private Map<String, BlockingQueue<Object>> queues = new HashMap<>();
 
-    private LocalMessageSystem() { }
+  private LocalMessageSystem() {
+  }
 
-    private BlockingQueue<Object> queueForTopic(String topic) {
-        return queues.computeIfAbsent( topic, k -> new LinkedBlockingQueue<>() );
+  private BlockingQueue<Object> queueForTopic(String topic) {
+    return queues.computeIfAbsent(topic,
+                                  k -> new LinkedBlockingQueue<>());
+  }
+
+  public void put(String topic,
+                  Object message) {
+    if (!queueForTopic(topic).offer(message)) {
+      logger.info("msg :{} not added in the topic:{}",
+                  message,
+                  topic);
     }
+  }
 
-    public void put(String topic, Object message) {
-        if(!queueForTopic(topic).offer( message )){
-            logger.info("msg :{} not added in the topic:{}", message, topic);
-        }
-    }
+  public Object peek(String topic) {
+    return queueForTopic(topic).peek();
+  }
 
-    public Object peek(String topic) {
-        return queueForTopic(topic).peek();
-    }
+  public Object poll(String topic) {
+    return queueForTopic(topic).poll();
+  }
 
-    public Object poll(String topic) {
-        return queueForTopic(topic).poll();
+  public Object poll(String topic,
+                     int durationMillis) {
+    try {
+      return queueForTopic(topic).poll(durationMillis,
+                                       TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
     }
+  }
 
-    public Object poll(String topic, int durationMillis) {
-        try {
-            return queueForTopic(topic).poll(durationMillis, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException( e );
-        }
-    }
+  public static LocalMessageSystem get() {
+    return LazyHolder.get();
+  }
+
+  private static class LazyHolder {
+
+    private static final LocalMessageSystem INSTANCE = new LocalMessageSystem();
 
     public static LocalMessageSystem get() {
-        return LazyHolder.get();
+      return INSTANCE;
     }
-
-    private static class LazyHolder {
-        private static final LocalMessageSystem INSTANCE = new LocalMessageSystem();
-
-        public static LocalMessageSystem get() {
-            return INSTANCE;
-        }
-    }
+  }
 }

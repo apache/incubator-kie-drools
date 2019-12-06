@@ -22,20 +22,24 @@ import java.util.concurrent.CompletableFuture;
 
 import org.kie.remote.impl.RemoteKieSessionImpl;
 
-public interface RemoteKieSession extends Closeable, RemoteEntryPoint, RemoteStatefulSession, UpdatableSession {
+public interface RemoteKieSession extends Closeable,
+                                          RemoteEntryPoint,
+                                          RemoteStatefulSession,
+                                          UpdatableSession {
 
-    RemoteEntryPoint getEntryPoint(String name);
+  RemoteEntryPoint getEntryPoint(String name);
 
-    static RemoteKieSession create(Properties configuration) {
-        return new RemoteKieSessionImpl( configuration );
-    }
+  static RemoteKieSession create(Properties configuration) {
+    return new RemoteKieSessionImpl(configuration);
+  }
 
-    static RemoteKieSession create(Properties configuration, TopicsConfig envConfig) {
-        return new RemoteKieSessionImpl( configuration, envConfig );
-    }
+  static RemoteKieSession create(Properties configuration,
+                                 TopicsConfig envConfig) {
+    return new RemoteKieSessionImpl(configuration,
+                                    envConfig);
+  }
 
-    CompletableFuture<String> getKJarGAV();
+  CompletableFuture<String> getKJarGAV();
 
-    CompletableFuture<Boolean> updateKJarGAV(String kjar);
-
+  CompletableFuture<Boolean> updateKJarGAV(String kjar);
 }

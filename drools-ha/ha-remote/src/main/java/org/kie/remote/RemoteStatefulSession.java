@@ -19,7 +19,10 @@ package org.kie.remote;
 import java.util.concurrent.CompletableFuture;
 
 public interface RemoteStatefulSession {
-    CompletableFuture<Long> fireAllRules();
-    void fireUntilHalt();
-    void halt();
+
+  CompletableFuture<Long> fireAllRules();
+
+  void fireUntilHalt();
+
+  void halt();
 }

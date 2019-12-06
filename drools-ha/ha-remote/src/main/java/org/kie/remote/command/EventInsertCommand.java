@@ -19,28 +19,36 @@ package org.kie.remote.command;
 import java.io.Serializable;
 
 public class EventInsertCommand extends WorkingMemoryActionCommand implements VisitableCommand,
-                                                                         Serializable {
-    private Object object;
+                                                                              Serializable {
 
-    public EventInsertCommand(){}
+  private Object object;
 
-    public EventInsertCommand( Object object, String entryPoint ) {
-        super(null, entryPoint);
-        this.object = object;
-    }
+  public EventInsertCommand() {
+  }
 
-    public Object getObject() {
-        return object;
-    }
+  public EventInsertCommand(Object object,
+                            String entryPoint) {
+    super(null,
+          entryPoint);
+    this.object = object;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  public Object getObject() {
+    return object;
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() { return true; }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public String toString() {
-        return "Insert of " + getFactHandle() + " into entry-point " + getEntryPoint();
-    }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Insert of " + getFactHandle() + " into entry-point " + getEntryPoint();
+  }
 }

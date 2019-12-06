@@ -17,11 +17,13 @@ package org.kie.hacep.exceptions;
 
 public class ProcessCommandException extends RuntimeException {
 
-  public ProcessCommandException(String msg){
+  public ProcessCommandException(String msg) {
     super(msg);
   }
 
-  public ProcessCommandException(String msg, Throwable t){
-    super(msg, t);
+  public ProcessCommandException(String msg,
+                                 Throwable t) {
+    super(msg,
+          t);
   }
 }

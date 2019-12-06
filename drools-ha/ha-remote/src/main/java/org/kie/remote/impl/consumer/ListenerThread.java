@@ -30,31 +30,46 @@ import static org.kie.remote.util.ConfigurationUtil.readBoolean;
 
 public interface ListenerThread extends Runnable {
 
-    void stop();
+  void stop();
 
-    static ListenerThread get(TopicsConfig topicsConfig, Map<String, CompletableFuture<Object>> requestsStore, Properties configuration) {
-        return get(topicsConfig, requestsStore, readBoolean(configuration, LOCAL_MESSAGE_SYSTEM_CONF), configuration);
-    }
+  static ListenerThread get(TopicsConfig topicsConfig,
+                            Map<String, CompletableFuture<Object>> requestsStore,
+                            Properties configuration) {
+    return get(topicsConfig,
+               requestsStore,
+               readBoolean(configuration,
+                           LOCAL_MESSAGE_SYSTEM_CONF),
+               configuration);
+  }
 
-    static ListenerThread get(TopicsConfig topicsConfig, Map<String, CompletableFuture<Object>> requestsStore, boolean isLocal, Properties configuration) {
-        return isLocal ?
-                new LocalListenerThread(topicsConfig, requestsStore) :
-                new KafkaListenerThread(getMergedConf(configuration), topicsConfig, requestsStore);
-    }
+  static ListenerThread get(TopicsConfig topicsConfig,
+                            Map<String, CompletableFuture<Object>> requestsStore,
+                            boolean isLocal,
+                            Properties configuration) {
+    return isLocal ?
+            new LocalListenerThread(topicsConfig,
+                                    requestsStore) :
+            new KafkaListenerThread(getMergedConf(configuration),
+                                    topicsConfig,
+                                    requestsStore);
+  }
 
-    static Properties getMergedConf(Properties configuration){
-        Properties conf = ClientUtils.getConfiguration(ClientUtils.CONSUMER_CONF);
-        conf.putAll(configuration);
-        return conf;
-    }
+  static Properties getMergedConf(Properties configuration) {
+    Properties conf = ClientUtils.getConfiguration(ClientUtils.CONSUMER_CONF);
+    conf.putAll(configuration);
+    return conf;
+  }
 
-    default void complete(Map<String, CompletableFuture<Object>> requestsStore, ResultMessage message, Logger logger) {
-        CompletableFuture<Object> completableFuture = requestsStore.get(message.getId());
-        if(completableFuture!= null) {
-            completableFuture.complete(message.getResult());
-            if(logger.isDebugEnabled()){
-                logger.debug("completed msg with key {}",message.getId());
-            }
-        }
+  default void complete(Map<String, CompletableFuture<Object>> requestsStore,
+                        ResultMessage message,
+                        Logger logger) {
+    CompletableFuture<Object> completableFuture = requestsStore.get(message.getId());
+    if (completableFuture != null) {
+      completableFuture.complete(message.getResult());
+      if (logger.isDebugEnabled()) {
+        logger.debug("completed msg with key {}",
+                     message.getId());
+      }
     }
+  }
 }

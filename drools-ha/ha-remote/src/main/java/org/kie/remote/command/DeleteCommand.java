@@ -20,23 +20,30 @@ import java.io.Serializable;
 
 import org.kie.remote.RemoteFactHandle;
 
-public class DeleteCommand extends WorkingMemoryActionCommand implements VisitableCommand, Serializable {
+public class DeleteCommand extends WorkingMemoryActionCommand implements VisitableCommand,
+                                                                         Serializable {
 
-    public DeleteCommand(){}
+  public DeleteCommand() {
+  }
 
-    public DeleteCommand(RemoteFactHandle factHandle, String entryPoint ) {
-        super(factHandle, entryPoint);
-    }
+  public DeleteCommand(RemoteFactHandle factHandle,
+                       String entryPoint) {
+    super(factHandle,
+          entryPoint);
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() { return true; }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return true;
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public String toString() {
-        return "Delete of " + getFactHandle() + " from entry-point " + getEntryPoint();
-    }
-
+  @Override
+  public String toString() {
+    return "Delete of " + getFactHandle() + " from entry-point " + getEntryPoint();
+  }
 }

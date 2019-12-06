@@ -20,11 +20,14 @@ import org.kie.remote.command.RemoteCommand;
 
 public interface ConsumerHandler {
 
-  void process(ItemToProcess item, State currentState);
+  void process(ItemToProcess item,
+               State currentState);
 
-  void process(RemoteCommand command, State state);
+  void process(RemoteCommand command,
+               State state);
 
-  void processWithSnapshot(ItemToProcess item, State currentState);
+  void processWithSnapshot(ItemToProcess item,
+                           State currentState);
 
   void stop();
 }

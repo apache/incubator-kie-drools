@@ -17,37 +17,36 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
+public class FactCountMessage extends AbstractMessage implements Serializable,
+                                                                 ResultMessage<Long> {
 
-public class FactCountMessage extends AbstractMessage implements Serializable, ResultMessage<Long> {
+  private long factCount;
 
-    private long factCount;
+  /* Empty constructor for serialization */
+  public FactCountMessage() {
+  }
 
-    /* Empty constructor for serialization */
-    public FactCountMessage(){}
+  public FactCountMessage(String id,
+                          long factCount) {
+    super(id);
+    this.factCount = factCount;
+  }
 
-    public FactCountMessage(String id,
-                            long factCount) {
-        super(id);
-        this.factCount = factCount;
-    }
+  @Override
+  public Long getResult() {
+    return getFactCount();
+  }
 
-    @Override
-    public Long getResult() {
-        return getFactCount();
-    }
+  public long getFactCount() {
+    return factCount;
+  }
 
-    public long getFactCount() {
-        return factCount;
-    }
-
-    @Override
-    public String toString() {
-        return "FactCountMessage{" +
-                "factCount=" + factCount +
-                ", id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "FactCountMessage{" +
+            "factCount=" + factCount +
+            ", id='" + id + '\'' +
+            ", timestamp=" + timestamp +
+            '}';
+  }
 }

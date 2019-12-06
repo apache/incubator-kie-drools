@@ -18,22 +18,26 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class HaltCommand extends AbstractCommand implements VisitableCommand, Serializable {
+public class HaltCommand extends AbstractCommand implements VisitableCommand,
+                                                            Serializable {
 
-    public HaltCommand() {
-        super(UUID.randomUUID().toString());
-    }
+  public HaltCommand() {
+    super(UUID.randomUUID().toString());
+  }
 
-    @Override
-    public void accept(VisitorCommand visitor) { visitor.visit(this); }
+  @Override
+  public void accept(VisitorCommand visitor) {
+    visitor.visit(this);
+  }
 
-    @Override
-    public boolean isPermittedForReplicas() { return true; }
+  @Override
+  public boolean isPermittedForReplicas() {
+    return true;
+  }
 
-    @Override
-    public String toString() {
-        return "Halt of " + getId();
-    }
-
+  @Override
+  public String toString() {
+    return "Halt of " + getId();
+  }
 }
 

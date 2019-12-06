@@ -24,23 +24,23 @@ import org.junit.Test;
 
 public class CommonConfigTest {
 
-    private static final String TEST_PROPERTY = "test-property";
-    private static final String TEST_PROPERTY_VALUE = "test-property-value";
+  private static final String TEST_PROPERTY = "test-property";
+  private static final String TEST_PROPERTY_VALUE = "test-property-value";
 
-    @Test
-    public void testGetStaticConfig() {
-        final Properties config = CommonConfig.getStatic();
-        Assertions.assertThat(config).containsKeys(CommonConfig.KEY_SERIALIZER_KEY,
-                                                   CommonConfig.VALUE_SERIALIZER_KEY,
-                                                   CommonConfig.KEY_DESERIALIZER_KEY,
-                                                   CommonConfig.VALUE_DESERIALIZER_KEY,
-                                                   ConsumerConfig.GROUP_ID_CONFIG);
-    }
+  @Test
+  public void testGetStaticConfig() {
+    final Properties config = CommonConfig.getStatic();
+    Assertions.assertThat(config).containsKeys(CommonConfig.KEY_SERIALIZER_KEY,
+                                               CommonConfig.VALUE_SERIALIZER_KEY,
+                                               CommonConfig.KEY_DESERIALIZER_KEY,
+                                               CommonConfig.VALUE_DESERIALIZER_KEY,
+                                               ConsumerConfig.GROUP_ID_CONFIG);
+  }
 
-    @Test
-    public void testProducerConfig() {
-        final Properties producerConfig = CommonConfig.getProducerConfig("test");
-        Assertions.assertThat(producerConfig).isNotNull();
-        Assertions.assertThat(producerConfig.getProperty(TEST_PROPERTY)).isEqualTo(TEST_PROPERTY_VALUE);
-    }
+  @Test
+  public void testProducerConfig() {
+    final Properties producerConfig = CommonConfig.getProducerConfig("test");
+    Assertions.assertThat(producerConfig).isNotNull();
+    Assertions.assertThat(producerConfig.getProperty(TEST_PROPERTY)).isEqualTo(TEST_PROPERTY_VALUE);
+  }
 }

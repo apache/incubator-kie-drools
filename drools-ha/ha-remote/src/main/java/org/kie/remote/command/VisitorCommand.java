@@ -17,33 +17,33 @@ package org.kie.remote.command;
 
 public interface VisitorCommand {
 
-    void visit(FireAllRulesCommand command);
+  void visit(FireAllRulesCommand command);
 
-    void visit(FireUntilHaltCommand command);
+  void visit(FireUntilHaltCommand command);
 
-    void visit(HaltCommand command);
+  void visit(HaltCommand command);
 
-    void visit(InsertCommand command);
+  void visit(InsertCommand command);
 
-    void visit(EventInsertCommand command);
+  void visit(EventInsertCommand command);
 
-    void visit(DeleteCommand command);
+  void visit(DeleteCommand command);
 
-    void visit(UpdateCommand command);
+  void visit(UpdateCommand command);
 
-    void visit(ListObjectsCommand command);
+  void visit(ListObjectsCommand command);
 
-    void visit(ListObjectsCommandClassType command);
+  void visit(ListObjectsCommandClassType command);
 
-    void visit(ListObjectsCommandNamedQuery command);
+  void visit(ListObjectsCommandNamedQuery command);
 
-    void visit(FactCountCommand command);
+  void visit(FactCountCommand command);
 
-    void visit(SnapshotOnDemandCommand command);
+  void visit(SnapshotOnDemandCommand command);
 
-    void visit(GetObjectCommand command);
+  void visit(GetObjectCommand command);
 
-    void visit(UpdateKJarCommand command);
+  void visit(UpdateKJarCommand command);
 
-    void visit(GetKJarGAVCommand command);
+  void visit(GetKJarGAVCommand command);
 }

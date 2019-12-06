@@ -22,24 +22,25 @@ import org.kie.remote.RemoteFactHandle;
 
 public abstract class WorkingMemoryActionCommand extends AbstractCommand {
 
-    private RemoteFactHandle factHandle;
-    private String entryPoint;
+  private RemoteFactHandle factHandle;
+  private String entryPoint;
 
-    public WorkingMemoryActionCommand() {
-        super( UUID.randomUUID().toString() );
-    }
+  public WorkingMemoryActionCommand() {
+    super(UUID.randomUUID().toString());
+  }
 
-    public WorkingMemoryActionCommand( RemoteFactHandle factHandle, String entryPoint ) {
-        super( UUID.randomUUID().toString() );
-        this.factHandle = factHandle;
-        this.entryPoint = entryPoint;
-    }
+  public WorkingMemoryActionCommand(RemoteFactHandle factHandle,
+                                    String entryPoint) {
+    super(UUID.randomUUID().toString());
+    this.factHandle = factHandle;
+    this.entryPoint = entryPoint;
+  }
 
-    public RemoteFactHandle getFactHandle() {
-        return factHandle;
-    }
+  public RemoteFactHandle getFactHandle() {
+    return factHandle;
+  }
 
-    public String getEntryPoint() {
-        return entryPoint;
-    }
+  public String getEntryPoint() {
+    return entryPoint;
+  }
 }
