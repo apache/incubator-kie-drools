@@ -59,7 +59,7 @@ end
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
 when
   Definitions($ns : namespace)
-  $o: Expression( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  $o: Expression( !(this instanceof UnaryTests), typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, $importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"

@@ -16,7 +16,9 @@
 
 package org.kie.dmn.model.api;
 
-public interface UnaryTests extends DMNElement {
+import javax.xml.namespace.QName;
+
+public interface UnaryTests extends Expression {
 
     String getText();
 
@@ -26,4 +28,13 @@ public interface UnaryTests extends DMNElement {
 
     void setExpressionLanguage(String value);
 
+    @Override
+    default QName getTypeRef() {
+        throw new UnsupportedOperationException("An instance of UnaryTests inherits an optional typeRef from Expression, which must not be used");
+    }
+
+    @Override
+    default void setTypeRef(QName value) {
+        throw new UnsupportedOperationException("An instance of UnaryTests inherits an optional typeRef from Expression, which must not be used");
+    }
 }

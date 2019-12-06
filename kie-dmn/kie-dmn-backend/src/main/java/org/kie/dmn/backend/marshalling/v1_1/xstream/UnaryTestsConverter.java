@@ -24,7 +24,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TUnaryTests;
 
-public class UnaryTestsConverter extends DMNElementConverter {
+public class UnaryTestsConverter extends ExpressionConverter {
     public static final String TEXT = "text";
     public static final String EXPRESSION_LANGUAGE = "expressionLanguage";
     
