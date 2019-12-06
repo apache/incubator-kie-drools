@@ -23,11 +23,12 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
+import org.kie.kogito.index.KeycloakServerTestResource;
 
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-@QuarkusTestResource(KeycloakServer.class)
+@QuarkusTestResource(KeycloakServerTestResource.class)
 public class KeycloakIntegrationIndexingServiceTest {
 
     private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");

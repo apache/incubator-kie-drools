@@ -18,68 +18,37 @@ package org.kie.kogito.jobs.service.resource;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
-import org.infinispan.commons.dataconversion.MediaType;
-import org.infinispan.configuration.cache.Configuration;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.cache.Index;
-import org.infinispan.configuration.global.GlobalConfiguration;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.server.core.admin.embeddedserver.EmbeddedServerAdminOperationHandler;
-import org.infinispan.server.hotrod.HotRodServer;
-import org.infinispan.server.hotrod.configuration.HotRodServerConfiguration;
-import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
-import org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 public class InfinispanServerTestResource implements QuarkusTestResourceLifecycleManager {
 
-    private HotRodServer hotRodServer;
-    private EmbeddedCacheManager cacheManager;
-    private static final Integer PORT = 11232;
+    private static final String INFINISPAN_VERSION = System.getProperty("infinispan.version");
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanServerTestResource.class);
+    private GenericContainer infinispan;
 
     @Override
     public Map<String, String> start() {
-        Configuration configuration = new ConfigurationBuilder()
-                .encoding()
-                .key()
-                .mediaType(MediaType.APPLICATION_PROTOSTREAM_TYPE)
-                .encoding()
-                .value()
-                .mediaType(MediaType.APPLICATION_PROTOSTREAM_TYPE)
-                .indexing().index(Index.PRIMARY_OWNER).addProperty("default.directory_provider", "local-heap")
-                .build();
-
-        GlobalConfiguration globalConfig = new GlobalConfigurationBuilder()
-                .defaultCacheName("default")
-                .serialization()
-                .build();
-
-        cacheManager = new DefaultCacheManager(globalConfig, configuration);
-
-        hotRodServer = new HotRodServer();
-        HotRodServerConfiguration cfg = new HotRodServerConfigurationBuilder()
-                .host("localhost")
-                .proxyHost("localhost")
-                .port(PORT)
-                .proxyPort(PORT)
-                .adminOperationsHandler(new EmbeddedServerAdminOperationHandler())
-                .build();
-        hotRodServer.start(cfg, cacheManager);
-
-        Stream.of(InfinispanConfiguration.Caches.SCHEDULED_JOBS)
-                .forEach(name -> cacheManager.administration().getOrCreateCache(name, configuration));
-
+        if (INFINISPAN_VERSION == null) {
+            throw new RuntimeException("Please define a valid Infinispan image version in system property infinispan.version");
+        }
+        LOGGER.info("Using Infinispan image version: {}", INFINISPAN_VERSION);
+        infinispan = new FixedHostPortGenericContainer("quay.io/infinispan/server:" + INFINISPAN_VERSION)
+                .withFixedExposedPort(11232, 11222)
+                .withEnv("USER", "admin")
+                .withEnv("PASS", "admin")
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER));
+        infinispan.start();
         return Collections.emptyMap();
     }
 
     @Override
     public void stop() {
-        Optional.ofNullable(hotRodServer)
-                .ifPresent(HotRodServer::stop);
+        infinispan.stop();
     }
 }

@@ -43,10 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JobResourceTest {
 
-    private JobResourceTest() {
-
-    }
-
     @Inject
     private ObjectMapper objectMapper;
 

@@ -16,7 +16,6 @@
 
 package org.kie.kogito.index.infinispan.cache;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -72,7 +71,7 @@ public class InfinispanCacheManager implements CacheService {
         manager.stop();
         try {
             manager.close();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             LOGGER.warn("Error trying to close Infinispan remote cache manager", ex);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,68 +18,37 @@ package org.kie.kogito.index;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
-import org.infinispan.configuration.cache.CacheMode;
-import org.infinispan.configuration.cache.Configuration;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.cache.Index;
-import org.infinispan.configuration.global.GlobalConfiguration;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.server.core.admin.embeddedserver.EmbeddedServerAdminOperationHandler;
-import org.infinispan.server.hotrod.HotRodServer;
-import org.infinispan.server.hotrod.configuration.HotRodServerConfiguration;
-import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
-
-import static org.infinispan.commons.dataconversion.MediaType.APPLICATION_PROTOSTREAM_TYPE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 public class InfinispanServerTestResource implements QuarkusTestResourceLifecycleManager {
 
-    private EmbeddedCacheManager cacheManager;
-    private HotRodServer hotRodServer;
+    private static final String INFINISPAN_VERSION = System.getProperty("infinispan.version");
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanServerTestResource.class);
+    private GenericContainer infinispan;
 
     @Override
     public Map<String, String> start() {
-        Configuration config = new ConfigurationBuilder()
-                .template(true)
-                .clustering().cacheMode(CacheMode.LOCAL)
-                .indexing().index(Index.PRIMARY_OWNER).addProperty("default.directory_provider", "local-heap")
-                .encoding().key().mediaType(APPLICATION_PROTOSTREAM_TYPE)
-                .encoding().value().mediaType(APPLICATION_PROTOSTREAM_TYPE)
-                .build();
-
-        GlobalConfiguration globalConfig = new GlobalConfigurationBuilder()
-                .defaultCacheName("default")
-                .nonClusteredDefault()
-                .build();
-
-        cacheManager = new DefaultCacheManager(globalConfig, new ConfigurationBuilder().build());
-        cacheManager.defineConfiguration("kogito-template", config);
-
-        hotRodServer = new HotRodServer();
-        HotRodServerConfiguration cfg = new HotRodServerConfigurationBuilder()
-                .host("localhost")
-                .proxyHost("localhost")
-                .port(11232)
-                .proxyPort(11232)
-                .adminOperationsHandler(new EmbeddedServerAdminOperationHandler())
-                .build();
-        hotRodServer.start(cfg, cacheManager);
+        if (INFINISPAN_VERSION == null) {
+            throw new RuntimeException("Please define a valid Infinispan image version in system property infinispan.version");
+        }
+        LOGGER.info("Using Infinispan image version: {}", INFINISPAN_VERSION);
+        infinispan = new FixedHostPortGenericContainer("quay.io/infinispan/server:" + INFINISPAN_VERSION)
+                .withFixedExposedPort(11232, 11222)
+                .withEnv("USER", "admin")
+                .withEnv("PASS", "admin")
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER));
+        infinispan.start();
         return Collections.emptyMap();
     }
 
     @Override
     public void stop() {
-        CompletableFuture.runAsync(() -> {
-            if (hotRodServer != null) {
-                hotRodServer.stop();
-            }
-            if (cacheManager != null) {
-                cacheManager.stop();
-            }
-        });
+        infinispan.stop();
     }
 }

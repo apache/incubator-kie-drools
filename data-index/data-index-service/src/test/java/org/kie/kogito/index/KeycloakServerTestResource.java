@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.service;
+package org.kie.kogito.index;
 
 import java.util.Collections;
 import java.util.Map;
@@ -25,7 +25,7 @@ import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-public class KeycloakServer implements QuarkusTestResourceLifecycleManager {
+public class KeycloakServerTestResource implements QuarkusTestResourceLifecycleManager {
 
     private GenericContainer keycloak;
 

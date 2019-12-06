@@ -30,8 +30,6 @@ import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.configuration.cache.Configuration;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +39,6 @@ public class InfinispanConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanConfiguration.class);
     public static final String PERSISTENCE_CONFIG_KEY = "kogito.jobs-service.persistence";
-    private final Configuration config = new ConfigurationBuilder().build();
 
     /**
      * Constants for Caches
@@ -72,7 +69,7 @@ public class InfinispanConfiguration {
         return ReactiveStreams.of(Caches.ALL())
                 .forEach(name -> cacheManager
                         .map(RemoteCacheManager::administration)
-                        .ifPresent(adm -> adm.getOrCreateCache(name, config)))
+                        .ifPresent(adm -> adm.getOrCreateCache(name, (String) null)))
                 .run()
                 .thenAccept(c -> LOGGER.info("Executed Infinispan configuration"));
     }
