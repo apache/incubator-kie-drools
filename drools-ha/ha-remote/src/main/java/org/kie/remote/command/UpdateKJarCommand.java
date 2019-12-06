@@ -23,7 +23,7 @@ public class UpdateKJarCommand extends AbstractCommand implements VisitableComma
                                                                   Serializable {
 
   private String kJarGAV;
-  private String groupID,
+  private String groupID;
   private String artifactID;
   private String version;
 
