@@ -56,7 +56,7 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
         throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
     }
 
-    @Override
+//    @Override
     public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         solver.addProblemFactChange(problemFactChange);
     }
