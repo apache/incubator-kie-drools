@@ -201,7 +201,7 @@ public class ModelGenerator {
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
         MethodCallExpr buildCallScope = ruleUnitDescr != null ?
-                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classNameToReferenceType(ruleUnitDescr.getRuleUnitName()) ) ) :
+                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classNameToReferenceType(ruleUnitDescr.getCanonicalName()) ) ) :
                 ruleCall;
 
         for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
