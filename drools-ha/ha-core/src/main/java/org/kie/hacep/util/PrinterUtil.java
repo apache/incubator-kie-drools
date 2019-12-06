@@ -31,8 +31,7 @@ public class PrinterUtil {
       try {
         returnInstance = (Printer) Class.forName(config.getPrinterType()).newInstance();
       } catch (Exception ex) {
-        logger.error("Printer:{} not found, using PrinterLog",
-                     ex.getMessage());
+        logger.error("Printer:{} not found, using PrinterLog", ex.getMessage());
         return new PrinterLogImpl();
       }
       return returnInstance;

@@ -22,8 +22,7 @@ public class InfraCallback implements LeadershipCallback {
 
   private LeadershipCallback consumer;
 
-  public InfraCallback() {
-  }
+  public InfraCallback() { }
 
   public void setConsumer(LeadershipCallback newConsumer) {
     this.consumer = newConsumer;

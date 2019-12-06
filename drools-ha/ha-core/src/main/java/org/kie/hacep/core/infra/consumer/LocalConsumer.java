@@ -52,8 +52,7 @@ public class LocalConsumer implements EventConsumer {
   }
 
   @Override
-  public void stop() {
-  }
+  public void stop() { }
 
   @Override
   public synchronized void updateStatus(State state) {

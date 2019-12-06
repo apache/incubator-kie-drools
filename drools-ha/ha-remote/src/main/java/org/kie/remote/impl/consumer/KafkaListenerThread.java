@@ -32,6 +32,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.kie.remote.CommonConfig;
 import org.kie.remote.TopicsConfig;
 import org.kie.remote.message.ResultMessage;
+import org.kie.remote.util.ConsumerUtils;
 import org.kie.remote.util.SerializationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,32 +51,7 @@ public class KafkaListenerThread implements ListenerThread {
         this.configuration = configuration;
         this.topicsConfig = config;
         this.requestsStore = requestsStore;
-        prepareConsumer();
-    }
-
-    private void prepareConsumer() {
-        consumer = new KafkaConsumer(configuration);
-        List<PartitionInfo> infos = consumer.partitionsFor(topicsConfig.getKieSessionInfosTopicName());
-        List<TopicPartition> partitions = new ArrayList<>();
-        if (infos != null) {
-            for (PartitionInfo partition : infos) {
-                partitions.add(new TopicPartition(topicsConfig.getKieSessionInfosTopicName(), partition.partition()));
-            }
-        }
-        consumer.assign(partitions);
-
-        Map<TopicPartition, Long> offsets = consumer.endOffsets(partitions);
-        Long lastOffset = 0l;
-        for (Map.Entry<TopicPartition, Long> entry : offsets.entrySet()) {
-            lastOffset = entry.getValue();
-        }
-        if (lastOffset == 0) {
-            lastOffset = 1l;// this is to start the seek with offset -1 on empty topic
-        }
-        Set<TopicPartition> assignments = consumer.assignment();
-        for (TopicPartition part : assignments) {
-            consumer.seek(part, lastOffset - 1);
-        }
+        consumer = ConsumerUtils.getConsumer(topicsConfig.getKieSessionInfosTopicName(), configuration);
     }
 
     @Override

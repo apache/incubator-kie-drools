@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.hacep.core.infra.consumer;
+package org.kie.hacep.exceptions;
 
-import org.kie.hacep.core.infra.election.State;
-import org.kie.remote.command.RemoteCommand;
+public class InitializeException extends RuntimeException  {
 
-public interface ConsumerHandler {
+  public InitializeException(String msg){
+    super(msg);
+  }
 
-  void process(ItemToProcess item, State currentState);
-
-  void process(RemoteCommand command, State state);
-
-  void processWithSnapshot(ItemToProcess item, State currentState);
-
-  void stop();
+  public InitializeException(String msg, Throwable t){
+    super(msg, t);
+  }
 }

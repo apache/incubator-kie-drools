@@ -32,14 +32,11 @@ import org.kie.remote.RemoteFactHandle;
 public class FactHandlesManager implements Serializable {
 
   private BidirectionalMap<RemoteFactHandle, Long> fhIdMap;
-
   private transient KieSession kieSession;
-
   private transient Map<RemoteFactHandle, InternalFactHandle> fhMap;
 
   //for serialization purpose
-  public FactHandlesManager() {
-  }
+  public FactHandlesManager() { }
 
   public FactHandlesManager(KieSession kieSession) {
     this.kieSession = kieSession;
@@ -51,13 +48,10 @@ public class FactHandlesManager implements Serializable {
     return fhIdMap.keySet();
   }
 
-  public void registerHandle(RemoteFactHandle remoteFH,
-                             FactHandle fh) {
+  public void registerHandle(RemoteFactHandle remoteFH, FactHandle fh) {
     InternalFactHandle ifh = (InternalFactHandle) fh;
-    fhMap.put(remoteFH,
-              ifh);
-    fhIdMap.put(remoteFH,
-                ifh.getId());
+    fhMap.put(remoteFH, ifh);
+    fhIdMap.put(remoteFH, ifh.getId());
   }
 
   public FactHandlesManager initFromKieSession(KieSession kieSession) {
@@ -65,8 +59,7 @@ public class FactHandlesManager implements Serializable {
     kieSession.addEventListener(new DefaultRuleRuntimeEventListener() {
       @Override
       public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
-        fhMap.remove(
-                fhIdMap.removeValue(((InternalFactHandle) objectDeletedEvent.getFactHandle()).getId()));
+        fhMap.remove(fhIdMap.removeValue(((InternalFactHandle) objectDeletedEvent.getFactHandle()).getId()));
       }
     });
     fhMap.clear();
@@ -74,8 +67,7 @@ public class FactHandlesManager implements Serializable {
   }
 
   public FactHandle mapRemoteFactHandle(RemoteFactHandle remoteFH) {
-    return fhMap.computeIfAbsent(remoteFH,
-                                 this::getFactHandleById);
+    return fhMap.computeIfAbsent(remoteFH, this::getFactHandleById);
   }
 
   private InternalFactHandle getFactHandleById(RemoteFactHandle remoteFH) {

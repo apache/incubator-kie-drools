@@ -51,15 +51,12 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
     this.envConfig = envConfig;
   }
 
-  public void serialize(KieSessionContext kieSessionContext,
-                        String lastInsertedEventkey,
-                        long lastInsertedEventOffset) {
+  public void serialize(KieSessionContext kieSessionContext, String lastInsertedEventkey, long lastInsertedEventOffset) {
     KieMarshallers marshallers = KieServices.get().getMarshallers();
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       EventProducer<byte[]> producer = new EventProducer<>();
       producer.start(Config.getSnapshotProducerConfig());
-      marshallers.newMarshaller(kieSessionContext.getKieSession().getKieBase()).marshall(out,
-                                                                                         kieSessionContext.getKieSession());
+      marshallers.newMarshaller(kieSessionContext.getKieSession().getKieBase()).marshall(out, kieSessionContext.getKieSession());
       /* We are storing the last inserted key and offset together with the session's bytes */
       byte[] bytes = out.toByteArray();
       SnapshotMessage message = new SnapshotMessage(UUID.randomUUID().toString(),
@@ -69,13 +66,10 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
                                                     lastInsertedEventkey,
                                                     lastInsertedEventOffset,
                                                     LocalDateTime.now());
-      producer.produceSync(envConfig.getSnapshotTopicName(),
-                           key,
-                           message);
+      producer.produceSync(envConfig.getSnapshotTopicName(), key, message);
       producer.stop();
     } catch (IOException e) {
-      logger.error(e.getMessage(),
-                   e);
+      logger.error(e.getMessage(), e);
     }
   }
 
@@ -98,14 +92,10 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
 
           KieSessionConfiguration conf = srv.newKieSessionConfiguration();
           conf.setOption(ClockTypeOption.get("pseudo"));
-          kieContainer = KieContainerUtils.getKieContainer(envConfig,
-                                                           srv);
-          kSession = srv.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in,
-                                                                                              conf,
-                                                                                              null);
+          kieContainer = KieContainerUtils.getKieContainer(envConfig, srv);
+          kSession = srv.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in, conf, null);
         } catch (IOException | ClassNotFoundException e) {
-          logger.error(e.getMessage(),
-                       e);
+          logger.error(e.getMessage(), e);
         }
         if (kSession == null && kieContainer != null) {//Snapshot topic empty
           kSession = kieContainer.newKieSession();

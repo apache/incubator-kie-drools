@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 public class EventInsertCommand extends WorkingMemoryActionCommand implements VisitableCommand,
                                                                          Serializable {
-
     private Object object;
 
     public EventInsertCommand(){}

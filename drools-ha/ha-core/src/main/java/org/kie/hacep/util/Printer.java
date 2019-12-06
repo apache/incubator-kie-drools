@@ -19,7 +19,5 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface Printer {
 
-  void prettyPrinter(String caller,
-                     ConsumerRecord consumerRecord,
-                     boolean processed);
+  void prettyPrinter(String caller, ConsumerRecord consumerRecord, boolean processed);
 }

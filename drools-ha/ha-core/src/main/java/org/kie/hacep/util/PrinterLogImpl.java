@@ -15,16 +15,7 @@
  */
 package org.kie.hacep.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
-import org.kie.hacep.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +24,7 @@ public class PrinterLogImpl implements Printer {
   private static Logger logger = LoggerFactory.getLogger(PrinterLogImpl.class);
 
   @Override
-  public void prettyPrinter(String caller,
-                            ConsumerRecord consumerRecord,
-                            boolean processed) {
+  public void prettyPrinter(String caller, ConsumerRecord consumerRecord, boolean processed) {
     if (consumerRecord != null) {
       logger.info("Caller:{} - Processed:{} - Topic: {} - Partition: {} - Offset: {} - Value: {}\n",
                   caller,
@@ -47,17 +36,4 @@ public class PrinterLogImpl implements Printer {
     }
   }
 
-  public Map<TopicPartition, Long> getOffsets(String topic) {
-    KafkaConsumer consumer = new KafkaConsumer(Config.getConsumerConfig("OffsetConsumer"));
-    consumer.subscribe(Arrays.asList(topic));
-    List<PartitionInfo> infos = consumer.partitionsFor(topic);
-    List<TopicPartition> tps = new ArrayList<>();
-    for (PartitionInfo info : infos) {
-      tps.add(new TopicPartition(topic,
-                                 info.partition()));
-    }
-    Map<TopicPartition, Long> offsets = consumer.endOffsets(tps);
-    consumer.close();
-    return offsets;
-  }
 }
