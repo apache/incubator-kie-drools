@@ -19,8 +19,9 @@ package org.optaplanner.core.api.domain.entity;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Specifies that a boolean property (or field) of a {@link PlanningEntity} determines if the planning entity is immovable.
@@ -32,7 +33,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * and true if the planning entity is immovable (AKA pinned).
  * <p>
  * It applies to all the planning variables of that planning entity.
- * To make individual variables immovable, see https://issues.jboss.org/browse/PLANNER-124
+ * To make individual variables immovable, see https://issues.redhat.com/browse/PLANNER-124
  * <p>
  * This is syntactic sugar for {@link PlanningEntity#movableEntitySelectionFilter()},
  * which is a more flexible and verbose way to make a planning entity immovable.

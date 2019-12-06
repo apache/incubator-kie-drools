@@ -34,11 +34,10 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 public class KOptMoveTest {
 
@@ -244,7 +243,7 @@ public class KOptMoveTest {
         // TODO
     }
 
-    @Test @Ignore("https://issues.jboss.org/browse/PLANNER-1250") // TODO https://issues.jboss.org/browse/PLANNER-1250
+    @Test @Ignore("https://issues.redhat.com/browse/PLANNER-1250") // TODO https://issues.redhat.com/browse/PLANNER-1250
     public void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
 

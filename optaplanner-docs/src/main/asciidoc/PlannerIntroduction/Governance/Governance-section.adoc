@@ -41,7 +41,7 @@ and https://www.facebook.com/OptaPlanner[facebook]. +
 *If you're happy with OptaPlanner, make us happy by posting a tweet or blog article about it.*
 
 Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[here].
-Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
+Bugs and feature requests are welcome in https://issues.redhat.com/browse/PLANNER[our issue tracker].
 Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
 
 Red Hat sponsors OptaPlanner development by employing the core team.

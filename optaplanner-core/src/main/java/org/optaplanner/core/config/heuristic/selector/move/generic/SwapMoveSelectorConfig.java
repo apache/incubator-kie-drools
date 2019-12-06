@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
@@ -45,7 +45,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
-    // TODO Wrap in <variableNameIncludes> https://issues.jboss.org/browse/PLANNER-838
+    // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
 //    @XStreamAlias("variableNameIncludes")
 //    @XStreamConverter(value = NamedCollectionConverter.class,

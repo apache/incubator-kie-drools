@@ -40,7 +40,7 @@ public abstract class AbstractConstructionHeuristicTest<Solution_> extends Abstr
         if (commonApp instanceof CurriculumCourseApp) {
             /*
              * TODO Delete this temporary workaround to ignore ALLOCATE_TO_VALUE_FROM_QUEUE,
-             * see https://issues.jboss.org/browse/PLANNER-486
+             * see https://issues.redhat.com/browse/PLANNER-486
              */
             List<ConstructionHeuristicType> typeList = new ArrayList<>();
             for (ConstructionHeuristicType type : ConstructionHeuristicType.values()) {

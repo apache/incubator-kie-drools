@@ -92,7 +92,7 @@ rule "Minimum and maximum number of assignments"
             scoreHolder.addSoftConstraintMatch(kcontext,
                     ($contractLine.getMaximumValue() - totalInt) * $contractLine.getMaximumWeight());
         } else {
-            // Workaround for https://issues.jboss.org/browse/PLANNER-761
+            // Workaround for https://issues.redhat.com/browse/PLANNER-761
             scoreHolder.addSoftConstraintMatch(kcontext, 0);
         }
 end

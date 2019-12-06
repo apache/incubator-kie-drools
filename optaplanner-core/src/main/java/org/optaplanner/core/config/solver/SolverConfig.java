@@ -66,7 +66,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -494,7 +494,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         }
     }
 
-    // TODO https://issues.jboss.org/browse/PLANNER-1688
+    // TODO https://issues.redhat.com/browse/PLANNER-1688
     /**
      * Do not use this method, it is an internal method.
      * Use {@link SolverFactory#buildSolver()} instead.
@@ -586,7 +586,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return resolvedMoveThreadCount;
     }
 
-    // TODO https://issues.jboss.org/browse/PLANNER-1688
+    // TODO https://issues.redhat.com/browse/PLANNER-1688
     /**
      * Do not use this method, it is an internal method.
      * Use {@link SolverFactory#getScoreDirectorFactory()} instead.
@@ -607,7 +607,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 configContext, classLoader, environmentMode, solutionDescriptor);
     }
 
-    // TODO https://issues.jboss.org/browse/PLANNER-1688
+    // TODO https://issues.redhat.com/browse/PLANNER-1688
     /**
      * Do not use this method, it is an internal method.
      * <p>

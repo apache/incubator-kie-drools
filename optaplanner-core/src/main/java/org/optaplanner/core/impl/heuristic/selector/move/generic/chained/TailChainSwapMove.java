@@ -88,7 +88,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
-    // TODO Workaround until https://issues.jboss.org/browse/PLANNER-1250 is fixed
+    // TODO Workaround until https://issues.redhat.com/browse/PLANNER-1250 is fixed
     protected TailChainSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, Object leftValue, Object leftAnchor,
             Object rightEntity, Object rightValue, Object rightAnchor) {
@@ -107,7 +107,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         this.entityAfterAnchor = null;
     }
 
-    // TODO Workaround until https://issues.jboss.org/browse/PLANNER-1250 is fixed
+    // TODO Workaround until https://issues.redhat.com/browse/PLANNER-1250 is fixed
     protected TailChainSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, Object leftValue, Object leftAnchor,
             Object rightEntity, Object rightValue, Object rightAnchor,
@@ -127,7 +127,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         this.entityAfterAnchor = null;
     }
 
-    // TODO Workaround until https://issues.jboss.org/browse/PLANNER-1250 is fixed
+    // TODO Workaround until https://issues.redhat.com/browse/PLANNER-1250 is fixed
     protected TailChainSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, Object leftValue, Object leftAnchor,
             Object rightEntity, Object rightValue, Object rightAnchor,
@@ -213,7 +213,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         } else {
             if (rightEntity == null) {
                 // TODO Currently unsupported because we fail to create a valid undoMove... even though doMove supports it
-                // https://issues.jboss.org/browse/PLANNER-1250
+                // https://issues.redhat.com/browse/PLANNER-1250
                 throw new IllegalStateException("Impossible state, because isMoveDoable() should not return true.");
             }
             if (!reverseAnchorSide) {

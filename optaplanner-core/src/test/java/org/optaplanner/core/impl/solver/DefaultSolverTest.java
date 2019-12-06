@@ -117,7 +117,7 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
-    // TODO https://issues.jboss.org/browse/PLANNER-1738
+    // TODO https://issues.redhat.com/browse/PLANNER-1738
     @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);

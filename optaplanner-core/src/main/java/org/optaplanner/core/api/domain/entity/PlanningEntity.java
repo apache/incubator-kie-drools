@@ -26,8 +26,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Specifies that the class is a planning entity.
@@ -45,7 +45,7 @@ public @interface PlanningEntity {
      * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
      * <p>
      * This applies to all the planning variables of this planning entity.
-     * To make individual variables immovable, see https://issues.jboss.org/browse/PLANNER-124
+     * To make individual variables immovable, see https://issues.redhat.com/browse/PLANNER-124
      * <p>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
      * if the selection entity is immovable and it returns true if the selection entity is movable

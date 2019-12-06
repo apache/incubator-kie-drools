@@ -55,7 +55,7 @@
   </scm>
   <issueManagement>
     <system>jira</system>
-    <url>https://issues.jboss.org/browse/PLANNER</url>
+    <url>https://issues.redhat.com/browse/PLANNER</url>
   </issueManagement>
 
   <modules>

@@ -75,14 +75,14 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
 
     @Override
     public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
-        // TODO https://issues.jboss.org/browse/PLANNER-232
+        // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
     public SimpleBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
-        // TODO https://issues.jboss.org/browse/PLANNER-232
+        // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }

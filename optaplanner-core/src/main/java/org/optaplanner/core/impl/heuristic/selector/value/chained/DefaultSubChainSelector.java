@@ -209,7 +209,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     @Override
     public ListIterator<SubChain> listIterator(int index) {
         if (!randomSelection) {
-            // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
+            // TODO Implement more efficient ListIterator https://issues.redhat.com/browse/PLANNER-37
             OriginalSubChainIterator it = new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
             for (int i = 0; i < index; i++) {
                 it.next();
@@ -272,19 +272,19 @@ public class DefaultSubChainSelector extends AbstractSelector
         @Override
         public boolean hasPrevious() {
             throw new UnsupportedOperationException("The operation hasPrevious() is not supported."
-                    + " See https://issues.jboss.org/browse/PLANNER-37");
+                    + " See https://issues.redhat.com/browse/PLANNER-37");
         }
 
         @Override
         public SubChain previous() {
             throw new UnsupportedOperationException("The operation previous() is not supported."
-                    + " See https://issues.jboss.org/browse/PLANNER-37");
+                    + " See https://issues.redhat.com/browse/PLANNER-37");
         }
 
         @Override
         public int previousIndex() {
             throw new UnsupportedOperationException("The operation previousIndex() is not supported."
-                    + " See https://issues.jboss.org/browse/PLANNER-37");
+                    + " See https://issues.redhat.com/browse/PLANNER-37");
         }
 
         @Override

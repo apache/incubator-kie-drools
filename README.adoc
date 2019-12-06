@@ -25,7 +25,7 @@ and configure a _Run/Debug configuration_ like this:
 === Starter issues
 
 If you're just starting out with OptaPlanner and want to contribute,
-take a look at our https://issues.jboss.org/issues/?jql=project%20%3D%20PLANNER%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20labels%20%3D%20starter%20ORDER%20BY%20priority%20DESC[starter issues].
+take a look at our https://issues.redhat.com/issues/?jql=project%20%3D%20PLANNER%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20labels%20%3D%20starter%20ORDER%20BY%20priority%20DESC[starter issues].
 They're specifically chosen to be easier for first time contributors.
 
 == Developing Drools, OptaPlanner and jBPM

@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
-    // TODO remove me to enable multithreaded solving, but first fix https://issues.jboss.org/browse/PLANNER-1250
+    // TODO remove me to enable multithreaded solving, but first fix https://issues.redhat.com/browse/PLANNER-1250
     protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final AnchorVariableSupply anchorVariableSupply;
 
@@ -137,7 +137,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public KOptMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        throw new UnsupportedOperationException("https://issues.jboss.org/browse/PLANNER-1250"); // TODO test also disabled
+        throw new UnsupportedOperationException("https://issues.redhat.com/browse/PLANNER-1250"); // TODO test also disabled
 //        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
 //                destinationScoreDirector.lookUpWorkingObject(entity),
 //                rebaseArray(values, destinationScoreDirector));

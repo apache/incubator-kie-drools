@@ -234,7 +234,7 @@ There are several ways to deliver this information:
 
 * Add class annotations and JavaBean property annotations on the domain model (recommended). The property annotations must be on the getter method, not on the setter method. Such a getter does not need to be public.
 * Add class annotations and field annotations on the domain model. Such a field does not need to be public.
-* No annotations: externalize the domain configuration in an XML file. This is https://issues.jboss.org/browse/PLANNER-151[not yet supported].
+* No annotations: externalize the domain configuration in an XML file. This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
 
 This manual focuses on the first manner, but every feature supports all three manners, even if it's not explicitly mentioned.
 

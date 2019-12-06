@@ -20,7 +20,7 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
                 minimizeMakespan(constraintFactory),
                 /*
                  * TODO potential for performance improvements through API enhancements,
-                 *  see https://issues.jboss.org/browse/PLANNER-1604.
+                 *  see https://issues.redhat.com/browse/PLANNER-1604.
                  */
                 criticalPriorityBasedTaskEndTime(constraintFactory),
                 majorPriorityTaskEndTime(constraintFactory),

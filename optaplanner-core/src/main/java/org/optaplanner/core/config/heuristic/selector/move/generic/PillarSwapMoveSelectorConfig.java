@@ -38,7 +38,7 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
-    // TODO Wrap in <variableNameIncludes> https://issues.jboss.org/browse/PLANNER-838
+    // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
 //    @XStreamAlias("variableNameIncludes")
 //    @XStreamConverter(value = NamedCollectionConverter.class,
