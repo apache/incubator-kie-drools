@@ -18,6 +18,7 @@ package org.kie.hacep.core.infra.consumer;
 import org.kie.hacep.EnvConfig;
 import org.kie.hacep.consumer.DroolsConsumerHandler;
 import org.kie.hacep.core.infra.election.LeadershipCallback;
+import org.kie.hacep.exceptions.ShutdownException;
 import org.kie.remote.impl.producer.Producer;
 
 public class ConsumerController {
@@ -26,8 +27,7 @@ public class ConsumerController {
   private InfraCallback callback;
   private Thread thread;
 
-  public ConsumerController(EnvConfig envConfig,
-                            Producer producer) {
+  public ConsumerController(EnvConfig envConfig, Producer producer) {
     this.callback = new InfraCallback();
     this.consumer = EventConsumer.get(envConfig);
     this.callback.setConsumer(consumer);
@@ -63,7 +63,7 @@ public class ConsumerController {
         thread.join();
       } catch (InterruptedException ex) {
         thread.interrupt();
-        throw new RuntimeException(ex);
+        throw new ShutdownException(ex.getMessage(), ex);
       }
     }
   }

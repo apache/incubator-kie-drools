@@ -145,16 +145,12 @@ public class SnapshotOnDemandUtils {
   public static KafkaConsumer getConfiguredSnapshotConsumer(EnvConfig envConfig) {
     KafkaConsumer<String, byte[]> consumer = new KafkaConsumer(Config.getSnapshotConsumerConfig());
     List<PartitionInfo> partitionsInfo = consumer.partitionsFor(envConfig.getSnapshotTopicName());
-    List<TopicPartition> partitions = null;
     Collection<TopicPartition> partitionCollection = new ArrayList<>();
 
     if (partitionsInfo != null) {
       for (PartitionInfo partition : partitionsInfo) {
-        TopicPartition topicPartition = new TopicPartition(partition.topic(),
-                                                           partition.partition());
-        if (partitions == null || partitions.contains(topicPartition)) {
-          partitionCollection.add(topicPartition);
-        }
+        TopicPartition topicPartition = new TopicPartition(partition.topic(), partition.partition());
+        partitionCollection.add(topicPartition);
       }
       if (!partitionCollection.isEmpty()) {
         consumer.assign(partitionCollection);

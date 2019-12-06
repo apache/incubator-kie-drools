@@ -37,6 +37,7 @@ import org.kie.hacep.core.infra.DefaultSessionSnapShooter;
 import org.kie.hacep.core.infra.SnapshotInfos;
 import org.kie.hacep.core.infra.election.State;
 import org.kie.hacep.core.infra.utils.ConsumerUtilsCore;
+import org.kie.hacep.exceptions.InitializeException;
 import org.kie.hacep.util.Printer;
 import org.kie.hacep.util.PrinterUtil;
 import org.kie.remote.DroolsExecutor;
@@ -127,9 +128,8 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
     if (started && changedState && !currentState.equals(State.BECOMING_LEADER)) {
       updateOnRunningConsumer(state);
     } else if (!started) {
-      if (state.equals(State.REPLICA)) {
-        //ask and wait a snapshot before start
-        if (!envConfig.isSkipOnDemandSnapshot() && !askedSnapshotOnDemand) {
+      //ask and wait a snapshot before start
+      if (state.equals(State.REPLICA) && !envConfig.isSkipOnDemandSnapshot() && !askedSnapshotOnDemand) {
           if (logger.isInfoEnabled()) {
             logger.info("askAndProcessSnapshotOnDemand:");
           }
@@ -144,7 +144,6 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
         }
         enableConsumeAndStartLoop(state);
       }
-    }
   }
 
   protected void askAndProcessSnapshotOnDemand() {
@@ -155,7 +154,7 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
                   completed);
     }
     if (!completed) {
-      throw new RuntimeException("Can't obtain a snapshot on demand");
+      throw new InitializeException("Can't obtain a snapshot on demand");
     }
   }
 
@@ -198,7 +197,7 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
 
     if (snapshotInfos != null) {
       if (partitionCollection.size() > 1) {
-        throw new RuntimeException("The system must run with only one partition per topic");
+        throw new InitializeException("The system must run with only one partition per topic");
       }
       kafkaConsumer.assignment().forEach(topicPartition -> kafkaConsumer.seek(partitionCollection.iterator().next(),
                                                                               snapshotInfos.getOffsetDuringSnapshot()));
@@ -251,9 +250,7 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
         kafkaSecondaryConsumer.commitSync();
         if (logger.isDebugEnabled()) {
           for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsetsEvents.entrySet()) {
-            logger.debug("Consumer partition %s - lastOffset %s\n",
-                         entry.getKey().partition(),
-                         entry.getValue().offset());
+            logger.debug("Consumer partition {}- lastOffset {}\n", entry.getKey().partition(), entry.getValue().offset());
           }
         }
       } catch (WakeupException e) {
@@ -297,18 +294,16 @@ public class DefaultKafkaConsumer<T> implements EventConsumer {
   }
 
   protected void setLastProcessedKey() {
-    ControlMessage lastControlMessage = ConsumerUtilsCore.getLastEvent(envConfig.getControlTopicName(),
-                                                                       envConfig.getPollTimeout());
+    ControlMessage lastControlMessage = ConsumerUtilsCore.getLastEvent(envConfig.getControlTopicName(), envConfig.getPollTimeout());
     settingsOnAEmptyControlTopic(lastControlMessage);
     processingKey = lastControlMessage.getId();
     processingKeyOffset = lastControlMessage.getOffset();
   }
 
   protected void settingsOnAEmptyControlTopic(ControlMessage lastWrapper) {
-    if (lastWrapper.getId() == null) {// completely empty or restart of ephemeral already used
-      if (currentState.equals(State.REPLICA)) {
+    // completely empty or restart of ephemeral already used
+    if (lastWrapper.getId() == null && currentState.equals(State.REPLICA)) {
         pollControl();
-      }
     }
   }
 

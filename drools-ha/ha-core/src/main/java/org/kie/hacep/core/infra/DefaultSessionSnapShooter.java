@@ -44,9 +44,10 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultSessionSnapShooter implements SessionSnapshooter {
 
-  public final static String KEY = "LAST-SNAPSHOT";
   private final Logger logger = LoggerFactory.getLogger(DefaultSessionSnapShooter.class);
   private EnvConfig envConfig;
+
+  public final static String KEY = "LAST-SNAPSHOT";
 
   public DefaultSessionSnapShooter(EnvConfig envConfig) {
     this.envConfig = envConfig;

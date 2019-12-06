@@ -35,36 +35,28 @@ import org.slf4j.LoggerFactory;
 public class KafkaListenerThread implements ListenerThread {
 
   private static Logger logger = LoggerFactory.getLogger(KafkaListenerThread.class);
-  private Properties configuration;
   private TopicsConfig topicsConfig;
   private Map<String, CompletableFuture<Object>> requestsStore;
   private KafkaConsumer consumer;
 
   private volatile boolean running = true;
 
-  public KafkaListenerThread(Properties configuration,
-                             TopicsConfig config,
-                             Map<String, CompletableFuture<Object>> requestsStore) {
-    this.configuration = configuration;
+  public KafkaListenerThread(Properties configuration, TopicsConfig config, Map<String, CompletableFuture<Object>> requestsStore) {
     this.topicsConfig = config;
     this.requestsStore = requestsStore;
-    consumer = ConsumerUtils.getConsumer(topicsConfig.getKieSessionInfosTopicName(),
-                                         configuration);
+    consumer = ConsumerUtils.getConsumer(topicsConfig.getKieSessionInfosTopicName(), configuration);
   }
 
   @Override
   public void run() {
     try {
       while (running) {
-        ConsumerRecords records = consumer.poll(Duration.of(CommonConfig.DEFAULT_POLL_TIMEOUT_MS,
-                                                            ChronoUnit.MILLIS));
+        ConsumerRecords records = consumer.poll(Duration.of(CommonConfig.DEFAULT_POLL_TIMEOUT_MS, ChronoUnit.MILLIS));
         for (Object item : records) {
           ConsumerRecord<String, byte[]> record = (ConsumerRecord<String, byte[]>) item;
           Object msg = SerializationUtil.deserialize(record.value());
           if (msg instanceof ResultMessage) {
-            complete(requestsStore,
-                     (ResultMessage) msg,
-                     logger);
+            complete(requestsStore, (ResultMessage) msg, logger);
           } else if (msg != null) {
             throw new IllegalStateException("Wrong type of response message: found " +
                                                     msg.getClass().getCanonicalName() +

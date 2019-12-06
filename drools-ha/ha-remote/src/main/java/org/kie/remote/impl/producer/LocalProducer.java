@@ -28,25 +28,21 @@ public class LocalProducer implements Producer {
 
   @Override
   public void start(Properties properties) {
+    //do nothing
   }
 
   @Override
   public void stop() {
+    //do nothing
   }
 
   @Override
-  public <T> void produceSync(String topicName,
-                              String key,
-                              ResultMessage<T> object) {
-    queue.put(topicName,
-              object);
+  public <T> void produceSync(String topicName, String key, ResultMessage<T> object) {
+    queue.put(topicName, object);
   }
 
   @Override
-  public void produceSync(String topicName,
-                          String key,
-                          Message object) {
-    queue.put(topicName,
-              object);
+  public void produceSync(String topicName, String key, Message object) {
+    queue.put(topicName, object);
   }
 }
