@@ -49,6 +49,16 @@ public class RuleUnitDescriptionImpl implements RuleUnitDescription {
         return ruleUnitClass;
     }
 
+    @Override
+    public String getSimpleName() {
+        return ruleUnitClass.getSimpleName();
+    }
+
+    @Override
+    public String getPackageName() {
+        return ruleUnitClass.getPackage().getName();
+    }
+
     public Optional<EntryPointId> getEntryPointId(String name ) {
         return varDeclarations.containsKey( name ) ? Optional.of( new EntryPointId( getEntryPointName(name) ) ) : Optional.empty();
     }
