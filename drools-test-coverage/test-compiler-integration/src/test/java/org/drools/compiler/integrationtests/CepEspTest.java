@@ -5460,6 +5460,12 @@ public class CepEspTest extends AbstractCepEspTest {
             this.timestamp = parseDate(time);
         }
 
+        public EventA(final Date timestamp, final int value) {
+            this.time = timestamp.toString();
+            this.value = value;
+            this.timestamp = timestamp;
+        }
+
         public Date getTimestamp() {
             return timestamp;
         }
@@ -5737,4 +5743,43 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
+    @Test
+    public void testSlidingWindowExpire() throws InterruptedException {
+        // DROOLS-4805
+        final String drl =
+                "package org.drools.compiler\n" +
+                "import " + EventA.class.getCanonicalName() + "\n" +
+                "declare EventA\n" +
+                "@role(event)\n" +
+                "@timestamp(timestamp)\n" +
+                "end\n" +
+                "rule 'delete outside of window' when\n" +
+                "   $fact : EventA( )\n" +
+                "   not( EventA( this == $fact ) over window:time( 8s ) )\n" +
+                "then\n" +
+                "    retract($fact);\n" +
+                "end\n";
+
+        // Create a session and fire rules
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        SessionPseudoClock clock = (( SessionPseudoClock ) ksession.getSessionClock());
+
+        FactHandle fh1 = ksession.insert(new EventA(new Date(6000), 1));
+        ksession.fireAllRules();
+        FactHandle fh2 = ksession.insert(new EventA(new Date(4000), 2));
+        ksession.fireAllRules();
+        FactHandle fh3 = ksession.insert(new EventA(new Date(2000), 3));
+        ksession.fireAllRules();
+
+        ksession.delete(fh3);
+        ksession.fireAllRules();
+
+        assertEquals(2, ksession.getObjects().size());
+
+        clock.advanceTime( 30, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertEquals(0, ksession.getObjects().size());
+    }
 }
