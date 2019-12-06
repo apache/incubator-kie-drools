@@ -20,17 +20,31 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface RuleUnitDescription {
+
+    /**
+     * @deprecated this is only used by PMML
+     *
+     */
+    @Deprecated
     Class<?> getRuleUnitClass();
 
     default String getRuleUnitName() {
         return getRuleUnitClass().getName();
     }
 
+    default String getCanonicalName() {
+        return getRuleUnitClass().getCanonicalName();
+    }
+
+    String getSimpleName();
+
+    String getPackageName();
+
     default String getEntryPointName(String name) {
         return getRuleUnitName() + "." + name;
     }
 
-    Optional<Class<?>> getDatasourceType( String name );
+    Optional<Class<?>> getDatasourceType(String name );
 
     Optional<Class<?>> getVarType( String name );
 
