@@ -16,9 +16,7 @@
 
 package org.kie.internal.ruleunit;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 public interface RuleUnitDescription {
@@ -40,7 +38,7 @@ public interface RuleUnitDescription {
 
     Collection<String> getUnitVars();
 
-    Map<String, Method> getUnitVarAccessors();
+    Collection<? extends RuleUnitVariable> getUnitVarDeclarations();
 
     boolean hasDataSource( String name );
 
