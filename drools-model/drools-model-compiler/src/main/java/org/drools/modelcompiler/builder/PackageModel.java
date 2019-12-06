@@ -72,6 +72,7 @@ import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.stream.Collectors.joining;
@@ -145,7 +146,7 @@ public class PackageModel {
 
     private final String pkgUUID;
     private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
-    private Set<Class<?>> ruleUnits = new HashSet<>();
+    private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private boolean oneClassPerRule;
 
@@ -375,17 +376,17 @@ public class PackageModel {
     }
 
 
-    public void addRuleUnit(Class<?> ruleUnitType) {
-        this.ruleUnits.add(ruleUnitType);
+    public void addRuleUnit(RuleUnitDescription ruleUnitDescription) {
+        this.ruleUnits.add(ruleUnitDescription);
     }
 
-    public Collection<Class<?>> getRuleUnits() {
+    public Collection<RuleUnitDescription> getRuleUnits() {
         return ruleUnits;
     }
 
-    public void addQueryInRuleUnit(Class<?> ruleUnitType, QueryModel query) {
-        addRuleUnit(ruleUnitType);
-        queriesByRuleUnit.computeIfAbsent( ruleUnitType.getSimpleName(), k -> new HashSet<>() ).add(query);
+    public void addQueryInRuleUnit(RuleUnitDescription ruleUnitDescription, QueryModel query) {
+        addRuleUnit(ruleUnitDescription);
+        queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> new HashSet<>() ).add(query);
     }
 
     public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
