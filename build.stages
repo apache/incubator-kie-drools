@@ -1,8 +1,8 @@
 if(!env.kiegroup_drools) {
     stage('Build drools projects') {
-        dir("droolsjbpm-knowledge") {
+        dir("appformer") {
             script {
-                githubscm.checkoutIfExists('droolsjbpm-knowledge', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                githubscm.checkoutIfExists('appformer', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
                 load("build.stages")
             }
         }
