@@ -17,11 +17,9 @@
 package org.optaplanner.spring.boot.example.poc.impl.solver;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
 
@@ -46,20 +44,21 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
 
     @Override
     public SolverStatus getSolverStatus() {
-        // TODO
+        // TODO FIX ME
         return SolverStatus.SOLVING_ACTIVE;
     }
 
-    @Override
-    public void reloadProblem(Supplier<Solution_> problemSupplier) {
-        // TODO
-        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
-    }
-
+    // TODO Future features
 //    @Override
-    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        solver.addProblemFactChange(problemFactChange);
-    }
+//    public void reloadProblem(Supplier<Solution_> problemSupplier) {
+//        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
+//    }
+
+    // TODO Future features
+//    @Override
+//    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+//        solver.addProblemFactChange(problemFactChange);
+//    }
 
     @Override
     public void terminateEarly() {

@@ -17,7 +17,6 @@
 package org.optaplanner.spring.boot.example.poc.api.solver;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
@@ -31,8 +30,10 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     SolverStatus getSolverStatus();
 
-    void reloadProblem(Supplier<Solution_> problemSupplier);
+    // TODO Future features
+//    void reloadProblem(Supplier<Solution_> problemSupplier);
 
+    // TODO Future features
 //    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     void terminateEarly();

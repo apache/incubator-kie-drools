@@ -54,7 +54,13 @@ public class TimeTableSolverService {
     }
 
     public void reloadProblem() {
-        solverManager.reloadProblem(TIME_TABLE_ID, timeTableRepository::find);
+        // TODO Future work (use this instead of the code below)
+//        solverManager.reloadProblem(TIME_TABLE_ID, timeTableRepository::find);
+
+        if (solverManager.getSolverStatus(TIME_TABLE_ID) == SolverStatus.NOT_SOLVING) {
+            return;
+        }
+        throw new UnsupportedOperationException("The solver is solving.");
     }
 
     @PostMapping("/stopSolving")

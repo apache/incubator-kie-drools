@@ -49,8 +49,10 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     SolverStatus getSolverStatus(ProblemId_ problemId);
 
-    void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier);
+    // TODO Future features
+//    void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier);
 
+    // TODO Future features
 //    void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);
 
     void terminateEarly(ProblemId_ problemId);

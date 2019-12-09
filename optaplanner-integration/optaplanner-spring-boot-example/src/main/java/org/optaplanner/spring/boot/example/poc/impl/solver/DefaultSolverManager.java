@@ -29,7 +29,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverJob;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
 import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
@@ -99,27 +98,29 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
         return solverJob.getSolverStatus();
     }
 
-    @Override
-    public void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier) {
-        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
-        if (solverJob == null) {
-            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            logger.debug("Ignoring reloadProblem() call because problemId ({}) is not solving.", problemId);
-            return;
-        }
-        solverJob.reloadProblem(problemSupplier);
-    }
-
+    // TODO Future features
 //    @Override
-    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
-        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
-        if (solverJob == null) {
-            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
-            return;
-        }
-        solverJob.addProblemFactChange(problemFactChange);
-    }
+//    public void reloadProblem(ProblemId_ problemId, Supplier<Solution_> problemSupplier) {
+//        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+//        if (solverJob == null) {
+//            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+//            logger.debug("Ignoring reloadProblem() call because problemId ({}) is not solving.", problemId);
+//            return;
+//        }
+//        solverJob.reloadProblem(problemSupplier);
+//    }
+
+    // TODO Future features
+//    @Override
+//    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
+//        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+//        if (solverJob == null) {
+//            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+//            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
+//            return;
+//        }
+//        solverJob.addProblemFactChange(problemFactChange);
+//    }
 
     @Override
     public void terminateEarly(ProblemId_ problemId) {

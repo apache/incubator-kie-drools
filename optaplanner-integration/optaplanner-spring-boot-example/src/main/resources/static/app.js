@@ -92,8 +92,8 @@ function solve() {
         if (autoRefreshIntervalId == null) {
             autoRefreshIntervalId = setInterval(autoRefresh, 2000);
         }
-    }).fail(function() {
-        showError("Start solving failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Start solving failed.", xhr);
     });
 }
 
@@ -120,8 +120,8 @@ function stopSolving() {
     $.post("/timeTable/stopSolving", function () {
         refreshSolvingButtons(false);
         refreshTimeTable();
-    }).fail(function() {
-        showError("Stop solving failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Stop solving failed.", xhr);
     });
 }
 
@@ -133,8 +133,8 @@ function addLesson() {
         "studentGroup": $("#lesson_studentGroup").val().trim()
     }), function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Adding lesson (" + subject + ") failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Adding lesson (" + subject + ") failed.", xhr);
     });
     $('#lessonDialog').modal('toggle');
 }
@@ -142,8 +142,8 @@ function addLesson() {
 function deleteLesson(lesson) {
     $.delete("/lessons/" + lesson.id, function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Deleting lesson (" + lesson.name + ") failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Deleting lesson (" + lesson.name + ") failed.", xhr);
     });
 }
 
@@ -154,8 +154,8 @@ function addTimeslot() {
         "endTime": $("#timeslot_endTime").val().trim()
     }), function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Adding timeslot failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Adding timeslot failed.", xhr);
     });
     $('#timeslotDialog').modal('toggle');
 }
@@ -163,8 +163,8 @@ function addTimeslot() {
 function deleteTimeslot(timeslot) {
     $.delete("/timeslots/" + timeslot.id, function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Deleting timeslot (" + timeslot.name + ") failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Deleting timeslot (" + timeslot.name + ") failed.", xhr);
     });
 }
 
@@ -174,8 +174,8 @@ function addRoom() {
         "name": name
     }), function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Adding room (" + name + ") failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Adding room (" + name + ") failed.", xhr);
     });
     $("#roomDialog").modal('toggle');
 }
@@ -183,13 +183,14 @@ function addRoom() {
 function deleteRoom(room) {
     $.delete("/rooms/" + room.id, function () {
         refreshTimeTable();
-    }).fail(function() {
-        showError("Deleting room (" + room.name + ") failed.");
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        showError("Deleting room (" + room.name + ") failed.", xhr);
     });
 }
 
-function showError(content) {
-    console.error(content);
+function showError(title, xhr) {
+    var serverErrorMessage = xhr.responseJSON == null ? "No response from server." : xhr.responseJSON.message;
+    console.error(title + "\n" + serverErrorMessage);
     var notification = $("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" style=\"min-width: 20rem\">"
             + "<div class=\"toast-header bg-danger\">"
             + "<strong class=\"mr-auto text-dark\">Error</strong>"
@@ -197,10 +198,10 @@ function showError(content) {
             + "<span aria-hidden=\"true\">&times;</span>"
             + "</button>"
             + "</div>"
-            + "<div class=\"toast-body\">" + content + "</div>"
+            + "<div class=\"toast-body\"><p>" + title + "</p><pre><code>" + serverErrorMessage + "</code></pre></div>"
             + "</div>");
     $("#notificationPanel").append(notification);
-    notification.toast({delay: 3000});
+    notification.toast({delay: 30000});
     notification.toast('show');
 }
 
