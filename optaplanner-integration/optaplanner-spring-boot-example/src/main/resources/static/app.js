@@ -126,11 +126,11 @@ function stopSolving() {
 }
 
 function addLesson() {
-    var subject = $("#lesson_subject").val();
+    var subject = $("#lesson_subject").val().trim();
     $.post("/lessons", JSON.stringify({
         "subject": subject,
-        "teacher": $("#lesson_teacher").val(),
-        "studentGroup": $("#lesson_studentGroup").val()
+        "teacher": $("#lesson_teacher").val().trim(),
+        "studentGroup": $("#lesson_studentGroup").val().trim()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
@@ -149,9 +149,9 @@ function deleteLesson(lesson) {
 
 function addTimeslot() {
     $.post("/timeslots", JSON.stringify({
-        "dayOfWeek": $("#timeslot_dayOfWeek").val(),
-        "startTime": $("#timeslot_startTime").val(),
-        "endTime": $("#timeslot_endTime").val()
+        "dayOfWeek": $("#timeslot_dayOfWeek").val().trim().toUpperCase(),
+        "startTime": $("#timeslot_startTime").val().trim(),
+        "endTime": $("#timeslot_endTime").val().trim()
     }), function () {
         refreshTimeTable();
     }).fail(function() {
@@ -169,7 +169,7 @@ function deleteTimeslot(timeslot) {
 }
 
 function addRoom() {
-    var name = $("#room_name").val();
+    var name = $("#room_name").val().trim();
     $.post("/rooms", JSON.stringify({
         "name": name
     }), function () {
