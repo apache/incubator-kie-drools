@@ -595,4 +595,82 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
+    
+    @Test
+    public void testBasicUserTaskProcessClaimReleaseClaimAndCompletePhases() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("UserTasksProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
+        
+        List<WorkItem> workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        WorkItem wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertEquals(0, wi.getResults().size());
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value")));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Claim.ID, wi.getPhase());
+        assertEquals(Claim.STATUS, wi.getPhaseStatus());
+        assertEquals(2, wi.getResults().size());
+        assertEquals("value", wi.getResults().get("test"));
+        assertEquals(null, wi.getResults().get("ActorId"));
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Release.ID));
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Release.ID, wi.getPhase());
+        assertEquals(Release.STATUS, wi.getPhaseStatus());
+        assertEquals(2, wi.getResults().size());
+        assertEquals("value", wi.getResults().get("test"));
+        assertEquals(null, wi.getResults().get("ActorId"));
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value")));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("FirstTask", wi.getName());
+        assertEquals(Claim.ID, wi.getPhase());
+        assertEquals(Claim.STATUS, wi.getPhaseStatus());
+        assertEquals(2, wi.getResults().size());
+        assertEquals("value", wi.getResults().get("test"));
+        assertEquals(null, wi.getResults().get("ActorId"));
+        
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        workItems = processInstance.workItems();
+        assertEquals(1, workItems.size());
+        wi = workItems.get(0);
+        assertEquals("SecondTask", wi.getName());
+        assertEquals(Active.ID, wi.getPhase());
+        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertEquals(0, wi.getResults().size());
+        
+        processInstance.abort();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+    }
 }

@@ -42,7 +42,7 @@ public class Claim implements LifeCyclePhase {
     public static final String ID = "claim";
     public static final String STATUS = "Reserved";
     
-    private List<String> allowedTransitions = Arrays.asList(Active.ID);
+    private List<String> allowedTransitions = Arrays.asList(Active.ID, Release.ID);
     
     @Override
     public String id() {
