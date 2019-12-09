@@ -390,7 +390,17 @@ public class PackageModel {
     }
 
     public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
-        return queriesByRuleUnit.getOrDefault( ruleUnitType.getSimpleName(), Collections.emptySet() );
+        String simpleName = ruleUnitType.getSimpleName();
+        return getQueriesInRuleUnit(simpleName);
+    }
+
+    public Collection<QueryModel> getQueriesInRuleUnit(RuleUnitDescription ruleUnitDescription) {
+        String simpleName = ruleUnitDescription.getSimpleName();
+        return getQueriesInRuleUnit(simpleName);
+    }
+
+    private Collection<QueryModel> getQueriesInRuleUnit(String simpleName) {
+        return queriesByRuleUnit.getOrDefault(simpleName, Collections.emptySet() );
     }
 
     public static class RuleSourceResult {
