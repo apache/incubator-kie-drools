@@ -47,7 +47,9 @@ function refreshTimeTable() {
         $.each(timeTable.timeslotList, function (index, timeslot) {
             var row = $("<tr>").appendTo(timeTableByRoom);
             row.append($("<th class=\"align-middle\">"
-                    + "<span>" + timeslot.dayOfWeek + " " + timeslot.startTime + "-" + timeslot.endTime + "</span>"
+                    + "<span>" + timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()
+                    + " " + moment(timeslot.startTime, "HH:mm:ss").format("HH:mm")
+                    + " - " + moment(timeslot.endTime, "HH:mm:ss").format("HH:mm") + "</span>"
                     + "<button id=\"deleteTimeslotButton-" + timeslot.id + "\" type=\"button\" class=\"ml-2 mb-1 btn btn-light btn-sm p-1\">"
                     + "<small class=\"fas fa-trash\"></small>"
                     + "</button>"
