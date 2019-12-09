@@ -63,6 +63,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
         }
     }
 
+    // DROOLS-4858
     @Test
     public void testMaterializeLambdaWithNested() {
         String str =
@@ -73,7 +74,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
                         "then\n" +
                         "    System.out.println($i);\n" +
                         "    Executor.execute(() -> { " +
-                        "       System.out.println(\"Integer is\" + $i);" +
+                        "       System.out.println(\"Integer is \" + $i);" +
                         "        result.setValue($i);" +
                         "    });" +
                         "end";

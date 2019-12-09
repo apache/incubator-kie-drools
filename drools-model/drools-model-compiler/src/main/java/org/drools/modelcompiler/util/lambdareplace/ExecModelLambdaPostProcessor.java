@@ -2,6 +2,7 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.github.javaparser.StaticJavaParser;
@@ -61,10 +62,15 @@ public class ExecModelLambdaPostProcessor {
             clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::convertIndexedByCall);
 
-            clone.findAll(MethodCallExpr.class, mc -> EXECUTE_CALL.equals(mc.getNameAsString()))
-                    .forEach(methodCallExpr -> {
-                        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName));
-                    });
+            clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
+                    .forEach(methodCallExpr -> extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName)));
+    }
+
+    private boolean isExecuteNonNestedCall(MethodCallExpr mc) {
+        Optional<MethodCallExpr> ancestor = mc.findAncestor(MethodCallExpr.class)
+                .filter(a -> a.getNameAsString().equals(EXECUTE_CALL));
+
+        return !ancestor.isPresent() && EXECUTE_CALL.equals(mc.getNameAsString());
     }
 
     private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
