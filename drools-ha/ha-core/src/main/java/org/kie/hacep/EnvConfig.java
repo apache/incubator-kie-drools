@@ -44,8 +44,8 @@ public final class EnvConfig {
   private Duration pollSnapshotDuration;
   private boolean updatableKJar;
   private String kJarGAV;//groupid:artifactid:version
-  public final static String SECONDS = "sec";
-  public final static String MILLISEC = "millisec";
+  public static final String SECONDS = "sec";
+  public static final String MILLISEC = "millisec";
 
   private EnvConfig() {
   }

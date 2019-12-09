@@ -33,9 +33,7 @@ public class RemoteStatefulSessionImpl implements RemoteStatefulSession {
   private final Listener listener;
   private final TopicsConfig topicsConfig;
 
-  public RemoteStatefulSessionImpl(Sender sender,
-                                   Listener listener,
-                                   TopicsConfig topicsConfig) {
+  public RemoteStatefulSessionImpl(Sender sender, Listener listener, TopicsConfig topicsConfig) {
     this.sender = sender;
     this.listener = listener;
     this.topicsConfig = topicsConfig;
@@ -46,10 +44,8 @@ public class RemoteStatefulSessionImpl implements RemoteStatefulSession {
   public CompletableFuture<Long> fireAllRules() {
     FireAllRulesCommand command = new FireAllRulesCommand();
     CompletableFuture<Long> callback = new CompletableFuture<>();
-    ((Map) getRequestsStore()).put(command.getId(),
-                                   callback);
-    sender.sendCommand(command,
-                       topicsConfig.getEventsTopicName());
+    ((Map) getRequestsStore()).put(command.getId(), callback);
+    sender.sendCommand(command, topicsConfig.getEventsTopicName());
     return callback;
   }
 
@@ -59,14 +55,12 @@ public class RemoteStatefulSessionImpl implements RemoteStatefulSession {
 
   @Override
   public void fireUntilHalt() {
-    sender.sendCommand(new FireUntilHaltCommand(),
-                       topicsConfig.getEventsTopicName());
+    sender.sendCommand(new FireUntilHaltCommand(), topicsConfig.getEventsTopicName());
   }
 
   @Override
   public void halt() {
-    sender.sendCommand(new HaltCommand(),
-                       topicsConfig.getEventsTopicName());
+    sender.sendCommand(new HaltCommand(), topicsConfig.getEventsTopicName());
   }
 
   public void stop() {

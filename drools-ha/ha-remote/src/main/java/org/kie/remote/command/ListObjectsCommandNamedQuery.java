@@ -18,24 +18,19 @@ package org.kie.remote.command;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class ListObjectsCommandNamedQuery extends ListObjectsCommand implements VisitableCommand,
-                                                                                Serializable {
+public class ListObjectsCommandNamedQuery extends ListObjectsCommand implements VisitableCommand, Serializable {
 
   private String namedQuery;
   private String objectName;
-  private Object[] params;
+  private Serializable[] params;
 
-  public ListObjectsCommandNamedQuery() {
-  }
+  public ListObjectsCommandNamedQuery() { }
 
-  public ListObjectsCommandNamedQuery(String entryPoint,
-                                      String namedQuery,
-                                      String objectName,
-                                      Object... params) {
+  public ListObjectsCommandNamedQuery(String entryPoint, String namedQuery, String objectName, Object... params) {
     super(entryPoint);
     this.namedQuery = namedQuery;
     this.objectName = objectName;
-    this.params = params;
+    this.params = (Serializable[]) params;
   }
 
   public String getNamedQuery() {

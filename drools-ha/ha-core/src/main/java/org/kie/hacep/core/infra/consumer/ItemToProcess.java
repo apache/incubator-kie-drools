@@ -22,12 +22,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class ItemToProcess implements Serializable {
 
   private String key;
-  private Object object;
+  private Serializable object;
   private long offset;
 
-  public ItemToProcess(String key,
-                       long offset,
-                       Object object) {
+  public ItemToProcess(String key, long offset, Serializable object) {
     this.key = key;
     this.object = object;
     this.offset = offset;
@@ -36,7 +34,7 @@ public class ItemToProcess implements Serializable {
   public static ItemToProcess getItemToProcess(ConsumerRecord record) {
     return new ItemToProcess(record.key().toString(),
                              record.offset(),
-                             record.value());
+                             (Serializable) record.value());
   }
 
   public String getKey() {

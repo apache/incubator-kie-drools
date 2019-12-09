@@ -17,6 +17,7 @@ package org.kie.remote.impl.consumer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
@@ -52,8 +53,9 @@ public class KafkaListenerThread implements ListenerThread {
     try {
       while (running) {
         ConsumerRecords records = consumer.poll(Duration.of(CommonConfig.DEFAULT_POLL_TIMEOUT_MS, ChronoUnit.MILLIS));
-        for (Object item : records) {
-          ConsumerRecord<String, byte[]> record = (ConsumerRecord<String, byte[]>) item;
+        Iterator<ConsumerRecord<String, byte[]>> iterator = records.iterator();
+        while (iterator.hasNext()) {
+          ConsumerRecord<String, byte[]> record = iterator.next();
           Object msg = SerializationUtil.deserialize(record.value());
           if (msg instanceof ResultMessage) {
             complete(requestsStore, (ResultMessage) msg, logger);
@@ -66,8 +68,7 @@ public class KafkaListenerThread implements ListenerThread {
         }
       }
     } catch (Exception ex) {
-      logger.error(ex.getMessage(),
-                   ex);
+      logger.error(ex.getMessage(), ex);
     } finally {
       consumer.close();
     }

@@ -39,6 +39,7 @@ import org.kie.hacep.consumer.KieContainerUtils;
 import org.kie.hacep.core.GlobalStatus;
 import org.kie.hacep.core.infra.SessionSnapshooter;
 import org.kie.hacep.core.infra.SnapshotInfos;
+import org.kie.hacep.exceptions.SnapshotOnDemandException;
 import org.kie.hacep.message.SnapshotMessage;
 import org.kie.remote.TopicsConfig;
 import org.kie.remote.command.SnapshotOnDemandCommand;
@@ -49,13 +50,12 @@ import org.slf4j.LoggerFactory;
 
 public class SnapshotOnDemandUtils {
 
-  private final static Logger logger = LoggerFactory.getLogger(SnapshotOnDemandUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(SnapshotOnDemandUtils.class);
 
   private SnapshotOnDemandUtils() {
   }
 
-  public static SnapshotInfos askASnapshotOnDemand(EnvConfig config,
-                                                   SessionSnapshooter snapshooter) {
+  public static SnapshotInfos askASnapshotOnDemand(EnvConfig config, SessionSnapshooter snapshooter) {
     LocalDateTime infosTime = snapshooter.getLastSnapshotTime();
     LocalDateTime limitAge = LocalDateTime.now().minusSeconds(config.getMaxSnapshotAge());
     if (infosTime != null && limitAge.isBefore(infosTime)) { //included in the max age
@@ -67,15 +67,12 @@ public class SnapshotOnDemandUtils {
       if (logger.isInfoEnabled()) {
         logger.info("Build NewSnapshotOnDemand ");
       }
-      return buildNewSnapshotOnDemand(config,
-                                      limitAge);
+      return buildNewSnapshotOnDemand(config, limitAge);
     }
   }
 
-  private static SnapshotInfos buildNewSnapshotOnDemand(EnvConfig envConfig,
-                                                        LocalDateTime limitAge) {
-    SnapshotMessage snapshotMsg = askAndReadSnapshotOnDemand(envConfig,
-                                                             limitAge);
+  private static SnapshotInfos buildNewSnapshotOnDemand(EnvConfig envConfig, LocalDateTime limitAge) {
+    SnapshotMessage snapshotMsg = askAndReadSnapshotOnDemand(envConfig, limitAge);
     KieSession kSession = null;
     KieContainer kieContainer = null;
     try (ByteArrayInputStream in = new ByteArrayInputStream(snapshotMsg.getSerializedSession())) {
@@ -84,12 +81,9 @@ public class SnapshotOnDemandUtils {
                                                        ks);
       KieSessionConfiguration conf = ks.newKieSessionConfiguration();
       conf.setOption(ClockTypeOption.get("pseudo"));
-      kSession = ks.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in,
-                                                                                         conf,
-                                                                                         null);
+      kSession = ks.getMarshallers().newMarshaller(kieContainer.getKieBase()).unmarshall(in, conf, null);
     } catch (IOException | ClassNotFoundException e) {
-      throw new RuntimeException(e.getMessage(),
-                                 e);
+      throw new SnapshotOnDemandException(e.getMessage(), e);
     }
     return new SnapshotInfos(kSession,
                              kieContainer,
@@ -100,13 +94,11 @@ public class SnapshotOnDemandUtils {
                              snapshotMsg.getKjarGAV());
   }
 
-  private static SnapshotMessage askAndReadSnapshotOnDemand(EnvConfig envConfig,
-                                                            LocalDateTime limitAge) {
+  private static SnapshotMessage askAndReadSnapshotOnDemand(EnvConfig envConfig, LocalDateTime limitAge) {
     Properties props = Config.getProducerConfig("SnapshotOnDemandUtils.askASnapshotOnDemand");
     Sender sender = new Sender(props);
     sender.start();
-    sender.sendCommand(new SnapshotOnDemandCommand(),
-                       TopicsConfig.getDefaultTopicsConfig().getEventsTopicName());
+    sender.sendCommand(new SnapshotOnDemandCommand(), TopicsConfig.getDefaultTopicsConfig().getEventsTopicName());
     sender.stop();
     KafkaConsumer consumer = getConfiguredSnapshotConsumer(envConfig);
     boolean snapshotReady = false;

@@ -55,6 +55,7 @@ public class LocalConsumer implements EventConsumer {
 
   @Override
   public void stop() {
+    //do nothing
   }
 
   @Override

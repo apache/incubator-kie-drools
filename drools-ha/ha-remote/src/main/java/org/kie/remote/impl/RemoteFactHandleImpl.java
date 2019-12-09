@@ -16,6 +16,7 @@
 
 package org.kie.remote.impl;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class RemoteFactHandleImpl implements RemoteFactHandle {
 
   private String id;
 
-  private Object object;
+  private Serializable object;
 
   /* Empty constructor for serialization */
   public RemoteFactHandleImpl() {
@@ -34,7 +35,7 @@ public class RemoteFactHandleImpl implements RemoteFactHandle {
 
   public RemoteFactHandleImpl(Object object) {
     this.id = UUID.randomUUID().toString();
-    this.object = object;
+    this.object = (Serializable) object;
   }
 
   @Override

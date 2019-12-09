@@ -18,19 +18,15 @@ package org.kie.remote.command;
 
 import java.io.Serializable;
 
-public class EventInsertCommand extends WorkingMemoryActionCommand implements VisitableCommand,
-                                                                              Serializable {
+public class EventInsertCommand extends WorkingMemoryActionCommand implements VisitableCommand, Serializable {
 
-  private Object object;
+  private Serializable object;
 
-  public EventInsertCommand() {
-  }
+  public EventInsertCommand() { }
 
-  public EventInsertCommand(Object object,
-                            String entryPoint) {
-    super(null,
-          entryPoint);
-    this.object = object;
+  public EventInsertCommand(Object object, String entryPoint) {
+    super(null, entryPoint);
+    this.object = (Serializable) object;
   }
 
   public Object getObject() {

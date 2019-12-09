@@ -46,10 +46,10 @@ public class TopicsConfig {
   }
 
   public TopicsConfig build() {
-    TopicsConfig TopicsConfig = new TopicsConfig();
-    TopicsConfig.eventsTopicName = this.eventsTopicName;
-    TopicsConfig.kieSessionInfosTopicName = this.kieSessionInfosTopicName;
-    return TopicsConfig;
+    TopicsConfig topicsConfig = new TopicsConfig();
+    topicsConfig.eventsTopicName = this.eventsTopicName;
+    topicsConfig.kieSessionInfosTopicName = this.kieSessionInfosTopicName;
+    return topicsConfig;
   }
 
   public String getEventsTopicName() {

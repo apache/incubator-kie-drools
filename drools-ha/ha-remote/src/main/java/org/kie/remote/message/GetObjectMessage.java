@@ -17,20 +17,17 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-public class GetObjectMessage extends AbstractMessage
-        implements Serializable,
-                   ResultMessage<Object> {
+public class GetObjectMessage extends AbstractMessage implements Serializable, ResultMessage<Object> {
 
-  private Object object;
+  private Serializable object;
 
   /* Empty constructor for serialization */
   public GetObjectMessage() {
   }
 
-  public GetObjectMessage(String id,
-                          Object object) {
+  public GetObjectMessage(String id, Object object) {
     super(id);
-    this.object = object;
+    this.object = (Serializable)object;
   }
 
   @Override

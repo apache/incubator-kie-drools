@@ -47,7 +47,7 @@ public class DefaultSessionSnapShooter implements SessionSnapshooter {
   private final Logger logger = LoggerFactory.getLogger(DefaultSessionSnapShooter.class);
   private EnvConfig envConfig;
 
-  public final static String KEY = "LAST-SNAPSHOT";
+  public static final String KEY = "LAST-SNAPSHOT";
 
   public DefaultSessionSnapShooter(EnvConfig envConfig) {
     this.envConfig = envConfig;

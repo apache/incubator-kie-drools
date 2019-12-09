@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.remote.TopicsConfig;
+import org.kie.remote.exceptions.StopConsumeException;
 
 import static org.kie.remote.CommonConfig.SKIP_LISTENER_AUTOSTART;
 import static org.kie.remote.util.ConfigurationUtil.readBoolean;
@@ -28,19 +29,12 @@ import static org.kie.remote.util.ConfigurationUtil.readBoolean;
 public class Listener {
 
   private final Map<String, CompletableFuture<Object>> requestsStore = new ConcurrentHashMap<>();
-
   private final ListenerThread listenerThread;
-
-  private Properties configuration;
   private Thread t;
 
   public Listener(Properties configuration) {
-    this.configuration = configuration;
-    listenerThread = ListenerThread.get(TopicsConfig.getDefaultTopicsConfig(),
-                                        requestsStore,
-                                        configuration);
-    if (!readBoolean(configuration,
-                     SKIP_LISTENER_AUTOSTART)) {
+    listenerThread = ListenerThread.get(TopicsConfig.getDefaultTopicsConfig(), requestsStore, configuration);
+    if (!readBoolean(configuration, SKIP_LISTENER_AUTOSTART)) {
       start();
     }
   }
@@ -64,7 +58,7 @@ public class Listener {
         t.join();
       } catch (InterruptedException ex) {
         t.interrupt();
-        throw new RuntimeException(ex);
+        throw new StopConsumeException(ex.getMessage(), ex);
       }
     }
   }

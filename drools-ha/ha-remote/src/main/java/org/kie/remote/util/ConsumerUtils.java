@@ -15,24 +15,17 @@
  */
 package org.kie.remote.util;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-import org.kie.remote.message.ControlMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.remote.util.SerializationUtil.deserialize;
 
 public class ConsumerUtils {
 
@@ -66,25 +59,4 @@ public class ConsumerUtils {
     return consumer;
   }
 
-  public static ControlMessage getLastEvent(String topic,
-                                            Properties properties,
-                                            Integer pollTimeout) {
-    KafkaConsumer consumer = getConsumer(topic,
-                                         properties);
-
-    ControlMessage lastMessage = new ControlMessage();
-    try {
-      ConsumerRecords records = consumer.poll(Duration.of(pollTimeout, ChronoUnit.MILLIS));
-      for (Object item : records) {
-        ConsumerRecord<String, byte[]> record = (ConsumerRecord<String, byte[]>) item;
-        lastMessage = deserialize(record.value());
-      }
-    } catch (Exception ex) {
-      logger.error(ex.getMessage(),
-                   ex);
-    } finally {
-      consumer.close();
-    }
-    return lastMessage;
-  }
 }
