@@ -22,9 +22,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
 
 @Configuration
@@ -215,11 +216,17 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         }
     }
 
+    // @Bean wrapped by static class to avoid classloading issues if dependencies are absent
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass({ Jackson2ObjectMapperBuilder.class, Score.class })
+    static class OptaPlannerJacksonConfiguration {
 
-    @Bean
-    @ConditionalOnClass(ObjectMapper.class)
-    Module jacksonModule() {
-        return OptaPlannerJacksonModule.createModule();
+        @Bean
+        Module jacksonModule() {
+            return OptaPlannerJacksonModule.createModule();
+        }
+
     }
+
 
 }
