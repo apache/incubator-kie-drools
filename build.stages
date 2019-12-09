@@ -1,0 +1,17 @@
+if(!env.kiegroup_drools) {
+    stage('Build drools projects') {
+        dir("appformer") {
+            script {
+                githubscm.checkoutIfExists('appformer', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                load("build.stages")
+            }
+        }
+    }
+    stage('Build drools project') {
+        script {
+            githubscm.checkoutIfExists('drools', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+            maven.runMavenWithSubmarineSettings('clean install', true)
+            env.kiegroup_drools = true;
+        }
+    }
+}
