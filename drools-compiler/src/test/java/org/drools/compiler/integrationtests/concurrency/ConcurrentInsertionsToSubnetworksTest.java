@@ -129,27 +129,27 @@ public class ConcurrentInsertionsToSubnetworksTest extends AbstractConcurrentIns
             "    System.out.println(\"R2\");" +
             "end\n";
 
-    @Test(timeout = 10000)
+    @Test(timeout = 40000)
     public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
         testConcurrentInsertions(drl, 1, 1000, false, false);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 40000)
     public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
         testConcurrentInsertions(drl, 500, 4, false, false);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 40000)
     public void testConcurrentInsertionsManyObjectsSingleThread() throws InterruptedException {
         testConcurrentInsertions(drl, 1000, 1, false, false);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 40000)
     public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
         testConcurrentInsertions(drl, 10, 1000, true, false);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 40000)
     public void testConcurrentInsertionsNewSessionEachThreadUpdate() throws InterruptedException {
         testConcurrentInsertions(drl, 10, 1000, true, true);
     }
