@@ -2,21 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:cc="http://creativecommons.org/ns#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-    width="800"
-    height="600"
-    id="svg2"
-    version="1.1"
-    inkscape:version="0.48.3.1 r9886"
-    sodipodi:docname="patientAdmissionScheduleUseCase.svg"
-    inkscape:export-filename="patientAdmissionScheduleUseCase.png"
-    inkscape:export-xdpi="90"
-    inkscape:export-ydpi="90">
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="800"
+   height="600"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.4 (unknown)"
+   sodipodi:docname="patientAdmissionScheduleUseCase.svg"
+   inkscape:export-filename="patientAdmissionScheduleUseCase.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -1239,7 +1240,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
-     inkscape:cx="400"
+     inkscape:cx="399.1573"
      inkscape:cy="295.28005"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -1247,8 +1248,8 @@
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1680"
-     inkscape:window-height="991"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -1279,7 +1280,7 @@
             <dc:title>www.optaplanner.org</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
         <dc:rights>
           <cc:Agent>
             <dc:title>www.optaplanner.org</dc:title>
@@ -1331,7 +1332,6 @@
        x="194.06451"
        y="310.96774"
        id="text6726"
-       sodipodi:linespacing="125%"
        transform="translate(0,452.36218)"><tspan
          sodipodi:role="line"
          id="tspan6728" /></text>
@@ -1380,27 +1380,7 @@
            x="-146.32422"
            y="301.43814"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3455-6">Assign each patient a hospital bed.</flowPara></flowRoot>    <text
-       xml:space="preserve"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa"
-       x="356.46066"
-       y="279.7753"
-       id="text3819"
-       sodipodi:linespacing="125%"
-       transform="translate(0,452.36218)"><tspan
-         sodipodi:role="line"
-         id="tspan3821" /></text>
-    <text
-       xml:space="preserve"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa"
-       x="397.75281"
-       y="279.7753"
-       id="text3823"
-       sodipodi:linespacing="125%"
-       transform="translate(0,452.36218)"><tspan
-         sodipodi:role="line"
-         id="tspan3825" /></text>
-    <flowRoot
+         id="flowPara3455-6">Assign each patient a hospital bed.</flowPara></flowRoot>    <flowRoot
        transform="translate(1.13477,276.46093)"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
        id="flowRoot3992"
