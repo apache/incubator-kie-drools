@@ -101,7 +101,9 @@ abstract class MaterializedLambda {
         ClassOrInterfaceType functionType = functionType();
 
         List<Type> typeArguments = lambdaParametersToType();
-        functionType.setTypeArguments(NodeList.nodeList(typeArguments));
+        if(!typeArguments.isEmpty()) {
+            functionType.setTypeArguments(NodeList.nodeList(typeArguments));
+        }
         return NodeList.nodeList(functionType);
     }
 
