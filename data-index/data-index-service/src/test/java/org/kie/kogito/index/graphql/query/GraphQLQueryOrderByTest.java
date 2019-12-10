@@ -56,6 +56,13 @@ public class GraphQLQueryOrderByTest {
     }
 
     @Test
+    public void testProcessInstancesSortByMultipleFields() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(orderBy: {start: ASC, processId: DESC}){ id } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+    }
+
+    @Test
     public void testUserTaskInstancesSort() {
         testSortBy("UserTaskInstances");
     }

@@ -167,7 +167,7 @@ public class InfinispanQueryTest {
 
         query.execute();
 
-        verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o order by o.name DESC o.date ASC");
+        verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o order by o.name DESC, o.date ASC");
         verify(mockQuery).list();
     }
 

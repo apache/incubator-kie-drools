@@ -67,7 +67,7 @@
     }
   },
   "ProcessInstanceByIdAndErrorNode": {
-    "query": "query ( $id: String, $node: String ) { ProcessInstances( where: {  id: {  equal : $id }, error : { nodeDefinitionId: {  equal : $node } } }, orderBy: { error: { message: ASC } } ){ %s } }",
+    "query": "query ( $id: String, $node: String ) { ProcessInstances( where: {  id: {  equal : $id }, error : { nodeDefinitionId: {  equal : $node } } }, orderBy: { error: { message: ASC }, lastUpdate: ASC } ){ %s } }",
     "variables": {
       "id": "%s",
       "node": "%s"

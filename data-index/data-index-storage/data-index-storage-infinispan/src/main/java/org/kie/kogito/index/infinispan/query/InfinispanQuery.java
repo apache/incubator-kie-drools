@@ -91,7 +91,7 @@ public class InfinispanQuery<T> implements Query<T> {
         }
         if (sortBy != null && !sortBy.isEmpty()) {
             queryString.append(" order by ");
-            queryString.append(sortBy.stream().map(f -> "o." + f.getAttribute() + " " + f.getSort().name()).collect(joining(" ")));
+            queryString.append(sortBy.stream().map(f -> "o." + f.getAttribute() + " " + f.getSort().name()).collect(joining(", ")));
         }
         LOGGER.debug("Executing Infinispan query: {}", queryString);
         org.infinispan.query.dsl.Query query = qf.create(queryString.toString());
