@@ -148,7 +148,7 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
             String currentOwner = getActualOwner();
             // if actual owner is already set always enforce same user
             if (currentOwner != null && !user.equals(currentOwner)) {
-                logger.debug("Work item {} has already owner assigned so requesting user must much - owner '{}' == requestor '{}'", getId(), currentOwner, user);
+                logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getId(), currentOwner, user);
                 throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
             } else {
                 // is not in the excluded users
