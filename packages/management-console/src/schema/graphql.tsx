@@ -344,7 +344,6 @@ export type UserTaskInstanceOrderBy = {
   description?: Maybe<OrderBy>;
   name?: Maybe<OrderBy>;
   priority?: Maybe<OrderBy>;
-  processInstanceId?: Maybe<OrderBy>;
   completed?: Maybe<OrderBy>;
   started?: Maybe<OrderBy>;
   referenceName?: Maybe<OrderBy>;
