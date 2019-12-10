@@ -99,7 +99,7 @@ public class QueryEndpointGenerator implements FileGenerator {
 
         String returnType = getReturnType(clazz);
         generateConstructors( clazz );
-        generateQueryMethod( clazz, returnType );
+        generateQueryMethods( clazz, returnType );
         clazz.getMembers().sort(new BodyDeclarationComparator());
         return cu.toString();
     }
@@ -113,10 +113,9 @@ public class QueryEndpointGenerator implements FileGenerator {
         }
     }
 
-    private void generateQueryMethod( ClassOrInterfaceDeclaration clazz, String returnType ) {
+    private void generateQueryMethods( ClassOrInterfaceDeclaration clazz, String returnType ) {
         MethodDeclaration queryMethod = clazz.getMethodsByName( "executeQuery" ).get(0);
         queryMethod.getParameter( 0 ).setType(ruleUnit.getCanonicalName() + "DTO");
-
         setGeneric(queryMethod.getType(), returnType);
 
         Statement statement = queryMethod
@@ -124,6 +123,16 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .getStatement( 0 );
         statement.findAll( VariableDeclarator.class ).forEach( decl -> setUnitGeneric( decl.getType() ) );
+
+        MethodDeclaration queryMethodSingle = clazz.getMethodsByName( "executeQueryFirst" ).get(0);
+        queryMethodSingle.getParameter( 0 ).setType(ruleUnit.getCanonicalName() + "DTO");
+        queryMethodSingle.setType( returnType );
+
+        Statement statementSingle = queryMethodSingle
+                .getBody()
+                .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
+                .getStatement( 0 );
+        statementSingle.findAll( VariableDeclarator.class ).forEach( decl -> setGeneric( decl.getType(), returnType ) );
     }
 
     private String getReturnType( ClassOrInterfaceDeclaration clazz ) {

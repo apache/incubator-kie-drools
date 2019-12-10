@@ -33,6 +33,15 @@ public class $unit$Query$name$Endpoint {
         return instance.executeQuery( "$queryName$" ).stream().map( this::toResult ).collect( toList() );
     }
 
+    @POST()
+    @Path("/first")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public $ReturnType$ executeQueryFirst($UnitTypeDTO$ unitDTO) {
+        List<$ReturnType$> results = executeQuery(unitDTO);
+        return results.isEmpty() ? null : results.get(0);
+    }
+
     private $ReturnType$ toResult(Map<String, Object> tuple) {
         return ($ReturnType$) tuple.values().iterator().next();
     }

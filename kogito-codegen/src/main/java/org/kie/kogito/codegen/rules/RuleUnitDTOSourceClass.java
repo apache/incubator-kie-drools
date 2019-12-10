@@ -92,7 +92,7 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
         if ( isDataSource ) {
             int genericStart = typeName.indexOf( '<' );
             if (genericStart > 0) {
-                genericType = typeName.substring( genericStart+1, typeName.length()-1 );
+                genericType = typeName.substring( genericStart+1, typeName.length()-1 ).trim();
                 typeName = "java.util.List" + typeName.substring( genericStart );
             } else {
                 genericType = "Object";
@@ -109,6 +109,15 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
         MethodDeclaration setter = dtoClass.addMethod( setterName, com.github.javaparser.ast.Modifier.Keyword.PUBLIC );
         setter.addParameter( typeName, field.name );
         setter.createBody().addStatement( "this." + field.name + " = " + field.name + ";");
+
+        if (genericType != null) {
+            String singleSetterName = setterName.endsWith( "s" ) ? setterName.substring( 0, setterName.length()-1 ) : setterName + "Single";
+            MethodDeclaration singleValueSetter = dtoClass.addMethod( singleSetterName, com.github.javaparser.ast.Modifier.Keyword.PUBLIC );
+            singleValueSetter.addParameter( genericType, field.name );
+            singleValueSetter.createBody()
+                    .addStatement( "this." + field.name + " = new java.util.ArrayList<>();")
+                    .addStatement( "this." + field.name + ".add(" + field.name + ");");
+        }
 
         if (isDataSource) {
             boolean isDataStream = DataStream.class.isAssignableFrom( rawType );
