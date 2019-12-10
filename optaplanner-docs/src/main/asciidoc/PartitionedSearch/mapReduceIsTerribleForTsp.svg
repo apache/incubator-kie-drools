@@ -313,7 +313,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot4302"
-       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
        transform="translate(-20,262.36198)"><flowRegion
          id="flowRegion4304"><rect
            id="rect4306"
@@ -326,7 +326,7 @@
        transform="translate(-20,382.36205)"
        xml:space="preserve"
        id="flowRoot4302-6"
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"><flowRegion
          id="flowRegion4304-7"><rect
            id="rect4306-3"
            width="740.00006"
@@ -2471,18 +2471,18 @@
        transform="translate(160.4248,575.53712)"
        xml:space="preserve"
        id="flowRoot6814"
-       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"><flowRegion
+       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal' Italic"><flowRegion
          id="flowRegion6816"><rect
            id="rect6818"
            width="170"
            height="49.999992"
            x="-140.4248"
            y="-255.53671"
-           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:Arial Italic" /></flowRegion><flowPara
-         style="font-style:normal;text-align:start;text-anchor:start;fill:#204a87;-inkscape-font-specification:Arial"
+           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:'Liberation Sans, Normal' Italic" /></flowRegion><flowPara
+         style="font-style:normal;text-align:start;text-anchor:start;fill:#204a87;-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara6820">1) Partition</flowPara><flowPara
          id="flowPara6840"
-         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#204a87;-inkscape-font-specification:Arial">      Divide into n pieces</flowPara></flowRoot>  </g>
+         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#204a87;-inkscape-font-specification:'Liberation Sans, Normal'">      Divide into n pieces</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer6"
@@ -3920,18 +3920,18 @@
        transform="translate(160.4248,575.53712)"
        xml:space="preserve"
        id="flowRoot6897"
-       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"><flowRegion
+       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal' Italic"><flowRegion
          id="flowRegion6899"><rect
            id="rect6901"
            width="170"
            height="60.000042"
            x="-140.4248"
            y="-195.53671"
-           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:Arial Italic" /></flowRegion><flowPara
+           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:'Liberation Sans, Normal' Italic" /></flowRegion><flowPara
          id="flowPara6909"
-         style="font-style:normal;text-align:start;text-anchor:start;fill:#8f5902;-inkscape-font-specification:Arial">2) Map</flowPara><flowPara
+         style="font-style:normal;text-align:start;text-anchor:start;fill:#8f5902;-inkscape-font-specification:'Liberation Sans, Normal'">2) Map</flowPara><flowPara
          id="flowPara6923"
-         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#8f5902;-inkscape-font-specification:Arial">      Solve each piece</flowPara></flowRoot>  </g>
+         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#8f5902;-inkscape-font-specification:'Liberation Sans, Normal'">      Solve each piece</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
@@ -5365,19 +5365,19 @@
        transform="translate(160.4248,575.53712)"
        xml:space="preserve"
        id="flowRoot6950"
-       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"><flowRegion
+       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal' Italic"><flowRegion
          id="flowRegion6952"><rect
            id="rect6954"
            width="170"
            height="69.999992"
            x="-140.4248"
            y="-135.53671"
-           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:Arial Italic" /></flowRegion><flowPara
+           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:'Liberation Sans, Normal' Italic" /></flowRegion><flowPara
          id="flowPara6968"
-         style="font-style:normal;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:Arial">3) Reduce</flowPara><flowPara
+         style="font-style:normal;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:'Liberation Sans, Normal'">3) Reduce</flowPara><flowPara
          id="flowPara6976"
-         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:Arial">      Merge piece solutions</flowPara><flowPara
-         style="font-size:14px;font-style:italic;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:Arial"
+         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:'Liberation Sans, Normal'">      Merge piece solutions</flowPara><flowPara
+         style="font-size:14px;font-style:italic;text-align:start;text-anchor:start;fill:#5c3566;-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara7067">      (not always possible)</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
@@ -6857,7 +6857,7 @@
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
       <flowRoot
          transform="translate(-80.000007,485.41364)"
-         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowRoot6549"
          xml:space="preserve"><flowRegion
            id="flowRegion6551"><rect
@@ -6872,7 +6872,7 @@
        transform="translate(209.9997,511.15018)"
        xml:space="preserve"
        id="flowRoot3985-0-4"
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"><flowRegion
          id="flowRegion3987-6-0"><rect
            id="rect3989-2-8"
            width="179.5"
@@ -6881,22 +6881,22 @@
            y="-171.15018"
            style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
          id="flowPara5199">Optimal solution</flowPara></flowRoot>    <flowRoot
-       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"
+       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal' Italic"
        id="flowRoot4163"
        xml:space="preserve"
        transform="translate(160.4248,574.53712)"><flowRegion
          id="flowRegion4165"><rect
-           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:Arial Italic"
+           style="font-size:20px;font-style:italic;fill:#000000;fill-opacity:1;-inkscape-font-specification:'Liberation Sans, Normal' Italic"
            y="-55.53672"
            x="-140.4248"
            height="70.999603"
            width="170"
            id="rect4167" /></flowRegion><flowPara
-         style="font-size:20px;font-style:normal;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:Arial"
+         style="font-size:20px;font-style:normal;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara6800">4) Result</flowPara><flowPara
-         style="font-size:14px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:Arial"
+         style="font-size:14px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara6804">      Not (near) optimal</flowPara><flowPara
-         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:Arial"
+         style="font-size:14px;font-style:normal;text-align:start;text-anchor:start;fill:#ce5c00;-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara7083">      Worse when scaling        </flowPara></flowRoot>    <g
        style="display:inline"
        transform="translate(515.00001,-255.41364)"
@@ -6913,7 +6913,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot6617"
-         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
          transform="translate(-80.000007,485.41364)"><flowRegion
            id="flowRegion6619"><rect
              id="rect6621"

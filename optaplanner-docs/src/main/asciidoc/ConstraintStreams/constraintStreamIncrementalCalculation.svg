@@ -578,7 +578,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot4302"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="translate(-19.999997,252.36213)"><flowRegion
          id="flowRegion4304"
          style="font-size:37.33333206px"><rect
@@ -593,7 +593,7 @@
        transform="translate(-19.999997,372.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion4304-7"
          style="font-size:16px"><rect
            id="rect4306-3"
@@ -604,7 +604,7 @@
            style="font-size:16px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4308-6"
          style="font-size:16px;line-height:1.25">Unlike SQL and Java 8 Streams, this API supports incremental score calculation (delta's) to scale better.</flowPara></flowRoot>    <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot2685"
        xml:space="preserve"
        transform="translate(-310.50716,430.26326)"><flowRegion
@@ -635,7 +635,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1602"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1598"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -662,7 +662,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot1614"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -679,7 +679,7 @@
        transform="translate(-144.59167,449.62957)"
        xml:space="preserve"
        id="flowRoot1684"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion1680"
          style="font-size:21.33333397px"><rect
            id="rect1678"
@@ -706,7 +706,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot1897"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -735,7 +735,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1909"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion1905"
            style="font-size:12.87545681px"><rect
@@ -763,7 +763,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1921"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1917"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -790,7 +790,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot1945"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -818,7 +818,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot1933"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -847,7 +847,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1957"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion1953"
            style="font-size:12.87545681px"><rect
@@ -875,7 +875,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot537"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion533"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -902,7 +902,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot549"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -919,7 +919,7 @@
        transform="translate(-144.59167,629.62966)"
        xml:space="preserve"
        id="flowRoot593"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion589"
          style="font-size:21.33333397px"><rect
            id="rect587"
@@ -956,7 +956,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot1221"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -985,7 +985,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1233"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion1229"
            style="font-size:12.87545681px"><rect
@@ -998,7 +998,7 @@
            style="font-size:12.87545681px;line-height:1.25"
            id="flowPara1231">1feb</flowPara></flowRoot>    </g>
     <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot1243"
        xml:space="preserve"
        transform="translate(141.94257,-2.7326205)"><flowRegion
@@ -1029,7 +1029,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot1301"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion1297"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1056,7 +1056,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot1313"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1070,7 +1070,7 @@
            id="flowPara1311"
            style="font-size:12.87545681px;line-height:1.25">3feb</flowPara></flowRoot>    </g>
     <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot2749"
        xml:space="preserve"
        transform="translate(-77.15286,-22.09371)"><flowRegion
@@ -1109,7 +1109,7 @@
        transform="translate(217.64128,-35.42705)"
        xml:space="preserve"
        id="flowRoot324"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion320"
          style="font-size:21.33333397px;text-align:start;text-anchor:start"><rect
            id="rect318"
@@ -1133,7 +1133,7 @@
        sodipodi:nodetypes="cc" />
     <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,81.798923)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot638"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:end;text-anchor:end"
@@ -1148,7 +1148,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end">-1soft</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot646"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,111.79898)"><flowRegion
          id="flowRegion642"
          style="font-size:12.87545681px;text-align:end;text-anchor:end"><rect
@@ -1161,7 +1161,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end"
          id="flowPara644">-1soft</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,206.72097)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot672"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:end;text-anchor:end"
@@ -1181,7 +1181,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot682"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,162.99162,177.6583)"><flowRegion
          id="flowRegion678"
          style="font-size:12.87545681px;text-align:start;text-anchor:start"><rect
@@ -1195,7 +1195,7 @@
          id="flowPara680">+</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot690"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,91.52654,206.72097)"><flowRegion
          id="flowRegion686"
          style="font-size:12.87545681px;text-align:start;text-anchor:start"><rect
@@ -1226,7 +1226,7 @@
      style="display:inline">
     <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,181.5277,271.79896)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#8f5902;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#8f5902;fill-opacity:1;stroke:none"
        id="flowRoot707"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:end;text-anchor:end;fill:#8f5902"
@@ -1241,7 +1241,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end;fill:#8f5902">-2soft</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot715"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#8f5902;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#8f5902;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,144.95647,271.79896)"><flowRegion
          id="flowRegion711"
          style="font-size:12.87545681px;text-align:start;text-anchor:start;fill:#8f5902"><rect
@@ -1267,7 +1267,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot260"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -1296,7 +1296,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot272"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion268"
            style="font-size:12.87545681px"><rect
@@ -1309,7 +1309,7 @@
            style="font-size:12.87545681px;line-height:1.25"
            id="flowPara270">1feb</flowPara></flowRoot>    </g>
     <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot284"
        xml:space="preserve"
        transform="translate(-144.59167,217.26738)"><flowRegion
@@ -1340,7 +1340,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot294"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion290"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1367,7 +1367,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot306"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1395,7 +1395,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot318"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -1424,7 +1424,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot343"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion339"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1452,7 +1452,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot331"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion326"
            style="font-size:12.87545681px"><rect
@@ -1479,7 +1479,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot355"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1508,7 +1508,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot561"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion557"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1535,7 +1535,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot573"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1549,7 +1549,7 @@
            id="flowPara571"
            style="font-size:12.87545681px;line-height:1.25">5feb</flowPara></flowRoot>    </g>
     <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;opacity:0.3;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;opacity:0.3;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot585"
        xml:space="preserve"
        transform="translate(-144.59167,397.26714)"><flowRegion
@@ -1572,7 +1572,7 @@
        transform="translate(-310.50716,296.09151)"
        xml:space="preserve"
        id="flowRoot1662"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#a40000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#a40000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion1656"
          style="font-size:18.66666603px;text-align:end;text-anchor:end;fill:#a40000"><rect
            id="rect1654"
@@ -1635,7 +1635,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot371"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion367"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1662,7 +1662,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot383"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1679,7 +1679,7 @@
        transform="translate(141.94257,217.26737)"
        xml:space="preserve"
        id="flowRoot395"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion389"
          style="font-size:21.33333397px"><rect
            id="rect387"
@@ -1706,7 +1706,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          id="flowRoot405"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px;fill:#ce5c00"
@@ -1735,7 +1735,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot417"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"><flowRegion
            id="flowRegion413"
            style="font-size:12.87545681px"><rect
@@ -1769,7 +1769,7 @@
       <flowRoot
          xml:space="preserve"
          id="flowRoot503"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none"
          transform="matrix(1.6568991,0,0,1.6568991,168.60556,755.67036)"><flowRegion
            id="flowRegion499"
            style="font-size:12.87545681px;fill:#ce5c00"><rect
@@ -1796,7 +1796,7 @@
          ry="5" />
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,169.60592,754.1611)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot515"
          xml:space="preserve"><flowRegion
            style="font-size:12.87545681px"
@@ -1828,7 +1828,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot431"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;opacity:0.3;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;opacity:0.3;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,301.79892)"><flowRegion
          id="flowRegion427"
          style="font-size:12.87545681px;text-align:end;text-anchor:end"><rect
@@ -1841,7 +1841,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end"
          id="flowPara429">-1soft</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,331.79898)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot439"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:end;text-anchor:end"
@@ -1856,7 +1856,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end">-1soft</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot447"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,181.5277,426.72097)"><flowRegion
          id="flowRegion443"
          style="font-size:12.87545681px;text-align:end;text-anchor:end"><rect
@@ -1874,7 +1874,7 @@
        style="display:inline;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,232.99231,397.6583)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot457"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:start;text-anchor:start"
@@ -1888,7 +1888,7 @@
          id="flowPara455"
          style="font-size:12.87545681px;line-height:1.25;text-align:start;text-anchor:start">+</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,161.52723,426.72097)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot465"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:start;text-anchor:start"
@@ -1903,7 +1903,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:start;text-anchor:start">Score</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot525"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,111.52701,361.79894)"><flowRegion
          id="flowRegion521"
          style="font-size:12.87545681px;text-align:end;text-anchor:end"><rect
@@ -1917,7 +1917,7 @@
          id="flowPara523">-1soft</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot681"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#a40000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#a40000;fill-opacity:1;stroke:none"
        transform="matrix(1.6568991,0,0,1.6568991,181.5277,331.79898)"><flowRegion
          id="flowRegion677"
          style="font-size:12.87545681px;text-align:end;text-anchor:end;fill:#a40000"><rect
@@ -1930,7 +1930,7 @@
          style="font-size:12.87545681px;line-height:1.25;text-align:end;text-anchor:end;fill:#a40000"
          id="flowPara679">+1soft</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,181.5277,361.79894)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#4e9a06;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.87545681px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#4e9a06;fill-opacity:1;stroke:none"
        id="flowRoot689"
        xml:space="preserve"><flowRegion
          style="font-size:12.87545681px;text-align:end;text-anchor:end;fill:#4e9a06"
