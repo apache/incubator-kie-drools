@@ -97,7 +97,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
 
     try {
       const result = await axios.get(
-        `${processInstanceData.endpoint}/management/process/${processId}/instances/${processInstanceId}/skip`
+        `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/skip`
       );
       setAlertTitle('Skip operation');
       setAlertType('success');
@@ -122,7 +122,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       const processId = processInstanceData.processId;
       try {
         const result = await axios.get(
-          `${processInstanceData.endpoint}/management/process/${processId}/instances/${processInstanceId}/retrigger`
+          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/retrigger`
         );
         setAlertTitle('Retry operation');
         setAlertType('success');

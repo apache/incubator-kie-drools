@@ -36,17 +36,17 @@ app.use(
 );
 
 //Rest Api's
-// http://localhost:4000/management/process/{processId}/instances/{processInstanceId}/error
+// http://localhost:4000/management/processes/{processId}/instances/{processInstanceId}/error
 app.get(
-  '/management/process/:processId/instances/:processInstanceId/error',
+  '/management/processes/:processId/instances/:processInstanceId/error',
   controller.showError
 );
 app.get(
-  '/management/process/:processId/instances/:processInstanceId/skip',
+  '/management/processes/:processId/instances/:processInstanceId/skip',
   controller.callSkip
 );
 app.get(
-  '/management/process/:processId/instances/:processInstanceId/retrigger',
+  '/management/processes/:processId/instances/:processInstanceId/retrigger',
   controller.callRetrigger
 );
 
