@@ -16,11 +16,14 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;
@@ -91,10 +94,27 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return evaluator.executeExpression(compiledExpression, params);
     }
 
+    /**
+     * The clean works in the following ways:
+     * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#')
+     * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case.
+     * - All other cases are wrong: a <code>IllegalArgumentException</code> in thrown.
+     * @param rawExpression
+     * @return
+     */
     protected String cleanExpression(String rawExpression) {
-        if (!rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
-            throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
+        if (rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
         }
-        return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(rawExpression);
+            if (jsonNode.isTextual()) {
+                return jsonNode.asText();
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "' ", e);
+        }
+        throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
     }
 }

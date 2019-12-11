@@ -16,6 +16,10 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 
@@ -56,11 +60,40 @@ public class ExpressionEvaluatorFactory {
 
         Object rawValue = factMappingValue.getRawValue();
 
-        if (rawValue instanceof String && ((String) rawValue).trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (isAnExpression(rawValue)) {
             return getOrCreateMVELExpressionEvaluator();
         } else {
             return getOrCreateBaseExpressionEvaluator();
         }
+    }
+
+    /**
+     * A rawValue is an expression if:
+     * - NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#')
+     * - COLLECTION CASE: It's a JSON String node, which is used only when an expression is set
+     *   (in other cases it's a JSON Object (Map) or a JSON Array (List)
+     * @param rawValue
+     * @return
+     */
+    private boolean isAnExpression(Object rawValue) {
+        if (!(rawValue instanceof String)) {
+            return false;
+        }
+        /* NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#') */
+        if (((String) rawValue).trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            return true;
+        }
+        /* COLLECTION CASE: It's a JSON String node, which is used only when an expression is set */
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree((String) rawValue);
+            if (jsonNode.isTextual()) {
+                return true;
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Malformed raw data", e);
+        }
+        return false;
     }
 
     private ExpressionEvaluator getOrCreateBaseExpressionEvaluator() {
