@@ -243,13 +243,11 @@ public class PhreakPropagationContext
         modificationMask = originalMask;
         boolean typeBit = modificationMask.isSet(PropertySpecificUtil.TRAITABLE_BIT);
         modificationMask = modificationMask.reset(PropertySpecificUtil.TRAITABLE_BIT);
-
-
+        
         Class<?> classType = classObjectType.getClassType();
+        String pkgName = classType.getPackage() == null? null:classType.getPackage().getName();
 
-        Package pkg = classType.getPackage();
-
-        if (classType == modifiedClass || (pkg != null && "java.lang".equals(pkg.getName()))
+        if (classType == modifiedClass ||  "java.lang".equals(pkgName)
                 || !(classType.isInterface() || modifiedClass.isInterface())) {
             if (typeBit) {
                 modificationMask = modificationMask.set(PropertySpecificUtil.TRAITABLE_BIT);
@@ -284,7 +282,7 @@ public class PhreakPropagationContext
     }
 
     private List<String> getAccessibleProperties( InternalWorkingMemory workingMemory, Class<?> classType, String pkgName ) {
-        if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
+        if ( "java.lang".equals(pkgName) || "java.util".equals(pkgName) ) {
             return Collections.EMPTY_LIST;
         }
         InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( pkgName );
