@@ -826,9 +826,24 @@ public class SpreadsheetCompilerUnitTest {
         // DROOLS-4788
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         String drl = converter.compile("/data/NewLineInConstraint.xls", InputType.XLS);
-
-        System.out.println(drl);
-
         assertTrue(drl.contains( "map[\"Key2\"] == var2" ));
+    }
+
+    @Test
+    public void testNoUnit() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrink.xls" );
+        final String drl = converter.compile(stream, InputType.XLS);
+        assertTrue( drl.contains( "$p: Person(age < 18)" ) );
+    }
+
+    @Test
+    public void testRuleUnit() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrinkUnit.xls" );
+        final String drl = converter.compile(stream, InputType.XLS);
+        assertTrue( drl.contains( "unit CanDrinkUnit;" ) );
+        assertTrue( drl.contains( "query Results $r: /results end" ) );
+        assertTrue( drl.contains( "$p: /persons[age < 18]" ) );
     }
 }

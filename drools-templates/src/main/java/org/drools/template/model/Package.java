@@ -28,90 +28,95 @@ public class Package extends AttributedDRLElement
         implements
         DRLJavaEmitter {
 
-    private String _name;
+    private String name;
 
-    private List<Import> _imports;
+    private List<Import> imports;
 
-    private List<Global> _variables;    // List of the application data Variable Objects
+    private List<Global> variables;    // List of the application data Variable Objects
 
-    private List<Rule> _rules;
+    private List<Rule> rules;
 
-    private Functions _functions;
+    private Functions functions;
 
-    private Queries _queries;
+    private Queries queries;
 
-    private DeclaredType _declaredTypes;
+    private DeclaredType declaredTypes;
+
+    private String ruleUnit;
 
     public Package(final String name) {
-        this._name = name;
-        this._imports = new LinkedList<Import>();
-        this._variables = new LinkedList<Global>();
-        this._rules = new LinkedList<Rule>();
-        this._functions = new Functions();
-        this._queries = new Queries();
-        this._declaredTypes = new DeclaredType();
+        this.name = name;
+        this.imports = new LinkedList<Import>();
+        this.variables = new LinkedList<Global>();
+        this.rules = new LinkedList<Rule>();
+        this.functions = new Functions();
+        this.queries = new Queries();
+        this.declaredTypes = new DeclaredType();
     }
 
     public void addImport(final Import imp) {
-        this._imports.add(imp);
+        this.imports.add(imp);
     }
 
     public void addVariable(final Global varz) {
-        this._variables.add(varz);
+        this.variables.add(varz);
     }
 
     public void addRule(final Rule rule) {
-        this._rules.add(rule);
+        this.rules.add(rule);
     }
 
     public void addFunctions(final String listing) {
-        this._functions.setFunctionsListing(listing);
+        this.functions.setFunctionsListing(listing);
     }
 
     public void addQueries(final String listing) {
-        this._queries.setQueriesListing(listing);
+        this.queries.setQueriesListing(listing);
     }
 
     public void addDeclaredType(final String declaration) {
-        this._declaredTypes.setDeclaredTypeListing(declaration);
+        this.declaredTypes.setDeclaredTypeListing(declaration);
     }
 
     public String getName() {
-        return this._name;
+        return this.name;
     }
 
     public List<Import> getImports() {
-        return this._imports;
+        return this.imports;
     }
 
     public List<Global> getVariables() {
-        return this._variables;
+        return this.variables;
     }
 
     public List<Rule> getRules() {
-        return this._rules;
+        return this.rules;
     }
 
-    public void renderDRL(final DRLOutput out) {
-        if (_name != null) {
-            out.writeLine("package " + this._name.replace(' ',
-                                                          '_') + ";");
+    public void setRuleUnit( String ruleUnit ) {
+        this.ruleUnit = ruleUnit;
+    }
+
+    public void renderDRL( final DRLOutput out) {
+        if ( name != null) {
+            out.writeLine("package " + name.replace(' ', '_') + ";");
+        }
+        if ( ruleUnit != null) {
+            out.writeLine("unit " + ruleUnit + ";");
         }
         out.writeLine("//generated from Decision Table");
-        renderDRL(this._imports,
-                  out);
-        renderDRL(this._variables,
-                  out);
-        this._functions.renderDRL(out);
-        this._queries.renderDRL(out);
-        this._declaredTypes.renderDRL(out);
+
+        renderDRL(imports, out);
+        renderDRL(variables, out);
+        functions.renderDRL(out);
+        queries.renderDRL(out);
+        declaredTypes.renderDRL(out);
 
         // attributes
         super.renderDRL(out);
 
-        renderDRL(this._rules,
-                  out);
-
+        renderDRL(rules, out);
     }
 
     private void renderDRL(final List<? extends DRLJavaEmitter> list,
