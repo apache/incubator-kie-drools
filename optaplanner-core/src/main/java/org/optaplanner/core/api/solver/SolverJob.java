@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.poc.api.solver;
+package org.optaplanner.core.api.solver;
 
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
@@ -26,16 +28,31 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  */
 public interface SolverJob<Solution_, ProblemId_> {
 
+    /**
+     * @return never null, a value given to {@link SolverManager#solveBatch(Object, Function, Consumer)}
+     *or {@link SolverManager#solveObserving(Object, Function, Consumer)}
+     */
     ProblemId_ getProblemId();
 
+    /**
+     * Returns if the {@link Solver} is scheduled to solve, actively solving or not.
+     * <p>
+     * Returns {@link SolverStatus#NOT_SOLVING} if the solver already terminated.
+     * @return never null
+     */
     SolverStatus getSolverStatus();
 
     // TODO Future features
-//    void reloadProblem(Supplier<Solution_> problemSupplier);
+//    void reloadProblem(Function<ProblemId_, Solution_> problemFinder);
 
     // TODO Future features
 //    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
+    /**
+     * Terminates the solver or cancels the solver job if it hasn't (re)started yet.
+     * <p>
+     * Does nothing if the solver already terminated.
+     */
     void terminateEarly();
 
 }

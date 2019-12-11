@@ -35,18 +35,49 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
- * A Solver solves a planning problem.
- * Clients usually call {@link #solve} and then {@link #getBestSolution()}.
+ * A Solver solves a planning problem and returns the best solution found.
+ * It's recommended to create a new Solver instance for each dataset.
+ * <p>
+ * To create a Solver, use {@link SolverFactory#buildSolver()}.
+ * To solve a planning problem, call {@link #solve(Object)}.
+ * To solve a planning problem without blocking the current thread, use {@link SolverManager} instead.
  * <p>
  * These methods are not thread-safe and should be called from the same thread,
  * except for the methods that are explicitly marked as thread-safe.
  * Note that despite that {@link #solve} is not thread-safe for clients of this class,
  * that method is free to do multithreading inside itself.
- * <p>
- * Build by a {@link SolverFactory}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface Solver<Solution_> {
+
+    /**
+     * Solves the planning problem and returns the best solution encountered
+     * (which might or might not be optimal, feasible or even initialized).
+     * <p>
+     * It can take seconds, minutes, even hours or days before this method returns,
+     * depending on the {@link Termination} configuration.
+     * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
+     * @param problem never null, a {@link PlanningSolution}, usually its planning variables are uninitialized
+     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
+     * @see #terminateEarly()
+     */
+    Solution_ solve(Solution_ problem);
+
+    /**
+     * Notifies the solver that it should stop at its earliest convenience.
+     * This method returns immediately, but it takes an undetermined time
+     * for the {@link #solve} to actually return.
+     * <p>
+     * If the solver is running in daemon mode, this is the only way to terminate it normally.
+     * <p>
+     * This method is thread-safe.
+     * It can only be called from a different thread
+     * because the original thread is still calling {@link #solve(Object)}.
+     * @return true if successful
+     * @see #isTerminateEarly()
+     * @see Future#cancel(boolean)
+     */
+    boolean terminateEarly();
 
     /**
      * The best solution is the {@link PlanningSolution best solution} found during solving:
@@ -104,35 +135,10 @@ public interface Solver<Solution_> {
     long getTimeMillisSpent();
 
     /**
-     * Solves the planning problem and returns the best solution encountered
-     * (which might or might not be optimal, feasible or even initialized).
-     * <p>
-     * It can take seconds, minutes, even hours or days before this method returns,
-     * depending on the {@link Termination} configuration.
-     * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
-     * @param problem never null, usually its planning variables are uninitialized
-     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
-     * @see #terminateEarly()
-     */
-    Solution_ solve(Solution_ problem);
-
-    /**
      * This method is thread-safe.
      * @return true if the {@link #solve} method is still running.
      */
     boolean isSolving();
-
-    /**
-     * Notifies the solver that it should stop at its earliest convenience.
-     * This method returns immediately, but it takes an undetermined time
-     * for the {@link #solve} to actually return.
-     * <p>
-     * This method is thread-safe.
-     * @return true if successful
-     * @see #isTerminateEarly()
-     * @see Future#cancel(boolean)
-     */
-    boolean terminateEarly();
 
     /**
      * This method is thread-safe.

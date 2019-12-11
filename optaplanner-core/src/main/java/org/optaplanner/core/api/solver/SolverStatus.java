@@ -14,26 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.domain;
+package org.optaplanner.core.api.solver;
 
-import org.optaplanner.core.api.solver.SolverStatus;
-
-public class TimeTableView {
-
-    private TimeTable timeTable;
-    private SolverStatus solverStatus;
-
-    public TimeTableView(TimeTable timeTable, SolverStatus solverStatus) {
-        this.timeTable = timeTable;
-        this.solverStatus = solverStatus;
-    }
-
-    public TimeTable getTimeTable() {
-        return timeTable;
-    }
-
-    public SolverStatus getSolverStatus() {
-        return solverStatus;
-    }
-
+public enum SolverStatus {
+    SOLVING_SCHEDULED,
+    SOLVING_ACTIVE,
+    NOT_SOLVING;
 }

@@ -19,6 +19,7 @@ package org.optaplanner.core.api.solver;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Objects;
 
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -36,9 +37,11 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  * Creates {@link Solver} instances.
  * Most applications only need one SolverFactory.
  * <p>
- * To build an instance, use {@link #createFromXmlResource(String)}.
- * To change the configuration programmatically, create a {@link SolverConfig}
- * and use {@link #create(SolverConfig)}.
+ * To create an SolverFactory, use {@link #createFromXmlResource(String)}.
+ * To change the configuration programmatically, create a {@link SolverConfig} first
+ * and then use {@link #create(SolverConfig)}.
+ * <p>
+ * These methods are thread-safe unless explicitly stated otherwise.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverFactory<Solution_> {
@@ -172,6 +175,7 @@ public abstract class SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
+        Objects.requireNonNull(solverConfig);
         // Defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
         solverConfig = new SolverConfig(solverConfig);
         return new DefaultSolverFactory<>(solverConfig);

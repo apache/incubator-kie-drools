@@ -16,11 +16,11 @@
 
 package org.optaplanner.spring.boot.example.solver;
 
+import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
 import org.optaplanner.spring.boot.example.domain.TimeTableView;
 import org.optaplanner.spring.boot.example.persistence.TimeTableRepository;
-import org.optaplanner.spring.boot.example.poc.api.solver.SolverManager;
-import org.optaplanner.spring.boot.example.poc.api.solver.SolverStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/timeTable")
 public class TimeTableSolverService {
 
-    // There is only one time table, so there is only timeTableId (= problemId).
-    public static final Long TIME_TABLE_ID = 1L;
-
     @Autowired
     private TimeTableRepository timeTableRepository;
     @Autowired
@@ -42,30 +39,31 @@ public class TimeTableSolverService {
     // To try, open http://localhost:8080/timeTable
     @GetMapping()
     public TimeTableView getTimeTableView() {
-        TimeTable timeTable = timeTableRepository.find();
+        TimeTable timeTable = timeTableRepository.findById(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
         solverManager.updateScore(timeTable);
-        SolverStatus solverStatus = solverManager.getSolverStatus(TIME_TABLE_ID);
+        SolverStatus solverStatus = solverManager.getSolverStatus(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
         return new TimeTableView(timeTable, solverStatus);
     }
 
     @PostMapping("/solve")
     public void solve() {
-        solverManager.solveObserving(TIME_TABLE_ID, timeTableRepository::find, timeTableRepository::save);
+        solverManager.solveObserving(TimeTableRepository.SINGLETON_TIME_TABLE_ID,
+                timeTableRepository::findById,
+                timeTableRepository::save);
     }
 
     public void reloadProblem() {
-        // TODO Future work (use this instead of the code below)
-//        solverManager.reloadProblem(TIME_TABLE_ID, timeTableRepository::find);
-
-        if (solverManager.getSolverStatus(TIME_TABLE_ID) == SolverStatus.NOT_SOLVING) {
+        if (solverManager.getSolverStatus(TimeTableRepository.SINGLETON_TIME_TABLE_ID) == SolverStatus.NOT_SOLVING) {
             return;
         }
         throw new UnsupportedOperationException("The solver is solving.");
+        // TODO Future work: use reloadProblem() instead of the code above
+//        solverManager.reloadProblem(TIME_TABLE_ID, timeTableRepository::findById);
     }
 
     @PostMapping("/stopSolving")
     public void stopSolving() {
-        solverManager.terminateEarly(TIME_TABLE_ID);
+        solverManager.terminateEarly(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
     }
 
 }

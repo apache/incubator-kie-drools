@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.example.poc.api.solver;
+package org.optaplanner.core.api.solver;
 
-public enum SolverStatus {
-    SOLVING_SCHEDULED,
-    SOLVING_ACTIVE,
-    NOT_SOLVING;
+public class SolverManagerTest {
+
 }

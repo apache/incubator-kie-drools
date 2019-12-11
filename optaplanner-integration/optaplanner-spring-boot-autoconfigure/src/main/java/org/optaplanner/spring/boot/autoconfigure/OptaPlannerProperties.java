@@ -31,6 +31,7 @@ public class OptaPlannerProperties {
     private String solverConfigXML;
 
     private SolverProperties solver;
+    private SolverManagerProperties solverManager;
 
     // ************************************************************************
     // Getters/setters
@@ -50,6 +51,14 @@ public class OptaPlannerProperties {
 
     public void setSolver(SolverProperties solver) {
         this.solver = solver;
+    }
+
+    public SolverManagerProperties getSolverManager() {
+        return solverManager;
+    }
+
+    public void setSolverManager(SolverManagerProperties solverManager) {
+        this.solverManager = solverManager;
     }
 
 }

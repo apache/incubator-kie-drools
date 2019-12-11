@@ -27,8 +27,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
@@ -70,8 +72,20 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public SolverFactory<?> solverFactory(SolverConfig solverConfig) {
+    public <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
         return SolverFactory.create(solverConfig);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverConfig solverConfig) {
+        // TODO supply ThreadFactory
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig);
+        SolverManagerProperties solverManagerProperties = optaPlannerProperties.getSolverManager();
+        if (solverManagerProperties != null) {
+            solverManagerConfig.setParallelSolverCount(solverManagerProperties.getParallelSolverCount());
+        }
+        return SolverManager.create(solverManagerConfig);
     }
 
     @Bean
