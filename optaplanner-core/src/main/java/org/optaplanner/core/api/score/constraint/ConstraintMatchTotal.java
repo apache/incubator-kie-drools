@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.constraint;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
@@ -193,9 +194,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     @Override
     public int hashCode() {
-        return ((17 * 37)
-                + constraintPackage.hashCode()) * 37
-                + constraintName.hashCode();
+        return Objects.hash(constraintPackage, constraintName);
     }
 
     @Override

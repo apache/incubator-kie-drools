@@ -18,9 +18,8 @@ package org.optaplanner.examples.examination.domain.solver;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.examination.domain.Topic;
 
 /**
@@ -71,23 +70,18 @@ public class TopicConflict implements Serializable,
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof TopicConflict) {
-            TopicConflict other = (TopicConflict) o;
-            return new EqualsBuilder()
-                    .append(leftTopic, other.leftTopic)
-                    .append(rightTopic, other.rightTopic)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final TopicConflict other = (TopicConflict) o;
+        return Objects.equals(leftTopic, other.leftTopic) &&
+                Objects.equals(rightTopic, other.rightTopic);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(leftTopic)
-                .append(rightTopic)
-                .toHashCode();
+        return Objects.hash(leftTopic, rightTopic);
     }
 
     @Override

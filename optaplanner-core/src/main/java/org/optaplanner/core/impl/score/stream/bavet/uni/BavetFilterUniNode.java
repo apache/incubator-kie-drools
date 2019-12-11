@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -48,9 +49,7 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public int hashCode() {
-        // Similar to Object.hash() without autoboxing
-        return 31 * System.identityHashCode(parentNode)
-                + System.identityHashCode(predicate);
+        return Objects.hash(System.identityHashCode(parentNode), System.identityHashCode(predicate));
     }
 
     @Override

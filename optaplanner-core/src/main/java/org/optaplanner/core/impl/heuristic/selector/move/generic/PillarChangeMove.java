@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
@@ -128,25 +126,19 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PillarChangeMove) {
-            PillarChangeMove<?> other = (PillarChangeMove) o;
-            return new EqualsBuilder()
-                    .append(variableDescriptor, other.variableDescriptor)
-                    .append(pillar, other.pillar)
-                    .append(toPlanningValue, other.toPlanningValue)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final PillarChangeMove<?> other = (PillarChangeMove<?>) o;
+        return Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(pillar, other.pillar) &&
+                Objects.equals(toPlanningValue, other.toPlanningValue);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(variableDescriptor)
-                .append(pillar)
-                .append(toPlanningValue)
-                .toHashCode();
+        return Objects.hash(variableDescriptor, pillar, toPlanningValue);
     }
 
     @Override

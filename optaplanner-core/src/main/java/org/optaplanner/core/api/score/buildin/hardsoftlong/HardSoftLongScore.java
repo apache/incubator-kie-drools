@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -196,7 +198,6 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof HardSoftLongScore) {
@@ -211,20 +212,15 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37)
-                + initScore) * 37
-                + Long.valueOf(hardScore).hashCode()) * 37
-                + Long.valueOf(softScore).hashCode();
+        return Objects.hash(initScore, hardScore, softScore);
     }
 
     @Override
     public int compareTo(HardSoftLongScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else if (hardScore != other.getHardScore()) {
-            return hardScore < other.getHardScore() ? -1 : 1;
+            return Long.compare(hardScore, other.getHardScore());
         } else {
             return Long.compare(softScore, other.getSoftScore());
         }

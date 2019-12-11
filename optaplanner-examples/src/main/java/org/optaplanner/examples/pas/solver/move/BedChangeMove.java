@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -73,23 +71,18 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof BedChangeMove) {
-            BedChangeMove other = (BedChangeMove) o;
-            return new EqualsBuilder()
-                    .append(bedDesignation, other.bedDesignation)
-                    .append(toBed, other.toBed)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final BedChangeMove other = (BedChangeMove) o;
+        return Objects.equals(bedDesignation, other.bedDesignation) &&
+                Objects.equals(toBed, other.toBed);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(bedDesignation)
-                .append(toBed)
-                .toHashCode();
+        return Objects.hash(bedDesignation, toBed);
     }
 
     @Override

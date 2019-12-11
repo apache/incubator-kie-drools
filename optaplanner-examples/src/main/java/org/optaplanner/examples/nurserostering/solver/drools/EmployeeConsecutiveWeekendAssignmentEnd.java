@@ -17,14 +17,17 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
 public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
+
+    private static final Comparator<EmployeeConsecutiveWeekendAssignmentEnd> COMPARATOR =
+            Comparator.comparing(EmployeeConsecutiveWeekendAssignmentEnd::getEmployee)
+                    .thenComparingInt(EmployeeConsecutiveWeekendAssignmentEnd::getSundayIndex);
 
     private Employee employee;
     private int sundayIndex;
@@ -54,31 +57,23 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveWeekendAssignmentEnd) {
-            EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
-            return new EqualsBuilder()
-                    .append(employee, other.employee)
-                    .append(sundayIndex, other.sundayIndex)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
+        return Objects.equals(employee, other.employee) &&
+                sundayIndex == other.sundayIndex;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(employee)
-                .append(sundayIndex)
-                .toHashCode();
+        return Objects.hash(employee, sundayIndex);
     }
 
     @Override
     public int compareTo(EmployeeConsecutiveWeekendAssignmentEnd other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(sundayIndex, other.sundayIndex)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override

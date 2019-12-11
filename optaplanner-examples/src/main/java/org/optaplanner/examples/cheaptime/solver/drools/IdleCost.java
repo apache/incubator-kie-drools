@@ -17,9 +17,8 @@
 package org.optaplanner.examples.cheaptime.solver.drools;
 
 import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 
 import static java.util.Comparator.comparing;
@@ -58,25 +57,19 @@ public class IdleCost implements Comparable<IdleCost> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof IdleCost) {
-            IdleCost other = (IdleCost) o;
-            return new EqualsBuilder()
-                    .append(machine, other.machine)
-                    .append(activePeriodAfterIdle, other.activePeriodAfterIdle)
-                    .append(cost, other.cost)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final IdleCost other = (IdleCost) o;
+        return Objects.equals(machine, other.machine) &&
+                activePeriodAfterIdle == other.activePeriodAfterIdle &&
+                cost == other.cost;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(machine)
-                .append(activePeriodAfterIdle)
-                .append(cost)
-                .toHashCode();
+        return Objects.hash(machine, activePeriodAfterIdle, cost);
     }
 
     @Override

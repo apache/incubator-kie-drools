@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 
@@ -155,7 +157,6 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof SimpleLongScore) {
@@ -169,17 +170,13 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + Long.valueOf(score).hashCode();
+        return Objects.hash(initScore, score);
     }
 
     @Override
     public int compareTo(SimpleLongScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else {
             return Long.compare(score, other.getScore());
         }

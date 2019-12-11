@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -230,7 +232,6 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof HardMediumSoftLongScore) {
@@ -246,23 +247,17 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((((17 * 37)
-                + initScore) * 37
-                + Long.valueOf(hardScore).hashCode()) * 37
-                + Long.valueOf(mediumScore).hashCode()) * 37
-                + Long.valueOf(softScore).hashCode();
+        return Objects.hash(initScore, hardScore, mediumScore, softScore);
     }
 
     @Override
     public int compareTo(HardMediumSoftLongScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else if (hardScore != other.getHardScore()) {
-            return hardScore < other.getHardScore() ? -1 : 1;
+            return Long.compare(hardScore, other.getHardScore());
         } else if (mediumScore != other.getMediumScore()) {
-            return mediumScore < other.getMediumScore() ? -1 : 1;
+            return Long.compare(mediumScore, other.getMediumScore());
         } else {
             return Long.compare(softScore, other.getSoftScore());
         }

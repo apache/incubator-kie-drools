@@ -18,12 +18,12 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
 
 public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
 
@@ -50,23 +50,18 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrServiceMovedProcessesCount) {
-            MrServiceMovedProcessesCount other = (MrServiceMovedProcessesCount) o;
-            return new EqualsBuilder()
-                    .append(service, other.service)
-                    .append(movedProcessesCount, other.movedProcessesCount)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final MrServiceMovedProcessesCount other = (MrServiceMovedProcessesCount) o;
+        return Objects.equals(service, other.service) &&
+                movedProcessesCount == other.movedProcessesCount ;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(service)
-                .append(movedProcessesCount)
-                .toHashCode();
+        return Objects.hash(service, movedProcessesCount);
     }
 
     public Long getServiceId() {

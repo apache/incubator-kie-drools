@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -48,9 +49,7 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
 
     @Override
     public int hashCode() {
-        // Similar to Object.hash() without autoboxing
-        return 31 * System.identityHashCode(parentNode)
-                + System.identityHashCode(predicate);
+        return Objects.hash(System.identityHashCode(parentNode), System.identityHashCode(predicate));
     }
 
     @Override

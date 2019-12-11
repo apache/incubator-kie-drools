@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply> {
-
-    private static final int CLASS_NAME_HASH_CODE = SingletonInverseVariableDemand.class.getName().hashCode() * 37;
 
     protected final VariableDescriptor sourceVariableDescriptor;
 
@@ -64,7 +64,7 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
 
     @Override
     public int hashCode() {
-        return CLASS_NAME_HASH_CODE + sourceVariableDescriptor.hashCode();
+        return Objects.hash(SingletonInverseVariableDemand.class.getName(), sourceVariableDescriptor);
     }
 
     @Override

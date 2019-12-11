@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -114,12 +114,8 @@ public class TravelingTournament extends AbstractPersistable {
 
     @Override
     public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Match match : matchList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(match.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
+        int[] hashes = matchList.stream().mapToInt(Match::solutionHashCode).toArray();
+        return Arrays.hashCode(hashes);
     }
 
 }

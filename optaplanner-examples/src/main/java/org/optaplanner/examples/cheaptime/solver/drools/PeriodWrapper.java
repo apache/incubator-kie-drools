@@ -17,9 +17,7 @@
 package org.optaplanner.examples.cheaptime.solver.drools;
 
 import java.util.Comparator;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 
 public class PeriodWrapper {
 
@@ -43,21 +41,17 @@ public class PeriodWrapper {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PeriodWrapper) {
-            PeriodWrapper other = (PeriodWrapper) o;
-            return new EqualsBuilder()
-                    .append(period, other.period)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final PeriodWrapper other = (PeriodWrapper) o;
+        return period == other.period;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(period)
-                .toHashCode();
+        return Objects.hash(period);
     }
 
     public int compareTo(PeriodWrapper other) {

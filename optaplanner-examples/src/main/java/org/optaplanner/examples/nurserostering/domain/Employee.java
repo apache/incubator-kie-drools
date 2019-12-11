@@ -28,7 +28,7 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 @XStreamAlias("Employee")
-public class Employee extends AbstractPersistable implements Labeled {
+public class Employee extends AbstractPersistable implements Labeled, Comparable<Employee> {
 
     private String code;
     private String name;
@@ -112,4 +112,8 @@ public class Employee extends AbstractPersistable implements Labeled {
         return name;
     }
 
+    @Override
+    public int compareTo(Employee employee) {
+        return name.compareTo(employee.name);
+    }
 }

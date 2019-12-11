@@ -18,14 +18,14 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
 
 public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> {
 
@@ -54,23 +54,18 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrMachineUsage) {
-            MrMachineUsage other = (MrMachineUsage) o;
-            return new EqualsBuilder()
-                    .append(machineCapacity, other.machineCapacity)
-                    .append(usage, other.usage)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final MrMachineUsage other = (MrMachineUsage) o;
+        return Objects.equals(machineCapacity, other.machineCapacity) &&
+                usage == other.usage;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(machineCapacity)
-                .append(usage)
-                .toHashCode();
+        return Objects.hash(machineCapacity, usage);
     }
 
     public MrMachine getMachine() {

@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -140,25 +138,19 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SubChainChangeMove) {
-            SubChainChangeMove<?> other = (SubChainChangeMove) o;
-            return new EqualsBuilder()
-                    .append(subChain, other.subChain)
-                    .append(variableDescriptor, other.variableDescriptor)
-                    .append(toPlanningValue, other.toPlanningValue)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final SubChainChangeMove<?> other = (SubChainChangeMove<?>) o;
+        return Objects.equals(subChain, other.subChain) &&
+                Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(toPlanningValue, other.toPlanningValue);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(subChain)
-                .append(variableDescriptor)
-                .append(toPlanningValue)
-                .toHashCode();
+        return Objects.hash(subChain, variableDescriptor, toPlanningValue);
     }
 
     @Override

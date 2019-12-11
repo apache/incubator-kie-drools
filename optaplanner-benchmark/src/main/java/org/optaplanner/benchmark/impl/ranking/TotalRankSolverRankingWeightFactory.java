@@ -122,7 +122,7 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
 
         @Override
         public int hashCode() {
-            return Objects.hash(getBetterCount(), getEqualCount(), getLowerCount());
+            return Objects.hash(betterCount, equalCount, lowerCount);
         }
 
     }

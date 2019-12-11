@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -160,7 +162,6 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof SimpleDoubleScore) {
@@ -174,17 +175,13 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + Double.valueOf(score).hashCode();
+        return Objects.hash(initScore, score);
     }
 
     @Override
     public int compareTo(SimpleDoubleScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else {
             return Double.compare(score, other.getScore());
         }

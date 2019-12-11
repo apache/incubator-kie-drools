@@ -16,9 +16,9 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
+import java.util.Objects;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -69,17 +69,15 @@ public class Match extends AbstractPersistable {
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof Match) {
-            Match other = (Match) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(homeTeam, other.homeTeam)
-                    .append(awayTeam, other.awayTeam)
-                    .append(day, other.day)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final Match other = (Match) o;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(homeTeam, other.homeTeam) &&
+                Objects.equals(awayTeam, other.awayTeam) &&
+                Objects.equals(day, other.day);
     }
 
     /**
@@ -88,12 +86,7 @@ public class Match extends AbstractPersistable {
      * @see #solutionEquals(Object)
      */
     public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(homeTeam)
-                .append(awayTeam)
-                .append(day)
-                .toHashCode();
+        return Objects.hash(id, homeTeam, awayTeam, day);
     }
 
     @Override

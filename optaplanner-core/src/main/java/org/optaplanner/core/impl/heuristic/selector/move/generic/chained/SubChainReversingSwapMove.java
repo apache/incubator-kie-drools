@@ -19,9 +19,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -178,25 +177,19 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SubChainReversingSwapMove) {
-            SubChainReversingSwapMove<?> other = (SubChainReversingSwapMove) o;
-            return new EqualsBuilder()
-                    .append(variableDescriptor, other.variableDescriptor)
-                    .append(leftSubChain, other.leftSubChain)
-                    .append(rightSubChain, other.rightSubChain)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final SubChainReversingSwapMove<?> other = (SubChainReversingSwapMove<?>) o;
+        return Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(leftSubChain, other.leftSubChain) &&
+                Objects.equals(rightSubChain, other.rightSubChain);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(variableDescriptor)
-                .append(leftSubChain)
-                .append(rightSubChain)
-                .toHashCode();
+        return Objects.hash(variableDescriptor, leftSubChain, rightSubChain);
     }
 
     @Override

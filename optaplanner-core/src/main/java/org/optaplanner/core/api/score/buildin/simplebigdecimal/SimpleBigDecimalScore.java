@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
@@ -172,7 +173,6 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof SimpleBigDecimalScore) {
@@ -186,17 +186,13 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + score.stripTrailingZeros().hashCode();
+        return Objects.hash(initScore, score.stripTrailingZeros());
     }
 
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else {
             return score.compareTo(other.getScore());
         }

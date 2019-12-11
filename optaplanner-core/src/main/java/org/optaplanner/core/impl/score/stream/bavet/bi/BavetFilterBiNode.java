@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -48,9 +49,7 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
     @Override
     public int hashCode() {
-        // Similar to Object.hash() without autoboxing
-        return 31 * System.identityHashCode(parentNode)
-                + System.identityHashCode(predicate);
+        return Objects.hash(System.identityHashCode(parentNode), System.identityHashCode(predicate));
     }
 
     @Override

@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.bendable;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -350,7 +351,6 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof BendableScore) {
@@ -380,28 +380,23 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        int hashCode = (17 * 37) + initScore;
-        hashCode = (37 * hashCode) + Arrays.hashCode(hardScores);
-        hashCode = (37 * hashCode) + Arrays.hashCode(softScores);
-        return hashCode;
+        return Objects.hash(initScore, Arrays.hashCode(hardScores), Arrays.hashCode(softScores));
     }
 
     @Override
     public int compareTo(BendableScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         validateCompatible(other);
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         }
         for (int i = 0; i < hardScores.length; i++) {
             if (hardScores[i] != other.getHardScore(i)) {
-                return hardScores[i] < other.getHardScore(i) ? -1 : 1;
+                return Integer.compare(hardScores[i], other.getHardScore(i));
             }
         }
         for (int i = 0; i < softScores.length; i++) {
             if (softScores[i] != other.getSoftScore(i)) {
-                return softScores[i] < other.getSoftScore(i) ? -1 : 1;
+                return Integer.compare(softScores[i], other.getSoftScore(i));
             }
         }
         return 0;

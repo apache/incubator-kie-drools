@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.custom;
 
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -25,8 +27,6 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * Therefore a custom shadow variable cannot be reused by built-in systems.
  */
 public class CustomShadowVariableDemand implements Demand<SingletonInverseVariableSupply> {
-
-    private static final int CLASS_NAME_HASH_CODE = CustomShadowVariableDemand.class.getName().hashCode() * 37;
 
     private final CustomShadowVariableDescriptor targetShadowVariableDescriptor;
 
@@ -61,7 +61,7 @@ public class CustomShadowVariableDemand implements Demand<SingletonInverseVariab
 
     @Override
     public int hashCode() {
-        return CLASS_NAME_HASH_CODE + targetShadowVariableDescriptor.hashCode();
+        return Objects.hash(CustomShadowVariableDemand.class.getName(), targetShadowVariableDescriptor);
     }
 
     @Override

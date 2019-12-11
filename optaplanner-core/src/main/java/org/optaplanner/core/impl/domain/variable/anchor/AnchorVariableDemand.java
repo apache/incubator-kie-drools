@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -23,8 +25,6 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class AnchorVariableDemand implements Demand<AnchorVariableSupply> {
-
-    private static final int CLASS_NAME_HASH_CODE = AnchorVariableDemand.class.getName().hashCode() * 37;
 
     protected final VariableDescriptor sourceVariableDescriptor;
 
@@ -68,7 +68,7 @@ public class AnchorVariableDemand implements Demand<AnchorVariableSupply> {
 
     @Override
     public int hashCode() {
-        return CLASS_NAME_HASH_CODE + sourceVariableDescriptor.hashCode();
+        return Objects.hash(AnchorVariableDemand.class.getName(), sourceVariableDescriptor);
     }
 
     @Override

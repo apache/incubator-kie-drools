@@ -17,13 +17,17 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, Serializable {
+
+    private static final Comparator<EmployeeFreeSequence> COMPARATOR =
+            Comparator.comparing(EmployeeFreeSequence::getEmployee)
+                    .thenComparingInt(EmployeeFreeSequence::getFirstDayIndex)
+                    .thenComparingInt(EmployeeFreeSequence::getLastDayIndex);
 
     private Employee employee;
     private int firstDayIndex;
@@ -63,34 +67,24 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeFreeSequence) {
-            EmployeeFreeSequence other = (EmployeeFreeSequence) o;
-            return new EqualsBuilder()
-                    .append(employee, other.employee)
-                    .append(firstDayIndex, other.firstDayIndex)
-                    .append(lastDayIndex, other.lastDayIndex)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeFreeSequence other = (EmployeeFreeSequence) o;
+        return Objects.equals(employee, other.employee) &&
+                firstDayIndex == other.firstDayIndex &&
+                lastDayIndex == other.lastDayIndex;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(employee)
-                .append(firstDayIndex)
-                .append(lastDayIndex)
-                .toHashCode();
+        return Objects.hash(employee, firstDayIndex, lastDayIndex);
     }
 
     @Override
     public int compareTo(EmployeeFreeSequence other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(firstDayIndex, other.firstDayIndex)
-                .append(lastDayIndex, other.lastDayIndex)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override
