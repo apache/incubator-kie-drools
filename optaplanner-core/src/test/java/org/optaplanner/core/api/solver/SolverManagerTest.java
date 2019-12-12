@@ -79,26 +79,33 @@ public class SolverManagerTest {
                             }
                         }
                 ), new ConstructionHeuristicPhaseConfig());
+        // Only 1 solver can run at the same time to predict the solver status of each job.
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig)
                 .withParallelSolverCount("1");
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverManagerConfig);
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
+        solverThreadReadyBarrier.await();
         SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L,
                 PlannerTestUtils.generateTestdataSolution("s2"));
-        solverThreadReadyBarrier.await();
         assertEquals(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.SOLVING_ACTIVE, solverJob1.getSolverStatus());
         assertEquals(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(2L));
+        assertEquals(SolverStatus.SOLVING_SCHEDULED, solverJob2.getSolverStatus());
         mainThreadReadyBarrier.await();
         solverThreadReadyBarrier.await();
         assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
         assertEquals(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(2L));
+        assertEquals(SolverStatus.SOLVING_ACTIVE, solverJob2.getSolverStatus());
         mainThreadReadyBarrier.await();
         solverJob1.getFinalBestSolution();
         solverJob2.getFinalBestSolution();
         assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
         assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(2L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverJob2.getSolverStatus());
     }
 
 }
