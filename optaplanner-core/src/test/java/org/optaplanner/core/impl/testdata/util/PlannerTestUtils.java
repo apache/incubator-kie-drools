@@ -42,6 +42,9 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import static org.mockito.Mockito.*;
 
@@ -92,6 +95,17 @@ public class PlannerTestUtils {
     public static <Solution_> Solution_ solve(SolverConfig solverConfig, Solution_ problem) {
         SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
         return solverFactory.buildSolver().solve(problem);
+    }
+
+    // ************************************************************************
+    // Testdata methods
+    // ************************************************************************
+
+    public static TestdataSolution generateTestdataSolution(String code) {
+        TestdataSolution solution = new TestdataSolution(code);
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+        return solution;
     }
 
     // ************************************************************************

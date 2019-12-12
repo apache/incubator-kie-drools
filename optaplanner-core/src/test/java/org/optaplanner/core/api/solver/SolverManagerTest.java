@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +27,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -53,18 +51,54 @@ public class SolverManagerTest {
                 .withParallelSolverCount("2");
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverManagerConfig);
 
-        TestdataSolution solution1 = new TestdataSolution("s1");
-        solution1.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution1.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L, solution1);
-
-        TestdataSolution solution2 = new TestdataSolution("s2");
-        solution2.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution2.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
-        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L, solution2);
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+                PlannerTestUtils.generateTestdataSolution("s1"));
+        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L,
+                PlannerTestUtils.generateTestdataSolution("s2"));
 
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         assertSolutionInitialized(solverJob2.getFinalBestSolution());
+    }
+
+    @Test(timeout = 600_000)
+    public void getSolverStatus() throws InterruptedException, BrokenBarrierException, ExecutionException {
+        CyclicBarrier solverThreadReadyBarrier = new CyclicBarrier(2);
+        CyclicBarrier mainThreadReadyBarrier = new CyclicBarrier(2);
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        scoreDirector -> {
+                            try {
+                                solverThreadReadyBarrier.await();
+                            } catch (InterruptedException | BrokenBarrierException e) {
+                                fail("Cyclic barrier failed.");
+                            }
+                            try {
+                                mainThreadReadyBarrier.await();
+                            } catch (InterruptedException | BrokenBarrierException e) {
+                                fail("Cyclic barrier failed.");
+                            }
+                        }
+                ), new ConstructionHeuristicPhaseConfig());
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig)
+                .withParallelSolverCount("1");
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverManagerConfig);
+
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+                PlannerTestUtils.generateTestdataSolution("s1"));
+        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L,
+                PlannerTestUtils.generateTestdataSolution("s2"));
+        solverThreadReadyBarrier.await();
+        assertEquals(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(2L));
+        mainThreadReadyBarrier.await();
+        solverThreadReadyBarrier.await();
+        assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(2L));
+        mainThreadReadyBarrier.await();
+        solverJob1.getFinalBestSolution();
+        solverJob2.getFinalBestSolution();
+        assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(2L));
     }
 
 }
