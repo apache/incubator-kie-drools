@@ -482,6 +482,7 @@ public class FieldDefinition
     public String resolveAlias( ) {
         if ( getAnnotations() != null ) {
             for ( AnnotationDefinition def : getAnnotations() ) {
+
                 if ( def.getName().equals( Alias.class.getName() ) ) {
                     String alias =  (String) def.getValues().get( "value" ).getValue();
                     return alias;

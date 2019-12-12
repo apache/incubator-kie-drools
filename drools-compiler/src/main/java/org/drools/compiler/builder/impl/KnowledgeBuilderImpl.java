@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -284,7 +285,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         }
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        typeBuilder = new TypeDeclarationBuilder(this);
+        this.typeBuilder = createTypeDeclarationBuilder();
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -310,7 +311,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.kBase = kBase;
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        typeBuilder = new TypeDeclarationBuilder(this);
+
+        this.typeBuilder = createTypeDeclarationBuilder();
+    }
+
+    private TypeDeclarationBuilder createTypeDeclarationBuilder() {
+        TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
+                Optional.ofNullable(ServiceRegistry.getInstance().get(TypeDeclarationBuilderFactory.class))
+                        .orElse(new DefaultTypeDeclarationBuilderFactory());
+
+        return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
     }
 
     public void setReleaseId( ReleaseId releaseId ) {
@@ -989,7 +999,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         InternalKnowledgePackage pkg;
         if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
-            pkg = new KnowledgePackageImpl(packageDescr.getName());
+            pkg = configuration.getKieComponentFactory().createKnowledgePackage((packageDescr.getName()));
             pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
 
             // if there is a rulebase then add the package.

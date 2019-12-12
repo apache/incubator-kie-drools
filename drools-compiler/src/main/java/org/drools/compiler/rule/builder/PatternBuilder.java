@@ -69,7 +69,6 @@ import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -560,14 +559,6 @@ public class PatternBuilder
             }
         }
 
-        for (Constraint constr : pattern.getConstraints()) {
-            if (constr instanceof EvaluatorConstraint && ((EvaluatorConstraint) constr).isSelf()) {
-                EvaluatorConstraint ec = ((EvaluatorConstraint) constr);
-                if (ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA) {
-                    listenedProperties.add(TraitableBean.TRAITSET_FIELD_NAME);
-                }
-            }
-        }
         pattern.setListenedProperties(listenedProperties);
     }
 

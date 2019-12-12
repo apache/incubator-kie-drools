@@ -29,14 +29,11 @@ import org.slf4j.LoggerFactory;
 
 public class DroolsPersistenceUtil extends PersistenceUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(DroolsPersistenceUtil.class);
-
     // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
 
     public static String OPTIMISTIC_LOCKING = "optimistic";
     public static String PESSIMISTIC_LOCKING = "pessimistic";
-
 
     public static Environment createEnvironment(Map<String, Object> context) {
         Environment env = EnvironmentFactory.newEnvironment();

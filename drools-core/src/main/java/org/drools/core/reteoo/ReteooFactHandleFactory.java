@@ -80,6 +80,11 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         }
     }
 
+    @Override
+    public DefaultFactHandle createDefaultFactHandle(long id, Object initialFact, long recency, WorkingMemoryEntryPoint wmEntryPoint) {
+        return new DefaultFactHandle(0, initialFact, 0, wmEntryPoint );
+    }
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newInstance()
      */
