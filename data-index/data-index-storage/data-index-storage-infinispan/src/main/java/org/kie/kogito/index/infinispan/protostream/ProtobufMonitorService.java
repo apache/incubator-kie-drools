@@ -19,12 +19,17 @@ package org.kie.kogito.index.infinispan.protostream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,15 +77,15 @@ public class ProtobufMonitorService {
                 throw new RuntimeException(format("Could not find proto files folder at: %s", folderPath));
             }
 
+            if (monitor) {
+                executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(new FolderWatcher(registerProtoFile(), protoFolder.toPath()));
+            }
+
             try (Stream<Path> stream = Files.find(protoFolder.toPath(), Integer.MAX_VALUE, (path, attrs) -> protoFileMatcher.matches(path))) {
                 stream.filter(path -> !KOGITO_APPLICATION_PROTO.equals(path.getFileName().toFile().getName())).forEach(path -> registerProtoFile().accept(path));
             } catch (IOException ex) {
                 throw new RuntimeException(format("Could not read content from proto file folder: %s", protoFolder), ex);
-            }
-
-            if (monitor) {
-                executorService = Executors.newSingleThreadExecutor();
-                executorService.submit(new FolderWatcher(registerProtoFile(), protoFolder.toPath()));
             }
         }
     }
@@ -110,6 +115,7 @@ public class ProtobufMonitorService {
 
         private Consumer<Path> consumer;
         private Path folder;
+        private final Map<WatchKey,Path> keys = new HashMap<>();
 
         public FolderWatcher(Consumer<Path> consumer, Path folder) {
             this.consumer = consumer;
@@ -119,14 +125,21 @@ public class ProtobufMonitorService {
         @Override
         public void run() {
             try (WatchService ws = FileSystems.getDefault().newWatchService()) {
-                folder.register(ws, ENTRY_MODIFY);
+                keys.put(folder.register(ws, ENTRY_MODIFY), folder);
+                Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                        keys.put(dir.register(ws, ENTRY_MODIFY), dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
                 WatchKey key;
                 while ((key = ws.take()) != null) {
                     for (WatchEvent<?> event : key.pollEvents()) {
                         LOGGER.debug("Event kind: {}. File affected: {}", event.kind(), event.context());
                         Path path = (Path) event.context();
                         if (protoFileMatcher.matches(path) && !KOGITO_APPLICATION_PROTO.equals(path.getFileName().toFile().getName())) {
-                            Path proto = folder.resolve(path);
+                            Path proto = keys.get(key).resolve(path);
                             consumer.accept(proto);
                         }
                     }
