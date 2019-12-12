@@ -8,10 +8,12 @@ import {
   FormGroup,
   Text,
   TextVariants,
-  Title
+  Title,
+  Tooltip
 } from '@patternfly/react-core';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
 
 const ProcessDetails = ({ loading, data }) => {
   return (
@@ -73,18 +75,23 @@ const ProcessDetails = ({ loading, data }) => {
           </FormGroup>
           {data.ProcessInstances[0].parentProcessInstanceId ? (
             <FormGroup label="Parent Process" fieldId="parent">
-              <Text component={TextVariants.p}>
-                <Link
-                  to={
-                    '/ProcessInstances/' +
-                    data.ProcessInstances[0].parentProcessInstanceId
-                  }
+              <div>
+                <Tooltip
+                  content={data.ProcessInstances[0].parentProcessInstanceId}
                 >
-                  <Button variant="secondary">
+                  <Button
+                    component="a"
+                    href={
+                      '/ProcessInstances/' +
+                      data.ProcessInstances[0].parentProcessInstanceId
+                    }
+                    variant="link"
+                    icon={<LevelUpAltIcon />}
+                  >
                     {data.ProcessInstances[0].parentProcessInstanceId}
                   </Button>
-                </Link>
-              </Text>
+                </Tooltip>
+              </div>
             </FormGroup>
           ) : (
             ''
@@ -93,15 +100,19 @@ const ProcessDetails = ({ loading, data }) => {
             <FormGroup label="Sub Processes" fieldId="parent">
               {data.ProcessInstances[0].childProcessInstanceId.map(
                 (child, index) => (
-                  <Text
-                    component={TextVariants.p}
-                    key={child}
-                    style={{ marginTop: '5px' }}
-                  >
-                    <Link to={'/ProcessInstances/' + child}>
-                      <Button variant="secondary">{child}</Button>
-                    </Link>
-                  </Text>
+                  <div key={child}>
+                    <Tooltip content={child}>
+                      <Button
+                        component="a"
+                        href={'/ProcessInstances/' + child}
+                        key={child}
+                        variant="link"
+                        icon={<LevelDownAltIcon />}
+                      >
+                        {child}
+                      </Button>
+                    </Tooltip>
+                  </div>
                 )
               )}
             </FormGroup>

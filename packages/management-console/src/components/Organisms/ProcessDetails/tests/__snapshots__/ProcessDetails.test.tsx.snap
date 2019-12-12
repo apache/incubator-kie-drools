@@ -78,19 +78,55 @@ exports[`Process Details component Snapshot tests 1`] = `
         fieldId="parent"
         label="Parent Process"
       >
-        <Text
-          component="p"
-        >
-          <Link
-            to="/ProcessInstances/e4448857-fa0c-403b-ad69-f0a353458b9d"
+        <div>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="e4448857-fa0c-403b-ad69-f0a353458b9d"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
           >
             <Component
-              variant="secondary"
+              component="a"
+              href="/ProcessInstances/e4448857-fa0c-403b-ad69-f0a353458b9d"
+              icon={
+                <LevelUpAltIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+              }
+              variant="link"
             >
               e4448857-fa0c-403b-ad69-f0a353458b9d
             </Component>
-          </Link>
-        </Text>
+          </Tooltip>
+        </div>
       </FormGroup>
     </Form>
   </CardBody>
