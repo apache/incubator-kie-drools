@@ -16,8 +16,6 @@
 package org.drools.core.phreak;
 
 
-import static org.drools.core.phreak.SegmentUtilities.isRootNode;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,6 +72,8 @@ import org.drools.core.util.LinkedList;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.phreak.SegmentUtilities.isRootNode;
 
 public class AddRemoveRule {
 
@@ -1043,6 +1043,12 @@ public class AddRemoveRule {
                 PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
+            if (lt.getContextObject() instanceof AccumulateContext) {
+                LeftTuple resultLt = (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                if (resultLt != null) {
+                    iterateLeftTuple( resultLt, wm );
+                }
+            }
             for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                 for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
                     if (peer.getPeer() == null) {

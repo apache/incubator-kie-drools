@@ -17,16 +17,23 @@
 package org.drools.modelcompiler;
 
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class IncrementalCompilationTest extends BaseModelTest {
 
@@ -213,5 +220,56 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
         assertEquals( 2, ksession2.fireAllRules() );
+    }
+
+    @Test
+    public void testRemoveRulesWithAccumulateAndLogicalAssertions() {
+        // DROOLS-3554
+        final String DRL1 =
+                "rule R1 when\n" +
+                        "    accumulate(String($l : length > 1); $s : sum($l))\n" +
+                        "then\n" +
+                        "    insertLogical($s);\n" +
+                        "end";
+
+        KieServices ks = KieServices.get();
+        final ReleaseId id = ks.newReleaseId("org.test", "logical", "1.0.0");
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(id);
+        kfs.write(ks.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType( ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        kieBuilder.buildAll();
+        KieModule kieModule = kieBuilder.getKieModule();
+        KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
+        KieSession kieSession = kieContainer.newKieSession();
+
+        kieSession.insert("test");
+        kieSession.insert("test2");
+        assertEquals(2, kieSession.getObjects().size());
+
+        kieSession.fireAllRules();
+        assertEquals(3, kieSession.getObjects().size());
+
+        assertEquals(9, kieSession.getObjects(new ClassObjectFilter( Integer.class )).iterator().next());
+
+        ReleaseId id2 = ks.newReleaseId("org.test", "logical", "2.0.0");
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+
+        KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
+        kfs2.generateAndWritePomXML(id2);
+
+        kieBuilder = ks.newKieBuilder(kfs2);
+        kieBuilder.buildAll();
+        kieModule = kieBuilder.getKieModule();
+        kieContainer.updateToVersion(id2);
+
+        kieSession.fireAllRules();
+        assertEquals(2, kieSession.getObjects().size());
+        assertTrue(kieSession.getObjects(new ClassObjectFilter( Integer.class )).isEmpty());
     }
 }

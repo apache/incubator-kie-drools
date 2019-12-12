@@ -384,10 +384,8 @@ public class DefaultAgenda
     }
 
     @Override
-    public void cancelActivation(final Tuple leftTuple,
-                                 final PropagationContext context,
-                                 final Activation activation,
-                                 final TerminalNode rtn) {
+    public void cancelActivation(final PropagationContext context,
+                                 final Activation activation) {
         AgendaItem item = (AgendaItem) activation;
         item.removeAllBlockersAndBlocked( this );
 
@@ -408,7 +406,7 @@ public class DefaultAgenda
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
             }
-            leftTuple.decreaseActivationCountForEvents();
+            (( Tuple ) activation).decreaseActivationCountForEvents();
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                            workingMemory,
@@ -421,9 +419,7 @@ public class DefaultAgenda
 
         workingMemory.getRuleEventSupport().onDeleteMatch( item );
 
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
-                                                                context,
-                                                                rtn.getRule() );
+        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, context, activation.getRule() );
     }
 
     /*
