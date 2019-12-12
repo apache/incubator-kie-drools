@@ -17,7 +17,6 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         if (!(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
         }
-        Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
+        Object expressionResult = compileAndExecute((String) rawExpression, new HashMap<>());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
@@ -96,8 +95,9 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
     /**
      * The clean works in the following ways:
-     * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#')
-     * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case.
+     * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#');
+     * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case, removing
+     *                    the MVEL_ESCAPE_SYMBOL ('#');
      * - All other cases are wrong: a <code>IllegalArgumentException</code> in thrown.
      * @param rawExpression
      * @return
@@ -109,8 +109,10 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(rawExpression);
-            if (jsonNode.isTextual()) {
-                return jsonNode.asText();
+            if (jsonNode.isTextual() && jsonNode.asText() != null) {
+                String expression = jsonNode.asText();
+                expression = expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+                return expression;
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "' ", e);
