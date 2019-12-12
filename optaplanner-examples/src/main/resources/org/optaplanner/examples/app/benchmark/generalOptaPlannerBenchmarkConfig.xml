@@ -265,11 +265,10 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1500</solutionTabuSize>
-          <moveTabuSize>7</moveTabuSize>
+          <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
         </acceptor>
         <forager>
-          <!-- Real world problems require to use of <acceptedCountLimit> -->
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

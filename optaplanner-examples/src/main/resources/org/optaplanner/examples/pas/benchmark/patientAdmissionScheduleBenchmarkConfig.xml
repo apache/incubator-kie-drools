@@ -62,26 +62,6 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>old MH</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <moveListFactory>
-          <selectionOrder>RANDOM</selectionOrder>
-          <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
-        <acceptor>
-          <undoMoveTabuSize>3</undoMoveTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>500</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
     <name>Tabu Search</name>
     <solver>
       <constructionHeuristic>

@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
+@Deprecated
 public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
     public SolutionTabuAcceptor(String logIndentation) {

@@ -387,17 +387,14 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
       <undoMoveTabuSize>7</undoMoveTabuSize>
     </acceptor>
 ----
-* _Solution tabu_ makes recently visited solutions tabu. It does not accept a move that leads to one of those solutions. It requires that the `Solution` implements `equals()` and `hashCode()` properly. If you can spare the memory, don't be cheap on the tabu size.
-+
-[source,xml,options="nowrap"]
-----
-    <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
-    </acceptor>
-----
-+
-For non-trivial cases, solution tabu is usually useless because the <<searchSpaceSize,search space size>> makes it statistically highly unlikely to reach the same solution twice.
-Therefore its use is not recommended, except for small datasets.
+
+[IMPORTANT]
+====
+When using move tabu and undo move tabu with <<customMoves,custom moves>>,
+make sure that the planning entities do not include planning variables in their `hashCode` methods.
+Failure to do so results in runtime exceptions being thrown due to the `hashCode` not being constant,
+as the entities have their values changed by the local search algorithm.
+====
 
 Sometimes it's useful to combine tabu types:
 

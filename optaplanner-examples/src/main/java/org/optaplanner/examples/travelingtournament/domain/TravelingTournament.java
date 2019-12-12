@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -86,36 +84,6 @@ public class TravelingTournament extends AbstractPersistable {
 
     public int getN() {
         return teamList.size();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof TravelingTournament)) {
-            return false;
-        } else {
-            TravelingTournament other = (TravelingTournament) o;
-            if (matchList.size() != other.matchList.size()) {
-                return false;
-            }
-            for (Iterator<Match> it = matchList.iterator(), otherIt = other.matchList.iterator(); it.hasNext();) {
-                Match match = it.next();
-                Match otherMatch = otherIt.next();
-                // Notice: we don't use equals()
-                if (!match.solutionEquals(otherMatch)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int[] hashes = matchList.stream().mapToInt(Match::solutionHashCode).toArray();
-        return Arrays.hashCode(hashes);
     }
 
 }

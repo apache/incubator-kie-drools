@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import java.util.Objects;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -55,38 +53,6 @@ public class Match extends AbstractPersistable {
 
     public void setDay(Day day) {
         this.day = day;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final Match other = (Match) o;
-        return Objects.equals(id, other.id) &&
-                Objects.equals(homeTeam, other.homeTeam) &&
-                Objects.equals(awayTeam, other.awayTeam) &&
-                Objects.equals(day, other.day);
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return Objects.hash(id, homeTeam, awayTeam, day);
     }
 
     @Override

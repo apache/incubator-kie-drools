@@ -45,7 +45,7 @@
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
-          <moveTabuSize>7</moveTabuSize>
+          <entityTabuSize>11</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>1000</acceptedCountLimit>

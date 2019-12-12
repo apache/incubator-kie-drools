@@ -19,21 +19,20 @@
     <unionMoveSelector>
       <swapMoveSelector>
         <cacheType>PHASE</cacheType>
-        <selectionOrder>SHUFFLED</selectionOrder><!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
+        <selectionOrder>SHUFFLED</selectionOrder> <!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
         <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
       </swapMoveSelector>
       <moveListFactory>
         <cacheType>STEP</cacheType>
-        <selectionOrder>SHUFFLED</selectionOrder><!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
+        <selectionOrder>SHUFFLED</selectionOrder> <!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
         <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
       </moveListFactory>
     </unionMoveSelector>
     <acceptor>
-      <solutionTabuSize>1500</solutionTabuSize>
-      <moveTabuSize>7</moveTabuSize>
+      <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
     </acceptor>
     <forager>
-      <!-- Real world problems require to use of <acceptedCountLimit> -->
+      <acceptedCountLimit>4</acceptedCountLimit>
     </forager>
   </localSearch>
 </solver>

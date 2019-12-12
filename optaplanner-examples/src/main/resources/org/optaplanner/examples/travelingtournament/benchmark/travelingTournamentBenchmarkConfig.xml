@@ -32,31 +32,6 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>tabuSearch</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-          </swapMoveSelector>
-          <moveListFactory>
-            <cacheType>STEP</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-        </unionMoveSelector>
-        <acceptor>
-          <solutionTabuSize>1500</solutionTabuSize>
-          <moveTabuSize>7</moveTabuSize>
-        </acceptor>
-        <forager>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
     <name>simulatedAnnealing-0hard-8000soft</name>
     <solver>
       <localSearch>
