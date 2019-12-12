@@ -1044,7 +1044,10 @@ public class AddRemoveRule {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                iterateLeftTuple( (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple(), wm );
+                LeftTuple resultLt = (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                if (resultLt != null) {
+                    iterateLeftTuple( resultLt, wm );
+                }
             }
             for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                 for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
