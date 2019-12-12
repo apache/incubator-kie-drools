@@ -94,7 +94,6 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
         int availableProcessorCount = getAvailableProcessors();
         Integer resolvedParallelSolverCount;
         if (parallelSolverCount == null || parallelSolverCount.equals(PARALLEL_SOLVER_COUNT_AUTO)) {
-            // Leave one for the Operating System and 1 for the solver thread, take the rest
             resolvedParallelSolverCount = resolveParallelSolverCountAutomatically(availableProcessorCount);
         } else {
             resolvedParallelSolverCount = ConfigUtils.resolveThreadPoolSizeScript(
