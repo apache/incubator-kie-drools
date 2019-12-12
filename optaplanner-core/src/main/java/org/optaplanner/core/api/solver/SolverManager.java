@@ -66,6 +66,20 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // ************************************************************************
 
     /**
+     * As defined by {@link #solveBatch(Object, Function, Consumer)}.
+     * <p>
+     * To retrieve the final best solution, use {@link SolverJob#getFinalBestSolution()}.
+     * In server applications, it's recommended to use {@link #solveBatch(Object, Function, Consumer)} instead.
+     * @param problemId never null, a ID for each planning problem. This must be unique.
+     * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
+     * @param problem never null, a {@link PlanningSolution} usually with uninitialized planning variables
+     * @return never null
+     */
+    default SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId, Solution_ problem) {
+        return solveBatch(problemId, (problemId_) -> problem, null, null);
+    }
+
+    /**
      * Submits a planning problem to solve and returns immediately.
      * The planning problem is solved on a solver {@link Thread}, as soon as one is available.
      * <p>
@@ -80,7 +94,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
      * @param problemFinder never null, a function that returns a {@link PlanningSolution}, usually with uninitialized planning variables
-     * @param finalBestSolutionConsumer never null, called only once, at the end, on a consumer thread
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread
      * @return never null
      */
     default SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId,
@@ -89,12 +103,12 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     }
 
     /**
-     * As defined by {@link #solveBatch(Object, Function, Consumer)},
+     * As defined by {@link #solveBatch(Object, Function, Consumer)}.
      * @param problemId never null, a ID for each planning problem. This must be unique.
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
      * @param problemFinder never null, function that returns a {@link PlanningSolution}, usually with uninitialized planning variables
-     * @param finalBestSolutionConsumer never null, called only once, at the end, on a consumer thread
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread
      * @param exceptionHandler sometimes null, called if an exception or error occurs.
      * If null it defaults to logging the exception as an error.
      * @return never null
@@ -127,7 +141,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     }
 
     /**
-     * As defined by {@link #solveObserving(Object, Function, Consumer)},
+     * As defined by {@link #solveObserving(Object, Function, Consumer)}.
      * @param problemId never null, a ID for each planning problem. This must be unique.
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.

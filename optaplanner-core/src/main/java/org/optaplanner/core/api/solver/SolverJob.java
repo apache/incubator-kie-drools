@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -54,5 +55,13 @@ public interface SolverJob<Solution_, ProblemId_> {
      * Does nothing if the solver already terminated.
      */
     void terminateEarly();
+
+    /**
+     * Waits if necessary for the solver to complete and then returns the final best {@link PlanningSolution}.
+     * @return never null, but it could be the original uninitialized problem
+     * @throws InterruptedException if the current thread was interrupted while waiting
+     * @throws ExecutionException if the computation threw an exception
+     */
+    Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException;
 
 }

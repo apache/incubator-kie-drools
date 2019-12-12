@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.solver;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -41,6 +43,7 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
     private final BiConsumer<ProblemId_, Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
+    private Future<Solution_> future;
 
     public DefaultSolverJob(DefaultSolverManager<Solution_, ProblemId_> solverManager, ProblemId_ problemId,
             Solver<Solution_> solver,
@@ -54,6 +57,10 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         solverStatus = SolverStatus.SOLVING_SCHEDULED;
+    }
+
+    public void setFuture(Future<Solution_> future) {
+        this.future = future;
     }
 
     @Override
@@ -102,6 +109,11 @@ public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Soluti
     @Override
     public void terminateEarly() {
         solver.terminateEarly();
+    }
+
+    @Override
+    public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
+        return future.get();
     }
 
 }

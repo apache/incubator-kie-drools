@@ -47,10 +47,10 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @see PlannerTestUtils
@@ -467,6 +467,19 @@ public class PlannerAssert extends Assert {
         assertEquals(false, subChainSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, subChainSelector.getSize());
+        }
+    }
+
+    // ************************************************************************
+    // Testdata methods
+    // ************************************************************************
+
+    public static void assertSolutionInitialized(TestdataSolution solution) {
+        assertNotNull(solution);
+        List<TestdataEntity> entityList = solution.getEntityList();
+        assertFalse(entityList.isEmpty());
+        for (TestdataEntity entity : entityList) {
+            assertNotNull(entity.getValue());
         }
     }
 

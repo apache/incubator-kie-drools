@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -107,7 +108,8 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
                return new DefaultSolverJob<>(this, problemId, solver, problemFinder, finalBestSolutionConsumer, finalExceptionHandler);
            }
         });
-        solverThreadPool.submit(solverJob);
+        Future<Solution_> future = solverThreadPool.submit(solverJob);
+        solverJob.setFuture(future);
         return solverJob;
     }
 
