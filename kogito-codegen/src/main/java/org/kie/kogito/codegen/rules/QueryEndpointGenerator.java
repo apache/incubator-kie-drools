@@ -126,7 +126,7 @@ public class QueryEndpointGenerator implements FileGenerator {
 
         MethodDeclaration queryMethodSingle = clazz.getMethodsByName( "executeQueryFirst" ).get(0);
         queryMethodSingle.getParameter( 0 ).setType(ruleUnit.getCanonicalName() + "DTO");
-        queryMethodSingle.setType( returnType );
+        queryMethodSingle.setType( toNonPrimitiveType( returnType ) );
 
         Statement statementSingle = queryMethodSingle
                 .getBody()
