@@ -1,7 +1,10 @@
-import gql from 'graphql-tag';
-export type Maybe<T> = T | null;
-/** All built-in and custom scalars, mapped to their actual values */
 /* tslint:disable */
+import gql from 'graphql-tag';
+import * as ApolloReactCommon from '@apollo/react-common';
+import * as ApolloReactHooks from '@apollo/react-hooks';
+export type Maybe<T> = T | null;
+
+/** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
   String: string;
@@ -349,3 +352,318 @@ export type UserTaskInstanceOrderBy = {
   referenceName?: Maybe<OrderBy>;
   lastUpdate?: Maybe<OrderBy>;
 };
+
+export type GetProcessInstancesQueryVariables = {
+  state?: Maybe<Array<ProcessInstanceState>>;
+};
+
+export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
+  ProcessInstances: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'ProcessInstance' } & Pick<
+          ProcessInstance,
+          | 'id'
+          | 'processId'
+          | 'processName'
+          | 'parentProcessInstanceId'
+          | 'roles'
+          | 'state'
+          | 'start'
+          | 'addons'
+          | 'endpoint'
+        > & {
+            error: Maybe<
+              { __typename?: 'ProcessInstanceError' } & Pick<
+                ProcessInstanceError,
+                'nodeDefinitionId' | 'message'
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export type GetChildInstancesQueryVariables = {
+  instanceId?: Maybe<Scalars['String']>;
+};
+
+export type GetChildInstancesQuery = { __typename?: 'Query' } & {
+  ProcessInstances: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'ProcessInstance' } & Pick<
+          ProcessInstance,
+          | 'id'
+          | 'processId'
+          | 'processName'
+          | 'parentProcessInstanceId'
+          | 'roles'
+          | 'state'
+          | 'start'
+          | 'endpoint'
+          | 'addons'
+        > & {
+            error: Maybe<
+              { __typename?: 'ProcessInstanceError' } & Pick<
+                ProcessInstanceError,
+                'nodeDefinitionId' | 'message'
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export type GetProcessInstanceByIdQueryVariables = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
+  ProcessInstances: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'ProcessInstance' } & Pick<
+          ProcessInstance,
+          | 'id'
+          | 'processId'
+          | 'processName'
+          | 'parentProcessInstanceId'
+          | 'roles'
+          | 'variables'
+          | 'state'
+          | 'start'
+          | 'end'
+          | 'endpoint'
+          | 'childProcessInstanceId'
+        > & {
+            nodes: Array<
+              { __typename?: 'NodeInstance' } & Pick<
+                NodeInstance,
+                'id' | 'name' | 'type' | 'enter' | 'exit'
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export const GetProcessInstancesDocument = gql`
+  query getProcessInstances($state: [ProcessInstanceState!]) {
+    ProcessInstances(
+      where: {
+        parentProcessInstanceId: { isNull: true }
+        state: { in: $state }
+      }
+    ) {
+      id
+      processId
+      processName
+      parentProcessInstanceId
+      roles
+      state
+      start
+      addons
+      endpoint
+      error {
+        nodeDefinitionId
+        message
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProcessInstancesQuery__
+ *
+ * To run a query within a React component, call `useGetProcessInstancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProcessInstancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProcessInstancesQuery({
+ *   variables: {
+ *      state: // value for 'state'
+ *   },
+ * });
+ */
+export function useGetProcessInstancesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetProcessInstancesQuery,
+    GetProcessInstancesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetProcessInstancesQuery,
+    GetProcessInstancesQueryVariables
+  >(GetProcessInstancesDocument, baseOptions);
+}
+export function useGetProcessInstancesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetProcessInstancesQuery,
+    GetProcessInstancesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetProcessInstancesQuery,
+    GetProcessInstancesQueryVariables
+  >(GetProcessInstancesDocument, baseOptions);
+}
+export type GetProcessInstancesQueryHookResult = ReturnType<
+  typeof useGetProcessInstancesQuery
+>;
+export type GetProcessInstancesLazyQueryHookResult = ReturnType<
+  typeof useGetProcessInstancesLazyQuery
+>;
+export type GetProcessInstancesQueryResult = ApolloReactCommon.QueryResult<
+  GetProcessInstancesQuery,
+  GetProcessInstancesQueryVariables
+>;
+export const GetChildInstancesDocument = gql`
+  query getChildInstances($instanceId: String) {
+    ProcessInstances(
+      where: { parentProcessInstanceId: { equal: $instanceId } }
+    ) {
+      id
+      processId
+      processName
+      parentProcessInstanceId
+      roles
+      state
+      start
+      endpoint
+      addons
+      error {
+        nodeDefinitionId
+        message
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetChildInstancesQuery__
+ *
+ * To run a query within a React component, call `useGetChildInstancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChildInstancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChildInstancesQuery({
+ *   variables: {
+ *      instanceId: // value for 'instanceId'
+ *   },
+ * });
+ */
+export function useGetChildInstancesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetChildInstancesQuery,
+    GetChildInstancesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetChildInstancesQuery,
+    GetChildInstancesQueryVariables
+  >(GetChildInstancesDocument, baseOptions);
+}
+export function useGetChildInstancesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetChildInstancesQuery,
+    GetChildInstancesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetChildInstancesQuery,
+    GetChildInstancesQueryVariables
+  >(GetChildInstancesDocument, baseOptions);
+}
+export type GetChildInstancesQueryHookResult = ReturnType<
+  typeof useGetChildInstancesQuery
+>;
+export type GetChildInstancesLazyQueryHookResult = ReturnType<
+  typeof useGetChildInstancesLazyQuery
+>;
+export type GetChildInstancesQueryResult = ApolloReactCommon.QueryResult<
+  GetChildInstancesQuery,
+  GetChildInstancesQueryVariables
+>;
+export const GetProcessInstanceByIdDocument = gql`
+  query getProcessInstanceById($id: String) {
+    ProcessInstances(where: { id: { equal: $id } }) {
+      id
+      processId
+      processName
+      parentProcessInstanceId
+      roles
+      variables
+      state
+      start
+      end
+      endpoint
+      childProcessInstanceId
+      nodes {
+        id
+        name
+        type
+        enter
+        exit
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProcessInstanceByIdQuery__
+ *
+ * To run a query within a React component, call `useGetProcessInstanceByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProcessInstanceByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProcessInstanceByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProcessInstanceByIdQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetProcessInstanceByIdQuery,
+    GetProcessInstanceByIdQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetProcessInstanceByIdQuery,
+    GetProcessInstanceByIdQueryVariables
+  >(GetProcessInstanceByIdDocument, baseOptions);
+}
+export function useGetProcessInstanceByIdLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetProcessInstanceByIdQuery,
+    GetProcessInstanceByIdQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetProcessInstanceByIdQuery,
+    GetProcessInstanceByIdQueryVariables
+  >(GetProcessInstanceByIdDocument, baseOptions);
+}
+export type GetProcessInstanceByIdQueryHookResult = ReturnType<
+  typeof useGetProcessInstanceByIdQuery
+>;
+export type GetProcessInstanceByIdLazyQueryHookResult = ReturnType<
+  typeof useGetProcessInstanceByIdLazyQuery
+>;
+export type GetProcessInstanceByIdQueryResult = ApolloReactCommon.QueryResult<
+  GetProcessInstanceByIdQuery,
+  GetProcessInstanceByIdQueryVariables
+>;

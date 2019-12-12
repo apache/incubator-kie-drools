@@ -11,8 +11,8 @@ const props = {
   }
 };
 
-const GET_QUERY = gql`
-  query getQuery($id: String) {
+const GET_PROCESS_INSTANCE = gql`
+  query getProcessInstanceById($id: String) {
     ProcessInstances(where: { id: { equal: $id } }) {
       id
       processId
@@ -34,7 +34,7 @@ const GET_QUERY = gql`
 const mocks = [
   {
     request: {
-      query: GET_QUERY,
+      query: GET_PROCESS_INSTANCE,
       variables: {
         id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
       }

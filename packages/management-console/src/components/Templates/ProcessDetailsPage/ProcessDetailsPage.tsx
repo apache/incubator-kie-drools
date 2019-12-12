@@ -19,8 +19,8 @@ import './ProcessDetailsPage.css';
 
 const ProcessDetailsPage = ({ match }) => {
   const id = match.params.instanceID;
-  const GET_QUERY = gql`
-    query getQuery($id: String) {
+  const GET_PROCESS_INSTANCE = gql`
+    query getProcessInstanceById($id: String) {
       ProcessInstances(where: { id: { equal: $id } }) {
         id
         processId
@@ -43,7 +43,7 @@ const ProcessDetailsPage = ({ match }) => {
       }
     }
   `;
-  const { data, loading, error } = useQuery(GET_QUERY, {
+  const { data, loading, error } = useQuery(GET_PROCESS_INSTANCE, {
     variables: { id }
   });
 

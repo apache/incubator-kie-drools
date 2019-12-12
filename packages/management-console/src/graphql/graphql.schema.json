@@ -1712,16 +1712,6 @@
             "defaultValue": null
           },
           {
-            "name": "processInstanceId",
-            "description": "",
-            "type": {
-              "kind": "ENUM",
-              "name": "OrderBy",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed",
             "description": "",
             "type": {

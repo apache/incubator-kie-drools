@@ -42,7 +42,7 @@ exports[`Process Details Page component Sample test case 1`] = `
       "link": MockLink {
         "addTypename": false,
         "mockedResponsesByKey": Object {
-          "{\\"query\\":\\"query getQuery($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+          "{\\"query\\":\\"query getProcessInstanceById($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
             Object {
               "request": Object {
                 "query": Object {
@@ -52,7 +52,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                       "kind": "OperationDefinition",
                       "name": Object {
                         "kind": "Name",
-                        "value": "getQuery",
+                        "value": "getProcessInstanceById",
                       },
                       "operation": "query",
                       "selectionSet": Object {
@@ -275,7 +275,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 278,
+                    "end": 292,
                     "start": 0,
                   },
                 },
@@ -411,7 +411,7 @@ exports[`Process Details Page component Sample test case 1`] = `
         "link": MockLink {
           "addTypename": false,
           "mockedResponsesByKey": Object {
-            "{\\"query\\":\\"query getQuery($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+            "{\\"query\\":\\"query getProcessInstanceById($id: String) {\\\\n  ProcessInstances(where: {id: {equal: $id}}) {\\\\n    id\\\\n    processId\\\\n    parentProcessInstanceId\\\\n    roles\\\\n    variables\\\\n    state\\\\n    nodes {\\\\n      id\\\\n      name\\\\n      type\\\\n      enter\\\\n      exit\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
               Object {
                 "request": Object {
                   "query": Object {
@@ -421,7 +421,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                         "kind": "OperationDefinition",
                         "name": Object {
                           "kind": "Name",
-                          "value": "getQuery",
+                          "value": "getProcessInstanceById",
                         },
                         "operation": "query",
                         "selectionSet": Object {
@@ -644,7 +644,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 278,
+                      "end": 292,
                       "start": 0,
                     },
                   },
