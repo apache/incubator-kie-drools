@@ -31,7 +31,7 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     /**
      * @return never null, a value given to {@link SolverManager#solveBatch(Object, Function, Consumer)}
-     *or {@link SolverManager#solveObserving(Object, Function, Consumer)}
+     * or {@link SolverManager#solveObserving(Object, Function, Consumer)}
      */
     ProblemId_ getProblemId();
 
