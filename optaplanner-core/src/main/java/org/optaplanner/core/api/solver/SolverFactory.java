@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  * Creates {@link Solver} instances.
  * Most applications only need one SolverFactory.
  * <p>
- * To create an SolverFactory, use {@link #createFromXmlResource(String)}.
+ * To create a SolverFactory, use {@link #createFromXmlResource(String)}.
  * To change the configuration programmatically, create a {@link SolverConfig} first
  * and then use {@link #create(SolverConfig)}.
  * <p>

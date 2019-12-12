@@ -58,7 +58,7 @@ public interface Solver<Solution_> {
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      * @param problem never null, a {@link PlanningSolution}, usually its planning variables are uninitialized
-     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a null {@link Score}.
      * @see #terminateEarly()
      */
     Solution_ solve(Solution_ problem);
@@ -73,7 +73,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * It can only be called from a different thread
      * because the original thread is still calling {@link #solve(Object)}.
-     * @return true if successful
+     * @return true if successful, false if was already terminating or terminated
      * @see #isTerminateEarly()
      * @see Future#cancel(boolean)
      */
