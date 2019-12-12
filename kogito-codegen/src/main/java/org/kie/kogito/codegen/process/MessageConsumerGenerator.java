@@ -120,7 +120,7 @@ public class MessageConsumerGenerator {
                              fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
             
             template.findAll(FieldDeclaration.class,
-                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", "true", fd));
+                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", fd));
             
             template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
         } else {

@@ -116,7 +116,7 @@ public class MessageProducerGenerator {
             produceMethod.setBody(body);
             
             template.findAll(FieldDeclaration.class,
-                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", "true", fd));
+                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", fd));
             
         } 
         template.getMembers().sort(new BodyDeclarationComparator());

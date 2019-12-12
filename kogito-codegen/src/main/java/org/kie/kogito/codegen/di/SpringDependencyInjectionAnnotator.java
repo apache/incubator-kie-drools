@@ -131,13 +131,13 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public void withConfigInjection(String configKey, NodeWithAnnotations<?> node) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + "}")));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
         
     }
 
     @Override
     public void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
         
     }
     

@@ -1,6 +1,7 @@
 package com.myspace.demo;
 
 
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.kie.api.runtime.process.ProcessInstance;
@@ -14,7 +15,7 @@ public class MessageProducer {
     
     Object emitter;
     
-    Boolean useCloudEvents = true;
+    Optional<Boolean> useCloudEvents = Optional.of(true);
     private ObjectMapper json = new ObjectMapper();
     
     
@@ -29,7 +30,7 @@ public class MessageProducer {
 	private String marshall(ProcessInstance pi, $Type$ eventData) {
 	    try {
 	        
-	        if (useCloudEvents) {
+	        if (useCloudEvents.orElse(true)) {
         	    $DataEventType$ event = new $DataEventType$("",
         	                                                    eventData,
         	                                                    pi.getId(),

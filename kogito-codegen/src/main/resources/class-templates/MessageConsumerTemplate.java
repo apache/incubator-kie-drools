@@ -1,6 +1,7 @@
 package com.myspace.demo;
 
 import java.util.TimeZone;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -23,7 +24,7 @@ public class $Type$MessageConsumer {
 
     Application application;
     
-    Boolean useCloudEvents = true;
+    Optional<Boolean> useCloudEvents = Optional.of(true);
     
     private ObjectMapper json = new ObjectMapper();
         
@@ -35,7 +36,7 @@ public class $Type$MessageConsumer {
 	    final String trigger = "$Trigger$";
         try {
             
-            if (useCloudEvents) {
+            if (useCloudEvents.orElse(true)) {
                 final $DataEventType$ eventData = json.readValue(payload, $DataEventType$.class);
         	    final $Type$ model = new $Type$();
                 model.set$ModelRef$(eventData.getData());

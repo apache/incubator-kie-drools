@@ -138,8 +138,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
 
     @Override
     public void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node) {
-        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.config.inject.ConfigProperty"), NodeList.nodeList(new MemberValuePair("name", new StringLiteralExpr(configKey)),
-                                                                                                                                         new MemberValuePair("defaultValue", new StringLiteralExpr(defaultValue)))));
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.config.inject.ConfigProperty"), NodeList.nodeList(new MemberValuePair("name", new StringLiteralExpr(configKey)))));
         
     }
 

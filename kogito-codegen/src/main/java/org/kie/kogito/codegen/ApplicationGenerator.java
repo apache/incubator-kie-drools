@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -32,6 +33,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import javax.lang.model.SourceVersion;
@@ -116,7 +120,7 @@ public class ApplicationGenerator {
         FieldDeclaration eventPublishersFieldDeclaration = new FieldDeclaration();
 
         FieldDeclaration kogitoServiceField = new FieldDeclaration().addVariable(new VariableDeclarator()
-                                                                                .setType(new ClassOrInterfaceType(null, String.class.getCanonicalName()))
+                                                                                .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                                                                                 .setName("kogitoService"));
 
 
@@ -132,9 +136,10 @@ public class ApplicationGenerator {
             annotator.withOptionalInjection(eventPublishersFieldDeclaration);
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
 
-            annotator.withConfigInjection("kogito.service.url", "", kogitoServiceField);
+            annotator.withConfigInjection("kogito.service.url", kogitoServiceField);
         } else {
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(List.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
+            kogitoServiceField.getVariable(0).setInitializer(new MethodCallExpr(new NameExpr(Optional.class.getCanonicalName()), "empty"));
         }
 
         eventPublishersFieldDeclaration.addVariable(eventPublishersDeclarator);

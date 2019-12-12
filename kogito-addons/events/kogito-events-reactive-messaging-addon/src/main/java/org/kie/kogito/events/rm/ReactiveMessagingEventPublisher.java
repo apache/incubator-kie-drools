@@ -16,6 +16,7 @@
 package org.kie.kogito.events.rm;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
+import io.smallrye.reactive.messaging.annotations.Channel;
 import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.Stream;
 
 @Singleton
 public class ReactiveMessagingEventPublisher implements EventPublisher {
@@ -43,20 +44,20 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     private ObjectMapper json = new ObjectMapper();
     
     @Inject
-    @Stream(PI_TOPIC_NAME)
+    @Channel(PI_TOPIC_NAME)
     Emitter<String> processInstancesEventsEmitter;
     
     @Inject
-    @Stream(UI_TOPIC_NAME)
+    @Channel(UI_TOPIC_NAME)
     Emitter<String> userTasksEventsEmitter;
     
     @Inject
-    @ConfigProperty(name = "kogito.events.processinstances.enabled", defaultValue = "true")
-    Boolean processInstancesEvents;
+    @ConfigProperty(name = "kogito.events.processinstances.enabled")
+    Optional<Boolean> processInstancesEvents;
     
     @Inject
-    @ConfigProperty(name = "kogito.events.usertasks.enabled", defaultValue = "true")
-    Boolean userTasksEvents;
+    @ConfigProperty(name = "kogito.events.usertasks.enabled")
+    Optional<Boolean> userTasksEvents;
     
     @PostConstruct
     public void configure() {
@@ -65,10 +66,10 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().equals("ProcessInstanceEvent") && processInstancesEvents) {
+        if (event.getType().equals("ProcessInstanceEvent") && processInstancesEvents.orElse(true)) {
             
             publishToTopic(event, processInstancesEventsEmitter, PI_TOPIC_NAME);
-        } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents) {
+        } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents.orElse(true)) {
             
             publishToTopic(event, userTasksEventsEmitter, UI_TOPIC_NAME);
         } else {

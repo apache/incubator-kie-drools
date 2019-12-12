@@ -23,7 +23,7 @@ public class Application implements org.kie.kogito.Application {
                 unitOfWorkManager().eventManager().addPublisher(publisher));
                 
             }
-            unitOfWorkManager().eventManager().setService(kogitoService);
+            unitOfWorkManager().eventManager().setService(kogitoService.orElse(""));
             unitOfWorkManager().eventManager().setAddons(config().addons());
         }
     }

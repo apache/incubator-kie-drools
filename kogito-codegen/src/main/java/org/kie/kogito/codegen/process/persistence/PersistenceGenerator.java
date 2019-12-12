@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -39,6 +40,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -160,12 +162,12 @@ public class PersistenceGenerator extends AbstractGenerator {
                 annotator.withInjection(constructor);
                 
                 FieldDeclaration templateNameField = new FieldDeclaration().addVariable(new VariableDeclarator()
-                                                                                         .setType(new ClassOrInterfaceType(null, String.class.getCanonicalName()))
+                                                                                         .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                                                                                          .setName(TEMPLATE_NAME));
-                annotator.withConfigInjection("kogito.persistence.infinispan.template", "", templateNameField);
+                annotator.withConfigInjection("kogito.persistence.infinispan.template", templateNameField);
                 // allow to inject template name for the cache
                 BlockStmt templateMethodBody = new BlockStmt();                
-                templateMethodBody.addStatement(new ReturnStmt(new NameExpr(TEMPLATE_NAME)));
+                templateMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(TEMPLATE_NAME), "orElse").addArgument(new StringLiteralExpr(""))));
                 
                 MethodDeclaration templateNameMethod = new MethodDeclaration()
                         .addModifier(Keyword.PUBLIC)
