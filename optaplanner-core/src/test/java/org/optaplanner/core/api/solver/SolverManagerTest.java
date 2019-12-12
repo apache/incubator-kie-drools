@@ -129,6 +129,8 @@ public class SolverManagerTest {
             assertEquals(1, exceptionCount.get());
             assertEquals("exceptionInSolver", e.getCause().getCause().getMessage());
         }
+        assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
     }
 
     @Test
@@ -151,6 +153,8 @@ public class SolverManagerTest {
             assertEquals(1, exceptionCount.get());
             assertEquals("exceptionInConsumer", e.getCause().getCause().getMessage());
         }
+        assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
+        assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
     }
 
     @Ignore("Skip ahead not yet supported")
