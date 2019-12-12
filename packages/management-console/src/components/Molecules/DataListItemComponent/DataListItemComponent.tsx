@@ -381,7 +381,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                   ]
               }
             >
-              {processInstanceData.error.message}
+              {processInstanceData.error ? processInstanceData.error.message: "No error message found"}
             </Modal>
           </DataListAction>
         </DataListItemRow>
