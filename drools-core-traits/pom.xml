@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools</artifactId>
+    <version>7.32.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-core-traits</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <name>Drools :: Core :: Traits</name>
+
+  <properties>
+    <java.module.name>org.drools.core.traits</java.module.name>
+    <surefire.forkCount>2</surefire.forkCount>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!--
+      following are required for parser (lang). May be refactored out of
+      core module.
+    -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-reflective</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Base64 encoding -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>grammarsProfile</id>
+      <activation>
+        <property>
+          <name>grammars</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin><!-- TODO JBRULES-2740 use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up to date -->
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <tasks if="generategrammars">
+                    <path id="base.classpath">
+                      <pathelement
+                          path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+                      <pathelement
+                          path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
+                      <pathelement
+                          path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
+                    </path>
+                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
+                    <echo message="Generating Antlr Grammars"/>
+                    <java classname="org.antlr.Tool" fork="true">
+                      <arg
+                          line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
+                      <classpath refid="base.classpath"/>
+                    </java>
+                    <move todir="src/test/java/org/drools/reteoo/test/parser">
+                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
+                        <include name="**/*.java"/>
+                        <exclude name="**/__*"/>
+                      </fileset>
+                    </move>
+                    <delete>
+                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
+                        <include name="**/*.tokens"/>
+                        <include name="**/classes"/>
+                        <include name="**/__*"/>
+                        <include name="NodeTestDSL__.g"/>
+                      </fileset>
+                    </delete>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>protobufProfile</id>
+      <activation>
+        <property>
+          <name>proto</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.3.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>protoc</executable>
+              <arguments>
+                <argument>-I=src/main/resources</argument>
+                <argument>--java_out=src/main/java</argument>
+                <argument>src/main/resources/org/drools/core/marshalling/droolsmessages.proto</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Generated classes should not show up in Sonar. -->
+        <sonar.exclusions>**/ProtobufMessages.java</sonar.exclusions>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/filtered-resources</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.drools.core.*
+            </Export-Package>
+            <Import-Package>
+              com.sun.tools.xjc.*;resolution:=optional,
+              org.drools.dynamic;resolution:=optional,
+              org.drools.persistence.api;resolution:=optional,
+              org.drools.template.parser;resolution:=optional,
+              org.drools.persistence.jpa;resolution:=optional,
+              org.drools.persistence.jpa.processinstance;resolution:=optional,
+              org.drools.reflective;resolution:=optional,
+              org.drools.reflective.classloader;resolution:=optional,
+              org.jbpm.persistence.api;resolution:=optional,
+              org.jbpm.marshalling.impl;resolution:=optional,
+              org.jbpm.process.instance.impl;resolution:=optional,
+              org.jbpm.process.instance.event;resolution:=optional,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!-- Hack/workaround for https://bugs.openjdk.java.net/browse/JDK-8061305. The Javadoc generation fails for
+               this class, so needs to be excluded. It seems the issue is fixed only in JDK 9+. -->
+          <sourceFileExcludes>
+            <sourceFileExclude>**/MetaProperty.java</sourceFileExclude>
+          </sourceFileExcludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <excludeFilterFile>${project.basedir}/src/main/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.revapi</groupId>
+        <artifactId>revapi-maven-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

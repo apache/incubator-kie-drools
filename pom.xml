@@ -55,6 +55,7 @@
     <module>kie-test-util</module>
     <module>drools-beliefs</module>
     <module>drools-core</module>
+    <module>drools-core-traits</module>
     <module>drools-compiler</module>
     <module>drools-ruleunit</module>
     <module>drools-cdi</module>
