@@ -36,7 +36,7 @@ public interface SolverJob<Solution_, ProblemId_> {
     ProblemId_ getProblemId();
 
     /**
-     * Returns if the {@link Solver} is scheduled to solve, actively solving or not.
+     * Returns whether the {@link Solver} is scheduled to solve, actively solving or not.
      * <p>
      * Returns {@link SolverStatus#NOT_SOLVING} if the solver already terminated.
      * @return never null
