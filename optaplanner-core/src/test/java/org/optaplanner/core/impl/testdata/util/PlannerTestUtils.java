@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.AnyTypePermission;
@@ -102,9 +104,17 @@ public class PlannerTestUtils {
     // ************************************************************************
 
     public static TestdataSolution generateTestdataSolution(String code) {
+        return generateTestdataSolution(code, 2);
+    }
+
+    public static TestdataSolution generateTestdataSolution(String code, int entityAndValueCount) {
         TestdataSolution solution = new TestdataSolution(code);
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+        solution.setValueList(IntStream.range(1, entityAndValueCount + 1)
+                .mapToObj(i -> new TestdataValue("v" + i))
+                .collect(Collectors.toList()));
+        solution.setEntityList(IntStream.range(1, entityAndValueCount + 1)
+                .mapToObj(i -> new TestdataEntity("e" + i))
+                .collect(Collectors.toList()));
         return solution;
     }
 

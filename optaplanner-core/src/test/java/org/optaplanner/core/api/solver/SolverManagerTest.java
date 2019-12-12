@@ -17,14 +17,18 @@
 package org.optaplanner.core.api.solver;
 
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -45,11 +49,9 @@ public class SolverManagerTest {
                             } catch (InterruptedException | BrokenBarrierException e) {
                                 fail("Cyclic barrier failed.");
                             }
-                        }
-                ), new ConstructionHeuristicPhaseConfig());
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig)
-                .withParallelSolverCount("2");
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverManagerConfig);
+                        }), new ConstructionHeuristicPhaseConfig());
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                new SolverManagerConfig(solverConfig).withParallelSolverCount("2"));
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
@@ -77,12 +79,10 @@ public class SolverManagerTest {
                             } catch (InterruptedException | BrokenBarrierException e) {
                                 fail("Cyclic barrier failed.");
                             }
-                        }
-                ), new ConstructionHeuristicPhaseConfig());
+                        }), new ConstructionHeuristicPhaseConfig());
         // Only 1 solver can run at the same time to predict the solver status of each job.
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig)
-                .withParallelSolverCount("1");
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverManagerConfig);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
@@ -106,6 +106,114 @@ public class SolverManagerTest {
         assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
         assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(2L));
         assertEquals(SolverStatus.NOT_SOLVING, solverJob2.getSolverStatus());
+    }
+
+    @Test
+    public void exceptionInSolver() throws InterruptedException {
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        scoreDirector -> {
+                            throw new IllegalStateException("exceptionInSolver");
+                        }));
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+
+        AtomicInteger exceptionCount = new AtomicInteger();
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+                problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
+                null, (problemId, throwable) -> exceptionCount.incrementAndGet());
+        try {
+            solverJob1.getFinalBestSolution();
+            fail("Exception got eaten.");
+        } catch (ExecutionException e) {
+            assertEquals(1, exceptionCount.get());
+            assertEquals("exceptionInSolver", e.getCause().getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void exceptionInConsumer() throws InterruptedException {
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new ConstructionHeuristicPhaseConfig());
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+
+        AtomicInteger exceptionCount = new AtomicInteger();
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+                problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
+                bestSolution -> {
+                    throw new IllegalStateException("exceptionInConsumer");
+                }, (problemId, throwable) -> exceptionCount.incrementAndGet());
+        try {
+            solverJob1.getFinalBestSolution();
+            fail("Exception got eaten.");
+        } catch (ExecutionException e) {
+            assertEquals(1, exceptionCount.get());
+            assertEquals("exceptionInConsumer", e.getCause().getCause().getMessage());
+        }
+    }
+
+    @Ignore("Skip ahead not yet supported")
+    @Test(timeout = 600_000)
+    public void skipAhead() throws ExecutionException, InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(0);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(0));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }, (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(1);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(1));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }, (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(2);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(2));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }, (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            // In the next best solution event, both e1 and e2 are definitely not null (but e3 might be).
+                            latch.countDown();
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(3);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(3));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }));
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+        AtomicInteger eventCount = new AtomicInteger();
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveObserving(1L,
+                problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),
+                bestSolution -> {
+                    if (bestSolution.getEntityList().get(1).getValue() == null) {
+                        // The problem itself causes a best solution event. TODO Do we really want that behavior?
+                        return;
+                    }
+                    eventCount.incrementAndGet();
+                    if (bestSolution.getEntityList().get(2).getValue() == null) {
+                        try {
+                            latch.await();
+                        } catch (InterruptedException e) {
+                            fail("Latch failed.");
+                        }
+                    } else if (bestSolution.getEntityList().get(3).getValue() == null) {
+                        fail("No skip ahead occurred: both e2 and e3 are null in a best solution event.");
+                    }
+                });
+        assertSolutionInitialized(solverJob1.getFinalBestSolution());
+        // EventCount can be 2 or 3, depending on the race, but it can never be 4.
+        assertTrue(eventCount.get() < 4);
     }
 
 }

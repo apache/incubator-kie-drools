@@ -24,12 +24,11 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.api.solver.Solver;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
@@ -51,7 +50,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     protected Map<String, String> customProperties = null;
 
     @XStreamOmitField
-    protected List<CustomPhaseCommand> customPhaseCommandList = null;
+    protected List<CustomPhaseCommand<?>> customPhaseCommandList = null;
 
     /** @deprecated Use {@link Solver#addProblemFactChange(ProblemFactChange)} instead.*/
     @Deprecated
@@ -77,11 +76,11 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         this.customProperties = customProperties;
     }
 
-    public List<CustomPhaseCommand> getCustomPhaseCommandList() {
+    public List<CustomPhaseCommand<?>> getCustomPhaseCommandList() {
         return customPhaseCommandList;
     }
 
-    public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
+    public void setCustomPhaseCommandList(List<CustomPhaseCommand<?>> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
     }
 
@@ -108,12 +107,12 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         this.customProperties = customProperties;
     }
 
-    public CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
+    public CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand<?>> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
         return this;
     }
 
-    public CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand... customPhaseCommands) {
+    public CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand<?>... customPhaseCommands) {
         this.customPhaseCommandList = Arrays.asList(customPhaseCommands);
         return this;
     }
@@ -134,7 +133,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
         }
-        List<CustomPhaseCommand> customPhaseCommandList_ = new ArrayList<>(
+        List<CustomPhaseCommand<?>> customPhaseCommandList_ = new ArrayList<>(
                 (customPhaseCommandClassList == null ? 0 : customPhaseCommandClassList.size())
                 + (customPhaseCommandList == null ? 0 : customPhaseCommandList.size()));
         if (customPhaseCommandClassList != null) {
