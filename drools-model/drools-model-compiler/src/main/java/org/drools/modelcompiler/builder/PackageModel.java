@@ -829,7 +829,8 @@ public class PackageModel {
     public String getDomainClassesMetadataSource() {
         StringBuilder sb = new StringBuilder(
                 "package " + name + ";\n" +
-                "public class " + DOMAIN_CLASSESS_METADATA_FILE_NAME  + pkgUUID + " {\n\n"
+                "  @javax.xml.bind.annotation.XmlTransient  " +
+        "public class " + DOMAIN_CLASSESS_METADATA_FILE_NAME  + pkgUUID + " {\n\n"
         );
         for (Class<?> domainClass : domainClasses) {
             String domainClassSourceName = asJavaSourceName( domainClass );
