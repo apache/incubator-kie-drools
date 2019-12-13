@@ -9624,7 +9624,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/RHPAM-2457")
     public void unmarshalStringListsCorrectly_ComplexValues() {
         final String drl = "package org.mortgages;\n" +
                 "rule \"aaa\"\n" +
