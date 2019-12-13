@@ -39,7 +39,8 @@ public class TimeTableSpringBootApp {
     
     @Bean
     public CommandLineRunner demoData(
-            TimeslotRepository timeslotRepository, RoomRepository roomRepository,
+            TimeslotRepository timeslotRepository,
+            RoomRepository roomRepository,
             LessonRepository lessonRepository) {
         return (args) -> {
             timeslotRepository.save(new Timeslot(DayOfWeek.MONDAY, LocalTime.of(8, 30), LocalTime.of(9, 30)));

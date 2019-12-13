@@ -29,7 +29,8 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
-        "optaplanner.solver.termination.spent-limit=1h", // Effectively disable this termination
+        "optaplanner.solver.environment-mode=FULL_ASSERT", // Use FULL_ASSERT only for testing, it slows down solving
+        "optaplanner.solver.termination.spent-limit=1h", // Effectively disable this termination in favor the next
         "optaplanner.solver.termination.best-score-limit=0hard/*soft"})
 public class TimeTableSolverServiceTest {
 
