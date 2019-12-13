@@ -101,13 +101,9 @@ public class RangeNode
         Object s = start.evaluate( ctx );
         Object e = end.evaluate( ctx );
         
-        boolean problem = false;
-        if ( s == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Start"))); problem = true; }
-        if ( e == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "End"))); problem = true; }
-        if (problem) { return null; }
-        
-        if ( BuiltInType.determineTypeFromInstance( s ) != BuiltInType.determineTypeFromInstance( e ) 
-                && !s.getClass().isAssignableFrom( e.getClass() ) ) {
+        Type sType = BuiltInType.determineTypeFromInstance(s);
+        Type eType = BuiltInType.determineTypeFromInstance(e);
+        if (s != null && e != null && sType != eType && !s.getClass().isAssignableFrom(e.getClass())) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
             return null;
         }
@@ -123,7 +119,9 @@ public class RangeNode
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {
         Comparable start;
-        if( s instanceof Comparable ) {
+        if (s == null) {
+            start = null;
+        } else if (s instanceof Comparable) {
             start = (Comparable) s;
         } else if( s instanceof Period ) {
             // period has special semantics

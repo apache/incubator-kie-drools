@@ -59,6 +59,20 @@ public class RangeImpl
 
     @Override
     public Boolean includes(Object param) {
+        if (lowEndPoint == null && highEndPoint != null) {
+            if (highBoundary == RangeBoundary.OPEN) {
+                return param == null ? null : highEndPoint.compareTo(param) > 0;
+            } else {
+                return param == null ? null : highEndPoint.compareTo(param) >= 0;
+            }
+        }
+        if (highEndPoint == null && lowEndPoint != null) {
+            if (lowBoundary == RangeBoundary.OPEN) {
+                return param == null ? null : lowEndPoint.compareTo(param) < 0;
+            } else {
+                return param == null ? null : lowEndPoint.compareTo(param) <= 0;
+            }
+        }
         if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN ) {
             return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) < 0 && highEndPoint.compareTo( param ) > 0;
         } else if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED ) {

@@ -38,7 +38,7 @@ public class FeelCtx {
     }
 
     public static MethodCallExpr getValue(String nameRef) {
-        return new MethodCallExpr(FEELCTX, "getValue", new NodeList<>(new StringLiteralExpr(nameRef)));
+        return new MethodCallExpr(null, "getValue", new NodeList<>(FEELCTX, new StringLiteralExpr(nameRef)));
     }
 
     public static MethodCallExpr current() {

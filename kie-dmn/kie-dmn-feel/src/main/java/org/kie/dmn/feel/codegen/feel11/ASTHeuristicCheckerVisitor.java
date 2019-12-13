@@ -26,6 +26,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.runtime.events.ASTHeuristicCheckEvent;
 import org.kie.dmn.feel.util.Msg;
@@ -45,7 +47,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
 
     @Override
     public List<FEELEvent> visit(InfixOpNode n) {
-        if (n.getRight() instanceof UnaryTestNode) {
+        if (!(n.getLeft() instanceof UnaryTestNode || n.getLeft() instanceof RangeNode) && (n.getRight() instanceof UnaryTestNode || n.getRight() instanceof RangeNode)) {
             return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.COMPARING_TO_UT, n.getOperator().symbol + " (" + n.getRight().getText()) + ")", n));
         }
         return defaultVisit(n);
@@ -53,10 +55,18 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
 
     @Override
     public List<FEELEvent> visit(UnaryTestNode n) {
-        if (n.getValue() instanceof UnaryTestNode) {
+        if (n.getValue() instanceof UnaryTestNode || n.getValue() instanceof RangeNode) {
             return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getOperator().symbol + " (" + n.getValue().getText()) + ")", n));
         }
         return defaultVisit(n);
     }
 
+    @Override
+    public List<FEELEvent> visit(RangeNode n) {
+        if ((n.getStart() instanceof NullNode && n.getEnd() instanceof RangeNode)
+                || (n.getStart() instanceof RangeNode && n.getEnd() instanceof NullNode)) {
+            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getText()), n));
+        }
+        return defaultVisit(n);
+    }
 }
