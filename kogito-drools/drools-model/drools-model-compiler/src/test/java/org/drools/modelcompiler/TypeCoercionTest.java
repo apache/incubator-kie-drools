@@ -230,11 +230,11 @@ public class TypeCoercionTest extends BaseModelTest {
     public void testBetaJoinShortInt() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "   $p1 : Person(  $age : age )\n" +
-                        "   $p2 :  Person(  ageAsShort == $age )\n" +
-                        "then\n" +
-                        "end\n";
+                "rule R when\n" +
+                "   $p1 : Person(  $age : age )\n" +
+                "   $p2 :  Person(  ageAsShort == $age )\n" +
+                "then\n" +
+                "end\n";
 
         KieSession ksession = getKieSession( str );
         assertEquals(0, ksession.fireAllRules());

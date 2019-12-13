@@ -5,16 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
 import com.github.javaparser.ast.NodeList;
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
@@ -26,6 +25,7 @@ import org.drools.modelcompiler.inlinecast.ICAbstractB;
 import org.drools.modelcompiler.inlinecast.ICAbstractC;
 import org.drools.modelcompiler.inlinecast.ICB;
 import org.drools.modelcompiler.inlinecast.ICC;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.junit.Before;
 import org.junit.Test;
 

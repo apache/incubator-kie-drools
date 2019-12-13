@@ -15,13 +15,13 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Tuple;
+import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
-import org.kie.services.time.Interval;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;

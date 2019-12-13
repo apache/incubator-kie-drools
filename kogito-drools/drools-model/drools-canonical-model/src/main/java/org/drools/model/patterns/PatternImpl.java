@@ -1,6 +1,7 @@
 package org.drools.model.patterns;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -10,8 +11,6 @@ import java.util.Set;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Constraint;
-import org.drools.model.Declaration;
-import org.drools.model.DomainClassMetadata;
 import org.drools.model.Pattern;
 import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
@@ -93,6 +92,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         bindings.add(binding);
     }
 
+    @Override
     public Collection<Binding> getBindings() {
         return bindings != null ? bindings : Collections.emptyList();
     }
@@ -149,5 +149,13 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     public PatternImpl<T> negate() {
         this.constraint = constraint.negate();
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "PatternImpl (type: " +  type + ", " +
+                "inputVars: " + Arrays.toString(inputVariables) + ", " +
+                "outputVar: " + variable + ", " +
+                "constraint: " + constraint + ")";
     }
 }

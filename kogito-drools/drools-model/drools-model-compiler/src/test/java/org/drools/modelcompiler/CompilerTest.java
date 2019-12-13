@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
@@ -41,12 +43,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static java.util.Arrays.asList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -520,113 +517,6 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-    @Test
-    public void testNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  do[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
-
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
-    }
-
-    @Test
-    public void testBreakingNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  if ( age < 30 ) break[FoundYoungMark]" +
-                "  else if ( age > 50) break[FoundOldMark]\n" +
-                "  else break[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundYoungMark]\n" +
-                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
-                "then[FoundOldMark]\n" +
-                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(1, results.size());
-
-        assertEquals( "Found Mark", results.iterator().next() );
-    }
-
-    @Test
-    public void testNonBreakingNamedConsequence() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  if ( age < 30 ) break[FoundYoungMark]" +
-                "  else if ( age > 50) break[FoundOldMark]\n" +
-                "  else do[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundYoungMark]\n" +
-                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
-                "then[FoundOldMark]\n" +
-                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-
-        Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
-
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
 
     @Test
@@ -1661,6 +1551,60 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testPrettyPrinterCrashing() {
+        final String drl = "" +
+                "package org.drools.compiler.test  \n" +
+
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+
+                "global List list\n" +
+
+                "dialect \"mvel\"\n" +
+
+                "declare Location\n" +
+                "    thing : String \n" +
+                "    location : String \n" +
+                "end" +
+                "\n" +
+                "query isContainedIn( String x, String y ) \n" +
+                "    Location(x, y;)\n" +
+                "    or \n" +
+                "    ( Location(z, y;) and isContainedIn(x, z;) )\n" +
+                "end\n" +
+                "\n" +
+                "rule look when \n" +
+                "    Person( $l : likes ) \n" +
+                "    isContainedIn( $l, 'office'; )\n" +
+                "then\n" +
+                "   insertLogical( 'blah' );" +
+                "end\n" +
+                "\n" +
+                "rule go1 when \n" +
+                "    String( this == 'go1') \n" +
+                "then\n" +
+                "        list.add( drools.getRule().getName() ); \n" +
+                "        insert( new Location('lamp', 'desk') );\n" +
+                "end\n" +
+                "\n";
+
+        KieSession ksession = getKieSession(drl);
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final Person p = new Person();
+            p.setLikes("lamp");
+            ksession.insert(p);
+            ksession.fireAllRules();
+
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
     public void testBetaJoinBigInteger() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -1761,6 +1705,38 @@ public class CompilerTest extends BaseModelTest {
 
     }
 
+    @Test
+    public void testNumericLimitsLiteral() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person(ageLong > 9223372036854775806L)\n" + // MAX_LONG - 1
+                        "then\n" +
+                        "  $r.setValue($p.getName() + \" is very old\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark").setAgeLong(37);
+        Person edson = new Person("Edson").setAgeLong(35);
+        Person mario = new Person("Mario").setAgeLong(Long.MAX_VALUE);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertEquals("Mario is very old", result.getValue());
+
+    }
+
+
 
     @Test
     public void testBetaCastGreaterThan() {
@@ -1839,48 +1815,14 @@ public class CompilerTest extends BaseModelTest {
 
     }
 
-
-    @Test
-    public void testNumericLimitsLiteral() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                        "import " + Person.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  $r : Result()\n" +
-                        "  $p : Person(ageLong > 9223372036854775806L)\n" + // MAX_LONG - 1
-                        "then\n" +
-                        "  $r.setValue($p.getName() + \" is very old\");\n" +
-                        "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        Person mark = new Person("Mark").setAgeLong(37);
-        Person edson = new Person("Edson").setAgeLong(35);
-        Person mario = new Person("Mario").setAgeLong(Long.MAX_VALUE);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        ksession.insert(mario);
-
-        ksession.fireAllRules();
-
-        assertEquals("Mario is very old", result.getValue());
-
-    }
-
-
-
     @Test
     public void testMapAbbreviatedComparison() {
         final String drl1 =
                 "import java.util.Map;\n" +
-                        "rule R1 when\n" +
-                        "    Map(this['money'] >= 65 && <= 75)\n" +
-                        "then\n" +
-                        "end\n";
+                "rule R1 when\n" +
+                "    Map(this['money'] >= 65 && <= 75)\n" +
+                "then\n" +
+                "end\n";
 
         KieSession ksession = getKieSession( drl1 );
 
@@ -1895,9 +1837,9 @@ public class CompilerTest extends BaseModelTest {
     public void testHalfBinary() {
         final String drl1 =
                 "rule R1 when\n" +
-                        "    Integer(this > 2 && < 5)\n" +
-                        "then\n" +
-                        "end\n";
+                "    Integer(this > 2 && < 5)\n" +
+                "then\n" +
+                "end\n";
 
         KieSession ksession = getKieSession( drl1 );
 
@@ -1911,12 +1853,12 @@ public class CompilerTest extends BaseModelTest {
     public void testMapPrimitiveComparison() {
         final String drl1 =
                 "import java.util.Map;\n" +
-                        "import " + Person.class.getCanonicalName() + ";\n" +
-                        "rule R1 when\n" +
-                        "    $m : Map()\n" +
-                        "    Person(age == $m['age'] )\n" +
-                        "then\n" +
-                        "end\n";
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $m : Map()\n" +
+                "    Person(age == $m['age'] )\n" +
+                "then\n" +
+                "end\n";
 
         KieSession ksession = getKieSession( drl1 );
 
@@ -1969,16 +1911,54 @@ public class CompilerTest extends BaseModelTest {
         // DROOLS-4579
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "    $p: Person()\n" +
-                        "then\n" +
-                        "    if ($p != drools.getMatch().getObjects().get(0)) throw new RuntimeException();\n" +
-                        "end";
+                "rule R when\n" +
+                "    $p: Person()\n" +
+                "then\n" +
+                "    if ($p != drools.getMatch().getObjects().get(0)) throw new RuntimeException();\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 
         Person me = new Person( "Mario", 40 );
         ksession.insert( me );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMultilinePattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  $p : Person(age == 30\n" +
+                        "    || employed == true)\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person first = new Person("John", 40);
+        first.setEmployed(true);
+        ksession.insert(first);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
+
+    @Test
+    public void testAccumulateWithMax() {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                        "import " + StockTick.class.getCanonicalName() + ";" +
+                        "rule AccumulateMaxDate when\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick($time : getTimeFieldAsDate());\n" +
+                        "    max($time.getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setTimeField(new Date().getTime());
+        ksession.insert(st);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 }

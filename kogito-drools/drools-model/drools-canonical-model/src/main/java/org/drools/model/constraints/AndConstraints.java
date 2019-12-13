@@ -66,4 +66,10 @@ public class AndConstraints extends AbstractConstraint implements ModelComponent
     public AndConstraints replaceVariable( Variable oldVar, Variable newVar ) {
         return new AndConstraints( constraints.stream().map( c -> c.replaceVariable( oldVar, newVar ) ).collect( toList() ) );
     }
+
+    @Override
+    public String toString() {
+        return "AndConstraints (constraints: " + constraints + ")";
+    }
+
 }

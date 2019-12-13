@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class GeneratedFile {
 
@@ -41,7 +42,7 @@ public class GeneratedFile {
         this(Type.RULE, path, data);
     }
 
-    public GeneratedFile(String path, byte[] data) {
+    private GeneratedFile(String path, byte[] data) {
         this(Type.RULE, path, data);
     }
 
@@ -49,7 +50,7 @@ public class GeneratedFile {
         this(type, path, data.getBytes(StandardCharsets.UTF_8));
     }
 
-    public GeneratedFile(Type type, String path, byte[] data) {
+    private GeneratedFile(Type type, String path, byte[] data) {
         this.type = type;
         this.path = path;
         this.data = data;
@@ -72,5 +73,22 @@ public class GeneratedFile {
         return "GeneratedFile{" +
                 "path='" + path + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GeneratedFile that = (GeneratedFile) o;
+        return path.equals(that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path);
     }
 }

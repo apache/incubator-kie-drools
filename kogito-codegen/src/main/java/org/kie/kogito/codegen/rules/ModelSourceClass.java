@@ -78,7 +78,6 @@ public class ModelSourceClass {
 
     private void addGetModelForKieBaseMethod(StringBuilder sb) {
         sb.append(
-                "    @Override\n" +
                 "    public java.util.List<Model> getModelsForKieBase(String kieBaseName) {\n" +
                 "        switch (kieBaseName) {\n"
         );

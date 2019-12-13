@@ -66,4 +66,10 @@ public class OrConstraints extends AbstractConstraint implements ModelComponent 
     public OrConstraints replaceVariable( Variable oldVar, Variable newVar ) {
         return new OrConstraints( constraints.stream().map( c -> c.replaceVariable( oldVar, newVar ) ).collect( toList() ) );
     }
+
+    @Override
+    public String toString() {
+        return "OrConstraints (constraints: " + constraints + ")";
+    }
+
 }

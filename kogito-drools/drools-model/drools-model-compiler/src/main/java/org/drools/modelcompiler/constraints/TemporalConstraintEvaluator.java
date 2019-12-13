@@ -22,12 +22,12 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
+import org.drools.core.time.Interval;
 import org.drools.model.SingleConstraint;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.kie.services.time.Interval;
 
 import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 

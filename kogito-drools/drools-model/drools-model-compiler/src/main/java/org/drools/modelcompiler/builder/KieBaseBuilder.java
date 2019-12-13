@@ -86,7 +86,7 @@ public class KieBaseBuilder {
         kieBaseConf.setSessionPoolSize(kieBaseModel.getSessionsPool().getSize());
 
         KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
-        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getName()) ).forEach( builder::addModel );
+        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
         return new KieBaseBuilder(kieBaseModel, kieBaseConf).createKieBase(builder.build());
     }
 }

@@ -38,12 +38,11 @@ import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.impl.AbstractRuleUnits;
+import org.kie.kogito.rules.units.impl.AbstractRuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 

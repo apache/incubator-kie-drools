@@ -1,5 +1,6 @@
 package org.drools.model.patterns;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.model.AccumulatePattern;
@@ -125,5 +126,13 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         if ( !ModelComponent.areEqualInModel( pattern, that.pattern ) ) return false;
         if ( !ModelComponent.areEqualInModel(accumulateFunctions, that.accumulateFunctions) ) return false;
         return ModelComponent.areEqualInModel( boundVariables, that.boundVariables );
+    }
+
+    @Override
+    public String toString() {
+        return "AccumulatePatternImpl (" +
+                "functions: " + Arrays.toString(accumulateFunctions) + ", " +
+                "condition: " + condition + ", " +
+                "pattern: " + pattern + ")";
     }
 }

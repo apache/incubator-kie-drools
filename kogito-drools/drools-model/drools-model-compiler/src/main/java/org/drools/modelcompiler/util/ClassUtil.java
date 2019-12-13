@@ -360,20 +360,6 @@ public class ClassUtil {
         return c;
     }
 
-    public static String toNonPrimitiveType(String type) {
-        switch (type) {
-            case "int": return "Integer";
-            case "long": return "Long";
-            case "double": return "Double";
-            case "float": return "Float";
-            case "short": return "Short";
-            case "byte": return "Byte";
-            case "char": return "Character";
-            case "boolean": return "Boolean";
-        }
-        return type;
-    }
-
     public static Class<?> toRawClass(Type type) {
         if (type == null) {
             return null;

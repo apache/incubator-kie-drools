@@ -39,6 +39,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -51,7 +52,7 @@ import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
 public class QueryEndpointGenerator implements FileGenerator {
 
-    private final Class<?> ruleUnit;
+    private final RuleUnitDescription ruleUnit;
     private final QueryModel query;
     private final DependencyInjectionAnnotator annotator;
 
@@ -60,7 +61,7 @@ public class QueryEndpointGenerator implements FileGenerator {
     private final String targetCanonicalName;
     private final String generatedFilePath;
 
-    public QueryEndpointGenerator(Class<?> ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator ) {
+    public QueryEndpointGenerator(RuleUnitDescription ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator ) {
         this.ruleUnit = ruleUnit;
         this.query = query;
         this.name = toCamelCase(query.getName());
@@ -187,12 +188,31 @@ public class QueryEndpointGenerator implements FileGenerator {
         setGeneric(type, ruleUnit);
     }
 
+    private void setGeneric(Type type, RuleUnitDescription ruleUnit) {
+        // fixme: must use classNameToReferenceType as soon as it lands on a stable release
+        type.asClassOrInterfaceType().setTypeArguments( classToReferenceType( ruleUnit.getRuleUnitClass() ) );
+    }
+
     private void setGeneric(Type type, Class<?> typeArgument) {
         type.asClassOrInterfaceType().setTypeArguments( classToReferenceType( typeArgument ) );
     }
 
     private void setGeneric(Type type, String typeArgument) {
         type.asClassOrInterfaceType().setTypeArguments( parseClassOrInterfaceType( toNonPrimitiveType( typeArgument ) ) );
+    }
+
+    private static String toNonPrimitiveType(String type) {
+        switch (type) {
+            case "int": return "Integer";
+            case "long": return "Long";
+            case "double": return "Double";
+            case "float": return "Float";
+            case "short": return "Short";
+            case "byte": return "Byte";
+            case "char": return "Character";
+            case "boolean": return "Boolean";
+        }
+        return type;
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {

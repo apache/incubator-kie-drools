@@ -39,7 +39,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -63,6 +62,7 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.core.addon.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +131,9 @@ public class ExpressionTyper {
         Class<?> typeCursor = patternType;
 
         if (drlxExpr instanceof EnclosedExpr) {
-            drlxExpr = ((EnclosedExpr) drlxExpr).getInner();
+            Expression inner = ((EnclosedExpr) drlxExpr).getInner();
+            Optional<TypedExpression> typedExpression = toTypedExpressionRec(inner);
+            return typedExpression.map(t -> t.cloneWithNewExpression(new EnclosedExpr(t.getExpression())));
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
@@ -211,7 +213,7 @@ public class ExpressionTyper {
             OperatorSpec opSpec = getOperatorSpec(halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
 
             final PointFreeExpr transformedToPointFree =
-                    new PointFreeExpr(halfPointFreeExpr.getTokenRange().get(),
+                    new PointFreeExpr(halfPointFreeExpr.getTokenRange().orElseThrow(() -> new IllegalStateException("Token range is not present!")),
                                       parentLeft,
                                       halfPointFreeExpr.getRight(),
                                       halfPointFreeExpr.getOperator(),
@@ -324,7 +326,7 @@ public class ExpressionTyper {
         return empty();
     }
 
-    private OperatorSpec getOperatorSpec( NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+    private OperatorSpec getOperatorSpec(NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
         for (Expression rightExpr : rightExpressions) {
             toTypedExpressionRec(rightExpr);
         }
@@ -435,8 +437,9 @@ public class ExpressionTyper {
 
             } else if (part instanceof ArrayAccessExpr) {
                 final ArrayAccessExpr inlineCastExprPart = (ArrayAccessExpr) part;
-                TypedExpressionCursor typedExpr = arrayAccessExpr(inlineCastExprPart, typeCursor, previous)
-                        .orElseThrow(() -> new NoSuchElementException("ArrayAccessExpr doesn't contain TypedExpressionCursor!"));
+                TypedExpressionCursor typedExpr =
+                        arrayAccessExpr(inlineCastExprPart, typeCursor, previous)
+                                .orElseThrow(() -> new NoSuchElementException("ArrayAccessExpr doesn't contain TypedExpressionCursor!"));
                 typeCursor = typedExpr.typeCursor;
                 previous = typedExpr.expressionCursor;
 
@@ -474,10 +477,11 @@ public class ExpressionTyper {
         } catch(RuntimeException e) {
             return empty();
         }
+        String field = name;
 
         final Object staticValue;
         try {
-            staticValue = clazz.getDeclaredField( name ).get(null);
+            staticValue = clazz.getDeclaredField(field).get(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             return empty();
         }
@@ -583,7 +587,7 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof FieldAccessExpr) {
             processNullSafeDereferencing( (( FieldAccessExpr ) drlxExpr).getScope() );
         } else if (drlxExpr instanceof MethodCallExpr && (( MethodCallExpr ) drlxExpr).getScope().isPresent()) {
-            processNullSafeDereferencing( (( MethodCallExpr ) drlxExpr).getScope().get() );
+            processNullSafeDereferencing( (( MethodCallExpr ) drlxExpr).getScope().orElseThrow(() -> new IllegalStateException("Scope expression is not present!")) );
         }
     }
 
@@ -603,7 +607,7 @@ public class ExpressionTyper {
         return new TypedExpressionCursor( binaryExpr,
                                           left.getTypedExpression()
                                                   .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
-                                                  .getType());
+                                                  .getType() );
     }
 
     private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor ) {
@@ -767,8 +771,9 @@ public class ExpressionTyper {
 
     private TypedExpressionCursor fieldAccessExpr(java.lang.reflect.Type originalTypeCursor, SimpleName firstNodeName) {
         TypedExpressionCursor teCursor;
+        final java.lang.reflect.Type tc4 = originalTypeCursor;
         String firstName = firstNodeName.getIdentifier();
-        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass( originalTypeCursor ), firstName);
+        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
             teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr(THIS_PLACEHOLDER), firstAccessor.getName()), firstAccessor.getGenericReturnType());

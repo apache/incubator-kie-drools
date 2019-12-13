@@ -3,9 +3,12 @@ package org.drools.mvelcompiler;
 import java.util.Map;
 
 import org.drools.Person;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class MvelCompilerTest implements CompilerTest {
 
@@ -38,6 +41,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testEnumField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ key = $p.gender.getKey(); } ",
+             "{ int key = $p.getGender().getKey(); }");
+    }
+
+    @Test
+    public void testEnumConstant() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ key = Gender.FEMALE.getKey(); } ",
+             "{ int key = Gender.FEMALE.getKey(); }");
+    }
+
+    @Test
     public void testPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parentPublic.getParent().name; } ",
@@ -66,6 +83,13 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ Person np = $p; np = $p; }",
              "{ org.drools.Person np = $p; np = $p; }");
+    }
+
+    @Test
+    public void testAssignmentUndeclared() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ np = $p; }",
+             "{ org.drools.Person np = $p; }");
     }
 
     @Test
@@ -107,6 +131,114 @@ public class MvelCompilerTest implements CompilerTest {
                      "java.util.ArrayList l = new ArrayList(); " +
                      "l.add(\"first\"); " +
                      "System.out.println(l.get(0)); " +
+                     "}");
+    }
+
+
+    @Test
+    public void testMapGet() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "m[\"key\"];\n" +
+                     "}",
+             "{ " +
+                     "m.get(\"key\");\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetAsField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key3\"];\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().get(\"key3\");\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapGetInMethodCall() {
+        test(ctx -> ctx.addDeclaration("m", Map.class),
+             "{ " +
+                     "System.out.println(m[\"key\"]);\n" +
+                     "}",
+             "{ " +
+                     "System.out.println(m.get(\"key\"));\n" +
+                     "}");
+    }
+
+
+    @Test
+    public void testMapSet() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key3\"] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key3\", java.lang.String.valueOf(\"value3\")); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithVariable() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "String key3 = \"key3\";\n" +
+                     "$p.items[key3] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "java.lang.String key3 = \"key3\";\n" +
+                     "$p.getItems().put(key3, java.lang.String.valueOf(\"value3\")); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapPutWithVariableCoercionString() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key\"] = 2;\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key\", java.lang.String.valueOf(2)); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithMapGetAsValue() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+                 ctx.addDeclaration("n", Integer.class);
+             },
+             "{" +
+                     "    $p.getItems().put(\"key4\", n);\n" +
+                     "}",
+             "{ " +
+                     "    $p.getItems().put(\"key4\", java.lang.String.valueOf(n));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetToNewMap() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "Map newhashmap = new HashMap();\n" +
+                     "$p.items = newhashmap;\n" +
+                     "}",
+             "{ " +
+                     "java.util.Map newhashmap = new HashMap(); \n" +
+                     "$p.setItems(newhashmap); " +
                      "}");
     }
 
@@ -167,7 +299,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }",
-             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -175,7 +307,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); }; }",
              "{ $p.setAge(1); }",
-             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -183,14 +315,14 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { age = $p.age+1 }; }",
              "{ $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
     public void testWithSemiColon() {
         test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
              "{ java.util.ArrayList $l = new ArrayList(); $l.add(2); }",
-             result -> assertThat(allUsedBindings(result)).isEmpty());
+             result -> assertThat(allUsedBindings(result), is(empty())));
     }
 
     @Test
@@ -198,7 +330,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ with($p = new Person()) { age = $p.age+1 }; }",
              "{ org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(allUsedBindings(result).isEmpty()));
+             result -> assertThat(allUsedBindings(result), is(empty())));
     }
 
     @Test
@@ -233,7 +365,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "      $p.setName(\"without_parent\"); " +
                      "  } " +
                      "}",
-             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test

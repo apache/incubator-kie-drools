@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DecisionTableProvider;
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
+import org.kie.kogito.codegen.GeneratedFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -86,7 +86,8 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(2, 1, generatedFiles.size());
+        int externalizedLambda = 5;
+        assertRules(2, 1, generatedFiles.size() - externalizedLambda);
     }
 
     @Test
@@ -110,7 +111,8 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(1, 1, generatedFiles.size());
+        int externalizedLambda = 2;
+        assertRules(1, 1, generatedFiles.size() - externalizedLambda);
     }
 
     @Test

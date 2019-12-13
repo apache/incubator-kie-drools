@@ -26,11 +26,11 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
+import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Constraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
-import org.kie.services.time.Interval;
 
 import static java.util.stream.Collectors.toList;
 

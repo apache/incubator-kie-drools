@@ -29,11 +29,12 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.impl.AbstractRuleUnit;
+import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
 import static java.util.stream.Collectors.toList;
 
@@ -43,7 +44,7 @@ import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitGenerator implements FileGenerator {
 
-    private final Class<?> ruleUnit;
+    private final RuleUnitDescription ruleUnit;
     private final String packageName;
     private final String typeName;
     private final String generatedSourceFile;
@@ -54,9 +55,9 @@ public class RuleUnitGenerator implements FileGenerator {
     private Collection<QueryModel> queries;
     private String applicationPackageName;
 
-    public RuleUnitGenerator(Class<?> ruleUnit, String generatedSourceFile) {
+    public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
-        this.packageName = ruleUnit.getPackage().getName();
+        this.packageName = ruleUnit.getPackageName();
         this.typeName = ruleUnit.getSimpleName();
         this.generatedSourceFile = generatedSourceFile;
         this.targetTypeName = typeName + "RuleUnit";
@@ -170,7 +171,7 @@ public class RuleUnitGenerator implements FileGenerator {
     }
 
     public Class<?> getRuleUnitClass() {
-        return ruleUnit;
+        return ruleUnit.getRuleUnitClass();
     }
 
     public void setApplicationPackageName(String packageName) {

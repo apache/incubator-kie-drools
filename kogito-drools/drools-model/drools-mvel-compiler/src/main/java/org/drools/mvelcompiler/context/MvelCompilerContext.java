@@ -1,14 +1,13 @@
 package org.drools.mvelcompiler.context;
 
-import java.util.Collection;
 import java.util.Optional;
 
-import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.core.addon.TypeResolver;
 
 public class MvelCompilerContext {
 
-    private Declarations declarations = new Declarations();
+    private ContextDeclarations contextDeclarations = new ContextDeclarations();
     private final TypeResolver typeResolver;
 
     public MvelCompilerContext(TypeResolver typeResolver) {
@@ -16,25 +15,25 @@ public class MvelCompilerContext {
     }
 
     public MvelCompilerContext addDeclaration(String name, Class<?> clazz) {
-        declarations.addDeclarations(new Declaration(name, clazz));
+        contextDeclarations.addDeclarations(new Declaration(name, clazz));
         return this;
     }
 
     public MvelCompilerContext addCreatedDeclaration(String name, Class<?> clazz) {
-        declarations.addDeclarations(new Declaration(name, clazz, true));
+        contextDeclarations.addDeclarations(new Declaration(name, clazz, true));
         return this;
     }
 
     public Optional<Declaration> findDeclarations(String name) {
-        return declarations.findDeclaration(name);
+        return contextDeclarations.findDeclaration(name);
     }
 
-    public Collection<Declaration> getCreatedDeclarsations() {
-        return declarations.getCreatedDeclarsations();
-    }
-
-    public void addCompilationError(String message) {
-
+    public Optional<Class<?>> findEnum(String name) {
+        try {
+            return Optional.of(typeResolver.resolveType(name));
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
     public Class<?> resolveType(String name) {

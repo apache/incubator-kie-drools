@@ -15,11 +15,8 @@
 
 package org.drools.compiler.compiler;
 
-import java.util.HashSet;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -29,38 +26,17 @@ import org.kie.api.io.Resource;
 
 public class PackageRegistry {
 
-    private static final String[] implicitImports = new String[]{
-            "org.kie.api.definition.rule.*",
-            "org.kie.api.definition.type.*",
-            "org.drools.core.factmodel.traits.Alias",
-            "org.drools.core.factmodel.traits.Trait",
-            "org.drools.core.factmodel.traits.Traitable",
-            "org.drools.core.beliefsystem.abductive.Abductive",
-            "org.drools.core.beliefsystem.abductive.Abducible"};
-
     private final InternalKnowledgePackage pkg;
     private String dialect;
 
     private final DialectRuntimeRegistry dialectRuntimeRegistry;
     private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
 
-    private final TypeResolver typeResolver;
-
     public PackageRegistry(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, InternalKnowledgePackage pkg) {
         this.pkg = pkg;
         this.dialectCompiletimeRegistry = pkgConf.buildDialectRegistry(rootClassLoader, pkgConf, this, pkg);
         this.dialectRuntimeRegistry = pkg.getDialectRuntimeRegistry();
-
-        this.typeResolver = new ClassTypeResolver(new HashSet<String>(this.pkg.getImports().keySet()),
-                                                  rootClassLoader,
-                                                  this.pkg.getName());
-
-        this.typeResolver.addImport(pkg.getName() + ".*");
-        for (String implicitImport : implicitImports) {
-            this.typeResolver.addImplicitImport(implicitImport);
-        }
-
-        pkg.setTypeResolver(typeResolver);
+        pkg.setClassLoader(rootClassLoader);
     }
 
     public String getDialect() {
@@ -94,7 +70,6 @@ public class PackageRegistry {
 
     public void registerImport(String importEntry) {
         this.pkg.addImport(new ImportDeclaration(importEntry));
-        this.typeResolver.addImport(importEntry);
     }
 
     public void addStaticImport(ImportDescr importDescr) {
@@ -102,7 +77,7 @@ public class PackageRegistry {
     }
 
     public TypeResolver getTypeResolver() {
-        return this.typeResolver;
+        return pkg.getTypeResolver();
     }
 
     public void compileAll() {

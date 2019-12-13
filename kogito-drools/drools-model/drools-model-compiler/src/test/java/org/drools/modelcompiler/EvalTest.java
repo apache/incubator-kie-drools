@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
+import org.drools.modelcompiler.domain.CalcFact;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -443,5 +444,24 @@ public class EvalTest extends BaseModelTest {
         public Integer add(int a, int b) {
             return Integer.sum(a, b);
         }
+    }
+
+    @Test
+    public void testEvalCalculationWithParenthesis() {
+        String str =
+                "import " + CalcFact.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : CalcFact( $v1 : value1, $v2 : value2 )\n" +
+                "  eval( ($v1 / ($v2 * 10) * 10) > 25 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new CalcFact(1.0d, 1.0d));
+        // (1.0 / (1.0 * 10) * 10) is 1. So this rule should not fire
+
+        int fired = ksession.fireAllRules();
+        assertEquals(0, fired);
     }
 }

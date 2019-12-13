@@ -54,7 +54,6 @@ public class DeclarationSpec {
 
     public List<BehaviorDescr> getBehaviors() {
         return optPattern.map(PatternDescr::getBehaviors).orElse(Collections.emptyList());
-
     }
 
     public String getBindingId() {

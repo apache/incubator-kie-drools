@@ -29,8 +29,8 @@ public class ServiceRegistryImpl
         implements
         ServiceRegistry {
 
-    private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicServiceRegistrySupplier";
-    private static final String STATIC_IMPL = "org.drools.statics.common.StaticServiceRegistrySupplier";
+    private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicServiceRegistrySupplier";
+    private static final String STATIC_IMPL = "org.drools.statics.StaticServiceRegistrySupplier";
 
     private static Supplier<ServiceRegistry> supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
 

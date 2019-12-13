@@ -29,8 +29,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -107,6 +105,7 @@ import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Exchange;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
@@ -134,21 +133,21 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
+import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
-
 
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
-import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
+import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
-import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class KiePackagesBuilder {
 
@@ -215,9 +214,7 @@ public class KiePackagesBuilder {
     private KnowledgePackageImpl createKiePackage(String name) {
         KnowledgePackageImpl kpkg = new KnowledgePackageImpl( name );
         kpkg.setClassFieldAccessorCache(new ClassFieldAccessorCache( getClassLoader() ) );
-        TypeResolver typeResolver = new ClassTypeResolver( new HashSet<>( kpkg.getImports().keySet() ), getClassLoader(), name );
-        typeResolver.addImport( name + ".*" );
-        kpkg.setTypeResolver(typeResolver);
+        kpkg.setClassLoader( getClassLoader() );
         return kpkg;
     }
 
@@ -227,6 +224,7 @@ public class KiePackagesBuilder {
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
+            pkg.getRuleUnitDescriptionLoader().getDescription(ruleImpl );
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
@@ -384,6 +382,9 @@ public class KiePackagesBuilder {
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
+        if (isLegacyRuleUnit() && ctx.getRule().getRuleUnitClassName() != null) {
+            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ), Condition.Type.PATTERN ) );
+        }
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
             lhs.addChild( 0, new Pattern( 0, ClassObjectType.InitialFact_ObjectType ) );
@@ -396,6 +397,20 @@ public class KiePackagesBuilder {
             return and.getChildren().isEmpty() || requiresLeftActivation( and.getChildren().get( 0 ) );
         }
         return rce instanceof QueryElement;
+    }
+
+    private Variable getUnitVariable( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
+        String unitClassName = ctx.getRule().getRuleUnitClassName();
+        for (Variable<?> var : view.getBoundVariables()) {
+            if ( var instanceof DeclarationImpl && var.getType().getName().equals( unitClassName ) ) {
+                return ( (DeclarationImpl) var ).setSource( entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
+            }
+        }
+        try {
+            return declarationOf( pkg.getTypeResolver().resolveType( unitClassName ), entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
     }
 
     private RuleConditionElement conditionToElement( RuleContext ctx, GroupElement group, Condition condition ) {
@@ -451,6 +466,13 @@ public class KiePackagesBuilder {
                 }
 
                 pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
+
+                for(Variable v : accumulatePattern.getBoundVariables()) {
+                    if(source instanceof Pattern) {
+                        ctx.registerPattern(v, (Pattern) source);
+                    }
+                }
+
                 return existingPattern ? null : pattern;
             }
             case QUERY:
@@ -530,7 +552,9 @@ public class KiePackagesBuilder {
     private ConditionalBranch buildConditionalConsequence(RuleContext ctx, ConditionalNamedConsequenceImpl consequence) {
         EvalCondition evalCondition;
         if (consequence.getExpr() != null) {
+
             Pattern pattern = ctx.getPattern(consequence.getExpr().getVariables()[0]);
+
             EvalExpression eval = new LambdaEvalExpression(pattern, consequence.getExpr());
             evalCondition = new EvalCondition(eval, pattern.getRequiredDeclarations());
         } else {
@@ -620,13 +644,6 @@ public class KiePackagesBuilder {
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
-
-        if (pattern.getListenedProperties() != null && modelPattern.getPatternClassMetadata() != null) {
-            String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
-            pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( modelPattern.getPatternClassMetadata(), true, listenedProperties ) ) );
-            pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( modelPattern.getPatternClassMetadata(), false, listenedProperties ) ) );
-        }
-
         return pattern;
     }
 
@@ -785,7 +802,7 @@ public class KiePackagesBuilder {
                     pattern.setSource(fromSource);
                 } else if ( decl.getSource() instanceof UnitData ) {
                     UnitData unitData = (UnitData ) decl.getSource();
-                    pattern.setSource( new EntryPointId( unitData.getName() ) );
+                    pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );
                 } else {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }

@@ -59,8 +59,8 @@ public class SingleConstraint11<A, B, C, D, E, F, G, H, I, J, K> extends Abstrac
     }
 
     public SingleConstraint11( Expr11ViewItemImpl<A, B, C, D, E, F, G, H, I, J, K> expr) {
-        this( expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getVar7(),
-                expr.getVar8(), expr.getVar9(), expr.getVar10(), expr.getVar11(), expr.getPredicate() );
+        this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getVar7(),
+                expr.getVar8(), expr.getVar9(), expr.getVar10(), expr.getVar11(), expr.getPredicate());
         setReactivitySpecs( expr.getReactivitySpecs() );
     }
 

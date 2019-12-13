@@ -70,6 +70,10 @@
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
+          <artifactId>drools-model-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
           <artifactId>drools-canonical-model</artifactId>
         </exclusion>
         <exclusion>

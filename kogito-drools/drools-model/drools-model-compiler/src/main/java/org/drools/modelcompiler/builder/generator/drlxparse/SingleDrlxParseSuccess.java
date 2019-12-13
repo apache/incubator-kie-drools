@@ -24,9 +24,11 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
@@ -39,6 +41,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
@@ -177,11 +180,13 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public String getUnificationVariable() {
-        return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
+        return left.getUnificationVariable().orElseGet(
+                () -> right.getUnificationVariable().orElseThrow(() -> new IllegalStateException("Right unification variable is not present!")));
     }
 
     public String getUnificationName() {
-        return left.getUnificationName().isPresent() ? left.getUnificationName().get() : right.getUnificationName().get();
+        return left.getUnificationName().orElseGet(
+                () -> right.getUnificationName().orElseThrow(() -> new IllegalStateException("Right unification name is not present!")));
     }
 
     public Class<?> getUnificationVariableType() {
@@ -206,6 +211,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public Class<?> getPatternType() {
         return patternType;
+    }
+
+    public com.github.javaparser.ast.type.Type getPatternJPType() {
+        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType(patternType).getCanonicalName());
     }
 
     public boolean isPatternBindingUnification() {
@@ -254,6 +263,9 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
             }
             if (expr instanceof EnclosedExpr ) {
                 return isEnclosedExprValid( (( EnclosedExpr ) expr).getInner());
+            }
+            if (expr instanceof UnaryExpr && ((UnaryExpr) expr).getOperator() == UnaryExpr.Operator.LOGICAL_COMPLEMENT) {
+                return true;
             }
             return right != null;
         }

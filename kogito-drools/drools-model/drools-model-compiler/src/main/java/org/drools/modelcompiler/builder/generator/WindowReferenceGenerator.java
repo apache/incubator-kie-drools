@@ -24,7 +24,6 @@ import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
-import org.drools.core.addon.TypeResolver;
 import org.drools.model.Window;
 import org.drools.model.WindowDefinition;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -34,6 +33,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
+import org.drools.core.addon.TypeResolver;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.stream.Collectors.toList;

@@ -17,7 +17,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 
 public class DeclaredTypeWriter {
@@ -26,7 +25,7 @@ public class DeclaredTypeWriter {
     protected final PackageModel pkgModel;
     private final String name;
 
-    public DeclaredTypeWriter( TypeDeclaration generatedPojo, PackageModel pkgModel) {
+    public DeclaredTypeWriter(TypeDeclaration generatedPojo, PackageModel pkgModel) {
         this.generatedPojo = generatedPojo;
         this.name = generatedPojo.getNameAsString();
         this.pkgModel = pkgModel;

@@ -73,6 +73,7 @@ import org.mvel2.compiler.ExecutableStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
@@ -423,8 +424,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
                 pos = settableProperties.indexOf(propertyName);
             }
-            if (pos >= 0) { // Ignore not settable properties
+            if (pos >= 0) {
                 mask = mask.set(pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET);
+            } else {
+                // if it is not able to find the property name it could be a function invocation so property reactivity shouldn't filter anything
+                return allSetBitMask();
             }
         }
 

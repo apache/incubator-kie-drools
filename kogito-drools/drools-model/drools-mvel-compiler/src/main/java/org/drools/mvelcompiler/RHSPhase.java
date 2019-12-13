@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
@@ -26,9 +25,9 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.drools.core.util.ClassUtils;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -44,10 +43,12 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.TypeUtils;
 
-import static java.util.stream.Stream.of;
+import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
+import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
 
 /**
  * This phase processes the right hand side of a Java Expression and creates a new AST
@@ -69,7 +70,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         final Optional<TypedExpression> scope;
 
         Context(TypedExpression scope) {
-            this.scope = Optional.ofNullable(scope);
+            this.scope = ofNullable(scope);
         }
 
         Optional<Type> getScopeType() {
@@ -105,6 +106,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {
         return asDeclaration(n)
+                .map(Optional::of)
+                .orElseGet(() -> asEnum(n))
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
@@ -117,12 +120,12 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
-        Optional<Type> typedExpression = arg.getScopeType();
+        Optional<Type> scopeType = arg.getScopeType();
 
-        Optional<Field> fieldType = typedExpression.flatMap(te -> {
-            Class parentClass = (Class) te;
+        Optional<Field> fieldType = scopeType.flatMap(te -> {
+            Class parentClass = TypeUtils.classFromType(te);
             Field field = ClassUtils.getField(parentClass, n.asString());
-            return Optional.ofNullable(field);
+            return ofNullable(field);
         });
 
         return map2(lastTypedExpression, fieldType, FieldAccessTExpr::new);
@@ -136,10 +139,15 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         });
     }
 
+    private Optional<TypedExpression> asEnum(SimpleName n) {
+        Optional<Class<?>> enumType = mvelCompilerContext.findEnum(n.asString());
+        return enumType.map(clazz -> new SimpleNameTExpr(n.asString(), clazz));
+    }
+
     private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> scopeType = arg.getScopeType();
-        Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
+        Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
     }
@@ -220,14 +228,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(this::isCollection).isPresent()) {
+        if(type.filter(TypeUtils::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
-    }
-
-    public boolean isCollection(Type t) {
-        return of(List.class, Map.class).anyMatch(cls -> (cls).isAssignableFrom((Class<?>)(t)));
     }
 
     @Override

@@ -32,7 +32,7 @@ public interface CanonicalKieModuleModel {
 
     List<Model> getModels();
 
-    List<Model> getModelsForKieBase(String kieBaseName);
+    List<Model> getModelsForKieBase( String kieBaseName );
 
     default KieModuleModel getKieModuleModel() {
         KieModuleModel kModuleModel = new KieModuleModelImpl();

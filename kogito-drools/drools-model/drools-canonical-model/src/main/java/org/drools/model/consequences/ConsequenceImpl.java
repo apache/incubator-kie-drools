@@ -1,5 +1,6 @@
 package org.drools.model.consequences;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.drools.model.Consequence;
@@ -18,7 +19,7 @@ public class ConsequenceImpl implements Consequence, ModelComponent {
 
     private final String language;
 
-    ConsequenceImpl(BlockN block, Variable[] variables, boolean usingDrools, boolean breaking, String language) {
+    public ConsequenceImpl(BlockN block, Variable[] variables, boolean usingDrools, boolean breaking, String language) {
         this.variables = variables;
         this.declarations = Stream.of(variables).filter( Variable::isFact ).toArray(Variable[]::new);
         this.block = block;
@@ -70,5 +71,13 @@ public class ConsequenceImpl implements Consequence, ModelComponent {
         if ( !ModelComponent.areEqualInModel( declarations, that.declarations ) ) return false;
         if ( block != null ? !block.equals( that.block ) : that.block != null ) return false;
         return language != null ? language.equals( that.language ) : that.language == null;
+    }
+
+    @Override
+    public String toString() {
+        return "ConsequenceImpl (" +
+                "variables: " + Arrays.toString(variables) + ", " +
+                "language: " + language + ", " +
+                "breaking: " + breaking + ")";
     }
 }

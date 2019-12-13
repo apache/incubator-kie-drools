@@ -1,9 +1,11 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -65,8 +67,9 @@ class FlowDSLPattern extends PatternDSL {
     private MethodCallExpr createInputExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
         MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
         exprDSL.addArgument( context.getVarExpr( pattern.getIdentifier()) );
-        if (context.isQuery() && declarationSpec.getDeclarationSource().isPresent()) {
-            exprDSL.addArgument( declarationSpec.getDeclarationSource().get() );
+        if (context.isQuery()) {
+            Optional<Expression> declarationSource = declarationSpec.getDeclarationSource();
+            declarationSource.ifPresent(exprDSL::addArgument);
         }
 
         if (context.isPropertyReactive(patternType)) {

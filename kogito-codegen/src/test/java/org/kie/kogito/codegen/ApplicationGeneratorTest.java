@@ -37,7 +37,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
@@ -274,8 +273,8 @@ public class ApplicationGeneratorTest {
             assertThat(generatedFile).isNotNull();
             assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
             if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
-                assertThat(generatedFile.getPath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
-                assertThat(generatedFile.getData()).isEqualTo(expectedApplicationContent);
+                assertThat(generatedFile.relativePath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
+                assertThat(generatedFile.contents()).isEqualTo(expectedApplicationContent);
             }
         }
     }

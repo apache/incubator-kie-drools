@@ -82,7 +82,7 @@ public class CoercedExpression {
         } else if(shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
         } else if (Boolean.class.isAssignableFrom(leftClass) && !Boolean.class.isAssignableFrom(rightClass)) {
-            coercedRight = coerceBoolean(right);
+             coercedRight = coerceBoolean(right);
         } else {
             coercedRight = right;
         }

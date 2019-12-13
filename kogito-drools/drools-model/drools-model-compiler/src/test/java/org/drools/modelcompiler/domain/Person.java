@@ -34,6 +34,7 @@ public class Person extends AbstractReactiveObject {
     private BigInteger ageInSeconds;
 
     private Map<Integer, Integer> items = new HashMap<>();
+    private Map<String, String> itemsString = new HashMap<>();
 
     public static int countItems(Map<?, ?> items) {
         return items.size();
@@ -197,6 +198,14 @@ public class Person extends AbstractReactiveObject {
     public Person setAgeInSeconds(BigInteger ageInSeconds) {
         this.ageInSeconds = ageInSeconds;
         return this;
+    }
+
+    public Map<String, String> getItemsString() {
+        return itemsString;
+    }
+
+    public void setItemsString(Map<String, String> itemsString) {
+        this.itemsString = itemsString;
     }
 
     @Override

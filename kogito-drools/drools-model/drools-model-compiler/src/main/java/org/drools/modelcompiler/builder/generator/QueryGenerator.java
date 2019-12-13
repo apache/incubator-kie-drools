@@ -100,7 +100,7 @@ public class QueryGenerator {
                 }
             }
             QueryModel queryModel = new QueryModel( queryDescr.getName(), queryDescr.getNamespace(), queryDescr.getParameters(), queryBindings );
-            packageModel.addQueryInRuleUnit( context.getRuleUnitDescr().getRuleUnitClass(), queryModel );
+            packageModel.addQueryInRuleUnit( context.getRuleUnitDescr(), queryModel );
         }
 
         final Type queryType = parseType(Query.class.getCanonicalName());
@@ -130,7 +130,7 @@ public class QueryGenerator {
             context.addDeclaration(argument, getClassFromContext(context.getTypeResolver(), type));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type));
             context.getQueryParameters().add(queryParameter);
-            packageModel.putQueryVariable(QUERY_METHOD_PREFIX + toId( descr.getName() ), queryParameter);
+            packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);
         }
     }
 

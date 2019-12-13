@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
@@ -45,6 +46,7 @@ import org.drools.core.impl.StatefulSessionPool;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
+import org.drools.core.util.ClassUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -246,6 +248,8 @@ public class KieContainerImpl
 
         final ResultsImpl results = new ResultsImpl();
 
+        currentKM.updateKieModule(newKM);
+
         List<String> kbasesToRemove = new ArrayList<String>();
         for ( Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
             String kbaseName = kBaseEntry.getKey();
@@ -297,11 +301,11 @@ public class KieContainerImpl
     }
 
     private boolean isModifyingUsedClass( List<String> modifiedClasses, ClassLoader classLoader ) {
-        return modifiedClasses.stream().anyMatch( c -> isClassInUse( classLoader, convertResourceToClassName(c) ) );
+        return modifiedClasses.stream().anyMatch( c -> isClassInUse( classLoader, ClassUtils.convertResourceToClassName(c) ) );
     }
 
     private boolean isClassInUse(ClassLoader rootClassLoader, String className) {
-        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
+        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className, MaterializedLambda.class);
     }
 
     private Collection<Class<?>> reinitModifiedClasses( InternalKieModule newKM, List<String> modifiedClasses, ClassLoader classLoader, boolean modifyingUsedClass ) {

@@ -83,4 +83,12 @@ public class VariableTemporalConstraint<A> extends TemporalConstraint {
         }
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "VariableTemporalConstraint for '" + getExprId() + "' (" +
+                "function1: lambda " + System.identityHashCode(f1) + ", " +
+                "function2: lambda " + System.identityHashCode(f2) + ")";
+    }
+
 }

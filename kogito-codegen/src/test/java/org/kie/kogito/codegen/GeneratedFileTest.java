@@ -17,7 +17,6 @@ package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
 
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -38,12 +37,12 @@ public class GeneratedFileTest {
 
     @Test
     public void relativePath() {
-        assertThat(testFile.getPath()).isEqualTo(TEST_RELATIVE_PATH);
+        assertThat(testFile.relativePath()).isEqualTo(TEST_RELATIVE_PATH);
     }
 
     @Test
     public void contents() {
-        assertThat(testFile.getData()).isEqualTo(TEST_CONTENTS);
+        assertThat(testFile.contents()).isEqualTo(TEST_CONTENTS);
     }
 
     @Test

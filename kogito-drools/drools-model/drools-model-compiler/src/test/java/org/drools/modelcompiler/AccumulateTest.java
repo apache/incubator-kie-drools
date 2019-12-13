@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Adult;
@@ -48,8 +50,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -1123,6 +1124,54 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithMaxCalendar() {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                        "rule AccumulateMaxDate\n" +
+                        "  dialect \"java\"\n" +
+                        "  when\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick($time : dueDate);\n" +
+                        "    max($time.getTime().getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setDueDate(Calendar.getInstance());
+        ksession.insert(st);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAccumulateWithMaxCalendarAndConstraint() {
+        String str =
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                        "rule AccumulateMaxDate\n" +
+                        "  dialect \"java\"\n" +
+                        "  when\n" +
+                        "  $customer : Customer( code == \"RHT\" )\n" +
+                        "  $max1 : Number() from accumulate(\n" +
+                        "    StockTick( company == $customer.code\n" +
+                        "    , $time : dueDate);\n" +
+                        "    max($time.getTime().getTime()))\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        StockTick st = new StockTick("RHT");
+        st.setDueDate(Calendar.getInstance());
+        Customer c = new Customer();
+        c.setCode("RHT");
+        ksession.insert(st);
+        ksession.insert(c);
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
     public void testNoBinding() {
 
         final String str = "rule foo\n" +
@@ -1359,24 +1408,23 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(BigDecimal.valueOf(3000), result.getBigDecimalValue());
     }
 
-
     @Test
     public void testFromAccumulateBigDecimalMvel() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
-                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;\n" +
-                "dialect \"mvel\"\n" +
-                "rule R when\n" +
-                "  $b : BigDecimal() from accumulate (\n" +
-                "            Person( $money : money ),\n" +
-                "                init( BigDecimal sum = 0; ),\n" +
-                "                action( sum += $money; ),\n" +
-                "                reverse( sum -= $money; ),\n" +
-                "                result( sum )\n" +
-                "         )\n" +
-                "then\n" +
-                "  list.add($b);\n" +
-                "end";
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list;\n" +
+                     "dialect \"mvel\"\n" +
+                     "rule R when\n" +
+                     "  $b : BigDecimal() from accumulate (\n" +
+                     "            Person( $money : money ),\n" +
+                     "                init( BigDecimal sum = 0; ),\n" +
+                     "                action( sum += $money; ),\n" +
+                     "                reverse( sum -= $money; ),\n" +
+                     "                result( sum )\n" +
+                     "         )\n" +
+                     "then\n" +
+                     "  list.add($b);\n" +
+                     "end";
 
         KieSession ksession = getKieSession(str);
         final List<Number> list = new ArrayList<>();
@@ -1392,8 +1440,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(new BigDecimal(300), list.get(0));
-    }
 
+    }
 
     @Test
     public void testSemicolonMissingInInit() {
@@ -1448,7 +1496,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  list.add($sum);\n" +
                 "end";
 
-        getKieSession(str);
+       getKieSession(str);
     }
 
     @Test(expected = AssertionError.class)
@@ -1615,5 +1663,63 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 38));
         ksession.insert(new Person("Mario", 45));
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testCoercionInAccumulate() {
+        String str =
+                        "global java.util.List result;\n" +
+                        "rule \"Row 1 moveToBiggerCities\"\n" +
+                        "  dialect \"mvel\"\n" +
+                                "  when\n" +
+                        "    $count : Integer( intValue() > 5 , intValue() <= 10 ) " +
+                        "      from accumulate ( Integer(), count(1)) \n" +
+                        "  then\n" +
+                        " result.add($count);" +
+                        "end";
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(str);
+        ksession.setGlobal("result", result);
+
+        IntStream.range(1, 7).forEach(ksession::insert);
+
+        ksession.fireAllRules();
+
+        assertEquals(6, result.iterator().next().longValue());
+
+    }
+
+    @Test
+    public void testCoercionInAccumulate2() {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List result; \n" +
+                        "rule \"rule\"\n" +
+                        "    when\n" +
+                        "        Person($age : age)\n" +
+                        "        $count : Number(intValue <= $age) from accumulate(\n" +
+                        "            $i : Integer(),\n" +
+                        "            count($i)\n" +
+                        "        )\n" +
+                        "    then\n" +
+                        "       result.add($count);\n" +
+                        "end\n";
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(drl);
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("Luca", 35));
+
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
+
+        ksession.fireAllRules();
+
+        assertEquals(3, result.iterator().next().longValue());
     }
 }

@@ -18,9 +18,6 @@ public class ModifyCompiler {
 
     private PreprocessPhase preprocessPhase = new PreprocessPhase();
 
-    public ModifyCompiler() {
-    }
-
     public ParsingResult compile(String mvelBlock) {
 
         BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);

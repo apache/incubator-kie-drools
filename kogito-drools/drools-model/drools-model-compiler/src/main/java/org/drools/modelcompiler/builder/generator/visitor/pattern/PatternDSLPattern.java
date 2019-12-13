@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -71,8 +71,9 @@ class PatternDSLPattern extends PatternDSL {
     private MethodCallExpr createPatternExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
         MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
         dslExpr.addArgument( context.getVarExpr( pattern.getIdentifier()) );
-        if (context.isQuery() && declarationSpec.getDeclarationSource().isPresent()) {
-            dslExpr.addArgument( declarationSpec.getDeclarationSource().get() );
+        if (context.isQuery()) {
+            Optional<Expression> declarationSource = declarationSpec.getDeclarationSource();
+            declarationSource.ifPresent(dslExpr::addArgument);
         }
         return dslExpr;
     }

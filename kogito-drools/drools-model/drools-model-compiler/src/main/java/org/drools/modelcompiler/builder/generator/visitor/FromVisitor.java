@@ -19,9 +19,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -32,14 +29,20 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static java.util.Optional.of;
+
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.sanitizeDrlNameExpr;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class FromVisitor {
 
@@ -106,7 +109,7 @@ public class FromVisitor {
             asListCall.addArgument(expr);
         }
 
-        fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true , Optional.empty()) );
         return of(fromCall);
     }
 
@@ -127,7 +130,7 @@ public class FromVisitor {
             }
         }
 
-        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty() ) );
         return of( fromCall );
     }
 
@@ -145,7 +148,7 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( packageModel.hasEntryPoint( bindingId ) ) {
+        if ( !isLegacyRuleUnit() && packageModel.hasEntryPoint( bindingId ) ) {
             return of( createEntryPointCall(bindingId) );
         }
         if ( contextHasDeclaration( bindingId ) ) {
@@ -201,8 +204,8 @@ public class FromVisitor {
         MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
         entryPointCall.addArgument( new StringLiteralExpr( bindingId ) );
         return entryPointCall;
-
     }
+
     private Expression createFromCall( String expression, String bindingId, boolean hasBinding ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         fromCall.addArgument( context.getVarExpr(bindingId));
@@ -218,7 +221,7 @@ public class FromVisitor {
     }
 
     private Expression addNoArgLambdaToFromExpression( String expression, MethodCallExpr fromCall ) {
-        fromCall.addArgument( generateLambdaWithoutParameters( Collections.emptyList(), DrlxParseUtil.parseExpression( expression ).getExpr(), true ) );
+        fromCall.addArgument( generateLambdaWithoutParameters( Collections.emptyList(), DrlxParseUtil.parseExpression( expression ).getExpr(), true, Optional.empty()) );
         return fromCall;
     }
 
@@ -245,6 +248,9 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( String bindingId ) {
+        if (isLegacyRuleUnit()) {
+            return parseExpression( DrlxParseUtil.toVar( bindingId ) );
+        }
         MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
         return entryPointCall.addArgument( new StringLiteralExpr(bindingId) );
     }

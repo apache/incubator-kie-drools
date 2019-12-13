@@ -24,7 +24,7 @@ public class MatchesOperator implements Operator.SingleValue<String, String> {
 
     @Override
     public boolean eval( String s1, String s2 ) {
-        return s1.matches( s2 );
+        return s1 != null && s1.matches( s2 );
     }
 
     @Override

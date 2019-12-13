@@ -81,14 +81,14 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
                 Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))
-                        .forEach( (name, errors) -> {
-                            errors.forEach( messages::addMessage );
-                            File srcFile = srcMfs.getFile( name );
-                            if ( srcFile instanceof MemoryFile ) {
-                                String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
-                                messages.addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
-                            }
-                        } );
+                    .forEach( (name, errors) -> {
+                        errors.forEach( messages::addMessage );
+                        File srcFile = srcMfs.getFile( name );
+                        if ( srcFile instanceof MemoryFile ) {
+                            String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
+                            messages.addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
+                        }
+                    } );
 
                 for (CompilationProblem problem : res.getWarnings()) {
                     messages.addMessage(problem);

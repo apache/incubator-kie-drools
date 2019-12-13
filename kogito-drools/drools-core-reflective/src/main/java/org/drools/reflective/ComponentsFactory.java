@@ -23,8 +23,8 @@ import static org.kie.api.internal.utils.ServiceUtil.instanceFromNames;
 
 public class ComponentsFactory {
 
-    private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicComponentsSupplier";
-    private static final String STATIC_IMPL = "org.drools.statics.common.StaticComponentsSupplier";
+    private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicComponentsSupplier";
+    private static final String STATIC_IMPL = "org.drools.statics.StaticComponentsSupplier";
 
     private static ComponentsSupplier supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
 

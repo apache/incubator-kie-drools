@@ -27,13 +27,13 @@ public class FlattenScope {
         } else if (expressionWithScope instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) expressionWithScope;
             if (methodCallExpr.getScope().isPresent()) {
-                res.addAll(flattenScope(methodCallExpr.getScope().get()));
+                res.addAll(flattenScope(methodCallExpr.getScope().orElseThrow(() -> new IllegalStateException("Scope expression is not present!"))));
             }
             res.add(methodCallExpr);
         } else if (expressionWithScope instanceof NullSafeMethodCallExpr) {
             NullSafeMethodCallExpr methodCallExpr = (NullSafeMethodCallExpr) expressionWithScope;
             if (methodCallExpr.getScope().isPresent()) {
-                res.addAll(flattenScope(methodCallExpr.getScope().get()));
+                res.addAll(flattenScope(methodCallExpr.getScope().orElseThrow(() -> new IllegalStateException("Scope expression is not present!"))));
             }
             res.add(methodCallExpr);
         } else if (expressionWithScope instanceof InlineCastExpr && ((InlineCastExpr) expressionWithScope).getExpression() instanceof FieldAccessExpr) {

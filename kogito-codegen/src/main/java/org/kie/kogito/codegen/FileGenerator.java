@@ -16,8 +16,6 @@
 
 package org.kie.kogito.codegen;
 
-import org.drools.modelcompiler.builder.GeneratedFile;
-
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public interface FileGenerator {

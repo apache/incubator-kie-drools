@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 /**

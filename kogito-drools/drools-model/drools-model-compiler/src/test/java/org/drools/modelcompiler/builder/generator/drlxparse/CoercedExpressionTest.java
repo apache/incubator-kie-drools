@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class CoercedExpressionTest {
 
@@ -139,7 +139,7 @@ public class CoercedExpressionTest {
 
     @Test
     public void doNotCastNameExprLiterals() {
-        final TypedExpression left = expr("_this.getAgeAsShort()", java.lang.Short.class);
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAgeAsShort()", java.lang.Short.class);
         final TypedExpression right = expr("$age", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("$age", int.class), coerce.getCoercedRight());

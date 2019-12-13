@@ -2430,6 +2430,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             if (helper.validateIdentifierKey(DroolsSoftKeywords.DO)) {
                 namedConsequence(ce, null);
             }
+        } else if (helper.validateIdentifierKey( DroolsSoftKeywords.IF )) {
+            result = conditionalBranch( ce, null );
         } else if (input.LA(1) == DRL6Lexer.ID || input.LA(1) == DRL6Lexer.QUESTION || input.LA( 1) == DRL6Lexer.DIV) {
             result = lhsPatternBind(ce,
                                     allowOr);

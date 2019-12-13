@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.kogito.rules.RuleUnitData;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 
 public class RuleUnitDescriptionRegistry {
 
@@ -31,10 +31,10 @@ public class RuleUnitDescriptionRegistry {
 
     public RuleUnitDescriptionRegistry() { }
 
-    public RuleUnitDescription getDescription(final RuleUnitData ruleUnit) {
-        final RuleUnitDescription ruleUnitDescr = ruleUnits.get(getUnitName(ruleUnit));
+    public RuleUnitDescription getDescription(Object ruleUnit) {
+        final RuleUnitDescription ruleUnitDescr = ruleUnits.get(ruleUnit.getClass().getName());
         if (ruleUnitDescr == null) {
-            throw new IllegalStateException("Unknown RuleUnitDescription: " + getUnitName(ruleUnit));
+            throw new IllegalStateException("Unknown RuleUnitDescription: " + ruleUnit.getClass().getName());
         }
         return ruleUnitDescr;
     }
@@ -58,7 +58,36 @@ public class RuleUnitDescriptionRegistry {
         return !ruleUnits.isEmpty();
     }
 
-    public static String getUnitName( RuleUnitData ruleUnit ) {
-        return ruleUnit.getClass().getName();
+    public enum State {
+        UNIT,
+        NO_UNIT,
+        UNKNOWN;
+
+        State hasUnit( boolean hasUnit) {
+            if (hasUnit) {
+                if (this == NO_UNIT) {
+                    throw new IllegalStateException("Cannot mix rules with and without unit");
+                }
+                return UNIT;
+            } else {
+                if (this == UNIT) {
+                    throw new IllegalStateException("Cannot mix rules with and without unit");
+                }
+                return NO_UNIT;
+            }
+        }
+
+        State merge( State other) {
+            if (this == UNKNOWN) {
+                return other;
+            }
+            if (other == UNKNOWN) {
+                return this;
+            }
+            if (this != other) {
+                throw new IllegalStateException("Cannot mix rules with and without unit");
+            }
+            return this;
+        }
     }
 }

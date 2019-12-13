@@ -170,7 +170,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>

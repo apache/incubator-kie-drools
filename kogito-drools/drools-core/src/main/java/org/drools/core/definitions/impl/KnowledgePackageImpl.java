@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -71,6 +72,15 @@ public class KnowledgePackageImpl
         Externalizable {
 
     private static final long serialVersionUID = 510l;
+
+    private static final String[] implicitImports = new String[]{
+            "org.kie.api.definition.rule.*",
+            "org.kie.api.definition.type.*",
+            "org.drools.core.factmodel.traits.Alias",
+            "org.drools.core.factmodel.traits.Trait",
+            "org.drools.core.factmodel.traits.Traitable",
+            "org.drools.core.beliefsystem.abductive.Abductive",
+            "org.drools.core.beliefsystem.abductive.Abducible"};
 
     /**
      * Name of the pkg.
@@ -341,8 +351,10 @@ public class KnowledgePackageImpl
     }
 
     public void addImport(final ImportDeclaration importDecl) {
-        this.imports.put(importDecl.getTarget(),
-                         importDecl);
+        this.imports.put(importDecl.getTarget(), importDecl);
+        if (this.typeResolver != null) {
+            this.typeResolver.addImport( importDecl.getTarget() );
+        }
     }
 
     public Map<String, ImportDeclaration> getImports() {
@@ -351,7 +363,7 @@ public class KnowledgePackageImpl
 
     public void addTypeDeclaration(final TypeDeclaration typeDecl) {
         this.typeDeclarations.put(typeDecl.getTypeName(),
-                                  typeDecl);
+                typeDecl);
     }
 
     public void removeTypeDeclaration(final String type) {
@@ -396,7 +408,7 @@ public class KnowledgePackageImpl
         }
 
         this.functions.put(function.getName(),
-                           function);
+                function);
         dialectRuntimeRegistry.getDialectData(function.getDialect()).setDirty(true);
     }
 
@@ -410,7 +422,7 @@ public class KnowledgePackageImpl
         }
 
         this.accumulateFunctions.put(name,
-                                     function);
+                function);
     }
 
     public Map<String, AccumulateFunction> getAccumulateFunctions() {
@@ -428,7 +440,7 @@ public class KnowledgePackageImpl
     public void addGlobal(final String identifier,
                           final Class<?> clazz) {
         if (this.globals == Collections.EMPTY_MAP) {
-            this.globals = new HashMap<>();
+            this.globals = new HashMap<>(1);
         }
         this.globals.put(identifier, clazz);
     }
@@ -445,7 +457,7 @@ public class KnowledgePackageImpl
         Function function = this.functions.remove(functionName);
         if (function != null) {
             this.dialectRuntimeRegistry.removeFunction(this,
-                                                       function);
+                    function);
         }
     }
 
@@ -458,7 +470,7 @@ public class KnowledgePackageImpl
             this.factTemplates = new HashMap<>(1);
         }
         this.factTemplates.put(factTemplate.getName(),
-                               factTemplate);
+                factTemplate);
     }
 
     /**
@@ -471,7 +483,7 @@ public class KnowledgePackageImpl
      */
     public void addRule(RuleImpl rule) {
         this.rules.put(rule.getName(),
-                       rule);
+                rule);
     }
 
     /**
@@ -636,8 +648,15 @@ public class KnowledgePackageImpl
         return typeResolver;
     }
 
-    public void setTypeResolver(TypeResolver typeResolver) {
-        this.typeResolver = typeResolver;
+    public void setClassLoader(ClassLoader classLoader) {
+        if (typeResolver != null && typeResolver.getClassLoader() == classLoader) {
+            return;
+        }
+        this.typeResolver = new ClassTypeResolver(new HashSet<String>(getImports().keySet()), classLoader, getName());
+        typeResolver.addImport(getName() + ".*");
+        for (String implicitImport : implicitImports) {
+            typeResolver.addImplicitImport(implicitImport);
+        }
         this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(this);
     }
 
@@ -806,7 +825,16 @@ public class KnowledgePackageImpl
             }
         }
 
-        return ClassUtils.deepClone(this, classLoader, cloningResources);
+        KnowledgePackageImpl clonedPkg = ClassUtils.deepClone(this, classLoader, cloningResources);
+        clonedPkg.setClassLoader( classLoader );
+
+        if (ruleUnitDescriptionLoader != null) {
+            for (String ruleUnit : ruleUnitDescriptionLoader.getDescriptions().keySet()) {
+                clonedPkg.getRuleUnitDescriptionLoader().getDescription( ruleUnit );
+            }
+        }
+
+        return clonedPkg;
     }
 
     @Override

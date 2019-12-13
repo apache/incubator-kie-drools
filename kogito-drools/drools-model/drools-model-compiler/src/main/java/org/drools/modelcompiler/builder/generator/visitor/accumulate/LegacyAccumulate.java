@@ -173,6 +173,11 @@ public class LegacyAccumulate {
         }
 
         @Override
+        public String normalizeValueForUnit( String value ) {
+            return delegate.normalizeValueForUnit( value );
+        }
+
+        @Override
         public boolean hasDataSource( String name ) {
             return delegate.hasDataSource( name );
         }

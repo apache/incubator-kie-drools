@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.kogito.codegen.GeneratedFile;
 
 public class BigRuleSetCodegenTest {
 

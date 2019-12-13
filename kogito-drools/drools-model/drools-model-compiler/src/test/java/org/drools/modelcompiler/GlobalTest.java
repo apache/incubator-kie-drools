@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.lang.reflect.Method;
 
+import org.drools.modelcompiler.domain.InputDataTypes;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -136,6 +137,23 @@ public class GlobalTest extends BaseModelTest {
 
             return false;
         }
+
+        public Double sumOf(Object[] objects) {
+            Double ret = null;
+            for (Object o : objects) {
+              if ((o instanceof Number))
+              {
+                Double d = Double.valueOf(o.toString());
+                if (ret == null) {
+                  ret = d;
+                } else {
+                  ret = Double.valueOf(ret.doubleValue() + d.doubleValue());
+                }
+              }
+            }
+            return ret;
+        }
+
     }
 
     @Test
@@ -331,5 +349,106 @@ public class GlobalTest extends BaseModelTest {
                 "global MyObject event;";
 
         KieSession ksession = getKieSession(str);
+    }
+
+    @Test
+    public void testGlobalFunctionWithArrayInput() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + InputDataTypes.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule useSumOf when\n" +
+                        "  $input : InputDataTypes( $no1Count_1 : no1Count\n" +
+                        "           , $no2Count_1 : no2Count\n" +
+                        "           , $no3Count_1 : no3Count\n" +
+                        "           , $no4Count_1 : no4Count\n" +
+                        "           , $no5Count_1 : no5Count\n" +
+                        "           , $no6Count_1 : no6Count\n" +
+                        "           , $no7Count_1 : no7Count\n" +
+                        "           , $no8Count_1 : no8Count\n" +
+                        "           , $no9Count_1 : no9Count\n" +
+                        "           , $no10Count_1 : no10Count\n" +
+                        "           , firings not contains \"fired\")\n" +
+                        "then\n" +
+                        "  $input.setNo13Count(functions.sumOf(new Object[]{$no1Count_1, $no2Count_1, $no3Count_1, $no4Count_1, $no5Count_1, $no6Count_1, $no7Count_1, $no8Count_1, $no9Count_1, $no10Count_1}).intValue());\n" +
+                        "  $input.getFirings().add(\"fired\");\n" +
+                        "  update($input);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new InputDataTypes());
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testGlobalFunctionWithLargeArrayInput() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + InputDataTypes.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule useSumOf when\n" +
+                        "  $input : InputDataTypes( " +
+                        "             $no1Count_1 : no1Count\n" +
+                        "           , $no2Count_1 : no2Count\n" +
+                        "           , $no3Count_1 : no3Count\n" +
+                        "           , $no4Count_1 : no4Count\n" +
+                        "           , $no5Count_1 : no5Count\n" +
+                        "           , $no6Count_1 : no6Count\n" +
+                        "           , $no7Count_1 : no7Count\n" +
+                        "           , $no8Count_1 : no8Count\n" +
+                        "           , $no9Count_1 : no9Count\n" +
+                        "           , $no10Count_1 : no10Count\n" +
+                        "           , $no11Count_1 : no11Count\n" +
+                        "           , $no12Count_1 : no12Count\n" +
+                        "           , $no13Count_1 : no13Count\n" +
+                        "           , $no14Count_1 : no14Count\n" +
+                        "           , $no15Count_1 : no15Count\n" +
+                        "           , $no16Count_1 : no16Count\n" +
+                        "           , $no17Count_1 : no17Count\n" +
+                        "           , $no18Count_1 : no18Count\n" +
+                        "           , $no19Count_1 : no19Count\n" +
+                        "           , $no20Count_1 : no20Count\n" +
+                        "           , $no21Count_1 : no21Count\n" +
+                        "           , $no22Count_1 : no22Count\n" +
+                        "           , firings not contains \"fired\")\n" +
+                        "then\n" +
+                        "  $input.setNo13Count(functions.sumOf(new Object[]{" +
+                        "       $no1Count_1, " +
+                        "       $no2Count_1, " +
+                        "       $no3Count_1, " +
+                        "       $no4Count_1, " +
+                        "       $no5Count_1, " +
+                        "       $no6Count_1, " +
+                        "       $no7Count_1, " +
+                        "       $no8Count_1, " +
+                        "       $no9Count_1, " +
+                        "       $no10Count_1, " +
+                        "       $no11Count_1," +
+                        "       $no12Count_1," +
+                        "       $no13Count_1," +
+                        "       $no14Count_1," +
+                        "       $no15Count_1," +
+                        "       $no16Count_1," +
+                        "       $no17Count_1," +
+                        "       $no18Count_1," +
+                        "       $no19Count_1," +
+                        "       $no20Count_1," +
+                        "       $no21Count_1," +
+                        "       $no22Count_1" +
+                        "" +
+                        "}).intValue());\n" +
+                        "  $input.getFirings().add(\"fired\");\n" +
+                        "  update($input);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new InputDataTypes());
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

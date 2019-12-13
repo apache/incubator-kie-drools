@@ -28,8 +28,8 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.addon.TypeResolver;
-import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -39,11 +39,15 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.kogito.rules.DataSource;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.drools.core.addon.TypeResolver;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -69,8 +73,9 @@ public class RuleContext {
 
     private RuleUnitDescription ruleUnitDescr;
     private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<String, String> aggregatePatternMap = new HashMap<>();
+    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
     private Boolean isNestedInsideOr = false;
@@ -135,18 +140,14 @@ public class RuleContext {
 
     private void processUnitData() {
         findUnitDescr();
-        if (ruleUnitDescr != null) {
-            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
-                String unitVarName = unitVar.getKey();
-                java.lang.reflect.Type type = unitVar.getValue().getGenericReturnType();
-                Class<?> rawClass = toRawClass( type );
-                Class<?> resolvedType = ruleUnitDescr.getDatasourceType( unitVarName ).orElse( rawClass );
-
-                Type declType = classToReferenceType( rawClass );
+        if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
+            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
+                String unitVarName = unitVar.getName();
+                Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
                 addRuleUnitVar( unitVarName, resolvedType );
 
-                getPackageModel().addGlobal( unitVarName, rawClass );
-                if ( DataSource.class.isAssignableFrom( rawClass ) ) {
+                getPackageModel().addGlobal( unitVarName, unitVar.getType() );
+                if ( unitVar.isDataSource() ) {
                     getPackageModel().addEntryPoint( unitVarName );
                 }
             }
@@ -179,12 +180,19 @@ public class RuleContext {
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         DeclarationSpec spec = scopedDeclarations.get( getDeclarationKey( id ));
         if (spec == null) {
-            Class<?> unitVarType = ruleUnitVars.get( id );
+            Class<?> unitVarType = ruleUnitVarsOriginalType.get( id );
+            if(unitVarType == null) {
+                unitVarType = ruleUnitVars.get(id);
+            }
             if (unitVarType != null) {
-                spec = new DeclarationSpec( id, unitVarType );
+                spec = new DeclarationSpec(id, unitVarType);
             }
         }
         return Optional.ofNullable( spec );
+    }
+
+    public DeclarationSpec getDeclarationByIdWithException(String id) {
+        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
     }
 
     private String getDeclarationKey( String id ) {
@@ -213,6 +221,10 @@ public class RuleContext {
 
     public void addRuleUnitVar(String name, Class<?> type) {
         ruleUnitVars.put( name, type );
+    }
+
+    public void addRuleUnitVarOriginalType(String name, Class<?> type) {
+        ruleUnitVarsOriginalType.put( name, type );
     }
 
     public Class<?> getRuleUnitVarType(String name) {
@@ -372,7 +384,7 @@ public class RuleContext {
         return namedConsequences;
     }
 
-    public Map<String, String> getAggregatePatternMap() {
+    public Map<AggregateKey, String> getAggregatePatternMap() {
         return aggregatePatternMap;
     }
 

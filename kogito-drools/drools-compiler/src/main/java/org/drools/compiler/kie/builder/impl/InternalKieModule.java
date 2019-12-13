@@ -146,6 +146,10 @@ public interface InternalKieModule extends KieModule, Serializable {
         return createProjectClassLoader( parent, createResourceProvider() );
     }
 
+    default void updateKieModule(InternalKieModule newKM) {
+
+    }
+
     default CompilationCache getCompilationCache( String kbaseName) { return null; }
 
     default void initModel() { }

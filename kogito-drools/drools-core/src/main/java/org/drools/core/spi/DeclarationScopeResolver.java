@@ -29,7 +29,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.ruleunit.RuleUnitDescription;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+
+import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * A class capable of resolving a declaration in the current build context
@@ -148,6 +150,14 @@ public class DeclarationScopeResolver {
     public Class<?> resolveVarType( String identifier ) {
         return ruleUnitDescr.flatMap( unit -> unit.getVarType( identifier ) ) // resolve identifier on rule unit ...
                             .orElseGet( () -> globalMap.get( identifier ) );  // ... or alternatively among globals
+    }
+
+    public String normalizeValueForUnit( String value ) {
+        return ruleUnitDescr.map( unit -> {
+            int dotPos = value.indexOf( '.' );
+            String firstPart = dotPos > 0 ? value.substring( 0, dotPos ) : value;
+            return unit.hasVar( firstPart ) ? RULE_UNIT_DECLARATION + "." + value : value;
+        }).orElse( value );
     }
 
     public boolean hasDataSource( String name ) {

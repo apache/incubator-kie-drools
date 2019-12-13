@@ -172,6 +172,10 @@ public class StringUtils {
         return Character.isUpperCase(s.charAt( 0 )) ? Character.toLowerCase( s.charAt( 0 ) ) + s.substring( 1 ) : s;
     }
 
+    public static String lcFirstForBean(String s) {
+        return s.length() > 1 && Character.isUpperCase( s.charAt( 1 ) ) ? s : lcFirst(s);
+    }
+
     // Empty checks
     //-----------------------------------------------------------------------
     /**

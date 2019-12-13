@@ -57,21 +57,19 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
-        // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
-        newKM.setIncrementalUpdate( true );
-        newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
         CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
-        newKM.setIncrementalUpdate( false );
 
         List<RuleImpl> rulesToBeRemoved;
         List<RuleImpl> rulesToBeAdded;
 
         Map<String, AtomicInteger> globalsCounter = new HashMap<>();
 
-
+        // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
+        newKM.setIncrementalUpdate( true );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+        newKM.setIncrementalUpdate( false );
 
         removeResources(pkgbuilder);
 

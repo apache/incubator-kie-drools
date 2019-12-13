@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
+import java.util.Optional;
+
 import org.drools.compiler.lang.descr.EvalDescr;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -26,7 +28,7 @@ public class EvalVisitor {
 
         drlxParseResult.accept(drlxParseSuccess -> {
             SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
-            Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(singleResult.getUsedDeclarations(), singleResult.getExpr(), true);
+            Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(singleResult.getUsedDeclarations(), singleResult.getExpr(), true, Optional.empty());
             singleResult.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
             singleResult.setStatic(true);
             new FlowExpressionBuilder(context).processExpression(drlxParseSuccess);

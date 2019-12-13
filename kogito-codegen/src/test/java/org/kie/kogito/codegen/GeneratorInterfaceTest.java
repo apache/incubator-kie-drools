@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 

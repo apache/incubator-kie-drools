@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.modelcompiler.builder.AccumulateClassWriter;
 import org.drools.modelcompiler.builder.DeclaredTypeWriter;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -31,6 +30,8 @@ import org.drools.modelcompiler.builder.PackageModelWriter;
 import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.RuleWriter;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class KogitoPackageSources extends PackageSources {
 
     private Map<String, String> modelsByUnit = new HashMap<>();
 
-    private Collection<Class<?>> ruleUnits;
+    private Collection<RuleUnitDescription> ruleUnits;
 
     private String rulesFileName;
 
@@ -62,31 +63,23 @@ public class KogitoPackageSources extends PackageSources {
             sources.reflectConfigSource = new GeneratedFile("META-INF/native-image/" + pkgModel.getPathName() + "/reflect-config.json", reflectConfigSource(pojoClasses));
         }
 
-        for (AccumulateClassWriter accumulateClassWriter : packageModelWriter.getAccumulateClasses()) {
-            sources.accumulateSources.add(new GeneratedFile(accumulateClassWriter.getName(), logSource( accumulateClassWriter.getSource() )));
-        }
-
-        RuleWriter rules = packageModelWriter.getRules();
-        sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
-        sources.modelsByUnit.putAll( rules.getModelsByUnit() );
-
-        for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
-            sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
-        }
-
-        PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
-        sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
-
+        RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
         sources.rulesFileName = pkgModel.getRulesFileName();
 
         sources.ruleUnits = pkgModel.getRuleUnits();
         if (!sources.ruleUnits.isEmpty()) {
             sources.queries = new HashMap<>();
-            for (Class<?> ruleUnit : sources.ruleUnits) {
-                sources.queries.put( ruleUnit, pkgModel.getQueriesInRuleUnit( ruleUnit ) );
+            for (RuleUnitDescription ruleUnit : sources.ruleUnits) {
+                Class<?> ruleUnitClass = ruleUnit.getRuleUnitClass();
+                if (ruleUnitClass == null) {
+                    logger.warn("Query Lookup: Generated rule units are not supported yet {}", ruleUnit.getRuleUnitName());
+                    continue;
+                }
+                sources.queries.put(ruleUnitClass, pkgModel.getQueriesInRuleUnit(ruleUnitClass) );
             }
         }
 
+        sources.modelsByUnit.putAll( rules.getModelsByUnit() );
         return sources;
     }
 
@@ -94,7 +87,7 @@ public class KogitoPackageSources extends PackageSources {
         return modelsByUnit;
     }
 
-    public Collection<Class<?>> getRuleUnits() {
+    public Collection<RuleUnitDescription> getRuleUnits() {
         return ruleUnits;
     }
 

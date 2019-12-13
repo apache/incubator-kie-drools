@@ -24,6 +24,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
 import org.drools.model.AnnotationValue;
 import org.drools.model.TypeMetaData;
 import org.drools.modelcompiler.constraints.MvelReadAccessor;
@@ -161,7 +162,7 @@ public class TypeDeclarationUtil {
 
         @Override
         public Object get(Object bean, String field) {
-            java.lang.reflect.Field f = org.drools.reflective.util.ClassUtils.getField( getDefinedClass(), field );
+            java.lang.reflect.Field f = ClassUtils.getField(getDefinedClass(), field );
             if (f != null) {
                 f.setAccessible( true );
                 try {
@@ -175,7 +176,7 @@ public class TypeDeclarationUtil {
 
         @Override
         public void set(Object bean, String field, Object value) {
-            java.lang.reflect.Field f = org.drools.reflective.util.ClassUtils.getField( getDefinedClass(), field );
+            java.lang.reflect.Field f = ClassUtils.getField( getDefinedClass(), field );
             if (f != null) {
                 f.setAccessible( true );
                 try {

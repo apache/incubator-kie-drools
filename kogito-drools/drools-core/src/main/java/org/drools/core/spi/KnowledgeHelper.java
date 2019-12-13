@@ -44,56 +44,56 @@ import org.kie.api.runtime.rule.RuleContext;
  * need to lookup the fact handle of the object form the WorkingMemory.
  */
 public interface KnowledgeHelper
-    extends
-    RuleContext,
-    Serializable {
-    
+        extends
+        RuleContext,
+        Serializable {
+
     void setActivation(final Activation agendaItem);
-    
+
     void reset();
-    
-    
+
+
     /**
      * Asserts an object
-     * 
+     *
      * @param object -
      *            the object to be asserted
      */
     InternalFactHandle insert(Object object) ;
 
     FactHandle insertAsync( Object object );
-    
+
     /**
      * Asserts an object specifying that it implement the onPropertyChange
      * listener
-     * 
+     *
      * @param object -
      *            the object to be asserted
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
      */
     InternalFactHandle insert(Object object,
-                boolean dynamic) ;
-    
+                              boolean dynamic) ;
+
     InternalFactHandle insertLogical(Object object) ;
-    
+
     InternalFactHandle insertLogical(Object object, boolean dynamic) ;
 
     InternalFactHandle insertLogical(Object object, Mode belief) ;
 
     InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
-    
+
     void cancelRemainingPreviousLogicalDependencies();
-    
+
     InternalFactHandle getFactHandle(Object object);
-    
+
     InternalFactHandle getFactHandle(InternalFactHandle handle);
-    
+
     void update(FactHandle handle, Object newObject);
 
     void update(FactHandle newObject);
     void update(FactHandle newObject, BitMask mask, Class<?> modifiedClass);
-    
+
     void update(Object newObject);
     void update(Object newObject, BitMask mask, Class<?> modifiedClass);
 
@@ -126,17 +126,17 @@ public interface KnowledgeHelper
     Activation getMatch();
 
     WorkingMemory getWorkingMemory();
-    
+
     EntryPoint getEntryPoint( String id );
-    
+
     Channel getChannel( String id );
-    
+
     Map<String, Channel> getChannels();
 
     void setFocus(String focus);
 
     Declaration getDeclaration(String identifier);
-    
+
     void halt();
 
     <T> T getContext(Class<T> contextClass);
@@ -165,5 +165,23 @@ public interface KnowledgeHelper
 
     ClassLoader getProjectClassLoader();
 
-    void run(String ruleUnitName);
+    default void run(String ruleUnitName) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void run(Object ruleUnit) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void run(Class<?> ruleUnitClass) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void guard(Object ruleUnit) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void guard(Class<?> ruleUnitClass) {
+        throw new UnsupportedOperationException();
+    }
 }

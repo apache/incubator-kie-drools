@@ -58,4 +58,9 @@ public class EvalImpl implements Condition, ModelComponent {
 
         return ModelComponent.areEqualInModel( expr, that.expr );
     }
+
+    @Override
+    public String toString() {
+        return "EvalImpl (expr: " + expr + ")";
+    }
 }

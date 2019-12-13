@@ -2,11 +2,12 @@ package org.drools.model.functions;
 
 import java.io.Serializable;
 
-public interface Block7<A, B, C, D, E, F, G> extends Serializable {
-    void execute(A a, B b, C c, D d, E e, F f, G g) throws Exception;
+public interface Block7<T1, T2, T3, T4, T5, T6, T7> extends Serializable {
+
+    void execute(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7) throws Exception;
 
     default BlockN asBlockN() {
-        return new Impl( this );
+        return new Impl(this);
     }
 
     class Impl extends IntrospectableLambda implements BlockN {
@@ -18,7 +19,7 @@ public interface Block7<A, B, C, D, E, F, G> extends Serializable {
         }
 
         @Override
-        public void execute( Object... objs ) throws Exception {
+        public void execute(Object... objs) throws Exception {
             block.execute(objs[0], objs[1], objs[2], objs[3], objs[4], objs[5], objs[6]);
         }
 
@@ -27,5 +28,4 @@ public interface Block7<A, B, C, D, E, F, G> extends Serializable {
             return block;
         }
     }
-
 }

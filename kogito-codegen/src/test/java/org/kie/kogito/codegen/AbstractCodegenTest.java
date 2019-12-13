@@ -32,7 +32,6 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -90,10 +89,10 @@ public class AbstractCodegenTest {
         String[] sources = new String[generatedFiles.size()];
         int index = 0;
         for (GeneratedFile entry : generatedFiles) {
-            String fileName = entry.getPath();
+            String fileName = entry.relativePath();
             sources[index++] = fileName;
-            srcMfs.write(fileName, entry.getData());
-            log(new String(entry.getData()));
+            srcMfs.write(fileName, entry.contents());
+            log(new String(entry.contents()));
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());

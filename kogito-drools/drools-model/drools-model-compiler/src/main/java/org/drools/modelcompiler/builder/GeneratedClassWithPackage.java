@@ -10,7 +10,7 @@ public class GeneratedClassWithPackage {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
 
-    public GeneratedClassWithPackage( TypeDeclaration generatedClass, String packageName, Collection<String> imports, Collection<String> staticImports) {
+    public GeneratedClassWithPackage(TypeDeclaration generatedClass, String packageName, Collection<String> imports, Collection<String> staticImports) {
         this.generatedClass = generatedClass;
         this.packageName = packageName;
         this.imports = imports;

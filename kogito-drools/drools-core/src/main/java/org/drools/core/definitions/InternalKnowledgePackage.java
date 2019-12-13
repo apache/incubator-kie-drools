@@ -140,7 +140,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     TypeResolver getTypeResolver();
 
-    void setTypeResolver(TypeResolver typeResolver);
+    void setClassLoader(ClassLoader classLoader);
 
     RuleUnitDescriptionLoader getRuleUnitDescriptionLoader();
 

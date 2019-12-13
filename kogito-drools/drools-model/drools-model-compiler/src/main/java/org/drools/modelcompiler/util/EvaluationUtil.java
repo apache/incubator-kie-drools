@@ -153,6 +153,7 @@ public class EvaluationUtil {
         return null;
     }
 
+
     public static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
         if (mask == null) {
             return null;

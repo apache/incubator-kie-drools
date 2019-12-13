@@ -20,8 +20,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -277,7 +284,7 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
-        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint. 
+        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
     @Test
@@ -327,7 +334,7 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
-        assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.  
+        assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.
     }
 
     @Test
@@ -358,14 +365,15 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @Test
     public void testFactType() throws Exception {
+        // DROOLS-4784
         String str =
                 "package org.test;\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "declare Name\n" +
-                "    value : String\n" +
+                "    VALUE : String\n" +
                 "end\n" +
                 "rule R when\n" +
-                "    Name($v : value == \"Mario\")\n" +
+                "    Name($v : VALUE == \"Mario\")\n" +
                 "then\n" +
                 "    insert($v);" +
                 "end";
@@ -374,16 +382,27 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         FactType nameType = ksession.getKieBase().getFactType("org.test", "Name");
         Object name = nameType.newInstance();
-        nameType.set(name, "value", "Mario");
+        nameType.set(name, "VALUE", "Mario");
 
         ksession.insert(name);
         ksession.fireAllRules();
 
-        assertEquals( "Mario", nameType.get( name, "value" ) );
+        assertEquals( "Mario", nameType.get( name, "VALUE" ) );
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next() );
+
+        EntryPointNode epn = (( KnowledgeBaseImpl ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        Iterator<ObjectTypeNode> otns = epn.getObjectTypeNodes().values().iterator();
+        ObjectTypeNode otn = otns.next();
+        if (otn.toString().contains( "InitialFact" )) {
+            otn = otns.next();
+        }
+        AlphaNode alpha = (AlphaNode)otn.getSinks()[0];
+        AlphaNodeFieldConstraint constraint = alpha.getConstraint();
+        int index = (( IndexableConstraint ) constraint).getFieldExtractor().getIndex();
+        assertTrue( index >= 0 );
     }
 
     @Test
@@ -442,6 +461,36 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
+    }
+
+    @Test
+    public void testEnum() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "declare enum PersonAge\n" +
+                "    ELEVEN(11);\n" +
+                "\n" +
+                "    key: int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"0_SomeRule\"\n" +
+                "    when\n" +
+                "            $p : Person ()\n" +
+                "    then\n" +
+                "            $p.setAge(PersonAge.ELEVEN.getKey());\n" +
+                "            insert(new Result($p));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario"));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        Person p = (Person) results.iterator().next().getValue();
+        assertEquals(11, p.getAge());
     }
 
     @Test

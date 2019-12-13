@@ -6,12 +6,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.drools.Gender;
 import org.drools.Person;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.junit.Assert.assertThat;
 
 interface CompilerTest {
 
@@ -27,11 +29,12 @@ interface CompilerTest {
         imports.add("java.math.BigDecimal");
         imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
+        imports.add(Gender.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
         ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
-        assertThat(compiled.resultAsString()).isEqualToIgnoringWhitespace(expectedResult);
+        assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
         resultAssert.accept(compiled);
     }
 

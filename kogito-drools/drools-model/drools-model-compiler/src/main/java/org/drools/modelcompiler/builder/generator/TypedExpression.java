@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
@@ -88,6 +89,10 @@ public class TypedExpression {
         } else {
             return Optional.empty();
         }
+    }
+
+    public com.github.javaparser.ast.type.Type getJPType() {
+        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType((Class<?>) type).getCanonicalName());
     }
 
     public boolean isPrimitive() {

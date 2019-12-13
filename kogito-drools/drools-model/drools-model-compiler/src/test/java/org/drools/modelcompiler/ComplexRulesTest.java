@@ -519,7 +519,7 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
-    public void testCompareDateWithString() { // FIXME fails on non-US locales
+    public void testCompareDateWithString() {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +

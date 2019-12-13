@@ -66,4 +66,10 @@ public class MultipleConstraints extends AbstractConstraint implements ModelComp
     public MultipleConstraints replaceVariable( Variable oldVar, Variable newVar ) {
         return new MultipleConstraints( constraints.stream().map( c -> c.replaceVariable( oldVar, newVar ) ).collect( toList() ) );
     }
+
+    @Override
+    public String toString() {
+        return "MultipleConstraints (constraints: " + constraints + ")";
+    }
+
 }
