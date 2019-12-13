@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
+ * Represents a {@link PlanningSolution problem} that has been submitted to solve on the {@link SolverManager}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
