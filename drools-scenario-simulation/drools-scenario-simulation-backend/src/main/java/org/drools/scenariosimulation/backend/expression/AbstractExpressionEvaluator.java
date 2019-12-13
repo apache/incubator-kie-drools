@@ -26,6 +26,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
@@ -34,7 +36,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (isStructuredResult(resultClass)) {
-            return verifyResult(rawExpression, resultValue);
+            return verifyResult(rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
         }
@@ -67,11 +69,12 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
-
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(rawString);
-            if (jsonNode.isArray()) {
+            if (jsonNode.isTextual()) {
+                return extractAndEvaluateExpression((TextNode) jsonNode, className);
+            } else if (jsonNode.isArray()) {
                 return createAndFillList((ArrayNode) jsonNode, new ArrayList<>(), className, genericClasses);
             } else if (jsonNode.isObject()) {
                 return createAndFillObject((ObjectNode) jsonNode,
@@ -79,9 +82,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
                                            className,
                                            genericClasses);
             }
-            throw new IllegalArgumentException("Malformed raw data");
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Malformed raw data", e);
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE, e);
         }
     }
 
@@ -135,19 +138,21 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawExpression, Object resultRaw) {
+    protected boolean verifyResult(Object rawExpression, Object resultRaw, Class<?> resultClass) {
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
         if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Malformed raw data");
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
         }
         String raw = (String) rawExpression;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             JsonNode jsonNode = objectMapper.readTree(raw);
-            if (jsonNode.isArray()) {
+            if (jsonNode.isTextual()) {
+                return verifyExpression((TextNode) jsonNode, resultRaw, resultClass);
+            } else if (jsonNode.isArray()) {
                 return verifyList((ArrayNode) jsonNode, (List) resultRaw);
             } else if (jsonNode.isObject()) {
                 return verifyObject((ObjectNode) jsonNode, resultRaw);
@@ -156,6 +161,33 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         } catch (IOException e) {
             throw new IllegalArgumentException("Malformed raw data", e);
         }
+    }
+
+    /**
+     * It verifies a user defined expression for a collection type object (Lists, Maps). The evaluator which need to
+     * handle it, must override this method and define its own logic. In all other cases, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     * @param jsonNode
+     * @param resultRaw
+     * @param resultClass
+     * @return
+     */
+    protected boolean verifyExpression(TextNode jsonNode, Object resultRaw, Class<?> resultClass) {
+        throw new UnsupportedOperationException("This evaluator " + this.getClass().getSimpleName() + "doesn't support " +
+                "user defined expressions for collections");
+    }
+
+    /**
+     * It estract a user defined expression for a collection type object (Lists, Maps). The evaluator which need to
+     * handle it, must override this method and define its own logic. In all other cases, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     * @param jsonNode
+     * @param className
+     * @return
+     */
+    protected Object extractAndEvaluateExpression(TextNode jsonNode, String className) {
+        throw new UnsupportedOperationException("This evaluator " + this.getClass().getSimpleName() + "doesn't support " +
+                                                        "user defined expressions for collections");
     }
 
     protected boolean verifyList(ArrayNode json, List resultRaw) {
@@ -292,15 +324,15 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return jsonNode.get(VALUE).textValue();
     }
 
-    abstract protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString);
+    protected abstract boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString);
 
-    abstract protected Object internalLiteralEvaluation(String raw, String className);
+    protected abstract Object internalLiteralEvaluation(String raw, String className);
 
-    abstract protected Object extractFieldValue(Object result, String fieldName);
+    protected abstract  Object extractFieldValue(Object result, String fieldName);
 
-    abstract protected Object createObject(String className, List<String> genericClasses);
+    protected abstract Object createObject(String className, List<String> genericClasses);
 
-    abstract protected void setField(Object toReturn, String fieldName, Object fieldValue);
+    protected abstract void setField(Object toReturn, String fieldName, Object fieldValue);
 
     /**
      * Return a pair with field className as key and list of generics as value
@@ -310,5 +342,5 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * @param genericClasses : list of generics related to this field
      * @return
      */
-    abstract protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses);
+    protected abstract Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses);
 }
