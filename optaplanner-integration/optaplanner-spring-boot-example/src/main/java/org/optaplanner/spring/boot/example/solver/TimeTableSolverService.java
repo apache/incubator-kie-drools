@@ -47,7 +47,7 @@ public class TimeTableSolverService {
 
     @PostMapping("/solve")
     public void solve() {
-        solverManager.solveObserving(TimeTableRepository.SINGLETON_TIME_TABLE_ID,
+        solverManager.solveAndListen(TimeTableRepository.SINGLETON_TIME_TABLE_ID,
                 timeTableRepository::findById,
                 timeTableRepository::save);
     }

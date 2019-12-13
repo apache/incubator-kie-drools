@@ -72,7 +72,7 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
     }
 
     @Override
-    public SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId,
+    public SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder,
             Consumer<Solution_> finalBestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler) {
@@ -80,7 +80,7 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
     }
 
     @Override
-    public SolverJob<Solution_, ProblemId_> solveObserving(ProblemId_ problemId,
+    public SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder,
             Consumer<Solution_> bestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler) {

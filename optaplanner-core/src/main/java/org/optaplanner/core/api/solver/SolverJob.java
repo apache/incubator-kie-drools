@@ -30,8 +30,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 public interface SolverJob<Solution_, ProblemId_> {
 
     /**
-     * @return never null, a value given to {@link SolverManager#solveBatch(Object, Function, Consumer)}
-     * or {@link SolverManager#solveObserving(Object, Function, Consumer)}
+     * @return never null, a value given to {@link SolverManager#solve(Object, Function, Consumer)}
+     * or {@link SolverManager#solveAndListen(Object, Function, Consumer)}
      */
     ProblemId_ getProblemId();
 

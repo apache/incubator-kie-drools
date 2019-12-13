@@ -34,8 +34,8 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * asynchronously without blocking the calling thread.
  * <p>
  * To create a SolverManager, use {@link #create(SolverManagerConfig)}.
- * To solve a planning problem, call {@link #solveBatch(Object, Function, Consumer)}
- * or {@link #solveObserving(Object, Function, Consumer)}.
+ * To solve a planning problem, call {@link #solve(Object, Function, Consumer)}
+ * or {@link #solveAndListen(Object, Function, Consumer)}.
  * <p>
  * These methods are thread-safe unless explicitly stated otherwise.
  * <p>
@@ -66,17 +66,55 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // ************************************************************************
 
     /**
-     * As defined by {@link #solveBatch(Object, Function, Consumer)}.
-     * <p>
+     * Submits a planning problem to solve and returns immediately.
+     * The planning problem is solved on a solver {@link Thread}, as soon as one is available.
      * To retrieve the final best solution, use {@link SolverJob#getFinalBestSolution()}.
-     * In server applications, it's recommended to use {@link #solveBatch(Object, Function, Consumer)} instead.
+     * <p>
+     * In server applications, it's recommended to use {@link #solve(Object, Function, Consumer)} instead,
+     * to avoid loading the problem going stale if solving can't start immediately.
+     * To listen to intermediate best solutions too, use {@link #solveAndListen(Object, Function, Consumer)} instead.
+     * <p>
+     * Defaults to logging exceptions as an error.
+     * <p>
+     * To stop a solver job before it naturally terminates, call {@link SolverJob#terminateEarly()}.
      * @param problemId never null, a ID for each planning problem. This must be unique.
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * @param problem never null, a {@link PlanningSolution} usually with uninitialized planning variables
      * @return never null
      */
-    default SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId, Solution_ problem) {
-        return solveBatch(problemId, (problemId_) -> problem, null, null);
+    default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId, Solution_ problem) {
+        return solve(problemId, (problemId_) -> problem, null, null);
+    }
+
+    /**
+     * As defined by {@link #solve(Object, Object)}.
+     * @param problemId never null, a ID for each planning problem. This must be unique.
+     * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
+     * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
+     * @param problem never null, a {@link PlanningSolution} usually with uninitialized planning variables
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread
+     * @return never null
+     */
+    default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
+            Solution_ problem, Consumer<Solution_> finalBestSolutionConsumer) {
+        return solve(problemId, (problemId_) -> problem, finalBestSolutionConsumer, null);
+    }
+
+    /**
+     * As defined by {@link #solve(Object, Object)}.
+     * @param problemId never null, a ID for each planning problem. This must be unique.
+     * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
+     * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
+     * @param problem never null, a {@link PlanningSolution} usually with uninitialized planning variables
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread
+     * @param exceptionHandler sometimes null, called if an exception or error occurs.
+     * If null it defaults to logging the exception as an error.
+     * @return never null
+     */
+    default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
+            Solution_ problem, Consumer<Solution_> finalBestSolutionConsumer,
+            BiConsumer<ProblemId_, Throwable> exceptionHandler) {
+        return solve(problemId, (problemId_) -> problem, finalBestSolutionConsumer, exceptionHandler);
     }
 
     /**
@@ -85,7 +123,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * <p>
      * When the solver terminates, the {@code finalBestSolutionConsumer} is called once with the final best solution,
      * on a consumer {@link Thread}, as soon as one is available.
-     * To listen to intermediate best solutions too, use {@link #solveObserving(Object, Function, Consumer)} instead.
+     * To listen to intermediate best solutions too, use {@link #solveAndListen(Object, Function, Consumer)} instead.
      * <p>
      * Defaults to logging exceptions as an error.
      * <p>
@@ -97,13 +135,13 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread
      * @return never null
      */
-    default SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId,
+    default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> finalBestSolutionConsumer) {
-        return solveBatch(problemId, problemFinder, finalBestSolutionConsumer, null);
+        return solve(problemId, problemFinder, finalBestSolutionConsumer, null);
     }
 
     /**
-     * As defined by {@link #solveBatch(Object, Function, Consumer)}.
+     * As defined by {@link #solve(Object, Function, Consumer)}.
      * @param problemId never null, a ID for each planning problem. This must be unique.
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -113,7 +151,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * If null it defaults to logging the exception as an error.
      * @return never null
      */
-    SolverJob<Solution_, ProblemId_> solveBatch(ProblemId_ problemId,
+    SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> finalBestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler);
 
@@ -135,13 +173,13 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @param bestSolutionConsumer never null, called multiple times, on a consumer thread
      * @return never null
      */
-    default SolverJob<Solution_, ProblemId_> solveObserving(ProblemId_ problemId,
+    default SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> bestSolutionConsumer) {
-        return solveObserving(problemId, problemFinder, bestSolutionConsumer, null);
+        return solveAndListen(problemId, problemFinder, bestSolutionConsumer, null);
     }
 
     /**
-     * As defined by {@link #solveObserving(Object, Function, Consumer)}.
+     * As defined by {@link #solveAndListen(Object, Function, Consumer)}.
      * @param problemId never null, a ID for each planning problem. This must be unique.
      * Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -151,7 +189,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * If null it defaults to logging the exception as an error.
      * @return never null
      */
-    SolverJob<Solution_, ProblemId_> solveObserving(ProblemId_ problemId,
+    SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> bestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler);
 
@@ -161,8 +199,8 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Returns {@link SolverStatus#NOT_SOLVING} if the solver already terminated or if the problemId was never added.
      * To distinguish between both cases, use {@link SolverJob#getSolverStatus()} instead.
      * Here, that distinction is not supported because it would cause a memory leak.
-     * @param problemId never null, a value given to {@link #solveBatch(Object, Function, Consumer)}
-     * or {@link #solveObserving(Object, Function, Consumer)}
+     * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
+     * or {@link #solveAndListen(Object, Function, Consumer)}
      * @return never null
      */
     SolverStatus getSolverStatus(ProblemId_ problemId);
@@ -179,8 +217,8 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Does nothing if the solver already terminated or the problemId was never added.
      * To distinguish between both cases, use {@link SolverJob#terminateEarly()} instead.
      * Here, that distinction is not supported because it would cause a memory leak.
-     * @param problemId never null, a value given to {@link #solveBatch(Object, Function, Consumer)}
-     * or {@link #solveObserving(Object, Function, Consumer)}
+     * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
+     * or {@link #solveAndListen(Object, Function, Consumer)}
      */
     void terminateEarly(ProblemId_ problemId);
 

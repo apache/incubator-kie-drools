@@ -53,9 +53,9 @@ public class SolverManagerTest {
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
                 new SolverManagerConfig(solverConfig).withParallelSolverCount("2"));
 
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
-        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L,
+        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solve(2L,
                 PlannerTestUtils.generateTestdataSolution("s2"));
 
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
@@ -84,10 +84,10 @@ public class SolverManagerTest {
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
                 new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
 
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
         solverThreadReadyBarrier.await();
-        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solveBatch(2L,
+        SolverJob<TestdataSolution, Long> solverJob2 = solverManager.solve(2L,
                 PlannerTestUtils.generateTestdataSolution("s2"));
         assertEquals(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(1L));
         assertEquals(SolverStatus.SOLVING_ACTIVE, solverJob1.getSolverStatus());
@@ -119,7 +119,7 @@ public class SolverManagerTest {
                 new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
 
         AtomicInteger exceptionCount = new AtomicInteger();
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
                 null, (problemId, throwable) -> exceptionCount.incrementAndGet());
         try {
@@ -141,7 +141,7 @@ public class SolverManagerTest {
                 new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
 
         AtomicInteger exceptionCount = new AtomicInteger();
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveBatch(1L,
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
                 bestSolution -> {
                     throw new IllegalStateException("exceptionInConsumer");
@@ -197,7 +197,7 @@ public class SolverManagerTest {
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
                 new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
         AtomicInteger eventCount = new AtomicInteger();
-        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveObserving(1L,
+        SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveAndListen(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),
                 bestSolution -> {
                     if (bestSolution.getEntityList().get(1).getValue() == null) {
