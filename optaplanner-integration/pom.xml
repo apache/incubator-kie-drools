@@ -29,18 +29,8 @@
     <module>optaplanner-workbench-models</module>
   </modules>
 
-
-  <properties>
-    <!-- Remove once https://github.com/kiegroup/droolsjbpm-build-bootstrap/pull/1086 is merged -->
-    <version.org.springframework.boot>2.2.0.RELEASE</version.org.springframework.boot>
-    <version.org.springframework>5.2.0.RELEASE</version.org.springframework>
-    <!-- Remove once https://github.com/kiegroup/droolsjbpm-build-bootstrap/pull/1075 is merged-->
-    <version.javax.validation>2.0.1.Final</version.javax.validation>
-    <version.org.hibernate.validator>6.0.17.Final</version.org.hibernate.validator>
-  </properties>
   <dependencyManagement>
     <dependencies>
-
       <dependency><!-- TODO move this into kie-parent -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>
