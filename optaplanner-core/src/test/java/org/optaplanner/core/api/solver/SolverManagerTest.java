@@ -51,7 +51,7 @@ public class SolverManagerTest {
                             }
                         }), new ConstructionHeuristicPhaseConfig());
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                new SolverManagerConfig(solverConfig).withParallelSolverCount("2"));
+                solverConfig, new SolverManagerConfig().withParallelSolverCount("2"));
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
@@ -82,7 +82,7 @@ public class SolverManagerTest {
                         }), new ConstructionHeuristicPhaseConfig());
         // Only 1 solver can run at the same time to predict the solver status of each job.
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 PlannerTestUtils.generateTestdataSolution("s1"));
@@ -116,7 +116,7 @@ public class SolverManagerTest {
                             throw new IllegalStateException("exceptionInSolver");
                         }));
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
 
         AtomicInteger exceptionCount = new AtomicInteger();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
@@ -138,7 +138,7 @@ public class SolverManagerTest {
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new ConstructionHeuristicPhaseConfig());
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
 
         AtomicInteger exceptionCount = new AtomicInteger();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
@@ -195,7 +195,7 @@ public class SolverManagerTest {
                             scoreDirector.triggerVariableListeners();
                         }));
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                new SolverManagerConfig(solverConfig).withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
         AtomicInteger eventCount = new AtomicInteger();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveAndListen(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),

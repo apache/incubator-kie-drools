@@ -20,11 +20,15 @@ import java.time.Duration;
 import java.util.Collections;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.spring.boot.autoconfigure.solver.TestdataSpringConstraintProvider;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringSolution;
@@ -146,6 +150,23 @@ public class OptaPlannerAutoConfigurationTest {
                     assertNotNull(context.getBean(SolverFactory.class));
                 });
     }
+
+    @Test
+    public void sameSolverFactory() {
+        contextRunner
+                .run(context -> {
+                    SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
+                    assertNotNull(solverFactory);
+                    ScoreManager<TestdataSpringSolution> scoreManager = context.getBean(ScoreManager.class);
+                    assertNotNull(scoreManager);
+                    // TODO in 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
+                    // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());
+                    SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
+                    assertNotNull(solverManager);
+                    assertSame(solverFactory, ((DefaultSolverManager<TestdataSpringSolution, Long>) solverManager).getSolverFactory());
+                });
+    }
+
 
     @Configuration
     @EntityScan(basePackageClasses = {TestdataSpringSolution.class, TestdataSpringConstraintProvider.class})

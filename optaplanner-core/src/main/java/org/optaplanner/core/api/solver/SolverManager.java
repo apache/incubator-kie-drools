@@ -24,8 +24,11 @@ import java.util.function.Function;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
@@ -33,7 +36,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * A SolverManager solves multiple planning problems of the same domain,
  * asynchronously without blocking the calling thread.
  * <p>
- * To create a SolverManager, use {@link #create(SolverManagerConfig)}.
+ * To create a SolverManager, use {@link #create(SolverFactory, SolverManagerConfig)}.
  * To solve a planning problem, call {@link #solve(Object, Function, Consumer)}
  * or {@link #solveAndListen(Object, Function, Consumer)}.
  * <p>
@@ -47,18 +50,36 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     // ************************************************************************
-    // Static creation methods: SolverFactory
+    // Static creation methods: SolverConfig and SolverFactory
     // ************************************************************************
 
     /**
-     * Uses a {@link SolverManagerConfig} to build a {@link SolverManager}.
+     * Use a {@link SolverConfig} and a {@link SolverManagerConfig} to build a {@link SolverManager}.
+     * <p>
+     * When using {@link ScoreManager} too, use {@link #create(SolverFactory, SolverManagerConfig)} instead
+     * so they reuse the same {@link SolverFactory} instance.
+     * @param solverConfig never null
      * @param solverManagerConfig never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
      */
-    static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(SolverManagerConfig solverManagerConfig) {
-        return new DefaultSolverManager<>(solverManagerConfig);
+    static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(
+            SolverConfig solverConfig, SolverManagerConfig solverManagerConfig) {
+        return create(SolverFactory.create(solverConfig), solverManagerConfig);
+    }
+
+    /**
+     * Use a {@link SolverFactory} and a {@link SolverManagerConfig} to build a {@link SolverManager}.
+     * @param solverFactory never null
+     * @param solverManagerConfig never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
+     */
+    static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(
+            SolverFactory<Solution_> solverFactory, SolverManagerConfig solverManagerConfig) {
+        return new DefaultSolverManager<>(solverFactory, solverManagerConfig);
     }
 
     // ************************************************************************
@@ -221,12 +242,6 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * or {@link #solveAndListen(Object, Function, Consumer)}
      */
     void terminateEarly(ProblemId_ problemId);
-
-    /**
-     * Calculates the {@link Score} of a {@link PlanningSolution} and updates its {@link PlanningScore} member.
-     * @param solution never null
-     */
-    void updateScore(Solution_ solution);
 
     /**
      * Terminates all solvers, cancels all solver jobs that haven't (re)started yet

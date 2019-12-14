@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.Module;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -78,14 +79,20 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverConfig solverConfig) {
+    public <Solution_> ScoreManager<Solution_> scoreManager(SolverFactory solverFactory) {
+        return ScoreManager.create(solverFactory);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverFactory solverFactory) {
         // TODO supply ThreadFactory
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig(solverConfig);
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         SolverManagerProperties solverManagerProperties = optaPlannerProperties.getSolverManager();
         if (solverManagerProperties != null) {
             solverManagerConfig.setParallelSolverCount(solverManagerProperties.getParallelSolverCount());
         }
-        return SolverManager.create(solverManagerConfig);
+        return SolverManager.create(solverFactory, solverManagerConfig);
     }
 
     @Bean

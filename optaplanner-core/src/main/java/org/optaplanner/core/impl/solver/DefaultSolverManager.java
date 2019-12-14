@@ -53,14 +53,19 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
 
     private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
 
-    public DefaultSolverManager(SolverManagerConfig solverManagerConfig) {
+    public DefaultSolverManager(SolverFactory<Solution_> solverFactory,
+            SolverManagerConfig solverManagerConfig) {
         defaultExceptionHandler = (problemId, throwable) -> logger.error(
                 "Solving failed for problemId ({}).", problemId, throwable);
-        this.solverFactory = SolverFactory.create(solverManagerConfig.getSolverConfig());
+        this.solverFactory = solverFactory;
         validateSolverFactory();
         this.parallelSolverCount = solverManagerConfig.resolveParallelSolverCount();
         solverThreadPool = Executors.newFixedThreadPool(parallelSolverCount);
         problemIdToSolverJobMap = new ConcurrentHashMap<>(parallelSolverCount * 10);
+    }
+
+    public SolverFactory<Solution_> getSolverFactory() {
+        return solverFactory;
     }
 
     private void validateSolverFactory() {
@@ -155,15 +160,6 @@ public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManage
             return;
         }
         solverJob.terminateEarly();
-    }
-
-    @Override
-    public void updateScore(Solution_ solution) {
-        ScoreDirectorFactory<Solution_> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-            scoreDirector.setWorkingSolution(solution);
-            scoreDirector.calculateScore();
-        }
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package org.optaplanner.spring.boot.example.solver;
 
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.spring.boot.example.domain.TimeTable;
@@ -35,12 +36,14 @@ public class TimeTableSolverService {
     private TimeTableRepository timeTableRepository;
     @Autowired
     private SolverManager<TimeTable, Long> solverManager;
+    @Autowired
+    private ScoreManager<TimeTable> scoreManager;
 
     // To try, open http://localhost:8080/timeTable
     @GetMapping()
     public TimeTableView getTimeTableView() {
         TimeTable timeTable = timeTableRepository.findById(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
-        solverManager.updateScore(timeTable);
+        scoreManager.updateScore(timeTable);
         SolverStatus solverStatus = solverManager.getSolverStatus(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
         return new TimeTableView(timeTable, solverStatus);
     }

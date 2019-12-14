@@ -29,7 +29,6 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(SolverManagerConfig.class);
 
-    protected SolverConfig solverConfig;
     protected String parallelSolverCount = null;
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
@@ -42,18 +41,6 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
     // ************************************************************************
 
     public SolverManagerConfig() {
-    }
-
-    public SolverManagerConfig(SolverConfig solverConfig) {
-        this.solverConfig = solverConfig;
-    }
-
-    public SolverConfig getSolverConfig() {
-        return solverConfig;
-    }
-
-    public void setSolverConfig(SolverConfig solverConfig) {
-        this.solverConfig = solverConfig;
     }
 
     public String getParallelSolverCount() {
@@ -128,7 +115,6 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
 
     @Override
     public void inherit(SolverManagerConfig inheritedConfig) {
-        solverConfig = ConfigUtils.inheritConfig(solverConfig, inheritedConfig.getSolverConfig());
         parallelSolverCount = ConfigUtils.inheritOverwritableProperty(parallelSolverCount,
                 inheritedConfig.getParallelSolverCount());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
