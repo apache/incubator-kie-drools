@@ -26,7 +26,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 @PlanningSolution
-public class TimeTable {
+public class TimeTableSolution {
 
     @ProblemFactCollectionProperty
     @ValueRangeProvider(id = "timeslotRange")
@@ -40,10 +40,10 @@ public class TimeTable {
     @PlanningScore
     private HardSoftScore score;
 
-    private TimeTable() {
+    private TimeTableSolution() {
     }
 
-    public TimeTable(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList) {
+    public TimeTableSolution(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList) {
         this.timeslotList = timeslotList;
         this.roomList = roomList;
         this.lessonList = lessonList;

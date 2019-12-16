@@ -19,7 +19,6 @@ package org.optaplanner.spring.boot.example.solver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.optaplanner.core.api.solver.SolverStatus;
-import org.optaplanner.spring.boot.example.domain.TimeTable;
 import org.optaplanner.spring.boot.example.domain.TimeTableView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,9 +46,8 @@ public class TimeTableSolverServiceTest {
             Thread.sleep(100L);
             timeTableView = timeTableSolverService.getTimeTableView();
         }
-        TimeTable timeTable = timeTableView.getTimeTable();
-        assertTrue(timeTable.getLessonList().size() > 10);
-        assertTrue(timeTable.getScore().isFeasible());
+        assertTrue(timeTableView.getLessonList().size() > 10);
+        assertTrue(timeTableView.getScore().isFeasible());
     }
 
 }

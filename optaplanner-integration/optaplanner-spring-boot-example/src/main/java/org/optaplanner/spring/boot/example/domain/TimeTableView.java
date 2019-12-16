@@ -16,20 +16,43 @@
 
 package org.optaplanner.spring.boot.example.domain;
 
+import java.util.List;
+
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.solver.SolverStatus;
 
 public class TimeTableView {
 
-    private TimeTable timeTable;
+    private List<Timeslot> timeslotList;
+    private List<Room> roomList;
+    private List<Lesson> lessonList;
+
+    private HardSoftScore score;
     private SolverStatus solverStatus;
 
-    public TimeTableView(TimeTable timeTable, SolverStatus solverStatus) {
-        this.timeTable = timeTable;
+    public TimeTableView(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList,
+            HardSoftScore score, SolverStatus solverStatus) {
+        this.timeslotList = timeslotList;
+        this.roomList = roomList;
+        this.lessonList = lessonList;
+        this.score = score;
         this.solverStatus = solverStatus;
     }
 
-    public TimeTable getTimeTable() {
-        return timeTable;
+    public List<Timeslot> getTimeslotList() {
+        return timeslotList;
+    }
+
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public List<Lesson> getLessonList() {
+        return lessonList;
+    }
+
+    public HardSoftScore getScore() {
+        return score;
     }
 
     public SolverStatus getSolverStatus() {

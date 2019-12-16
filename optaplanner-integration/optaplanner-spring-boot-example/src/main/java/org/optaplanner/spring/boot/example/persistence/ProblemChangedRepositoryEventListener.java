@@ -16,14 +16,15 @@
 
 package org.optaplanner.spring.boot.example.persistence;
 
+import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.spring.boot.example.domain.Lesson;
 import org.optaplanner.spring.boot.example.domain.Room;
 import org.optaplanner.spring.boot.example.domain.Timeslot;
 import org.optaplanner.spring.boot.example.solver.TimeTableSolverService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.core.annotation.HandleAfterCreate;
-import org.springframework.data.rest.core.annotation.HandleAfterDelete;
-import org.springframework.data.rest.core.annotation.HandleAfterSave;
+import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.HandleBeforeDelete;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
@@ -34,25 +35,37 @@ public class ProblemChangedRepositoryEventListener {
     @Autowired
     private TimeTableSolverService timeTableSolverService;
 
-    @HandleAfterCreate
-    @HandleAfterSave
-    @HandleAfterDelete
+    // TODO Future work: Give the CRUD operations "right of way", by calling something like this:
+    // before: solverManager.freeze(TIME_TABLE_ID);
+    // after: reloadProblem(TIME_TABLE_ID, timeTableRepository::findById);
+
+    @HandleBeforeCreate
+    @HandleBeforeSave
+    @HandleBeforeDelete
     private void timeslotCreateSaveDelete(Timeslot timeslot) {
-        timeTableSolverService.reloadProblem();
+        assertNotSolving();
     }
 
-    @HandleAfterCreate
-    @HandleAfterSave
-    @HandleAfterDelete
+    @HandleBeforeCreate
+    @HandleBeforeSave
+    @HandleBeforeDelete
     private void roomCreateSaveDelete(Room room) {
-        timeTableSolverService.reloadProblem();
+        assertNotSolving();
     }
 
-    @HandleAfterCreate
-    @HandleAfterSave
-    @HandleAfterDelete
+    @HandleBeforeCreate
+    @HandleBeforeSave
+    @HandleBeforeDelete
     private void lessonCreateSaveDelete(Lesson lesson) {
-        timeTableSolverService.reloadProblem();
+        assertNotSolving();
+    }
+
+    public void assertNotSolving() {
+        // TODO Race condition: if timeTableSolverService.solve() comes in concurrently,
+        // the solver can start before the CRUD transaction completes.
+        if (timeTableSolverService.getSolverStatus() != SolverStatus.NOT_SOLVING) {
+            throw new IllegalStateException("The solver is solving.");
+        }
     }
 
 }

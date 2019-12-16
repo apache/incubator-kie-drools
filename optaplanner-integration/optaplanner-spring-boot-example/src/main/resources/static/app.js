@@ -19,10 +19,8 @@ var autoRefreshIntervalId = null;
 
 function refreshTimeTable() {
     $.getJSON("/timeTable", function (timeTableView) {
-        var timeTable = timeTableView.timeTable;
-        var solverStatus = timeTableView.solverStatus;
-        refreshSolvingButtons(solverStatus !== "NOT_SOLVING");
-        $("#score").text("Score: "+ (timeTable.score == null ? "?" : timeTable.score));
+        refreshSolvingButtons(timeTableView.solverStatus !== "NOT_SOLVING");
+        $("#score").text("Score: "+ (timeTableView.score == null ? "?" : timeTableView.score));
 
         var timeTableByRoom = $("#timeTableByRoom");
         timeTableByRoom.children().remove();
@@ -32,7 +30,7 @@ function refreshTimeTable() {
         var thead = $("<thead>").appendTo(timeTableByRoom);
         var headerRow = $("<tr>").appendTo(thead);
         headerRow.append($("<th>Timeslot</th>"));
-        $.each(timeTable.roomList, function (index, room) {
+        $.each(timeTableView.roomList, function (index, room) {
             headerRow.append($("<th>"
                     + "<span>" + room.name + "</span>"
                     + "<button id=\"deleteRoomButton-" + room.id + "\" type=\"button\" class=\"ml-2 mb-1 btn btn-light btn-sm p-1\">"
@@ -44,7 +42,7 @@ function refreshTimeTable() {
             });
         });
 
-        $.each(timeTable.timeslotList, function (index, timeslot) {
+        $.each(timeTableView.timeslotList, function (index, timeslot) {
             var row = $("<tr>").appendTo(timeTableByRoom);
             row.append($("<th class=\"align-middle\">"
                     + "<span>" + timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()
@@ -57,12 +55,12 @@ function refreshTimeTable() {
             $("#deleteTimeslotButton-" + timeslot.id).click(function() {
                 deleteTimeslot(timeslot);
             });
-            $.each(timeTable.roomList, function (index, room) {
+            $.each(timeTableView.roomList, function (index, room) {
                 row.append($("<td id=\"timeslot" + timeslot.id + "room" + room.id + "\"></td>"));
             });
         });
 
-        $.each(timeTable.lessonList, function (index, lesson) {
+        $.each(timeTableView.lessonList, function (index, lesson) {
             var lessonElement = $("<div class=\"card lesson\"><div class=\"card-body p-2\">"
                     + "<button id=\"deleteLessonButton-" + lesson.id + "\" type=\"button\" class=\"ml-2 btn btn-light btn-sm p-1 float-right\">"
                     + "<small class=\"fas fa-trash\"></small>"
