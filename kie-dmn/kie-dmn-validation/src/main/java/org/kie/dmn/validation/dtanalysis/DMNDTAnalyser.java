@@ -546,12 +546,28 @@ public class DMNDTAnalyser {
             return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col);
         } else if (ut.getValue() instanceof RangeNode) {
             RangeNode rangeNode = (RangeNode) ut.getValue();
-            return new Interval(rangeNode.getLowerBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
-                                valueFromNode(rangeNode.getStart()),
-                                valueFromNode(rangeNode.getEnd()),
-                                rangeNode.getUpperBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
-                                rule,
-                                col);
+            if (!(rangeNode.getStart() instanceof NullNode || rangeNode.getEnd() instanceof NullNode)) {
+                return new Interval(rangeNode.getLowerBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                    valueFromNode(rangeNode.getStart()),
+                                    valueFromNode(rangeNode.getEnd()),
+                                    rangeNode.getUpperBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                    rule,
+                                    col);
+            } else if (rangeNode.getStart() instanceof NullNode) {
+                return new Interval(minMax.getLowerBound().getBoundaryType(),
+                                    minMax.getLowerBound().getValue(),
+                                    valueFromNode(rangeNode.getEnd()),
+                                    rangeNode.getUpperBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                    rule,
+                                    col);
+            } else {
+                return new Interval(rangeNode.getLowerBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                    valueFromNode(rangeNode.getStart()),
+                                    minMax.getUpperBound().getValue(),
+                                    minMax.getUpperBound().getBoundaryType(),
+                                    rule,
+                                    col);
+            }
         } else {
             throw new UnsupportedOperationException("UnaryTest type: " + ut);
         }
