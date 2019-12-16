@@ -35,15 +35,18 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (isStructuredResult(resultClass)) {
-            return verifyResult(rawExpression, resultValue, resultClass);
+        if (!(rawExpression instanceof String)) {
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
+        }
+        if (isStructuredResult(resultClass, (String) rawExpression)) {
+            return verifyResult((String) rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
         }
     }
 
     protected Object commonEvaluationLiteralExpression(String className, List<String> genericClasses, String raw) {
-        if (isStructuredInput(className)) {
+        if (isStructuredInput(className, raw)) {
             return convertResult(raw, className, genericClasses);
         } else {
             return internalLiteralEvaluation(raw, className);
@@ -53,18 +56,19 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     /**
      * Check if resultClass represents a structured result
      * @param resultClass
-     * @return
+     * @returnisStructuredResult(resultClass)
      */
-    protected boolean isStructuredResult(Class<?> resultClass) {
+    protected boolean isStructuredResult(Class<?> resultClass, String rawExpression) {
         return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
     }
 
     /**
      * Check if className represents a structured input
      * @param className
+     * @param raw
      * @return
      */
-    protected boolean isStructuredInput(String className) {
+    protected boolean isStructuredInput(String className, String raw) {
         return ScenarioSimulationSharedUtils.isCollection(className);
     }
 
@@ -138,14 +142,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawExpression, Object resultRaw, Class<?> resultClass) {
+    protected boolean verifyResult(String raw, Object resultRaw, Class<?> resultClass) {
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
-        }
-        String raw = (String) rawExpression;
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

@@ -31,21 +31,6 @@ public class JsonUtils {
     }
 
     /**
-     * Given a json in String format, it defines if is a valid json or not.
-     * @param json
-     * @return
-     */
-    public static boolean isValidJSON(String json) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.readTree(json);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    /**
      * Given a json in String format, it try to convert it in a <code>JsonNode</code>. In case of success, i.e.
      * the given string is a valid json, it put the <code>JsonNode</code> in a <code>Optional</code>. An empty
      * <code>Optional</code> is passed otherwise.
@@ -61,4 +46,18 @@ public class JsonUtils {
             return Optional.empty();
         }
     }
+
+    public static boolean isAJSONStringNode(String json) {
+        if (json != null && !json.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(json);
+                return jsonNode.isTextual();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
 }

@@ -26,6 +26,7 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
@@ -164,18 +165,21 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
      * @return
      */
     @Override
-    protected boolean isStructuredResult(Class<?> resultClass) {
-        return resultClass != null && ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName());
+    protected boolean isStructuredResult(Class<?> resultClass, String raw) {
+        return resultClass != null && (ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName()) ||
+                (ScenarioSimulationSharedUtils.isMap(resultClass.getCanonicalName()) && JsonUtils.isAJSONStringNode(raw)));
     }
 
     /**
      * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions
      * @param className
+     * @param raw
      * @return
      */
     @Override
-    protected boolean isStructuredInput(String className) {
-        return ScenarioSimulationSharedUtils.isList(className);
+    protected boolean isStructuredInput(String className, String raw) {
+        return ScenarioSimulationSharedUtils.isList(className) ||
+                (ScenarioSimulationSharedUtils.isMap(className) && JsonUtils.isAJSONStringNode(raw));
     }
 
     /**

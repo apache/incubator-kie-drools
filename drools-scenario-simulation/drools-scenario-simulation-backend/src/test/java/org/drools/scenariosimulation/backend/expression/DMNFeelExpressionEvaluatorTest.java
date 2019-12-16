@@ -58,6 +58,11 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
         assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("{key_a : 1}").toString(), contextValue, Map.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{key_a : 2}").toString(), contextValue, Map.class));
+        List<BigDecimal> contextListValue = Collections.singletonList(BigDecimal.valueOf(23));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -67,9 +72,9 @@ public class DMNFeelExpressionEvaluatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
 
-        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
+        /*assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Syntax error:");
+                .hasMessageStartingWith("Syntax error:");*/
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("? > 2", null, BigDecimal.class))
                 .isInstanceOf(NullPointerException.class);
@@ -84,6 +89,13 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), "{key_a : 1}");
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
+        Map<String, Object> parsedValueMapExpression = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), new TextNode("{key_e : 10}").toString());
+        assertTrue(parsedValueMapExpression.containsKey("key_e"));
+        assertEquals(parsedValueMapExpression.get("key_e"), BigDecimal.valueOf(10));
+        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(List.class.getCanonicalName(), Collections.emptyList(), new TextNode("[10, 12]").toString());
+        assertTrue(parsedValueListExpression.size() == 2);
+        assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
+        assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
 
         assertThatThrownBy(() -> expressionEvaluator
                 .evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED"))
@@ -181,28 +193,47 @@ public class DMNFeelExpressionEvaluatorTest {
         }
     }
 
+    @Test
     public void expressionListTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), new ArrayList<>());
-        //TODO Don't remember last list what is it
+        String expressionCollectionJsonString = new TextNode("[1,10]").toString();
+        List<BigDecimal> result = (List<BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertEquals(BigDecimal.ONE, result.get(0));
+        assertEquals(BigDecimal.TEN, result.get(1));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionListTest_Wrong() {
+        String expressionCollectionJsonString = new TextNode("[1:234").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
+    }
 
+    @Test
     public void expressionMapTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), new ArrayList<>());
-        //TODO check result class  and resultRaw
+        String expressionCollectionJsonString = new TextNode("{ x : 5, y : 3 }").toString();
+        Map<String, BigDecimal> result = (Map<String, BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertEquals(BigDecimal.valueOf(5), result.get("x"));
+        assertEquals(BigDecimal.valueOf(3), result.get("y"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionMapTest_Wrong() {
+        String expressionCollectionJsonString = new TextNode(": 5 y : 3 }").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
+    }
+
+    @Test
     public void expressionListVerifyResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.verifyResult(expressionCollectionJsonString, new ArrayList<>(), null);
-        //TODO check result class  and resultRaw
+        String expressionCollectionJsonString = new TextNode("10").toString();
+        List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class));
     }
 
+    @Test
     public void expressionMapVerifyResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.verifyResult(expressionCollectionJsonString, new HashMap<>(), null);
-        //TODO check result class and resultRaw
+        String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
+        Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
     }
 }
