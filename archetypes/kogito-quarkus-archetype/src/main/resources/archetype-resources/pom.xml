@@ -41,7 +41,57 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-internal</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-drools</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-core</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-core-reflective</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-core-static</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-canonical-model</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-model-compiler</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-mvel-compiler</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-mvel-parser</artifactId>
         <version>${kogito.version}</version>
       </dependency>
       <dependency>
@@ -67,6 +117,11 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-dmn</artifactId>
+        <version>${kogito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-services</artifactId>
         <version>${kogito.version}</version>
       </dependency>
     </dependencies>
