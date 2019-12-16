@@ -32,19 +32,23 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-    protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
+    // FIXME to test with null
+    @Override
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue);
         } else {
-            return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
+            return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
         }
     }
 
-    protected Object commonEvaluationLiteralExpression(String className, List<String> genericClasses, String raw) {
+    // FIXME to test with null
+    @Override
+    public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
         if (isStructuredInput(className)) {
-            return convertResult(raw, className, genericClasses);
+            return convertResult(rawExpression, className, genericClasses);
         } else {
-            return internalLiteralEvaluation(raw, className);
+            return internalLiteralEvaluation(rawExpression, className);
         }
     }
 
@@ -135,18 +139,15 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawExpression, Object resultRaw) {
+    // FIXME to test with null
+    protected boolean verifyResult(String rawExpression, Object resultRaw) {
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Malformed raw data");
-        }
-        String raw = (String) rawExpression;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            JsonNode jsonNode = objectMapper.readTree(raw);
+            JsonNode jsonNode = objectMapper.readTree(rawExpression);
             if (jsonNode.isArray()) {
                 return verifyList((ArrayNode) jsonNode, (List) resultRaw);
             } else if (jsonNode.isObject()) {

@@ -193,16 +193,6 @@ public class AbstractExpressionEvaluatorTest {
     AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
 
         @Override
-        public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public String fromObjectToExpression(Object value) {
             throw new UnsupportedOperationException();
         }

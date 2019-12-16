@@ -41,7 +41,7 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        Object raw = new Object();
+        String raw = "";
         assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(Object.class.getCanonicalName(), Collections.emptyList(), raw));
 
         raw = "SimpleString";

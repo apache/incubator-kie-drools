@@ -52,24 +52,6 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (rawExpression != null && !(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw expression should be a string");
-        }
-
-        return commonEvaluateUnaryExpression(rawExpression, resultValue, resultClass);
-    }
-
-    @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        if (!(rawExpression instanceof String)) {
-            return rawExpression;
-        }
-
-        return commonEvaluationLiteralExpression(className, genericClasses, (String) rawExpression);
-    }
-
-    @Override
     public String fromObjectToExpression(Object value) {
         FEELFnResult<String> invoke = codeFunction.invoke(value);
         return invoke.getOrElseThrow(feelEvent -> new IllegalArgumentException("This should not happen",

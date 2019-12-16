@@ -56,10 +56,6 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class));
 
-        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Raw expression should be a string");
-
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
@@ -77,7 +73,7 @@ public class DMNFeelExpressionEvaluatorTest {
     public void evaluateLiteralExpression() {
         assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
         Object nonStringObject = new Object();
-        assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
+//        assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), "{key_a : 1}");
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));

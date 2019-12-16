@@ -43,30 +43,25 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         config.setClassLoader(classLoader);
     }
 
+    // FIXME to test with null
     @Override
-    public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (!(rawExpression instanceof String)) {
-            String rawClass = rawExpression == null ? null : rawExpression.getClass().getCanonicalName();
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawClass + "'");
-        }
-
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         Map<String, Object> params = new HashMap<>();
         params.put(ACTUAL_VALUE_IDENTIFIER, resultValue);
 
-        Object expressionResult = compileAndExecute((String) rawExpression, params);
+        Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
+            // FIXME to change
             return BaseExpressionOperator.EQUALS.eval(expressionResult, resultValue, resultClass, classLoader);
         }
         return (boolean) expressionResult;
     }
 
+    // FIXME to test with null
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
-        }
-        Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
+    public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
+        Object expressionResult = compileAndExecute(rawExpression, Collections.emptyMap());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +

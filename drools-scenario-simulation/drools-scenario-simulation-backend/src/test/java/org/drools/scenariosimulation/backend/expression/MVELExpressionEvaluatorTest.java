@@ -47,10 +47,6 @@ public class MVELExpressionEvaluatorTest {
         assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 321, Integer.class));
         assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 123, Integer.class));
 
-        assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(new Object(), "", String.class))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw expression should be a String");
-
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(null, "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Raw expression should be a String");
@@ -101,10 +97,6 @@ public class MVELExpressionEvaluatorTest {
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), "1+"))
                 .isInstanceOf(RuntimeException.class);
-
-        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), new Object()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw expression should be a String");
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression(String.class.getCanonicalName(),
                                                                      Collections.emptyList(),
