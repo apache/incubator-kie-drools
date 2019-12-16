@@ -33,7 +33,7 @@ import org.optaplanner.core.api.solver.SolverStatus;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
-public class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
+public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final ProblemId_ problemId;

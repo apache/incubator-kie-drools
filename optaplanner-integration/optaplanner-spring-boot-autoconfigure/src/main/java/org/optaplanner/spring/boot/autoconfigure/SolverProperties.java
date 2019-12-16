@@ -18,6 +18,7 @@ package org.optaplanner.spring.boot.autoconfigure;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 public class SolverProperties {
 
@@ -34,6 +35,7 @@ public class SolverProperties {
      */
     private String moveThreadCount = null;
 
+    @NestedConfigurationProperty
     private TerminationProperties termination = new TerminationProperties();
 
     // ************************************************************************

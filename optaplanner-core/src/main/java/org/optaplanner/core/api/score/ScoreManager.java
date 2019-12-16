@@ -16,17 +16,12 @@
 
 package org.optaplanner.core.api.score;
 
-import java.util.UUID;
-
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
-import org.optaplanner.core.impl.solver.DefaultSolverManager;
 
 /**
  * A stateless service to help calculate {@link Score}, {@link ConstraintMatchTotal},

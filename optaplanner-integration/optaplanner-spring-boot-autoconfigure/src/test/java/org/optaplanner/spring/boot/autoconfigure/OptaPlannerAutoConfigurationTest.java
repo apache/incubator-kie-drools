@@ -27,7 +27,6 @@ import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.DefaultScoreManager;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.spring.boot.autoconfigure.solver.TestdataSpringConstraintProvider;
 import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
@@ -53,7 +52,7 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXML_none() {
+    public void solverConfigXml_none() {
         contextRunner
                 .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
                 .run(context -> {
@@ -69,7 +68,7 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXML_default() {
+    public void solverConfigXml_default() {
         contextRunner
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
@@ -84,9 +83,9 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXML_property() {
+    public void solverConfigXml_property() {
         contextRunner
-                .withPropertyValues("optaplanner.solverConfigXML=org/optaplanner/spring/boot/autoconfigure/customSpringBootSolverConfig.xml")
+                .withPropertyValues("optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/customSpringBootSolverConfig.xml")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertNotNull(solverConfig);
@@ -102,7 +101,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test(expected = IllegalStateException.class)
     public void scanAnnotatedClasses() {
         contextRunner
-                .withPropertyValues("optaplanner.solverConfigXML=org/optaplanner/spring/boot/autoconfigure/scanAnnotatedSpringBootSolverConfig.xml")
+                .withPropertyValues("optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/scanAnnotatedSpringBootSolverConfig.xml")
                 .run(context -> {
                     context.getBean(SolverConfig.class);
                 });

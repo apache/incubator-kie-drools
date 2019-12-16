@@ -41,7 +41,7 @@ public class TimeTable {
     @PlanningScore
     private HardSoftScore score;
 
-    // Ignored by OptaPlanner
+    // Ignored by OptaPlanner, used by the UI to display solve or stop solving button
     private SolverStatus solverStatus;
 
     private TimeTable() {

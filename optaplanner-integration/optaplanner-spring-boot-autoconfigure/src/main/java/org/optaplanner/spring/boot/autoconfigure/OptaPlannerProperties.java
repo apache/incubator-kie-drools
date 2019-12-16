@@ -17,6 +17,7 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(value = "optaplanner", ignoreUnknownFields = false)
 public class OptaPlannerProperties {
@@ -28,21 +29,23 @@ public class OptaPlannerProperties {
      * Defaults to {@value DEFAULT_SOLVER_CONFIG_URL}.
      * If this property isn't specified, that solverConfig.xml is optional.
      */
-    private String solverConfigXML;
+    private String solverConfigXml;
 
+    @NestedConfigurationProperty
     private SolverProperties solver;
+    @NestedConfigurationProperty
     private SolverManagerProperties solverManager;
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public String getSolverConfigXML() {
-        return solverConfigXML;
+    public String getSolverConfigXml() {
+        return solverConfigXml;
     }
 
-    public void setSolverConfigXML(String solverConfigXML) {
-        this.solverConfigXML = solverConfigXML;
+    public void setSolverConfigXml(String solverConfigXml) {
+        this.solverConfigXml = solverConfigXml;
     }
 
     public SolverProperties getSolver() {

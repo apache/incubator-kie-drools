@@ -98,14 +98,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     @Bean
     @ConditionalOnMissingBean
     public SolverConfig solverConfig() {
-        String solverConfigXML = optaPlannerProperties.getSolverConfigXML();
+        String solverConfigXml = optaPlannerProperties.getSolverConfigXml();
         SolverConfig solverConfig;
-        if (solverConfigXML != null) {
-            if (beanClassLoader.getResource(solverConfigXML) == null) {
-                throw new IllegalStateException("Invalid optaplanner.solverConfigXML property (" + solverConfigXML
+        if (solverConfigXml != null) {
+            if (beanClassLoader.getResource(solverConfigXml) == null) {
+                throw new IllegalStateException("Invalid optaplanner.solverConfigXml property (" + solverConfigXml
                         + "): that classpath resource does not exist.");
             }
-            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML, beanClassLoader);
+            solverConfig = SolverConfig.createFromXmlResource(solverConfigXml, beanClassLoader);
         } else if (beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL) != null) {
             solverConfig = SolverConfig.createFromXmlResource(
                     OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL, beanClassLoader);

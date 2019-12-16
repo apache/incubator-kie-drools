@@ -33,8 +33,6 @@ import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +40,14 @@ import org.slf4j.LoggerFactory;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
-public class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
+public final class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private BiConsumer<ProblemId_, Throwable> defaultExceptionHandler;
+    private final BiConsumer<ProblemId_, Throwable> defaultExceptionHandler;
     private final SolverFactory<Solution_> solverFactory;
     private final int parallelSolverCount;
-    private ExecutorService solverThreadPool;
+    private final ExecutorService solverThreadPool;
 
     private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
 

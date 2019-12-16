@@ -25,10 +25,6 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-spring-boot-starter</artifactId>
     </dependency>
 
