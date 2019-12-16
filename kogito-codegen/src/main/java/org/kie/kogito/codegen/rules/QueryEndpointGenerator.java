@@ -47,6 +47,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
@@ -189,8 +190,7 @@ public class QueryEndpointGenerator implements FileGenerator {
     }
 
     private void setGeneric(Type type, RuleUnitDescription ruleUnit) {
-        // fixme: must use classNameToReferenceType as soon as it lands on a stable release
-        type.asClassOrInterfaceType().setTypeArguments( classToReferenceType( ruleUnit.getRuleUnitClass() ) );
+        type.asClassOrInterfaceType().setTypeArguments( classNameToReferenceType( ruleUnit.getCanonicalName() ) );
     }
 
     private void setGeneric(Type type, Class<?> typeArgument) {

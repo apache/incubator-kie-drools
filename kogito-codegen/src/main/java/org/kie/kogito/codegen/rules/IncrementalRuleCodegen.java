@@ -210,7 +210,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                 for (RuleUnitDescription ruleUnit : ruleUnits) {
                     RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName())
                             .withDependencyInjection(annotator)
-                            .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit.getRuleUnitClass() ) );
+                            .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit.getCanonicalName() ) );
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit.getCanonicalName(), ruSource.targetCanonicalName());
                     // only Class<?> has config for now
