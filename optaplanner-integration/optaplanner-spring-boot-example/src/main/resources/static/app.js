@@ -18,9 +18,9 @@ var autoRefreshCount = 0;
 var autoRefreshIntervalId = null;
 
 function refreshTimeTable() {
-    $.getJSON("/timeTable", function (timeTableView) {
-        refreshSolvingButtons(timeTableView.solverStatus !== "NOT_SOLVING");
-        $("#score").text("Score: "+ (timeTableView.score == null ? "?" : timeTableView.score));
+    $.getJSON("/timeTable", function (timeTable) {
+        refreshSolvingButtons(timeTable.solverStatus !== "NOT_SOLVING");
+        $("#score").text("Score: "+ (timeTable.score == null ? "?" : timeTable.score));
 
         var timeTableByRoom = $("#timeTableByRoom");
         timeTableByRoom.children().remove();
@@ -30,7 +30,7 @@ function refreshTimeTable() {
         var thead = $("<thead>").appendTo(timeTableByRoom);
         var headerRow = $("<tr>").appendTo(thead);
         headerRow.append($("<th>Timeslot</th>"));
-        $.each(timeTableView.roomList, function (index, room) {
+        $.each(timeTable.roomList, function (index, room) {
             headerRow.append($("<th>"
                     + "<span>" + room.name + "</span>"
                     + "<button id=\"deleteRoomButton-" + room.id + "\" type=\"button\" class=\"ml-2 mb-1 btn btn-light btn-sm p-1\">"
@@ -42,7 +42,7 @@ function refreshTimeTable() {
             });
         });
 
-        $.each(timeTableView.timeslotList, function (index, timeslot) {
+        $.each(timeTable.timeslotList, function (index, timeslot) {
             var row = $("<tr>").appendTo(timeTableByRoom);
             row.append($("<th class=\"align-middle\">"
                     + "<span>" + timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()
@@ -55,12 +55,12 @@ function refreshTimeTable() {
             $("#deleteTimeslotButton-" + timeslot.id).click(function() {
                 deleteTimeslot(timeslot);
             });
-            $.each(timeTableView.roomList, function (index, room) {
+            $.each(timeTable.roomList, function (index, room) {
                 row.append($("<td id=\"timeslot" + timeslot.id + "room" + room.id + "\"></td>"));
             });
         });
 
-        $.each(timeTableView.lessonList, function (index, lesson) {
+        $.each(timeTable.lessonList, function (index, lesson) {
             var lessonElement = $("<div class=\"card lesson\"><div class=\"card-body p-2\">"
                     + "<button id=\"deleteLessonButton-" + lesson.id + "\" type=\"button\" class=\"ml-2 btn btn-light btn-sm p-1 float-right\">"
                     + "<small class=\"fas fa-trash\"></small>"
@@ -189,7 +189,7 @@ function deleteRoom(room) {
 function showError(title, xhr) {
     var serverErrorMessage = xhr.responseJSON == null ? "No response from server." : xhr.responseJSON.message;
     console.error(title + "\n" + serverErrorMessage);
-    var notification = $("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" style=\"min-width: 20rem\">"
+    var notification = $("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" style=\"min-width: 30rem\">"
             + "<div class=\"toast-header bg-danger\">"
             + "<strong class=\"mr-auto text-dark\">Error</strong>"
             + "<button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">"

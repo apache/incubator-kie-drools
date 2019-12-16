@@ -18,29 +18,39 @@ package org.optaplanner.spring.boot.example.domain;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.solver.SolverStatus;
 
-/**
- * Currently separated from {@link TimeTableSolution}
- * because it contains a {@link SolverStatus} and the {@link #score} is never null.
- */
-public class TimeTableView {
+@PlanningSolution
+public class TimeTable {
 
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "timeslotRange")
     private List<Timeslot> timeslotList;
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "roomRange")
     private List<Room> roomList;
+    @PlanningEntityCollectionProperty
     private List<Lesson> lessonList;
 
+    @PlanningScore
     private HardSoftScore score;
+
+    // Ignored by OptaPlanner
     private SolverStatus solverStatus;
 
-    public TimeTableView(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList,
-            HardSoftScore score, SolverStatus solverStatus) {
+    private TimeTable() {
+    }
+
+    public TimeTable(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList) {
         this.timeslotList = timeslotList;
         this.roomList = roomList;
         this.lessonList = lessonList;
-        this.score = score;
-        this.solverStatus = solverStatus;
     }
 
     public List<Timeslot> getTimeslotList() {
@@ -61,6 +71,10 @@ public class TimeTableView {
 
     public SolverStatus getSolverStatus() {
         return solverStatus;
+    }
+
+    public void setSolverStatus(SolverStatus solverStatus) {
+        this.solverStatus = solverStatus;
     }
 
 }
