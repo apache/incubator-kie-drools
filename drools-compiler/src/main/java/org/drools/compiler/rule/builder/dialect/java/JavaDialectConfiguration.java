@@ -44,7 +44,7 @@ import static org.mvel2.asm.Opcodes.*;
  * system property "java.version"
  * 
  * The JavaDialectConfiguration will attempt to validate that the specified compiler
- * is in the classpath, using ClassLoader.loasClass(String). If you intented to
+ * is in the classpath, using ClassLoader.loadClass(String). If you intented to
  * just Janino sa the compiler you must either overload the compiler property before 
  * instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
  * classpath, as Eclipse is the default.
@@ -61,7 +61,7 @@ public class JavaDialectConfiguration
         ECLIPSE, JANINO, NATIVE
     }
 
-    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "9"};
+    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "9", "10", "11"};
 
     private String                      languageLevel;
 
@@ -180,6 +180,12 @@ public class JavaDialectConfiguration
                 return "1.8";
             case V9:
                 return "9";
+            case V10:
+                return "10";
+            case V11:
+                return "11";
+            case V12:
+              return "12";
             default:
                 return "1.8";
         }
