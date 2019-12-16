@@ -51,8 +51,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
 
 @Configuration
-@ConditionalOnClass({SolverConfig.class, SolverFactory.class})
-@ConditionalOnMissingBean({SolverConfig.class, SolverFactory.class})
+@ConditionalOnClass({SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class})
+@ConditionalOnMissingBean({SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class})
 @EnableConfigurationProperties({OptaPlannerProperties.class})
 public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
