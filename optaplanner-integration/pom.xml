@@ -25,7 +25,6 @@
   <modules>
     <module>optaplanner-spring-boot-autoconfigure</module>
     <module>optaplanner-spring-boot-starter</module>
-    <module>optaplanner-workbench-models</module>
   </modules>
 
   <dependencyManagement>
