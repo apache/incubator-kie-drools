@@ -161,6 +161,8 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     /**
      * In DMN only Lists are structured result while Maps are context so "plain" FEEL expressions
+     * Maps are considered structured only when the given raw value is a JSON textual type
+     * i.e. an user defined expression (The JSON textual must be processed to take its value)
      * @param resultClass
      * @return
      */
@@ -171,7 +173,9 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     /**
-     * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions
+     * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions.
+     * Maps are considered structured only when the given raw value is a JSON textual type
+     * i.e. an user defined expression (The JSON textual must be processed to take its value)
      * @param className
      * @param raw
      * @return
