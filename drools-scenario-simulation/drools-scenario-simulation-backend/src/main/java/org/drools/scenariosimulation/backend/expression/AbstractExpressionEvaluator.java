@@ -35,11 +35,8 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
     protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
-        }
         if (isStructuredResult(resultClass, (String) rawExpression)) {
-            return verifyResult((String) rawExpression, resultValue, resultClass);
+            return verifyResult(rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
         }
@@ -55,8 +52,8 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     /**
      * Check if resultClass represents a structured result
-     * @param resultClass
-     * @returnisStructuredResult(resultClass)
+     * @param resultClass Used to determine if a structured result is passed
+     * @param rawExpression The raw value. It could be used in subclasses overridden method
      */
     protected boolean isStructuredResult(Class<?> resultClass, String rawExpression) {
         return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
@@ -64,8 +61,8 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     /**
      * Check if className represents a structured input
-     * @param className
-     * @param raw
+     * @param className Used to determine if a structured input is passed
+     * @param raw The raw value. It could be used in subclasses overridden method
      * @return
      */
     protected boolean isStructuredInput(String className, String raw) {
@@ -76,10 +73,13 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(rawString);
+            /* JSON String: User defined Expression */
             if (jsonNode.isTextual()) {
                 return extractAndEvaluateExpression((TextNode) jsonNode, className);
+            /* JSON Array: User defined List */
             } else if (jsonNode.isArray()) {
                 return createAndFillList((ArrayNode) jsonNode, new ArrayList<>(), className, genericClasses);
+            /* JSON Object: User defined Map */
             } else if (jsonNode.isObject()) {
                 return createAndFillObject((ObjectNode) jsonNode,
                                            createObject(className, genericClasses),
@@ -142,19 +142,26 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(String raw, Object resultRaw, Class<?> resultClass) {
+    protected boolean verifyResult(Object rawExpression, Object resultRaw, Class<?> resultClass) {
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
+        if (!(rawExpression instanceof String)) {
+            throw new IllegalArgumentException("Malformed raw data");
+        }
+        String raw = (String) rawExpression;
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             JsonNode jsonNode = objectMapper.readTree(raw);
+            /* JSON String: User defined Expression */
             if (jsonNode.isTextual()) {
                 return verifyExpression((TextNode) jsonNode, resultRaw, resultClass);
+            /* JSON Array: User defined List */
             } else if (jsonNode.isArray()) {
                 return verifyList((ArrayNode) jsonNode, (List) resultRaw);
+            /* JSON Object: User defined Map */
             } else if (jsonNode.isObject()) {
                 return verifyObject((ObjectNode) jsonNode, resultRaw);
             }
@@ -165,7 +172,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     /**
-     * It verifies a user defined expression for a collection type object (Lists, Maps). The evaluator which need to
+     * It verifies a user defined expression for a collection type object (Lists, Maps). The evaluator which needs to
      * handle it, must override this method and define its own logic. In all other cases, an
      * <code>UnsupportedOperationException</code> is thrown.
      * @param jsonNode
@@ -179,7 +186,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     /**
-     * It estract a user defined expression for a collection type object (Lists, Maps). The evaluator which need to
+     * It extract a user defined expression for a collection type object (Lists, Maps). The evaluator which needs to
      * handle it, must override this method and define its own logic. In all other cases, an
      * <code>UnsupportedOperationException</code> is thrown.
      * @param jsonNode

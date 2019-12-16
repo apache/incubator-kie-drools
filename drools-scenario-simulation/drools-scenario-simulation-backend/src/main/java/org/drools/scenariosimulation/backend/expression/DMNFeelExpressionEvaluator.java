@@ -167,7 +167,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     @Override
     protected boolean isStructuredResult(Class<?> resultClass, String raw) {
         return resultClass != null && (ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName()) ||
-                (ScenarioSimulationSharedUtils.isMap(resultClass.getCanonicalName()) && JsonUtils.isAJSONStringNode(raw)));
+                (ScenarioSimulationSharedUtils.isMap(resultClass.getCanonicalName()) && JsonUtils.isAJSONTextualNode(raw)));
     }
 
     /**
@@ -179,7 +179,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     @Override
     protected boolean isStructuredInput(String className, String raw) {
         return ScenarioSimulationSharedUtils.isList(className) ||
-                (ScenarioSimulationSharedUtils.isMap(className) && JsonUtils.isAJSONStringNode(raw));
+                (ScenarioSimulationSharedUtils.isMap(className) && JsonUtils.isAJSONTextualNode(raw));
     }
 
     /**

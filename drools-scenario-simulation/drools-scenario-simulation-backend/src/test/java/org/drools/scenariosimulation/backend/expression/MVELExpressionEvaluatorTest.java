@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -170,8 +171,15 @@ public class MVELExpressionEvaluatorTest {
         assertEquals("test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + "test"));
         assertEquals(" test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " test"));
         assertEquals(" " + MVEL_ESCAPE_SYMBOL + " test", evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " " + MVEL_ESCAPE_SYMBOL + " test"));
+        assertEquals("test", evaluator.cleanExpression(new TextNode(MVEL_ESCAPE_SYMBOL + "test").toString()));
+        assertEquals(" test", evaluator.cleanExpression(new TextNode(MVEL_ESCAPE_SYMBOL + " test").toString()));
+        assertEquals(" " + MVEL_ESCAPE_SYMBOL + " test", evaluator.cleanExpression(new TextNode(MVEL_ESCAPE_SYMBOL + " " + MVEL_ESCAPE_SYMBOL + " test").toString()));
 
         assertThatThrownBy(() -> evaluator.cleanExpression("test"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Malformed MVEL expression");
+
+        assertThatThrownBy(() -> evaluator.cleanExpression(new TextNode("test").toString()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Malformed MVEL expression");
     }

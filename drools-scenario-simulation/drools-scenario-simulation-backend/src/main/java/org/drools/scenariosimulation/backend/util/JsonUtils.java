@@ -47,7 +47,12 @@ public class JsonUtils {
         }
     }
 
-    public static boolean isAJSONStringNode(String json) {
+    /**
+     * It determines if a given json in String format, is a Json Textual node
+     * @param json
+     * @return
+     */
+    public static boolean isAJSONTextualNode(String json) {
         if (json != null && !json.isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
