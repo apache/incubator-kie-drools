@@ -43,6 +43,11 @@
       </dependency>
       <dependency><!-- TODO move this into kie-parent -->
         <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure-processor</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <dependency><!-- TODO move this into kie-parent -->
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
         <version>${version.org.springframework.boot}</version>
       </dependency>
