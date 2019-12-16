@@ -680,10 +680,13 @@ public class ProtobufOutputMarshaller {
                 org.drools.core.spi.Tuple t1 = o1.getTuple();
                 org.drools.core.spi.Tuple t2 = o2.getTuple();
                 while ( result == 0 && t1 != null && t2 != null ) {
-                    if ( t1.getFactHandle() != null && t2.getFactHandle() != null ) {
-                        // can be null for eval, not and exists that have no right input
-                        result = Long.compare(t1.getFactHandle().getId(), t2.getFactHandle().getId());
+                    // can be null for eval, not and exists that have no right input
+                    if ( t1.getFactHandle() == null ) {
+                        result = t2.getFactHandle() == null ? 0 : -1;
+                    } else {
+                        result = t2.getFactHandle() == null ? 1 : Long.compare(t1.getFactHandle().getId(), t2.getFactHandle().getId());
                     }
+
                     t1 = t1.getParent();
                     t2 = t2.getParent();
                 }

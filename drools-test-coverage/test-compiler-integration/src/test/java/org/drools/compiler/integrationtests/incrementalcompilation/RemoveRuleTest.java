@@ -226,4 +226,41 @@ public class RemoveRuleTest {
         assertNotNull(leftTuple);
         assertNull(leftTuple.getHandleNext());
     }
+
+     @Test
+    public void testRemoveAccumulateRule() {
+        // DROOLS-4864
+        final String str =
+                "package org.drools.compiler.test\n" +
+                "\n" +
+                "rule Acc no-loop\n" +
+                "when\n" +
+                "    accumulate(\n" +
+                "            String( $l : length, this == \"test\" );\n" +
+                "            $max : max( $l ))\n" +
+                "then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "test-remove-acc-rule", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, str);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) kc.getKieBase();
+
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert("xxx");
+        final ReleaseId releaseId2 = KieServices.get().newReleaseId("org.kie", "test-remove-acc-rule", "1.1");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration);
+
+        kc.updateToVersion(releaseId2);
+
+        final EntryPointNode epn = kbase.getRete().getEntryPointNodes().values().iterator().next();
+        for (final ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
+            final ObjectSink[] sinks = otn.getObjectSinkPropagator().getSinks();
+            if (sinks.length > 0) {
+                fail( otn + " has sinks " + Arrays.toString( sinks ) );
+            }
+        }
+    }
 }
