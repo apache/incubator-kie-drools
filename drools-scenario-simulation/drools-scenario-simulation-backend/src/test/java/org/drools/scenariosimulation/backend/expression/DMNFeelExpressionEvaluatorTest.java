@@ -72,9 +72,9 @@ public class DMNFeelExpressionEvaluatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
 
-        /*assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Syntax error:");*/
+                .hasMessageStartingWith("Syntax error:");
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("? > 2", null, BigDecimal.class))
                 .isInstanceOf(NullPointerException.class);
@@ -195,7 +195,7 @@ public class DMNFeelExpressionEvaluatorTest {
 
     @Test
     public void expressionListTest() {
-        String expressionCollectionJsonString = new TextNode("[1,10]").toString();
+        String expressionCollectionJsonString = new TextNode("[ 1, 10 ]").toString();
         List<BigDecimal> result = (List<BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
         assertTrue(result.size() == 2);
         assertEquals(BigDecimal.ONE, result.get(0));
@@ -204,7 +204,7 @@ public class DMNFeelExpressionEvaluatorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void expressionListTest_Wrong() {
-        String expressionCollectionJsonString = new TextNode("[1:234").toString();
+        String expressionCollectionJsonString = new TextNode("[ 1 : 234").toString();
         expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
     }
 
