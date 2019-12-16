@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
@@ -78,7 +79,8 @@ public class ProcessInstanceManagementResource {
     public Response getWorkItemsInProcessInstance(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         
         return executeOnInstance(processId, processInstanceId, processInstance -> {
-            List<WorkItem> workItems = processInstance.workItems();
+            // use special security policy to bypass auth check as this is management operation
+            List<WorkItem> workItems = processInstance.workItems(new SecurityPolicy(null){});
                                    
                 return Response
                         .status(Response.Status.OK)

@@ -51,6 +51,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
@@ -60,6 +61,7 @@ import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
@@ -137,7 +139,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
@@ -164,7 +166,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertNotNull(workItem);
         assertEquals("Executing task of process instance " + processInstance.id() + " as work item with Hello",
                 workItem.getParameter("Description").toString().trim());
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
@@ -445,7 +447,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
     

@@ -38,7 +38,7 @@ public class SecurityPolicy implements Policy<IdentityProvider> {
         return new SecurityPolicy(identity);
     }
     
-    private SecurityPolicy(IdentityProvider identity) {
+    protected SecurityPolicy(IdentityProvider identity) {
         this.identity = identity;
     }
     

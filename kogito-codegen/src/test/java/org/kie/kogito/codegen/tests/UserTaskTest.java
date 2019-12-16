@@ -51,9 +51,12 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 public class UserTaskTest extends AbstractCodegenTest {
+    
+    private Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
     
     @Test
     public void testBasicUserTaskProcess() throws Exception {
@@ -85,18 +88,18 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         assertEquals("FirstTask", workItems.get(0).getName());
         
-        processInstance.completeWorkItem(workItems.get(0).getId(), null);
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         assertEquals("SecondTask", workItems.get(0).getName());
         
-        processInstance.completeWorkItem(workItems.get(0).getId(), null);
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         
         assertThat(workItemTransitionEvents).hasSize(8);
@@ -120,24 +123,24 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
         assertEquals(Active.ID, wi.getPhase());
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
         assertEquals(Active.ID, wi.getPhase());
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
     
@@ -158,7 +161,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -166,10 +169,10 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         assertEquals(0, wi.getResults().size());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value")));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -177,12 +180,12 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Claim.STATUS, wi.getPhaseStatus());
         assertEquals(2, wi.getResults().size());
         assertEquals("value", wi.getResults().get("test"));
-        assertEquals(null, wi.getResults().get("ActorId"));
+        assertEquals("john", wi.getResults().get("ActorId"));
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -211,7 +214,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -222,11 +225,11 @@ public class UserTaskTest extends AbstractCodegenTest {
         final String wiId = wi.getId();
         
         assertThrows(InvalidTransitionException.class, () -> 
-            processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID)));
+            processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID, null, securityPolicy)));
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -234,10 +237,10 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         assertEquals(0, wi.getResults().size());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -279,7 +282,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -287,12 +290,11 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         assertEquals(0, wi.getResults().size());
         
-        IdentityProvider identity = new StaticIdentityProvider("john");
-        
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), identity));
+  
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -302,10 +304,10 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals("value", wi.getResults().get("test"));
         assertEquals("john", wi.getResults().get("ActorId"));
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -336,7 +338,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -360,7 +362,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -373,7 +375,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, identityCorrect));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -508,17 +510,17 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
         assertEquals(Active.ID, wi.getPhase());
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -531,7 +533,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         processInstance.triggerNode("UserTask_2");
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -539,7 +541,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         // since it was triggered again it must have different node instance id
         assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
@@ -561,17 +563,17 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
         assertEquals(Active.ID, wi.getPhase());
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -583,7 +585,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         processInstance.retriggerNodeInstance(wi.getNodeInstanceId());
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
                 
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());
@@ -591,7 +593,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         // since it was retriggered it must have different node instance id
         assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
@@ -613,7 +615,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         WorkItem wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -621,10 +623,10 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.STATUS, wi.getPhaseStatus());
         assertEquals(0, wi.getResults().size());
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value")));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -632,11 +634,11 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Claim.STATUS, wi.getPhaseStatus());
         assertEquals(2, wi.getResults().size());
         assertEquals("value", wi.getResults().get("test"));
-        assertEquals(null, wi.getResults().get("ActorId"));
+        assertEquals("john", wi.getResults().get("ActorId"));
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Release.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Release.ID, null, securityPolicy));
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -644,12 +646,12 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Release.STATUS, wi.getPhaseStatus());
         assertEquals(2, wi.getResults().size());
         assertEquals("value", wi.getResults().get("test"));
-        assertEquals(null, wi.getResults().get("ActorId"));
+        assertEquals("john", wi.getResults().get("ActorId"));
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value")));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("FirstTask", wi.getName());
@@ -657,12 +659,12 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Claim.STATUS, wi.getPhaseStatus());
         assertEquals(2, wi.getResults().size());
         assertEquals("value", wi.getResults().get("test"));
-        assertEquals(null, wi.getResults().get("ActorId"));
+        assertEquals("john", wi.getResults().get("ActorId"));
         
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID));
+        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         wi = workItems.get(0);
         assertEquals("SecondTask", wi.getName());

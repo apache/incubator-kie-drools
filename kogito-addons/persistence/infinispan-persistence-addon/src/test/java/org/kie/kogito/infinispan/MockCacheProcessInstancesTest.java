@@ -41,6 +41,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
@@ -48,6 +49,7 @@ import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -103,10 +105,10 @@ public class MockCacheProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         
 
-        WorkItem workItem = processInstance.workItems().get(0);
+        WorkItem workItem = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john"))).get(0);
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameters().get("ActorId")).isEqualTo("john");
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
     }
     
@@ -183,10 +185,10 @@ public class MockCacheProcessInstancesTest {
         
         op.accept(processInstance);
 
-        WorkItem workItem = processInstance.workItems().get(0);
+        WorkItem workItem = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john"))).get(0);
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameters().get("ActorId")).isEqualTo("john");
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
     }
     

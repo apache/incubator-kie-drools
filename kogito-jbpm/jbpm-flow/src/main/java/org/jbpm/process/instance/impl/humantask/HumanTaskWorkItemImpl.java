@@ -125,15 +125,21 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
     }
 
     @Override
-    public boolean enforce(Policy<?>... policies) {
+    public boolean enforce(Policy<?>... policies) {   
         for (Policy<?> policy : policies) {
             if (policy instanceof SecurityPolicy) {
                 try {
                     enforceAuthorization(((SecurityPolicy) policy).value());
+                    
+                    return true;
                 } catch (NotAuthorizedException e) {
                     return false;
                 }
             }
+        }
+        // there might have not been any policies given so let's ensure task is protected if any assignments is set
+        if (getActualOwner() != null || !getPotentialUsers().isEmpty()) {
+            return false;
         }
 
         return true;
@@ -147,7 +153,7 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
             String user = identity.getName();
             String currentOwner = getActualOwner();
             // if actual owner is already set always enforce same user
-            if (currentOwner != null && !user.equals(currentOwner)) {
+            if (currentOwner != null && !currentOwner.trim().isEmpty() && !user.equals(currentOwner)) {
                 logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getId(), currentOwner, user);
                 throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
             } else {

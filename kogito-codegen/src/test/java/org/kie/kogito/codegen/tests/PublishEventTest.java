@@ -28,6 +28,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.event.DataEvent;
@@ -40,6 +41,7 @@ import org.kie.kogito.services.event.ProcessInstanceDataEvent;
 import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.uow.UnitOfWork;
 
 
@@ -130,13 +132,13 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready", "UserTasksProcess");
         
         
-        List<WorkItem> workItems = processInstance.workItems();
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(1, workItems.size());
         assertEquals("FirstTask", workItems.get(0).getName());
         
         uow = app.unitOfWorkManager().newUnitOfWork();                        
         uow.start();
-        processInstance.completeWorkItem(workItems.get(0).getId(), null);
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         events = publisher.extract();
@@ -149,13 +151,13 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Ready", "UserTasksProcess");
         assertUserTaskInstanceEvent(events.get(2), "First Task", null, "1", "Completed", "UserTasksProcess");
         
-        workItems = processInstance.workItems();
+        workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(1, workItems.size());
         assertEquals("SecondTask", workItems.get(0).getName());
         
         uow = app.unitOfWorkManager().newUnitOfWork();                        
         uow.start();
-        processInstance.completeWorkItem(workItems.get(0).getId(), null);
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         events = publisher.extract();
