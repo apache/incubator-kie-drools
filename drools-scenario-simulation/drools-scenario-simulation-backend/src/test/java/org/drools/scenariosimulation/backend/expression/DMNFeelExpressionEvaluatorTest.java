@@ -18,12 +18,15 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -176,5 +179,30 @@ public class DMNFeelExpressionEvaluatorTest {
         for (FEELEvent event : events) {
             feel.getListeners().forEach(listener -> listener.onEvent(event));
         }
+    }
+
+    public void expressionListTest() {
+        String expressionCollectionJsonString = new TextNode("JsonText").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), new ArrayList<>());
+        //TODO Don't remember last list what is it
+    }
+
+
+    public void expressionMapTest() {
+        String expressionCollectionJsonString = new TextNode("JsonText").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), new ArrayList<>());
+        //TODO check result class  and resultRaw
+    }
+
+    public void expressionListVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("JsonText").toString();
+        expressionEvaluator.verifyResult(expressionCollectionJsonString, new ArrayList<>(), null);
+        //TODO check result class  and resultRaw
+    }
+
+    public void expressionMapVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("JsonText").toString();
+        expressionEvaluator.verifyResult(expressionCollectionJsonString, new HashMap<>(), null);
+        //TODO check result class and resultRaw
     }
 }

@@ -157,9 +157,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             } else if (jsonNode.isObject()) {
                 return verifyObject((ObjectNode) jsonNode, resultRaw);
             }
-            throw new IllegalArgumentException("Malformed raw data");
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Malformed raw data", e);
+            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE, e);
         }
     }
 
