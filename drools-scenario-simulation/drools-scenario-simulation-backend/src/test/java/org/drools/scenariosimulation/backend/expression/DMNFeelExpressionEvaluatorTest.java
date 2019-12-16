@@ -72,8 +72,6 @@ public class DMNFeelExpressionEvaluatorTest {
     @SuppressWarnings("unchecked")
     public void evaluateLiteralExpression() {
         assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
-        Object nonStringObject = new Object();
-//        assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), "{key_a : 1}");
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
