@@ -42,6 +42,15 @@ public class MVELExpressionEvaluatorTest {
         assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("1"), 1, Integer.class));
         assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("2"), 1, Integer.class));
 
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(""), null, String.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(""), "", String.class));
+
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(null), null, String.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "null", String.class));
+
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("\"\""), "", String.class));
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "", String.class));
+
         assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 123, Integer.class));
         assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 321, Integer.class));
         assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 321, Integer.class));
@@ -49,7 +58,7 @@ public class MVELExpressionEvaluatorTest {
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(null, "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Raw expression should be a String");
+                .hasMessageStartingWith("Malformed MVEL expression");
     }
 
     @Test

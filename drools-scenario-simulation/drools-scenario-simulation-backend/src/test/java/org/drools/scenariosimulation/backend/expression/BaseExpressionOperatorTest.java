@@ -125,5 +125,7 @@ public class BaseExpressionOperatorTest {
         assertFalse(LIST_OF_CONDITION.eval("", "test", String.class, classLoader));
 
         assertTrue(LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, int.class, classLoader));
+
+        assertFalse(LIST_OF_CONDITION.eval(null, 1, int.class, classLoader));
     }
 }

@@ -29,6 +29,7 @@ import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.compareValues;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
@@ -43,7 +44,6 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         config.setClassLoader(classLoader);
     }
 
-    // FIXME to test with null
     @Override
     public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         Map<String, Object> params = new HashMap<>();
@@ -52,13 +52,11 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
-            // FIXME to change
-            return BaseExpressionOperator.EQUALS.eval(expressionResult, resultValue, resultClass, classLoader);
+            return compareValues(expressionResult, resultValue);
         }
         return (boolean) expressionResult;
     }
 
-    // FIXME to test with null
     @Override
     public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
         Object expressionResult = compileAndExecute(rawExpression, Collections.emptyMap());
@@ -78,7 +76,8 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     protected Object compileAndExecute(String rawExpression, Map<String, Object> params) {
         ParserContext ctx = new ParserContext(this.config);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            ctx.addVariable(entry.getKey(), entry.getValue().getClass());
+            Class type = entry.getValue() != null ? entry.getValue().getClass() : null;
+            ctx.addVariable(entry.getKey(), type);
         }
 
         String expression = cleanExpression(rawExpression);
@@ -87,7 +86,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     protected String cleanExpression(String rawExpression) {
-        if (!rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (rawExpression == null || !rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
             throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
         }
         return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");

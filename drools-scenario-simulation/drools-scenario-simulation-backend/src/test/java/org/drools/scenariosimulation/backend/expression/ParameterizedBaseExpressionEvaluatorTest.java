@@ -35,7 +35,6 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     @Parameterized.Parameters(name = "{index}: Expr \"{0} {1}\" should be true")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {true, 1, 1, int.class},
                 {true, 1, "1", int.class},
                 {true, 2, "!= 1", int.class},
                 {true, -1, "- 1", int.class},
@@ -98,7 +97,7 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     public Object resultValue;
 
     @Parameterized.Parameter(2)
-    public Object exprToTest;
+    public String exprToTest;
 
     @Parameterized.Parameter(3)
     public Class<?> clazz;
@@ -107,7 +106,7 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     public void evaluateUnaryExpression() {
 
         if (!(resultValue instanceof Class)) {
-            assertEquals(expectedResult, baseExpressionEvaluator.evaluateUnaryExpression((String) exprToTest, resultValue, clazz));
+            assertEquals(expectedResult, baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz));
         } else {
             try {
                 baseExpressionEvaluator.evaluateUnaryExpression((String) exprToTest, true, clazz);

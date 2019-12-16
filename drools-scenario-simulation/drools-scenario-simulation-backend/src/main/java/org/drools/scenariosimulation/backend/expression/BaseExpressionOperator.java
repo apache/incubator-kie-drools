@@ -31,10 +31,12 @@ public enum BaseExpressionOperator {
     LIST_OF_CONDITION(0, ";") {
         @Override
         protected Optional<String> match(String value) {
+            if (value == null) {
+                return Optional.empty();
+            }
             return symbols.stream().filter(value::contains).findFirst();
         }
 
-        // FIXME to test with NULL
         @Override
         protected boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             if (!match(rawValue).isPresent()) {
@@ -175,6 +177,12 @@ public enum BaseExpressionOperator {
         return BaseExpressionOperator.EQUALS;
     }
 
+    /**
+     * Support method that perform an equals/compare of given values
+     * @param value1
+     * @param value2
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static boolean compareValues(Object value1, Object value2) {
         if (value1 == null) {

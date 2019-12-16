@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import static java.util.Collections.emptyList;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,7 +39,59 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractExpressionEvaluatorTest {
 
-    JsonNodeFactory factory = JsonNodeFactory.instance;
+    private static final JsonNodeFactory factory = JsonNodeFactory.instance;
+    private static final AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
+
+        @Override
+        public String fromObjectToExpression(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected Object extractFieldValue(Object result, String fieldName) {
+            return result;
+        }
+
+        @Override
+        protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString) {
+            return true;
+        }
+
+        @Override
+        protected Object internalLiteralEvaluation(String raw, String className) {
+            return raw;
+        }
+
+        @Override
+        protected Object createObject(String className, List<String> genericClasses) {
+            return new HashMap<>();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void setField(Object toReturn, String fieldName, Object fieldValue) {
+            ((Map) toReturn).put(fieldName, fieldValue);
+        }
+
+        @Override
+        protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses) {
+            return new AbstractMap.SimpleEntry<>("", Collections.singletonList(""));
+        }
+    };
+
+    @Test
+    public void evaluateLiteralExpression() {
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(String.class.getCanonicalName(), null, null));
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(List.class.getCanonicalName(), null, null));
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(Map.class.getCanonicalName(), null, null));
+    }
+
+    @Test
+    public void evaluateUnaryExpression() {
+        assertTrue(expressionEvaluatorMock.evaluateUnaryExpression(null, null, String.class));
+        assertTrue(expressionEvaluatorMock.evaluateUnaryExpression(null, null, Map.class));
+        assertTrue(expressionEvaluatorMock.evaluateUnaryExpression(null, null, List.class));
+    }
 
     @Test
     public void convertList() {
@@ -81,7 +134,7 @@ public class AbstractExpressionEvaluatorTest {
         result = expressionEvaluatorMock.createAndFillObject(objectNode,
                                                              new HashMap<>(),
                                                              String.class.getCanonicalName(),
-                                                             Collections.emptyList());
+                                                             emptyList());
 
         assertTrue(result instanceof Map);
         resultMap = (Map<String, Object>) result;
@@ -100,7 +153,7 @@ public class AbstractExpressionEvaluatorTest {
         result = expressionEvaluatorMock.createAndFillObject(objectNode,
                                                              new HashMap<>(),
                                                              String.class.getCanonicalName(),
-                                                             Collections.emptyList());
+                                                             emptyList());
 
         assertTrue(result instanceof Map);
         resultMap = (Map<String, Object>) result;
@@ -189,42 +242,4 @@ public class AbstractExpressionEvaluatorTest {
         assertFalse(expressionEvaluatorMock.isEmptyText(new TextNode(VALUE)));
         assertTrue(expressionEvaluatorMock.isEmptyText(new ObjectNode(factory)));
     }
-
-    AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
-
-        @Override
-        public String fromObjectToExpression(Object value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        protected Object extractFieldValue(Object result, String fieldName) {
-            return result;
-        }
-
-        @Override
-        protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString) {
-            return true;
-        }
-
-        @Override
-        protected Object internalLiteralEvaluation(String raw, String className) {
-            return raw;
-        }
-
-        @Override
-        protected Object createObject(String className, List<String> genericClasses) {
-            return new HashMap<>();
-        }
-
-        @Override
-        protected void setField(Object toReturn, String fieldName, Object fieldValue) {
-            ((Map) toReturn).put(fieldName, fieldValue);
-        }
-
-        @Override
-        protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses) {
-            return new AbstractMap.SimpleEntry<>("", Collections.singletonList(""));
-        }
-    };
 }

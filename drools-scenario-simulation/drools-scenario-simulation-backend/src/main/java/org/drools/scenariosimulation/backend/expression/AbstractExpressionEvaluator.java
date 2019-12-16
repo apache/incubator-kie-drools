@@ -32,23 +32,21 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-    // FIXME to test with null
-    @Override
-    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
-        if (isStructuredResult(resultClass)) {
-            return verifyResult(rawExpression, resultValue);
-        } else {
-            return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
-        }
-    }
-
-    // FIXME to test with null
     @Override
     public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
         if (isStructuredInput(className)) {
             return convertResult(rawExpression, className, genericClasses);
         } else {
             return internalLiteralEvaluation(rawExpression, className);
+        }
+    }
+
+    @Override
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
+        if (isStructuredResult(resultClass)) {
+            return verifyResult(rawExpression, resultValue);
+        } else {
+            return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
         }
     }
 
@@ -71,6 +69,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
+        if(rawString == null) {
+            return null;
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -139,8 +140,10 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    // FIXME to test with null
     protected boolean verifyResult(String rawExpression, Object resultRaw) {
+        if (rawExpression == null) {
+            return resultRaw == null;
+        }
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
