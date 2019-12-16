@@ -239,9 +239,9 @@ public abstract class AbstractRunnerHelper {
             ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(factMappingValue);
 
             try {
-                Object value = expressionEvaluator.evaluateLiteralExpression(factMapping.getClassName(),
-                                                                             factMapping.getGenericTypes(),
-                                                                             (String) factMappingValue.getRawValue());
+                Object value = expressionEvaluator.evaluateLiteralExpression((String) factMappingValue.getRawValue(), factMapping.getClassName(),
+                                                                             factMapping.getGenericTypes()
+                );
                 paramsForBean.put(pathToField, value);
             } catch (RuntimeException e) {
                 factMappingValue.setExceptionMessage(e.getMessage());

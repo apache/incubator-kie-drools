@@ -71,18 +71,18 @@ public class DMNFeelExpressionEvaluatorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void evaluateLiteralExpression() {
-        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
-        Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), "{key_a : 1}");
+        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression("2 + 3", BigDecimal.class.getCanonicalName(), null));
+        Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression("{key_a : 1}", Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
 
         assertThatThrownBy(() -> expressionEvaluator
-                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED"))
+                .evaluateLiteralExpression("SPEED", String.class.getCanonicalName(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
 
         assertThatThrownBy(() -> expressionEvaluator
-                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "\"SPEED"))
+                .evaluateLiteralExpression("\"SPEED", String.class.getCanonicalName(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Syntax error:");
     }

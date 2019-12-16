@@ -81,9 +81,9 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(String.class.getCanonicalName(), null, null));
-        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(List.class.getCanonicalName(), null, null));
-        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(Map.class.getCanonicalName(), null, null));
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(null, String.class.getCanonicalName(), null));
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(null, List.class.getCanonicalName(), null));
+        assertNull(expressionEvaluatorMock.evaluateLiteralExpression(null, Map.class.getCanonicalName(), null));
     }
 
     @Test

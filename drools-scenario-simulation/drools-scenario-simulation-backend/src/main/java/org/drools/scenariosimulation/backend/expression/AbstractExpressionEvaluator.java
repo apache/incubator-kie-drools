@@ -33,7 +33,7 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
+    public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
         if (isStructuredInput(className)) {
             return convertResult(rawExpression, className, genericClasses);
         } else {

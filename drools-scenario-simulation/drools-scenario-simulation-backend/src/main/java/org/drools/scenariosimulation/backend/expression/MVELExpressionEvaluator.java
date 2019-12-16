@@ -58,7 +58,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, String rawExpression) {
+    public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
         Object expressionResult = compileAndExecute(rawExpression, Collections.emptyMap());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
