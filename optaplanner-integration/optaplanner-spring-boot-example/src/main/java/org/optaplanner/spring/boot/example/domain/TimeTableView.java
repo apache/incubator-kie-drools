@@ -21,6 +21,10 @@ import java.util.List;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.solver.SolverStatus;
 
+/**
+ * Currently separated from {@link TimeTableSolution}
+ * because it contains a {@link SolverStatus} and the {@link #score} is never null.
+ */
 public class TimeTableView {
 
     private List<Timeslot> timeslotList;
