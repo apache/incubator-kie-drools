@@ -25,7 +25,6 @@
   <modules>
     <module>optaplanner-spring-boot-autoconfigure</module>
     <module>optaplanner-spring-boot-starter</module>
-    <module>optaplanner-spring-boot-example</module>
     <module>optaplanner-workbench-models</module>
   </modules>
 
@@ -44,26 +43,6 @@
       <dependency><!-- TODO move this into kie-parent -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-rest</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
         <version>${version.org.springframework.boot}</version>
       </dependency>
       <dependency><!-- TODO move this into kie-parent -->
