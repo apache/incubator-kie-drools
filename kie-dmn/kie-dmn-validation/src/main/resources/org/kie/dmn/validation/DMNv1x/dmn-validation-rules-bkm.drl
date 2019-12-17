@@ -33,7 +33,7 @@ rule BKM_MISSING_EXPR
 when
     $d : BusinessKnowledgeModel( encapsulatedLogic == null || encapsulatedLogic.expression == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_BKM, $d.getIdentifierString() );
+    reporter.report( DMNMessage.Severity.WARN, $d, Msg.MISSING_EXPRESSION_FOR_BKM, $d.getIdentifierString() );
 end
 
 rule BKM_MISSING_VAR

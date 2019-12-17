@@ -58,7 +58,7 @@ rule INVOCATION_MISSING_EXPR
 when
     $b : Binding( expression == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR, $b, Msg.MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION,
+    reporter.report( DMNMessage.Severity.WARN, $b, Msg.MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION,
                      $b.getParameter() != null ? $b.getParameter().getIdentifierString() : "[unnamed]",
                      $b.getParentDRDElement().getIdentifierString() );
 end
@@ -142,7 +142,7 @@ end
 rule INVOCATION_WRONG_PARAM_COUNT
 when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
-    BusinessKnowledgeModel( name == $targetName, encapsulatedLogic.formalParameter.size != $inv.binding.size ) 
+    BusinessKnowledgeModel( name == $targetName, encapsulatedLogic!.formalParameter.size != $inv.binding.size ) 
 then
     reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.PARAMETER_COUNT_MISMATCH, $targetName, $inv.getParentDRDElement().getIdentifierString() );
 end

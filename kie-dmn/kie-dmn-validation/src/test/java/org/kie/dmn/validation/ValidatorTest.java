@@ -38,6 +38,8 @@ import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
 import org.kie.dmn.core.imports.ImportsTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.v1_3.DMN13specificTest;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -449,6 +451,25 @@ public class ValidatorTest extends AbstractValidatorTest {
                                              .theseModels(getReader("Recommended Loan Products.dmn", DMN13specificTest.class),
                                                           getReader("Loan info.dmn", DMN13specificTest.class));
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testBkmAndBindingWarnLevel() {
+        // DROOLS-4875 DMN validation message alignment to DMN XSD constraint
+        List<DMNMessage> validate = validator.validate(getReader("bkmAndBinding.dmn"),
+                                                       VALIDATE_SCHEMA,
+                                                       VALIDATE_MODEL,
+                                                       VALIDATE_COMPILATION);
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().allMatch(p -> p.getLevel() == Level.WARNING));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
+                                                   p.getSourceId() != null &&
+                                                   p.getSourceId().equals("_3ce3c41a-450a-40d1-9e9c-09180cd29879")));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
+                                                   ((DMNElement) ((DMNModelInstrumentedBase) p.getSourceReference()).getParent()).getId().equals("_d8b0c243-3fb6-40ec-a29c-28f8bdb92e13")));
     }
 
 }
