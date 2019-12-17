@@ -4,6 +4,7 @@ module.exports = data = [
     processId: 'hotelBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     processName: 'HotelBooking',
+    rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'COMPLETED',
     start: '2019-10-22T03:40:44.089Z',
@@ -49,6 +50,7 @@ module.exports = data = [
     processId: 'flightBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     processName: 'FlightBooking',
+    rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'ERROR',
     addons: ['jobs-management', 'prometheus-monitoring'],
@@ -94,6 +96,7 @@ module.exports = data = [
     processId: 'flightBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     processName: 'FlightBooking',
+    rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'COMPLETED',
     start: '2019-10-22T03:40:44.089Z',
@@ -141,6 +144,7 @@ module.exports = data = [
     processName: 'travels',
     roles: [],
     state: 'ERROR',
+    rootProcessInstanceId: null,
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
@@ -244,6 +248,7 @@ module.exports = data = [
     processId: 'flightBooking',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     processName: 'FlightBooking',
+    rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     roles: [],
     state: 'ERROR',
     addons: ['prometheus-monitoring'],
@@ -289,6 +294,7 @@ module.exports = data = [
     id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
     processId: 'hotelBooking',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+    rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     processName: 'HotelBooking',
     roles: [],
     state: 'ABORTED',
@@ -335,6 +341,7 @@ module.exports = data = [
     processId: 'travels',
     parentProcessInstanceId: null,
     processName: 'travels',
+    rootProcessInstanceId: null,
     roles: [],
     state: 'ERROR',
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
@@ -432,6 +439,7 @@ module.exports = data = [
     processName: 'travels',
     roles: [],
     state: 'ACTIVE',
+    rootProcessInstanceId: null,
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -526,6 +534,99 @@ module.exports = data = [
     processId: 'flightBooking',
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processName: 'FlightBooking',
+    rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    roles: [],
+    state: 'COMPLETED',
+    endpoint: 'http://localhost:4000/',
+    addons: [],
+    error: {
+      nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
+      message: 'Something went wrong'
+    },
+    start: '2019-10-22T03:40:44.089Z',
+    end: '2019-10-22T05:40:44.089Z',
+    variables:
+      '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+    nodes: [
+      {
+        name: 'End Event 1',
+        definitionId: 'EndEvent_1',
+        id: '7244ba1b-75ec-4789-8c65-499a0c5b1a6f',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'EndNode'
+      },
+      {
+        name: 'Book flight',
+        definitionId: 'ServiceTask_1',
+        id: '2f588da5-a323-4111-9017-3093ef9319d1',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'WorkItemNode'
+      },
+      {
+        name: 'StartProcess',
+        definitionId: 'StartEvent_1',
+        id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'StartNode'
+      }
+    ],
+    childProcessInstanceId: ['c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd']
+  },
+  {
+    id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+    processId: 'flightBooking test1',
+    parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+    processName: 'FlightBooking test 1',
+    rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    roles: [],
+    state: 'COMPLETED',
+    endpoint: 'http://localhost:4000/',
+    addons: [],
+    error: {
+      nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
+      message: 'Something went wrong'
+    },
+    start: '2019-10-22T03:40:44.089Z',
+    end: '2019-10-22T05:40:44.089Z',
+    variables:
+      '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+    nodes: [
+      {
+        name: 'End Event 1',
+        definitionId: 'EndEvent_1',
+        id: '7244ba1b-75ec-4789-8c65-499a0c5b1a6f',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'EndNode'
+      },
+      {
+        name: 'Book flight',
+        definitionId: 'ServiceTask_1',
+        id: '2f588da5-a323-4111-9017-3093ef9319d1',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'WorkItemNode'
+      },
+      {
+        name: 'StartProcess',
+        definitionId: 'StartEvent_1',
+        id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
+        enter: '2019-10-22T04:43:01.144Z',
+        exit: '2019-10-22T04:43:01.144Z',
+        type: 'StartNode'
+      }
+    ],
+    childProcessInstanceId: ['c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc']
+  },
+  {
+    id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
+    processId: 'flightBooking test2',
+    parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+    rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    processName: 'FlightBooking test 2',
     roles: [],
     state: 'COMPLETED',
     endpoint: 'http://localhost:4000/',
@@ -570,6 +671,7 @@ module.exports = data = [
     id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
     processId: 'hotelBooking',
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processName: 'HotelBooking',
     roles: [],
     state: 'COMPLETED',

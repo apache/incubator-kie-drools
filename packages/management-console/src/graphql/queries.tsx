@@ -34,6 +34,7 @@ const GET_CHILD_INSTANCES = gql`
       processId
       processName
       parentProcessInstanceId
+      rootProcessInstanceId
       roles
       state
       start

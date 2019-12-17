@@ -62,6 +62,14 @@ const resolvers = {
         console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
           return datum.id == args['where'].id.equal;
+        } else if (
+          args['where'].rootProcessInstanceId &&
+          args['where'].rootProcessInstanceId.equal
+        ) {
+          return (
+            datum.rootProcessInstanceId ==
+            args['where'].rootProcessInstanceId.equal
+          );
         } else if (args['where'].parentProcessInstanceId.equal) {
           return (
             datum.parentProcessInstanceId ==

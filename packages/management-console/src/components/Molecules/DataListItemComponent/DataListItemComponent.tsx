@@ -1,5 +1,5 @@
 import { TimeAgo } from '@n1ru4l/react-time-ago';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import axios from 'axios';
 import {
@@ -50,7 +50,7 @@ export interface IOwnProps {
 const DataListItemComponent: React.FC<IOwnProps> = ({
   processInstanceData
 }) => {
-  const [expanded, setexpanded] = useState(['kie-datalist-toggle']);
+  const [expanded, setexpanded] = useState([]);
   const [isOpen, setisOpen] = useState(false);
   const [isLoaded, setisLoaded] = useState(false);
   const [isChecked, setisChecked] = useState(false);
@@ -64,14 +64,15 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const client = useApolloClient();
 
   const GET_CHILD_INSTANCES = gql`
-    query getChildInstances($instanceId: String) {
+    query getChildInstances($rootProcessInstanceId: String) {
       ProcessInstances(
-        where: { parentProcessInstanceId: { equal: $instanceId } }
+        where: { rootProcessInstanceId: { equal: $rootProcessInstanceId } }
       ) {
         id
         processId
         processName
         parentProcessInstanceId
+        rootProcessInstanceId
         roles
         state
         start
@@ -110,7 +111,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       setAlertType('danger');
       setAlertMessage(
         'Process execution failed to skip node which in error state. Message: ' +
-        JSON.stringify(error.message)
+          JSON.stringify(error.message)
       );
       setAlertVisible(true);
     }
@@ -135,7 +136,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         setAlertType('danger');
         setAlertMessage(
           'Process execution failed to re executed node which is error state. Message: ' +
-          JSON.stringify(error.message)
+            JSON.stringify(error.message)
         );
         setAlertVisible(true);
       }
@@ -166,17 +167,17 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     const newExpanded =
       index >= 0
         ? [
-          ...expanded.slice(0, index),
-          ...expanded.slice(index + 1, expanded.length)
-        ]
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length)
+          ]
         : [...expanded, _id];
     setexpanded(newExpanded);
     if (!isLoaded) {
-      const data = await client
+      await client
         .query({
           query: GET_CHILD_INSTANCES,
           variables: {
-            instanceId: processInstanceData.id
+            rootProcessInstanceId: processInstanceData.id
           },
           fetchPolicy: 'network-only'
         })
@@ -186,6 +187,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         });
     }
   };
+
   const handleSkipButton = async () => {
     setOpenModal(!openModal);
     await handleSkip(
@@ -220,12 +222,14 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         isExpanded={expanded.includes('kie-datalist-toggle')}
       >
         <DataListItemRow>
-          <DataListToggle
-            onClick={() => toggle('kie-datalist-toggle')}
-            isExpanded={expanded.includes('kie-datalist-toggle')}
-            id="kie-datalist-toggle"
-            aria-controls="kie-datalist-expand"
-          />
+          {processInstanceData.parentProcessInstanceId === null && (
+            <DataListToggle
+              onClick={() => toggle('kie-datalist-toggle')}
+              isExpanded={expanded.includes('kie-datalist-toggle')}
+              id="kie-datalist-toggle"
+              aria-controls="kie-datalist-expand"
+            />
+          )}
           <DataListCheck
             aria-labelledby="width-kie-datalist-item"
             name="width-kie-datalist-item"
@@ -246,8 +250,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     render={({ _error, value }) => <span>{value}</span>}
                   />
                 ) : (
-                    ''
-                  )}
+                  ''
+                )}
               </DataListCell>,
               <DataListCell key={3}>{processInstanceData.state}</DataListCell>
             ]}
@@ -277,69 +281,69 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 dropdownItems={
                   processInstanceData.addons.includes('process-management')
                     ? [
-                      <DropdownItem
-                        key={1}
-                        onClick={() =>
-                          handleRetry(
-                            processInstanceData.processId,
-                            processInstanceData.id,
-                            processInstanceData.endpoint
-                          )
-                        }
-                      >
-                        Retry
+                        <DropdownItem
+                          key={1}
+                          onClick={() =>
+                            handleRetry(
+                              processInstanceData.processId,
+                              processInstanceData.id,
+                              processInstanceData.endpoint
+                            )
+                          }
+                        >
+                          Retry
                         </DropdownItem>,
-                      <DropdownItem
-                        key={2}
-                        onClick={() =>
-                          handleSkip(
-                            processInstanceData.processId,
-                            processInstanceData.id,
-                            processInstanceData.endpoint
-                          )
-                        }
-                      >
-                        Skip
+                        <DropdownItem
+                          key={2}
+                          onClick={() =>
+                            handleSkip(
+                              processInstanceData.processId,
+                              processInstanceData.id,
+                              processInstanceData.endpoint
+                            )
+                          }
+                        >
+                          Skip
                         </DropdownItem>,
-                      <DropdownItem
-                        key={3}
-                        onClick={() =>
-                          handleViewError(
-                            processInstanceData.processId,
-                            processInstanceData.id,
-                            processInstanceData.endpoint
-                          )
-                        }
-                      >
-                        View Error
+                        <DropdownItem
+                          key={3}
+                          onClick={() =>
+                            handleViewError(
+                              processInstanceData.processId,
+                              processInstanceData.id,
+                              processInstanceData.endpoint
+                            )
+                          }
+                        >
+                          View Error
                         </DropdownItem>
-                    ]
+                      ]
                     : [
-                      <DropdownItem
-                        key={1}
-                        onClick={() =>
-                          handleViewError(
-                            processInstanceData.processId,
-                            processInstanceData.id,
-                            processInstanceData.endpoint
-                          )
-                        }
-                      >
-                        View Error
+                        <DropdownItem
+                          key={1}
+                          onClick={() =>
+                            handleViewError(
+                              processInstanceData.processId,
+                              processInstanceData.id,
+                              processInstanceData.endpoint
+                            )
+                          }
+                        >
+                          View Error
                         </DropdownItem>
-                    ]
+                      ]
                 }
               />
             ) : (
-                <Dropdown
-                  isPlain
-                  position={DropdownPosition.right}
-                  isOpen={isOpen}
-                  onSelect={onSelect}
-                  toggle={<KebabToggle isDisabled onToggle={onToggle} />}
-                  dropdownItems={[]}
-                />
-              )}
+              <Dropdown
+                isPlain
+                position={DropdownPosition.right}
+                isOpen={isOpen}
+                onSelect={onSelect}
+                toggle={<KebabToggle isDisabled onToggle={onToggle} />}
+                dropdownItems={[]}
+              />
+            )}
             <Modal
               isLarge
               title="Error"
@@ -348,47 +352,49 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               actions={
                 processInstanceData.addons.includes('process-management')
                   ? [
-                    <Button
-                      key="confirm1"
-                      variant="secondary"
-                      onClick={handleSkipButton}
-                    >
-                      Skip
+                      <Button
+                        key="confirm1"
+                        variant="secondary"
+                        onClick={handleSkipButton}
+                      >
+                        Skip
                       </Button>,
-                    <Button
-                      key="confirm2"
-                      variant="secondary"
-                      onClick={handleRetryButton}
-                    >
-                      Retry
+                      <Button
+                        key="confirm2"
+                        variant="secondary"
+                        onClick={handleRetryButton}
+                      >
+                        Retry
                       </Button>,
-                    <Button
-                      key="confirm3"
-                      variant="primary"
-                      onClick={handleModalToggle}
-                    >
-                      Close
+                      <Button
+                        key="confirm3"
+                        variant="primary"
+                        onClick={handleModalToggle}
+                      >
+                        Close
                       </Button>
-                  ]
+                    ]
                   : [
-                    <Button
-                      key="confirm3"
-                      variant="primary"
-                      onClick={handleModalToggle}
-                    >
-                      Close
+                      <Button
+                        key="confirm3"
+                        variant="primary"
+                        onClick={handleModalToggle}
+                      >
+                        Close
                       </Button>
-                  ]
+                    ]
               }
             >
-              {processInstanceData.error ? processInstanceData.error.message: "No error message found"}
+              {processInstanceData.error
+                ? processInstanceData.error.message
+                : 'No error message found'}
             </Modal>
           </DataListAction>
         </DataListItemRow>
         <DataListContent
           aria-label="Primary Content Details"
           id="kie-datalist-expand1"
-          isHidden={expanded.includes('kie-datalist-toggle')}
+          isHidden={!expanded.includes('kie-datalist-toggle')}
         >
           {isLoaded &&
             childList['ProcessInstances'] !== undefined &&
