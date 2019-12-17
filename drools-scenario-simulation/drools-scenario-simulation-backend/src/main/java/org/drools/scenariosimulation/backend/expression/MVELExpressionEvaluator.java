@@ -112,8 +112,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
             JsonNode jsonNode = optionalJSONNode.get();
             if (jsonNode.isTextual() && jsonNode.asText() != null && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
                 String expression = jsonNode.asText();
-                expression = expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
-                return expression;
+                return expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
             }
         }
         throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");

@@ -54,6 +54,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * Check if resultClass represents a structured result
      * @param resultClass Used to determine if a structured result is passed
      * @param rawExpression The raw value. It could be used in subclasses overridden method
+     * @return
      */
     protected boolean isStructuredResult(Class<?> resultClass, String rawExpression) {
         return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
@@ -150,7 +151,6 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             throw new IllegalArgumentException("Malformed raw data");
         }
         String raw = (String) rawExpression;
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
