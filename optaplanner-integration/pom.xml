@@ -27,45 +27,4 @@
     <module>optaplanner-spring-boot-starter</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-configuration-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency><!-- TODO move this into kie-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin><!-- TODO move this into kie-parent -->
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${version.org.springframework.boot}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 </project>
