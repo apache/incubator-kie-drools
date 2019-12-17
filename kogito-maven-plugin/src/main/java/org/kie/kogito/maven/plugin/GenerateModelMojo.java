@@ -32,6 +32,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -183,12 +184,16 @@ public class GenerateModelMojo extends AbstractKieMojo {
                                                                            outputDirectory,
                                                                            null);
         
+        GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
+        context.withBuildContext(discoverKogitoRuntimeContext(project));
+
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
                         .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
                         .withPersistence(usePersistence)
                         .withMonitoring(useMonitoring)
-                        .withClassLoader(projectClassLoader);
+                        .withClassLoader(projectClassLoader)
+                        .withGeneratorContext(context);
         
         if (generateRuleUnits) {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
@@ -197,7 +202,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
 
         if (generateProcesses) {
-            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))                    
+            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath())) 
                     .withPersistence(usePersistence)
                     .withClassLoader(projectClassLoader)
             ;

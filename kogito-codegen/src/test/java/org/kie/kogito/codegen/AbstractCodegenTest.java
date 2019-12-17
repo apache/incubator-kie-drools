@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,8 +40,6 @@ import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class AbstractCodegenTest {
     
     private static final Logger logger = LoggerFactory.getLogger(AbstractCodegenTest.class);
@@ -62,8 +62,10 @@ public class AbstractCodegenTest {
     }
 
     protected Application generateCode(List<String> processResources, List<String> rulesResources, boolean hasRuleUnit) throws Exception {
+        GeneratorContext context = GeneratorContext.ofResourcePath(new File("src/test/resources"));
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
+                        .withGeneratorContext(context)
                         .withRuleUnits(hasRuleUnit)
                         .withDependencyInjection(null);
 
@@ -80,6 +82,8 @@ public class AbstractCodegenTest {
                                                                         .map(resource -> new File("src/test/resources", resource))
                                                                         .collect(Collectors.toList())));
         }
+        
+        
 
         Collection<GeneratedFile> generatedFiles = appGen.generate();
 

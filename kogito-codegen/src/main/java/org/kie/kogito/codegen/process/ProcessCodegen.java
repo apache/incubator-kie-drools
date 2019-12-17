@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen.process;
 
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
@@ -51,17 +52,23 @@ import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFile.Type;
+import org.kie.kogito.codegen.GeneratorConfig;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-import static org.kie.kogito.codegen.GeneratedFile.*;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 /**
  * Entry point to process code generation
  */
 public class ProcessCodegen extends AbstractGenerator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessCodegen.class);
 
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
 
@@ -120,14 +127,14 @@ public class ProcessCodegen extends AbstractGenerator {
 
 
     private String packageName;
-    private String applicationCanonicalName; 
+    private String applicationCanonicalName;
     private DependencyInjectionAnnotator annotator;
-    
+
     private ProcessesContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
-    
+
     private boolean persistence;
 
     public ProcessCodegen(
@@ -152,7 +159,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new ProcessesContainerGenerator(packageName);                
+        this.moduleGenerator = new ProcessesContainerGenerator(packageName);
         this.applicationCanonicalName = packageName + ".Application";
     }
 
@@ -183,7 +190,7 @@ public class ProcessCodegen extends AbstractGenerator {
         List<ProcessGenerator> ps = new ArrayList<>();
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
         List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
-        List<ResourceGenerator> rgs = new ArrayList<>(); // REST resources
+        List<AbstractResourceGenerator> rgs = new ArrayList<>(); // REST resources
         List<MessageDataEventGenerator> mdegs = new ArrayList<>(); // message data events
         List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
         List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
@@ -192,7 +199,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         Map<String, ModelMetaData> processIdToModel = new HashMap<>();
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
-        
+
         Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
         Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
 
@@ -202,7 +209,7 @@ public class ProcessCodegen extends AbstractGenerator {
             processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
             processIdToModel.put(workFlowProcess.getId(), mcg.generate());
         }
-        
+
         // then we generate user task inputs and outputs if any
         for (WorkflowProcess workFlowProcess : processes.values()) {
             UserTasksModelClassGenerator utcg = new UserTasksModelClassGenerator(workFlowProcess);
@@ -228,8 +235,8 @@ public class ProcessCodegen extends AbstractGenerator {
                 throw new ProcessCodegenException(id, packageName, e);
             }
         }
-        
-        
+
+
 
         // generate Process, ProcessInstance classes and the REST resource
         for (ProcessExecutableModelGenerator execModelGen : processExecutableModelGenerators) {
@@ -254,32 +261,57 @@ public class ProcessCodegen extends AbstractGenerator {
                     modelClassGenerator.generate());
 
             ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
-                        
-            // create REST resource class for process
-            ResourceGenerator resourceGenerator = new ResourceGenerator(
-                    workFlowProcess,
-                    modelClassGenerator.className(),
-                    execModelGen.className(),
-                    applicationCanonicalName)
+
+
+            AbstractResourceGenerator resourceGenerator;
+
+            boolean generateReactiveResources = false;
+            if ("reactive".equals(context.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP).orElse(""))) {
+                if (context.getBuildContext() instanceof QuarkusKogitoBuildContext) {
+                    generateReactiveResources = true;
+                } else {
+                    LOGGER.warn("Reacte REST Resources are currently only support on a Quarkus runtime. Falling back to non-reactive REST Resources");
+                }
+            }
+
+            if (generateReactiveResources) {
+
+                LOGGER.info("Generating Reactive REST Resources.");
+                // create REST resource class for process
+                resourceGenerator = new ReactiveResourceGenerator(
+                                            workFlowProcess,
+                                            modelClassGenerator.className(),
+                                            execModelGen.className(),
+                                            applicationCanonicalName);
+            } else {
+                LOGGER.info("Generating REST Resources.");
+                // create REST resource class for process
+                resourceGenerator = new ResourceGenerator(
+                                            workFlowProcess,
+                                            modelClassGenerator.className(),
+                                            execModelGen.className(),
+                                            applicationCanonicalName);
+            }
+
+            resourceGenerator
                     .withDependencyInjection(annotator)
                     .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                     .withSignals(metaData.getSignals())
                     .withTriggers(metaData.isStartable());
-            
+
             rgs.add(resourceGenerator);
-            
-                        
+
             if (metaData.getTriggers() != null) {
-                
+
                 for (TriggerMetaData trigger : metaData.getTriggers()) {
-                    
-                    MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,                                                            
+
+                    MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
                                                             trigger)
                                                                   .withDependencyInjection(annotator);
                     mdegs.add(msgDataEventGenerator);
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                    
+
                         megs.add(new MessageConsumerGenerator(
                                     workFlowProcess,
                                     modelClassGenerator.className(),
@@ -293,7 +325,7 @@ public class ProcessCodegen extends AbstractGenerator {
                                                               workFlowProcess,
                                                               modelClassGenerator.className(),
                                                               execModelGen.className(),
-                                                              msgDataEventGenerator.className(),                                                              
+                                                              msgDataEventGenerator.className(),
                                                               trigger)
                                                                   .withDependencyInjection(annotator));
                     }
@@ -311,31 +343,31 @@ public class ProcessCodegen extends AbstractGenerator {
             storeFile( Type.MODEL, modelClassGenerator.generatedFilePath(),
                       mmd.generate());
         }
-        
+
         for (List<UserTaskModelMetaData> utmd : processIdToUserTaskModel.values()) {
-            
+
             for (UserTaskModelMetaData ut : utmd) {
                 storeFile(Type.MODEL, UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput());
-                
+
                 storeFile(Type.MODEL, UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput());
             }
         }
 
-        for (ResourceGenerator resourceGenerator : rgs) {
+        for (AbstractResourceGenerator resourceGenerator : rgs) {
             storeFile(Type.REST, resourceGenerator.generatedFilePath(),
                       resourceGenerator.generate());
         }
-        
+
         for (MessageDataEventGenerator messageDataEventGenerator : mdegs) {
             storeFile(Type.CLASS, messageDataEventGenerator.generatedFilePath(),
                       messageDataEventGenerator.generate());
         }
-        
+
         for (MessageConsumerGenerator messageConsumerGenerator : megs) {
             storeFile(Type.MESSAGE_CONSUMER, messageConsumerGenerator.generatedFilePath(),
                       messageConsumerGenerator.generate());
         }
-        
+
         for (MessageProducerGenerator messageProducerGenerator : mpgs) {
             storeFile(Type.MESSAGE_PRODUCER, messageProducerGenerator.generatedFilePath(),
                       messageProducerGenerator.generate());
@@ -343,7 +375,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         for (ProcessGenerator p : ps) {
             storeFile(Type.PROCESS, p.generatedFilePath(), p.generate());
-            
+
             p.getAdditionalClasses().forEach(cp -> {
                 String packageName = cp.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
                 String clazzName = cp.findFirst(ClassOrInterfaceDeclaration.class).map(cls -> cls.getName().toString()).get();

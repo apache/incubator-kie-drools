@@ -17,11 +17,11 @@ package org.kie.kogito.codegen.process;
 
 import org.kie.api.definition.process.WorkflowProcess;
 
-public class ResourceGenerator extends AbstractResourceGenerator {
+public class ReactiveResourceGenerator extends AbstractResourceGenerator {
 
-    private static final String RESOURCE_TEMPLATE = "/class-templates/RestResourceTemplate.java";
+    private static final String REACTIVE_RESOURCE_TEMPLATE = "/class-templates/ReactiveRestResourceTemplate.java";
 
-    public ResourceGenerator(
+    public ReactiveResourceGenerator(
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
@@ -31,6 +31,6 @@ public class ResourceGenerator extends AbstractResourceGenerator {
 
     @Override
     protected String getResourceTemplate() {
-        return RESOURCE_TEMPLATE;
+        return REACTIVE_RESOURCE_TEMPLATE;
     }
 }

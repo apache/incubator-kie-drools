@@ -19,6 +19,9 @@ import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
@@ -52,5 +55,18 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
 
         throw new IllegalStateException("Unable to find dependency injection annotator");
+    }
+
+    protected KogitoBuildContext discoverKogitoRuntimeContext(MavenProject project)  {
+        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
+        if (hasSpring) {
+            return new SpringBootKogitoBuildContext();
+        }
+
+        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
+        if (hasQuarkus) {
+            return new QuarkusKogitoBuildContext();
+        }
+        throw new IllegalStateException("Unable to determine Kogito runtime.");
     }
 }

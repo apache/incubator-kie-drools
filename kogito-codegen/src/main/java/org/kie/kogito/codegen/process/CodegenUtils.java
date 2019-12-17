@@ -44,9 +44,7 @@ public class CodegenUtils {
     public static void interpolateTypes(SimpleName returnType, Map<String, String> typeInterpolations) {
         typeInterpolations.entrySet().stream().forEach(entry -> {
             String identifier = returnType.getIdentifier();
-            String keyValue = entry.getKey();
-            String valueValue = entry.getValue();
-            String newIdentifier = identifier.replace(keyValue, valueValue);
+            String newIdentifier = identifier.replace(entry.getKey(), entry.getValue());
             returnType.setIdentifier(newIdentifier);
         });
     }

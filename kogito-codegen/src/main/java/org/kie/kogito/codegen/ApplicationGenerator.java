@@ -75,7 +75,7 @@ public class ApplicationGenerator {
     private List<Generator> generators = new ArrayList<>();
     private List<Labeler> labelers = new ArrayList<>();
 
-    private GeneratorContext context = new GeneratorContext();
+    private GeneratorContext context;
     private boolean persistence;       
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
@@ -176,6 +176,11 @@ public class ApplicationGenerator {
     public ApplicationGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
         configGenerator.withDependencyInjection(annotator);
+        return this;
+    }
+
+    public ApplicationGenerator withGeneratorContext(GeneratorContext context) {
+        this.context = context;
         return this;
     }
 

@@ -18,6 +18,13 @@ package org.kie.kogito.codegen.rules;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.rules.KieRuntimeBuilder;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.units.impl.AbstractRuleUnits;
+
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -37,12 +44,6 @@ import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.rules.KieRuntimeBuilder;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.units.impl.AbstractRuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
