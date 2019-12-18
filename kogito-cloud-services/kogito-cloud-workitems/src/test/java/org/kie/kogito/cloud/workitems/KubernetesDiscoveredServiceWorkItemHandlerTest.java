@@ -47,7 +47,7 @@ public class KubernetesDiscoveredServiceWorkItemHandlerTest extends BaseKubernet
         final ObjectMeta metadata = new ObjectMeta();
         metadata.setName("test-kieserver");
         metadata.setNamespace(MOCK_NAMESPACE);
-        metadata.setLabels(Collections.singletonMap("service", "test-kieserver"));
+        metadata.setLabels(Collections.singletonMap("test-kieserver", "service"));
 
         final Service service = new Service("v1", "Service", metadata, serviceSpec, new ServiceStatus(new LoadBalancerStatus()));
         getClient().services().create(service);
