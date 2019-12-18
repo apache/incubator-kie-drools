@@ -1963,4 +1963,36 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         assertEquals( 3, ksession.fireAllRules(3) );
     }
+
+    @Test
+    public void testComment() {
+        // DROOLS-3583
+        final String str1 =
+                "package com.example\n" +
+                "\n" +
+                "declare Counter\n" +
+                "    value: int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\" when\n" +
+                "    not Counter()\n" +
+                "then\n" +
+                "    drools.insert(new Counter(0));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Loop\"\n" +
+                "when\n" +
+                "    $c: Counter()\n" +
+                "then\n" +
+                "// removing this comment line removes the loop\n" +
+                "    $c.setValue(1);\n" +
+                "    update($c);\n" +
+                "end\n\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }
