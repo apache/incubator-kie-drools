@@ -1657,7 +1657,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(fieldValue.getField());
             } else {
                 buf.append(".set");
-                buf.append(Character.toUpperCase(fieldValue.getField().charAt(0)));
+                buf.append(formatFieldFirstCharacterToFitDroolsCoreStandards(fieldValue.getField()));
                 buf.append(fieldValue.getField().substring(1));
             }
             buf.append("( ");
@@ -1719,7 +1719,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(fieldValue.getField());
             } else {
                 buf.append("set");
-                buf.append(Character.toUpperCase(fieldValue.getField().charAt(0)));
+                buf.append(formatFieldFirstCharacterToFitDroolsCoreStandards(fieldValue.getField()));
                 buf.append(fieldValue.getField().substring(1));
             }
             buf.append("( ");
@@ -1732,6 +1732,14 @@ public class RuleModelDRLPersistenceImpl
                                                      final ActionFieldValue fieldValue) {
             if (doesPeerHaveOutput(gctx)) {
                 buf.append(", \n");
+            }
+        }
+
+        private char formatFieldFirstCharacterToFitDroolsCoreStandards(final String fieldName) {
+            if (fieldName.length() > 1 && Character.isLowerCase(fieldName.charAt(0)) && Character.isUpperCase(fieldName.charAt(1))) {
+                return fieldName.charAt(0);
+            } else {
+                return Character.toUpperCase(fieldName.charAt(0));
             }
         }
 
