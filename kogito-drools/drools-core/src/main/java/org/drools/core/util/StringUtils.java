@@ -861,6 +861,15 @@ public class StringUtils {
         }
         return (String[]) collection.toArray(new String[collection.size()]);
     }
+
+    private static boolean contains(char[] chars, char ch) {
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == ch) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     /**
      * Delete any character in a given String.
@@ -957,7 +966,7 @@ public class StringUtils {
     }
 
     public static List<String> splitStatements(CharSequence string) {
-        return codeAwareSplitOnChar(string, ';', true);
+        return codeAwareSplitOnChar(string, true, ';', '\n');
     }
 
     public static List<String> splitArgumentsList(CharSequence string) {
@@ -965,16 +974,16 @@ public class StringUtils {
     }
 
     public static List<String> splitArgumentsList(CharSequence string, boolean trimArgs) {
-        return codeAwareSplitOnChar(string, ',', trimArgs);
+        return codeAwareSplitOnChar(string, trimArgs, ',');
     }
 
-    private static List<String> codeAwareSplitOnChar(CharSequence string, char ch, boolean trimArgs) {
+    private static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
         boolean isQuoted = false;
         for (int i = 0; i < string.length(); i++) {
-            if (string.charAt( i ) == ch) {
+            if (contains(chs, string.charAt( i ))) {
                 if (!isQuoted && nestedParam == 0) {
                     String arg = string.subSequence(lastStart, i).toString();
                     args.add(trimArgs ? arg.trim() : arg);

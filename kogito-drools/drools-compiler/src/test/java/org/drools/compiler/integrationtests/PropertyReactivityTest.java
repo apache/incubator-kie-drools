@@ -15,11 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +39,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
@@ -1892,5 +1892,37 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         public int getQuantity() {
             return quantity;
         }
+    }
+
+    @Test
+    public void testComment() {
+        // DROOLS-3583
+        final String str1 =
+                "package com.example\n" +
+                        "\n" +
+                        "declare Counter\n" +
+                        "    value: int\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Init\" when\n" +
+                        "    not Counter()\n" +
+                        "then\n" +
+                        "    drools.insert(new Counter(0));\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Loop\"\n" +
+                        "when\n" +
+                        "    $c: Counter()\n" +
+                        "then\n" +
+                        "// removing this comment line removes the loop\n" +
+                        "    $c.setValue(1);\n" +
+                        "    update($c);\n" +
+                        "end\n\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        assertEquals( 2, ksession.fireAllRules() );
     }
 }
