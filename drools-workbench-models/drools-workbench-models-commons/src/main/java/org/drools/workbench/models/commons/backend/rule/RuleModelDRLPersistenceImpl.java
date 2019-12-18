@@ -2744,8 +2744,9 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
             int opPos = expr.indexOf(opString);
-            if (opPos >= 0 && !isInQuote(expr,
-                                         opPos) &&
+            if (opPos >= 0 &&
+                    isNotMethodName(expr, opPos) &&
+                    !isInQuote(expr, opPos) &&
                     !(Character.isLetter(opString.charAt(0)) &&
                             (expr.length() == opPos + opString.length() || Character.isLetter(expr.charAt(opPos + opString.length())) ||
                                     (opPos > 0 && Character.isLetter(expr.charAt(opPos - 1)))))) {
@@ -2771,6 +2772,11 @@ public class RuleModelDRLPersistenceImpl
             return " in ";
         }
         return null;
+    }
+
+    private static boolean isNotMethodName(final String expression,
+                                           final int operatorPosition) {
+        return operatorPosition == 0 || expression.charAt(operatorPosition - 1) == ' ';
     }
 
     private static boolean isInQuote(final String expr,
