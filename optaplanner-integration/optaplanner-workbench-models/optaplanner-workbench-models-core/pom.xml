@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner-workbench-models</artifactId>
+    <version>7.32.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>optaplanner-workbench-models-core</artifactId>
+  <packaging>jar</packaging>
+
+  <name>OptaPlanner core GWT wrapper for OptaPlanner Workbench</name>
+  <description>
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module wraps OptaPlanner core classes used by OptaPlanner Workbench.
+  </description>
+
+  <properties>
+    <java.module.name>org.optaplanner.workbench.models.core</java.module.name>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.errai.bom</groupId>
+        <artifactId>errai-internal-bom</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Transitive dependencies -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-codegen</artifactId>
+    </dependency>
+    <!-- Regular dependencies -->
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-marshalling</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.optaplanner</includeGroupIds>
+              <includeArtifactIds>optaplanner-core</includeArtifactIds>
+              <classifier>sources</classifier>
+              <outputDirectory>${project.build.directory}/core-dependencies</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <!--Include classes and resources reused by client-side of the workbench -->
+    <resources>
+      <resource>
+        <directory>${project.build.directory}/core-dependencies</directory>
+        <includes>
+          <include>org/optaplanner/core/api/score/AbstractScore.java</include>
+          <include>org/optaplanner/core/api/score/AbstractBendableScore.java</include>
+          <include>org/optaplanner/core/api/score/FeasibilityScore.java</include>
+          <include>org/optaplanner/core/api/score/Score.java</include>
+          <include>org/optaplanner/core/api/score/buildin/bendable/BendableScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/bendablebigdecimal/BendableBigDecimalScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/bendablelong/BendableLongScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardmediumsoft/HardMediumSoftScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardmediumsoftbigdecimal/HardMediumSoftBigDecimalScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardmediumsoftlong/HardMediumSoftLongScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardsoft/HardSoftScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardsoftbigdecimal/HardSoftBigDecimalScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardsoftdouble/HardSoftDoubleScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/hardsoftlong/HardSoftLongScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/simple/SimpleScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/simplebigdecimal/SimpleBigDecimalScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/simpledouble/SimpleDoubleScore.java</include>
+          <include>org/optaplanner/core/api/score/buildin/simplelong/SimpleLongScore.java</include>
+          <include>org/optaplanner/core/config/constructionheuristic/ConstructionHeuristicType.java</include>
+          <include>org/optaplanner/core/config/heuristic/selector/entity/EntitySorterManner.java</include>
+          <include>org/optaplanner/core/config/heuristic/selector/value/ValueSorterManner.java</include>
+          <include>org/optaplanner/core/config/localsearch/LocalSearchType.java</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
+
+</project>
