@@ -15,9 +15,6 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +22,13 @@ import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class JavaCompilerI18NTest {
 
     @Test
     public void testi18NFile () throws Exception {
-        String fileStr = "com/myspace/test/" + URLEncoder.encode("あ", "UTF-8") + ".java";
+        String fileStr = "com/myspace/test/あ.java";
         List<String> classes = new ArrayList<>();
         classes.add(fileStr);
 
