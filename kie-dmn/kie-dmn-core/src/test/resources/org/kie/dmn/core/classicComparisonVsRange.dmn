@@ -4,7 +4,7 @@
     <semantic:itemDefinition name="tValue" label="tValue">
         <semantic:typeRef>number</semantic:typeRef>
         <semantic:allowedValues triso:constraintsType="simple">
-            <semantic:text>[0..100]</semantic:text>
+            <semantic:text>[0..10]</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
     <semantic:decisionService id="_ac6efb68-08ed-43ec-b427-e99e78f51ba1_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
@@ -41,7 +41,7 @@
                     <semantic:text>value</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="simple">
-                    <semantic:text>[0..100]</semantic:text>
+                    <semantic:text>[0..10]</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
             <semantic:output id="_548354d7-9bbe-4b60-93c1-727f638bc25d" triso:allowNull="true">
@@ -77,7 +77,7 @@
                     <semantic:text>value</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="simple">
-                    <semantic:text>[0..100]</semantic:text>
+                    <semantic:text>[0..10]</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
             <semantic:output id="_81a676dc-3f07-484b-9891-835c495490d2" triso:allowNull="true">
@@ -88,7 +88,7 @@
             <semantic:annotation name="Description"/>
             <semantic:rule id="_bfaf4652-f7bc-4f51-899d-6526b723c9a4">
                 <semantic:inputEntry id="_a75e8dd2-e8df-45ca-884d-dd0938b6b62d">
-                    <semantic:text>[threshold..100]</semantic:text>
+                    <semantic:text>[threshold..10]</semantic:text>
                 </semantic:inputEntry>
                 <semantic:outputEntry id="_35b7003f-dde6-420f-86ee-3d12479e46bc">
                     <semantic:text>"At or Above threshold"</semantic:text>

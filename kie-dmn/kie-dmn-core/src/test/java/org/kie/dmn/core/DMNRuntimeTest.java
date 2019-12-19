@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -2729,22 +2728,23 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Random random = new Random();
-        for (int i = 1; i <= 100; i++) {
-            BigDecimal value = new BigDecimal(random.nextInt(101));
-            BigDecimal threshold = new BigDecimal(random.nextInt(101));
-            String expectedResult = value.compareTo(threshold) >= 0 ? "At or Above threshold" : "Lower than threshold";
-            LOG.info("Execution {} value {} threshold {} expectedResult {}", i, value, threshold, expectedResult);
+        for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
+                BigDecimal value = new BigDecimal(i);
+                BigDecimal threshold = new BigDecimal(j);
+                String expectedResult = value.compareTo(threshold) >= 0 ? "At or Above threshold" : "Lower than threshold";
+                LOG.info("Execution {} value {} threshold {} expectedResult {}", i, value, threshold, expectedResult);
 
-            final DMNContext context = DMNFactory.newContext();
-            context.set("value", value);
-            context.set("threshold", threshold);
+                final DMNContext context = DMNFactory.newContext();
+                context.set("value", value);
+                context.set("threshold", threshold);
 
-            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            LOG.debug("{}", dmnResult);
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("classic comparison").getResult(), is(expectedResult));
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("using range").getResult(), is(expectedResult));
+                final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+                LOG.debug("{}", dmnResult);
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("classic comparison").getResult(), is(expectedResult));
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("using range").getResult(), is(expectedResult));
+            }
         }
     }
 }
