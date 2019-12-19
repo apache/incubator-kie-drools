@@ -307,8 +307,25 @@ image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
 Doing this is inefficient because the resulting stream might contain constraint matches that are of no interest to your
 constraint.
-Use `Joiner` to restrict your joins only to the matches you are actually interested in, as illustrated in the following
-figure:
+Use `Joiner` to restrict your joins only to the matches you are actually interested in, as shown in this example:
+
+[source,java,options="nowrap"]
+----
+    import static org.optaplanner.core.api.score.stream.Joiners.*;
+
+    ...
+
+    private Constraint shiftOnDayOff(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Shift.class)
+                .join(DayOff.class,
+                    equal(Shift::getDate, DayOff::getDate),
+                    equal(Shift::getEmployee, DayOff::getEmployee))
+                .penalize("Shift on an off-day",
+                        HardSoftScore.ONE_HARD);
+    }
+----
+
+The following figure illustrates the behavior:
 
 image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
@@ -337,6 +354,10 @@ every computer whose processes consume more power than is available.
 
 [source,java,options="nowrap"]
 ----
+    import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+
+    ...
+
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
