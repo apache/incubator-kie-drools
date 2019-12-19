@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const webpack = require('webpack');
 
 const BG_IMAGES_DIRNAME = 'bgimages';
 
@@ -12,6 +13,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: 'src/favicon.ico'
+    }),
+    new webpack.EnvironmentPlugin({
+        KOGITO_AUTH_ENABLED: process.env.KOGITO_AUTH_ENABLED || false,
+        KOGITO_KEYCLOAK_REALM: "kogito",
+        KOGITO_KEYCLOAK_URL: "http://localhost:8280",
+        KOGITO_KEYCLOAK_CLIENT_ID: "kogito-management-console",
+        KOGITO_DATAINDEX_HTTP_URL: process.env.KOGITO_DATAINDEX_HTTP_URL || "http://localhost:4000"
     })
   ],
   module: {

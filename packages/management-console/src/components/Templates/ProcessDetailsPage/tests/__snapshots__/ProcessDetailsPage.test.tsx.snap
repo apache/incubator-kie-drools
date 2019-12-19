@@ -782,7 +782,7 @@ exports[`Process Details Page component Sample test case 1`] = `
         },
       },
       "typeDefs": undefined,
-      "version": "2.6.4",
+      "version": "2.6.8",
       "watchQuery": [Function],
     }
   }

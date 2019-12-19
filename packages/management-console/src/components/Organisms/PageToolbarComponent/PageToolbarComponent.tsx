@@ -11,9 +11,29 @@ import {
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 import AboutModalBox from '../../Molecules/AboutModalComponent/AboutModal';
+import Keycloak from "keycloak-js";
+
 export interface IOwnProps {}
 
 const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
+  let userName = "Anonymous";
+  let kcInfo;
+
+  if (process.env.KOGITO_AUTH_ENABLED) {
+    kcInfo = JSON.parse(localStorage.getItem("keycloakData"));
+    userName = kcInfo.tokenParsed.preferred_username;
+  }
+
+  const handleLogout = () => {
+    const keycloakConf = {
+      realm: process.env.KOGITO_KEYCLOAK_REALM,
+      url: process.env.KOGITO_KEYCLOAK_URL + "/auth",
+      clientId: process.env.KOGITO_KEYCLOAK_CLIENT_ID
+    };
+    const kcInstance = Keycloak(keycloakConf);
+    kcInstance.init(kcInfo).success(kcInstance.logout);
+  };
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [modalToggle, setmodalToggle] = useState(false);
 
@@ -31,12 +51,15 @@ const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
   const userDropdownItems = [
     <DropdownItem key={1} onClick={handleModalToggle}>
       About
-    </DropdownItem>,
-    <DropdownSeparator key={2} />,
-    <DropdownItem component="button" key={3}>
-      Log out
-    </DropdownItem>
-  ];
+    </DropdownItem>];
+
+  if (process.env.KOGITO_AUTH_ENABLED) {
+    userDropdownItems.push(<DropdownSeparator key={2}/>,
+      <DropdownItem component="button" key={3} onClick={handleLogout}>
+        Log out
+      </DropdownItem>);
+  }
+
   return (
     <React.Fragment>
       <AboutModalBox
@@ -56,11 +79,7 @@ const PageToolbarComponent: React.FunctionComponent<IOwnProps> = () => {
               position="right"
               onSelect={onDropdownSelect}
               isOpen={isDropdownOpen}
-              toggle={
-                <DropdownToggle onToggle={onDropdownToggle}>
-                  User
-                </DropdownToggle>
-              }
+              toggle={<DropdownToggle onToggle={onDropdownToggle}>{userName}</DropdownToggle>}
               dropdownItems={userDropdownItems}
             />
           </ToolbarItem>
