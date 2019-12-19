@@ -79,6 +79,30 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public LocalSearchForagerConfig withPickEarlyType(LocalSearchPickEarlyType pickEarlyType) {
+        this.pickEarlyType = pickEarlyType;
+        return this;
+    }
+
+    public LocalSearchForagerConfig withAcceptedCountLimit(int acceptedCountLimit) {
+        this.acceptedCountLimit = acceptedCountLimit;
+        return this;
+    }
+
+    public LocalSearchForagerConfig withFinalistPodiumType(FinalistPodiumType finalistPodiumType) {
+        this.finalistPodiumType = finalistPodiumType;
+        return this;
+    }
+
+    public LocalSearchForagerConfig withBreakTieRandomly(boolean breakTieRandomly) {
+        this.breakTieRandomly = breakTieRandomly;
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 
