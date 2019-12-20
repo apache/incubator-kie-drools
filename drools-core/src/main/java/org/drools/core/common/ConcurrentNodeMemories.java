@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -52,20 +54,25 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase)session.getKieBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) session.getKieBase();
+        Set<SegmentMemory> smemSet = new HashSet<>();
 
         for (int i = 0; i < memories.length(); i++) {
             Memory memory = memories.get(i);
             if (memory != null) {
                 memory.reset();
-                SegmentMemory smem = memory.getSegmentMemory();
-                if (smem != null) {
-                    smem.reset(kBase.getSegmentPrototype(smem));
-                    if ( smem.isSegmentLinked() ) {
-                        smem.notifyRuleLinkSegment((InternalWorkingMemory)session);
-                    }
-                }
+                smemSet.add(memory.getSegmentMemory());
+            }
+        }
 
+        smemSet.forEach(smem -> resetSegmentMemory(session, kBase, smem));
+    }
+
+    private void resetSegmentMemory(StatefulKnowledgeSession session, InternalKnowledgeBase kBase, SegmentMemory smem) {
+        if (smem != null) {
+            smem.reset(kBase.getSegmentPrototype(smem));
+            if (smem.isSegmentLinked()) {
+                smem.notifyRuleLinkSegment((InternalWorkingMemory) session);
             }
         }
     }

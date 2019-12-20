@@ -26,6 +26,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.FactA;
+import org.drools.compiler.FactB;
+import org.drools.compiler.FactC;
 import org.drools.core.common.EventSupport;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.event.DefaultRuleRuntimeEventListener;
@@ -252,6 +255,124 @@ public class SessionsPoolTest {
         assertEquals(1, list.size());
 
         pool.shutdown();
+    }
+
+    @Test
+    public void testSegmentMemoriesResetWithNotNodeInTheMiddle() {
+        String drl =
+                "import " + FactA.class.getCanonicalName() + ";\n" +
+                "import " + FactB.class.getCanonicalName() + ";\n" +
+                "import " + FactC.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $factA : FactA( field1 == \"code1\")\n" +
+                "  not FactC( f2 == 1 && f1 == \"code1\")\n" +
+                "  $factB : FactB( f2 == 1 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2\n" +
+                "when\n" +
+                "  $factA : FactA( field1 == \"code1\")\n" +
+                "  not FactC( f2 == 1 && f1 == \"code1\")\n" +
+                "  $factB : FactB( f2 == 3 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R3\n" +
+                "when\n" +
+                "  $factA: FactA( field1 == \"code1\")\n" +
+                "  $factC: FactC( f1 == \"code1\")\n" +
+                "then\n" +
+                "end";
+
+        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
+
+        KieSession ksession = pool.newKieSession();
+
+        try {
+            createFactAndInsert(ksession);
+            assertEquals(1, ksession.fireAllRules()); // R1 is fired
+        } finally {
+            ksession.dispose();
+        }
+
+        ksession = pool.newKieSession();
+
+        try {
+            createFactAndInsert(ksession);
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+
+        pool.shutdown();
+    }
+
+    @Test
+    public void testSegmentMemoriesResetWithNotNodeInTheMiddle2() {
+        // FactB constrains in R1 and R2 are different from testSegmentMemoriesResetWithNotNodeInTheMiddle()
+        String drl =
+                "import " + FactA.class.getCanonicalName() + ";\n" +
+                "import " + FactB.class.getCanonicalName() + ";\n" +
+                "import " + FactC.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $factA : FactA( field1 == \"code1\")\n" +
+                "  not FactC( f2 == 1 && f1 == \"code1\")\n" +
+                "  $factB : FactB( f2 == 3 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2\n" +
+                "when\n" +
+                "  $factA : FactA( field1 == \"code1\")\n" +
+                "  not FactC( f2 == 1 && f1 == \"code1\")\n" +
+                "  $factB : FactB( f2 == 1 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R3\n" +
+                "when\n" +
+                "  $factA: FactA( field1 == \"code1\")\n" +
+                "  $factC: FactC( f1 == \"code1\")\n" +
+                "then\n" +
+                "end";
+
+        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
+
+        KieSession ksession = pool.newKieSession();
+
+        try {
+            createFactAndInsert(ksession);
+            assertEquals(1, ksession.fireAllRules()); // R2 is fired
+        } finally {
+            ksession.dispose();
+        }
+
+        ksession = pool.newKieSession();
+
+        try {
+            createFactAndInsert(ksession);
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+
+        pool.shutdown();
+    }
+
+    private void createFactAndInsert(KieSession ksession) {
+        FactA factA = new FactA();
+        factA.setField1("code1");
+        ksession.insert(factA);
+
+        FactB factB = new FactB();
+        factB.setF2(1);
+        ksession.insert(factB);
+
+        FactC factC = new FactC();
+        factC.setF1("code3");
+        factC.setF2(2);
+        ksession.insert(factC);
     }
 
     @Test
