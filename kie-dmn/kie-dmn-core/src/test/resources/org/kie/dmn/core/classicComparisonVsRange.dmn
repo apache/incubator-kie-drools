@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_ac6efb68-08ed-43ec-b427-e99e78f51ba1" id="_ac6efb68-08ed-43ec-b427-e99e78f51ba1" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_ac6efb68-08ed-43ec-b427-e99e78f51ba1" exporter="DMN Modeler" exporterVersion="6.6.0" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tValue" label="tValue">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="simple">
+            <semantic:text>[0..10]</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:decisionService id="_ac6efb68-08ed-43ec-b427-e99e78f51ba1_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_ac6efb68-08ed-43ec-b427-e99e78f51ba1_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_1176a4a5-579b-4a9d-9518-34454f09a3f3"/>
+        <semantic:outputDecision href="#_c3ff2a9e-a186-40a8-b09c-d81cd7255e90"/>
+        <semantic:inputData href="#_0e8f41d1-8bb4-4c0d-851e-72a03360cd81"/>
+        <semantic:inputData href="#_1358b1d9-fd49-4260-87c4-dff9b409c4ad"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_fe973a0e-11f2-45c8-8f80-b663c7a607c2_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_fe973a0e-11f2-45c8-8f80-b663c7a607c2_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_1176a4a5-579b-4a9d-9518-34454f09a3f3"/>
+        <semantic:outputDecision href="#_c3ff2a9e-a186-40a8-b09c-d81cd7255e90"/>
+        <semantic:inputData href="#_0e8f41d1-8bb4-4c0d-851e-72a03360cd81"/>
+        <semantic:inputData href="#_1358b1d9-fd49-4260-87c4-dff9b409c4ad"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_1358b1d9-fd49-4260-87c4-dff9b409c4ad" name="value">
+        <semantic:variable name="value" id="_6a5e2a42-8c9d-429a-a9ab-98a781f731eb" typeRef="tValue"/>
+    </semantic:inputData>
+    <semantic:inputData id="_0e8f41d1-8bb4-4c0d-851e-72a03360cd81" name="threshold">
+        <semantic:variable name="threshold" id="_c9e7ebd7-79d6-4f37-ab57-106cf99a6d21" typeRef="tValue"/>
+    </semantic:inputData>
+    <semantic:decision id="_1176a4a5-579b-4a9d-9518-34454f09a3f3" name="classic comparison">
+        <semantic:variable name="classic comparison" id="_afc44a8e-42c4-41ac-be17-637f39d01d6e" typeRef="string"/>
+        <semantic:informationRequirement id="_b568fb60-c062-4e75-810f-420ccc56fa87">
+            <semantic:requiredInput href="#_0e8f41d1-8bb4-4c0d-851e-72a03360cd81"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_b4d47948-7057-4b7c-b6fa-99339c114695">
+            <semantic:requiredInput href="#_1358b1d9-fd49-4260-87c4-dff9b409c4ad"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_1cc871d9-3f44-484a-a326-62eb42a6e45f" hitPolicy="UNIQUE" outputLabel="classic comparison" typeRef="string" triso:expressionId="_e302200f-ebfb-4c40-92ca-735cea18868e">
+            <semantic:input id="_e9634293-338f-4801-8435-40de9a080193" label="value">
+                <semantic:inputExpression typeRef="tValue">
+                    <semantic:text>value</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="simple">
+                    <semantic:text>[0..10]</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_548354d7-9bbe-4b60-93c1-727f638bc25d" triso:allowNull="true">
+                <semantic:defaultOutputEntry>
+                    <semantic:text>"Lower than threshold"</semantic:text>
+                </semantic:defaultOutputEntry>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_94c9d180-08b9-468b-81f0-4de34d94b3aa">
+                <semantic:inputEntry id="_6e248685-c25a-4980-87e6-f3f90b65ed55">
+                    <semantic:text>&gt;=threshold</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_aa2e52db-aca7-42d0-ab81-43dba44ca57d">
+                    <semantic:text>"At or Above threshold"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:decision id="_c3ff2a9e-a186-40a8-b09c-d81cd7255e90" name="using range">
+        <semantic:variable name="using range" id="_19ed27b4-f6de-48ac-94cf-5947245e0ac9" typeRef="string"/>
+        <semantic:informationRequirement id="_43883191-9b55-4f39-9b5d-49a408605165">
+            <semantic:requiredInput href="#_1358b1d9-fd49-4260-87c4-dff9b409c4ad"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_f689de99-22ea-45d3-a6fd-42a75ede95f9">
+            <semantic:requiredInput href="#_0e8f41d1-8bb4-4c0d-851e-72a03360cd81"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_9275c247-8156-4999-afd5-fd52cc21d8a7" hitPolicy="UNIQUE" outputLabel="using range" typeRef="string" triso:expressionId="_004cf7da-e66b-4353-906f-7ae651d3329e">
+            <semantic:input id="_de0f5f44-0ebf-4896-8b22-999e00121215" label="value">
+                <semantic:inputExpression typeRef="tValue">
+                    <semantic:text>value</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="simple">
+                    <semantic:text>[0..10]</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_81a676dc-3f07-484b-9891-835c495490d2" triso:allowNull="true">
+                <semantic:defaultOutputEntry>
+                    <semantic:text>"Lower than threshold"</semantic:text>
+                </semantic:defaultOutputEntry>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_bfaf4652-f7bc-4f51-899d-6526b723c9a4">
+                <semantic:inputEntry id="_a75e8dd2-e8df-45ca-884d-dd0938b6b62d">
+                    <semantic:text>[threshold..10]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_35b7003f-dde6-420f-86ee-3d12479e46bc">
+                    <semantic:text>"At or Above threshold"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_fe973a0e-11f2-45c8-8f80-b663c7a607c2" triso:modelElementRef="_2518bca0-1a68-413e-ba35-aead49872f05" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_1314b7bb-c2e1-4ad6-9d82-56178bf1ba53" dmnElementRef="_1358b1d9-fd49-4260-87c4-dff9b409c4ad">
+                <dc:Bounds x="400.7588291168213" y="146" width="135.48234176635742" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_c3488bdb-0488-492e-9c2f-8969513d7967" dmnElementRef="_0e8f41d1-8bb4-4c0d-851e-72a03360cd81">
+                <dc:Bounds x="400.7588291168213" y="248" width="135.48234176635742" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_9ba2ab7a-4769-4e6e-8bde-3042dfc53af5" dmnElementRef="_1176a4a5-579b-4a9d-9518-34454f09a3f3">
+                <dc:Bounds x="606.2411708831787" y="196" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_24cca82d-28af-4bdc-8db7-51b305382732" dmnElementRef="_c3ff2a9e-a186-40a8-b09c-d81cd7255e90">
+                <dc:Bounds x="168.5" y="196" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_c1b553fd-7d28-4af2-90e3-f8b921bd4b46" dmnElementRef="_b568fb60-c062-4e75-810f-420ccc56fa87">
+                <di:waypoint x="536.9968013763428" y="278"/>
+                <di:waypoint x="606.2411708831787" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_327e5076-c180-45f1-b17f-20e5f7603dec" dmnElementRef="_b4d47948-7057-4b7c-b6fa-99339c114695">
+                <di:waypoint x="536.2411708831787" y="176"/>
+                <di:waypoint x="606.2411708831787" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_722b59e7-82d6-4c53-851a-3aa6777a927e" dmnElementRef="_43883191-9b55-4f39-9b5d-49a408605165">
+                <di:waypoint x="400.9968013763428" y="176"/>
+                <di:waypoint x="321.5" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_91c81753-ec15-48c8-9c1c-305d2df0fcee" dmnElementRef="_f689de99-22ea-45d3-a6fd-42a75ede95f9">
+                <di:waypoint x="400.9968013763428" y="278"/>
+                <di:waypoint x="321.5" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_ac6efb68-08ed-43ec-b427-e99e78f51ba1_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
