@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68" id="_a937d093-86d3-4306-8db8-1e7a33588b68" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68" exporter="DMN Modeler" exporterVersion="6.6.0" triso:logoChoice="Default">
+    <semantic:decision id="_db85a8e9-0e10-4988-bda7-32401a4d10ea" name="wrong1">
+        <semantic:variable name="wrong1" id="_993b7ca4-9607-43c7-b616-c8101b66f433" typeRef="boolean"/>
+        <semantic:literalExpression id="_d72d6fab-1e67-4fe7-9c12-54800d6fe294" typeRef="boolean" triso:expressionId="_9c3926c7-ec91-4b66-b5bb-c937db8daac1">
+            <semantic:text>1 &gt;&gt; 2</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_bd2a4d7f-ff22-4f59-85bc-85d9d8c5e56c" name="wrong2">
+        <semantic:variable name="wrong2" id="_2aee51ec-157c-4fe6-9b9d-cf45fee7e317" typeRef="boolean"/>
+        <semantic:literalExpression id="_2390dd99-094d-4f97-aecc-9cccb697ce05" typeRef="boolean" triso:expressionId="_c35f3d4f-7bcb-48b4-8390-dd5b2997ba84">
+            <semantic:text>1 &gt;&gt;&gt; 2</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_3ad97840-010e-46b8-9705-d087164904fc" name="wrong3">
+        <semantic:variable name="wrong3" id="_1220f351-4f21-40e8-8f12-126504930563" typeRef="boolean"/>
+        <semantic:literalExpression id="_0c292d34-498e-4b08-ae99-3c694197b69f" typeRef="boolean" triso:expressionId="_2bdb360b-64d2-409a-aa45-5a5753128734">
+            <semantic:text>1 == 2</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+      <semantic:decision id="_8a8c25ab-5e2b-434b-9684-6311069fe4fa" name="wrong 4">
+        <semantic:variable name="wrong 4" id="_edcbb70b-9a69-4818-934b-9c95d05ac11d" typeRef="boolean"/>
+        <semantic:literalExpression id="_21c7d800-b806-4b2e-9a10-00828de7f2d2" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" typeRef="boolean" triso:expressionId="_f7927221-b61d-43fb-919e-1e84c0c7ad3d">
+            <semantic:text>{ m: &lt;&lt;18 }.m(16)</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_e1b89f0f-1caf-4b11-88dd-073011ce2fb9" name="working1">
+        <semantic:variable name="working1" id="_019437fe-3556-40cc-a24b-309fddf477f2" typeRef="boolean"/>
+        <semantic:literalExpression id="_3aa79320-ac64-4db7-9820-f75aa81cc1ff" typeRef="boolean" triso:expressionId="_398fd1dc-9881-4eb7-bc0e-3711ba5bccba">
+            <semantic:text>1 &gt; 2</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_4e44b093-1d8e-432b-9fd5-084e9c1a242b" name="working2">
+        <semantic:variable name="working2" id="_aea55060-9dba-4189-9983-b394d83ff72f" typeRef="boolean"/>
+        <semantic:literalExpression id="_a6cc6f6c-4ccf-4b21-b7d6-ec33196ea763" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" typeRef="boolean" triso:expressionId="_7fdd00df-616b-4cfe-be96-9bf4cc7d1950">
+            <semantic:text>{ m: &lt;18 }.m(16)</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>
