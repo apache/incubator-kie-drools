@@ -4427,4 +4427,83 @@ public class IncrementalCompilationTest {
         ksession2.insert(new Message("Hello World"));
         assertEquals(3, ksession2.fireAllRules());
     }
+
+    @Test
+    public void testGetFactTypeOnIncrementalUpdateWithNestedFactsRulesFired() throws Exception {
+        // DROOLS-4886
+        final String drl1 =
+                "package org.drools.example.api.kiemodulemodel\n" +
+                        "declare MyNestedFact\n" +
+                        "   x : String\n" +
+                        "end\n" +
+                        "declare Message\n" +
+                        "   text : String\n" +
+                        "   nested : MyNestedFact\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R when Message(text == \"What's the problem?\") then end\n";
+
+        final String drl2 =
+                "package org.drools.example.api.kiemodulemodel\n" +
+                        "declare MyNestedFact\n" +
+                        "   x : String\n" +
+                        "   y : int\n" +
+                        "end\n" +
+                        "declare Message\n" +
+                        "   text : String\n" +
+                        "   nested : MyNestedFact\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R when Message(text == \"What's the problem?\", nested.y == 42) then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieBase kbase = kc.getKieBase();
+
+        FactType ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
+        assertNotNull(ftype.getField("text"));
+
+        Object fact = ftype.newInstance();
+        ftype.set(fact, "text", "What's the problem?");
+
+        FactType nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
+        assertNotNull(nestedftype.getField("x"));
+
+        Object nestedfact = nestedftype.newInstance();
+        ftype.set(fact, "nested", nestedfact);
+
+        KieSession session = kbase.newKieSession();
+        session.insert( fact );
+        assertEquals( 1, session.fireAllRules() );
+        session.dispose();
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
+        kc.updateToVersion(releaseId2);
+
+        kbase = kc.getKieBase();
+        ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
+        assertNotNull(ftype.getField("text"));
+
+        fact = ftype.newInstance();
+        ftype.set(fact, "text", "What's the problem?");
+
+        nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
+        assertNotNull(nestedftype.getField("x"));
+        assertNotNull(nestedftype.getField("y"));
+
+        nestedfact = nestedftype.newInstance();
+        nestedftype.set(nestedfact, "y", 42);
+
+        ftype.set(fact, "nested", nestedfact);
+
+        session = kbase.newKieSession();
+        session.insert( fact );
+        assertEquals( 1, session.fireAllRules() );
+        session.dispose();
+    }
 }

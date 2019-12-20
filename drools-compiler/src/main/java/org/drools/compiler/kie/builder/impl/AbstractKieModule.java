@@ -41,6 +41,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -148,6 +149,16 @@ public abstract class AbstractKieModule
 
     public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName) {
         return kBuilders.get(kieBaseName);
+    }
+
+    public InternalKnowledgePackage getPackage(String packageName) {
+        for (KnowledgeBuilder kbuilder : kBuilders.values()) {
+            InternalKnowledgePackage pkg = (( KnowledgeBuilderImpl ) kbuilder).getPackage( packageName );
+            if (pkg != null) {
+                return pkg;
+            }
+        }
+        return null;
     }
 
     @Override
