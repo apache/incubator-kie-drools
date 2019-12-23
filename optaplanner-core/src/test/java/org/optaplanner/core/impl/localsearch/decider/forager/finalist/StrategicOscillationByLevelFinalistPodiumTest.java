@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -27,8 +28,8 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.extractSingleton;
 
 public class StrategicOscillationByLevelFinalistPodiumTest {
 
@@ -201,6 +202,31 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
+    }
+
+    @Test
+    public void alwaysPickImprovingMove() { // Test for PLANNER-1219.
+        StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
+
+        // Reference score is [0, -2, -3]
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        solverScope.setBestScore(HardMediumSoftScore.of(-0, -2, -3));
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
+        lastCompletedStepScope.setScore(solverScope.getBestScore());
+        phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
+        finalistPodium.phaseStarted(phaseScope);
+
+        // Have two moves, scores [-1, -1, 3] and [0, -2, -1]
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
+        finalistPodium.stepStarted(stepScope0);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -1, -1, -3);
+        finalistPodium.addMove(moveScope0);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope0, 0, -2, -1);
+        finalistPodium.addMove(moveScope1);
+
+        // The better is picked
+        Assertions.assertThat(finalistPodium.getFinalistList()).containsOnly(moveScope1);
     }
 
     protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
