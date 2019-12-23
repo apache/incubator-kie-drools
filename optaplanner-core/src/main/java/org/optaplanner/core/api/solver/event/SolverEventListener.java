@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+@FunctionalInterface
 public interface SolverEventListener<Solution_> extends EventListener {
 
     /**
