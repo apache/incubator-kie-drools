@@ -38,8 +38,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final ProblemId_ problemId;
     private final Solver<Solution_> solver;
-    private final Function<ProblemId_, Solution_> problemFinder;
-    private final Consumer<Solution_> finalBestSolutionConsumer;
+    private final Function<ProblemId_, ? extends Solution_> problemFinder;
+    private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<ProblemId_, Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
@@ -47,8 +47,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     public DefaultSolverJob(DefaultSolverManager<Solution_, ProblemId_> solverManager, ProblemId_ problemId,
             Solver<Solution_> solver,
-            Function<ProblemId_, Solution_> problemFinder,
-            Consumer<Solution_> finalBestSolutionConsumer,
+            Function<ProblemId_, ? extends Solution_> problemFinder,
+            Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler) {
         this.solverManager = solverManager;
         this.problemId = problemId;

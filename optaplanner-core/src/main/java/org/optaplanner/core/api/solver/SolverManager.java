@@ -114,7 +114,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Solution_ problem, Consumer<Solution_> finalBestSolutionConsumer) {
+            Solution_ problem, Consumer<? super Solution_> finalBestSolutionConsumer) {
         return solve(problemId, (problemId_) -> problem, finalBestSolutionConsumer, null);
     }
 
@@ -130,7 +130,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Solution_ problem, Consumer<Solution_> finalBestSolutionConsumer,
+            Solution_ problem, Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler) {
         return solve(problemId, (problemId_) -> problem, finalBestSolutionConsumer, exceptionHandler);
     }
@@ -154,7 +154,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> finalBestSolutionConsumer) {
+            Function<ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> finalBestSolutionConsumer) {
         return solve(problemId, problemFinder, finalBestSolutionConsumer, null);
     }
 
@@ -170,7 +170,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> finalBestSolutionConsumer,
+            Function<ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler);
 
     /**
@@ -192,7 +192,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     default SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
-            Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> bestSolutionConsumer) {
+            Function<ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> bestSolutionConsumer) {
         return solveAndListen(problemId, problemFinder, bestSolutionConsumer, null);
     }
 
@@ -208,7 +208,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @return never null
      */
     SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
-            Function<ProblemId_, Solution_> problemFinder, Consumer<Solution_> bestSolutionConsumer,
+            Function<ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> bestSolutionConsumer,
             BiConsumer<ProblemId_, Throwable> exceptionHandler);
 
     /**
