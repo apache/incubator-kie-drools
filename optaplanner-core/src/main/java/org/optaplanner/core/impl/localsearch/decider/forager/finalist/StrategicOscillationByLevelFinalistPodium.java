@@ -29,11 +29,12 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
 
     protected final boolean referenceBestScoreInsteadOfLastStepScore;
 
+    protected Score referenceScore;
     protected Number[] referenceLevelNumbers;
 
     protected Score finalistScore;
-    protected Score referenceScore;
     protected Number[] finalistLevelNumbers;
+    protected boolean finalistImprovesUponReference;
 
     public StrategicOscillationByLevelFinalistPodium(boolean referenceBestScoreInsteadOfLastStepScore) {
         this.referenceBestScoreInsteadOfLastStepScore = referenceBestScoreInsteadOfLastStepScore;
@@ -42,14 +43,15 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
         super.stepStarted(stepScope);
-        referenceLevelNumbers = referenceBestScoreInsteadOfLastStepScore
-                ? stepScope.getPhaseScope().getBestScore().toLevelNumbers()
-                : stepScope.getPhaseScope().getLastCompletedStepScope().getScore().toLevelNumbers();
         referenceScore = referenceBestScoreInsteadOfLastStepScore
                 ? stepScope.getPhaseScope().getBestScore()
                 : stepScope.getPhaseScope().getLastCompletedStepScope().getScore();
+        referenceLevelNumbers = referenceBestScoreInsteadOfLastStepScore
+                ? stepScope.getPhaseScope().getBestScore().toLevelNumbers()
+                : stepScope.getPhaseScope().getLastCompletedStepScope().getScore().toLevelNumbers();
         finalistScore = null;
         finalistLevelNumbers = null;
+        finalistImprovesUponReference = false;
     }
 
     @Override
@@ -63,10 +65,13 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
             finalistScore = null;
             finalistLevelNumbers = null;
         }
-        int comparison = doComparison(moveScope);
+        Score moveScore = moveScope.getScore();
+        Number[] moveLevelNumbers = moveScore.toLevelNumbers();
+        int comparison = doComparison(moveScore, moveLevelNumbers);
         if (comparison > 0) {
-            finalistScore = moveScope.getScore();
-            finalistLevelNumbers = moveScope.getScore().toLevelNumbers();
+            finalistScore = moveScore;
+            finalistLevelNumbers = moveLevelNumbers;
+            finalistImprovesUponReference = (moveScore.compareTo(referenceScore) > 0);
             finalistList.clear();
             finalistList.add(moveScope);
         } else if (comparison == 0) {
@@ -74,66 +79,43 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
         }
     }
 
-    private int doComparison(LocalSearchMoveScope moveScope) {
+    private int doComparison(Score moveScore, Number[] moveLevelNumbers) {
         if (finalistScore == null) {
             return 1;
         }
-
-        Score moveScore = moveScope.getScore();
-        Score bestStepScore = moveScope.getStepScope().getScore();
-        boolean hasImproving = bestStepScore != null && bestStepScore.compareTo(moveScore) > 0;
-        if (!hasImproving && moveScore.compareTo(referenceScore) > 0) {
-            /*
-             * Found an improving move.
-             * The '!hasImproving' condition is present so that it is only checking for an improving move in this step
-             * if it is not already found.
-             * The part after the && sign will not be executed if 'hasImproving' is true.
-             */
-            hasImproving = true;
-        }
-        if (!hasImproving) {
-            // There are no improving moves (including this one) so far. Checking is this a strategic oscillation move.
-            Number[] moveLevelNumbers = moveScore.toLevelNumbers();
+        // If there is an improving move, do not oscillate
+        if (!finalistImprovesUponReference && moveScore.compareTo(referenceScore) < 0) {
             for (int i = 0; i < referenceLevelNumbers.length; i++) {
-                // True if it has an improvement at the current level.
-                boolean moveIsHigher = compareLevelNumbersAgainstReference(moveLevelNumbers, i) > 0;
-                boolean finalistIsHigher = compareLevelNumbersAgainstReference(finalistLevelNumbers, i) > 0;
+                boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
+                boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
                 if (moveIsHigher) {
-                    // Current move has improvement.
                     if (finalistIsHigher) {
-                        // There is also an improvement produced in the previous moves.
+                        // Both are higher, take the best one but do not ignore higher levels
                         break;
                     } else {
-                        // This move is the first improving move for the i-th level at the current step.
+                        // The move has the first level which is higher while the finalist is lower than the reference
                         return 1;
                     }
-                } else if (finalistIsHigher) {
-                    /*
-                     * The current move is not producing an improving score at this level but there is already a
-                     * previous move that does that so we definitely know that the previous finalists have a better
-                     * score than this move.
-                     */
-                    return -1;
+                } else {
+                    if (finalistIsHigher) {
+                        // The finalist has the first level which is higher while the move is lower than the reference
+                        return -1;
+                    } else {
+                        // Both are lower, ignore this level
+                    }
                 }
             }
         }
-        /*
-         * If it comes to this point it means that both the finalists and the current move are improving the score
-         * either at just one level (as strategic oscillation moves) or one of them or both might be an overall
-         * improvement compared to the reference score, so now we compare which one is better.
-         */
         return moveScore.compareTo(finalistScore);
-    }
-
-    private int compareLevelNumbersAgainstReference(Number[] actualLevelNumbers, int level) {
-        return ((Comparable) actualLevelNumbers[level]).compareTo(referenceLevelNumbers[level]);
     }
 
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
+        referenceScore = null;
         referenceLevelNumbers = null;
         finalistScore = null;
         finalistLevelNumbers = null;
     }
+
 }
