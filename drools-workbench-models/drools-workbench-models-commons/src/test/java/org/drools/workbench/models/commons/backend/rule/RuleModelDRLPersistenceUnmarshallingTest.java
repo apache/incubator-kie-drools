@@ -8400,6 +8400,41 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void testExpressionWhenMethodNameIsExsistingOperator() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( name.contains(\"test\") ) \n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                Collections.emptyList(),
+                                                                                dmo);
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     pattern.getFactType());
+        assertEquals(1,
+                     pattern.getNumberOfConstraints());
+        assertEquals("contains(\"test\")",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getFieldName());
+        assertNull(((SingleFieldConstraint) pattern.getConstraint(0)).getOperator());
+        assertNull(((SingleFieldConstraint) pattern.getConstraint(0)).getValue());
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint(0);
+        List<ExpressionPart> expressionParts = constraint.getExpressionLeftSide().getParts();
+        assertEquals(3, expressionParts.size());
+        assertTrue(expressionParts.get(0) instanceof ExpressionUnboundFact);
+        assertEquals("Applicant", ((ExpressionUnboundFact) expressionParts.get(0)).getFactType());
+        assertTrue(expressionParts.get(1) instanceof ExpressionText);
+        assertEquals("name", expressionParts.get(1).getName());
+        assertTrue(expressionParts.get(2) instanceof ExpressionText);
+        assertEquals("contains(\"test\")", expressionParts.get(2).getName());
+    }
+
+    @Test
     public void testStringReplaceExpression() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
         String drl = "rule \"Replace_condition_Issue\"\n" +

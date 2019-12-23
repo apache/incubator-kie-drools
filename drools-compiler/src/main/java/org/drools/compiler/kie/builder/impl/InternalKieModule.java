@@ -32,6 +32,7 @@ import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.classloader.ProjectClassLoader;
@@ -68,7 +69,9 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     Collection<KiePackage> getKnowledgePackagesForKieBase(String kieBaseName);
 
-    void cacheResultsForKieBase(String kieBaseName, Results results);
+    InternalKnowledgePackage getPackage(String packageName);
+
+    void cacheResultsForKieBase( String kieBaseName, Results results);
 
     Map<String, Results> getKnowledgeResultsCache();    
     

@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -32,6 +34,9 @@ import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.ResourceType;
@@ -41,6 +46,9 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl.DEFAULT_PACKAGE;
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.StringUtils.isEmpty;
 
 public class ChangeSetBuilder {
@@ -66,16 +74,21 @@ public class ChangeSetBuilder {
             }
         }
 
+        List<TypeDeclarationDescr> typeDeclarations = new ArrayList<>();
+        Map<String, String> changedClasses = new HashMap<>();
+
         for( String file : currentFiles ) {
             if( originalFiles.contains( file ) ) {
                 // check for modification
                 byte[] ob = original.getBytes( file );
                 byte[] cb = currentJar.getBytes( file );
                 if( ! Arrays.equals( ob, cb ) ) {
-                    // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
-                    if ( !ResourceType.DRL.matchesExtension(file) || !StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) {
+                    if (file.endsWith( ".class" )) {
+                        changedClasses.put(convertResourceToClassName(file), file);
+                    } else if ( !ResourceType.DRL.matchesExtension(file) || !StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) {
+                        // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
                         // parse the file to figure out the difference
-                        result.registerChanges( file, diffResource( file, ob, cb ) );
+                        result.registerChanges( file, diffResource( file, ob, cb, typeDeclarations ) );
                     }
                 }
             } else {
@@ -83,14 +96,37 @@ public class ChangeSetBuilder {
                 result.addFile( file );
             }
         }
+
+        for (TypeDeclarationDescr typeDeclaration : typeDeclarations) {
+            String fqn = typeDeclaration.getFullTypeName();
+            if (changedClasses.containsKey( fqn )) {
+                continue;
+            }
+
+            TypeResolver resolver = original.getPackage( typeDeclaration.getNamespace() ).getTypeResolver();
+            for (TypeFieldDescr field : typeDeclaration.getFields().values()) {
+                String fieldType;
+                try {
+                    fieldType = resolver.resolveType( field.getPattern().getObjectType() ).getCanonicalName();
+                } catch (ClassNotFoundException e) {
+                    continue;
+                }
+                if (changedClasses.containsKey( fieldType )) {
+                    changedClasses.put( fqn, convertClassToResourcePath( fqn ) );
+                    break;
+                }
+            }
+        }
+
+        for (String changedClass : changedClasses.values()) {
+            result.registerChanges( changedClass, new ResourceChangeSet( changedClass, ChangeType.UPDATED ) );
+        }
         
         return result;
     }
 
 
-    private static ResourceChangeSet diffResource(String file,
-                                          byte[] ob,
-                                          byte[] cb) {
+    private static ResourceChangeSet diffResource(String file, byte[] ob, byte[] cb, List<TypeDeclarationDescr> typeDeclarations) {
         ResourceChangeSet pkgcs = new ResourceChangeSet( file, ChangeType.UPDATED );
         ResourceType type = ResourceType.determineResourceType( file );
         if( ResourceType.DRL.equals( type ) || ResourceType.GDRL.equals( type ) || ResourceType.RDRL.equals( type ) || ResourceType.TDRL.equals( type )) {
@@ -118,6 +154,13 @@ public class ChangeSetBuilder {
 
                 List<GlobalDescr> oglobals = new ArrayList<>( opkg.getGlobals() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, oglobals, cpkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
+
+                for (TypeDeclarationDescr typeDeclaration : cpkg.getTypeDeclarations()) {
+                    if ( isEmpty( typeDeclaration.getNamespace()) ) {
+                        typeDeclaration.setNamespace( isEmpty( cpkg.getNamespace() ) ? DEFAULT_PACKAGE : cpkg.getNamespace() );
+                    }
+                    typeDeclarations.add( typeDeclaration );
+                }
             } catch ( Exception e ) {
                 logger.error( "Error analyzing the contents of "+file+". Skipping.", e );
             }

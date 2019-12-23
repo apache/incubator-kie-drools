@@ -41,6 +41,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -169,4 +170,22 @@ public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
     }
 
+    @Test
+    public void testWrongComparisonOps() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("WrongComparisonOps.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(), hasSize(4));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(DMNMessage.Severity.WARN), hasSize(4));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()),
+                   dmnModel.getMessages(DMNMessage.Severity.WARN)
+                           .stream()
+                           .filter(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
+                                        m.getSourceId().equals("_2390dd99-094d-4f97-aecc-9cccb697ce05") ||
+                                        m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
+                                        m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
+                           .count(),
+                   is(4L));
+    }
 }

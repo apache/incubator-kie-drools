@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_3e859913-8630-4683-9a23-6074c480dd3b" id="_3e859913-8630-4683-9a23-6074c480dd3b" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_3e859913-8630-4683-9a23-6074c480dd3b" exporter="DMN Modeler" exporterVersion="6.5.2" triso:logoChoice="Default">
+    <semantic:businessKnowledgeModel id="_3ce3c41a-450a-40d1-9e9c-09180cd29879" name="my f">
+        <semantic:variable name="my f" id="_6a1069af-d471-4d55-b422-9f9032d0fa66" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_36c33136-e164-4a95-b1e7-1b6a1f1a90df" kind="FEEL" typeRef="Any" triso:expressionId="_92254d2b-6f9d-4ed1-bd8f-36ed909460cd">
+            <semantic:formalParameter name="p1" typeRef="number" id="_adddd445-ea9d-4294-bdf1-eea9239d60ec"/>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_71352c8e-1ba2-43a4-9cea-e21efafc563c" name="invoking">
+        <semantic:variable name="invoking" id="_c043394a-d090-4bc5-a7fb-52cf507c09fd" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_7345e1e5-34e2-4443-a14a-b95aa3c3c40e">
+            <semantic:requiredKnowledge href="#_3ce3c41a-450a-40d1-9e9c-09180cd29879"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_d8b0c243-3fb6-40ec-a29c-28f8bdb92e13" typeRef="Any" triso:expressionId="_1865fcd2-326d-4551-b5e8-9bdcf26cd23e">
+            <semantic:literalExpression id="literal__d8b0c243-3fb6-40ec-a29c-28f8bdb92e13">
+                <semantic:text>my f</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_6b1cca97-a4a0-4203-ae8a-672348aa4e4a" name="p1"/>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+</semantic:definitions>
