@@ -102,7 +102,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <artifactId>kogito-drools-model</artifactId>
     </dependency>
 
     <dependency>

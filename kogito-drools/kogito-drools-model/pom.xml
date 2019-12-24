@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -25,36 +25,45 @@
     <version>8.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-drools</artifactId>
-  <packaging>jar</packaging>
-
+  <artifactId>kogito-drools-model</artifactId>
 
   <!-- Logging -->
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-internal</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core-reflective</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core-static</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-ruleunits</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools-model</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
 </project>

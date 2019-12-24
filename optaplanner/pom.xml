@@ -101,15 +101,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-canonical-model</artifactId>
+      <artifactId>kogito-drools-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-model-compiler</artifactId>
     </dependency>
 
     <!-- test -->

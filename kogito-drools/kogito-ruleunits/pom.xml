@@ -54,12 +54,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-canonical-model</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <artifactId>kogito-drools-model</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
