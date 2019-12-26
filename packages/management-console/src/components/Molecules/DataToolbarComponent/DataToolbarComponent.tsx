@@ -20,21 +20,34 @@ interface IOwnProps {
   checkedArray: any;
   filterClick: any;
   setCheckedArray: any;
+  setIsStatusSelected: any;
+  filters: any;
+  setFilters: any;
 }
 const DataToolbarWithFilter: React.FC<IOwnProps> = ({
   checkedArray,
   filterClick,
-  setCheckedArray
+  setCheckedArray,
+  filters,
+  setFilters,
+  setIsStatusSelected
 }) => {
   const [isExpanded, setisExpanded] = useState(false);
-  const [filters, setfilters] = useState(checkedArray);
+
   const [isFilterClicked, setIsFilterClicked] = useState(false);
   const [isClearAllClicked, setIsClearAllClicked] = useState(false);
-  const allStates = ['ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED', 'ABORTED'];
+
   const onFilterClick = () => {
-    setfilters(checkedArray);
-    filterClick();
-    setIsFilterClicked(true);
+    if (checkedArray.length === 0) {
+      setFilters(checkedArray);
+      setIsFilterClicked(true);
+      setIsStatusSelected(false);
+    } else {
+      setFilters(checkedArray);
+      filterClick();
+      setIsFilterClicked(true);
+      setIsStatusSelected(true);
+    }
   };
 
   const onSelect = (event, selection) => {
@@ -55,29 +68,38 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
   };
 
   const onDelete = (type = '', id = '') => {
-    const index = checkedArray.indexOf(id);
-    checkedArray.splice(index, 1);
-    onFilterClick();
+    if (checkedArray.length === 1) {
+      const index = checkedArray.indexOf(id);
+      checkedArray.splice(index, 1);
+      setCheckedArray([]);
+      setFilters([]);
+      setIsStatusSelected(false);
+    } else {
+      const index = checkedArray.indexOf(id);
+      checkedArray.splice(index, 1);
+      filterClick();
+    }
   };
 
   useEffect(() => {
     if (!checkedArray.length && isFilterClicked) {
-      setfilters(checkedArray);
+      setFilters(checkedArray);
     }
   }, [checkedArray]);
 
   const clearAll = () => {
     setIsClearAllClicked(true);
     setCheckedArray(['ACTIVE']);
-    setfilters(['ACTIVE']);
+    setFilters(['ACTIVE']);
     filterClick(['ACTIVE']);
   };
 
   const onRefreshClick = () => {
-    if (isFilterClicked) {
+    if (checkedArray.length === 0) {
+      checkedArray.length = 0;
+    } else if (isFilterClicked) {
       filterClick(checkedArray);
-    }
-    if (isClearAllClicked) {
+    } else if (isClearAllClicked) {
       filterClick(['ACTIVE']);
     }
   };

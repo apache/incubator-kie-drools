@@ -12,6 +12,7 @@ interface IOwnProps {
   initData: any;
   isLoading: boolean;
   setIsError: any;
+  setIsLoading: any;
 }
 
 enum ProcessInstanceState {
@@ -53,18 +54,29 @@ const DataListComponent: React.FC<IOwnProps> = ({
       }
     }
   `;
-  const { loading, error, data } = useQuery(GET_INSTANCES, {
-    variables: {
-      state: ['ACTIVE']
-    },
-    fetchPolicy: 'network-only'
-  });
-
+  const { loading, error, data, refetch, networkStatus } = useQuery(
+    GET_INSTANCES,
+    {
+      variables: {
+        state: ['ACTIVE']
+      },
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true
+    }
+  );
   useEffect(() => {
+    setIsError(false);
     setInitData(data);
   }, [data]);
 
   if (loading || isLoading) {
+    return (
+      <Bullseye>
+        <SpinnerComponent spinnerText="Loading process instances..." />
+      </Bullseye>
+    );
+  }
+  if (networkStatus === 4) {
     return (
       <Bullseye>
         <SpinnerComponent spinnerText="Loading process instances..." />
@@ -79,6 +91,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
           iconType="warningTriangleIcon"
           title="Oops... error while loading"
           body="Try using the refresh action to reload process instances"
+          refetch={refetch}
         />
       </div>
     );

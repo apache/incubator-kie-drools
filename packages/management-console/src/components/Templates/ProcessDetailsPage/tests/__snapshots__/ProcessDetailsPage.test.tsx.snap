@@ -286,7 +286,9 @@ exports[`Process Details Page component Sample test case 1`] = `
               "result": Object {
                 "data": Object {
                   "ProcessInstances": Object {
-                    "childProcessInstanceId": Array [],
+                    "childProcessInstanceId": Array [
+                      "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd",
+                    ],
                     "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
                     "nodes": Array [
                       Object {
@@ -318,6 +320,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                     "processId": "flightBooking",
                     "processName": "FlightBooking",
                     "roles": Array [],
+                    "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                     "state": "COMPLETED",
                     "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                   },
@@ -655,7 +658,9 @@ exports[`Process Details Page component Sample test case 1`] = `
                 "result": Object {
                   "data": Object {
                     "ProcessInstances": Object {
-                      "childProcessInstanceId": Array [],
+                      "childProcessInstanceId": Array [
+                        "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd",
+                      ],
                       "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
                       "nodes": Array [
                         Object {
@@ -687,6 +692,7 @@ exports[`Process Details Page component Sample test case 1`] = `
                       "processId": "flightBooking",
                       "processName": "FlightBooking",
                       "roles": Array [],
+                      "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                       "state": "COMPLETED",
                       "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                     },

@@ -16,12 +16,25 @@ interface IOwnProps {
   iconType: string;
   title: string;
   body: string;
+  filterClick?: any;
+  setFilters?: any;
+  setCheckedArray?: any;
+  refetch?: any;
 }
 const EmptyStateComponent: React.FC<IOwnProps> = ({
   iconType,
   title,
-  body
+  body,
+  filterClick,
+  setFilters,
+  setCheckedArray,
+  refetch
 }) => {
+  const resetClick = () => {
+    filterClick(['ACTIVE']);
+    setFilters(['ACTIVE']);
+    setCheckedArray(['ACTIVE']);
+  };
   return (
     <Bullseye>
       <EmptyState>
@@ -34,11 +47,24 @@ const EmptyStateComponent: React.FC<IOwnProps> = ({
             className="pf-u-mb-xl"
           />
         )}
+        {iconType === 'warningTriangleIcon1' && (
+          <FontAwesomeIcon
+            icon={faExclamationTriangle}
+            size="3x"
+            color="var(--pf-global--warning-color--100)"
+            className="pf-u-mb-xl"
+          />
+        )}
         <Title size="lg">{title}</Title>
         <EmptyStateBody>{body}</EmptyStateBody>
         {iconType === 'warningTriangleIcon' && (
-          <Button variant="primary" onClick={() => window.location.reload()}>
+          <Button variant="primary" onClick={() => refetch()}>
             Refresh
+          </Button>
+        )}
+        {iconType === 'warningTriangleIcon1' && (
+          <Button variant="link" onClick={resetClick}>
+            Reset to default
           </Button>
         )}
       </EmptyState>
