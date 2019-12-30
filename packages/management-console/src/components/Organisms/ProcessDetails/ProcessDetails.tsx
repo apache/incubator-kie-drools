@@ -73,6 +73,18 @@ const ProcessDetails = ({ loading, data }) => {
               ''
             )}
           </FormGroup>
+          <FormGroup label="Last Updated" fieldId="lastUpdate">
+            {data.ProcessInstances[0].lastUpdate ? (
+              <Text component={TextVariants.p}>
+                <TimeAgo
+                  date={new Date(`${data.ProcessInstances[0].lastUpdate}`)}
+                  render={({ error, value }) => <span>{value}</span>}
+                />
+              </Text>
+            ) : (
+              ''
+            )}
+          </FormGroup>
           {data.ProcessInstances[0].parentProcessInstanceId ? (
             <FormGroup label="Parent Process" fieldId="parent">
               <div>

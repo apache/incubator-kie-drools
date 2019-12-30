@@ -32,6 +32,7 @@ export interface IProcessInstanceError {
   message: string;
 }
 interface IProcessInstance {
+  lastUpdate: string;
   id: string;
   processId: string;
   parentProcessInstanceId: string | null;
@@ -76,6 +77,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         roles
         state
         start
+        lastUpdate
         endpoint
         addons
         error {
@@ -253,7 +255,17 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                   ''
                 )}
               </DataListCell>,
-              <DataListCell key={3}>{processInstanceData.state}</DataListCell>
+              <DataListCell key={3}>
+                {processInstanceData.lastUpdate ? (
+                  <TimeAgo
+                    date={new Date(`${processInstanceData.lastUpdate}`)}
+                    render={({ _error, value }) => <span>{value}</span>}
+                  />
+                ) : (
+                  ''
+                )}
+              </DataListCell>,
+              <DataListCell key={4}>{processInstanceData.state}</DataListCell>
             ]}
           />
 

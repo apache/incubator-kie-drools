@@ -15,6 +15,7 @@ const GET_PROCESS_INSTANCES = gql`
       roles
       state
       start
+      lastUpdate
       addons
       endpoint
       error {
@@ -38,6 +39,7 @@ const GET_CHILD_INSTANCES = gql`
       roles
       state
       start
+      lastUpdate
       endpoint
       addons
       error {
@@ -59,6 +61,7 @@ const GET_PROCESS_INSTANCE = gql`
       variables
       state
       start
+      lastUpdate
       end
       endpoint
       childProcessInstanceId

@@ -29,6 +29,7 @@ const ProcessDetailsPage = ({ match }) => {
         roles
         variables
         state
+        lastUpdate
         start
         end
         endpoint

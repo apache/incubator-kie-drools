@@ -276,6 +276,16 @@
             "defaultValue": null
           },
           {
+            "name": "lastUpdate",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "end",
             "description": "",
             "type": {

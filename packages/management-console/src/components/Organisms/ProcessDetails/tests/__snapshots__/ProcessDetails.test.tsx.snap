@@ -75,6 +75,10 @@ exports[`Process Details component Snapshot tests 1`] = `
         </Text>
       </FormGroup>
       <FormGroup
+        fieldId="lastUpdate"
+        label="Last Updated"
+      />
+      <FormGroup
         fieldId="parent"
         label="Parent Process"
       >
