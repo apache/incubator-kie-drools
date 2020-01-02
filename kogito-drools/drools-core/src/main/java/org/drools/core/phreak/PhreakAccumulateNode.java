@@ -656,6 +656,11 @@ public class PhreakAccumulateNode {
                                              leftTuple,
                                              workingMemory);
         if (result == null) {
+            if (accctx.propagated) {
+                // retract
+                trgLeftTuples.addDelete(accctx.getResultLeftTuple());
+                accctx.propagated = false;
+            }
             return;
         }
 
