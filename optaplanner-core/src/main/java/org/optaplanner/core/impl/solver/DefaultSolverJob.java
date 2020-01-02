@@ -38,18 +38,18 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final ProblemId_ problemId;
     private final Solver<Solution_> solver;
-    private final Function<ProblemId_, ? extends Solution_> problemFinder;
+    private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
-    private final BiConsumer<ProblemId_, Throwable> exceptionHandler;
+    private final BiConsumer<? super ProblemId_, Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
     private Future<Solution_> future;
 
     public DefaultSolverJob(DefaultSolverManager<Solution_, ProblemId_> solverManager, ProblemId_ problemId,
             Solver<Solution_> solver,
-            Function<ProblemId_, ? extends Solution_> problemFinder,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<ProblemId_, Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, Throwable> exceptionHandler) {
         this.solverManager = solverManager;
         this.problemId = problemId;
         this.solver = solver;
@@ -96,7 +96,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     // TODO Future features
 //    @Override
-//    public void reloadProblem(Function<ProblemId_, Solution_> problemFinder) {
+//    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
 //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
 //    }
 

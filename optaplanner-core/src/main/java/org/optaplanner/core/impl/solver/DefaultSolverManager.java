@@ -76,31 +76,31 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     @Override
     public SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Function<ProblemId_, ? extends Solution_> problemFinder,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<ProblemId_, Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, Throwable> exceptionHandler) {
         return solve(problemId, problemFinder, null, finalBestSolutionConsumer, exceptionHandler);
     }
 
     @Override
     public SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
-            Function<ProblemId_, ? extends Solution_> problemFinder,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> bestSolutionConsumer,
-            BiConsumer<ProblemId_, Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, Throwable> exceptionHandler) {
         return solve(problemId, problemFinder, bestSolutionConsumer, null, exceptionHandler);
     }
 
     protected SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
-            Function<ProblemId_, ? extends Solution_> problemFinder,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<ProblemId_, Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, Throwable> exceptionHandler) {
         Solver<Solution_> solver = solverFactory.buildSolver();
         // TODO consumption should happen on different thread than solver thread, doing skipAhead and throttling
         if (bestSolutionConsumer != null) {
             solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
         }
-        BiConsumer<ProblemId_, Throwable> finalExceptionHandler = (exceptionHandler != null)
+        BiConsumer<? super ProblemId_, Throwable> finalExceptionHandler = (exceptionHandler != null)
                 ? exceptionHandler : defaultExceptionHandler;
         DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap
                 .compute(problemId, (key, oldSolverJob) -> {
@@ -127,7 +127,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     // TODO Future features
 //    @Override
-//    public void reloadProblem(ProblemId_ problemId, Function<ProblemId_, Solution_> problemFinder) {
+//    public void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder) {
 //        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
 //        if (solverJob == null) {
 //            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.

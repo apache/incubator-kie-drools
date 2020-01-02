@@ -45,7 +45,7 @@ public interface SolverJob<Solution_, ProblemId_> {
     SolverStatus getSolverStatus();
 
     // TODO Future features
-//    void reloadProblem(Function<ProblemId_, Solution_> problemFinder);
+//    void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder);
 
     // TODO Future features
 //    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
