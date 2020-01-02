@@ -2720,5 +2720,32 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("decision_003").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
         assertThat(dmnResult.getDecisionResultByName("decision_003").getResult(), nullValue());
     }
+
+    @Test
+    public void testClassicComparisonVsRange() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("classicComparisonVsRange.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ac6efb68-08ed-43ec-b427-e99e78f51ba1", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
+                BigDecimal value = new BigDecimal(i);
+                BigDecimal threshold = new BigDecimal(j);
+                String expectedResult = value.compareTo(threshold) >= 0 ? "At or Above threshold" : "Lower than threshold";
+                LOG.info("Execution {} value {} threshold {} expectedResult {}", i, value, threshold, expectedResult);
+
+                final DMNContext context = DMNFactory.newContext();
+                context.set("value", value);
+                context.set("threshold", threshold);
+
+                final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+                LOG.debug("{}", dmnResult);
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("classic comparison").getResult(), is(expectedResult));
+                assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("using range").getResult(), is(expectedResult));
+            }
+        }
+    }
 }
 

@@ -639,6 +639,11 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
+    public InternalKnowledgePackage getPackage(String packageName) {
+        return internalKieModule.getPackage( packageName );
+    }
+
+    @Override
     public Collection<KiePackage> getKnowledgePackagesForKieBase( String kieBaseName ) {
         return internalKieModule.getKnowledgePackagesForKieBase( kieBaseName );
     }

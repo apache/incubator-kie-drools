@@ -106,6 +106,8 @@ public class KnowledgeBuilderConfigurationImpl
         implements
         KnowledgeBuilderConfiguration {
 
+    public static final String                DEFAULT_PACKAGE = "defaultpkg";
+
     private static final int                  DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD = 10;
     
     private Map<String, DialectConfiguration> dialectConfigurations;
@@ -250,7 +252,7 @@ public class KnowledgeBuilderConfigurationImpl
 
         setProperty(DefaultPackageNameOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(DefaultPackageNameOption.PROPERTY_NAME,
-                                                       "defaultpkg"));
+                                                       DEFAULT_PACKAGE));
 
         setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"true"));

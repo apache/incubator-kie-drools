@@ -243,12 +243,13 @@ public class DMNEvaluatorCompiler {
             }
             if( binding.getExpression() == null ) {
                 MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
+                                       DMNMessage.Severity.WARN,
                                        binding,
                                        model,
                                        null,
                                        null,
-                                       Msg.MISSING_PARAMETER_FOR_INVOCATION,
+                                       Msg.MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION,
+                                       binding.getParameter().getIdentifierString(),
                                        node.getIdentifierString() );
                 return null;
             }
