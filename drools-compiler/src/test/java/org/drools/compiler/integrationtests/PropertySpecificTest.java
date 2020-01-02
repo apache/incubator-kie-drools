@@ -15,6 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -54,9 +55,11 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
@@ -2555,5 +2558,126 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KieSession ksession = kbase.newKieSession();
 
         ksession.fireAllRules();
+    }
+
+    public static class LongFact {
+
+        private Long	longVal;
+        private Long	longDiff;
+
+        public LongFact( int i) {
+            this.longVal = new Long(i);
+        }
+
+        public Long getLongDiff() {
+            return longDiff;
+        }
+
+        public Long getLongVal() {
+            return longVal;
+        }
+
+        public void setLongDiff( Long longDiff ) {
+            this.longDiff = longDiff;
+        }
+
+        public void setLongVal( Long longVal ) {
+            this.longVal = longVal;
+        }
+    }
+
+    public static class BigDecimalFact {
+
+        private BigDecimal bdVal;
+        private BigDecimal bdDiff;
+
+        public BigDecimalFact( int i) {
+            this.bdVal = new BigDecimal(i);
+        }
+
+        public BigDecimal getBdDiff() {
+            return bdDiff;
+        }
+
+        public BigDecimal getBdVal() {
+            return bdVal;
+        }
+
+        public void setBdDiff( BigDecimal bdDiff ) {
+            this.bdDiff = bdDiff;
+        }
+
+        public void setBdVal( BigDecimal bdVal ) {
+            this.bdVal = bdVal;
+        }
+    }
+
+    @Test
+    public void testAccLong() {
+        String rule =
+                "package com.sample.rules\n" +
+                "import " + LongFact.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        accumulate( LongFact( $longVal: longVal), $minVal : min($longVal))\n" +
+                "        accumulate( LongFact( $longVal2: longVal, $longVal2 > $minVal), $minVal2 : min($longVal2))\n" +
+                "\n" +
+                "        $minFact: LongFact( longVal == $minVal)\n" +
+                "        $minFact2: LongFact( longVal == $minVal2)\n" +
+                "\n" +
+                "then\n" +
+                "    Long $difference = (Long)$minVal2 - (Long)$minVal;\n" +
+                "    $minFact2.setLongDiff($difference);\n" +
+                "    update($minFact2);\n" +
+                "    retract($minFact);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
+        KieSession kSession = kbase.newKieSession();
+
+        final int NUM = 5;
+
+        for (int i = 0; i < NUM; i++) {
+            LongFact fact = new LongFact(100 + i*i*10);
+            kSession.insert(fact);
+        }
+
+        int cnt = kSession.fireAllRules();
+        assertThat(cnt, is(NUM-1));
+    }
+
+    @Test
+    public void testAccBigDecimal() {
+        // DROOLS-4896
+        String rule =
+                "package com.sample.rules\n" +
+                "import java.math.BigDecimal;\n" +
+                "import " + BigDecimalFact.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        accumulate( BigDecimalFact( $bdVal: bdVal), $minVal : min($bdVal))\n" +
+                "        accumulate( BigDecimalFact( $bdVal2: bdVal, $bdVal2 > $minVal), $minVal2 : min($bdVal2))\n" +
+                "\n" +
+                "        \n" +
+                "        $minFact: BigDecimalFact( bdVal == new BigDecimal($minVal.intValue()))\n" +
+                "        $minFact2: BigDecimalFact( bdVal == new BigDecimal($minVal2.intValue()))\n" +
+                "\n" +
+                "then\n" +
+                "    BigDecimal $difference = new BigDecimal($minVal2.intValue() - $minVal.intValue());\n" +
+                "    $minFact2.setBdDiff($difference);\n" +
+                "    update($minFact2);\n" +
+                "    retract($minFact);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
+        KieSession kSession = kbase.newKieSession();
+
+        final int NUM = 5;
+
+        for (int i = 0; i < NUM; i++) {
+            BigDecimalFact fact = new BigDecimalFact(100 + i*i*10);
+            kSession.insert(fact);
+        }
+
+        int cnt = kSession.fireAllRules();
+        assertThat(cnt, is(NUM-1));
     }
 }
