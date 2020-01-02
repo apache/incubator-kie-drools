@@ -48,7 +48,7 @@ import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class CoercedExpression {
 
-    private static final List<Class<?>> LITERAL_NUMBER_CLASSES = Arrays.asList(int.class, long.class, double.class);
+    private static final List<Class<?>> LITERAL_NUMBER_CLASSES = Arrays.asList(int.class, long.class, double.class, Integer.class, Long.class, Double.class);
 
     private TypedExpression left;
     private TypedExpression right;
@@ -76,13 +76,17 @@ public class CoercedExpression {
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
 
+        if (leftClass == rightClass) {
+            return new CoercedExpressionResult(left, right);
+        }
+
         if (cannotCoerce()) {
             throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
         }
 
         final Expression rightExpression = right.getExpression();
 
-        final boolean leftIsPrimitive = leftClass.isPrimitive();
+        final boolean leftIsPrimitive = leftClass.isPrimitive() || Number.class.isAssignableFrom( leftClass );
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
@@ -195,14 +199,14 @@ public class CoercedExpression {
     }
 
     private Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type) {
-        if (type == int.class) {
+        if (type == int.class || type == Integer.class) {
             return new IntegerLiteralExpr(expr.getValue());
         }
-        if (type == long.class) {
+        if (type == long.class || type == Long.class) {
             String value = expr.getValue();
             return new LongLiteralExpr(isLongLiteral(value) ? expr.getValue() : expr.getValue() + "l");
         }
-        if (type == double.class) {
+        if (type == double.class || type == Double.class) {
             return new DoubleLiteralExpr(expr.getValue().endsWith("d") ? expr.getValue() : expr.getValue() + "d");
         }
         throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));

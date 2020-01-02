@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class StringEndsWithOperator implements Operator.SingleValue<String, String> {
+public enum StringEndsWithOperator implements Operator.SingleValue<String, String> {
 
-    public static final StringEndsWithOperator INSTANCE = new StringEndsWithOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( String s1, String s2 ) {

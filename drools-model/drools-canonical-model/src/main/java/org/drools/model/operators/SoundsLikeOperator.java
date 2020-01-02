@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class SoundsLikeOperator implements Operator.SingleValue<String, String> {
+public enum SoundsLikeOperator implements Operator.SingleValue<String, String> {
 
-    public static final SoundsLikeOperator INSTANCE = new SoundsLikeOperator();
+    INSTANCE;
 
     public static final char[] MAP = new char[]{'0', '1', '2', '3', '0', '1', '2', '0', '0', '2', '2', '4', '5', '5', '0', '1', '2', '6', '2', '3', '0', '1', '0', '2', '0', '2'};
 

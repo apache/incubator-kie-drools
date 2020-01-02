@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class MemberOfOperator implements Operator.SingleValue<Object, Object> {
+public enum MemberOfOperator implements Operator.SingleValue<Object, Object> {
 
-    public static final MemberOfOperator INSTANCE = new MemberOfOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( Object a, Object b ) {
