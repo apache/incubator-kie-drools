@@ -43,6 +43,6 @@ public class $unit$Query$name$Endpoint {
     }
 
     private $ReturnType$ toResult(Map<String, Object> tuple) {
-        return ($ReturnType$) tuple.values().iterator().next();
+        return ($ReturnType$) tuple.get("");
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.kogito.codegen.rules;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,7 +50,6 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
 public class QueryEndpointGenerator implements FileGenerator {
 
@@ -141,12 +141,17 @@ public class QueryEndpointGenerator implements FileGenerator {
         MethodDeclaration toResultMethod = clazz.getMethodsByName( "toResult" ).get(0);
         String returnType;
         if (query.getBindings().size() == 1) {
-            returnType = query.getBindings().values().iterator().next().getCanonicalName();
+            Map.Entry<String, Class<?>> binding = query.getBindings().entrySet().iterator().next();
+            String name = binding.getKey();
+            returnType = binding.getValue().getCanonicalName();
+
             Statement statement = toResultMethod
                     .getBody()
                     .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                     .getStatement( 0 );
+
             statement.findAll( CastExpr.class ).get(0).setType( returnType );
+            statement.findAll( StringLiteralExpr.class ).get(0).setString( name );
         } else {
             returnType = "Result";
             generateResultClass(clazz, toResultMethod);
