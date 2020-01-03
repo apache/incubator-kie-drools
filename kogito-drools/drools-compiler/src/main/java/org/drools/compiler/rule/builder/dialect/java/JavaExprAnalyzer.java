@@ -54,50 +54,43 @@ public class JavaExprAnalyzer {
 
     /**
      * Analyze an expression.
-     * 
+     *
      * @param expr
      *            The expression to analyze.
      * @param availableIdentifiers
      *            Total set of declarations available.
-     * 
+     *
      * @return The <code>Set</code> of declarations used by the expression.
-     * @throws RecognitionException 
+     * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeExpression(final String expr,
                                                 final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final JavaParser parser = parse( expr );
         parser.conditionalOrExpression();
-        
-        JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setAnalyzedExpr(expr);
-        result.setIdentifiers(new HashSet<String>( parser.getIdentifiers() ) );
-        return analyze( result,
-                        availableIdentifiers );
+
+        JavaAnalysisResult result = new JavaAnalysisResult( expr, parser.getIdentifiers() );
+        return analyze( result, availableIdentifiers );
     }
 
-    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeBlock(final String expr,
-                                       final BoundIdentifiers availableIdentifiers) throws RecognitionException {
+                                           final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final JavaParser parser = parse( "{" + expr + "}" );
         parser.block();
 
-        JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setAnalyzedExpr(expr);
-        result.setIdentifiers( new HashSet<String>( parser.getIdentifiers() ) );
-        result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
-        if( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
-            for( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
+        JavaAnalysisResult result = new JavaAnalysisResult( expr, parser.getIdentifiers() );
+
+        if ( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
+            for ( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
                 for (JavaLocalDeclarationDescr.IdentifierDescr ident : descr.getIdentifiers()) {
                     result.addLocalVariable(ident.getIdentifier(), descr);
                 }
             }
         }
         result.setBlockDescrs( parser.getRootBlockDescr() );
+        result.setAssignedVariables( parser.getAssignedVariables() );
 
-        return analyze( result,
-                        availableIdentifiers );
+        return analyze( result, availableIdentifiers );
     }
 
     private JavaParser parse(final String expr) {
@@ -109,26 +102,22 @@ public class JavaExprAnalyzer {
 
     /**
      * Analyze an expression.
-     * 
+     *
      * @param availableIdentifiers
      *            Total set of declarations available.
      * @param result
      *            The AST for the expression.
-     * 
+     *
      * @return The <code>Set</code> of declarations used by the expression.
-     * 
-     * @throws RecognitionException
-     *             If an error occurs in the parser.
      */
-    private JavaAnalysisResult analyze(JavaAnalysisResult result,
-                                       BoundIdentifiers availableIdentifiers) throws RecognitionException {
+    private JavaAnalysisResult analyze(JavaAnalysisResult result, BoundIdentifiers availableIdentifiers) {
         final Set<String> identifiers = result.getIdentifiers();
-        final Set<String> notBound = new HashSet<String>( identifiers );
-        
-        Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
-        Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
-        Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
- 
+        final Set<String> notBound = new HashSet<>( identifiers );
+
+        Map<String, Class<?>> usedDecls = new HashMap<>();
+        Map<String, Class<?>> usedGlobals = new HashMap<>();
+        Map<String, EvaluatorWrapper> usedOperators = new HashMap<>();
+
         for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedDecls.put( entry.getKey(), entry.getValue() );
@@ -152,9 +141,9 @@ public class JavaExprAnalyzer {
         }
 
         BoundIdentifiers boundIdentifiers = new BoundIdentifiers( usedDecls,
-                                                                  availableIdentifiers.getContext(),
-                                                                  usedOperators,
-                                                                  availableIdentifiers.getThisClass() );
+                availableIdentifiers.getContext(),
+                usedOperators,
+                availableIdentifiers.getThisClass() );
         boundIdentifiers.setGlobals( usedGlobals );
 
         result.setBoundIdentifiers( boundIdentifiers );

@@ -43,8 +43,8 @@ import org.kie.api.definition.type.FactField;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class ClassFieldAccessorStore
-    implements
-    Externalizable {
+        implements
+        Externalizable {
 
     private static final long serialVersionUID = 510l;
 
@@ -62,7 +62,7 @@ public class ClassFieldAccessorStore
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         lookup = (Map<AccessorKey, BaseLookupEntry>) in.readObject();
     }
 
@@ -74,21 +74,20 @@ public class ClassFieldAccessorStore
         this.cache = cache;
     }
 
-    public ClassFieldReader getReader(Class cls,
-                                      String fieldName) {
+    public ClassFieldReader getReader(Class<?> cls, String fieldName) {
         return getReader( cls.getName(),
-                          fieldName,
-                          null,
-                          AccessorKey.AccessorType.FieldAccessor );
+                fieldName,
+                null,
+                AccessorKey.AccessorType.FieldAccessor );
     }
 
     public ClassFieldReader getReader(final String className,
                                       final String fieldName,
                                       final AcceptsReadAccessor target) {
         return getReader( className,
-                          fieldName,
-                          target,
-                          AccessorKey.AccessorType.FieldAccessor );
+                fieldName,
+                target,
+                AccessorKey.AccessorType.FieldAccessor );
     }
 
     public synchronized ClassFieldReader getReader(final String className,
@@ -96,14 +95,14 @@ public class ClassFieldAccessorStore
                                                    final AcceptsReadAccessor target,
                                                    final AccessorKey.AccessorType accessorType) {
         AccessorKey key = new AccessorKey( className,
-                                           fieldName,
-                                           accessorType );
+                fieldName,
+                accessorType );
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
 
         boolean exists = entry != null;
         if ( !exists ) {
             entry = new FieldLookupEntry( new ClassFieldReader( className,
-                                                                fieldName ) );
+                    fieldName ) );
         }
 
         if ( this.eagerWire ) {
@@ -121,7 +120,7 @@ public class ClassFieldAccessorStore
         if ( !exists ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
-                             entry );
+                    entry );
         }
 
         return ( ClassFieldReader ) entry.getClassFieldReader();
@@ -133,53 +132,51 @@ public class ClassFieldAccessorStore
     }
 
     public InternalReadAccessor getMVELReader(final String pkgName,
-                                                    final String className,
-                                                    final String expr,
-                                                    final boolean typesafe, 
-                                                    Class returnType) {
+                                              final String className,
+                                              final String expr,
+                                              final boolean typesafe,
+                                              Class<?> returnType) {
         AccessorKey key = new AccessorKey( pkgName + className, expr, AccessorKey.AccessorType.FieldAccessor );
 
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.computeIfAbsent( key, k ->
-            new FieldLookupEntry( getReadAcessor( className, expr, typesafe, returnType ) ) );
+                new FieldLookupEntry( getReadAcessor( className, expr, typesafe, returnType ) ) );
 
         return entry.getClassFieldReader();
     }
-    
-    public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class returnType) {
-        if (Number.class.isAssignableFrom( returnType ) ||
-            ( returnType == byte.class ||
-              returnType == short.class ||
-              returnType == int.class ||
-              returnType == long.class ||
-              returnType == float.class ||
-              returnType == double.class ) ) {            
-            return new MVELNumberClassFieldReader( className, expr, typesafe );            
-        } else if (  Date.class.isAssignableFrom( returnType ) ) {
-          return new MVELDateClassFieldReader( className, expr, typesafe );
-        } else {
-          return new MVELObjectClassFieldReader( className, expr, typesafe );
-        }       
-    }     
 
-    public ClassFieldAccessor getAccessor(Class cls,
-                                          String fieldName) {
-        return getAccessor( cls.getName(),
-                            fieldName );
+    public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class<?> returnType) {
+        if (Number.class.isAssignableFrom( returnType ) ||
+                ( returnType == byte.class ||
+                        returnType == short.class ||
+                        returnType == int.class ||
+                        returnType == long.class ||
+                        returnType == float.class ||
+                        returnType == double.class ) ) {
+            return new MVELNumberClassFieldReader( className, expr, typesafe );
+        } else if (  Date.class.isAssignableFrom( returnType ) ) {
+            return new MVELDateClassFieldReader( className, expr, typesafe );
+        } else {
+            return new MVELObjectClassFieldReader( className, expr, typesafe );
+        }
+    }
+
+    public ClassFieldAccessor getAccessor(Class<?> cls, String fieldName) {
+        return getAccessor( cls.getName(), fieldName );
     }
 
     public ClassFieldAccessor getAccessor(final String className,
                                           final String fieldName) {
         AccessorKey key = new AccessorKey( className,
-                                           fieldName,
-                                           AccessorKey.AccessorType.FieldAccessor );
+                fieldName,
+                AccessorKey.AccessorType.FieldAccessor );
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.computeIfAbsent( key, k ->
                 new FieldLookupEntry( new ClassFieldReader( className,
-                                                            fieldName ),
-                                      new ClassFieldWriter( className,
-                                                            fieldName ) ) );
+                        fieldName ),
+                        new ClassFieldWriter( className,
+                                fieldName ) ) );
 
         ClassFieldAccessor accessor = new ClassFieldAccessor( (ClassFieldReader) entry.getClassFieldReader(),
-                                                              entry.getClassFieldWriter() );
+                entry.getClassFieldWriter() );
 
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
@@ -195,8 +192,8 @@ public class ClassFieldAccessorStore
         }
 
         AccessorKey key = new AccessorKey( objectType.getClassName(),
-                                           objectType.isEvent() ? "$$DROOLS__isEvent__" : null,
-                                           AccessorKey.AccessorType.ClassObjectType );
+                objectType.isEvent() ? "$$DROOLS__isEvent__" : null,
+                AccessorKey.AccessorType.ClassObjectType );
 
         ClassObjectTypeLookupEntry entry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( key, k ->
                 new ClassObjectTypeLookupEntry( cache.getClassObjectType( (ClassObjectType) objectType, false ) ) );
@@ -246,15 +243,19 @@ public class ClassFieldAccessorStore
                 }
 
                 case ClassObjectType : {
-                    ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( entry.getKey(), e -> {
-                        ClassObjectType oldObjectType = ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType();
-                        ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
-                        oldObjectType.setClassType( newObjectType.getClassType() );
-                        return new ClassObjectTypeLookupEntry( newObjectType );
-                    });
+                    if (!this.lookup.containsKey( entry.getKey() )) {
+                        this.lookup.put( entry.getKey(), getBaseLookupEntry( entry ) );
+                    }
                 }
             }
         }
+    }
+
+    private BaseLookupEntry getBaseLookupEntry( Entry<AccessorKey, BaseLookupEntry> entry ) {
+        ClassObjectType oldObjectType = (( ClassObjectTypeLookupEntry ) entry.getValue()).getClassObjectType();
+        ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
+        oldObjectType.setClassType( newObjectType.getClassType() );
+        return new ClassObjectTypeLookupEntry( newObjectType );
     }
 
     public void wire() {
@@ -303,7 +304,7 @@ public class ClassFieldAccessorStore
     public void wire( ClassWireable wireable ) {
         try {
             if ( wireable.getClassType() == null || ! wireable.getClassType().isPrimitive() ) {
-                Class cls = this.cache.getClassLoader().loadClass( wireable.getClassName() );
+                Class<?> cls = this.cache.getClassLoader().loadClass( wireable.getClassName() );
                 wireable.wire( cls );
             }
         } catch ( ClassNotFoundException e ) {
@@ -311,7 +312,7 @@ public class ClassFieldAccessorStore
         }
     }
 
-    public Collection<KnowledgeBuilderResult> getWiringResults( Class klass, String fieldName ) {
+    public Collection<KnowledgeBuilderResult> getWiringResults( Class<?> klass, String fieldName ) {
         if ( cache == null ) {
             return Collections.EMPTY_LIST;
         }
@@ -340,7 +341,7 @@ public class ClassFieldAccessorStore
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                ClassNotFoundException {
             classObjectType = (ClassObjectType) in.readObject();
         }
 
@@ -362,19 +363,13 @@ public class ClassFieldAccessorStore
         private InternalReadAccessor reader;
         private ClassFieldWriter writer;
 
-        public FieldLookupEntry() {
-
-        }
+        public FieldLookupEntry() { }
 
         public FieldLookupEntry(InternalReadAccessor reader) {
-            this.reader = reader;
+            this( reader, null );
         }
 
-        public FieldLookupEntry(ClassFieldWriter writer) {
-            this.writer = writer;
-        }
-
-        public FieldLookupEntry(ClassFieldReader reader,
+        public FieldLookupEntry(InternalReadAccessor reader,
                                 ClassFieldWriter writer) {
             this.writer = writer;
             this.reader = reader;
@@ -386,7 +381,7 @@ public class ClassFieldAccessorStore
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                ClassNotFoundException {
             reader = (InternalReadAccessor) in.readObject();
             writer = (ClassFieldWriter) in.readObject();
         }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,49 +32,63 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclaration
  */
 public class JavaAnalysisResult implements AnalysisResult {
 
-    private String analyzedExpr;
+    private final String analyzedExpr;
+    private final Set<String> identifiers;
+
     private BoundIdentifiers boundIdentifiers = null;
-    private Set<String> identifiers = Collections.emptySet();
-    private Map<String,JavaLocalDeclarationDescr> localVariables = Collections.emptyMap();
-    private Set<String> notBoundedIdentifiers = Collections.emptySet();
+    private Map<String,JavaLocalDeclarationDescr> localVariables;
+    private Set<String> notBoundedIdentifiers;
+    private Set<String> assignedVariables;
     private JavaContainerBlockDescr blocks;
+
+    public JavaAnalysisResult( String analyzedExpr, Set<String> identifiers ) {
+        this.analyzedExpr = analyzedExpr;
+        this.identifiers = identifiers;
+    }
 
     public String getAnalyzedExpr() {
         return analyzedExpr;
     }
-    public void setAnalyzedExpr(String analyzedExpr) {
-        this.analyzedExpr = analyzedExpr;
-    }
+
     public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
     }
     public void setBoundIdentifiers(BoundIdentifiers boundIdentifiers) {
         this.boundIdentifiers = boundIdentifiers;
     }
+
     public Set<String> getIdentifiers() {
         return identifiers;
     }
-    public void setIdentifiers(Set<String> identifiers) {
-        this.identifiers = identifiers;
-    }
+
     public Set<String> getLocalVariables() {
         return localVariables.keySet();
     }
+
     public Map<String,JavaLocalDeclarationDescr> getLocalVariablesMap() {
-        return this.localVariables;
-    }
-    public void setLocalVariables(Map<String,JavaLocalDeclarationDescr> localVariables) {
-        this.localVariables = localVariables;
+        return localVariables == null ? Collections.emptyMap() : localVariables;
     }
     public void addLocalVariable( String identifier, JavaLocalDeclarationDescr descr ) {
+        if (localVariables == null) {
+            localVariables = new HashMap<>();
+        }
         this.localVariables.put( identifier, descr );
     }
+
     public Set<String> getNotBoundedIdentifiers() {
-        return notBoundedIdentifiers;
+        return notBoundedIdentifiers == null ? Collections.emptySet() : notBoundedIdentifiers;
     }
     public void setNotBoundedIdentifiers(Set<String> notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
+
+    public Set<String> getAssignedVariables() {
+        return assignedVariables == null ? Collections.emptySet() : assignedVariables;
+    }
+    public void setAssignedVariables( Set<String> assignedVariables ) {
+        this.assignedVariables = assignedVariables;
+    }
+
     public JavaContainerBlockDescr getBlockDescrs() {
         return blocks;
     }

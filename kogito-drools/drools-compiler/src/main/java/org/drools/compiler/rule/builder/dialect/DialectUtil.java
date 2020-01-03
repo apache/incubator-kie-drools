@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,20 +11,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.rule.builder.dialect;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
-import static org.drools.core.util.StringUtils.splitArgumentsList;
-import static org.drools.core.util.StringUtils.splitStatements;
-import static org.drools.reflective.util.ClassUtils.findClass;
-import static org.drools.reflective.util.ClassUtils.getter2property;
-import static org.drools.reflective.util.ClassUtils.setter2property;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +66,17 @@ import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.ClassUtils.findClass;
+import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
+import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
+import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.core.util.StringUtils.splitStatements;
+
 public final class DialectUtil {
 
     private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[\\W]");
@@ -119,7 +119,7 @@ public final class DialectUtil {
                                        final JavaAnalysisResult analysis,
                                        Map<String, Declaration> decls) {
         // This is a list of all the non container blocks, which initially are in tree form.
-        List<JavaBlockDescr> blocks = buildBlockDescrs(new ArrayList<JavaBlockDescr>(), analysis.getBlockDescrs());
+        List<JavaBlockDescr> blocks = buildBlockDescrs(new ArrayList<>(), analysis.getBlockDescrs());
 
         return fixBlockDescr(context, analysis, decls, blocks);
     }
@@ -129,20 +129,10 @@ public final class DialectUtil {
                                        Map<String, Declaration> decls,
                                        List<JavaBlockDescr> blocks) {
 
-        MVELDialect mvel = (MVELDialect) context.getDialect("mvel");
-
-
         String originalCode = analysis.getAnalyzedExpr();
-        BoundIdentifiers bindings = analysis.getBoundIdentifiers();
 
         // sorting exit points for correct order iteration
-        Collections.sort(blocks,
-                new Comparator<JavaBlockDescr>() {
-                    public int compare(JavaBlockDescr o1,
-                                       JavaBlockDescr o2) {
-                        return o1.getStart() - o2.getStart();
-                    }
-                });
+        blocks.sort( Comparator.comparingInt( JavaBlockDescr::getStart ) );
 
         StringBuilder consequence = new StringBuilder();
         int lastAdded = 0;
@@ -154,8 +144,7 @@ public final class DialectUtil {
             }
 
             // adding chunk
-            consequence.append(originalCode.substring(lastAdded,
-                    block.getStart() - 1));
+            consequence.append( originalCode, lastAdded, block.getStart() - 1 );
 
             lastAdded = block.getEnd();
 
@@ -163,26 +152,17 @@ public final class DialectUtil {
                 case MODIFY:
                 case UPDATE:
                 case DELETE:
-                    rewriteDescr(context,
-                            originalCode,
-                            mvel,
-                            consequence,
-                            block,
-                            bindings,
-                            decls);
+                    rewriteDescr(context, consequence, block, analysis, decls);
                     break;
                 case ENTRY:
                 case EXIT:
                 case CHANNEL:
-                    rewriteInterfacePoint(context,
-                            originalCode,
-                            consequence,
-                            (JavaInterfacePointsDescr) block);
+                    rewriteInterfacePoint(context, originalCode, consequence, (JavaInterfacePointsDescr) block);
                     break;
                 case INSERT:
                     parseInsertDescr(context, block);
                 default:
-                    consequence.append(originalCode.substring(block.getStart() - 1, lastAdded));
+                    consequence.append( originalCode, block.getStart() - 1, lastAdded );
             }
         }
         consequence.append(originalCode.substring(lastAdded));
@@ -207,12 +187,12 @@ public final class DialectUtil {
      * get this to work and will have to wait until MVEL supports genercs (mdp).
      */
     public static void setContainerBlockInputs(RuleBuildContext context,
-                                                List<JavaBlockDescr> descrs,
-                                                JavaContainerBlockDescr parentBlock,
-                                                String originalCode,
-                                                BoundIdentifiers bindings,
-                                                Map<String, Class<?>> parentVars,
-                                                int offset) {
+                                               List<JavaBlockDescr> descrs,
+                                               JavaContainerBlockDescr parentBlock,
+                                               String originalCode,
+                                               BoundIdentifiers bindings,
+                                               Map<String, Class<?>> parentVars,
+                                               int offset) {
         StringBuilder consequence = new StringBuilder();
         int lastAdded = 0;
 
@@ -225,8 +205,7 @@ public final class DialectUtil {
 
             if (block.getType() == JavaBlockDescr.BlockType.TRY) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
                 JavaTryBlockDescr tryDescr = (JavaTryBlockDescr) block;
                 if (tryDescr.getFinal() != null) {
                     lastAdded = tryDescr.getFinal().getEnd() - offset;
@@ -240,66 +219,56 @@ public final class DialectUtil {
                         offset);
             } else if (block.getType() == JavaBlockDescr.BlockType.THROW) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
 
                 JavaThrowBlockDescr throwBlock = (JavaThrowBlockDescr) block;
                 addWhiteSpaces(originalCode, consequence, throwBlock.getStart() - offset, throwBlock.getTextStart() - offset);
-                consequence.append(originalCode.substring(throwBlock.getTextStart() - offset - 1, throwBlock.getEnd() - 1 - offset)).append(";");
+                consequence.append( originalCode, throwBlock.getTextStart() - offset - 1, throwBlock.getEnd() - 1 - offset ).append(";");
                 lastAdded = throwBlock.getEnd() - offset;
             } else if (block.getType() == JavaBlockDescr.BlockType.IF) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
                 JavaIfBlockDescr ifDescr = (JavaIfBlockDescr) block;
                 lastAdded = ifDescr.getEnd() - offset;
                 stripBlockDescr(originalCode,
-                                consequence,
-                                ifDescr,
-                                offset);
+                        consequence,
+                        ifDescr,
+                        offset);
             } else if (block.getType() == JavaBlockDescr.BlockType.ELSE) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
                 JavaElseBlockDescr elseDescr = (JavaElseBlockDescr) block;
                 lastAdded = elseDescr.getEnd() - offset;
                 stripBlockDescr(originalCode,
-                                consequence,
-                                elseDescr,
-                                offset);
+                        consequence,
+                        elseDescr,
+                        offset);
             } else if (block.getType() == JavaBlockDescr.BlockType.WHILE) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
                 JavaWhileBlockDescr whileDescr = (JavaWhileBlockDescr) block;
                 lastAdded = whileDescr.getEnd() - offset;
                 stripBlockDescr(originalCode,
-                                consequence,
-                                whileDescr,
-                                offset);
+                        consequence,
+                        whileDescr,
+                        offset);
             } else if (block.getType() == JavaBlockDescr.BlockType.FOR) {
                 // adding previous chunk up to the start of this block
-                consequence.append(originalCode.substring(lastAdded,
-                        block.getStart() - 1 - offset));
+                consequence.append( originalCode, lastAdded, block.getStart() - 1 - offset );
                 JavaForBlockDescr forDescr = (JavaForBlockDescr) block;
                 lastAdded = forDescr.getEnd() - offset;
                 stripBlockDescr(originalCode,
-                                consequence,
-                                forDescr,
-                                offset);
+                        consequence,
+                        forDescr,
+                        offset);
             }
         }
         consequence.append(originalCode.substring(lastAdded));
 
         // We need to do this as MVEL doesn't recognise "modify"
         MacroProcessor macroProcessor = new MacroProcessor();
-        Map<String, Macro> macros = new HashMap<String, Macro>(MVELConsequenceBuilder.macros);
-        macros.put("modify",
-                new Macro() {
-                    public String doMacro() {
-                        return "with  ";
-                    }
-                });
+        Map<String, Macro> macros = new HashMap<>(MVELConsequenceBuilder.macros);
+        macros.put("modify", () -> "with  " );
         macroProcessor.setMacros(macros);
         String mvelCode = macroProcessor.parse(consequence.toString());
 
@@ -406,7 +375,7 @@ public final class DialectUtil {
             // swallow this as the error will be reported else where
         }
 
-        return (mvelAnalysis != null) ? mvelAnalysis.getMvelVariables() : new HashMap<String, Class<?>>();
+        return (mvelAnalysis != null) ? mvelAnalysis.getMvelVariables() : new HashMap<>();
     }
 
     private static void addWhiteSpaces(String original, StringBuilder consequence, int start, int end) {
@@ -454,7 +423,6 @@ public final class DialectUtil {
         addWhiteSpaces(originalCode, consequence, consequence.length(), block.getEnd() - offset);
     }
 
-    @SuppressWarnings("unchecked")
     private static void rewriteInterfacePoint(final RuleBuildContext context,
                                               final String originalCode,
                                               final StringBuilder consequence,
@@ -483,21 +451,17 @@ public final class DialectUtil {
         String originalBlock = originalCode.substring(ep.getStart() - 1,
                 ep.getEnd());
         int end = originalBlock.indexOf("]");
-        addLineBreaks(consequence,
-                originalBlock.substring(0,
-                        end));
+        addLineBreaks(consequence, originalBlock.substring(0, end));
     }
 
-    private static boolean rewriteDescr(final RuleBuildContext context,
-                                        final String originalCode,
-                                        final MVELDialect mvel,
-                                        final StringBuilder consequence,
-                                        final JavaBlockDescr d,
-                                        final BoundIdentifiers bindings,
-                                        final Map<String, Declaration> decls) {
+    private static void rewriteDescr(final RuleBuildContext context,
+                                     final StringBuilder consequence,
+                                     final JavaBlockDescr d,
+                                     final JavaAnalysisResult analysis,
+                                     final Map<String, Declaration> decls) {
         if ( d.getEnd() == 0 ) {
             // do nothing, it was incorrectly parsed, but this error should be picked up else where
-            return false;
+            return;
         }
 
         boolean typeSafety = context.isTypesafe();
@@ -505,7 +469,7 @@ public final class DialectUtil {
 
         Map<String, Class<?>> localTypes = d.getInputs();
         if( d.getInScopeLocalVars() != null && ! d.getInScopeLocalVars().isEmpty() ) {
-            localTypes = new HashMap<String, Class<?>>( d.getInputs() != null ? d.getInputs() : Collections.EMPTY_MAP );
+            localTypes = new HashMap<>( d.getInputs() != null ? d.getInputs() : Collections.emptyMap() );
             for( JavaLocalDeclarationDescr local : d.getInScopeLocalVars() ) {
                 // these are variables declared in the code itself that are in the scope for this expression
                 try {
@@ -522,37 +486,38 @@ public final class DialectUtil {
             }
         }
 
+        MVELDialect mvel = (MVELDialect) context.getDialect("mvel");
         MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
-                                                                                   d.getTargetExpression(),
-                                                                                   bindings,
-                                                                                   localTypes,
-                                                                                   "drools",
-                                                                                   KnowledgeHelper.class);
+                d.getTargetExpression(),
+                analysis.getBoundIdentifiers(),
+                localTypes,
+                "drools",
+                KnowledgeHelper.class);
         context.setTypesafe( typeSafety );
         if ( mvelAnalysis == null ) {
-           // something bad happened, issue already logged in errors
-           return false;
+            // something bad happened, issue already logged in errors
+            return;
         }
 
-        Class ret = mvelAnalysis.getReturnType();
+        Class<?> ret = mvelAnalysis.getReturnType();
 
         if ( ret == null ) {
-           // not possible to evaluate expression return value
-           context.addError(new DescrBuildError(context.getParentDescr(),
-                   context.getRuleDescr(),
-                   originalCode,
-                   "Unable to determine the resulting type of the expression: " + d.getTargetExpression() + "\n"));
+            // not possible to evaluate expression return value
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                    context.getRuleDescr(),
+                    analysis.getAnalyzedExpr(),
+                    "Unable to determine the resulting type of the expression: " + d.getTargetExpression() + "\n"));
 
-           return false;
+            return;
         }
 
         // adding modify expression
         String retString = ClassUtils.canonicalName( ret );
         String declrString;
         if (d.getTargetExpression().charAt( 0 ) == '(' ) {
-           declrString = d.getTargetExpression().substring( 1,d.getTargetExpression().length() -1 ).trim();
+            declrString = d.getTargetExpression().substring( 1,d.getTargetExpression().length() -1 ).trim();
         } else {
-           declrString = d.getTargetExpression();
+            declrString = d.getTargetExpression();
         }
         String obj = declrString;
         Declaration declr = decls.get( declrString );
@@ -560,39 +525,37 @@ public final class DialectUtil {
         consequence.append( "{ " );
 
         if ( declr == null ) {
-           obj = "__obj__";
-           consequence.append( retString );
-           consequence.append( " " );
-           consequence.append( obj);
-           consequence.append( " = " );
-           consequence.append( d.getTargetExpression() );
-           consequence.append( "; " );
+            obj = "__obj__";
+            consequence.append( retString );
+            consequence.append( " " );
+            consequence.append( obj);
+            consequence.append( " = " );
+            consequence.append( d.getTargetExpression() );
+            consequence.append( "; " );
         }
 
         if ( declr == null || declr.isInternalFact() ) {
-           consequence.append( "org.kie.api.runtime.rule.FactHandle " );
-           consequence.append( obj );
-           consequence.append( "__Handle2__ = drools.getFactHandle(" );
-           consequence.append( obj );
-           consequence.append( ");" );
+            consequence.append( "org.kie.api.runtime.rule.FactHandle " );
+            consequence.append( obj );
+            consequence.append( "__Handle2__ = drools.getFactHandle(" );
+            consequence.append( obj );
+            consequence.append( ");" );
         }
 
         // the following is a hack to preserve line breaks.
-        String originalBlock = originalCode.substring( d.getStart() - 1, d.getEnd() );
+        String originalBlock = analysis.getAnalyzedExpr().substring( d.getStart() - 1, d.getEnd() );
 
         switch (d.getType()) {
             case MODIFY:
                 rewriteModifyDescr(context, d, originalBlock, consequence, declr, obj);
                 break;
             case UPDATE:
-                rewriteUpdateDescr(context, d, consequence, declr, obj);
+                rewriteUpdateDescr(context, d, analysis, consequence, declr, obj);
                 break;
             case DELETE:
                 rewriteDeleteDescr( context, d, consequence, declr, obj );
                 break;
         }
-
-        return declr != null;
     }
 
     private static void rewriteModifyDescr( RuleBuildContext context,
@@ -652,11 +615,18 @@ public final class DialectUtil {
 
     private static void rewriteUpdateDescr( RuleBuildContext context,
                                             JavaBlockDescr d,
+                                            JavaAnalysisResult analysis,
                                             StringBuilder consequence,
                                             Declaration declr,
                                             String obj) {
-        BitMask modificationMask = AllSetBitMask.get();
 
+        if (analysis.getAssignedVariables().contains( obj )) {
+            consequence.insert( 0, "drools.delete(" + obj + ");\n" );
+            consequence.append( "drools.insert(" ).append( obj ).append( ");\n}" );
+            return;
+        }
+
+        BitMask modificationMask = AllSetBitMask.get();
         Class<?> typeClass = findModifiedClass(context, d, declr);
         TypeDeclaration typeDeclaration = typeClass == null ? null : context.getKnowledgeBuilder().getTypeDeclaration(typeClass);
 
@@ -741,7 +711,7 @@ public final class DialectUtil {
                     statement.addField(modifiedProp, argsNr > 0 ? args.get(0) : null);
                 }
             }
-            
+
             if ( propertyReactive && propertyName == null && modifiedProps == null ) {
                 // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
                 modificationMask = allSetButTraitBitMask();
@@ -840,7 +810,7 @@ public final class DialectUtil {
             return clazz;
         }
 
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
         List<PackageDescr> pkgDescrs = packageBuilder.getPackageDescrs(namespace);
         if (pkgDescrs == null) {
             return null;
@@ -859,11 +829,11 @@ public final class DialectUtil {
         return function == null ? null : findClassByName(context, function.getReturnType());
     }
 
-    private static boolean rewriteDeleteDescr( RuleBuildContext context,
-                                               JavaBlockDescr d,
-                                               StringBuilder consequence,
-                                               Declaration declr,
-                                               String obj ) {
+    private static void rewriteDeleteDescr( RuleBuildContext context,
+                                            JavaBlockDescr d,
+                                            StringBuilder consequence,
+                                            Declaration declr,
+                                            String obj ) {
         Class<?> typeClass = findModifiedClass(context, d, declr);
         if (typeClass != null) {
             ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.RETRACT, typeClass);
@@ -875,8 +845,6 @@ public final class DialectUtil {
         } else {
             consequence.append("drools.delete( ").append(obj).append("__Handle2__ ); }");
         }
-
-        return declr != null;
     }
 
     private static void parseInsertDescr(RuleBuildContext context, JavaBlockDescr block) {
