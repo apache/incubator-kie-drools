@@ -131,7 +131,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     default SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
             Solution_ problem, Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<? super ProblemId_, Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         return solve(problemId, (problemId_) -> problem, finalBestSolutionConsumer, exceptionHandler);
     }
 
@@ -171,7 +171,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<? super ProblemId_, Throwable> exceptionHandler);
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler);
 
     /**
      * Submits a planning problem to solve and returns immediately.
@@ -209,7 +209,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> bestSolutionConsumer,
-            BiConsumer<? super ProblemId_, Throwable> exceptionHandler);
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler);
 
     /**
      * Returns if the {@link Solver} is scheduled to solve, actively solving or not.

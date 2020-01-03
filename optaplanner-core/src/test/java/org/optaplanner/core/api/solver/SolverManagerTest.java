@@ -21,6 +21,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,10 +34,13 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
 
 public class SolverManagerTest {
 
@@ -155,6 +161,20 @@ public class SolverManagerTest {
         }
         assertEquals(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(1L));
         assertEquals(SolverStatus.NOT_SOLVING, solverJob1.getSolverStatus());
+    }
+
+    @Test
+    public void solveGenerics() {
+        final SolverConfig solverConfig = PlannerTestUtils
+                .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager
+                .create(solverConfig, new SolverManagerConfig());
+
+        BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("This is unexpected");
+        Consumer<Object> finalBestSolutionConsumer = o -> {};
+        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder = o -> new TestdataUnannotatedExtendedSolution();
+
+        solverManager.solve(1L, problemFinder, finalBestSolutionConsumer, exceptionHandler);
     }
 
     @Ignore("Skip ahead not yet supported")
