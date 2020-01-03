@@ -74,8 +74,7 @@ public class ClassFieldAccessorStore
         this.cache = cache;
     }
 
-    public ClassFieldReader getReader(Class cls,
-                                      String fieldName) {
+    public ClassFieldReader getReader(Class<?> cls, String fieldName) {
         return getReader( cls.getName(),
                           fieldName,
                           null,
@@ -136,7 +135,7 @@ public class ClassFieldAccessorStore
                                                     final String className,
                                                     final String expr,
                                                     final boolean typesafe, 
-                                                    Class returnType) {
+                                                    Class<?> returnType) {
         AccessorKey key = new AccessorKey( pkgName + className, expr, AccessorKey.AccessorType.FieldAccessor );
 
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.computeIfAbsent( key, k ->
@@ -145,7 +144,7 @@ public class ClassFieldAccessorStore
         return entry.getClassFieldReader();
     }
     
-    public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class returnType) {
+    public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class<?> returnType) {
         if (Number.class.isAssignableFrom( returnType ) ||
             ( returnType == byte.class ||
               returnType == short.class ||
@@ -161,10 +160,8 @@ public class ClassFieldAccessorStore
         }       
     }     
 
-    public ClassFieldAccessor getAccessor(Class cls,
-                                          String fieldName) {
-        return getAccessor( cls.getName(),
-                            fieldName );
+    public ClassFieldAccessor getAccessor(Class<?> cls, String fieldName) {
+        return getAccessor( cls.getName(), fieldName );
     }
 
     public ClassFieldAccessor getAccessor(final String className,
@@ -246,15 +243,19 @@ public class ClassFieldAccessorStore
                 }
 
                 case ClassObjectType : {
-                    ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( entry.getKey(), e -> {
-                        ClassObjectType oldObjectType = ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType();
-                        ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
-                        oldObjectType.setClassType( newObjectType.getClassType() );
-                        return new ClassObjectTypeLookupEntry( newObjectType );
-                    });
+                    if (!this.lookup.containsKey( entry.getKey() )) {
+                        this.lookup.put( entry.getKey(), getBaseLookupEntry( entry ) );
+                    }
                 }
             }
         }
+    }
+
+    private BaseLookupEntry getBaseLookupEntry( Entry<AccessorKey, BaseLookupEntry> entry ) {
+        ClassObjectType oldObjectType = (( ClassObjectTypeLookupEntry ) entry.getValue()).getClassObjectType();
+        ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
+        oldObjectType.setClassType( newObjectType.getClassType() );
+        return new ClassObjectTypeLookupEntry( newObjectType );
     }
 
     public void wire() {
@@ -303,7 +304,7 @@ public class ClassFieldAccessorStore
     public void wire( ClassWireable wireable ) {
         try {
             if ( wireable.getClassType() == null || ! wireable.getClassType().isPrimitive() ) {
-                Class cls = this.cache.getClassLoader().loadClass( wireable.getClassName() );
+                Class<?> cls = this.cache.getClassLoader().loadClass( wireable.getClassName() );
                 wireable.wire( cls );
             }
         } catch ( ClassNotFoundException e ) {
@@ -311,7 +312,7 @@ public class ClassFieldAccessorStore
         }
     }
 
-    public Collection<KnowledgeBuilderResult> getWiringResults( Class klass, String fieldName ) {
+    public Collection<KnowledgeBuilderResult> getWiringResults( Class<?> klass, String fieldName ) {
         if ( cache == null ) {
             return Collections.EMPTY_LIST;
         }
@@ -362,19 +363,13 @@ public class ClassFieldAccessorStore
         private InternalReadAccessor reader;
         private ClassFieldWriter writer;
 
-        public FieldLookupEntry() {
-
-        }
+        public FieldLookupEntry() { }
 
         public FieldLookupEntry(InternalReadAccessor reader) {
-            this.reader = reader;
+            this( reader, null );
         }
 
-        public FieldLookupEntry(ClassFieldWriter writer) {
-            this.writer = writer;
-        }
-
-        public FieldLookupEntry(ClassFieldReader reader,
+        public FieldLookupEntry(InternalReadAccessor reader,
                                 ClassFieldWriter writer) {
             this.writer = writer;
             this.reader = reader;

@@ -488,4 +488,66 @@ public class PropertyReactivityTest extends BaseModelTest {
         assertEquals( 41, p.getAge() );
         assertTrue( p.getEmployed() );
     }
+
+    @Test
+    public void testReassignment() {
+        // DROOLS-4884
+        final String str =
+                "package com.example\n" +
+                "\n" +
+                "declare Counter\n" +
+                "    value1: int\n" +
+                "    value2: int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\" when\n" +
+                "    not Counter()\n" +
+                "then\n" +
+                "    drools.insert(new Counter(0, 0));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Loop\"\n" +
+                "when\n" +
+                "    $c: Counter( value1 == 0 )\n" +
+                "then\n" +
+                "    $c = new Counter(0, 0);\n" +
+                "    $c.setValue2(1);\n" +
+                "    update($c);\n" +
+                "end\n\n";
+
+        KieSession ksession = getKieSession( str );
+
+        assertEquals( 5, ksession.fireAllRules(5) );
+    }
+
+    @Test
+    public void testReassignment2() {
+        // DROOLS-4884
+        final String str =
+                "package com.example\n" +
+                "\n" +
+                "declare Counter\n" +
+                "    value1: int\n" +
+                "    value2: int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\" when\n" +
+                "    not Counter()\n" +
+                "then\n" +
+                "    drools.insert(new Counter(0, 0));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Loop\"\n" +
+                "when\n" +
+                "    $c: Counter( value1 == 0 )\n" +
+                "then\n" +
+                "    $c = new Counter(0, 0);\n" +
+                "    $c.setValue1(1);\n" +
+                "    update($c);\n" +
+                "end\n\n";
+
+        KieSession ksession = getKieSession( str );
+
+        assertEquals( 2, ksession.fireAllRules(5) );
+    }
 }
