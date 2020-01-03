@@ -63,7 +63,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
-                                                       "' to '" + requiredClass.getCanonicalName());
+                                                       "' to '" + requiredClass.getCanonicalName() + "'");
         }
         return expressionResult;
     }

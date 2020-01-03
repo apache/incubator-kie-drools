@@ -114,7 +114,7 @@ public class MVELExpressionEvaluatorTest {
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
     }
 
-    @Ignore("https://issues.jboss.org/browse/DROOLS-4649")
+    @Ignore("https://issues.redhat.com/browse/DROOLS-4649")
     @Test
     public void evaluateLiteralExpression_Array() {
         assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{\"Jim\", \"Michael\"}"), Object[].class.getCanonicalName(),
