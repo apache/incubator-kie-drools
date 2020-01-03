@@ -47,10 +47,10 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
 
     private final static String DEFAULT_APPLICATION = "defaultApplication";
 
-    protected static final BiFunction<String, KieContainer, KieSessionConfiguration> forcePseudoClock = (sessionName, kc) -> {
-        KieSessionConfiguration kieSessionConfiguration = kc.getKieSessionConfiguration(sessionName);
+    protected static final BiFunction<String, KieContainer, KieSessionConfiguration> forcePseudoClock = (sn, kc) -> {
+        KieSessionConfiguration kieSessionConfiguration = kc.getKieSessionConfiguration(sn);
         if (kieSessionConfiguration == null) {
-            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
+            throw new ScenarioException("Impossible to find a KieSession with name " + sn);
         }
         kieSessionConfiguration.setOption(ClockTypeOption.get("pseudo"));
         return kieSessionConfiguration;
