@@ -69,7 +69,7 @@ public enum BaseExpressionOperator {
             if (!rawValue.endsWith("]")) {
                 throw new IllegalArgumentException(new StringBuilder().append("Malformed expression: ").append(rawValue).toString());
             }
-            return Stream.of(rawValue.substring(1, (rawValue).length() - 1).split(","))
+            return Stream.of(rawValue.substring(1, rawValue.length() - 1).split(","))
                     .map(String::trim)
                     .collect(Collectors.toList());
         }

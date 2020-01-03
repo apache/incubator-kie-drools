@@ -69,7 +69,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
-        if(rawString == null) {
+        if (rawString == null) {
             return null;
         }
 
