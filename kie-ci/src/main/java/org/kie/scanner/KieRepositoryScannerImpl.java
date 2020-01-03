@@ -55,6 +55,7 @@ import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyDescriptor, Artifact>> implements InternalKieScanner {
 
     private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
+    private static final DependencyFilter.ExcludeScopeFilter DEPENDENCY_SCOPEFILTER = new DependencyFilter.ExcludeScopeFilter("test", "provided", "system");
 
     private DependencyDescriptor kieProjectDescr;
 
@@ -248,7 +249,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
 
     private Map<ReleaseId, DependencyDescriptor> indexArtifacts() {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<>();
-        for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
+        for (DependencyDescriptor dep : artifactResolver.getAllDependecies(DEPENDENCY_SCOPEFILTER)) {
             if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
                 Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
                 if (artifact != null) {
