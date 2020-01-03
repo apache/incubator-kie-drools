@@ -32,15 +32,15 @@ public class MVELAnalysisResult
     AnalysisResult {
 
     private BoundIdentifiers        boundIdentifiers      = null;
-    private Set<String>             identifiers           = Collections.EMPTY_SET;
-    private Set<String>             localVariables        = Collections.EMPTY_SET;
-    private Set<String>             notBoundedIdentifiers = Collections.EMPTY_SET;
+    private Set<String>             identifiers           = Collections.emptySet();
+    private Set<String>             localVariables        = Collections.emptySet();
+    private Set<String>             notBoundedIdentifiers = Collections.emptySet();
 
     private Map<String, Class< ? >> mvelVariables;
 
     private boolean                 typesafe              = true;
 
-    private Class                   returnType;
+    private Class<?>                returnType;
 
     public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
@@ -55,7 +55,7 @@ public class MVELAnalysisResult
         return identifiers;
     }
 
-    public void setIdentifiers(Set identifiers) {
+    public void setIdentifiers(Set<String> identifiers) {
         this.identifiers = identifiers;
     }
 
@@ -63,15 +63,11 @@ public class MVELAnalysisResult
         return this.localVariables;
     }
 
-    public void setLocalVariables(Set localVariables) {
-        this.localVariables = localVariables;
-    }
-
     public Set<String> getNotBoundedIdentifiers() {
         return notBoundedIdentifiers;
     }
 
-    public void setNotBoundedIdentifiers(Set notBoundedIdentifiers) {
+    public void setNotBoundedIdentifiers(Set<String> notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
 
@@ -83,11 +79,11 @@ public class MVELAnalysisResult
         this.mvelVariables = mvelVariables;
     }
 
-    public Class getReturnType() {
+    public Class<?> getReturnType() {
         return returnType;
     }
 
-    public void setReturnType(Class returnType) {
+    public void setReturnType(Class<?> returnType) {
         this.returnType = returnType;
     }
 

@@ -137,7 +137,7 @@ public class Consequence {
         Set<String> usedUnusableDeclarations = new HashSet<>(context.getUnusableOrBinding());
         usedUnusableDeclarations.retainAll(usedDeclarationInRHS);
 
-        for(String s : usedUnusableDeclarations) {
+        for (String s : usedUnusableDeclarations) {
             context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s)) );
         }
 
@@ -145,14 +145,34 @@ public class Consequence {
         if (isBreaking) {
             onCall = new MethodCallExpr(onCall, BREAKING_CALL);
         }
-        MethodCallExpr executeCall = null;
-        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
-        } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            executeCall = createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+
+        switch (context.getRuleDialect()) {
+            case JAVA:
+                rewriteReassignedDeclrations( ruleConsequence, usedDeclarationInRHS );
+                return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+            case MVEL:
+                return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
         }
 
-        return executeCall;
+        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
+    }
+
+    private void rewriteReassignedDeclrations( BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
+        for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
+            String assignedVariable = assignExpr.getTarget().toString();
+            if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
+                ruleConsequence.findAll( MethodCallExpr.class).stream()
+                        .filter( m -> m.getNameAsString().equals( "update" ) )
+                        .filter( m -> m.getScope().map( s -> s.toString().equals( "drools" ) ).orElse( true ) )
+                        .filter( m -> m.getArguments().size() == 1 )
+                        .filter( m -> m.getArgument(0).toString().equals( assignedVariable ) )
+                        .findFirst()
+                        .ifPresent( m -> {
+                            m.setName( "insert" );
+                            ruleConsequence.addStatement(0, new MethodCallExpr( "delete", new NameExpr( assignedVariable ) ));
+                        } );
+            }
+        }
     }
 
     private MethodCallExpr createExecuteCallMvel(RuleDescr ruleDescr, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
@@ -201,9 +221,9 @@ public class Consequence {
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
-        } else {
-            throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
         }
+
+        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
     }
 
     public static boolean containsWord(String word, String body) {
@@ -307,7 +327,7 @@ public class Consequence {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
-                        MethodCallExpr bitMaskCreation = createBitMaskInitialization( newDeclarations, updatedClass, modifiedProps );
+                        MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
                     }
 
@@ -325,7 +345,7 @@ public class Consequence {
         return context.getDeclarationById(declarationVar).map( DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
     }
 
-    private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, Class<?> updatedClass, Set<String> modifiedProps) {
+    private MethodCallExpr createBitMaskInitialization(Class<?> updatedClass, Set<String> modifiedProps) {
         MethodCallExpr bitMaskCreation;
         if (modifiedProps != null && !modifiedProps.isEmpty()) {
             String domainClassSourceName = asJavaSourceName( updatedClass );

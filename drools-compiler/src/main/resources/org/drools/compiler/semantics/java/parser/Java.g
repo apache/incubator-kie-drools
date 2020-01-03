@@ -85,9 +85,12 @@ scope VarDecl {
     package org.drools.compiler.rule.builder.dialect.java.parser;
     import java.util.Iterator;
     import java.util.Queue;
-    import java.util.LinkedList;   
-    import java.util.Stack; 
-    
+    import java.util.LinkedList;
+    import java.util.Stack;
+    import java.util.Set;
+    import java.util.HashSet;
+    import java.util.Collections;
+
     import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
     import org.drools.compiler.rule.builder.dialect.java.parser.JavaRootBlockDescr;
     import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
@@ -96,8 +99,8 @@ scope VarDecl {
 }
 
 @parser::members {
-    private List identifiers = new ArrayList();
-    public List getIdentifiers() { return identifiers; }
+    private Set<String> identifiers = new HashSet<String>();
+    public Set<String> getIdentifiers() { return identifiers; }
 
     private Stack<List<JavaLocalDeclarationDescr>> localDeclarationsStack = new Stack<List<JavaLocalDeclarationDescr>>(); 
     { localDeclarationsStack.push( new ArrayList<JavaLocalDeclarationDescr>() ); }
@@ -108,15 +111,23 @@ scope VarDecl {
     
         private JavaRootBlockDescr rootBlockDescr = new JavaRootBlockDescr();
         private LinkedList<JavaContainerBlockDescr> blocks;
-        
+        private Set<String> assignedVariables;
+
         public void addBlockDescr(JavaBlockDescr blockDescr) {
             if ( this.blocks == null ) {
-                this.blocks = new LinkedList<JavaContainerBlockDescr>();          
+                this.blocks = new LinkedList<JavaContainerBlockDescr>();
                 this.blocks.add( this.rootBlockDescr );
             }
             blocks.getLast().addJavaBlockDescr( blockDescr );
         }
-        
+
+        public void addAssignment(String variable) {
+            if ( this.assignedVariables == null ) {
+                this.assignedVariables = new HashSet<String>();
+            }
+            this.assignedVariables.add( variable );
+        }
+
             public void pushContainerBlockDescr(JavaContainerBlockDescr blockDescr, boolean addToParent) {
                 if ( addToParent ) {
                     addBlockDescr(blockDescr);
@@ -129,6 +140,8 @@ scope VarDecl {
             }          
         
         public JavaRootBlockDescr getRootBlockDescr() { return rootBlockDescr; }
+
+        public Set<String> getAssignedVariables() { return assignedVariables != null ? assignedVariables : Collections.emptySet(); }
 
     private String source = "unknown";
 
@@ -1116,12 +1129,19 @@ constantExpression
     ;
 
 expression
-    :	conditionalExpression (assignmentOperator expression)?
+    :	assignmentExpression
+    |   conditionalExpression (assignmentOperator expression)?
+    ;
+
+assignmentExpression
+    :	id=conditionalExpression '=' expression
+        {
+            this.addAssignment( $id.text );
+        }
     ;
 
 assignmentOperator
-    :	'='
-    |   '+='
+    :	'+='
     |   '-='
     |   '*='
     |   '/='

@@ -16,22 +16,22 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.core.base.EvaluatorWrapper;
 
 /**
  * Expression analyzer.
@@ -64,40 +64,33 @@ public class JavaExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeExpression(final String expr,
                                                 final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final JavaParser parser = parse( expr );
         parser.conditionalOrExpression();
         
-        JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setAnalyzedExpr(expr);
-        result.setIdentifiers(new HashSet<String>( parser.getIdentifiers() ) );
-        return analyze( result,
-                        availableIdentifiers );
+        JavaAnalysisResult result = new JavaAnalysisResult( expr, parser.getIdentifiers() );
+        return analyze( result, availableIdentifiers );
     }
 
-    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeBlock(final String expr,
                                        final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final JavaParser parser = parse( "{" + expr + "}" );
         parser.block();
 
-        JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setAnalyzedExpr(expr);
-        result.setIdentifiers( new HashSet<String>( parser.getIdentifiers() ) );
-        result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
-        if( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
-            for( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
+        JavaAnalysisResult result = new JavaAnalysisResult( expr, parser.getIdentifiers() );
+
+        if ( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
+            for ( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
                 for (JavaLocalDeclarationDescr.IdentifierDescr ident : descr.getIdentifiers()) {
                     result.addLocalVariable(ident.getIdentifier(), descr);
                 }
             }
         }
         result.setBlockDescrs( parser.getRootBlockDescr() );
+        result.setAssignedVariables( parser.getAssignedVariables() );
 
-        return analyze( result,
-                        availableIdentifiers );
+        return analyze( result, availableIdentifiers );
     }
 
     private JavaParser parse(final String expr) {
@@ -116,18 +109,14 @@ public class JavaExprAnalyzer {
      *            The AST for the expression.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
-     * 
-     * @throws RecognitionException
-     *             If an error occurs in the parser.
      */
-    private JavaAnalysisResult analyze(JavaAnalysisResult result,
-                                       BoundIdentifiers availableIdentifiers) throws RecognitionException {
+    private JavaAnalysisResult analyze(JavaAnalysisResult result, BoundIdentifiers availableIdentifiers) {
         final Set<String> identifiers = result.getIdentifiers();
-        final Set<String> notBound = new HashSet<String>( identifiers );
+        final Set<String> notBound = new HashSet<>( identifiers );
         
-        Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
-        Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
-        Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
+        Map<String, Class<?>> usedDecls = new HashMap<>();
+        Map<String, Class<?>> usedGlobals = new HashMap<>();
+        Map<String, EvaluatorWrapper> usedOperators = new HashMap<>();
  
         for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {

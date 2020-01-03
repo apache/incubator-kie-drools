@@ -32,19 +32,21 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-    protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (isStructuredResult(resultClass)) {
-            return verifyResult(rawExpression, resultValue);
+    @Override
+    public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
+        if (isStructuredInput(className)) {
+            return convertResult(rawExpression, className, genericClasses);
         } else {
-            return internalUnaryEvaluation((String) rawExpression, resultValue, resultClass, false);
+            return internalLiteralEvaluation(rawExpression, className);
         }
     }
 
-    protected Object commonEvaluationLiteralExpression(String className, List<String> genericClasses, String raw) {
-        if (isStructuredInput(className)) {
-            return convertResult(raw, className, genericClasses);
+    @Override
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
+        if (isStructuredResult(resultClass)) {
+            return verifyResult(rawExpression, resultValue);
         } else {
-            return internalLiteralEvaluation(raw, className);
+            return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
         }
     }
 
@@ -67,6 +69,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
+        if (rawString == null) {
+            return null;
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -135,18 +140,17 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(Object rawExpression, Object resultRaw) {
+    protected boolean verifyResult(String rawExpression, Object resultRaw) {
+        if (rawExpression == null) {
+            return resultRaw == null;
+        }
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Malformed raw data");
-        }
-        String raw = (String) rawExpression;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            JsonNode jsonNode = objectMapper.readTree(raw);
+            JsonNode jsonNode = objectMapper.readTree(rawExpression);
             if (jsonNode.isArray()) {
                 return verifyList((ArrayNode) jsonNode, (List) resultRaw);
             } else if (jsonNode.isObject()) {
