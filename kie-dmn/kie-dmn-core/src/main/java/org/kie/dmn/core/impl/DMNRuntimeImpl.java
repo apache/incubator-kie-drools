@@ -793,4 +793,8 @@ public class DMNRuntimeImpl
     public ClassLoader getRootClassLoader() {
         return knowledgeBase.getRootClassLoader();
     }
+
+    public InternalKnowledgeBase getInternalKnowledgeBase() {
+        return this.knowledgeBase;
+    }
 }

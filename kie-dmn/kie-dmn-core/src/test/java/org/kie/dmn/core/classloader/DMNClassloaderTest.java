@@ -122,4 +122,46 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
         pom.append("</project>");
         return pom.toString();
     }
+
+    @Test
+    public void testCallToJavaWithDMNRuntime() {
+        final String javaSource = "package com.acme.functions;\n" +
+                                  "\n" +
+                                  "import java.math.BigDecimal;\n" +
+                                  "\n" +
+                                  "public class MyFunction {\n" +
+                                  "\n" +
+                                  "    public static BigDecimal evaluate( org.kie.dmn.api.core.DMNRuntime dmnRuntime ) {\n" +
+                                  "        return new BigDecimal(dmnRuntime.getModels().size());\n" +
+                                  "    }\n" +
+                                  "}";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core.classloader", "testCallToJavaWithDMNRuntime", UUID.randomUUID().toString());
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/java/com/acme/functions/MyFunction.java", javaSource);
+        kfs.write(ks.getResources().newClassPathResource("callToJavaWithDMNRuntime.dmn", this.getClass()));
+        kfs.writePomXML(getPom(kjarReleaseId));
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+
+        final KieContainer container = ks.newKieContainer(kjarReleaseId);
+        final DMNRuntime runtime = container.newKieSession().getKieRuntime(DMNRuntime.class);
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5d9e63ac-e73a-4b9e-8635-760f0c23c0ad", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.info("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("main decision"), is(new BigDecimal(1)));
+    }
 }
