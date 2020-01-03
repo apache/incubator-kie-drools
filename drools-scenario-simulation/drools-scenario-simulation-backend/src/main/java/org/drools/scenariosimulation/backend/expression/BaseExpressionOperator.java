@@ -86,7 +86,6 @@ public enum BaseExpressionOperator {
             return convertValue(className, returnValue, classLoader);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             Object parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getCanonicalName() : null, rawValue, classLoader);
@@ -100,12 +99,9 @@ public enum BaseExpressionOperator {
         }
     },
     NOT_EQUALS(3, "!", "!=", "<>") {
-        @SuppressWarnings("unchecked")
         @Override
         public boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            String valueToTest = rawValue;
-
-            valueToTest = removeOperator(rawValue);
+            String valueToTest = removeOperator(rawValue);
             BaseExpressionOperator operator = findOperator(valueToTest);
 
             return !operator.eval(valueToTest, resultValue, resultClass, classLoader);
@@ -162,7 +158,7 @@ public enum BaseExpressionOperator {
     }
 
     public static BaseExpressionOperator findOperator(String rawValue) {
-        if(rawValue != null) {
+        if (rawValue != null) {
             String value = rawValue.trim();
             List<BaseExpressionOperator> sortedOperators = Arrays.stream(values()).sorted(comparingInt(BaseExpressionOperator::getPrecedence))
                     .collect(Collectors.toList());
