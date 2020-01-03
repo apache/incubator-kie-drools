@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import static java.util.Collections.emptyList;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,169 +39,8 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractExpressionEvaluatorTest {
 
-    JsonNodeFactory factory = JsonNodeFactory.instance;
-
-    @Test
-    public void convertList() {
-        // Test simple list
-        ArrayNode jsonNodes = new ArrayNode(factory);
-        ObjectNode objectNode = new ObjectNode(factory);
-        objectNode.put(VALUE, "data");
-        jsonNodes.add(objectNode);
-
-        List<Object> objects = expressionEvaluatorMock.createAndFillList(jsonNodes,
-                                                                         new ArrayList<>(),
-                                                                         List.class.getCanonicalName(),
-                                                                         Collections.singletonList(String.class.getCanonicalName()));
-        assertEquals("data", objects.get(0));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void convertObject() {
-        // single level
-        ObjectNode objectNode = new ObjectNode(factory);
-        objectNode.put("age", "1");
-
-        Object result = expressionEvaluatorMock.createAndFillObject(objectNode,
-                                                                    new HashMap<>(),
-                                                                    Map.class.getCanonicalName(),
-                                                                    Collections.singletonList(String.class.getCanonicalName()));
-
-        assertTrue(result instanceof Map);
-        Map<String, Object> resultMap = (Map<String, Object>) result;
-
-        assertEquals("1", resultMap.get("age"));
-
-        // nested object
-        objectNode.removeAll();
-        ObjectNode nestedObject = new ObjectNode(factory);
-        objectNode.set("nested", nestedObject);
-        nestedObject.put("field", "fieldValue");
-
-        result = expressionEvaluatorMock.createAndFillObject(objectNode,
-                                                             new HashMap<>(),
-                                                             String.class.getCanonicalName(),
-                                                             Collections.emptyList());
-
-        assertTrue(result instanceof Map);
-        resultMap = (Map<String, Object>) result;
-
-        assertEquals(1, resultMap.size());
-        Map<String, Object> nested = (Map<String, Object>) resultMap.get("nested");
-        assertEquals(1, nested.size());
-        assertEquals("fieldValue", nested.get("field"));
-
-        // nested list
-        objectNode.removeAll();
-        ArrayNode jsonNodes = new ArrayNode(factory);
-        objectNode.set("listField", jsonNodes);
-        jsonNodes.add(nestedObject);
-
-        result = expressionEvaluatorMock.createAndFillObject(objectNode,
-                                                             new HashMap<>(),
-                                                             String.class.getCanonicalName(),
-                                                             Collections.emptyList());
-
-        assertTrue(result instanceof Map);
-        resultMap = (Map<String, Object>) result;
-
-        assertEquals(1, resultMap.size());
-        List<Map<String, Object>> nestedList = (List<Map<String, Object>>) resultMap.get("listField");
-        assertEquals(1, nestedList.size());
-        assertEquals("fieldValue", nestedList.get(0).get("field"));
-    }
-
-    @Test
-    public void isSimpleTypeNode() {
-        assertFalse(expressionEvaluatorMock.isSimpleTypeNode(new ArrayNode(factory)));
-
-        ObjectNode jsonNode = new ObjectNode(factory);
-
-        jsonNode.set(VALUE, new TextNode("test"));
-        assertTrue(expressionEvaluatorMock.isSimpleTypeNode(jsonNode));
-
-        jsonNode.set("otherField", new TextNode("testValue"));
-
-        assertFalse(expressionEvaluatorMock.isSimpleTypeNode(jsonNode));
-    }
-
-    @Test
-    public void getSimpleTypeNodeTextValue() {
-        Assertions.assertThatThrownBy(() -> expressionEvaluatorMock.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Parameter does not contains a simple type");
-
-        ObjectNode jsonNode = new ObjectNode(factory);
-
-        jsonNode.set(VALUE, new TextNode("testValue"));
-        assertEquals("testValue", expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
-
-        jsonNode.set(VALUE, new IntNode(10));
-        assertNull(expressionEvaluatorMock.getSimpleTypeNodeTextValue(jsonNode));
-    }
-
-    @Test
-    public void isNodeEmpty() {
-        ObjectNode objectNode = new ObjectNode(factory);
-        assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
-        objectNode.set("empty array", new ArrayNode(factory));
-        assertTrue(expressionEvaluatorMock.isNodeEmpty(objectNode));
-        objectNode.set("key", new TextNode(VALUE));
-        assertFalse(expressionEvaluatorMock.isNodeEmpty(objectNode));
-
-        ArrayNode arrayNode = new ArrayNode(factory);
-        assertTrue(expressionEvaluatorMock.isNodeEmpty(arrayNode));
-        arrayNode.add(new TextNode(VALUE));
-        assertFalse(expressionEvaluatorMock.isNodeEmpty(arrayNode));
-
-        assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode("")));
-        assertTrue(expressionEvaluatorMock.isNodeEmpty(new TextNode(null)));
-        assertFalse(expressionEvaluatorMock.isNodeEmpty(new TextNode(VALUE)));
-    }
-
-    @Test
-    public void isListEmpty() {
-        ArrayNode json = new ArrayNode(factory);
-        assertTrue(expressionEvaluatorMock.isListEmpty(json));
-        ObjectNode nestedNode = new ObjectNode(factory);
-        json.add(nestedNode);
-        assertTrue(expressionEvaluatorMock.isListEmpty(json));
-        nestedNode.set("emptyField", new TextNode(""));
-        assertTrue(expressionEvaluatorMock.isListEmpty(json));
-        nestedNode.set("notEmptyField", new TextNode("text"));
-        assertFalse(expressionEvaluatorMock.isListEmpty(json));
-    }
-
-    @Test
-    public void isObjectEmpty() {
-        ObjectNode json = new ObjectNode(factory);
-        assertTrue(expressionEvaluatorMock.isObjectEmpty(json));
-        ObjectNode nestedNode = new ObjectNode(factory);
-        json.set("emptyField", nestedNode);
-        assertTrue(expressionEvaluatorMock.isObjectEmpty(json));
-        nestedNode.set("notEmptyField", new TextNode("text"));
-        assertFalse(expressionEvaluatorMock.isObjectEmpty(json));
-    }
-
-    @Test
-    public void isEmptyText() {
-        assertTrue(expressionEvaluatorMock.isEmptyText(new TextNode("")));
-        assertFalse(expressionEvaluatorMock.isEmptyText(new TextNode(VALUE)));
-        assertTrue(expressionEvaluatorMock.isEmptyText(new ObjectNode(factory)));
-    }
-
-    AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
-
-        @Override
-        public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-            throw new UnsupportedOperationException();
-        }
+    private static final JsonNodeFactory factory = JsonNodeFactory.instance;
+    private static final AbstractExpressionEvaluator expressionEvaluatorLocal = new AbstractExpressionEvaluator() {
 
         @Override
         public String fromObjectToExpression(Object value) {
@@ -227,6 +67,7 @@ public class AbstractExpressionEvaluatorTest {
             return new HashMap<>();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void setField(Object toReturn, String fieldName, Object fieldValue) {
             ((Map) toReturn).put(fieldName, fieldValue);
@@ -237,4 +78,168 @@ public class AbstractExpressionEvaluatorTest {
             return new AbstractMap.SimpleEntry<>("", Collections.singletonList(""));
         }
     };
+
+    @Test
+    public void evaluateLiteralExpression() {
+        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, String.class.getCanonicalName(), null));
+        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, List.class.getCanonicalName(), null));
+        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, Map.class.getCanonicalName(), null));
+    }
+
+    @Test
+    public void evaluateUnaryExpression() {
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class));
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class));
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class));
+    }
+
+    @Test
+    public void convertList() {
+        // Test simple list
+        ArrayNode jsonNodes = new ArrayNode(factory);
+        ObjectNode objectNode = new ObjectNode(factory);
+        objectNode.put(VALUE, "data");
+        jsonNodes.add(objectNode);
+
+        List<Object> objects = expressionEvaluatorLocal.createAndFillList(jsonNodes,
+                                                                          new ArrayList<>(),
+                                                                          List.class.getCanonicalName(),
+                                                                          Collections.singletonList(String.class.getCanonicalName()));
+        assertEquals("data", objects.get(0));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void convertObject() {
+        // single level
+        ObjectNode objectNode = new ObjectNode(factory);
+        objectNode.put("age", "1");
+
+        Object result = expressionEvaluatorLocal.createAndFillObject(objectNode,
+                                                                     new HashMap<>(),
+                                                                     Map.class.getCanonicalName(),
+                                                                     Collections.singletonList(String.class.getCanonicalName()));
+
+        assertTrue(result instanceof Map);
+        Map<String, Object> resultMap = (Map<String, Object>) result;
+
+        assertEquals("1", resultMap.get("age"));
+
+        // nested object
+        objectNode.removeAll();
+        ObjectNode nestedObject = new ObjectNode(factory);
+        objectNode.set("nested", nestedObject);
+        nestedObject.put("field", "fieldValue");
+
+        result = expressionEvaluatorLocal.createAndFillObject(objectNode,
+                                                              new HashMap<>(),
+                                                              String.class.getCanonicalName(),
+                                                              emptyList());
+
+        assertTrue(result instanceof Map);
+        resultMap = (Map<String, Object>) result;
+
+        assertEquals(1, resultMap.size());
+        Map<String, Object> nested = (Map<String, Object>) resultMap.get("nested");
+        assertEquals(1, nested.size());
+        assertEquals("fieldValue", nested.get("field"));
+
+        // nested list
+        objectNode.removeAll();
+        ArrayNode jsonNodes = new ArrayNode(factory);
+        objectNode.set("listField", jsonNodes);
+        jsonNodes.add(nestedObject);
+
+        result = expressionEvaluatorLocal.createAndFillObject(objectNode,
+                                                              new HashMap<>(),
+                                                              String.class.getCanonicalName(),
+                                                              emptyList());
+
+        assertTrue(result instanceof Map);
+        resultMap = (Map<String, Object>) result;
+
+        assertEquals(1, resultMap.size());
+        List<Map<String, Object>> nestedList = (List<Map<String, Object>>) resultMap.get("listField");
+        assertEquals(1, nestedList.size());
+        assertEquals("fieldValue", nestedList.get(0).get("field"));
+    }
+
+    @Test
+    public void isSimpleTypeNode() {
+        assertFalse(expressionEvaluatorLocal.isSimpleTypeNode(new ArrayNode(factory)));
+
+        ObjectNode jsonNode = new ObjectNode(factory);
+
+        jsonNode.set(VALUE, new TextNode("test"));
+        assertTrue(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode));
+
+        jsonNode.set("otherField", new TextNode("testValue"));
+
+        assertFalse(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode));
+    }
+
+    @Test
+    public void getSimpleTypeNodeTextValue() {
+        Assertions.assertThatThrownBy(() -> expressionEvaluatorLocal.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter does not contains a simple type");
+
+        ObjectNode jsonNode = new ObjectNode(factory);
+
+        jsonNode.set(VALUE, new TextNode("testValue"));
+        assertEquals("testValue", expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode));
+
+        jsonNode.set(VALUE, new IntNode(10));
+        assertNull(expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode));
+    }
+
+    @Test
+    public void isNodeEmpty() {
+        ObjectNode objectNode = new ObjectNode(factory);
+        assertTrue(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+        objectNode.set("empty array", new ArrayNode(factory));
+        assertTrue(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+        objectNode.set("key", new TextNode(VALUE));
+        assertFalse(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+
+        ArrayNode arrayNode = new ArrayNode(factory);
+        assertTrue(expressionEvaluatorLocal.isNodeEmpty(arrayNode));
+        arrayNode.add(new TextNode(VALUE));
+        assertFalse(expressionEvaluatorLocal.isNodeEmpty(arrayNode));
+
+        assertTrue(expressionEvaluatorLocal.isNodeEmpty(new TextNode("")));
+        assertTrue(expressionEvaluatorLocal.isNodeEmpty(new TextNode(null)));
+        assertFalse(expressionEvaluatorLocal.isNodeEmpty(new TextNode(VALUE)));
+    }
+
+    @Test
+    public void isListEmpty() {
+        ArrayNode json = new ArrayNode(factory);
+        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        ObjectNode nestedNode = new ObjectNode(factory);
+        json.add(nestedNode);
+        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        nestedNode.set("emptyField", new TextNode(""));
+        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        nestedNode.set("notEmptyField", new TextNode("text"));
+        assertFalse(expressionEvaluatorLocal.isListEmpty(json));
+    }
+
+    @Test
+    public void isObjectEmpty() {
+        ObjectNode json = new ObjectNode(factory);
+        assertTrue(expressionEvaluatorLocal.isObjectEmpty(json));
+        ObjectNode nestedNode = new ObjectNode(factory);
+        json.set("emptyField", nestedNode);
+        assertTrue(expressionEvaluatorLocal.isObjectEmpty(json));
+        nestedNode.set("notEmptyField", new TextNode("text"));
+        assertFalse(expressionEvaluatorLocal.isObjectEmpty(json));
+    }
+
+    @Test
+    public void isEmptyText() {
+        assertTrue(expressionEvaluatorLocal.isEmptyText(new TextNode("")));
+        assertFalse(expressionEvaluatorLocal.isEmptyText(new TextNode(VALUE)));
+        assertTrue(expressionEvaluatorLocal.isEmptyText(new ObjectNode(factory)));
+    }
 }

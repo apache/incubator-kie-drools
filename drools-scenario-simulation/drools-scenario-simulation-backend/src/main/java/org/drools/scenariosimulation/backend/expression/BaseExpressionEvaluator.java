@@ -38,25 +38,6 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
         this.classLoader = classLoader;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean evaluateUnaryExpression(Object raw, Object resultValue, Class<?> resultClass) {
-        if (!(raw instanceof String)) {
-            return BaseExpressionOperator.EQUALS.eval(raw, resultValue, resultClass, classLoader);
-        }
-
-        return commonEvaluateUnaryExpression(raw, resultValue, resultClass);
-    }
-
-    @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        if (!(rawExpression instanceof String)) {
-            return rawExpression;
-        }
-
-        return commonEvaluationLiteralExpression(className, genericClasses, (String) rawExpression);
-    }
-
     @Override
     public String fromObjectToExpression(Object value) {
         return revertValue(value);

@@ -41,16 +41,16 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        Object raw = new Object();
-        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(Object.class.getCanonicalName(), Collections.emptyList(), raw));
+        String raw = "";
+        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(raw, Object.class.getCanonicalName(), Collections.emptyList()));
 
         raw = "SimpleString";
-        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList()));
 
         raw = "= SimpleString";
-        assertEquals("SimpleString", expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals("SimpleString", expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList()));
 
-        assertNull(expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), null));
+        assertNull(expressionEvaluator.evaluateLiteralExpression(null, String.class.getCanonicalName(), Collections.emptyList()));
     }
 
     @Test

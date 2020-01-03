@@ -29,6 +29,7 @@ import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.compareValues;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
@@ -44,33 +45,25 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (!(rawExpression instanceof String)) {
-            String rawClass = rawExpression == null ? null : rawExpression.getClass().getCanonicalName();
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawClass + "'");
-        }
-
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         Map<String, Object> params = new HashMap<>();
         params.put(ACTUAL_VALUE_IDENTIFIER, resultValue);
 
-        Object expressionResult = compileAndExecute((String) rawExpression, params);
+        Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
-            return BaseExpressionOperator.EQUALS.eval(expressionResult, resultValue, resultClass, classLoader);
+            return compareValues(expressionResult, resultValue);
         }
         return (boolean) expressionResult;
     }
 
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
-        }
-        Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
+    public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
+        Object expressionResult = compileAndExecute(rawExpression, Collections.emptyMap());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
-                                                       "' to '" + requiredClass.getCanonicalName());
+                                                       "' to '" + requiredClass.getCanonicalName() + "'");
         }
         return expressionResult;
     }
@@ -83,7 +76,8 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     protected Object compileAndExecute(String rawExpression, Map<String, Object> params) {
         ParserContext ctx = new ParserContext(this.config);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            ctx.addVariable(entry.getKey(), entry.getValue().getClass());
+            Class type = entry.getValue() != null ? entry.getValue().getClass() : null;
+            ctx.addVariable(entry.getKey(), type);
         }
 
         String expression = cleanExpression(rawExpression);
@@ -92,7 +86,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     protected String cleanExpression(String rawExpression) {
-        if (!rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (rawExpression == null || !rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
             throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
         }
         return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");

@@ -94,7 +94,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     protected KieContainer kieContainerMock;
 
     private static final String NAME = "NAME";
-    private static final double AMOUNT = 10;
+    private static final String AMOUNT = "10";
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE);
@@ -565,7 +565,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
             } else if (backgroundGiven.getFactIdentifier().equals(disputeFactIdentifier)) {
                 assertEquals(disputeFactIdentifier, backgroundGiven.getFactIdentifier());
                 Dispute dispute = (Dispute) backgroundGiven.getValue();
-                assertEquals(AMOUNT, dispute.getAmount(), 0.1);
+                double parsedAmount = Double.parseDouble(AMOUNT);
+                assertEquals(parsedAmount, dispute.getAmount(), 0.1);
             } else {
                 fail();
             }
