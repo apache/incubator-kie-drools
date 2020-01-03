@@ -612,15 +612,6 @@
         "allPublicClasses": true
     },
     {
-        "name": "org.kie.dmn.feel.runtime.functions.extended.DmnRuntimeFunction",
-        "allDeclaredConstructors": true,
-        "allPublicConstructors": true,
-        "allDeclaredMethods": true,
-        "allPublicMethods": true,
-        "allDeclaredClasses": true,
-        "allPublicClasses": true
-    },
-    {
         "name": "org.kie.dmn.feel.runtime.functions.extended.DurationFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,

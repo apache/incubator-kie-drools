@@ -62,7 +62,6 @@ public class KieExtendedDMNFunctions {
                                                                          new TodayFunction(),
                                                                          new CodeFunction(),
                                                                          new InvokeFunction(),
-                                                                         new DmnRuntimeFunction(),
 
                                                                          // CQL based, two value logic functions
                                                                         NNAnyFunction.INSTANCE,
