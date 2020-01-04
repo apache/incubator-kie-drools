@@ -250,20 +250,14 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
     private Map<ReleaseId, DependencyDescriptor> indexArtifacts() {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies(DEPENDENCY_SCOPEFILTER)) {
-            if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
-                Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
-                if (artifact != null) {
-                    if ( log.isDebugEnabled() ) {
-                        log.debug( artifact + " resolved to  " + artifact.getFile() );
-                    }
-                    if ( isKJar( artifact.getFile() ) ) {
-                        depsMap.put( adapt( dep.getReleaseIdWithoutVersion() ), new DependencyDescriptor( artifact ) );
-                    }
-                }
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug( "{} does not need to be resolved because in scope {}", dep, dep.getScope() );
-                }
+            Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
+            if (artifact != null) {
+                if ( log.isDebugEnabled() ) {
+                     log.debug( artifact + " resolved to  " + artifact.getFile() );
+                 }
+                 if ( isKJar( artifact.getFile() ) ) {
+                     depsMap.put( adapt( dep.getReleaseIdWithoutVersion() ), new DependencyDescriptor( artifact ) );
+                 }
             }
         }
         return depsMap;
