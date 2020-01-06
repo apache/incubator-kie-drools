@@ -172,12 +172,12 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addLhsItem(p);
 
-        m.addRow(new String[]{"\"John\", \"John (jr)\""});
+        m.addRow(new String[]{"\"John\", \"John, the John\", \"John (jr)\""});
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 in (\"John\",\" John (jr)\") )" +
+                "  Person( field1 in (\"John\", \"John, the John\", \" John (jr)\") )" +
                 "then \n" +
                 "end";
 

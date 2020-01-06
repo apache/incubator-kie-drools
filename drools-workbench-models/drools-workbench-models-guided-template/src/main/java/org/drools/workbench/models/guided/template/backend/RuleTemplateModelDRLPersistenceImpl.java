@@ -624,7 +624,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                               "}}");
         header.append("@code{\n" +
                               " def makeValueList(value, isNumeric) {\n" +
-                              "    if(value.startsWith('\"') && value.endsWith('\"')) {\n" +
+                              "    if( !value.contains(',') && value.startsWith('\"') && value.endsWith('\"')) {\n" +
                               "      value = value.substring(1, value.length() - 1);\n" +
                               "    }\n" +
                               "	workingValue = value.trim();\n" +
@@ -632,7 +632,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                               "		workingValue = workingValue.substring( 1 );\n" +
                               "	  	workingValue = workingValue.substring( 0, workingValue.length() - 1 );\n" +
                               "	}\n" +
-                              "	values = workingValue.split( ',' );\n" +
+                              "	values = org.kie.soup.commons.util.ListSplitter.splitPreserveQuotes( \"\\\"\", true, workingValue );\n" +
                               "	output = ' (';\n" +
                               "	for (v : values ) {\n" +
                               "		v = v.trim();\n" +
