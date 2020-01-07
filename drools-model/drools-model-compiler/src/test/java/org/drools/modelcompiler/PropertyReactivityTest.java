@@ -550,4 +550,30 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals( 2, ksession.fireAllRules(5) );
     }
+
+    @Test
+    public void testMultipleFieldUpdate() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ), setLikes(\"Cheese\") };\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $p : Person( name == \"Mario\", likes == \"Cheese\" )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        p.setLikes("Beer");
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(42, p.getAge());
+    }
 }

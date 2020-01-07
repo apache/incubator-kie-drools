@@ -18,12 +18,19 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -31,6 +38,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.model.BitMask;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +88,10 @@ public class ExecModelLambdaPostProcessor {
                     .forEach(this::convertIndexedByCall);
 
             clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
-                    .forEach(methodCallExpr -> extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName)));
+                    .forEach(methodCallExpr -> {
+                        List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
+                        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
+                    });
     }
 
     private boolean isExecuteNonNestedCall(MethodCallExpr mc) {
@@ -111,6 +122,40 @@ public class ExecModelLambdaPostProcessor {
 
     private Expression lambdaInstance(ClassOrInterfaceType type) {
         return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
+    }
+
+    private List<MaterializedLambda.BitMaskVariable> findBitMaskFields(MethodCallExpr methodCallExpr) {
+        return optionalToStream(methodCallExpr.findAncestor(MethodDeclaration.class))
+                .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
+                .filter(this::isBitMaskType)
+                .flatMap(this::findAssignExpr)
+                .map(this::toMaterializedLambdaFactory)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isBitMaskType(VariableDeclarator vd) {
+        return vd.getType().asString().equals(BitMask.class.getCanonicalName());
+    }
+
+    private MaterializedLambda.BitMaskVariable toMaterializedLambdaFactory(AssignExpr ae) {
+        String maskName = ae.getTarget().asVariableDeclarationExpr().getVariables().iterator().next().getNameAsString();
+        MethodCallExpr maskInit = ae.getValue().asMethodCallExpr();
+        if (maskInit.getArguments().isEmpty()) {
+            return new MaterializedLambda.AllSetButLastBitMask(maskName);
+        } else {
+            NodeList<Expression> arguments = maskInit.getArguments();
+            String domainClassMetadata = arguments.get(0).toString();
+            List<String> fields = arguments.subList(1, arguments.size()).stream().map(Expression::toString).collect(Collectors.toList());
+            return new MaterializedLambda.BitMaskVariableWithFields(domainClassMetadata, fields, maskName);
+        }
+    }
+
+    private Stream<? extends AssignExpr> findAssignExpr(VariableDeclarator vd) {
+        return optionalToStream(vd.findAncestor(AssignExpr.class));
+    }
+
+    private <T> Stream<T> optionalToStream(Optional<T> opt) {
+        return opt.map(Stream::of).orElse(Stream.empty());
     }
 
     private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Supplier<MaterializedLambda> lambdaExtractor) {
