@@ -66,7 +66,9 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // No termination defined
                     assertNull(solverConfig.getTerminationConfig());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    assertNotNull(solverFactory);
+                    assertNotNull(solverFactory.buildSolver());
                 });
     }
 
@@ -81,7 +83,9 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // Properties defined in solverConfig.xml
                     assertEquals(2L, solverConfig.getTerminationConfig().getSecondsSpentLimit().longValue());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    assertNotNull(solverFactory);
+                    assertNotNull(solverFactory.buildSolver());
                 });
     }
 
@@ -97,14 +101,16 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // Properties defined in customSpringBootSolverConfig.xml
                     assertEquals(3L, solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    assertNotNull(solverFactory);
+                    assertNotNull(solverFactory.buildSolver());
                 });
     }
 
     @Test(expected = IllegalStateException.class)
     public void scanAnnotatedClasses() {
         contextRunner
-                .withPropertyValues("optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/scanAnnotatedSpringBootSolverConfig.xml")
+                .withPropertyValues("optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/illegalScanAnnotatedSpringBootSolverConfig.xml")
                 .run(context -> {
                     context.getBean(SolverConfig.class);
                 });
@@ -154,7 +160,7 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void sameSolverFactory() {
+    public void singletonSolverFactory() {
         contextRunner
                 .run(context -> {
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
@@ -165,6 +171,7 @@ public class OptaPlannerAutoConfigurationTest {
                     // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());
                     SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
                     assertNotNull(solverManager);
+                    // There is only one SolverFactory instance
                     assertSame(solverFactory, ((DefaultSolverManager<TestdataSpringSolution, Long>) solverManager).getSolverFactory());
                 });
     }
