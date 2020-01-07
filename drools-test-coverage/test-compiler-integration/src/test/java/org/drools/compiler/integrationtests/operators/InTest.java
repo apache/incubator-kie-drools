@@ -75,4 +75,34 @@ public class InTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testNegatedIn() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"test negated in\"\n" +
+                "when\n" +
+                "    Person( !(name in (\"joe\", \"doe\")) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"test not negated in\"\n" +
+                "when\n" +
+                "    Person( !(name not in (\"bob\", \"mark\")) )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("in-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person person = new Person("bob");
+            ksession.insert(person);
+
+            final int rules = ksession.fireAllRules();
+            assertEquals(2, rules);
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
