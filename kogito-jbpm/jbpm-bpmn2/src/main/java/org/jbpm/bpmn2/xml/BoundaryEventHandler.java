@@ -64,7 +64,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         Node node = (Node) parser.getCurrent();
         String attachedTo = element.getAttribute("attachedToRef");
         Attr cancelActivityAttr = element.getAttributeNode("cancelActivity");
-        boolean cancelActivity = Boolean.parseBoolean(cancelActivityAttr.getValue());
+        boolean cancelActivity = true;
+        if (cancelActivityAttr != null) {
+            cancelActivity = Boolean.parseBoolean(cancelActivityAttr.getValue());
+        }
 
         // determine type of event definition, so the correct type of node can be generated
         org.w3c.dom.Node xmlNode = element.getFirstChild();
