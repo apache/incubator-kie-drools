@@ -64,10 +64,6 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));
 
-        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Raw expression should be a string");
-
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
@@ -83,27 +79,25 @@ public class DMNFeelExpressionEvaluatorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void evaluateLiteralExpression() {
-        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
-        Object nonStringObject = new Object();
-        assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
-        Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), "{key_a : 1}");
+        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression("2 + 3", BigDecimal.class.getCanonicalName(), null));
+        Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression("{key_a : 1}", Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
-        Map<String, Object> parsedValueMapExpression = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(Map.class.getCanonicalName(), Collections.emptyList(), new TextNode("{key_e : 10}").toString());
+        Map<String, Object> parsedValueMapExpression = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(new TextNode("{key_e : 10}").toString(), Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValueMapExpression.containsKey("key_e"));
         assertEquals(parsedValueMapExpression.get("key_e"), BigDecimal.valueOf(10));
-        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(List.class.getCanonicalName(), Collections.emptyList(), new TextNode("[10, 12]").toString());
+        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression( new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValueListExpression.size() == 2);
         assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
         assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
 
         assertThatThrownBy(() -> expressionEvaluator
-                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED"))
+                .evaluateLiteralExpression("SPEED", String.class.getCanonicalName(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
 
         assertThatThrownBy(() -> expressionEvaluator
-                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "\"SPEED"))
+                .evaluateLiteralExpression("\"SPEED", String.class.getCanonicalName(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Syntax error:");
     }

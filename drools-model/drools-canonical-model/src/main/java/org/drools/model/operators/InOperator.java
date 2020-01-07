@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class InOperator implements Operator.MultipleValue<Object, Object> {
+public enum InOperator implements Operator.MultipleValue<Object, Object> {
 
-    public static final InOperator INSTANCE = new InOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( Object a, Object[] bs ) {

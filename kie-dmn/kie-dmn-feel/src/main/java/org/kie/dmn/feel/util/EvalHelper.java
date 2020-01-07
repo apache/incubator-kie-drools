@@ -485,13 +485,13 @@ public class EvalHelper {
     public static Boolean compare(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
         if ( left == null || right == null ) {
             return null;
-        } else if ((left instanceof ChronoPeriod && right instanceof ChronoPeriod)) {
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
             Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
             Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
             return op.test( l, r );
         } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
-            // Handle specific cases when both date / datetime
+            // Handle specific cases when both time / datetime
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
             if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
@@ -539,12 +539,19 @@ public class EvalHelper {
             return isEqual( (Iterable)left, (Iterable) right );
         } else if( left instanceof Map && right instanceof Map ) {
             return isEqual( (Map)left, (Map) right );
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
+            Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
+            Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
+            return isEqual(l, r);
         } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
-            // Handle specific cases when both date / datetime
+            // Handle specific cases when both time / datetime
+            TemporalAccessor l = (TemporalAccessor) left;
+            TemporalAccessor r = (TemporalAccessor) right;
             if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
-                return isEqualTime((TemporalAccessor) left, (TemporalAccessor) right);
+                return isEqual(valuet(l), valuet(r));
             } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
-                return isEqualDateTime((TemporalAccessor) left, (TemporalAccessor) right);
+                return isEqual(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
             } // fallback; continue:
         }
         return compare( left, right, ctx, (l, r) -> l.compareTo( r ) == 0  );
@@ -552,6 +559,7 @@ public class EvalHelper {
 
     /**
      * DMNv1.2 10.3.2.3.6 date-time, valuedt(date and time), for use in this {@link EvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
+     * DMNv1.3 also used for equality DMN13-35
      */
     private static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
@@ -568,20 +576,21 @@ public class EvalHelper {
 
     /**
      * DMNv1.2 10.3.2.3.4 time, valuet(time), for use in this {@link EvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
+     * DMNv1.3 also used for equality DMN13-35
      */
     private static long valuet(TemporalAccessor time) {
         long result = 0;
         result += time.get(ChronoField.HOUR_OF_DAY) * (60 * 60);
         result += time.get(ChronoField.MINUTE_OF_HOUR) * (60);
         result += time.get(ChronoField.SECOND_OF_MINUTE);
-        result += Optional.ofNullable(time.query(TemporalQueries.offset())).map(ZoneOffset::getTotalSeconds).orElse(0);
         return result;
     }
 
     /**
      * DMNv1.2 Table 48: Specific semantics of equality
+     * DMNv1.3 Table 71: Semantic of date and time functions
      */
-    private static Boolean isEqualDateTime(TemporalAccessor left, TemporalAccessor right) {
+    public static Boolean isEqualDateTimeInSemanticD(TemporalAccessor left, TemporalAccessor right) {
         boolean result = true;
         Optional<Integer> lY = Optional.ofNullable(left.isSupported(ChronoField.YEAR) ? left.get(ChronoField.YEAR) : null);
         Optional<Integer> rY = Optional.ofNullable(right.isSupported(ChronoField.YEAR) ? right.get(ChronoField.YEAR) : null);
@@ -592,14 +601,15 @@ public class EvalHelper {
         Optional<Integer> lD = Optional.ofNullable(left.isSupported(ChronoField.DAY_OF_MONTH) ? left.get(ChronoField.DAY_OF_MONTH) : null);
         Optional<Integer> rD = Optional.ofNullable(right.isSupported(ChronoField.DAY_OF_MONTH) ? right.get(ChronoField.DAY_OF_MONTH) : null);
         result &= lD.equals(rD);
-        result &= isEqualTime(left, right);
+        result &= isEqualTimeInSemanticD(left, right);
         return result;
     }
 
     /**
      * DMNv1.2 Table 48: Specific semantics of equality
+     * DMNv1.3 Table 71: Semantic of date and time functions
      */
-    private static Boolean isEqualTime(TemporalAccessor left, TemporalAccessor right) {
+    public static Boolean isEqualTimeInSemanticD(TemporalAccessor left, TemporalAccessor right) {
         boolean result = true;
         Optional<Integer> lH = Optional.ofNullable(left.isSupported(ChronoField.HOUR_OF_DAY) ? left.get(ChronoField.HOUR_OF_DAY) : null);
         Optional<Integer> rH = Optional.ofNullable(right.isSupported(ChronoField.HOUR_OF_DAY) ? right.get(ChronoField.HOUR_OF_DAY) : null);

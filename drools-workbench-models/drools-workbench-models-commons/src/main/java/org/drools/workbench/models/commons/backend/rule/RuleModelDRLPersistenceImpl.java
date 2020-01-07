@@ -4125,7 +4125,8 @@ public class RuleModelDRLPersistenceImpl
             } else if (value.startsWith("(")) {
                 if (operator != null && operator.contains("in")) {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-                    con.setValue(String.join(", ", ListSplitter.split("\"", true, unwrapParenthesis(value))));
+                    String[] split = ListSplitter.splitPreserveQuotes("\"", true, unwrapParenthesis(value));
+                    con.setValue(String.join(", ", split));
                 } else {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                     con.setValue(unwrapParenthesis(value));

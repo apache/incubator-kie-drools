@@ -38,6 +38,9 @@ public class JsonUtils {
      * @return
      */
     public static Optional<JsonNode> convertFromStringToJSONNode(String json) {
+        if (json == null) {
+           return Optional.empty();
+        }
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(json);

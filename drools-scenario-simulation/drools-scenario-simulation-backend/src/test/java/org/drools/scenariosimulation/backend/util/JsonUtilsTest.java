@@ -24,6 +24,7 @@ public class JsonUtilsTest {
 
     @Test
     public void convertFromStringToJSONNode() {
+        assertFalse(JsonUtils.convertFromStringToJSONNode(null).isPresent());
         assertFalse(JsonUtils.convertFromStringToJSONNode("Not json").isPresent());
         assertFalse(JsonUtils.convertFromStringToJSONNode("\"Not json").isPresent());
         assertFalse(JsonUtils.convertFromStringToJSONNode("key : notJson\"").isPresent());

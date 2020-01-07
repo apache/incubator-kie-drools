@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.assertj.core.api.Assertions;
@@ -73,15 +74,11 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void equalsTest() {
-        MyTestClass test1 = new MyTestClass();
-        MyTestClass test2 = new MyTestClass();
-        MyComparableTestClass comparableTest1 = new MyComparableTestClass();
+        String test1 = "2019-12-02";
+        LocalDate test2 = LocalDate.of(2019, 12, 2);
 
-        // Tested via Objects.equals
-        assertTrue(EQUALS.eval(test1, test1, test1.getClass(), classLoader));
-        assertFalse(EQUALS.eval(test1, test2, test1.getClass(), classLoader));
-        // Tested via Comparable.compareTo
-        assertTrue(EQUALS.eval(comparableTest1, comparableTest1, comparableTest1.getClass(), classLoader));
+        assertTrue(EQUALS.eval(test1, test2, test2.getClass(), classLoader));
+        assertFalse(EQUALS.eval(test1, test2.plusDays(1), test2.getClass(), classLoader));
 
         assertTrue(EQUALS.eval("1", 1, int.class, classLoader));
 
@@ -90,15 +87,11 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void notEqualsTest() {
-        MyTestClass test1 = new MyTestClass();
-        MyTestClass test2 = new MyTestClass();
-        MyComparableTestClass comparableTest1 = new MyComparableTestClass();
+        String test1 = "2019-12-02";
+        LocalDate test2 = LocalDate.of(2019, 12, 2);
 
-        // Tested via Objects.equals
-        assertFalse(NOT_EQUALS.eval(test1, test1, test1.getClass(), classLoader));
-        assertTrue(NOT_EQUALS.eval(test1, test2, test1.getClass(), classLoader));
-        // Tested via Comparable.compareTo
-        assertFalse(NOT_EQUALS.eval(comparableTest1, comparableTest1, comparableTest1.getClass(), classLoader));
+        assertFalse(NOT_EQUALS.eval(test1, test2, test2.getClass(), classLoader));
+        assertTrue(NOT_EQUALS.eval(test1, test2.plusDays(1), test2.getClass(), classLoader));
 
         assertTrue(NOT_EQUALS.eval("<> 1", 2, int.class, classLoader));
 
@@ -111,16 +104,14 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void rangeTest() {
-        Object o = new Object();
-        assertFalse(RANGE.eval(o, "", o.getClass(), classLoader));
+        assertFalse(RANGE.eval("", "test", String.class, classLoader));
 
         assertTrue(RANGE.eval(">2", 3, int.class, classLoader));
     }
 
     @Test
     public void listOfValuesTest() {
-        Object o = new Object();
-        assertFalse(LIST_OF_VALUES.eval(o, "", o.getClass(), classLoader));
+        assertFalse(LIST_OF_VALUES.eval("", "test", String.class, classLoader));
 
         assertThatThrownBy(() -> LIST_OF_VALUES.eval("[ 2", "", String.class, classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -131,21 +122,10 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void listOfConditionsTest() {
-        Object o = new Object();
-        assertFalse(LIST_OF_CONDITION.eval(o, "", o.getClass(), classLoader));
+        assertFalse(LIST_OF_CONDITION.eval("", "test", String.class, classLoader));
 
         assertTrue(LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, int.class, classLoader));
-    }
 
-    private class MyTestClass {
-
-    }
-
-    private class MyComparableTestClass implements Comparable<MyComparableTestClass> {
-
-        @Override
-        public int compareTo(MyComparableTestClass o) {
-            return 0;
-        }
+        assertFalse(LIST_OF_CONDITION.eval(null, 1, int.class, classLoader));
     }
 }
