@@ -223,6 +223,70 @@
           "methodName": "join",
           "elementKind": "method",
           "justification": "Introduced QuadStreams"
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "oldType": "org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_ extends java.lang.Object, GroupKeyB_ extends java.lang.Object, Result_ extends java.lang.Object>",
+          "newType": "org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_ extends java.lang.Object, Result_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
+        },
+        {
+          "code": "java.generics.formalTypeParameterRemoved",
+          "old": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "oldType": "org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_ extends java.lang.Object, Result_ extends java.lang.Object>",
+          "newType": "org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
+        },
+        {
+          "code": "java.generics.formalTypeParameterRemoved",
+          "old": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKey_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Add groupBy methods"
         }
       ]
     }
