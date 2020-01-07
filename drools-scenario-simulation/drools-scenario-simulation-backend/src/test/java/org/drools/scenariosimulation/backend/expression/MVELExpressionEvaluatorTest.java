@@ -91,7 +91,21 @@ public class MVELExpressionEvaluatorTest {
 
         assertThat(evaluator.evaluateLiteralExpression(mvelExpression("\"abc..\"[2]"), Character.class.getCanonicalName(),
                                                        Collections.emptyList()
-        ));
+        ))
+                .isEqualTo('c');
+
+        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("1.234B"), BigDecimal.class.getCanonicalName(),
+                                                       Collections.emptyList()
+        ))
+                .isEqualTo(new BigDecimal("1.234"));
+
+        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("1.234d"), Double.class.getCanonicalName(),
+                                                       Collections.emptyList()
+        ))
+                .isEqualTo(Double.valueOf("1.234"));
+
+        assertEquals("Value", evaluator.evaluateLiteralExpression("# \"Value\"", String.class.getCanonicalName(), Collections.emptyList()));
+
         assertEquals(Arrays.asList("Bob", "Michael"), evaluator.evaluateLiteralExpression(mvelExpression("a = \"Bob\";\n" +
                                                                                                                  "test = new java.util.ArrayList();\n" +
                                                                                                                  "test.add(a);\n" +
@@ -116,21 +130,6 @@ public class MVELExpressionEvaluatorTest {
                                                                       HashMap.class.getCanonicalName(),
                                                                       new ArrayList<>()
         ));
-        assertEquals('c', evaluator.evaluateLiteralExpression(mvelExpression("\"abc..\"[2]"),
-                                                       Character.class.getCanonicalName(),
-                                                       new ArrayList<>()
-        ));
-        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("1.234B"), BigDecimal.class.getCanonicalName(),
-                                                       Collections.emptyList()
-        ))
-                .isEqualTo(new BigDecimal("1.234"));
-
-        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("1.234d"), Double.class.getCanonicalName(),
-                                                       Collections.emptyList()
-        ))
-                .isEqualTo(Double.valueOf("1.234"));
-
-        assertEquals("Value", evaluator.evaluateLiteralExpression("# \"Value\"", String.class.getCanonicalName(), Collections.emptyList()));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("1+", String.class.getCanonicalName(), Collections.emptyList()))
                 .isInstanceOf(RuntimeException.class);
