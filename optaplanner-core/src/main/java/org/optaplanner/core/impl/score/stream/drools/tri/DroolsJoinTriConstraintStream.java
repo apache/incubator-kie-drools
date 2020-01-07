@@ -61,6 +61,11 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public boolean isGroupByAllowed() {
+        return leftParentStream.isGroupByAllowed() && rightParentStream.isGroupByAllowed();
+    }
+
+    @Override
     public String toString() {
         return "TriJoin() with " + getChildStreams().size()  + " children";
     }

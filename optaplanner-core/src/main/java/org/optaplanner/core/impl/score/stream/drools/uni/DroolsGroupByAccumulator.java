@@ -21,7 +21,6 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -40,7 +39,7 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
     private final Function<ResultContainer, NewB> finisher;
     // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<Pair<A, NewB>> result = new LinkedHashSet<>(0);
+    private final transient Set<DroolsValuePair<A, NewB>> result = new LinkedHashSet<>(0);
 
     public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
@@ -70,48 +69,12 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
         };
     }
 
-    public Set<Pair<A, NewB>> finish() {
+    public Set<DroolsValuePair<A, NewB>> finish() {
         result.clear();
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();
-            result.add(new Pair<>(entry.getKey(), finisher.apply(container)));
+            result.add(new DroolsValuePair<>(entry.getKey(), finisher.apply(container)));
         }
         return result;
     }
-
-    public static final class Pair<K,V> {
-        public final K key;
-        public final V value;
-        private final int hashCode;
-
-        public Pair(K key, V value) {
-            this.key = key;
-            this.value = value;
-            this.hashCode = Objects.hash(key, value);
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || !Objects.equals(getClass(), o.getClass())) {
-                return false;
-            }
-            final Pair<?, ?> pair = (Pair<?, ?>) o;
-            return Objects.equals(key, pair.key) &&
-                    Objects.equals(value, pair.value);
-        }
-
-        @Override
-        public int hashCode() {
-            return hashCode;
-        }
-
-        @Override
-        public String toString() {
-            return "Pair[" + key + ", " + value + "]";
-        }
-    }
-
 }

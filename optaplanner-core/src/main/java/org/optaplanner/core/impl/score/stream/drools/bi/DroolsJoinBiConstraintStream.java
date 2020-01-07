@@ -55,6 +55,11 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     }
 
     @Override
+    public boolean isGroupByAllowed() {
+        return leftParentStream.isGroupByAllowed() && rightParentStream.isGroupByAllowed();
+    }
+
+    @Override
     public String toString() {
         return "BiJoin() with " + getChildStreams().size()  + " children";
     }

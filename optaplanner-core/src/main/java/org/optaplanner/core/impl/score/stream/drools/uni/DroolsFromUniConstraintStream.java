@@ -45,6 +45,11 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     }
 
     @Override
+    public boolean isGroupByAllowed() {
+        return true;
+    }
+
+    @Override
     public DroolsUniCondition<A> getCondition() {
         return condition;
     }

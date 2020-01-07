@@ -17,14 +17,26 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
+import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsValuePair;
+
+import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
@@ -52,7 +64,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name) {
         return DSL.declarationOf(clz, decorateVariableName(name));
     }
 
@@ -72,7 +84,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name, DeclarationSource source) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name, DeclarationSource source) {
         return DSL.declarationOf(clz, decorateVariableName(name), source);
     }
 
@@ -96,19 +108,15 @@ public abstract class DroolsRuleStructure {
         return (Variable<X>) createVariable(Object.class, name, source);
     }
 
-    /**
-     * Takes {@link #getSupportingRuleItems()}, puts them into a new {@link List}, and adds additional
-     * {@link RuleItemBuilder}s after it.
-     *
-     * @param toAdd the additional items to add
-     * @return new list containing both the existing supporting rule items and the new ones
-     */
-    public final List<RuleItemBuilder<?>> rebuildSupportingRuleItems(RuleItemBuilder<?>... toAdd) {
-        List<RuleItemBuilder<?>> supporting = new ArrayList<>(getSupportingRuleItems());
-        for (RuleItemBuilder<?> ruleItem : toAdd) {
-            supporting.add(ruleItem);
-        }
-        return supporting;
+    public final List<RuleItemBuilder<?>> finish(ConsequenceBuilder.AbstractValidBuilder<?> consequence) {
+        List<RuleItemBuilder<?>> closed = getClosedRuleItems();
+        List<RuleItemBuilder<?>> open = getOpenRuleItems();
+        List<RuleItemBuilder<?>> result = new ArrayList<>(closed.size() + open.size() + 2);
+        result.addAll(closed);
+        result.addAll(open);
+        result.add(getPrimaryPattern().build());
+        result.add(consequence);
+        return result;
     }
 
     public LongSupplier getVariableIdSupplier() {
@@ -134,10 +142,36 @@ public abstract class DroolsRuleStructure {
     /**
      * Every other pattern necessary for the {@link #getPrimaryPattern()} to function properly within the Drools rule's
      * left-hand side. In the example rule (see {@link #getPrimaryPattern()}, this method would return one and only
-     * supporting {@link RuleItemBuilder}, the one representing $a1.
+     * open {@link RuleItemBuilder}, the one representing $a1.
      *
-     * @return all supporting rule items as defined, in the correct order
+     * @return all open rule items as defined, in the correct order
      */
-    public abstract List<RuleItemBuilder<?>> getSupportingRuleItems();
+    public abstract List<RuleItemBuilder<?>> getOpenRuleItems();
+
+    public abstract List<RuleItemBuilder<?>> getClosedRuleItems();
+
+    private List<RuleItemBuilder<?>> mergeClosedItems(RuleItemBuilder<?>... newClosedItems) {
+        return Stream.concat(getClosedRuleItems().stream(), Stream.of(newClosedItems))
+                .collect(Collectors.toList());
+    }
+
+    public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
+            PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("groupKey", from(newASource));
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<DroolsValuePair<NewA, NewB>> newSource,
+            PatternDSL.PatternDef<Set<DroolsValuePair<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        DroolsPatternBuilder<DroolsValuePair<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.key))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.value));
+        return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
 
 }

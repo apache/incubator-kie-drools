@@ -164,4 +164,10 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     public abstract DroolsTriCondition<A, B, C> getCondition();
+
+    @Override
+    public boolean isGroupByAllowed() {
+        return parent.isGroupByAllowed();
+    }
+
 }

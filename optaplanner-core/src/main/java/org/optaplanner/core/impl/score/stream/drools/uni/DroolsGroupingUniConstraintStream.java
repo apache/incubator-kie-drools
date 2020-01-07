@@ -17,15 +17,18 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
 public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
+    private final DroolsAbstractConstraintStream<Solution_> parent;
     private final DroolsUniCondition<NewA> condition;
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -43,9 +46,21 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
         this.condition = parent.getCondition().andCollect(collector);
     }
 
+    public <B> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andGroup(groupKeyMapping);
+    }
+
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
+    }
+
+    @Override
+    public boolean isGroupByAllowed() {
+        return false;
     }
 
     // ************************************************************************

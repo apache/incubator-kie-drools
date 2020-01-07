@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstr
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 
 public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
@@ -62,6 +63,23 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         addChildStream(stream);
         return stream;
     }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        addChildStream(stream);
+        return stream;
+    }
+
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -159,4 +177,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     public abstract DroolsBiCondition<A, B> getCondition();
 
+    @Override
+    public boolean isGroupByAllowed() {
+        return getParent().isGroupByAllowed();
+    }
 }

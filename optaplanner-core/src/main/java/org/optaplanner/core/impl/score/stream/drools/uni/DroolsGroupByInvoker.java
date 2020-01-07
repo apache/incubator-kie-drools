@@ -24,6 +24,7 @@ import java.io.Serializable;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.CompiledInvoker;
@@ -60,11 +61,18 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
             Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
         InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
         Object handleObject = handle.getObject();
-        final A groupKey = (A) getDeclarationForVariable(groupKeyVar, innerDeclarations)
-                .getValue(internalWorkingMemory, handleObject);
-        final B toCollect = (B) getDeclarationForVariable(collectingVar, innerDeclarations)
-                .getValue(internalWorkingMemory, handleObject);
+        final A groupKey = getValue(groupKeyVar, internalWorkingMemory, handleObject, innerDeclarations);
+        final B toCollect = getValue(collectingVar, internalWorkingMemory, handleObject, innerDeclarations);
         ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
+    }
+
+    private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
+            Declaration... innerDeclarations) {
+        Declaration declaration = getDeclarationForVariable(var, innerDeclarations);
+        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
+                ((SubnetworkTuple)handleObject).getObject(declaration) :
+                handleObject;
+        return (X) declaration.getValue(internalWorkingMemory, actualHandleObject);
     }
 
     /**

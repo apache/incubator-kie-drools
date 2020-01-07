@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsValuePair;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -75,12 +75,12 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     private static List<Object> unpair(List<Object> justificationList, int expectedJustificationCount) {
         return justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof DroolsGroupByAccumulator.Pair) {
+                    if (item instanceof DroolsValuePair) {
                         /*
                          * In the case of Drools-based CS, the justification may be both in the form of (A, B) and
                          * Pair<A, B>. In the latter case, we adapt to the former.
                          */
-                        DroolsGroupByAccumulator.Pair<?, ?> pair = (DroolsGroupByAccumulator.Pair<?, ?>) item;
+                        DroolsValuePair<?, ?> pair = (DroolsValuePair<?, ?>) item;
                         return Stream.of(pair.key, pair.value);
                     } else {
                         return Stream.of(item);

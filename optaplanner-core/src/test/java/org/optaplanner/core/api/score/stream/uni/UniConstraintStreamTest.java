@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -667,7 +666,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getIntegerProperty, count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, count) -> count);
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (integerProperty, count) -> count);
         });
 
         // From scratch
@@ -686,9 +685,60 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, 2, 1));
     }
 
-    @Test @Ignore("TODO implement it") // TODO
+    @Test
     public void groupBy_2Mapping0Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishValue secondValue = solution.getValueList().get(1);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", entityGroup1, secondValue);
+        solution.getEntityList().add(entity3);
 
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entityGroup1, solution.getFirstValue()),
+                assertMatchWithScore(-1, entityGroup1, secondValue),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(0)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(1)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(2)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(3)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(4)));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entityGroup1, solution.getFirstValue()),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(0)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(1)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(2)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(3)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(4)));
+
+        // Ensure that the first match is still there when entity2, as it still has entity1
+        scoreDirector.beforeEntityRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterEntityRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entityGroup1, solution.getFirstValue()),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(0)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(1)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(2)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(3)),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(4)));
     }
 
     @Test @Ignore("TODO implement it") // TODO

@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -80,11 +79,6 @@ public abstract class AbstractConstraintStreamTest {
                 (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
                 constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
-    }
-
-    private List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {
-        return new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
-
     }
 
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,

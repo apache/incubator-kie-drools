@@ -18,18 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.function.UnaryOperator;
 
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.Index;
+import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -40,7 +48,10 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
+import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleStructure<A, B>> {
 
@@ -55,19 +66,35 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
+    }
+
+    public <NewA> DroolsUniCondition<NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {
+        Variable<NewA> mappedVariable = ruleStructure.createVariable("biMapped");
+        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
+                        .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
+                        .build();
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
+        Variable<Set<NewA>> setOfMappings =
+                (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
+        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfMappings)
+                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
+        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfMappings));
+        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfMappings, pattern, accumulate);
+        return new DroolsUniCondition<>(newRuleStructure);
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsUniRuleStructure<C> cRuleStructure = cCondition.getRuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
-        DroolsPatternBuilder<Object> cPattern = cRuleStructure.getPrimaryPattern()
-                .expand(p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(),
-                        cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c)));
-        DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
-                cRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+        UnaryOperator<PatternDSL.PatternDef<Object>> expander = p -> p.expr("Filter using " + triJoiner,
+                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c));
+        DroolsUniRuleStructure<C> newCRuleStructure = cRuleStructure.amend(expander);
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }
@@ -100,7 +127,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB())
                         .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+        return ruleStructure.finish(consequence);
     }
 
     private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {

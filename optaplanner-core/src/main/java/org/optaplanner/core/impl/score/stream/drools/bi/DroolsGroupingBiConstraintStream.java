@@ -23,18 +23,26 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContainer_, NewB>
+public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final DroolsBiCondition<NewA, NewB> condition;
 
-    public DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <ResultContainer_> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, NewB> collector) {
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
+    }
+
+    public DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
+            Function<A, NewB> groupKeyBMapping) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
     }
 
     @Override
@@ -45,6 +53,11 @@ public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContaine
     @Override
     protected DroolsAbstractConstraintStream<Solution_> getParent() {
         return parent;
+    }
+
+    @Override
+    public boolean isGroupByAllowed() {
+        return false;
     }
 
     @Override

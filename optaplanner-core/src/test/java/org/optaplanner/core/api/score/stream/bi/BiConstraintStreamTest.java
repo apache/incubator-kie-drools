@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream.bi;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleLongScoreSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtra;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
@@ -263,7 +265,40 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
-    // TODO
+    @Test
+    public void groupBy_1Mapping0Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                    .groupBy((entityA, entityB) -> entityA.getEntityGroup())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup()),
+                assertMatchWithScore(-1, entityGroup1));
+
+        // Incremental
+        Stream.of(entity1, entity2).forEach(entity -> {
+            scoreDirector.beforeEntityRemoved(entity);
+            solution.getEntityList().remove(entity);
+            scoreDirector.afterEntityRemoved(entity);
+        });
+        assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
+    }
 
     // ************************************************************************
     // Penalize/reward
@@ -431,6 +466,43 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     @Test @Ignore("Not yet supported") // TODO
     public void nodeSharing() {
 
+    }
+
+    @Test
+    public void joinerEqualsAndSameness() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 1, 2);
+        // The two bigDecimals are not the same, but they equals()
+        String decimal = "0.01";
+        BigDecimal bigDecimal1 = new BigDecimal(decimal);
+        BigDecimal bigDecimal2 = new BigDecimal(decimal);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        entity1.setBigDecimalProperty(bigDecimal1);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        entity2.setBigDecimalProperty(bigDecimal2);
+        // Entity 3's BigDecimal property is the same as Entity 1's and equals() Entity 2's.
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("My Entity 0", solution.getFirstEntityGroup(), entity1.getValue());
+        entity3.setBigDecimalProperty(bigDecimal1);
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getBigDecimalProperty))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                // Each entity's BigDecimal property is joined to itself.
+                assertMatch(entity1, entity1),
+                assertMatch(entity2, entity2),
+                assertMatch(entity3, entity3),
+                // Each entity's BigDecimal property is joined to each other entity's.
+                assertMatch(entity1, entity2),
+                assertMatch(entity1, entity3),
+                assertMatch(entity2, entity1),
+                assertMatch(entity2, entity3),
+                assertMatch(entity3, entity1),
+                assertMatch(entity3, entity2));
     }
 
 }

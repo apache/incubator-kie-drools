@@ -51,7 +51,7 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, dVariable, filter));
         DroolsQuadRuleStructure<A, B, C, D> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable, bVariable,
-                cVariable, dVariable, newTargetPattern, ruleStructure.getSupportingRuleItems(),
+                cVariable, dVariable, newTargetPattern, ruleStructure.getOpenRuleItems(),
                 ruleStructure.getVariableIdSupplier());
         return new DroolsQuadCondition<>(newRuleStructure);
     }
@@ -88,7 +88,7 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC(),
                         ruleStructure.getD())
                         .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+        return ruleStructure.finish(consequence);
     }
 
 }

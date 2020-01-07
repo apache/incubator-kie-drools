@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
@@ -31,7 +32,8 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     private final Variable<A> a;
     private final Variable<B> b;
     private final DroolsPatternBuilder<?> targetPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final List<RuleItemBuilder<?>> openRuleItems;
+    private final List<RuleItemBuilder<?>> closedRuleItems;
 
     /**
      * Builds a final version of the A pattern as it will no longer be mutated, and turns the B pattern into the new
@@ -46,27 +48,26 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
         this.targetPattern = bRuleStructure.getPrimaryPattern();
-        /*
-         * Assemble the new rule structure in the following order:
-         * - First, the supporting rule items from aRuleStructure.
-         * - Second, the primary pattern from aRuleStructure.
-         * - And finally, the supporting rule items from bRuleStructure.
-         *
-         * This makes sure that left-hand side of the rule represented by this object is properly ordered.
-         */
-        List<RuleItemBuilder<?>> ruleItems =
-                aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(bRuleStructure.getSupportingRuleItems());
-        this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
+        List<RuleItemBuilder<?>> newOpenItems = new ArrayList<>();
+        newOpenItems.addAll(aRuleStructure.getOpenRuleItems());
+        newOpenItems.add(aRuleStructure.getPrimaryPattern().build());
+        newOpenItems.addAll(bRuleStructure.getOpenRuleItems());
+        this.openRuleItems = Collections.unmodifiableList(newOpenItems);
+        List<RuleItemBuilder<?>> newClosedItems = new ArrayList<>();
+        newClosedItems.addAll(aRuleStructure.getClosedRuleItems());
+        newClosedItems.addAll(bRuleStructure.getClosedRuleItems());
+        this.closedRuleItems = Collections.unmodifiableList(newClosedItems);
     }
 
     public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+            List<RuleItemBuilder<?>> openRuleItems, List<RuleItemBuilder<?>> closedRuleItems,
+            LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.targetPattern = targetPattern;
-        this.supportingRuleItems = supportingRuleItems;
+        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
+        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
     }
 
     public Variable<A> getA() {
@@ -83,7 +84,13 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<RuleItemBuilder<?>> getOpenRuleItems() {
+        return openRuleItems;
     }
+
+    @Override
+    public List<RuleItemBuilder<?>> getClosedRuleItems() {
+        return closedRuleItems;
+    }
+
 }

@@ -17,9 +17,12 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.drools.model.Drools;
 import org.drools.model.PatternDSL;
+import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
@@ -64,5 +67,13 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         RuleContext kcontext = (RuleContext) drools;
         scoreHolder.impactScore(kcontext, impact);
     }
+
+    protected ViewItem<?> getInnerAccumulatePattern(PatternDSL.PatternDef<Object> mainAccumulatePattern) {
+        ViewItem[] items = Stream.concat(ruleStructure.getOpenRuleItems().stream(), Stream.of(mainAccumulatePattern))
+                .toArray(ViewItem[]::new);
+        return PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
+    }
+
+
 
 }

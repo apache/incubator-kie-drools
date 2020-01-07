@@ -19,10 +19,8 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
@@ -60,6 +58,11 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
 
     public DroolsAbstractUniConstraintStream<Solution_, D> getRightParentStream() {
         return rightParentStream;
+    }
+
+    @Override
+    public boolean isGroupByAllowed() {
+        return leftParentStream.isGroupByAllowed() && rightParentStream.isGroupByAllowed();
     }
 
     @Override

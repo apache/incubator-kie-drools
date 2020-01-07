@@ -103,6 +103,15 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 

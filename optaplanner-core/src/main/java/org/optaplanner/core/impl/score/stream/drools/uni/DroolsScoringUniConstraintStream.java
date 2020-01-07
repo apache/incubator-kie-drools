@@ -102,6 +102,11 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     }
 
     @Override
+    public boolean isGroupByAllowed() {
+        return false;
+    }
+
+    @Override
     public DroolsUniCondition<A> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own UniCondition.");
     }

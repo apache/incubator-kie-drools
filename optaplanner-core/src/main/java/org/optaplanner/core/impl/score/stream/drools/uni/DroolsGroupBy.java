@@ -56,7 +56,7 @@ public class DroolsGroupBy<A, B, ResultContainer, NewB> implements Serializable 
         undo.run();
     }
 
-    public Set<DroolsGroupByAccumulator.Pair<A, NewB>> getResult() {
+    public Set<DroolsValuePair<A, NewB>> getResult() {
         return acc.finish();
     }
 

@@ -18,8 +18,10 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 

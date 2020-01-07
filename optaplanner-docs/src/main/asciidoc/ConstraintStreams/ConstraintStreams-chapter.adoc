@@ -375,6 +375,13 @@ In the previous example, `filter()` and all subsequent operations no longer have
 `CloudProcess` instance.
 ====
 
+[NOTE]
+====
+Consecutive `groupBy(...)` calls are not yet supported.
+Once a `groupBy(...)` method has been called on a constraint stream,
+subsequent calls to any `groupBy(...)` methods on that stream will throw `UnsupportedOperationException`.
+====
+
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
