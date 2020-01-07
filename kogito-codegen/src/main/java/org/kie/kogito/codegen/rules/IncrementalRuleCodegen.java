@@ -21,6 +21,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -91,6 +92,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     public static IncrementalRuleCodegen ofFiles(Collection<File> files, ResourceType resourceType) {
         return new IncrementalRuleCodegen(toResources(files.stream(), resourceType));
+    }
+
+    public static IncrementalRuleCodegen ofJavaFiles(Collection<File> files) {
+        List<Resource> generatedRules =
+                AnnotatedClassPostProcessor.scan(files.stream().map(File::toPath)).generate();
+        return ofResources(generatedRules);
     }
 
     public static IncrementalRuleCodegen ofFiles(Collection<File> files) {
