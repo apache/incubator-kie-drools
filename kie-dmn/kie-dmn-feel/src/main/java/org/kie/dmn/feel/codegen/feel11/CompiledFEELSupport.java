@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-import com.github.javaparser.StaticJavaParser;
-import org.antlr.v4.runtime.tree.ParseTree;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -39,8 +36,6 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -49,21 +44,14 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
-import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
@@ -509,7 +497,7 @@ public class CompiledFEELSupport {
                 "notifyCompilationError",
                 new NodeList<>(
                         new NameExpr("feelExprCtx"),
-                        new StringLiteralExpr(msg)));
+                        Expressions.stringLiteral(msg)));
     }
 
     // thread-unsafe, but this is single-threaded so it's ok
