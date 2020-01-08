@@ -14,7 +14,7 @@
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
-    <java.module.name>org.drools.model-compiler</java.module.name>
+    <java.module.name>org.drools.modelcompiler</java.module.name>
     <version.jmh>1.19</version.jmh>
   </properties>
 
