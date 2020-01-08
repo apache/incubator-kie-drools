@@ -736,7 +736,7 @@ public class KieBuilderImpl
 
     private JavaCompiler createCompiler( JavaDialectConfiguration javaConf,
                                          String prefix ) {
-        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( javaConf );
+        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( javaConf );
         if ( javaCompiler instanceof EclipseJavaCompiler ) {
             ( (EclipseJavaCompiler) javaCompiler ).setPrefix( prefix );
         }

@@ -653,7 +653,7 @@ public class JavaDialect
     }
 
     private void loadCompiler() {
-        this.compiler = JavaCompilerFactory.getInstance().loadCompiler(this.configuration);
+        this.compiler = JavaCompilerFactory.INSTANCE.loadCompiler(this.configuration);
     }
 
     public void addImport(ImportDescr importDescr) {
