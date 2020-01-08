@@ -46,8 +46,7 @@ public class AbstractCodegenTest {
     
     private TestClassLoader classloader;
 
-    @SuppressWarnings("deprecation")
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
 
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {
         return generateCode(Arrays.asList(processes), Collections.emptyList());

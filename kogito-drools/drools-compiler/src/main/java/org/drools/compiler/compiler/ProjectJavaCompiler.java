@@ -15,8 +15,6 @@
 
 package org.drools.compiler.compiler;
 
-import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +33,8 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
 
+import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
+
 public class ProjectJavaCompiler {
 
     private final JavaCompiler compiler;
@@ -44,7 +44,7 @@ public class ProjectJavaCompiler {
     }
 
     public ProjectJavaCompiler(JavaDialectConfiguration configuration) {
-        compiler = JavaCompilerFactory.getInstance().loadCompiler(configuration);
+        compiler = JavaCompilerFactory.INSTANCE.loadCompiler(configuration);
     }
 
     public List<KnowledgeBuilderResult> compileAll(ProjectClassLoader projectClassLoader,
