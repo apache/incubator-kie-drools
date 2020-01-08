@@ -142,4 +142,10 @@ public interface QueryParameterIdentifiers {
     public static final String TASK_VARIABLE_COMBINED_ID = "-" + String.valueOf(idGen.getAndIncrement());
     public static final String TASK_VARIABLE_DATE_ID_LIST = String.valueOf(idGen.getAndIncrement());
 
+    public static final String CASE_FILE_DATA_LOG_LASTMODIFIED = String.valueOf(idGen.getAndIncrement());
+
+    public static final String SUBQUERY_STATUS = String.valueOf(idGen.getAndIncrement());
+    public static final String SUBQUERY_DEPLOYMENT = String.valueOf(idGen.getAndIncrement());
+    public static final String SUBQUERY_CASE = String.valueOf(idGen.getAndIncrement());
+
 }

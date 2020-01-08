@@ -40,6 +40,22 @@ public interface AuditDeleteBuilder<T> extends ParametrizedQueryBuilder<T> {
     public T processId(String... processId);
 
     /**
+     * Specify one or more status that process instance should be in as criteria in the query.
+     * It might be supported or not
+     * @param statuses @see org.kie.api.runtime.process.ProcessInstance
+     * @return The current query builder instance
+     */
+    T logBelongsToProcessInStatus(Integer... statuses);
+
+    /**
+     * Specify deployment id that process instance should be in as criteria in the query.
+     * It might me supported or not
+     * @param the deployment id
+     * @return The current query builder instance
+     */
+    T logBelongsToProcessInDeployment(String deploymentId);
+
+    /**
      * Create the {@link ParametrizedUpdate} instance that can be used
      * to execute an update or delete of the entities that this builder is for.
      * </p>
@@ -50,4 +66,5 @@ public interface AuditDeleteBuilder<T> extends ParametrizedQueryBuilder<T> {
      * @return a {@link ParametrizedUpdate} instance that can be executed.
      */
     public ParametrizedUpdate build();
+
 }
