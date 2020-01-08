@@ -44,7 +44,7 @@ public class ProjectJavaCompiler {
     }
 
     public ProjectJavaCompiler(JavaDialectConfiguration configuration) {
-        compiler = JavaCompilerFactory.getInstance().loadCompiler(configuration);
+        compiler = JavaCompilerFactory.INSTANCE.loadCompiler(configuration);
     }
 
     public List<KnowledgeBuilderResult> compileAll( ProjectClassLoader projectClassLoader,
