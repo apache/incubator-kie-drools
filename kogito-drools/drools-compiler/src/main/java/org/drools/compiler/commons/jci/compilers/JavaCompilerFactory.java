@@ -28,9 +28,9 @@ import org.drools.core.util.ClassUtils;
 /**
  * Creates JavaCompilers
  */
-public enum JavaCompilerFactory {
+public final class JavaCompilerFactory {
 
-    INSTANCE;
+    public static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
 
     private final Map<String, Class<?>> classCache = new HashMap<>();
 
