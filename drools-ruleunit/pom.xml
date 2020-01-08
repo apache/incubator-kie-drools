@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <java.module.name>org.drools.drools-ruleunit</java.module.name>
+        <java.module.name>org.drools.droolsruleunit</java.module.name>
     </properties>
 
     <dependencies>

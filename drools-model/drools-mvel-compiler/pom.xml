@@ -14,7 +14,7 @@
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
-    <java.module.name>org.drools.mvel-compiler</java.module.name>
+    <java.module.name>org.drools.mvelcompiler</java.module.name>
   </properties>
 
   <dependencies>

@@ -15,7 +15,7 @@
   <name>Drools :: Core :: Dynamic</name>
 
   <properties>
-    <java.module.name>org.drools.drools-core-dynamic</java.module.name>
+    <java.module.name>org.drools.droolscoredynamic</java.module.name>
   </properties>
 
   <dependencies>
