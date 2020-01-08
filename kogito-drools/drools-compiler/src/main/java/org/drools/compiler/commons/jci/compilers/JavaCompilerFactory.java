@@ -34,6 +34,10 @@ public enum JavaCompilerFactory {
 
     private final Map<String, Class<?>> classCache = new HashMap<>();
 
+    public static JavaCompilerFactory getInstance() {
+        return JavaCompilerFactory.INSTANCE;
+    }
+
     /**
      * Tries to guess the class name by convention. So for compilers
      * following the naming convention
