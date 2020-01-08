@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -69,10 +70,40 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
         throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKey_, __, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            BiFunction<A, B, GroupKey_> groupKeyMapping,
+            BiConstraintCollector<A, B, __, Result_> collector) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping);
         addChildStream(stream);
         return stream;
     }

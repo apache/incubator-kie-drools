@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
 
-public final class DroolsValuePair<K,V> {
+public final class BiTuple<K,V> {
     public final K key;
     public final V value;
     private final int hashCode;
 
-    public DroolsValuePair(K key, V value) {
+    public BiTuple(K key, V value) {
         this.key = key;
         this.value = value;
         this.hashCode = Objects.hash(key, value);
@@ -37,7 +37,7 @@ public final class DroolsValuePair<K,V> {
         if (o == null || !Objects.equals(getClass(), o.getClass())) {
             return false;
         }
-        final DroolsValuePair<?, ?> pair = (DroolsValuePair<?, ?>) o;
+        final BiTuple<?, ?> pair = (BiTuple<?, ?>) o;
         return Objects.equals(key, pair.key) &&
                 Objects.equals(value, pair.value);
     }
@@ -49,6 +49,6 @@ public final class DroolsValuePair<K,V> {
 
     @Override
     public String toString() {
-        return "Pair(" + key + ", " + value + ")";
+        return "BiTuple(" + key + ", " + value + ")";
     }
 }

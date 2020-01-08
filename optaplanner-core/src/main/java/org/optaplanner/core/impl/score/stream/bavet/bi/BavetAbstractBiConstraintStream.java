@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import java.util.function.ToLongBiFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -107,7 +109,25 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            BiFunction<A, B, GroupKey_> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
         throw new UnsupportedOperationException();
     }
 

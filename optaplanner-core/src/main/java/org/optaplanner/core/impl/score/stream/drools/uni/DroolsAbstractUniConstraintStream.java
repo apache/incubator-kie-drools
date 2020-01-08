@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, Result_> stream =
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
@@ -105,7 +105,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingBiConstraintStream<Solution_, A, GroupKeyA_, GroupKeyB_> stream =
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping);
         addChildStream(stream);

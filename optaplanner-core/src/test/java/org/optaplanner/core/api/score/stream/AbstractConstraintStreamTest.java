@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.stream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -91,8 +92,13 @@ public abstract class AbstractConstraintStreamTest {
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
-                ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
-                        .get(composeConstraintId(constraintPackage, assertableMatch.constraintName));
+                Map<String, ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotalMap();
+                String constraintId = composeConstraintId(constraintPackage, assertableMatch.constraintName);
+                ConstraintMatchTotal constraintMatchTotal = constraintMatchTotals.get(constraintId);
+                if (constraintMatchTotal == null) {
+                    throw new IllegalStateException("Requested constraint matches for unknown constraint (" +
+                            constraintId + ").");
+                }
                 if (constraintMatchTotal.getConstraintMatchSet().stream().noneMatch(assertableMatch::isEqualTo)) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("

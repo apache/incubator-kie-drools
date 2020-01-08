@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongSupplier;
@@ -34,7 +35,6 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsValuePair;
 
 import static org.drools.model.DSL.from;
 
@@ -155,6 +155,14 @@ public abstract class DroolsRuleStructure {
                 .collect(Collectors.toList());
     }
 
+    public <NewA> DroolsUniRuleStructure<NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        // The accumulate pattern is the new open item, as it is where the primary pattern gets the variable from.
+        List<RuleItemBuilder<?>> newOpenItems = Collections.singletonList(accumulatePattern);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, newOpenItems, getClosedRuleItems(),
+                getVariableIdSupplier());
+    }
+
     public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
             PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
@@ -163,11 +171,11 @@ public abstract class DroolsRuleStructure {
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
-    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<DroolsValuePair<NewA, NewB>> newSource,
-            PatternDSL.PatternDef<Set<DroolsValuePair<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<BiTuple<NewA, NewB>> newSource,
+            PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
-        DroolsPatternBuilder<DroolsValuePair<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
                 .expand(p -> p.bind(newA, pair -> (NewA) pair.key))
                 .expand(p -> p.bind(newB, pair -> (NewB) pair.value));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),

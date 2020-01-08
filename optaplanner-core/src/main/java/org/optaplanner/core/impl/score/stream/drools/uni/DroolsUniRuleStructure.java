@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.function.UnaryOperator;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
@@ -80,14 +79,6 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
      */
     public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDSL.PatternDef<Object>> expander) {
         return new DroolsUniRuleStructure<>(a, getPrimaryPattern().expand(expander), openRuleItems, closedRuleItems,
-                getVariableIdSupplier());
-    }
-
-    public <NewA> DroolsUniRuleStructure<NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
-        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
-        // The accumulate pattern is the new open item, as it is where the primary pattern gets the variable from.
-        List<RuleItemBuilder<?>> newOpenItems = Collections.singletonList(accumulatePattern);
-        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, newOpenItems, closedRuleItems,
                 getVariableIdSupplier());
     }
 

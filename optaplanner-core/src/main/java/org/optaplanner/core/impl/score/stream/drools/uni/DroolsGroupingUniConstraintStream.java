@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
@@ -51,6 +52,14 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andGroup(groupKeyMapping);
+    }
+
+    public <B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
+            BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andCollect(collector);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsValuePair;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -75,12 +75,12 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     private static List<Object> unpair(List<Object> justificationList, int expectedJustificationCount) {
         return justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof DroolsValuePair) {
+                    if (item instanceof BiTuple) {
                         /*
                          * In the case of Drools-based CS, the justification may be both in the form of (A, B) and
                          * Pair<A, B>. In the latter case, we adapt to the former.
                          */
-                        DroolsValuePair<?, ?> pair = (DroolsValuePair<?, ?>) item;
+                        BiTuple<?, ?> pair = (BiTuple<?, ?>) item;
                         return Stream.of(pair.key, pair.value);
                     } else {
                         return Stream.of(item);

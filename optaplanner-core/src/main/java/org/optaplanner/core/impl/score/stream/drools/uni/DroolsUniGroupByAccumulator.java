@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,21 +27,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
 
     // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUse = new IdentityHashMap<>(0);
+    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
     // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<A, ResultContainer> containers = new LinkedHashMap<>(0);
+    private final Map<A, ResultContainer> containersMap = new LinkedHashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
     // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<DroolsValuePair<A, NewB>> result = new LinkedHashSet<>(0);
+    private final transient Set<BiTuple<A, NewB>> resultSet = new LinkedHashSet<>(0);
 
-    public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
@@ -56,25 +57,25 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
     }
 
     public Runnable accumulate(A key, B value) {
-        ResultContainer container = containers.computeIfAbsent(key, __ -> supplier.get());
+        ResultContainer container = containersMap.computeIfAbsent(key, __ -> supplier.get());
         Runnable undo = accumulator.apply(container, value);
-        containersInUse.compute(container, (__, count) -> increment(count)); // Increment use counter.
+        containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
             // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            Long currentCount = containersInUse.compute(container, (__, count) -> decrement(count));
+            Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
             if (currentCount == null) {
-                containers.remove(key);
+                containersMap.remove(key);
             }
         };
     }
 
-    public Set<DroolsValuePair<A, NewB>> finish() {
-        result.clear();
-        for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
+    public Set<BiTuple<A, NewB>> finish() {
+        resultSet.clear();
+        for (Map.Entry<A, ResultContainer> entry: containersMap.entrySet()) {
             ResultContainer container = entry.getValue();
-            result.add(new DroolsValuePair<>(entry.getKey(), finisher.apply(container)));
+            resultSet.add(new BiTuple<>(entry.getKey(), finisher.apply(container)));
         }
-        return result;
+        return resultSet;
     }
 }

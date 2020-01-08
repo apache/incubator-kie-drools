@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
+public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
 
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
     private final Variable<A> groupKeyVar;
     private final Variable<B> collectingVar;
 
-    public DroolsGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> groupKeyVar,
+    public DroolsUniGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> groupKeyVar,
             Variable<B> collectingVar) {
         this.collector = collector;
         this.groupKeyVar = groupKeyVar;
@@ -47,13 +47,13 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
 
     @Override
     public Serializable createContext() {
-        return new DroolsGroupBy<>(collector);
+        return new DroolsUniGroupBy<>(collector);
     }
 
     @Override
     public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
             WorkingMemory workingMemory) {
-        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).init();
+        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).init();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
         Object handleObject = handle.getObject();
         final A groupKey = getValue(groupKeyVar, internalWorkingMemory, handleObject, innerDeclarations);
         final B toCollect = getValue(collectingVar, internalWorkingMemory, handleObject, innerDeclarations);
-        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
+        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
     }
 
     private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
@@ -94,13 +94,13 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).reverse(handle);
+        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).reverse(handle);
     }
 
     @Override
     public Object getResult(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
             WorkingMemory workingMemory) {
-        return ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).getResult();
+        return ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).getResult();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
 
     @Override
     public String getMethodBytecode() {
-        Class<?> accumulateClass = DroolsGroupBy.class;
+        Class<?> accumulateClass = DroolsUniGroupBy.class;
         String classFileName = accumulateClass.getCanonicalName().replace('.', '/') + ".class";
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(classFileName)) {
             final byte[] data = new byte[1024];

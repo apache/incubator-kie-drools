@@ -210,9 +210,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
      * facts.
      * <p>
-     * The first fact is the value resulting from applying the group key mapping function on the fact from the original
-     * tuple. The second fact is the value of applying a given {@link UniConstraintCollector} on all the facts of the
-     * original tuple with a matching group key.
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of a given {@link UniConstraintCollector} applied on incoming tuples with the
+     * same first fact.
      * @param groupKeyMapping never null, function to convert a fact in original tuple to a different fact
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -227,9 +227,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
      * facts.
      * <p>
-     * The first fact is the value resulting from applying the "A" group key mapping function to the fact from the
-     * original tuple. The second fact is the value resulting from applying the "B" group key mapping function to the
-     * fact from the original tuple, which already passed through the "A" group key mapping.
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on incoming tuples with
+     * the same first fact.
      * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
      * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
