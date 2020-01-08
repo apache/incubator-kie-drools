@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
-import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
@@ -152,17 +151,13 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     /**
-     * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions.
-     * Maps are considered structured only when the given raw value is a JSON textual type
-     * i.e. an user defined expression (The JSON textual must be processed to take its value)
+     * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions
      * @param className
-     * @param raw
      * @return
      */
     @Override
-    protected boolean isStructuredInput(String className, String raw) {
-        return ScenarioSimulationSharedUtils.isList(className) ||
-                (ScenarioSimulationSharedUtils.isMap(className) && JsonUtils.isAJSONTextualNode(raw));
+    protected boolean isStructuredInput(String className) {
+        return ScenarioSimulationSharedUtils.isList(className);
     }
 
     /**

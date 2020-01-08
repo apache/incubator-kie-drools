@@ -36,7 +36,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
-        if (isStructuredInput(className, rawExpression)) {
+        if (isStructuredInput(className)) {
             return convertResult(rawExpression, className, genericClasses);
         } else {
             return internalLiteralEvaluation(rawExpression, className);
@@ -64,10 +64,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     /**
      * Check if className represents a structured input
      * @param className Used to determine if a structured input is passed
-     * @param raw The raw value. It could be used in subclasses overridden method
      * @return
      */
-    protected boolean isStructuredInput(String className, String raw) {
+    protected boolean isStructuredInput(String className) {
         return ScenarioSimulationSharedUtils.isCollection(className);
     }
 

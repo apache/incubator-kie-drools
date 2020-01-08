@@ -81,9 +81,6 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression("{key_a : 1}", Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
-        Map<String, Object> parsedValueMapExpression = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression(new TextNode("{key_e : 10}").toString(), Map.class.getCanonicalName(), Collections.emptyList());
-        assertTrue(parsedValueMapExpression.containsKey("key_e"));
-        assertEquals(parsedValueMapExpression.get("key_e"), BigDecimal.valueOf(10));
         List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression( new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValueListExpression.size() == 2);
         assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
