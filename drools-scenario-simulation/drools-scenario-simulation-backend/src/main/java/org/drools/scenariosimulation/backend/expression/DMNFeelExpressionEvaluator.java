@@ -143,15 +143,12 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     /**
      * In DMN only Lists are structured result while Maps are context so "plain" FEEL expressions
-     * Maps are considered structured only when the given raw value is a JSON textual type
-     * i.e. an user defined expression (The JSON textual must be processed to take its value)
      * @param resultClass
      * @return
      */
     @Override
-    protected boolean isStructuredResult(Class<?> resultClass, String raw) {
-        return resultClass != null && (ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName()) ||
-                (ScenarioSimulationSharedUtils.isMap(resultClass.getCanonicalName()) && JsonUtils.isAJSONTextualNode(raw)));
+    protected boolean isStructuredResult(Class<?> resultClass) {
+        return resultClass != null && ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName());
     }
 
     /**

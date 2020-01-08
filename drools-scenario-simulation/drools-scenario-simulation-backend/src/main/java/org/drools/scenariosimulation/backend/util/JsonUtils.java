@@ -38,7 +38,7 @@ public class JsonUtils {
      * @return
      */
     public static Optional<JsonNode> convertFromStringToJSONNode(String json) {
-        if (json == null) {
+        if (json == null || json.isEmpty()) {
            return Optional.empty();
         }
         try {
@@ -56,16 +56,6 @@ public class JsonUtils {
      * @return
      */
     public static boolean isAJSONTextualNode(String json) {
-        if (json != null && !json.isEmpty()) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(json);
-                return jsonNode.isTextual();
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
+        return convertFromStringToJSONNode(json).filter(JsonNode::isTextual).isPresent();
     }
-
 }

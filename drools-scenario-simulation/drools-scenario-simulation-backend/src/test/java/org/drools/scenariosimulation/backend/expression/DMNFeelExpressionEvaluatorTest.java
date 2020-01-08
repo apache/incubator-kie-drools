@@ -58,8 +58,6 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
         assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("{key_a : 1}").toString(), contextValue, Map.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{key_a : 2}").toString(), contextValue, Map.class));
         List<BigDecimal> contextListValue = Collections.singletonList(BigDecimal.valueOf(23));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));

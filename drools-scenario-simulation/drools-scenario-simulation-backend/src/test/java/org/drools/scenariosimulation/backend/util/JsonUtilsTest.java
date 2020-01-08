@@ -43,6 +43,8 @@ public class JsonUtilsTest {
 
     @Test
     public void isAJSONTextualNode() {
+        assertFalse(JsonUtils.isAJSONTextualNode(null));
+        assertFalse(JsonUtils.isAJSONTextualNode(""));
         assertFalse(JsonUtils.isAJSONTextualNode("Not json"));
         assertFalse(JsonUtils.isAJSONTextualNode("\"Not json"));
         assertFalse(JsonUtils.isAJSONTextualNode("key : notJson\""));

@@ -45,7 +45,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
-        if (isStructuredResult(resultClass, rawExpression)) {
+        if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
@@ -55,10 +55,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     /**
      * Check if resultClass represents a structured result
      * @param resultClass Used to determine if a structured result is passed
-     * @param rawExpression The raw value. It could be used in subclasses overridden method
      * @return
      */
-    protected boolean isStructuredResult(Class<?> resultClass, String rawExpression) {
+    protected boolean isStructuredResult(Class<?> resultClass) {
         return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
     }
 

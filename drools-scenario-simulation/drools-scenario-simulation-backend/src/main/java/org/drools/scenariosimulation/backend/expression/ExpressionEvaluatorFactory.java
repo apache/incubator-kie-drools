@@ -58,7 +58,7 @@ public class ExpressionEvaluatorFactory {
             return getOrCreateDMNExpressionEvaluator();
         }
 
-        Object rawValue = factMappingValue.getRawValue();
+        String rawValue = (String) factMappingValue.getRawValue();
 
         if (isAnMVELExpression(rawValue)) {
             return getOrCreateMVELExpressionEvaluator();
@@ -75,24 +75,16 @@ public class ExpressionEvaluatorFactory {
      * @param rawValue
      * @return
      */
-    protected boolean isAnMVELExpression(Object rawValue) {
-        if (!(rawValue instanceof String)) {
-            return false;
-        }
+    protected boolean isAnMVELExpression(String rawValue) {
         /* NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#') */
-        if (((String) rawValue).trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (rawValue.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
             return true;
         }
         /* COLLECTION CASE: It's a JSON String node, which is used only when an expression is set
            and it's value starts with MVEL_ESCAPE_SYMBOL ('#') */
-        Optional<JsonNode> optionalNode = JsonUtils.convertFromStringToJSONNode((String) rawValue);
-        if (optionalNode.isPresent()) {
-            JsonNode jsonNode = optionalNode.get();
-            if (jsonNode.isTextual() && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
-                return true;
-            }
-        }
-        return false;
+        Optional<JsonNode> optionalNode = JsonUtils.convertFromStringToJSONNode(rawValue);
+        return optionalNode.filter(
+                jsonNode -> jsonNode.isTextual() && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)).isPresent();
     }
 
     private ExpressionEvaluator getOrCreateBaseExpressionEvaluator() {
