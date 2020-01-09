@@ -90,6 +90,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -2761,6 +2762,34 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("hardcoded").getResult(), is("Hello, x"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEvaluateByNameWithEmptyParam() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Monthly Salary", 1000);
+
+        String[] decisionNames = new String[]{};
+        runtime.evaluateByName(dmnModel, context, decisionNames);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEvaluateByIdWithEmptyParam() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Monthly Salary", 1000);
+
+        String[] decisionIds = new String[]{};
+        runtime.evaluateById(dmnModel, context, decisionIds);
     }
 }
 

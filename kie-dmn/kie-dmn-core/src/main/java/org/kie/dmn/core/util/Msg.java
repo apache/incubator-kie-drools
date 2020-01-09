@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 public final class Msg {
     // consolidated
     public static final Message1 PARAM_CANNOT_BE_NULL                                = new Message1( DMNMessageType.KIE_API, "Kie DMN API parameter '%s' cannot be null." );
+    public static final Message1 PARAM_CANNOT_BE_EMPTY                               = new Message1( DMNMessageType.KIE_API, "Kie DMN API parameter '%s' cannot be empty." );
     public static final Message2 UNSUPPORTED_ELEMENT                                 = new Message2( DMNMessageType.UNSUPPORTED_ELEMENT, "Element %s with type='%s' is not supported." );
     public static final Message1 IMPORT_TYPE_UNKNOWN                                 = new Message1( DMNMessageType.INVALID_SYNTAX, "Import type unknown: '%s'." );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
