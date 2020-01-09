@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mvel2.CompileException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -107,6 +108,12 @@ public class MVELExpressionEvaluatorTest {
         assertEquals(3, evaluator.evaluateLiteralExpression("# a = 1; b = 2; a+b;", Integer.class.getCanonicalName(), Collections.emptyList()));
 
         assertEquals("Test", evaluator.evaluateLiteralExpression("# a = \"Te\"; b = \"st\"; a+b;", String.class.getCanonicalName(), Collections.emptyList()));
+
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("# a = 1 b = 2 a+b;", Integer.class.getCanonicalName(), Collections.emptyList()))
+                .isInstanceOf(CompileException.class);
+
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("# a = 1; a+b;", Integer.class.getCanonicalName(), Collections.emptyList()))
+                .isInstanceOf(CompileException.class);
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("1+", String.class.getCanonicalName(), Collections.emptyList()))
                 .isInstanceOf(RuntimeException.class);
