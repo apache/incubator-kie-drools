@@ -104,6 +104,10 @@ public class MVELExpressionEvaluatorTest {
 
         assertEquals("Value", evaluator.evaluateLiteralExpression("# \"Value\"", String.class.getCanonicalName(), Collections.emptyList()));
 
+        assertEquals(3, evaluator.evaluateLiteralExpression("# a = 1; b = 2; a+b;", Integer.class.getCanonicalName(), Collections.emptyList()));
+
+        assertEquals("Test", evaluator.evaluateLiteralExpression("# a = \"Te\"; b = \"st\"; a+b;", String.class.getCanonicalName(), Collections.emptyList()));
+
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("1+", String.class.getCanonicalName(), Collections.emptyList()))
                 .isInstanceOf(RuntimeException.class);
 
