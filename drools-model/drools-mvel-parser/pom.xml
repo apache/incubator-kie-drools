@@ -11,7 +11,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <java.module.name>org.drools.mvel-parser</java.module.name>
+    <java.module.name>org.drools.mvelparser</java.module.name>
   </properties>
 
   <description>Parsing of constraints in LHS</description>

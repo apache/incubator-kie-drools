@@ -56,7 +56,7 @@ public class JavaParserCompiler {
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
 
     private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( COMPILER_TYPE, "1.8" );
+        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
         if (COMPILER_TYPE == JavaDialectConfiguration.CompilerType.ECLIPSE) {
             ((EclipseJavaCompiler )javaCompiler).setPrefix( "src/main/java/" );
         }
@@ -112,7 +112,7 @@ public class JavaParserCompiler {
     }
 
     private static JavaCompiler createEclipseCompiler() {
-        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) new JavaCompilerFactory().loadCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8");
+        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8");
         javaCompiler.setPrefix("src/main/java/");
         return javaCompiler;
     }

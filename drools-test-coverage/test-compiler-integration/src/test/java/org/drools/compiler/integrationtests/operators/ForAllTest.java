@@ -65,6 +65,11 @@ public class ForAllTest {
     }
 
     @Test
+    public void test1P2CFiringWithIn() {
+        check("age >= 18, name in(\"Mario\", \"Mark\")", 1, new Person("Mario", 45), new Person("Mark", 43));
+    }
+
+    @Test
     public void test1P2CNotFiring1() {
         check("age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
     }

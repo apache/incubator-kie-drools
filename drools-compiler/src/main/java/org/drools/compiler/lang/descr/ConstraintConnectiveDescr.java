@@ -122,4 +122,20 @@ public class ConstraintConnectiveDescr extends AnnotatedBaseDescr {
     public void setNegated( boolean negated ) {
         this.negated = negated;
     }
+
+    @Override
+    public BaseDescr negate() {
+        if (connective == ConnectiveType.OR) {
+            connective = ConnectiveType.AND;
+        } else if (connective == ConnectiveType.AND) {
+            connective = ConnectiveType.OR;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+        for (BaseDescr descr : descrs) {
+            descr.negate();
+        }
+        return this;
+    }
 }

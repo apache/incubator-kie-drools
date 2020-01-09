@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.AtLiteralContext;
 
 public class ASTBuilderFactory {
 
@@ -154,5 +155,9 @@ public class ASTBuilderFactory {
 
     public static TypeNode newTypeNode(ParserRuleContext ctx) {
         return new TypeNode( ctx );
+    }
+
+    public static BaseNode newAtLiteralNode(AtLiteralContext ctx, StringNode stringLiteral) {
+        return new AtLiteralNode(ctx, stringLiteral);
     }
 }

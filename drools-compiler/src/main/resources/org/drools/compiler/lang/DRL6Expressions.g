@@ -500,7 +500,12 @@ unaryExpression returns [BaseDescr result]
 unaryExpressionNotPlusMinus returns [BaseDescr result]
 @init { boolean isLeft = false; BindingDescr bind = null;}
     :   TILDE unaryExpression
-    | 	NEGATION unaryExpression
+    | 	NEGATION ue=unaryExpression
+        {
+            if( buildDescr && ue != null ) {
+                $result = ue.negate();
+            }
+        }
     |   (castExpression)=>castExpression
     |   (backReferenceExpression)=>backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}

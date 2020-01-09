@@ -14,7 +14,7 @@
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
-    <java.module.name>org.drools.canonical-model</java.module.name>
+    <java.module.name>org.drools.canonicalmodel</java.module.name>
   </properties>
 
   <dependencies>

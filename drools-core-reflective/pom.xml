@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <java.module.name>org.drools.drools-core-reflective</java.module.name>
+        <java.module.name>org.drools.droolscorereflective</java.module.name>
     </properties>
 
     <dependencies>

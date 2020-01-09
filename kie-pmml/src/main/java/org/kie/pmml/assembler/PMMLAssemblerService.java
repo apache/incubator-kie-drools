@@ -290,8 +290,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private JavaCompiler createCompiler(JavaDialectConfiguration javaConf, String prefix) {
-        JavaCompilerFactory compilerFactory = new JavaCompilerFactory();
-        JavaCompiler javaCompiler = compilerFactory.loadCompiler(javaConf);
+        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(javaConf);
         if (javaCompiler instanceof EclipseJavaCompiler) {
             ((EclipseJavaCompiler) javaCompiler).setPrefix(prefix);
         }

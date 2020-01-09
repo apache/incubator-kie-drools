@@ -47,6 +47,7 @@ import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
@@ -104,6 +105,12 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitBoolLiteral(FEEL_1_1Parser.BoolLiteralContext ctx) {
         return ASTBuilderFactory.newBooleanNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitAtLiteral(FEEL_1_1Parser.AtLiteralContext ctx) {
+        StringNode stringLiteral = ASTBuilderFactory.newStringNode(ctx.atLiteralValue());
+        return ASTBuilderFactory.newAtLiteralNode(ctx, stringLiteral);
     }
 
     @Override
