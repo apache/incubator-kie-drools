@@ -32,12 +32,16 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNProfilesTest.class);
 
     public DMNProfilesTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
@@ -68,7 +72,7 @@ public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
         context.set("number", 123.123456d);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult);
+        LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -99,7 +103,7 @@ public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult);
+        LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
