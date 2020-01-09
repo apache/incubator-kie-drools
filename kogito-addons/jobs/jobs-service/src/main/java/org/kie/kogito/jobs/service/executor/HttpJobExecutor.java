@@ -119,7 +119,7 @@ public class HttpJobExecutor implements JobExecutor {
     }
 
     @Override
-    public CompletionStage<ScheduledJob> execute(CompletionStage<ScheduledJob> futureJob) {
+    public CompletionStage<ScheduledJob>  execute(CompletionStage<ScheduledJob> futureJob) {
         return futureJob
                 .thenCompose(job -> {
                     //Using just POST method for now
@@ -159,5 +159,9 @@ public class HttpJobExecutor implements JobExecutor {
 
     private int getRepeatableJobCountDown(ScheduledJob job) {
         return job.getRepeatLimit() - job.getExecutionCounter();
+    }
+
+    WebClient getClient() {
+        return client;
     }
 }

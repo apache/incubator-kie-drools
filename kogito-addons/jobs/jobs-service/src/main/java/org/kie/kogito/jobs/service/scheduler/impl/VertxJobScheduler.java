@@ -25,7 +25,9 @@ import io.vertx.axle.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.service.executor.JobExecutor;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.BaseTimerJobScheduler;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -42,20 +44,31 @@ public class VertxJobScheduler extends BaseTimerJobScheduler {
     @Inject
     Vertx vertx;
 
+    public VertxJobScheduler() {
+    }
+
+    public VertxJobScheduler(Vertx vertx, JobExecutor jobExecutor, ReactiveJobRepository jobRepository,
+                             long backoffRetryMillis,
+                             long maxIntervalLimitToRetryMillis) {
+        super(jobExecutor, jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis);
+        this.vertx = vertx;
+    }
+
     @Override
-    public Publisher<String> doSchedule(Duration delay, Job job) {
+    public PublisherBuilder<String> doSchedule(Duration delay, Job job) {
         LOGGER.debug("Job Scheduling {}", job);
         return ReactiveStreams
-                .of(setTimer(delay, job))
-                .map(String::valueOf)
-                .buildRs();
+                .of(job)
+                .map(j -> setTimer(delay, j))
+                .map(String::valueOf);
     }
 
     @Override
     public PublisherBuilder<String> doPeriodicSchedule(Duration interval, Job job) {
         LOGGER.debug("Job Periodic Scheduling {}", job);
         return ReactiveStreams
-                .of(setPeriodicTimer(interval, job))
+                .of(job)
+                .map(j -> setPeriodicTimer(interval, j))
                 .map(String::valueOf);
     }
 

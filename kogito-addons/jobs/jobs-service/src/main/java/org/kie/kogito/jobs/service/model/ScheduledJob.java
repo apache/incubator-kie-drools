@@ -35,18 +35,19 @@ public class ScheduledJob extends Job {
     public ScheduledJob() {
     }
 
-    private ScheduledJob(Job job, String scheduledId, Integer retries, JobStatus status, ZonedDateTime lastUpdate,
+    private ScheduledJob(Optional<Job> job, String scheduledId, Integer retries, JobStatus status,
+                         ZonedDateTime lastUpdate,
                          JobExecutionResponse executionResponse, Integer executionCounter) {
-        super(job.getId(),
-              job.getExpirationTime(),
-              job.getPriority(),
-              job.getCallbackEndpoint(),
-              job.getProcessInstanceId(),
-              job.getRootProcessInstanceId(),
-              job.getProcessId(),
-              job.getRootProcessId(),
-              job.getRepeatInterval(),
-              job.getRepeatLimit());
+        super(job.map(Job::getId).orElse(null),
+              job.map(Job::getExpirationTime).orElse(null),
+              job.map(Job::getPriority).orElse(null),
+              job.map(Job::getCallbackEndpoint).orElse(null),
+              job.map(Job::getProcessInstanceId).orElse(null),
+              job.map(Job::getRootProcessInstanceId).orElse(null),
+              job.map(Job::getProcessId).orElse(null),
+              job.map(Job::getRootProcessId).orElse(null),
+              job.map(Job::getRepeatInterval).orElse(null),
+              job.map(Job::getRepeatLimit).orElse(null));
         this.scheduledId = scheduledId;
         this.retries = retries;
         this.status = status;
@@ -165,7 +166,9 @@ public class ScheduledJob extends Job {
         }
 
         public ScheduledJob build() {
-            return new ScheduledJob(job, scheduledId, retries, status, getLastUpdate(), executionResponse, executionCounter);
+            return new ScheduledJob(Optional.ofNullable(job), scheduledId, retries, status, getLastUpdate(),
+                                    executionResponse,
+                                    executionCounter);
         }
 
         private ZonedDateTime getLastUpdate() {

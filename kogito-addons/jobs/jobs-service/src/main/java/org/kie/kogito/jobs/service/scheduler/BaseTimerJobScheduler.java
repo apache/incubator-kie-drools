@@ -58,6 +58,19 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     @Inject
     ReactiveJobRepository jobRepository;
 
+    public BaseTimerJobScheduler() {
+    }
+
+    public BaseTimerJobScheduler(JobExecutor jobExecutor,
+                                 ReactiveJobRepository jobRepository,
+                                 long backoffRetryMillis,
+                                 long maxIntervalLimitToRetryMillis) {
+        this.jobExecutor = jobExecutor;
+        this.jobRepository = jobRepository;
+        this.backoffRetryMillis = backoffRetryMillis;
+        this.maxIntervalLimitToRetryMillis = maxIntervalLimitToRetryMillis;
+    }
+
     @Override
     public Publisher<ScheduledJob> schedule(Job job) {
         LOGGER.debug("Scheduling {}", job);
@@ -71,9 +84,13 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 //2- calculate the delay (when the job should be executed)
                 .map(checked -> job.getExpirationTime())
                 .map(this::calculateDelay)
+                .peek(delay -> Optional
+                        .of(delay.isNegative())
+                        .filter(Boolean.FALSE::equals)
+                        .orElseThrow(() -> new RuntimeException("Delay should be positive")))
                 //3- schedule the job
                 .map(delay -> doSchedule(delay, job))
-                .flatMapRsPublisher(p -> p)
+                .flatMap(p -> p)
                 .map(scheduleId -> ScheduledJob
                         .builder()
                         .job(job)
@@ -140,7 +157,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                                         .status(JobStatus.PERIODIC_SCHEDULED)
                                         .build())
                                 .flatMapCompletionStage(jobRepository::save))
-                        //hand already PERIODIC_SCHEDULED
+                        //handle already PERIODIC_SCHEDULED
                         .orElseGet(() -> ReactiveStreams.fromCompletionStage(
                                 job.hasInterval()
                                         //handle already periodic scheduled job
@@ -207,7 +224,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                         .map(ScheduledJob::getStatus)
                         .filter(s -> !JobStatus.ERROR.equals(s))
                         .map(time -> doSchedule(Duration.ofMillis(backoffRetryMillis), scheduledJob))
-                        .flatMapRsPublisher(p -> p)
+                        .flatMap(p -> p)
                         .map(scheduleId -> ScheduledJob
                                 .builder()
                                 .of(scheduledJob)
@@ -236,7 +253,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .orElse(null);
     }
 
-    public abstract Publisher<String> doSchedule(Duration delay, Job job);
+    public abstract PublisherBuilder<String> doSchedule(Duration delay, Job job);
 
     public abstract PublisherBuilder<String> doPeriodicSchedule(Duration delay, Job job);
 
@@ -270,4 +287,20 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     }
 
     public abstract Publisher<Boolean> doCancel(ScheduledJob scheduledJob);
+
+    public long getBackoffRetryMillis() {
+        return backoffRetryMillis;
+    }
+
+    public void setBackoffRetryMillis(long backoffRetryMillis) {
+        this.backoffRetryMillis = backoffRetryMillis;
+    }
+
+    public long getMaxIntervalLimitToRetryMillis() {
+        return maxIntervalLimitToRetryMillis;
+    }
+
+    public void setMaxIntervalLimitToRetryMillis(long maxIntervalLimitToRetryMillis) {
+        this.maxIntervalLimitToRetryMillis = maxIntervalLimitToRetryMillis;
+    }
 }
