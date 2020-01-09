@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -54,17 +55,62 @@ public class ProtobufMonitorServiceTest {
             CountDownLatch latch = new CountDownLatch(4);
             doAnswer(args -> {
                 latch.countDown();
-                if (latch.getCount() == 2) {
-                    Files.write(file2, "test".getBytes());
-                    Files.write(file1, "test".getBytes());
-                }
                 return null;
             }).when(protobufService).registerProtoBufferType(any());
 
             protobufMonitorService.monitor = true;
             protobufMonitorService.protoFiles = Optional.of(dir.toAbsolutePath().toString());
+            protobufMonitorService.onFolderWatch = path ->
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            Files.write(file2, "test".getBytes());
+                            Files.write(file1, "test".getBytes());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
             protobufMonitorService.onStart(null);
-            
+
+            latch.await(1, TimeUnit.MINUTES);
+            assertEquals(0, latch.getCount());
+        } finally {
+            if (dir != null) {
+                try {
+                    Files.deleteIfExists(dir);
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testAddingSubFolderAfterStart() throws Exception {
+        Path dir = null;
+        try {
+            dir = Files.createTempDirectory(this.getClass().getName());
+            Files.createFile(dir.resolve("kogito-application.proto"));
+            Files.createFile(dir.resolve("test1.proto"));
+            CountDownLatch latch = new CountDownLatch(2);
+            Path proto = dir.resolve("proto");
+            doAnswer(args -> {
+                latch.countDown();
+                return null;
+            }).when(protobufService).registerProtoBufferType(any());
+
+            protobufMonitorService.monitor = true;
+            protobufMonitorService.protoFiles = Optional.of(dir.toAbsolutePath().toString());
+            protobufMonitorService.onFolderWatch = path ->
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            Path sub = Files.createDirectory(proto);
+                            Files.createFile(sub.resolve("test2.txt"));
+                            Files.createFile(sub.resolve("test2.proto"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+            protobufMonitorService.onStart(null);
+
             latch.await(1, TimeUnit.MINUTES);
             assertEquals(0, latch.getCount());
         } finally {
