@@ -209,28 +209,4 @@ public class BaseExpressionEvaluatorTest {
         listJsonString = "[{\"" + VALUE + "\" : \"\"}]";
         assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null));
     }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void expressionListConvertResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void expressionMapConvertResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void expressionListVerifyResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.verifyResult(expressionCollectionJsonString, new ArrayList<>(), null);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void expressionMapVerifyResultTest() {
-        String expressionCollectionJsonString = new TextNode("JsonText").toString();
-        expressionEvaluator.verifyResult(expressionCollectionJsonString, new HashMap<>(), null);
-    }
 }

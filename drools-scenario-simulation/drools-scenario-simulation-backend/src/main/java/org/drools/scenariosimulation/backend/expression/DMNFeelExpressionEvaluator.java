@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
@@ -171,15 +170,5 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     @Override
     protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses) {
         return new AbstractMap.SimpleEntry<>("", singletonList(""));
-    }
-
-    @Override
-    protected boolean verifyExpression(TextNode jsonNode, Object resultValue, Class<?> resultClass) {
-        return internalUnaryEvaluation(jsonNode.asText(), resultValue, resultClass, false);
-    }
-
-    @Override
-    protected Object extractAndEvaluateExpression(TextNode jsonNode, String className) {
-        return internalLiteralEvaluation(jsonNode.asText(), className);
     }
 }

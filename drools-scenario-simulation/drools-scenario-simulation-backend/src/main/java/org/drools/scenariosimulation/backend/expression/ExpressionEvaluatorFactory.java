@@ -76,12 +76,11 @@ public class ExpressionEvaluatorFactory {
      * @return
      */
     protected boolean isAnMVELExpression(String rawValue) {
-        /* NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#') */
+        /* NOT COLLECTIONS CASE */
         if (rawValue.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
             return true;
         }
-        /* COLLECTION CASE: It's a JSON String node, which is used only when an expression is set
-           and it's value starts with MVEL_ESCAPE_SYMBOL ('#') */
+        /* COLLECTION CASE */
         Optional<JsonNode> optionalNode = JsonUtils.convertFromStringToJSONNode(rawValue);
         return optionalNode.filter(
                 jsonNode -> jsonNode.isTextual() && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)).isPresent();

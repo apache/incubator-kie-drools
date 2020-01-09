@@ -55,6 +55,7 @@ public class ConstantsHolder {
                                                                                            "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"));
 
     public static final String MALFORMED_RAW_DATA_MESSAGE = "Malformed raw data";
+    public static final String MALFORMED_MVEL_EXPRESSION = "Malformed MVEL expression";
 
     private ConstantsHolder() {
         // Not instantiable

@@ -30,6 +30,7 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MALFORMED_MVEL_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.compareValues;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
@@ -109,6 +110,6 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
                 return expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
             }
         }
-        throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
+        throw new IllegalArgumentException(MALFORMED_MVEL_EXPRESSION + "'" + rawExpression + "'");
     }
 }

@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 
@@ -78,14 +77,14 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(rawString);
-            /* JSON String: User defined Expression */
             if (jsonNode.isTextual()) {
-                return extractAndEvaluateExpression((TextNode) jsonNode, className);
-            /* JSON Array: User defined List */
+                /* JSON String: User defined Expression */
+                return internalLiteralEvaluation(jsonNode.asText(), className);
             } else if (jsonNode.isArray()) {
+                /* JSON Array: User defined List */
                 return createAndFillList((ArrayNode) jsonNode, new ArrayList<>(), className, genericClasses);
-            /* JSON Object: User defined Map */
             } else if (jsonNode.isObject()) {
+                /* JSON Object: User defined Map */
                 return createAndFillObject((ObjectNode) jsonNode,
                                            createObject(className, genericClasses),
                                            className,
@@ -158,47 +157,20 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
         try {
             JsonNode jsonNode = objectMapper.readTree(rawExpression);
-            /* JSON String: User defined Expression */
             if (jsonNode.isTextual()) {
-                return verifyExpression((TextNode) jsonNode, resultRaw, resultClass);
-            /* JSON Array: User defined List */
+                /* JSON String: User defined Expression */
+                return internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false);
             } else if (jsonNode.isArray()) {
+                /* JSON Array: User defined List */
                 return verifyList((ArrayNode) jsonNode, (List) resultRaw);
-            /* JSON Object: User defined Map */
             } else if (jsonNode.isObject()) {
+                /* JSON Object: User defined Map */
                 return verifyObject((ObjectNode) jsonNode, resultRaw);
             }
             throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
         } catch (IOException e) {
             throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE, e);
         }
-    }
-
-    /**
-     * It verifies a user defined expression for a collection type object (Lists, Maps). The evaluator which needs to
-     * handle it, must override this method and define its own logic. In all other cases, an
-     * <code>UnsupportedOperationException</code> is thrown.
-     * @param jsonNode
-     * @param resultRaw
-     * @param resultClass
-     * @return
-     */
-    protected boolean verifyExpression(TextNode jsonNode, Object resultRaw, Class<?> resultClass) {
-        throw new UnsupportedOperationException("This evaluator " + this.getClass().getSimpleName() + "doesn't support " +
-                "user defined expressions for collections");
-    }
-
-    /**
-     * It extract a user defined expression for a collection type object (Lists, Maps). The evaluator which needs to
-     * handle it, must override this method and define its own logic. In all other cases, an
-     * <code>UnsupportedOperationException</code> is thrown.
-     * @param jsonNode
-     * @param className
-     * @return
-     */
-    protected Object extractAndEvaluateExpression(TextNode jsonNode, String className) {
-        throw new UnsupportedOperationException("This evaluator " + this.getClass().getSimpleName() + "doesn't support " +
-                                                        "user defined expressions for collections");
     }
 
     protected boolean verifyList(ArrayNode json, List resultRaw) {
