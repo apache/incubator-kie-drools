@@ -1055,9 +1055,11 @@ public class KnowledgeBaseImpl
                 throw new RuntimeException( "Registering null bytes for class " + className );
             }
 
-            if (newDecl.getTypeClassDef() == null) {
-                newDecl.setTypeClassDef( new ClassDefinition() );
-            }
+
+            // TODO instantiate this
+//            if (newDecl.getTypeClassDef() == null) {
+//                newDecl.setTypeClassDef( new ClassDefinition() );
+//            }
             newDecl.setTypeClass( definedKlass );
 
             this.classTypeDeclaration.put( className, newDecl );

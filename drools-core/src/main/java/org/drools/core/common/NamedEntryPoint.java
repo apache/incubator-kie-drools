@@ -109,7 +109,8 @@ public class NamedEntryPoint
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
-        this.traitHelper = new TraitHelper( wm, this );
+//        this.traitHelper = new TraitHelper( wm, this );
+        this.traitHelper = null; // TODO inject trait helper here
     }
 
     protected NamedEntryPoint( EntryPointId entryPoint,
@@ -122,7 +123,7 @@ public class NamedEntryPoint
         this.handleFactory = handleFactory;
         this.lock = lock;
         this.objectStore = objectStore;
-        this.traitHelper = new TraitHelper( wm, this );
+//        this.traitHelper = new TraitHelper( wm, this ); // TODO inject trait helper here
     }
 
      public void lock() {

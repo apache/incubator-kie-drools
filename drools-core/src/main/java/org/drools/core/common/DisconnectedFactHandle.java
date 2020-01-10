@@ -418,11 +418,12 @@ public class DisconnectedFactHandle
     }
 
     private TraitTypeEnum determineTraitType() {
-        if ( isTraitOrTraitable() ) {
-            return TraitFactory.determineTraitType( object );
-        } else {
+        // TODO trait specific code
+//        if ( isTraitOrTraitable() ) {
+//            return TraitFactory.determineTraitType( object );
+//        } else {
             return TraitTypeEnum.NON_TRAIT;
-        }
+//        }
     }
 
     @Override

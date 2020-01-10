@@ -30,7 +30,7 @@ import org.drools.core.common.PhreakWorkingMemoryFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
-import org.drools.core.factmodel.ClassBuilderFactory;
+//import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -228,46 +228,52 @@ public class KieComponentFactory implements Serializable {
         return new DefaultLogicTransformerFactory();
     }
 
-    private TraitFactory traitFactory = new TraitFactory();
+    // TODO inject this
+    private TraitFactory traitFactory = null;
 
     public TraitFactory getTraitFactory() {
         return traitFactory;
     }
-
-    public void setTraitFactory( TraitFactory tf ) {
-        traitFactory = tf;
-    }
-
-    public void setDefaultTraitFactory() {
-        traitFactory = new TraitFactory();
-    }
-
-    public static TraitFactory getDefaultTraitFactory() {
-        return new TraitFactory();
-    }
-
-    private TraitRegistry traitRegistry;
+//
+//    public void setTraitFactory( TraitFactory tf ) {
+//        traitFactory = tf;
+//    }
+//
+//    public void setDefaultTraitFactory() {
+//        traitFactory = new TraitFactory();
+//    }
+//
+//    public static TraitFactory getDefaultTraitFactory() {
+//        return new TraitFactory();
+//    }
+//
+    private TraitRegistry traitRegistry; // TODO initialise this
 
     public TraitRegistry getTraitRegistry() {
-        if ( traitRegistry == null ) {
-            traitRegistry = new TraitRegistry();
-        }
         return traitRegistry;
     }
 
-    public void setTraitFactory( TraitRegistry tr ) {
-        traitRegistry = tr;
-    }
-
-    public void setDefaultTraitRegistry() {
-        traitRegistry = new TraitRegistry();
-    }
-
-    public static TraitRegistry getDefaultTraitRegistry() {
-        return new TraitRegistry();
-    }
-
-
+    //
+//    public TraitRegistry getTraitRegistry() {
+//        if ( traitRegistry == null ) {
+//            traitRegistry = new TraitRegistry();
+//        }
+//        return traitRegistry;
+//    }
+//
+//    public void setTraitFactory( TraitRegistry tr ) {
+//        traitRegistry = tr;
+//    }
+//
+//    public void setDefaultTraitRegistry() {
+//        traitRegistry = new TraitRegistry();
+//    }
+//
+//    public static TraitRegistry getDefaultTraitRegistry() {
+//        return new TraitRegistry();
+//    }
+//
+//
     private TripleStore tripleStore = new TripleStore();
 
     public TripleStore getTripleStore() {
@@ -287,23 +293,23 @@ public class KieComponentFactory implements Serializable {
     }
 
 
-    private ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
-
-    public ClassBuilderFactory getClassBuilderFactory() {
-        return classBuilderFactory;
-    }
-
-    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
-        classBuilderFactory = tf;
-    }
-
-    public void setDefaultClassBuilderFactory() {
-        classBuilderFactory = new ClassBuilderFactory();
-    }
-
-    public static ClassBuilderFactory getDefaultClassBuilderFactory() {
-        return new ClassBuilderFactory();
-    }
+//    private ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
+//
+//    public ClassBuilderFactory getClassBuilderFactory() {
+//        return classBuilderFactory;
+//    }
+//
+//    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
+//        classBuilderFactory = tf;
+//    }
+//
+//    public void setDefaultClassBuilderFactory() {
+//        classBuilderFactory = new ClassBuilderFactory();
+//    }
+//
+//    public static ClassBuilderFactory getDefaultClassBuilderFactory() {
+//        return new ClassBuilderFactory();
+//    }
 
 
     private Class<?> baseTraitProxyClass = TraitProxy.class;

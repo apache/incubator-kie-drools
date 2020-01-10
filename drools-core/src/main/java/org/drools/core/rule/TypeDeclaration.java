@@ -138,7 +138,9 @@ public class TypeDeclaration
         this(ClassUtils.getSimpleName(typeClass));
         setTypeClass(typeClass);
         javaBased = true;
-        setTypeClassDef( new ClassDefinition( typeClass ) );
+
+        // TODO trait code
+//        setTypeClassDef( new ClassDefinition( typeClass ) );
 
         Role role = typeClass.getAnnotation(Role.class);
         if (role != null) {

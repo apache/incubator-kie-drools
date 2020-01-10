@@ -142,15 +142,17 @@ public class ModifyInterceptor
                 }
             }
 
-            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
-            if (modifiedProps != null) {
-                for (String modifiedProp : modifiedProps) {
-                    int index = settableProperties.indexOf(modifiedProp);
-                    if (index >= 0) {
-                        modificationMask = setPropertyOnMask(modificationMask, index);
-                    }
-                }
-            }
+
+            // TODO trait specific code
+//            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
+//            if (modifiedProps != null) {
+//                for (String modifiedProp : modifiedProps) {
+//                    int index = settableProperties.indexOf(modifiedProp);
+//                    if (index >= 0) {
+//                        modificationMask = setPropertyOnMask(modificationMask, index);
+//                    }
+//                }
+//            }
         }
     }
 

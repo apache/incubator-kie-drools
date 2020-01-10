@@ -175,7 +175,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     }
 
     private Class<T> extendAsProperTrait( Class<T> trait ) {
-        String extName = trait.getName() + AbstractTraitFactory.SUFFIX;
+        String extName = trait.getName() + SUFFIX;
         if ( ! classLoader.isClassInUse( extName ) ) {
             try {
                 ClassDefinition extDef = new ClassDefinition( extName );

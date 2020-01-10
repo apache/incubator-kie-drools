@@ -679,10 +679,12 @@ public class KnowledgePackageImpl
         return traitRegistry != null;
     }
 
-    public TraitRegistry getTraitRegistry() {
-        if (traitRegistry == null) {
-            traitRegistry = new TraitRegistry();
-        }
+   public TraitRegistry getTraitRegistry() {
+
+        // TODO instantiate this
+//        if (traitRegistry == null) {
+//            traitRegistry = new TraitRegistry();
+//        }
         return traitRegistry;
     }
 

@@ -38,7 +38,6 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.CodedHierarchy;
-import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.runtime.ObjectFilter;
 
 /**
@@ -368,7 +367,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             if ( sourceTraits == null ) {
                 return false;
             }
-            return targetTraits == null || HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
+
+            // TODO trait specific code
+//            return targetTraits == null || HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
+            return targetTraits == null;
         }
 
         @Override

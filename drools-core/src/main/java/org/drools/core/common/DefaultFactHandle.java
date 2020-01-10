@@ -125,7 +125,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
-        this(id, identityHashCode, object, recency, wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint(), determineTraitType(object, isTraitOrTraitable));
+        // TODO trait specific type
+        this(id, identityHashCode, object, recency, wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint(), null);
         if (wmEntryPoint != null) {
             setLinkedTuples( wmEntryPoint.getKnowledgeBase() );
             this.wmEntryPoint = wmEntryPoint;
@@ -194,12 +195,15 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public <K> K as( Class<K> klass ) throws ClassCastException {
         if ( klass.isAssignableFrom( object.getClass() ) ) {
             return (K) object;
-        } else if ( this.isTraitOrTraitable() ) {
-            K k = TraitHelper.extractTrait( this, klass );
-            if ( k != null ) {
-                return  k;
-            }
         }
+
+        // TODO trait specific code
+//        if ( this.isTraitOrTraitable() ) {
+//            K k = TraitHelper.extractTrait( this, klass );
+//            if ( k != null ) {
+//                return  k;
+//            }
+//        }
         throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
     }
 
@@ -316,17 +320,18 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             this.objectHashCode = 0;
         }
 
-        if ( isTraitOrTraitable() ) {
-            TraitTypeEnum newType = determineTraitType(object, isTraitOrTraitable());
-            if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
-                this.identityHashCode = determineIdentityHashCode( object );
-            } else {
-                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
-            }
-            this.traitType = newType;
-        } else {
-            this.identityHashCode = determineIdentityHashCode( object );
-        }
+        // TODO this is trait specific code
+//        if ( isTraitOrTraitable() ) {
+//            TraitTypeEnum newType = determineTraitType(object, isTraitOrTraitable());
+//            if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
+//                this.identityHashCode = determineIdentityHashCode( object );
+//            } else {
+//                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
+//            }
+//            this.traitType = newType;
+//        } else {
+//            this.identityHashCode = determineIdentityHashCode( object );
+//        }
     }
 
     /**
@@ -463,13 +468,15 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         handle.objectClassName = elements.length > 7 ? elements[7] : null;
     }
 
-    private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
-        if ( isTraitOrTraitable ) {
-            return TraitFactory.determineTraitType( object );
-        } else {
-            return TraitTypeEnum.NON_TRAIT;
-        }
-    }
+
+    // TODO trait specific code
+//    private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
+//        if ( isTraitOrTraitable ) {
+//            return TraitFactory.determineTraitType( object );
+//        } else {
+//            return TraitTypeEnum.NON_TRAIT;
+//        }
+//    }
 
     public boolean isTraitable() {
         return traitType == TraitTypeEnum.TRAITABLE || traitType == TraitTypeEnum.WRAPPED_TRAITABLE;

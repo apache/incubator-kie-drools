@@ -22,27 +22,52 @@ import java.util.Map;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
+import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 @Traitable
 public interface TraitableMap extends TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {
 
-	Map<String, Object> _getDynamicProperties();
+	@Override
+	default Map<String, Object> _getDynamicProperties() {
+		return this;
+	}
 
-	void _setDynamicProperties( Map<String, Object> map );
+	@Override
+	default void _setDynamicProperties(Map<String, Object> map) {
 
-	TraitFieldTMS _getFieldTMS();
+	}
 
-    void _setFieldTMS( TraitFieldTMS __$$field_Tms$$ );
 
-    void _setTraitMap(Map map);
+	default TraitFieldTMS _getFieldTMS() {
+    	TraitFieldTMS tms = ( TraitFieldTMS ) _getDynamicProperties().get( FIELDTMS_FIELD_NAME );
+        if ( tms == null ) {
+        	tms = new TraitFieldTMSImpl();
+            _getDynamicProperties().put( FIELDTMS_FIELD_NAME, tms );
+        }
+        return tms;
+    }
 
-    Map<String, Thing<Map>> _getTraitMap();
+    default void _setFieldTMS(TraitFieldTMS __$$field_Tms$$) {
+        _getDynamicProperties().put( FIELDTMS_FIELD_NAME, __$$field_Tms$$ );
+    }
 
-    void init( Map core );
+    default void _setTraitMap(Map map) {
+        _getDynamicProperties().put( TRAITSET_FIELD_NAME, map );
+    }
 
-    Map getCore();
+    default Map<String, Thing<Map>> _getTraitMap() {
+        return ( Map<String, Thing<Map>> ) _getDynamicProperties().get( TRAITSET_FIELD_NAME );
+    }
+
+    default void init(Map core) {
+//        __$$dynamic_properties_map$$ = core;
+    }
+
+    default Map getCore() {
+        return _getDynamicProperties();
+    }
 
 }
 

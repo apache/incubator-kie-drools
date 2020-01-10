@@ -237,18 +237,19 @@ public class PersisterHelper {
             return;
         }
 
-        TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
-        List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
-        Collections.sort( runtimeClassNames );
-        ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
-        for ( String resourceName : runtimeClassNames ) {
-            if ( traitFactory.isRuntimeClass( resourceName ) ) {
-                _classDef.clear();
-                _classDef.setClassFqName( resourceName );
-                _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
-                _header.addRuntimeClassDefinitions( _classDef.build() );
-            }
-        }
+        // TODO trait specific code
+//        TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
+//        List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
+//        Collections.sort( runtimeClassNames );
+//        ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
+//        for ( String resourceName : runtimeClassNames ) {
+//            if ( traitFactory.isRuntimeClass( resourceName ) ) {
+//                _classDef.clear();
+//                _classDef.setClassFqName( resourceName );
+//                _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
+//                _header.addRuntimeClassDefinitions( _classDef.build() );
+//            }
+//        }
     }
 
     private static void writeStrategiesIndex(MarshallerWriteContext context,
