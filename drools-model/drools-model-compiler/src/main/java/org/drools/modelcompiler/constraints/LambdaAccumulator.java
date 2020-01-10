@@ -160,7 +160,7 @@ public abstract class LambdaAccumulator implements Accumulator {
             if (this == o) {
                 return true;
             }
-            if (o == null || !Objects.equals(getClass(), o.getClass())) {
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
             if (!super.equals(o)) {
