@@ -30,6 +30,7 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
@@ -66,7 +67,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         encoder.encode( Thing.class, Collections.emptyList() );
 
         this.mode = mode;
-        setMode( this.mode, getComponentFactory() );
+        setMode(this.mode, new ClassBuilderFactory(), new TraitFactory());
     }
 
     /**
@@ -100,6 +101,9 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
 
     @Override
     protected TraitRegistry getTraitRegistry() {
+        if(registry == null) {
+            registry = new TraitRegistry(); // TODO check if it's right
+        }
         return registry;
     }
 
@@ -190,7 +194,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
 
                 // TODO trait instantiate this somehow
 //                ClassBuilderFactory classBuilderFactory = getComponentFactory().getClassBuilderFactory();
-                ClassBuilderFactory classBuilderFactory = null;
+                ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
                 byte[] ext = classBuilderFactory.getTraitBuilder().buildClass(extDef, classLoader );
                 Class<?> klass = registerAndLoadTypeDefinition( extName, ext );
 

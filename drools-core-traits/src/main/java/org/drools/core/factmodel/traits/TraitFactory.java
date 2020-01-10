@@ -40,7 +40,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
 
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
-        setMode( newMode, rcf );
+        setMode(newMode, null, rcf.getTraitFactory());
     }
 
     public static TraitFactory getTraitBuilderForKnowledgeBase( KieBase kb ) {
