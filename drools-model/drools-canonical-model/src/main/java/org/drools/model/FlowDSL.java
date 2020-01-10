@@ -20,6 +20,8 @@ package org.drools.model;
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.temporal.TemporalPredicate;
@@ -39,6 +41,8 @@ import org.drools.model.impl.RuleBuilder;
 import org.drools.model.impl.ViewBuilder;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
+import org.drools.model.view.BindViewItem3;
+import org.drools.model.view.BindViewItem4;
 import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
@@ -114,8 +118,12 @@ public class FlowDSL extends DSL {
         private final Variable<T> boundVariable;
         private Function1 function1;
         private Function2 function2;
+        private Function3 function3;
+        private Function4 function4;
         private Variable inputVariable1;
         private Variable inputVariable2;
+        private Variable inputVariable3;
+        private Variable inputVariable4;
         private String[] reactOn;
         private String[] watchedProps;
 
@@ -136,6 +144,23 @@ public class FlowDSL extends DSL {
             return this;
         }
 
+        public <A, B, C> BindViewItemBuilder<T> as( Variable<A> var1, Variable<B> var2, Variable<C> var3, Function3<A, B, C, T> f) {
+            this.function3 = new Function3.Impl<>(f);
+            this.inputVariable1 = var1;
+            this.inputVariable2 = var2;
+            this.inputVariable3 = var3;
+            return this;
+        }
+
+        public <A, B, C, D> BindViewItemBuilder<T> as( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Function4<A, B, C, D, T> f) {
+            this.function4 = new Function4.Impl<>(f);
+            this.inputVariable1 = var1;
+            this.inputVariable2 = var2;
+            this.inputVariable3 = var3;
+            this.inputVariable4 = var4;
+            return this;
+        }
+
         public BindViewItemBuilder<T> reactOn( String... reactOn ) {
             this.reactOn = reactOn;
             return this;
@@ -152,7 +177,16 @@ public class FlowDSL extends DSL {
 
         @Override
         public Variable<?>[] getVariables() {
-            return inputVariable2 != null ? new Variable[] { inputVariable1, inputVariable2 } : new Variable[] { inputVariable1 };
+            if (function1 != null) {
+                return new Variable[]{inputVariable1};
+            } else if (function2 != null) {
+                return new Variable[] {inputVariable1, inputVariable2};
+            } else if (function3 != null) {
+                return new Variable[] {inputVariable1, inputVariable2, inputVariable3};
+            } else if (function4 != null) {
+                return new Variable[] {inputVariable1, inputVariable2, inputVariable3, inputVariable4};
+            }
+            throw new UnsupportedOperationException("function needed");
         }
 
         @Override
@@ -161,8 +195,12 @@ public class FlowDSL extends DSL {
                 return new BindViewItem1<>(boundVariable, function1, inputVariable1, reactOn, watchedProps);
             } else if(function2 != null) {
                 return new BindViewItem2<>(boundVariable, function2, inputVariable1, inputVariable2, reactOn, watchedProps);
+            } else if(function3 != null) {
+                return new BindViewItem3<>(boundVariable, function3, inputVariable1, inputVariable2, inputVariable3, reactOn, watchedProps);
+            } else if(function4 != null) {
+                return new BindViewItem4<>(boundVariable, function4, inputVariable1, inputVariable2, inputVariable3, inputVariable4, reactOn, watchedProps);
             }
-            throw new UnsupportedOperationException("function1 or function2 needed");
+            throw new UnsupportedOperationException("function needed");
         }
     }
 

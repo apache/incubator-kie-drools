@@ -43,6 +43,8 @@ import org.drools.model.constraints.VariableTemporalConstraint;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate10;
 import org.drools.model.functions.Predicate11;
@@ -76,6 +78,8 @@ import org.drools.model.index.AlphaIndexImpl;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
+import org.drools.model.view.BindViewItem3;
+import org.drools.model.view.BindViewItem4;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 
@@ -220,6 +224,14 @@ public class PatternDSL extends DSL {
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f );
 
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn );
+
+        <A, U, V> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Function3<T, U, V, A> f );
+
+        <A, U, V> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Function3<T, U, V, A> f, ReactOn reactOn );
+
+        <A, U, V, W> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f );
+
+        <A, U, V, W> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f, ReactOn reactOn );
 
         PatternDef<T> watch( String... watch );
     }
@@ -567,6 +579,30 @@ public class PatternDSL extends DSL {
         @Override
         public <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn ) {
             items.add( new PatternBinding2<>( boundVar, otherVar, f, reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, U, V> PatternDef<T> bind(Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Function3<T, U, V, A> f) {
+            items.add( new PatternBinding3<>( boundVar, otherVar1, otherVar2, f, null) );
+            return this;
+        }
+
+        @Override
+        public <A, U, V> PatternDef<T> bind(Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Function3<T, U, V, A> f, ReactOn reactOn) {
+            items.add( new PatternBinding3<>( boundVar, otherVar1, otherVar2, f, reactOn) );
+            return this;
+        }
+
+        @Override
+        public <A, U, V, W> PatternDef<T> bind(Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f) {
+            items.add( new PatternBinding4<>( boundVar, otherVar1, otherVar2, otherVar3, f, null) );
+            return this;
+        }
+
+        @Override
+        public <A, U, V, W> PatternDef<T> bind(Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f, ReactOn reactOn) {
+            items.add( new PatternBinding4<>( boundVar, otherVar1, otherVar2, otherVar3, f, reactOn) );
             return this;
         }
 
@@ -1284,6 +1320,44 @@ public class PatternDSL extends DSL {
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
             return new BindViewItem2( boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn(), null );
+        }
+    }
+
+    public static class PatternBinding3<T, U, V, A> extends PatternBindingImpl<T, A> {
+        private final Variable<U> otherVar1;
+        private final Variable<V> otherVar2;
+        private final Function3<T, U, V, A> f;
+
+        public PatternBinding3( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Function3<T, U, V, A> f, ReactOn reactOn ) {
+            super( boundVar, reactOn );
+            this.f = new Function3.Impl<>( f );
+            this.otherVar1 = otherVar1;
+            this.otherVar2 = otherVar2;
+        }
+
+        @Override
+        public Binding asBinding( PatternDefImpl patternDef ) {
+            return new BindViewItem3( boundVar, f, patternDef.getFirstVariable(), otherVar1, otherVar2, getReactOn(), null );
+        }
+    }
+
+    public static class PatternBinding4<T, U, V, W, A> extends PatternBindingImpl<T, A> {
+        private final Variable<U> otherVar1;
+        private final Variable<V> otherVar2;
+        private final Variable<W> otherVar3;
+        private final Function4<T, U, V, W, A> f;
+
+        public PatternBinding4( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f, ReactOn reactOn ) {
+            super( boundVar, reactOn );
+            this.f = new Function4.Impl<>( f );
+            this.otherVar1 = otherVar1;
+            this.otherVar2 = otherVar2;
+            this.otherVar3 = otherVar3;
+        }
+
+        @Override
+        public Binding asBinding( PatternDefImpl patternDef ) {
+            return new BindViewItem4( boundVar, f, patternDef.getFirstVariable(), otherVar1, otherVar2, otherVar3, getReactOn(), null );
         }
     }
 

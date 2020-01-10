@@ -21,10 +21,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -136,7 +138,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
@@ -439,7 +440,7 @@ public class KiePackagesBuilder {
                 }
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
-                List<String> usedVariableName = new ArrayList<>();
+                Set<String> usedVariableName = new LinkedHashSet<>();
                 Binding binding = null;
 
                 if (sourcePattern != null) {
@@ -449,7 +450,9 @@ public class KiePackagesBuilder {
 
                     if ( !sourcePattern.getBindings().isEmpty() ) {
                         binding = ( Binding ) sourcePattern.getBindings().iterator().next();
-                        usedVariableName.add( binding.getBoundVariable().getName() );
+                        for (Variable var: binding.getInputVariables()) {
+                            usedVariableName.add(var.getName());
+                        }
                     }
                 }
 
@@ -465,7 +468,7 @@ public class KiePackagesBuilder {
                     source = buildPattern(ctx, group, condition );
                 }
 
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), binding) );
 
                 for(Variable v : accumulatePattern.getBoundVariables()) {
                     if(source instanceof Pattern) {
@@ -770,7 +773,7 @@ public class KiePackagesBuilder {
 
     private Accumulator createLambdaAccumulator(List<String> usedVariableName, BindingEvaluator binding, org.kie.api.runtime.rule.AccumulateFunction function) {
         if (binding == null) {
-            return new LambdaAccumulator.NotBindingAcc(function, usedVariableName);
+            return new LambdaAccumulator.NotBindingAcc(function);
         } else {
             return new LambdaAccumulator.BindingAcc(function, usedVariableName, binding);
         }
