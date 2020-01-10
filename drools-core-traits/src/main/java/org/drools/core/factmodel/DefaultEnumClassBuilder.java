@@ -31,7 +31,9 @@ import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClas
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
-public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Serializable {
+public class DefaultEnumClassBuilder implements Opcodes,
+                                                Serializable,
+                                                ClassBuilder {
 
 
     /**

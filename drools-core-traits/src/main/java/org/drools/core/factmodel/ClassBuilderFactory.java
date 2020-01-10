@@ -46,28 +46,6 @@ public class ClassBuilderFactory implements Serializable {
 
 
 
-    private  EnumClassBuilder enumClassBuilder = new DefaultEnumClassBuilder();
-
-    public EnumClassBuilder getEnumClassBuilder() {
-        return enumClassBuilder;
-    }
-
-    public void setEnumClassBuilder( EnumClassBuilder ecb ) {
-        enumClassBuilder = ecb;
-    }
-
-    public void setDefaultEnumClassBuilder() {
-        enumClassBuilder = new DefaultEnumClassBuilder();
-    }
-
-    public static EnumClassBuilder getDefaultEnumClassBuilder() {
-        return new DefaultEnumClassBuilder();
-    }
-
-
-
-
-
     // Trait interfaces
 
     private TraitClassBuilder traitBuilder = new TraitClassBuilderImpl();
