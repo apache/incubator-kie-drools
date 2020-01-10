@@ -132,8 +132,9 @@ public abstract class LambdaAccumulator implements Accumulator {
             if (accumulateObject instanceof SubnetworkTuple ) {
                 Object[] args = new Object[ sourceVariables.size() ];
                 for (int i = 0; i < sourceVariables.size(); i++) {
+                    String sourceVariable = sourceVariables.get(i);
                     for (Declaration d : innerDeclarations) {
-                        if (d.getIdentifier().equals( sourceVariables.get(i) )) {
+                        if (d.getIdentifier().equals( sourceVariable )) {
                             args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
                             break;
                         }
