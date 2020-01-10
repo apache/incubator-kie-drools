@@ -18,7 +18,6 @@
 package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,23 +44,20 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
         LambdaAccumulator that = (LambdaAccumulator) o;
         return Objects.equals(accumulateFunction, that.accumulateFunction) &&
-                Objects.equals(sourceVariables, that.sourceVariables) &&
                 Objects.equals(reverseSupport, that.reverseSupport);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accumulateFunction, sourceVariables, reverseSupport);
+        return Objects.hash(accumulateFunction, reverseSupport);
     }
 
     private final AccumulateFunction accumulateFunction;
-    protected final List<String> sourceVariables;
     private Map<Long, Object> reverseSupport;
 
 
-    protected LambdaAccumulator(AccumulateFunction accumulateFunction, List<String> sourceVariables) {
+    protected LambdaAccumulator(AccumulateFunction accumulateFunction) {
         this.accumulateFunction = accumulateFunction;
-        this.sourceVariables = sourceVariables;
     }
 
     @Override
@@ -121,10 +117,12 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     public static class BindingAcc extends LambdaAccumulator {
         private final BindingEvaluator binding;
+        private final List<String> sourceVariables;
 
         public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
-            super(accumulateFunction, sourceVariables);
+            super(accumulateFunction);
             this.binding = binding;
+            this.sourceVariables = sourceVariables;
         }
 
         @Override
@@ -156,12 +154,32 @@ public abstract class LambdaAccumulator implements Accumulator {
                 return binding.evaluate(handle, tuple, wm, declarations, innerDeclarations);
             }
         }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || !Objects.equals(getClass(), o.getClass())) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
+            final LambdaAccumulator.BindingAcc that = (LambdaAccumulator.BindingAcc) o;
+            return Objects.equals(sourceVariables, that.sourceVariables);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), sourceVariables);
+        }
     }
 
     public static class NotBindingAcc extends LambdaAccumulator {
 
         public NotBindingAcc(AccumulateFunction accumulateFunction) {
-            super(accumulateFunction, Collections.emptyList());
+            super(accumulateFunction);
         }
 
         @Override
@@ -180,7 +198,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         private final Object value;
 
         public FixedValueAcc(AccumulateFunction accumulateFunction, Object value) {
-            super(accumulateFunction, Collections.emptyList());
+            super(accumulateFunction);
             this.value = value;
         }
 
