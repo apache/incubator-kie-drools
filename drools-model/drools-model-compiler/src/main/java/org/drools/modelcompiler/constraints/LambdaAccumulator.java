@@ -31,6 +31,7 @@ import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 public abstract class LambdaAccumulator implements Accumulator {
 
@@ -53,12 +54,12 @@ public abstract class LambdaAccumulator implements Accumulator {
         return Objects.hash(accumulateFunction, sourceVariables, reverseSupport);
     }
 
-    private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
+    private final AccumulateFunction accumulateFunction;
     protected final List<String> sourceVariables;
     private Map<Long, Object> reverseSupport;
 
 
-    protected LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables) {
+    protected LambdaAccumulator(AccumulateFunction accumulateFunction, List<String> sourceVariables) {
         this.accumulateFunction = accumulateFunction;
         this.sourceVariables = sourceVariables;
     }
@@ -121,7 +122,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     public static class BindingAcc extends LambdaAccumulator {
         private final BindingEvaluator binding;
 
-        public BindingAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
+        public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
             super(accumulateFunction, sourceVariables);
             this.binding = binding;
         }
@@ -131,14 +132,23 @@ public abstract class LambdaAccumulator implements Accumulator {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple ) {
                 Declaration[] bindingDeclarations = binding.getDeclarations();
-                Object[] args = new Object[ bindingDeclarations.length ];
-                for (int i = 0; i < bindingDeclarations.length; i++) {
-                    Declaration bindingDeclaration = bindingDeclarations[i];
-                    for (Declaration d : innerDeclarations) {
-                        if (d.equals(bindingDeclaration)) {
-                            args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
-                            break;
+                Object[] args;
+                if (bindingDeclarations == null || bindingDeclarations.length == 0) {
+                    args = new Object[ sourceVariables.size() ];
+                    for (int i = 0; i < sourceVariables.size(); i++) {
+                        String sourceVariable = sourceVariables.get(i);
+                        for (Declaration d : innerDeclarations) {
+                            if (d.getIdentifier().equals( sourceVariable )) {
+                                args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
+                                break;
+                            }
                         }
+                    }
+                } else { // Return values in the order required by the binding.
+                    args = new Object[ bindingDeclarations.length ];
+                    for (int i = 0; i < bindingDeclarations.length; i++) {
+                        Declaration d = bindingDeclarations[i];
+                        args[i] = ((SubnetworkTuple) accumulateObject).getObject(d);
                     }
                 }
                 return binding.evaluate(args);
@@ -150,8 +160,8 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     public static class NotBindingAcc extends LambdaAccumulator {
 
-        public NotBindingAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables) {
-            super(accumulateFunction, sourceVariables);
+        public NotBindingAcc(AccumulateFunction accumulateFunction) {
+            super(accumulateFunction, Collections.emptyList());
         }
 
         @Override
@@ -169,7 +179,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
         private final Object value;
 
-        public FixedValueAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, Object value) {
+        public FixedValueAcc(AccumulateFunction accumulateFunction, Object value) {
             super(accumulateFunction, Collections.emptyList());
             this.value = value;
         }

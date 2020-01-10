@@ -773,7 +773,7 @@ public class KiePackagesBuilder {
 
     private Accumulator createLambdaAccumulator(List<String> usedVariableName, BindingEvaluator binding, org.kie.api.runtime.rule.AccumulateFunction function) {
         if (binding == null) {
-            return new LambdaAccumulator.NotBindingAcc(function, usedVariableName);
+            return new LambdaAccumulator.NotBindingAcc(function);
         } else {
             return new LambdaAccumulator.BindingAcc(function, usedVariableName, binding);
         }
