@@ -130,11 +130,12 @@ public abstract class LambdaAccumulator implements Accumulator {
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple ) {
-                Object[] args = new Object[ sourceVariables.size() ];
-                for (int i = 0; i < sourceVariables.size(); i++) {
-                    String sourceVariable = sourceVariables.get(i);
+                Declaration[] bindingDeclarations = binding.getDeclarations();
+                Object[] args = new Object[ bindingDeclarations.length ];
+                for (int i = 0; i < bindingDeclarations.length; i++) {
+                    Declaration bindingDeclaration = bindingDeclarations[i];
                     for (Declaration d : innerDeclarations) {
-                        if (d.getIdentifier().equals( sourceVariable )) {
+                        if (d.equals(bindingDeclaration)) {
                             args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
                             break;
                         }
