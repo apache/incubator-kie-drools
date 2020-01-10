@@ -36,7 +36,6 @@ import org.drools.core.metadata.Identifiable;
 import org.drools.core.metadata.Lit;
 import org.drools.core.metadata.MetadataContainer;
 import org.drools.core.metadata.With;
-import org.drools.core.test.model.Person;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;

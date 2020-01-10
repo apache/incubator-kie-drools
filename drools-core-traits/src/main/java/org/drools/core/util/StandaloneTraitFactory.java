@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.AbstractTraitFactory;
 import org.drools.core.factmodel.traits.CoreWrapper;
@@ -187,7 +188,10 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
                 String[] supers = new String[] { Thing.class.getName(), trait.getName() };
                 extDef.setInterfaces( supers );
 
-                byte[] ext = getComponentFactory().getClassBuilderFactory().getTraitBuilder().buildClass( extDef, classLoader );
+                // TODO trait instantiate this somehow
+//                ClassBuilderFactory classBuilderFactory = getComponentFactory().getClassBuilderFactory();
+                ClassBuilderFactory classBuilderFactory = null;
+                byte[] ext = classBuilderFactory.getTraitBuilder().buildClass(extDef, classLoader );
                 Class<?> klass = registerAndLoadTypeDefinition( extName, ext );
 
                 ClassDefinition tDef = buildClassDefinition( trait, trait );

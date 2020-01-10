@@ -62,7 +62,8 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     protected static void setMode(VirtualPropertyMode newMode, KieComponentFactory rcf) {
-        ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
+//        ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
+        ClassBuilderFactory cbf = null; // TODO trait instantiate this
         rcf.getTraitFactory().mode = newMode;
         switch (newMode) {
             case MAP:
@@ -226,7 +227,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
         KieComponentFactory rcf = getComponentFactory();
 
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
+//        ClassBuilderFactory classBuilderFactory = rcf.getClassBuilderFactory();
+        ClassBuilderFactory classBuilderFactory = null; // TODO instantiate this
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) classBuilderFactory.getPropertyWrapperBuilder();
 
         propWrapperBuilder.init(tdef, getTraitRegistry());
         try {
@@ -236,7 +239,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             e.printStackTrace();
         }
 
-        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
+        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) classBuilderFactory.getTraitProxyBuilder();
 
         proxyBuilder.init(tdef, rcf.getBaseTraitProxyClass(), getTraitRegistry());
         try {
