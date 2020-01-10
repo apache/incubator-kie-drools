@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.meta;
+package org.drools.core.meta.org;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -207,13 +207,15 @@ public class MetadataTest {
         assertEquals( 42, (int) klass2.getSubProp() );
     }
 
-    @Test
-    public void testURIsOnLegacyClasses() {
-        Person p = new Person();
-        URI uri = MetadataContainer.getIdentifier( p );
 
-        assertEquals( URI.create( "urn:" + p.getClass().getPackage().getName() +  "/" + p.getClass().getSimpleName() + "/" + System.identityHashCode( p ) ), uri );
-    }
+    // TODO TRAIT
+//    @Test
+//    public void testURIsOnLegacyClasses() {
+//        Person p = new Person();
+//        URI uri = MetadataContainer.getIdentifier( p );
+//
+//        assertEquals( URI.create( "urn:" + p.getClass().getPackage().getName() +  "/" + p.getClass().getSimpleName() + "/" + System.identityHashCode( p ) ), uri );
+//    }
 
     @Test
     public void testDon() {

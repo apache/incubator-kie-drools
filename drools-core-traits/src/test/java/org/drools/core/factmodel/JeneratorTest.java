@@ -21,8 +21,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This mostly shows how to go to a jar and back, if needed.
