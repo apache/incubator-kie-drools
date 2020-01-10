@@ -36,8 +36,8 @@ import org.optaplanner.core.api.solver.SolverStatus;
 public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
-    private final ProblemId_ problemId;
     private final Solver<Solution_> solver;
+    private final ProblemId_ problemId;
     private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
