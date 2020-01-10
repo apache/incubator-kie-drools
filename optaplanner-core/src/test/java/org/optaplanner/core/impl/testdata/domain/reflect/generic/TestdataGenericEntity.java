@@ -40,6 +40,7 @@ public class TestdataGenericEntity<T> extends TestdataObject {
     }
 
     private TestdataGenericValue<T> value;
+    private TestdataGenericValue<T> subTypeValue;
     private TestdataGenericValue<Map<T, TestdataGenericValue<T>>> complexGenericValue;
 
     public TestdataGenericEntity() {
@@ -59,8 +60,17 @@ public class TestdataGenericEntity<T> extends TestdataObject {
         return value;
     }
 
+    @PlanningVariable(valueRangeProviderRefs = "subTypeValueRange")
+    public TestdataGenericValue<T> getSubTypeValue() {
+        return subTypeValue;
+    }
+
     public void setValue(TestdataGenericValue<T> value) {
         this.value = value;
+    }
+
+    public void setSubTypeValue(TestdataGenericValue<T> subTypeValue) {
+        this.subTypeValue = subTypeValue;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "complexGenericValueRange")

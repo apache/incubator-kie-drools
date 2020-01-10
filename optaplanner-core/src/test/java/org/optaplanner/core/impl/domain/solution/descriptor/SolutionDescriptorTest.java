@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExt
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataScoreGetterOverrideExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
+import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
@@ -158,6 +159,12 @@ public class SolutionDescriptorTest {
     public void generic() {
         SolutionDescriptor<TestdataGenericSolution> solutionDescriptor
                 = TestdataGenericSolution.buildSolutionDescriptor();
+
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(), "valueList", "complexGenericValueList", "subTypeValueList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),"entityList");
+
+        assertMapContainsKeysExactly(solutionDescriptor.findEntityDescriptor( TestdataGenericEntity.class ).getVariableDescriptorMap(), "value", "subTypeValue", "complexGenericValue"  );
+
     }
 
     // ************************************************************************

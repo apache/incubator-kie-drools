@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -103,6 +104,11 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                         + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
             }
             Type typeArgument = typeArguments[0];
+
+            if (typeArgument instanceof WildcardType) {
+                typeArgument = ((WildcardType) typeArgument).getUpperBounds()[0];
+            }
+
             if (typeArgument instanceof ParameterizedType) {
                 // TODO fail fast if the type arguments don't match
                 // with the variableDescriptor's generic type's type arguments

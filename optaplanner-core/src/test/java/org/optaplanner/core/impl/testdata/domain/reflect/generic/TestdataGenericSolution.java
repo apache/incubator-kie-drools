@@ -36,6 +36,7 @@ public class TestdataGenericSolution<T> extends TestdataObject {
     }
 
     private List<TestdataGenericValue<T>> valueList;
+    private List<? extends TestdataGenericValue<T>> subTypeValueList;
     private List<TestdataGenericValue<Map<T, TestdataGenericValue<T>>>> complexGenericValueList;
     private List<TestdataGenericEntity<T>> entityList;
 
@@ -67,6 +68,12 @@ public class TestdataGenericSolution<T> extends TestdataObject {
     @ProblemFactCollectionProperty
     public List<TestdataGenericValue<Map<T, TestdataGenericValue<T>>>> getComplexGenericValueList() {
         return complexGenericValueList;
+    }
+
+    @ValueRangeProvider(id = "subTypeValueRange")
+    @ProblemFactCollectionProperty
+    public List<? extends TestdataGenericValue<T>> getSubTypeValueList() {
+        return subTypeValueList;
     }
 
     @PlanningEntityCollectionProperty
