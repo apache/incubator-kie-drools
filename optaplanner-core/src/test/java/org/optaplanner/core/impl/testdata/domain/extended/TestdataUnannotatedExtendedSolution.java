@@ -34,6 +34,12 @@ public class TestdataUnannotatedExtendedSolution extends TestdataSolution {
         this.extraObject = extraObject;
     }
 
+    public TestdataUnannotatedExtendedSolution(TestdataSolution other) {
+        super(other.getCode());
+        setValueList(other.getValueList());
+        setEntityList(other.getEntityList());
+    }
+
     public Object getExtraObject() {
         return extraObject;
     }

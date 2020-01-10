@@ -37,10 +37,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SolverManagerTest {
 
@@ -164,17 +162,19 @@ public class SolverManagerTest {
     }
 
     @Test
-    public void solveGenerics() {
+    public void solveGenerics() throws ExecutionException, InterruptedException {
         final SolverConfig solverConfig = PlannerTestUtils
                 .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverManager<TestdataSolution, Long> solverManager = SolverManager
                 .create(solverConfig, new SolverManagerConfig());
 
-        BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("This is unexpected");
+        BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("Solving failed.");
         Consumer<Object> finalBestSolutionConsumer = o -> {};
-        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder = o -> new TestdataUnannotatedExtendedSolution();
+        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder
+                = o -> new TestdataUnannotatedExtendedSolution(PlannerTestUtils.generateTestdataSolution("s1"));
 
-        solverManager.solve(1L, problemFinder, finalBestSolutionConsumer, exceptionHandler);
+        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer, exceptionHandler);
+        solverJob.getFinalBestSolution();
     }
 
     @Ignore("Skip ahead not yet supported")
