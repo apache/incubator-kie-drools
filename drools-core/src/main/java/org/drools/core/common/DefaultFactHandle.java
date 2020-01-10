@@ -146,7 +146,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.recency = recency;
         setObject( object );
         this.identityHashCode = identityHashCode;
-        this.traitType = traitType;
+        this.traitType = TraitTypeEnum.NON_TRAIT;
     }
 
     public DefaultFactHandle(long id,

@@ -210,7 +210,7 @@ public class KnowledgeBaseImpl
         kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
-        kieComponentFactory.getTraitFactory().setRuleBase(this);
+//        kieComponentFactory.getTraitFactory().setRuleBase(this);
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
@@ -499,7 +499,8 @@ public class KnowledgeBaseImpl
             droolsStream.close();
         }
 
-        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase(this);
+        // TODO reenable this
+//        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase(this);
 
         rewireReteAfterDeserialization();
     }
