@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
@@ -1214,6 +1215,7 @@ public class FEELParserTest {
         assertThat( function.getParams().getElements(), is( empty() ) );
     }
 
+    @Ignore("dropped since DMNv1.2")
     @Test
     public void testFunctionDecisionTableInvocation() {
         String inputExpression = "decision table( "
@@ -1222,7 +1224,7 @@ public class FEELParserTest {
                                  + "    rule list: ["
                                  + "        [ >60      , \"good\" , \"Medium\" ],"
                                  + "        [ >60      , \"bad\"  , \"High\"   ],"
-                                 + "        [ [25..60] , -        , \"Medium\" ],"
+                                 + "        [ [25..60] , -        , \"Medium\" ]," // also another problem is the - operator cannot be inside of expression.
                                  + "        [ <25      , \"good\" , \"Low\"    ],"
                                  + "        [ <25      , \"bad\"  , \"Medium\" ] ],"
                                  + "    hit policy: \"Unique\" )";
@@ -1264,7 +1266,7 @@ public class FEELParserTest {
         assertThat( named.getExpression(), is( instanceOf( ListNode.class ) ) );
 
         list = (ListNode) named.getExpression();
-        assertThat( list.getElements().size(), is( 5 ) );
+        assertThat(list.getElements().size(), is(5)); // this assert on the 5 rows but third row contains the - operation which is not allowed in expression.
         assertThat( list.getElements().get( 0 ), is( instanceOf( ListNode.class ) ) );
 
         ListNode rule = (ListNode) list.getElements().get( 0 );

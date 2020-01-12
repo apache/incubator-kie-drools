@@ -274,6 +274,7 @@ unaryExpression
 	:	SUB unaryExpression                      #signedUnaryExpressionMinus
 	|   unaryExpressionNotPlusMinus              #nonSignedUnaryExpression
     |	ADD unaryExpressionNotPlusMinus          #signedUnaryExpressionPlus
+    | unaryExpression parameters #fnInvocation
 	;
 
 unaryExpressionNotPlusMinus
@@ -290,7 +291,7 @@ primary
     | context                     #primaryContext
     | LPAREN expression RPAREN          #primaryParens
     | simplePositiveUnaryTest     #primaryUnaryTest
-    | qualifiedName parameters?   #primaryName
+    | qualifiedName    #primaryName
     ;
 
 // #33 - #39
