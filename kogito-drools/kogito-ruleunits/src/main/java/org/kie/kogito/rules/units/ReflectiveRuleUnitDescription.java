@@ -48,6 +48,11 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     @Override
+    public String getCanonicalName() {
+        return getRuleUnitClass().getCanonicalName();
+    }
+
+    @Override
     public String getSimpleName() {
         return ruleUnitClass.getSimpleName();
     }

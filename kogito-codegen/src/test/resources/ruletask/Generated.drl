@@ -1,0 +1,27 @@
+package ruletask;
+unit Generated;
+
+import org.kie.kogito.codegen.data.Person;
+
+rule singlePerson when
+    p: /singlePerson[ age >= 18 ]
+then
+    p.setAdult(true);
+
+end
+
+
+rule singlePerson_add_note when
+    p: /singlePerson[ age == 50 ]
+then
+    p.setAdult(true);
+	singleString.add("Now the life starts again");
+end
+
+rule singlePerson_clear_note when
+    p: /singlePerson[ age == 60 ]
+    s: /singleString
+then
+    p.setAdult(true);
+	singleString.remove(s);
+end

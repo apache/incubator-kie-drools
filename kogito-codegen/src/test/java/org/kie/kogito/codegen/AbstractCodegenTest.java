@@ -18,6 +18,8 @@ package org.kie.kogito.codegen;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,20 +78,19 @@ public class AbstractCodegenTest {
                         .withRuleUnits(hasRuleUnit)
                         .withDependencyInjection(null);
 
+        if (!processResources.isEmpty()) {
+            appGen.withGenerator(ProcessCodegen.ofFiles(processResources
+                                                                .stream()
+                                                                .map(resource -> new File("src/test/resources", resource))
+                                                                .collect(Collectors.toList())));
+        }
+
         if (!rulesResources.isEmpty()) {
             appGen.withGenerator(IncrementalRuleCodegen.ofFiles(rulesResources
                                                                    .stream()
                                                                    .map(resource -> new File("src/test/resources", resource))
                                                                    .collect(Collectors.toList())));
         }
-
-        if (!processResources.isEmpty()) {
-            appGen.withGenerator(ProcessCodegen.ofFiles(processResources
-                                                                        .stream()
-                                                                        .map(resource -> new File("src/test/resources", resource))
-                                                                        .collect(Collectors.toList())));
-        }
-
 
         if (!javaRulesResources.isEmpty()) {
             appGen.withGenerator(IncrementalRuleCodegen.ofJavaFiles(javaRulesResources
@@ -110,6 +111,16 @@ public class AbstractCodegenTest {
             sources[index++] = fileName;
             srcMfs.write(fileName, entry.contents());
             log(new String(entry.contents()));
+        }
+
+        if (logger.isDebugEnabled()) {
+            Path temp = Files.createTempDirectory("KOGITO_TESTS");
+            logger.debug("Dumping generated files in " + temp);
+            for (GeneratedFile entry : generatedFiles) {
+                Path fpath = temp.resolve(entry.relativePath());
+                fpath.getParent().toFile().mkdirs();
+                Files.write(fpath, entry.contents());
+            }
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());

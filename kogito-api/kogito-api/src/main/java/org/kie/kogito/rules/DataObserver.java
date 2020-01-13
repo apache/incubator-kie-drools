@@ -16,12 +16,12 @@ public interface DataObserver {
 
             @Override
             public void update(DataHandle handle, T object) {
-
+                consumer.accept(object);
             }
 
             @Override
             public void delete(DataHandle handle) {
-
+                consumer.accept(null);
             }
         };
     }

@@ -46,6 +46,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
@@ -57,6 +58,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
+@Disabled
 public class ParallelEvaluationTest {
 
     @Test

@@ -221,7 +221,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit.getCanonicalName(), ruSource.targetCanonicalName());
                     // only Class<?> has config for now
-                    addUnitConfToKieModule( ruleUnit.getRuleUnitClass() );
+                    addUnitConfToKieModule( ruleUnit );
                 }
             }
         }
@@ -240,12 +240,14 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
                 generatedFiles.add( ruleUnit.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
 
-                RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(contextClassLoader);
+                RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance();
                 generatedFiles.add( ruleUnitInstance.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+
+                ruleUnit.pojo().ifPresent(p -> generatedFiles.add(p.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE)));
 
                 List<QueryEndpointGenerator> queries = ruleUnit.queries();
                 if (!queries.isEmpty()) {
-                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitClass() ).generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription().getRuleUnitClass() ).generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
                     for (QueryEndpointGenerator query : queries) {
                         generatedFiles.add( query.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
                     }
@@ -293,25 +295,31 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return generatedFiles;
     }
 
-    private void addUnitConfToKieModule( Class<?> ruleUnit ) {
-        KieBaseModel unitKieBaseModel = kieModuleModel.newKieBaseModel( ruleUnit2KieBaseName(ruleUnit.getName()) );
+    private void addUnitConfToKieModule( RuleUnitDescription ruleUnitDescription ) {
+        KieBaseModel unitKieBaseModel = kieModuleModel.newKieBaseModel(ruleUnit2KieBaseName(ruleUnitDescription.getCanonicalName()));
         unitKieBaseModel.setEventProcessingMode(org.kie.api.conf.EventProcessingOption.CLOUD);
-        unitKieBaseModel.addPackage(ruleUnit.getPackage().getName());
+        unitKieBaseModel.addPackage(ruleUnitDescription.getPackageName());
 
-        SessionsPool sessionsPoolAnn = ruleUnit.getAnnotation( SessionsPool.class );
-        if (sessionsPoolAnn != null && sessionsPoolAnn.value() > 0) {
-            unitKieBaseModel.setSessionsPool( SessionsPoolOption.get( sessionsPoolAnn.value() ) );
-        }
-        EventProcessing eventAnn = ruleUnit.getAnnotation( EventProcessing.class );
-        if (eventAnn != null && eventAnn.value() == EventProcessing.Type.STREAM) {
-            unitKieBaseModel.setEventProcessingMode( EventProcessingOption.STREAM );
+        // fixme config should go in the description as well
+        Class<?> ruleUnit = ruleUnitDescription.getRuleUnitClass();
+        if (ruleUnit != null) {
+            SessionsPool sessionsPoolAnn = ruleUnit.getAnnotation(SessionsPool.class);
+            if (sessionsPoolAnn != null && sessionsPoolAnn.value() > 0) {
+                unitKieBaseModel.setSessionsPool(SessionsPoolOption.get(sessionsPoolAnn.value()));
+            }
+            EventProcessing eventAnn = ruleUnit.getAnnotation(EventProcessing.class);
+            if (eventAnn != null && eventAnn.value() == EventProcessing.Type.STREAM) {
+                unitKieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            }
         }
 
-        KieSessionModel unitKieSessionModel = unitKieBaseModel.newKieSessionModel( ruleUnit2KieSessionName(ruleUnit.getName()) );
-        unitKieSessionModel.setType( KieSessionModel.KieSessionType.STATEFUL );
-        Clock clockAnn = ruleUnit.getAnnotation( Clock.class );
-        if (clockAnn != null && clockAnn.value() == Clock.Type.PSEUDO) {
-            unitKieSessionModel.setClockType( ClockTypeOption.PSEUDO );
+        KieSessionModel unitKieSessionModel = unitKieBaseModel.newKieSessionModel(ruleUnit2KieSessionName(ruleUnitDescription.getCanonicalName()));
+        unitKieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
+        if (ruleUnit != null) {
+            Clock clockAnn = ruleUnit.getAnnotation(Clock.class);
+            if (clockAnn != null && clockAnn.value() == Clock.Type.PSEUDO) {
+                unitKieSessionModel.setClockType( ClockTypeOption.PSEUDO );
+            }
         }
     }
 

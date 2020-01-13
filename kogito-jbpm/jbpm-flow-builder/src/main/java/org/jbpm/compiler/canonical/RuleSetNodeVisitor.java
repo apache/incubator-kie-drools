@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -53,10 +54,15 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.api.definition.process.Node;
+import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.kogito.rules.DataObserver;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
+import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
+import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -77,6 +83,8 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
  *
  */
 public class RuleSetNodeVisitor extends AbstractVisitor {
+
+    public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
 
     private final ClassLoader contextClassLoader;
 
@@ -102,45 +110,11 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         }
 
         if (ruleType.isRuleFlowGroup()) {
-            MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
-                    new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "ruleRuntimeBuilder");
-            MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
-            actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
-            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleType.getName()), lambda);
+            handleRuleFlowGroup(node, body, actionBody, lambda, ruleType);
         } else if (ruleType.isRuleUnit()) {
-            InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/RuleUnitFactoryTemplate.java");
-            Optional<Expression> ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class);
-
-            String unitName = ruleType.getName();
-            Class<?> unitClass = loadUnitClass(nodeName, unitName, metadata.getPackageName());
-
-            ruleUnitFactory.ifPresent(factory -> {
-                factory.findAll(ClassOrInterfaceType.class)
-                        .stream()
-                        .filter(t -> t.getNameAsString().equals("$Type$"))
-                        .forEach(t -> t.setName(unitName));
-
-                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                        .ifPresent(m -> m.setBody(bind(variableScope, ruleSetNode, unitClass)));
-                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unit"))
-                        .ifPresent(m -> m.setBody(unit(unitName)));
-                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                        .ifPresent(m -> m.setBody(unbind(variableScope, ruleSetNode, unitClass)));
-            });
-
-            if (ruleUnitFactory.isPresent()) {
-                addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory.get());
-            } else {
-                addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()));
-            }
+            handleRuleUnit(node, body, variableScope, metadata, ruleSetNode, nodeName, ruleType);
         } else if (ruleType.isDecision()) {
-            RuleSetNode.RuleType.Decision decisionModel = (RuleSetNode.RuleType.Decision) ruleType;
-            MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(new NameExpr("app"), "dmnRuntimeBuilder");
-            actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
-            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "dmnGroup", new StringLiteralExpr(decisionModel.getNamespace()),
-                                     new StringLiteralExpr(decisionModel.getModel()),
-                                     decisionModel.getDecision() == null ? new NullLiteralExpr() : new StringLiteralExpr(decisionModel.getDecision()),
-                                     lambda);
+            handleDecision(node, body, actionBody, lambda, (RuleSetNode.RuleType.Decision) ruleType);
         } else {
             throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + ruleSetNode.getLanguage());
         }
@@ -156,15 +130,92 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
 
         addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "done");
 
+        if (ruleType.isRuleUnit()) {
+            if (ruleSetNode.getInMappings().isEmpty()) {
+                GeneratedRuleUnitDescription generatedRuleUnitDescription = new GeneratedRuleUnitDescription(ruleType.getName(), contextClassLoader);
+                for (Variable v : variableScope.getVariables()) {
+                    generatedRuleUnitDescription.putDatasourceVar(v.getName(), DataStore.class.getCanonicalName(), v.getType().getStringType());
+                }
+                RuleUnitComponentFactoryImpl impl = (RuleUnitComponentFactoryImpl) RuleUnitComponentFactory.get();
+                impl.registerRuleUnitDescription(generatedRuleUnitDescription);
+            }
+        }
+
     }
 
-    private Class<?> loadUnitClass(String nodeName, String unitName, String packageName) {
-        IllegalArgumentException ex;
+    private void handleDecision(Node node, BlockStmt body, BlockStmt actionBody, LambdaExpr lambda, RuleSetNode.RuleType.Decision ruleType) {
+        RuleSetNode.RuleType.Decision decisionModel = ruleType;
+        MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(new NameExpr("app"), "dmnRuntimeBuilder");
+        actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
+        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "dmnGroup", new StringLiteralExpr(decisionModel.getNamespace()),
+                                 new StringLiteralExpr(decisionModel.getModel()),
+                                 decisionModel.getDecision() == null ? new NullLiteralExpr() : new StringLiteralExpr(decisionModel.getDecision()),
+                                 lambda);
+    }
+
+    private void handleRuleUnit(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleSetNode.RuleType ruleType) {
+        InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/RuleUnitFactoryTemplate.java");
+        Optional<Expression> ruleUnitFactory = parse(resourceAsStream).findFirst(Expression.class);
+
+        String unitName = ruleType.getName();
+        Class<?> unitClass;
+
+        try {
+            unitClass = loadUnitClass(nodeName, unitName, metadata.getPackageName());
+
+            ruleUnitFactory.ifPresent(factory -> {
+                factory.findAll(ClassOrInterfaceType.class)
+                        .stream()
+                        .filter(t -> t.getNameAsString().equals("$Type$"))
+                        .forEach(t -> t.setName(unitName));
+
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
+                        .ifPresent(m -> m.setBody(bind(variableScope, ruleSetNode, unitClass)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unit"))
+                        .ifPresent(m -> m.setBody(unit(unitName)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
+                        .ifPresent(m -> m.setBody(unbind(variableScope, ruleSetNode, unitClass)));
+            });
+        } catch (ClassNotFoundException e) {
+            logger.warn("Rule task \"{}\": cannot load class {}. " +
+                                "The unit data object will be generated.", nodeName, unitName);
+
+            ruleUnitFactory.ifPresent(factory -> {
+                factory.findAll(ClassOrInterfaceType.class)
+                        .stream()
+                        .filter(t -> t.getNameAsString().equals("$Type$"))
+                        .forEach(t -> t.setName(unitName));
+
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
+                        .ifPresent(m -> m.setBody(bind(variableScope, ruleSetNode, unitName)));
+                factory.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unit"))
+                        .ifPresent(m -> m.setBody(unit(unitName)));
+                
+            });
+
+        }
+
+        if (ruleUnitFactory.isPresent()) {
+            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory.get());
+        } else {
+            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()));
+        }
+    }
+
+    private void handleRuleFlowGroup(Node node, BlockStmt body, BlockStmt actionBody, LambdaExpr lambda, RuleSetNode.RuleType ruleType) {
+        MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
+                new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "ruleRuntimeBuilder");
+        MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
+        actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
+        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleType.getName()), lambda);
+    }
+
+    private Class<?> loadUnitClass(String nodeName, String unitName, String packageName) throws ClassNotFoundException {
+        ClassNotFoundException ex;
         try {
             return contextClassLoader.loadClass(unitName);
         } catch (ClassNotFoundException e) {
-            ex = new IllegalArgumentException(
-                    MessageFormat.format("Rule task \"{0}\" is invalid: cannot load unit {1}", nodeName, unitName), e);
+            ex = e;
         }
         // maybe the name is not qualified. Let's try with tacking the packageName at the front
         try {
@@ -173,6 +224,90 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             // throw the original error
             throw ex;
         }
+    }
+
+
+    private BlockStmt bind(VariableScope variableScope, RuleSetNode node, String unitName) {
+     // we need an empty constructor for now
+        AssignExpr assignExpr = new AssignExpr(
+                new VariableDeclarationExpr(new ClassOrInterfaceType(null, unitName), "model"),
+                new ObjectCreationExpr().setType(unitName),
+                AssignExpr.Operator.ASSIGN);
+               
+        BlockStmt actionBody = new BlockStmt();
+        actionBody.addStatement(assignExpr);
+        
+        Set<Entry<String, String>> entries = node.getOutMappings().entrySet();
+        if (entries.isEmpty()) {
+            // no explicit i/o mappings, use process variables instead
+            for (Variable variable : variableScope.getVariables()) {
+                
+                injectDataFromModel(actionBody, variable.getName());                
+            }
+        } else {
+            for (Map.Entry<String, String> e : node.getOutMappings().entrySet()) {
+                
+                injectDataFromModel(actionBody, e.getValue());                
+            }
+        }
+        
+
+        entries = node.getInMappings().entrySet();
+        if (entries.isEmpty()) {
+            // no explicit i/o mappings, use process variables instead
+            for (Variable variable : variableScope.getVariables()) {
+                injectDataFromVariable(actionBody, variable);
+            }
+        } else {
+            for (Map.Entry<String, String> e : entries) {
+                Variable v = variableScope.findVariable(extractVariableFromExpression(e.getValue()));
+                if (v != null) {
+                    injectDataFromVariable(actionBody, v);
+                }
+            }
+        }
+
+       
+        actionBody.addStatement(new ReturnStmt(new NameExpr("model")));
+        
+        return actionBody;
+    }
+    
+    private BlockStmt unbind(VariableScope variableScope, RuleSetNode node, String unitName) {
+        BlockStmt stmts = new BlockStmt();
+        Set<Entry<String, String>> entries = node.getOutMappings().entrySet();
+        if (entries.isEmpty()) {
+            // no explicit i/o mappings, use process variables instead
+            for (Variable variable : variableScope.getVariables()) {
+                
+                injectDataFromModel(stmts, variable.getName());                
+            }
+        } else {
+            for (Map.Entry<String, String> e : node.getOutMappings().entrySet()) {
+                
+                injectDataFromModel(stmts, e.getValue());                
+            }
+        }
+        return stmts;
+    }
+    
+    private void injectDataFromModel(BlockStmt stmts, String name) {
+        stmts.addStatement(new ExpressionStmt(
+                                              new MethodCallExpr(new MethodCallExpr(
+                                                                                    new NameExpr("model"),
+                                                                                    "get" + StringUtils.capitalize(name)), "subscribe")
+                                                      .addArgument(new MethodCallExpr(
+                                                              new NameExpr(DataObserver.class.getCanonicalName()), "of")
+                                                                           .addArgument(parseExpression("o -> kcontext.setVariable(\"" + name + "\", o)")))));              
+    }
+
+    private void injectDataFromVariable(BlockStmt actionBody, Variable v) {
+        actionBody.addStatement(makeAssignment(v));
+        actionBody.addStatement(
+                injectData(isCollectionType(v),
+                           new MethodCallExpr(new NameExpr("model"), "get" + StringUtils.capitalize(v.getName())),
+                           "add",
+                           new NameExpr(v.getName())));
     }
 
     private BlockStmt bind(VariableScope variableScope, RuleSetNode node, Class<?> unitClass) {
@@ -222,12 +357,12 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         Method m;
         try {
             m = unitClass.getMethod(methodName);
-            Expression fieldAccessor =
+            Expression fieldGetter =
                     new MethodCallExpr(new NameExpr("model"), methodName);
             if ( DataStore.class.isAssignableFrom(m.getReturnType() ) ) {
-                return injectData(isCollection, destField, fieldAccessor, "add", expression);
+                return injectData(isCollection, fieldGetter, "add", expression);
             } else if ( DataStream.class.isAssignableFrom(m.getReturnType() ) ) {
-                return injectData(isCollection, destField, fieldAccessor, "append", expression);
+                return injectData(isCollection, fieldGetter, "append", expression);
             } // else fallback to the following
         } catch (NoSuchMethodException e) {
             // fallback to the following
@@ -247,15 +382,15 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
 
     }
 
-    private Statement injectData(boolean isCollection, String destField, Expression fieldAccessor, String acceptorMethodName, Expression expression) {
+    private Statement injectData(boolean isCollection, Expression fieldGetter, String acceptorMethodName, Expression value) {
         if (isCollection) {
-            return drainIntoDS(fieldAccessor, destField, acceptorMethodName, expression);
+            return drainIntoDS(fieldGetter, acceptorMethodName, value);
         } else {
-            return invoke(fieldAccessor, acceptorMethodName, expression);
+            return invoke(fieldGetter, acceptorMethodName, value);
         }
     }
 
-    private Statement drainIntoDS(Expression fieldAccessor, String destField, String acceptorMethodName, Expression expression) {
+    private Statement drainIntoDS(Expression fieldAccessor, String acceptorMethodName, Expression expression) {
         VariableDeclarationExpr varDecl = declareErasedDataSource(fieldAccessor);
 
         MethodCallExpr methodCallExpr = new MethodCallExpr(new MethodCallExpr(expression, "stream"), "forEach").addArgument(

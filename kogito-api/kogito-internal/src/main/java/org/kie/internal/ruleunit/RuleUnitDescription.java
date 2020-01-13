@@ -22,19 +22,15 @@ import java.util.Optional;
 public interface RuleUnitDescription {
 
     /**
-     * @deprecated this is only used by PMML
+     * @deprecated this is only used by PMML / it should not be used for other purposes
      *
      */
     @Deprecated
     Class<?> getRuleUnitClass();
 
-    default String getRuleUnitName() {
-        return getRuleUnitClass().getName();
-    }
+    String getRuleUnitName();
 
-    default String getCanonicalName() {
-        return getRuleUnitClass().getCanonicalName();
-    }
+    String getCanonicalName();
 
     String getSimpleName();
 
