@@ -56,7 +56,7 @@ public class ScenarioBeanUtil {
         for (Map.Entry<List<String>, Object> param : params.entrySet()) {
 
             // direct mapping already considered
-            if(param.getKey().isEmpty()) {
+            if (param.getKey().isEmpty()) {
                 continue;
             }
 
@@ -279,7 +279,7 @@ public class ScenarioBeanUtil {
     }
 
     private static String revertDouble(Double doubleValue) {
-        if(Double.isInfinite(doubleValue) || Double.isNaN(doubleValue)) {
+        if (Double.isInfinite(doubleValue) || Double.isNaN(doubleValue)) {
             return String.valueOf(doubleValue);
         }
         return doubleValue + "d";
