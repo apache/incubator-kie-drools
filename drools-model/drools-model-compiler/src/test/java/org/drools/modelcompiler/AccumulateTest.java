@@ -430,6 +430,63 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithAnd3Binds() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ) and $s : String( this == $a.name ), " +
+                        "$parentAge : sum($a.getAge() + $c.getAge() + $s.length()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.insert( "Mario" );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        // The original DSL test returns a double while the exec model returns an integer
+        assertEquals(54, ((Number)results.iterator().next().getValue()).intValue());
+    }
+
+    @Test
+    public void testAccumulateWithAnd4Binds() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ) and $s1 : String( this == $a.name ) and $s2 : String( this == $c.name ), " +
+                        "$parentAge : sum($a.getAge() + $c.getAge() + $s1.length() + $s2.length()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.insert( "Mario" );
+        ksession.insert( "Sofia" );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        // The original DSL test returns a double while the exec model returns an integer
+        assertEquals(59, ((Number)results.iterator().next().getValue()).intValue());
+    }
+
+    @Test
     public void testAccumulateWithCustomImport() {
         String str =
                 "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n" +
