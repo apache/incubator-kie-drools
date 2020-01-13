@@ -14,44 +14,47 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.bi;
+package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.model.Variable;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-public class DroolsBiGroupByInvoker<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, BiTuple<A, B>> {
+public class DroolsTriToBiGroupByInvoker<A, B, C, ResultContainer, NewA, NewB>
+        extends DroolsAbstractGroupByInvoker<ResultContainer, TriTuple<A, B, C>> {
 
-    private final BiConstraintCollector<A, B, ResultContainer, NewB> collector;
-    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final TriConstraintCollector<A, B, C, ResultContainer, NewB> collector;
+    private final TriFunction<A, B, C, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
     private final Variable<B> bVariable;
+    private final Variable<C> cVariable;
 
-    public DroolsBiGroupByInvoker(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector, Variable<A> aVariable,
-            Variable<B> bVariable) {
+    public DroolsTriToBiGroupByInvoker(TriFunction<A, B, C, NewA> groupKeyMapping,
+            TriConstraintCollector<A, B, C, ResultContainer, NewB> collector, Variable<A> aVariable,
+            Variable<B> bVariable, Variable<C> cVariable) {
         this.collector = collector;
         this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
         this.bVariable = bVariable;
+        this.cVariable = cVariable;
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, ?> newContext() {
-        return new DroolsBiGroupBy<>(groupKeyMapping, collector);
+    protected DroolsAbstractGroupBy<ResultContainer, TriTuple<A, B, C>, ?> newContext() {
+        return new DroolsTriToBiGroupBy<>(groupKeyMapping, collector);
     }
 
     @Override
-    protected <X> BiTuple<A, B> createInput(Function<Variable<X>, X> valueFinder) {
+    protected <X> TriTuple<A, B, C> createInput(Function<Variable<X>, X> valueFinder) {
         final A a = materialize(aVariable, valueFinder);
         final B b = materialize(bVariable, valueFinder);
-        return new BiTuple<>(a, b);
+        final C c = materialize(cVariable, valueFinder);
+        return new TriTuple<>(a, b, c);
     }
 
 }

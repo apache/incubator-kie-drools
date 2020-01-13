@@ -24,26 +24,30 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, NewA, BiTuple<NewA, NewB>> {
+final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, NewC> extends
+        DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
-    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final BiFunction<A, B, NewA> groupKeyAMapping;
+    private final BiFunction<A, B, NewB> groupKeyBMapping;
     private final Supplier<ResultContainer> supplier;
     private final TriFunction<ResultContainer, A, B, Runnable> accumulator;
-    private final Function<ResultContainer, NewB> finisher;
+    private final Function<ResultContainer, NewC> finisher;
 
-    public DroolsBiGroupByAccumulator(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
-        this.groupKeyMapping = groupKeyMapping;
+    public DroolsBiToTriGroupByAccumulator(BiFunction<A, B, NewA> groupKeyAMapping,
+            BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer, NewC> collector) {
+        this.groupKeyAMapping = groupKeyAMapping;
+        this.groupKeyBMapping = groupKeyBMapping;
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
     @Override
-    protected NewA toKey(BiTuple<A, B> tuple) {
-        return groupKeyMapping.apply(tuple.a, tuple.b);
+    protected BiTuple<NewA, NewB> toKey(BiTuple<A, B> abBiTuple) {
+        return new BiTuple<>(groupKeyAMapping.apply(abBiTuple.a, abBiTuple.b),
+                groupKeyBMapping.apply(abBiTuple.a, abBiTuple.b));
     }
 
     @Override
@@ -52,13 +56,13 @@ final class DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB>
     }
 
     @Override
-    protected Runnable process(BiTuple<A, B> tuple, ResultContainer container) {
-        return accumulator.apply(container, tuple.a, tuple.b);
+    protected Runnable process(BiTuple<A, B> abBiTuple, ResultContainer container) {
+        return accumulator.apply(container, abBiTuple.a, abBiTuple.b);
     }
 
     @Override
-    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
-        return new BiTuple<>(key, finisher.apply(container));
+    protected TriTuple<NewA, NewB, NewC> toResult(BiTuple<NewA, NewB> key, ResultContainer container) {
+        return new TriTuple<>(key.a, key.b, finisher.apply(container));
     }
 
 }

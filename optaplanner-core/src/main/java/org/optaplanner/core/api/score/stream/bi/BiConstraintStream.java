@@ -251,14 +251,23 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping);
 
-    /*
-    // TODO implement this
-    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-    TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
-            BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
+    /**
+     * Combines the semantics of {@link #groupBy(BiFunction, BiFunction)} and {@link #groupBy(BiConstraintCollector)}.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(BiFunction, BiFunction)} semantics,
+     * and the third fact is the result of applying {@link BiConstraintCollector#finisher()} on all the tuples of the
+     * original {@link UniConstraintStream} that fall in the group.
+     * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
+     * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
+     * @param collector never null, the collector to perform the grouping operation with
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
      */
+    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
 
     // ************************************************************************
     // Penalize/reward

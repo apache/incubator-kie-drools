@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,14 +64,14 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
             DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> openRuleItems,
-            LongSupplier variableIdSupplier) {
+            List<RuleItemBuilder<?>> closedRuleItems, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
         this.primaryPattern = primaryPattern;
         this.openRuleItems = Collections.unmodifiableList(openRuleItems);
-        this.closedRuleItems = Collections.emptyList();
+        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
     }
 
     public Variable<A> getA() {

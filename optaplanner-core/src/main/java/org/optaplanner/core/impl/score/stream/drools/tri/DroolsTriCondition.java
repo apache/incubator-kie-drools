@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,13 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
@@ -58,7 +62,8 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
-                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(newRuleStructure);
     }
 
@@ -72,6 +77,41 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         DroolsUniRuleStructure<D> newDRuleStructure = dRuleStructure.amend(expander);
         return new DroolsQuadCondition<>(new DroolsQuadRuleStructure<>(ruleStructure, newDRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
+    }
+
+    public <NewA, __> DroolsUniCondition<NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
+        DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge =
+                new DroolsTriAccumulateFunctionBridge<>(collector);
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
+                ruleStructure.getB(), (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c)));
+    }
+
+    public <NewA> DroolsUniCondition<NewA> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {
+        return super.group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
+                (c, a, b) -> groupKeyMapping.apply(a, b, (C) c)));
+    }
+
+    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(TriFunction<A, B, C, NewA> groupKeyMapping,
+            TriConstraintCollector<A, B, C, __, NewB> collector) {
+        return groupWithCollect(() -> new DroolsTriToBiGroupByInvoker<>(groupKeyMapping, collector, getRuleStructure().getA(),
+                        getRuleStructure().getB(), getRuleStructure().getC()));
+    }
+
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(TriFunction<A, B, C, NewA> groupKeyAMapping,
+            TriFunction<A, B, C, NewB> groupKeyBMapping) {
+        return groupBi((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
+                (c, a, b) -> {
+                    final NewA newA = groupKeyAMapping.apply(a, b, (C) c);
+                    final NewB newB = groupKeyBMapping.apply(a, b, (C) c);
+                    return new BiTuple<>(newA, newB);
+                }));
+    }
+
+    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+            TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
+            TriConstraintCollector<A, B, C, __, NewC> collector) {
+        return groupBiWithCollect(() -> new DroolsTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping, collector,
+                getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

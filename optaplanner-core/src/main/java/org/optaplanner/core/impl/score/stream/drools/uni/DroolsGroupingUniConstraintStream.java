@@ -20,26 +20,29 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 
-public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
+public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
     private final DroolsAbstractConstraintStream<Solution_> parent;
     private final DroolsUniCondition<NewA> condition;
 
-    public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
-    public <ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         super(constraintFactory);
@@ -47,19 +50,35 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
         this.condition = parent.getCondition().andCollect(collector);
     }
 
-    public <B> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
-    public <B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andCollect(collector);
+    }
+
+    public <A, B, C, ResultContainer_> DroolsGroupingUniConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andCollect(collector);
+    }
+
+    public <A, B, C> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     @Override

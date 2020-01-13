@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,9 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsTriCondition<A, B, C> condition = parent.getCondition();
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent =
+                (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
+        DroolsTriCondition<A, B, C> condition = actualParent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {

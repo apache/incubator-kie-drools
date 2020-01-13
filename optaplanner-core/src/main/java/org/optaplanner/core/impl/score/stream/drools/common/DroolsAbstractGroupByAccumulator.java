@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
 import java.util.IdentityHashMap;
@@ -22,43 +22,21 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-
-final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
+public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple> implements Serializable {
 
     // Containers may be identical in type and contents, yet they should still not count as the same container.
     private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
     // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<A, ResultContainer> containersMap = new LinkedHashMap<>(0);
-    private final Supplier<ResultContainer> supplier;
-    private final BiFunction<ResultContainer, B, Runnable> accumulator;
-    private final Function<ResultContainer, NewB> finisher;
+    private final Map<KeyTuple, ResultContainer> containersMap = new LinkedHashMap<>(0);
     // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<BiTuple<A, NewB>> resultSet = new LinkedHashSet<>(0);
+    private final transient Set<OutTuple> resultSet = new LinkedHashSet<>(0);
 
-    public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
-    }
-
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
-    }
-
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
-    }
-
-    public Runnable accumulate(A key, B value) {
-        ResultContainer container = containersMap.computeIfAbsent(key, __ -> supplier.get());
-        Runnable undo = accumulator.apply(container, value);
+    public Runnable accumulate(InTuple input) {
+        KeyTuple key = toKey(input);
+        ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
+        Runnable undo = process(input, container);
         containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
@@ -70,12 +48,28 @@ final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements 
         };
     }
 
-    public Set<BiTuple<A, NewB>> finish() {
+    private static Long increment(Long count) {
+        return count == null ? 1L : count + 1L;
+    }
+
+    private static Long decrement(Long count) {
+        return count == 1L ? null : count - 1L;
+    }
+
+    public Set<OutTuple> finish() {
         resultSet.clear();
-        for (Map.Entry<A, ResultContainer> entry: containersMap.entrySet()) {
-            ResultContainer container = entry.getValue();
-            resultSet.add(new BiTuple<>(entry.getKey(), finisher.apply(container)));
+        for (Map.Entry<KeyTuple, ResultContainer> entry : containersMap.entrySet()) {
+            resultSet.add(toResult(entry.getKey(), entry.getValue()));
         }
         return resultSet;
     }
+
+    protected abstract KeyTuple toKey(InTuple tuple);
+
+    protected abstract ResultContainer newContainer();
+
+    protected abstract Runnable process(InTuple tuple, ResultContainer container);
+
+    protected abstract OutTuple toResult(KeyTuple key, ResultContainer container);
+
 }

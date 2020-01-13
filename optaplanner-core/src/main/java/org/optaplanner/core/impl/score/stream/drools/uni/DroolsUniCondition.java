@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
@@ -26,10 +25,8 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
-import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
-import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -41,26 +38,19 @@ import org.drools.model.functions.Block3;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
-import org.drools.model.view.ExprViewItem;
-import org.drools.model.view.ViewItem;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.from;
-import static org.drools.model.PatternDSL.pattern;
 
 public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleStructure<A>> {
 
@@ -99,102 +89,35 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return new DroolsUniCondition<>(newStructure);
     }
 
-    public <NewA, ResultContainer> DroolsUniCondition<NewA> andCollect(
-            UniConstraintCollector<A, ResultContainer, NewA> collector) {
-        Variable<A> inputVariable = ruleStructure.getA();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleStructure.getPrimaryPattern().build());
-        AccumulateFunction<DroolsAccumulateContext<ResultContainer>> accumulateFunction =
-                new DroolsUniAccumulateFunctionBridge<>(collector);
-        Variable<NewA> outputVariable = (Variable<NewA>) declarationOf(Object.class, "collected");
-        ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.recollect(outputVariable, outerAccumulatePattern);
-        return new DroolsUniCondition<>(newRuleStructure);
+    public <NewA, __> DroolsUniCondition<NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
+        DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
-        Variable<NewA> mappedVariable = ruleStructure.createVariable("mapped");
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(mappedVariable, k -> groupKeyMapping.apply((A) k)))
-                .build());
-        Variable<Set<NewA>> setOfGroupKeys = (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
-        AlphaIndex<Set<NewA>, Integer> index = alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1,
-                Set::size, 0);
-        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfGroupKeys)
-                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(), index);
-        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfGroupKeys, pattern, accumulate);
-        return new DroolsUniCondition<>(newRuleStructure);
+        return group((pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a)));
     }
 
-    public <ResultContainer, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer, NewB> collector) {
-        Variable<A> collectingOnVar =
-                (Variable<A>) ruleStructure.createVariable(ruleStructure.getA().getType(), "collectingOn");
-        Variable<NewA> groupKeyVar = ruleStructure.createVariable("groupKey");
-        Variable<Set<BiTuple<NewA, NewB>>> setOfPairsVar =
-                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
-        String exprName = "Set of pairs of " + collectingOnVar.getName() + " and " + groupKeyVar.getName();
-        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairsVar)
-                .expr(exprName, set -> !set.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        // Prepare the list of pairs.
-        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(groupKeyVar, a -> groupKeyMapping.apply((A) a))
-                        .bind(collectingOnVar, a -> (A) a))
-                .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
-        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> new DroolsUniGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
-                        .as(setOfPairsVar));
-        // Load one pair from the list.
-        Variable<BiTuple<NewA, NewB>> onePairVar =
-                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairsVar));
-        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
-        return new DroolsBiCondition<>(newRuleStructure);
+    public <__, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
+            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, __, NewB> collector) {
+        return groupWithCollect(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector,
+                getRuleStructure().getA()));
     }
 
-    /**
-     * The goal of this method is to create the left-hand side of a rule to look like this:
-     *
-     * <pre>
-     * when
-     *     set(size > 0): accumulate(Person(), $set: collectSet(Pair.of(Person::getCity, Person::getName)))
-     *     Pair($newA: left, $newB: right) from $set
-     * then
-     *     ...
-     * end
-     * </pre>
-     * <p>
-     * Note: This is pseudo-code and the actual Drools code will look slightly different in terms of syntax.
-     * @param groupKeyAMapping never null, first grouping to apply
-     * @param groupKeyBMapping never null, second grouping to apply
-     * @param <NewA> type of the first logical fact
-     * @param <NewB> type of the second logical fact
-     * @return
-     */
     public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
-        Variable<BiTuple<NewA, NewB>> pairVar = ruleStructure.createVariable("groupedPair");
-        Variable<Set<BiTuple<NewA, NewB>>> setOfPairsVar =
-                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOf" + pairVar.getName());
-        // Prepare the list of pairs.
-        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairsVar)
-                .expr("Set of " + pairVar.getName(), set -> !set.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(pairVar,
-                        a -> new BiTuple<>(groupKeyAMapping.apply((A) a), groupKeyBMapping.apply((A) a))))
-                .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
-        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction::new, pairVar).as(setOfPairsVar));
-        // Load one pair from the list.
-        Variable<BiTuple<NewA, NewB>> onePairVar =
-                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairsVar));
-        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
-        return new DroolsBiCondition<>(newRuleStructure);
+        return groupBi((pattern, tuple) -> pattern.bind(tuple, a -> {
+            final NewA newA = groupKeyAMapping.apply((A) a);
+            final NewB newB = groupKeyBMapping.apply((A) a);
+            return new BiTuple<>(newA, newB);
+        }));
+    }
+
+    public <ResultContainer, NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+            Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+            UniConstraintCollector<A, ResultContainer, NewC> collector) {
+        return groupBiWithCollect(() -> new DroolsUniToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+                collector, getRuleStructure().getA()));
     }
 
     public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {

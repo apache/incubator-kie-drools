@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -75,13 +76,16 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     private static List<Object> unpair(List<Object> justificationList, int expectedJustificationCount) {
         return justificationList.stream()
                 .flatMap(item -> {
+                    /*
+                     * In the case of Drools-based CS, the justification may be both in the form of (A, B, ...) and
+                     * Tuple<A, B, ...>. In the latter case, we adapt to the former.
+                     */
                     if (item instanceof BiTuple) {
-                        /*
-                         * In the case of Drools-based CS, the justification may be both in the form of (A, B) and
-                         * Pair<A, B>. In the latter case, we adapt to the former.
-                         */
                         BiTuple<?, ?> pair = (BiTuple<?, ?>) item;
-                        return Stream.of(pair.key, pair.value);
+                        return Stream.of(pair.a, pair.b);
+                    } else if (item instanceof TriTuple) {
+                        TriTuple<?, ?, ?> pair = (TriTuple<?, ?, ?>) item;
+                        return Stream.of(pair.a, pair.b, pair.c);
                     } else {
                         return Stream.of(item);
                     }

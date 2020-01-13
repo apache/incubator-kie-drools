@@ -16,27 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
 
-/**
- * Drools {@link AccumulateFunction} that calls {@link UniConstraintCollector} underneath.
- * @param <A> input to accumulate
- * @param <ResultContainer_> implementation detail
- * @param <NewA> result of accumulation
- */
 final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
-        implements AccumulateFunction<DroolsAccumulateContext<ResultContainer_>> {
+        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, BiTuple<A, B>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
     private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
@@ -53,58 +42,17 @@ final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
     }
 
     @Override
-    public DroolsAccumulateContext<ResultContainer_> createContext() {
-        return new DroolsAccumulateContext<>(supplier.get());
+    protected ResultContainer_ newContainer() {
+        return supplier.get();
     }
 
     @Override
-    public void init(DroolsAccumulateContext<ResultContainer_> context) {
-        context.getUndoMap().clear();
+    protected Runnable accumulate(ResultContainer_ container, BiTuple<A, B> tuple) {
+        return accumulator.apply(container, tuple.a, tuple.b);
     }
 
     @Override
-    public void accumulate(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        Map<Object, Runnable> undoMap = context.getUndoMap();
-        if (undoMap.containsKey(value)) {
-            throw new IllegalStateException("Undo for (" + value +  ") already exists.");
-        }
-        BiTuple<A, B> values = (BiTuple<A, B>) value;
-        Runnable undo = accumulator.apply(context.getContainer(), values.key, values.value);
-        undoMap.put(value, undo);
+    protected NewA getResult(ResultContainer_ container_) {
+        return finisher.apply(container_);
     }
-
-    @Override
-    public void reverse(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        Runnable undo = context.getUndoMap().remove(value);
-        if (undo == null) {
-            throw new IllegalStateException("Undo for (" + value +  ") does not exist.");
-        }
-        undo.run();
-    }
-
-    @Override
-    public Object getResult(DroolsAccumulateContext<ResultContainer_> context) {
-        return finisher.apply(context.getContainer());
-    }
-
-    @Override
-    public boolean supportsReverse() {
-        return true;
-    }
-
-    @Override
-    public Class<?> getResultType() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) {
-        throw new UnsupportedOperationException();
-    }
-
 }

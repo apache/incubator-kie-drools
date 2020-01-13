@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
@@ -33,6 +34,7 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstrai
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
@@ -76,7 +78,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
@@ -85,7 +87,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
@@ -111,6 +113,19 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         addChildStream(stream);
         return stream;
     }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_>
+    groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
+            Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
+                        collector);
+        addChildStream(stream);
+        return stream;
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

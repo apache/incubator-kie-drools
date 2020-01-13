@@ -351,6 +351,60 @@
           "methodName": "groupBy",
           "elementKind": "method",
           "justification": "Introduce groupBy() for BiStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKey_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<GroupKey_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKey_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKeyA_, GroupKeyB_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyA_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyB_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyA_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyB_>, org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKey_, ResultContainer_, Result_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<GroupKey_, Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKey_>, org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultContainer_, Result_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<Result_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ResultContainer_, Result_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Introduce groupBy() for TriStreams."
         }
       ]
     }

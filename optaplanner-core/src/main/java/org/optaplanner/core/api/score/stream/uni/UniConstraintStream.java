@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
@@ -239,7 +240,6 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping);
 
-    /*
     /**
      * Combines the semantics of {@link #groupBy(Function, Function)} and {@link #groupBy(UniConstraintCollector)}.
      * That is, the first and second facts in the tuple follow the {@link #groupBy(Function, Function)} semantics, and
@@ -254,11 +254,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
      * @return never null
      */
-    // TODO implement this
-    //<GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
-    //        Function<A, GroupKeyA_> groupKeyAMapping,
-    //        Function<A, GroupKeyB_> groupKeyBMapping,
-    //        UniConstraintCollector<A, ResultContainer_, Result_> collector);
+    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+            UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     // ************************************************************************
     // Penalize/reward

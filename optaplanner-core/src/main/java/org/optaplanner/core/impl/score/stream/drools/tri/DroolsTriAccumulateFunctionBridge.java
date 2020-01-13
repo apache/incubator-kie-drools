@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, A, NewA> {
+final class DroolsTriAccumulateFunctionBridge<A, B, C, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, TriTuple<A, B, C>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final BiFunction<ResultContainer_, A, Runnable> accumulator;
+    private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsUniAccumulateFunctionBridge(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
+    public DroolsTriAccumulateFunctionBridge(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsUniAccumulateFunctionBridge() {
+    public DroolsTriAccumulateFunctionBridge() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -46,8 +47,8 @@ final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, A tuple) {
-        return accumulator.apply(container, tuple);
+    protected Runnable accumulate(ResultContainer_ container, TriTuple<A, B, C> tuple) {
+        return accumulator.apply(container, tuple.a, tuple.b, tuple.c);
     }
 
     @Override

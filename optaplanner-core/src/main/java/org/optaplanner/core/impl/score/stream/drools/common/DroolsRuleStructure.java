@@ -34,6 +34,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 import static org.drools.model.DSL.from;
@@ -171,14 +172,32 @@ public abstract class DroolsRuleStructure {
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
-    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<BiTuple<NewA, NewB>> newSource,
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<Set<BiTuple<NewA, NewB>>> newSource,
             PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<BiTuple<NewA, NewB>> newTuple =
+                (Variable<BiTuple<NewA, NewB>>) createVariable(BiTuple.class,"groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
-        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair.key))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair.value));
+        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.b));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(
+            Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource,
+            PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<TriTuple<NewA, NewB, NewC>> newTuple =
+                (Variable<TriTuple<NewA, NewB, NewC>>) createVariable(TriTuple.class, "groupKey", from(newSource));
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        Variable<NewC> newC = createVariable("newC");
+        DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.b))
+                .expand(p -> p.bind(newC, pair -> (NewC) pair.c));
+        return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 

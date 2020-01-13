@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.bi;
+package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.function.BiFunction;
-
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiGroupBy<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>> {
+final class DroolsTriToBiGroupBy<A, B, C, ResultContainer, NewA, NewB>
+    extends DroolsAbstractGroupBy<ResultContainer, TriTuple<A, B, C>, BiTuple<NewA, NewB>> {
 
-    private final BiFunction<A, B, NewA> groupKeyMapping;
-    private final BiConstraintCollector<A, B, ResultContainer, NewB> collector;
+    private final TriFunction<A, B, C, NewA> groupKeyMapping;
+    private final TriConstraintCollector<A, B, C, ResultContainer, NewB> collector;
 
-    public DroolsBiGroupBy(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
+    public DroolsTriToBiGroupBy(TriFunction<A, B, C, NewA> groupKeyMapping,
+            TriConstraintCollector<A, B, C, ResultContainer, NewB> collector) {
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, ?, BiTuple<NewA, NewB>> newAccumulator() {
-        return new DroolsBiGroupByAccumulator<>(groupKeyMapping, collector);
+    protected DroolsAbstractGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, ?, BiTuple<NewA, NewB>> newAccumulator() {
+        return new DroolsTriToBiGroupByAccumulator<>(groupKeyMapping, collector);
     }
 
 }

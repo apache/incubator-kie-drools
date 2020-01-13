@@ -22,22 +22,25 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiGroupBy<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>> {
+final class DroolsBiToTriGroupBy<A, B, ResultContainer, NewA, NewB, NewC>
+        extends DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, TriTuple<NewA, NewB, NewC>> {
 
-    private final BiFunction<A, B, NewA> groupKeyMapping;
-    private final BiConstraintCollector<A, B, ResultContainer, NewB> collector;
+    private final BiFunction<A, B, NewA> groupKeyAMapping;
+    private final BiFunction<A, B, NewB> groupKeyBMapping;
+    private final BiConstraintCollector<A, B, ResultContainer, NewC> collector;
 
-    public DroolsBiGroupBy(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
-        this.groupKeyMapping = groupKeyMapping;
+    public DroolsBiToTriGroupBy(BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainer, NewC> collector) {
+        this.groupKeyAMapping = groupKeyAMapping;
+        this.groupKeyBMapping = groupKeyBMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, ?, BiTuple<NewA, NewB>> newAccumulator() {
-        return new DroolsBiGroupByAccumulator<>(groupKeyMapping, collector);
+    protected DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+        return new DroolsBiToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
 }

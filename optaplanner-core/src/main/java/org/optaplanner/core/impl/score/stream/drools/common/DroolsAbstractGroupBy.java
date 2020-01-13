@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,27 +22,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializable {
+public abstract class DroolsAbstractGroupBy<ResultContainer, InTuple, OutTuple> implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
-    private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> acc;
-
-    public DroolsUniGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
-        this.collector = collector;
-    }
+    private DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> acc;
 
     public void init() {
-        acc = new DroolsUniGroupByAccumulator<>(collector);
+        acc = newAccumulator();
         undoMap.clear();
     }
 
-    public void accumulate(InternalFactHandle handle, A groupKey, B collected) {
-        Runnable undo = acc.accumulate(groupKey, collected);
+    public void accumulate(InternalFactHandle handle, InTuple input) {
+        Runnable undo = acc.accumulate(input);
         Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
         if (oldUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
@@ -57,8 +50,10 @@ final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializabl
         undo.run();
     }
 
-    public Set<BiTuple<A, NewB>> getResult() {
+    public Set<OutTuple> getResult() {
         return acc.finish();
     }
+
+    protected abstract DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> newAccumulator();
 
 }

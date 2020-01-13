@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,15 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongTriFunction;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 
 /**
@@ -82,6 +87,26 @@ public final class ConstraintCollectors {
         return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a, b) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countTri() {
+        return new DefaultTriConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b, c) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countLongTri() {
+        return new DefaultTriConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b, c) -> {
                     resultContainer[0]++;
                     return (() -> resultContainer[0]--);
                 },
@@ -290,6 +315,78 @@ public final class ConstraintCollectors {
                 () -> new Period[] { Period.ZERO },
                 (resultContainer, a, b) -> {
                     Period value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> sum(
+            ToIntTriFunction<? super A, ? super B, ? super C> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b, c) -> {
+                    int value = groupValueMapping.applyAsInt(a, b, c);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> sumLong(
+            ToLongTriFunction<? super A, ? super B, ? super C> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b, c) -> {
+                    long value = groupValueMapping.applyAsLong(a, b, c);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal> sumBigDecimal(
+            TriFunction<? super A, ? super B, ? super C, BigDecimal> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new BigDecimal[] { BigDecimal.ZERO },
+                (resultContainer, a, b, c) -> {
+                    BigDecimal value = groupValueMapping.apply(a, b, c);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigInteger> sumBigInteger(
+            TriFunction<? super A, ? super B, ? super C, BigInteger> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new BigInteger[] { BigInteger.ZERO },
+                (resultContainer, a, b, c) -> {
+                    BigInteger value = groupValueMapping.apply(a, b, c);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Duration> sumDuration(
+            TriFunction<? super A, ? super B, ? super C, Duration> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new Duration[] { Duration.ZERO },
+                (resultContainer, a, b, c) -> {
+                    Duration value = groupValueMapping.apply(a, b, c);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Period> sumPeriod(
+            TriFunction<? super A, ? super B, ? super C, Period> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new Period[] { Period.ZERO },
+                (resultContainer, a, b, c) -> {
+                    Period value = groupValueMapping.apply(a, b, c);
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
