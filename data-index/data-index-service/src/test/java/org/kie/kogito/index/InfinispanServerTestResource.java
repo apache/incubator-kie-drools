@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 public class InfinispanServerTestResource implements QuarkusTestResourceLifecycleManager {
 
@@ -42,7 +43,8 @@ public class InfinispanServerTestResource implements QuarkusTestResourceLifecycl
                 .withFixedExposedPort(11232, 11222)
                 .withEnv("USER", "admin")
                 .withEnv("PASS", "admin")
-                .withLogConsumer(new Slf4jLogConsumer(LOGGER));
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+                .waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1));
         infinispan.start();
         return Collections.emptyMap();
     }

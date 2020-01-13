@@ -23,12 +23,14 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.KeycloakServerTestResource;
 
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 @QuarkusTestResource(KeycloakServerTestResource.class)
+@QuarkusTestResource(InfinispanServerTestResource.class)
 public class KeycloakIntegrationIndexingServiceTest {
 
     private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");
@@ -37,7 +39,6 @@ public class KeycloakIntegrationIndexingServiceTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty("quarkus.oidc.enabled", "true");
         System.setProperty("quarkus.http.auth.policy.role-policy1.roles-allowed", "confidential");
         System.setProperty("quarkus.http.auth.permission.roles1.paths", "/graphql");
         System.setProperty("quarkus.http.auth.permission.roles1.policy", "role-policy1");

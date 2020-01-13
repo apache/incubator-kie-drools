@@ -32,8 +32,8 @@
       <artifactId>quarkus-vertx-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-web-graphql</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-vertx-graphql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -124,7 +124,7 @@
             </goals>
           </execution>
           <execution>
-            <id>testWitKeycloak</id>
+            <id>testWithKeycloak</id>
             <goals>
               <goal>test</goal>
             </goals>
@@ -135,9 +135,9 @@
               <excludes>
                 <exclude>none</exclude>
               </excludes>
-              <systemProperties>
-                <quarkus.oidc.enabled>true</quarkus.oidc.enabled>
-              </systemProperties>
+              <systemPropertyVariables>
+                <quarkus.profile>test</quarkus.profile>
+              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
@@ -148,6 +148,7 @@
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <infinispan.version>${version.org.infinispan.image}</infinispan.version>
+            <keycloak.version>${version.org.keycloak.image}</keycloak.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>

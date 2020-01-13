@@ -20,23 +20,34 @@ import java.util.Collections;
 import java.util.Map;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 public class KeycloakServerTestResource implements QuarkusTestResourceLifecycleManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakServerTestResource.class);
+    private static final String KEYCLOAK_VERSION = System.getProperty("keycloak.version");
 
     private GenericContainer keycloak;
 
     @Override
     public Map<String, String> start() {
-        keycloak = new FixedHostPortGenericContainer("quay.io/keycloak/keycloak")
+        if (KEYCLOAK_VERSION == null) {
+            throw new RuntimeException("Please define a valid Keycloak image version in system property keycloak.version");
+        }
+        LOGGER.info("Using Keycloak image version: {}", KEYCLOAK_VERSION);
+        keycloak = new FixedHostPortGenericContainer("quay.io/keycloak/keycloak:" + KEYCLOAK_VERSION)
                 .withFixedExposedPort(8281, 8080)
                 .withEnv("KEYCLOAK_USER", "admin")
                 .withEnv("KEYCLOAK_PASSWORD", "admin")
                 .withEnv("KEYCLOAK_IMPORT", "/tmp/realm.json")
                 .withClasspathResourceMapping("kogito-realm.json", "/tmp/realm.json", BindMode.READ_ONLY)
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                 .waitingFor(Wait.forHttp("/auth"));
         keycloak.start();
         return Collections.emptyMap();
