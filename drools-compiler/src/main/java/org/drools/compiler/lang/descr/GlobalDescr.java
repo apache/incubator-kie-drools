@@ -19,7 +19,7 @@ package org.drools.compiler.lang.descr;
 /**
  * A descriptor class for globals.
  */
-public class GlobalDescr extends BaseDescr {
+public class GlobalDescr extends AnnotatedBaseDescr {
 
     private static final long serialVersionUID = 510l;
 
