@@ -36,6 +36,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
@@ -107,13 +108,20 @@ public class DMNDTAnalyser {
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
         compileTableRules(dt, ddtaTable);
+        compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
         if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
-            LOG.debug("findGaps");
-            findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+            if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
+                LOG.debug("findGaps");
+                findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+            } else {
+                LOG.debug("findGaps Skipped because getColIDsStringWithoutEnum is not empty: {}", ddtaTable.getColIDsStringWithoutEnum());
+            }
             LOG.debug("findOverlaps");
             findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        } else {
+            LOG.debug("findGaps(), findOverlaps() are Skipped because getHitPolicy is COLLECT.");
         }
         LOG.debug("computeMaskedRules");
         analysis.computeMaskedRules();
@@ -132,6 +140,26 @@ public class DMNDTAnalyser {
         return analysis;
     }
 
+    private void compileTableComputeColStringMissingEnum(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
+        for (int iColIdx = 0; iColIdx < ddtaTable.inputCols(); iColIdx++) {
+            InputClause ie = dt.getInput().get(iColIdx);
+            QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
+            if (SimpleType.STRING.equals(typeRef.getLocalPart()) && !ddtaTable.getInputs().get(iColIdx).isDiscreteDomain()) {
+                Interval infStringDomain = ddtaTable.getInputs().get(iColIdx).getDomainMinMax();
+                boolean areAllSinglePointOrAll = true;
+                for (int jRowIdx = 0; jRowIdx < dt.getRule().size() && areAllSinglePointOrAll; jRowIdx++) {
+                    List<Interval> r = ddtaTable.getRule().get(jRowIdx).getInputEntry().get(iColIdx).getIntervals();
+                    for (Interval interval : r) {
+                        areAllSinglePointOrAll = areAllSinglePointOrAll && (infStringDomain.equals(interval) || interval.isSingularity());
+                    }
+                }
+                if (areAllSinglePointOrAll) {
+                    ddtaTable.addColIdStringWithoutEnum(iColIdx + 1);
+                }
+            }
+        }
+    }
+
     private void printDebugTableInfo(DDTATable ddtaTable) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("{}", ddtaTable);
@@ -145,6 +173,7 @@ public class DMNDTAnalyser {
                 Collections.sort(bounds);
                 LOG.debug("{}", bounds);
             }
+            LOG.debug("col IDs being String without Enum: {}", ddtaTable.getColIDsStringWithoutEnum());
         }
     }
 
