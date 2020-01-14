@@ -140,22 +140,12 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     /**
-     * In DMN only Lists are structured result while Maps are context so "plain" FEEL expressions
-     * @param resultClass
-     * @return
-     */
-    @Override
-    protected boolean isStructuredResult(Class<?> resultClass) {
-        return resultClass != null && ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName());
-    }
-
-    /**
      * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions
      * @param className
      * @return
      */
     @Override
-    protected boolean isStructuredInput(String className) {
+    protected boolean isStructured(String className) {
         return ScenarioSimulationSharedUtils.isList(className);
     }
 

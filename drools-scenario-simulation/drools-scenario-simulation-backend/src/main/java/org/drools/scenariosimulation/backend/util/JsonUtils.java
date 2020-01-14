@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.util;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,17 +46,10 @@ public class JsonUtils {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(json);
             return Optional.of(jsonNode);
-        } catch (IOException e) {
+        } catch (JsonParseException e) {
             return Optional.empty();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Generic error during json parsing: " + json, e);
         }
-    }
-
-    /**
-     * It determines if a given json in String format, is a Json Textual node
-     * @param json
-     * @return
-     */
-    public static boolean isAJSONTextualNode(String json) {
-        return convertFromStringToJSONNode(json).filter(JsonNode::isTextual).isPresent();
     }
 }

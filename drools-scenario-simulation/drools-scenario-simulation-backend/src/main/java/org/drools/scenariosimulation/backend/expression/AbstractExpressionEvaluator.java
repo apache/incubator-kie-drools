@@ -16,18 +16,18 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
@@ -35,7 +35,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
-        if (isStructuredInput(className)) {
+        if (isStructured(className)) {
             return convertResult(rawExpression, className, genericClasses);
         } else {
             return internalLiteralEvaluation(rawExpression, className);
@@ -44,7 +44,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
-        if (isStructuredResult(resultClass)) {
+        if (resultClass != null && isStructured(resultClass.getCanonicalName())) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
@@ -52,20 +52,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     /**
-     * Check if resultClass represents a structured result
-     * @param resultClass Used to determine if a structured result is passed
+     * Check if className represents a structured type
+     * @param className Used to determine if a structured type is passed
      * @return
      */
-    protected boolean isStructuredResult(Class<?> resultClass) {
-        return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
-    }
-
-    /**
-     * Check if className represents a structured input
-     * @param className Used to determine if a structured input is passed
-     * @return
-     */
-    protected boolean isStructuredInput(String className) {
+    protected boolean isStructured(String className) {
         return ScenarioSimulationSharedUtils.isCollection(className);
     }
 
@@ -74,26 +65,23 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             return null;
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            JsonNode jsonNode = objectMapper.readTree(rawString);
-            if (jsonNode.isTextual()) {
-                /* JSON String: User defined Expression */
-                return internalLiteralEvaluation(jsonNode.asText(), className);
-            } else if (jsonNode.isArray()) {
-                /* JSON Array: User defined List */
-                return createAndFillList((ArrayNode) jsonNode, new ArrayList<>(), className, genericClasses);
-            } else if (jsonNode.isObject()) {
-                /* JSON Object: User defined Map */
-                return createAndFillObject((ObjectNode) jsonNode,
-                                           createObject(className, genericClasses),
-                                           className,
-                                           genericClasses);
-            }
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE, e);
+        Optional<JsonNode> optionalJsonNode = JsonUtils.convertFromStringToJSONNode(rawString);
+        JsonNode jsonNode = optionalJsonNode.orElseThrow(() -> new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE));
+
+        if (jsonNode.isTextual()) {
+            /* JSON Text: expression manually written by the user to build a list/map */
+            return internalLiteralEvaluation(jsonNode.asText(), className);
+        } else if (jsonNode.isArray()) {
+            /* JSON Array: list of expressions created using List collection editor */
+            return createAndFillList((ArrayNode) jsonNode, new ArrayList<>(), className, genericClasses);
+        } else if (jsonNode.isObject()) {
+            /* JSON Map: map of expressions created using Map collection editor */
+            return createAndFillObject((ObjectNode) jsonNode,
+                                       createObject(className, genericClasses),
+                                       className,
+                                       genericClasses);
         }
+        throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
     }
 
     protected List<Object> createAndFillList(ArrayNode json, List<Object> toReturn, String className, List<String> genericClasses) {
@@ -153,24 +141,20 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
         }
-        ObjectMapper objectMapper = new ObjectMapper();
+        Optional<JsonNode> optionalJsonNode = JsonUtils.convertFromStringToJSONNode(rawExpression);
+        JsonNode jsonNode = optionalJsonNode.orElseThrow(() -> new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE));
 
-        try {
-            JsonNode jsonNode = objectMapper.readTree(rawExpression);
-            if (jsonNode.isTextual()) {
-                /* JSON String: User defined Expression */
-                return internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false);
-            } else if (jsonNode.isArray()) {
-                /* JSON Array: User defined List */
-                return verifyList((ArrayNode) jsonNode, (List) resultRaw);
-            } else if (jsonNode.isObject()) {
-                /* JSON Object: User defined Map */
-                return verifyObject((ObjectNode) jsonNode, resultRaw);
-            }
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE, e);
+        if (jsonNode.isTextual()) {
+            /* JSON Text: expression manually written by the user to build a list/map */
+            return internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false);
+        } else if (jsonNode.isArray()) {
+            /* JSON Array: list of expressions created using List collection editor */
+            return verifyList((ArrayNode) jsonNode, (List) resultRaw);
+        } else if (jsonNode.isObject()) {
+            /* JSON Map: map of expressions created using Map collection editor */
+            return verifyObject((ObjectNode) jsonNode, resultRaw);
         }
+        throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
     }
 
     protected boolean verifyList(ArrayNode json, List resultRaw) {

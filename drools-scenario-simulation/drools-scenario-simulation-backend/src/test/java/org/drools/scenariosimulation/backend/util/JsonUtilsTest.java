@@ -40,26 +40,4 @@ public class JsonUtilsTest {
         assertTrue(JsonUtils.convertFromStringToJSONNode("[1,2,3]").isPresent());
         assertTrue(JsonUtils.convertFromStringToJSONNode("{\"id\": 23, \"num\": 34, \"time\" : 56}").isPresent());
     }
-
-    @Test
-    public void isAJSONTextualNode() {
-        assertFalse(JsonUtils.isAJSONTextualNode(null));
-        assertFalse(JsonUtils.isAJSONTextualNode(""));
-        assertFalse(JsonUtils.isAJSONTextualNode("Not json"));
-        assertFalse(JsonUtils.isAJSONTextualNode("\"Not json"));
-        assertFalse(JsonUtils.isAJSONTextualNode("key : notJson\""));
-        assertTrue(JsonUtils.isAJSONTextualNode("\"Json\""));
-        assertTrue(JsonUtils.isAJSONTextualNode("\"key : Json\""));
-        assertFalse(JsonUtils.isAJSONTextualNode("{ \"id\": 2, \"username\": \"user\", \"num\": 12, \"name\": \"Mr Yellow\"\n }"));
-        assertFalse(JsonUtils.isAJSONTextualNode("{ \"users\": [\n" +
-                                                                 "\t\t{ \"id\": 3, \"username\": \"user45\", \"num\": 24, \"name\": \"Mr White\" },\n" +
-                                                                 "\t\t{ \"id\": 4, \"username\": \"user65\", \"num\": 32, \"name\": \"Mr Red\" }\n" +
-                                                                 "\t]}"));
-        assertFalse(JsonUtils.isAJSONTextualNode("[{\"name\": \"\\\"John\\\"\"}, " +
-                                                                 "{\"name\": \"\\\"John\\\"\", \"names\" : [{\"value\": \"\\\"Anna\\\"\"}, {\"value\": \"\\\"Mario\\\"\"}]}]"));
-        assertFalse(JsonUtils.isAJSONTextualNode("[1,2,3]"));
-        assertFalse(JsonUtils.isAJSONTextualNode("{\"id\": 23, \"num\": 34, \"time\" : 56}"));
-        assertTrue(JsonUtils.isAJSONTextualNode("\"[1,2,3]\""));
-        assertTrue(JsonUtils.isAJSONTextualNode("\"{\"id\": 23, \"num\": 34, \"time\" : 56}\""));
-    }
 }

@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -224,5 +227,18 @@ public class DMNFeelExpressionEvaluatorTest {
         String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
         assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
+    }
+
+    @Test
+    public void isStructured() {
+        assertTrue(expressionEvaluator.isStructured(List.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructured(ArrayList.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructured(LinkedList.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(Map.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(HashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(LinkedHashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(Set.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(Integer.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructured(String.class.getCanonicalName()));
     }
 }
