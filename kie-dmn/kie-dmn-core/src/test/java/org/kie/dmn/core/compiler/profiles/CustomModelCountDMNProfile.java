@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.DRGElementCompiler;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
-public class Just47DMNProfile implements DMNProfile {
+public class CustomModelCountDMNProfile implements DMNProfile {
 
     @Override
     public List<FEELFunction> getFEELFunctions() {
-        return Collections.singletonList(new Just47Function());
+        return Collections.singletonList(new CustomModelCountFunction());
     }
 
     @Override
