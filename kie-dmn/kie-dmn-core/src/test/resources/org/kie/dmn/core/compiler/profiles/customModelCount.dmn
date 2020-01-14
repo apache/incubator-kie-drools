@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_5d9e63ac-e73a-4b9e-8635-760f0c23c0ad" id="_5d9e63ac-e73a-4b9e-8635-760f0c23c0ad" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_5d9e63ac-e73a-4b9e-8635-760f0c23c0ad" exporter="DMN Modeler" exporterVersion="6.6.0" triso:logoChoice="Default">
+    <semantic:decision id="_1c999ac2-885b-4282-9033-ebcd35fcbf9c" name="main decision">
+        <semantic:variable name="main decision" id="_8b30bbf1-a10a-41a1-8d0f-a03fd4485aaa" typeRef="number"/>
+        <semantic:literalExpression id="_1e12c6cb-952e-4cdf-a076-ec5eafb1ea12" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" typeRef="number" triso:expressionId="_79e115dc-c4fc-424d-85e3-220ad25001c8">
+            <semantic:text>customModelCount()</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>

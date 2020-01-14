@@ -77,7 +77,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"date and time(\"2016-07-29T05:48:23.765-05:00\") instance of date and time", Boolean.TRUE , null},
                 {"duration( \"P2Y2M\" ) instance of duration", Boolean.TRUE , null},
                 {"true instance of boolean", Boolean.TRUE , null},
-                {"< 10 instance of unary test", Boolean.TRUE , null},
+                {"< 10 instance of range", Boolean.TRUE , null},
                 {"[10..20) instance of range", Boolean.TRUE , null},
                 {"[10, 20, 30] instance of list", Boolean.TRUE , null},
                 {"{ foo : \"foo\" } instance of context", Boolean.TRUE , null},

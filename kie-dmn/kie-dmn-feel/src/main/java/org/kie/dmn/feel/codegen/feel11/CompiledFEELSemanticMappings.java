@@ -53,7 +53,7 @@ public class CompiledFEELSemanticMappings {
 
         Comparable left = asComparable(lowEndPoint);
         Comparable right = asComparable(highEndPoint);
-        if (left == null || right == null || !compatible(left, right)) {
+        if (left != null && right != null && !compatible(left, right)) {
             ctx.notifyEvt(() -> new ASTEventBase(
                     FEELEvent.Severity.ERROR,
                     Msg.createMessage(
@@ -133,6 +133,9 @@ public class CompiledFEELSemanticMappings {
         if (test instanceof UnaryTest) {
             Boolean result = ((UnaryTest) test).apply(ctx, target);
             return result != null && result;
+        } else if (test instanceof Range) {
+            Boolean result = ((Range) test).includes(target);
+            return result != null && result;
         } else if (test == null) {
             return target == null ? true : null;
         } else {
@@ -162,6 +165,14 @@ public class CompiledFEELSemanticMappings {
         return true;
     }
 
+    public static Object getValue(EvaluationContext ctx, String varName) {
+        Object value = ctx.getValue(varName);
+        if (value == null && !ctx.isDefined(varName)) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.UNKNOWN_VARIABLE_REFERENCE, varName), null));
+        }
+        return value;
+    }
+
     private static boolean compatible(Comparable left, Comparable right) {
         Class<?> leftClass = left.getClass();
         Class<?> rightClass = right.getClass();
@@ -170,13 +181,15 @@ public class CompiledFEELSemanticMappings {
     }
 
     private static Comparable asComparable(Object s) {
-        if (s instanceof Comparable) {
+        if (s == null) {
+            return null;
+        } else if (s instanceof Comparable) {
             return (Comparable) s;
         } else if (s instanceof Period) {
             // period has special semantics
             return new ComparablePeriod((Period) s);
         } else {
-            throw new IllegalArgumentException("Unable to transform s " + s + "as Comparable");
+            throw new IllegalArgumentException("Unable to transform s " + s + " as Comparable");
         }
     }
 

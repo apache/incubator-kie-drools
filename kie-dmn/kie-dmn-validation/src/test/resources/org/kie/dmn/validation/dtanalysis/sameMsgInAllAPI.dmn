@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_a3361387-08cd-4822-b9a7-b1ad5095ac75" id="_a3361387-08cd-4822-b9a7-b1ad5095ac75" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_a3361387-08cd-4822-b9a7-b1ad5095ac75" exporter="DMN Modeler" exporterVersion="6.6.1.202001102229" triso:logoChoice="Default">
+    <semantic:itemDefinition name="tZeroTen" label="tZeroTen">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="expression">
+            <semantic:text>[0..10]</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_48993c1c-1f0b-44dc-806e-03ef3f0e5e59" name="bw zero and ten">
+        <semantic:variable name="bw zero and ten" id="_8f18f497-82cf-473f-a80e-9022da46b860" typeRef="tZeroTen"/>
+    </semantic:inputData>
+    <semantic:decision id="_c2c31604-779c-44be-94a4-af426e375dcc" name="decision">
+        <semantic:variable name="decision" id="_92ba574b-d687-457a-8d65-ebedca6a4237" typeRef="string"/>
+        <semantic:informationRequirement id="_046f86f5-1604-4c6c-abfe-41d917973a4f">
+            <semantic:requiredInput href="#_48993c1c-1f0b-44dc-806e-03ef3f0e5e59"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_4771db14-e088-4d5a-8942-211c57ad0b42" hitPolicy="PRIORITY" outputLabel="decision" typeRef="string" triso:expressionId="_d3ff14f4-6744-4549-ad9a-96e708d5a395">
+            <semantic:input id="_0020bdd3-09e3-4d00-817c-63ea9fa547ef" label="bw zero and ten">
+                <semantic:inputExpression typeRef="tZeroTen">
+                    <semantic:text>bw zero and ten</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="expression">
+                    <semantic:text>[0..10]</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_3201a224-6401-4f75-965f-f965a53e5bc7" triso:allowNull="true">
+                <semantic:outputValues triso:constraintsType="expression">
+                    <semantic:text>"L","Ls","H","Hs",null</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_23903e4e-abe4-40a4-97eb-c52c3c191cc0">
+                <semantic:inputEntry id="_1fb57da3-18cf-4b46-a188-9bdd5fd0ff08">
+                    <semantic:text>[2..4]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_7aa9ea81-bb0f-4aa5-b3f2-632c80e9a535">
+                    <semantic:text>"L"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_c96f915b-fce8-4417-bc1e-0fedf0e8daf8">
+                <semantic:inputEntry id="_215401f2-1aca-481b-acf9-498c895de3c1">
+                    <semantic:text>[3..4]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_0ee81a7a-07f2-48ed-bba4-7fc26b15947d">
+                    <semantic:text>"Ls"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_f58412d3-e2e1-4869-98c6-0c8d0b65f6c2">
+                <semantic:inputEntry id="_64604990-19f2-449a-ab2c-4a2f97749a66">
+                    <semantic:text>[6..8]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_e692ec73-0391-40eb-9214-cc96c0fb3cb4">
+                    <semantic:text>"H"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_e1bf5dd5-b974-4e6d-bbfb-b48ad0ee90bc">
+                <semantic:inputEntry id="_0f839c8d-60f4-4bfe-9726-d28f1533e1ae">
+                    <semantic:text>[6..7]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_cb0e4922-2b69-4a5b-8064-b961782bf903">
+                    <semantic:text>"Hs"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

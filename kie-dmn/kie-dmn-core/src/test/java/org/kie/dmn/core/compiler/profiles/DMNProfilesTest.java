@@ -16,10 +16,6 @@
 
 package org.kie.dmn.core.compiler.profiles;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import java.math.BigDecimal;
 
 import org.junit.Test;
@@ -36,8 +32,16 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNProfilesTest.class);
 
     public DMNProfilesTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
@@ -68,10 +72,41 @@ public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
         context.set("number", 123.123456d);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult);
+        LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("decision result"), is(new BigDecimal(47)));
+    }
+
+    @Test
+    public void testCustomModelCount() {
+        final KieServices ks = KieServices.Factory.get();
+        final KieFileSystem kfs = ks.newKieFileSystem();
+
+        final KieModuleModel kmm = ks.newKieModuleModel();
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.CustomModelCountDMNProfile", CustomModelCountDMNProfile.class.getCanonicalName());
+        kfs.writeKModuleXML(kmm.toXML());
+        kfs.write(ks.getResources().newClassPathResource("customModelCount.dmn", this.getClass()));
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final Results results = kieBuilder.getResults();
+        assertThat(results.getMessages().toString(), results.hasMessages(org.kie.api.builder.Message.Level.ERROR), is(false));
+
+        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5d9e63ac-e73a-4b9e-8635-760f0c23c0ad", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("main decision"), is(new BigDecimal(1)));
     }
 }

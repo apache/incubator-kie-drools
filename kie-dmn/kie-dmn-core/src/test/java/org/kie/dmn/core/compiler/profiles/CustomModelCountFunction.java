@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,26 @@
 
 package org.kie.dmn.core.compiler.profiles;
 
+import java.math.BigDecimal;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
 
-public class Just47Function extends BaseFEELFunction {
+public class CustomModelCountFunction extends BaseFEELFunction {
 
-    public Just47Function() {
-        super("just47");
+    public CustomModelCountFunction() {
+        super("customModelCount");
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx) {
-        return FEELFnResult.ofResult(EvalHelper.coerceNumber(47));
+        return FEELFnResult.ofResult(new BigDecimal(ctx.getDMNRuntime().getModels().size()));
     }
 
     @Override
     protected boolean isCustomFunction() {
-        return super.isCustomFunction(); // explicit: ensure to use non-custom function.
+        return super.isCustomFunction(); // explicit: standard behavior of BaseFEELFunction.
     }
 
 }
