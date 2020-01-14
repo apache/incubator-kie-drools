@@ -16,6 +16,8 @@
 
 package org.kie.internal.ruleunit;
 
+import java.util.List;
+
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
 
@@ -29,6 +31,7 @@ public interface RuleUnitComponentFactory {
     }
 
     RuleUnitDescription createRuleUnitDescription( KiePackage pkg, Class<?> ruleUnitClass );
+    RuleUnitDescription createRuleUnitDescription( String unitName, List<RuleUnitVariable> unitVariables );
 
     ApplyPmmlModelCommandExecutor newApplyPmmlModelCommandExecutor();
 
