@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
 
     @Override
     public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
-        Object expressionResult = compileAndExecute(rawExpression, Collections.emptyMap());
+        Object expressionResult = compileAndExecute(rawExpression, new HashMap<>());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
