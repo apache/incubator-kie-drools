@@ -23,6 +23,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
@@ -51,7 +52,6 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
@@ -558,10 +558,10 @@ public class FEELParserTest {
         assertThat( in.getExprs().getText(), is( "<=1000, >t, null, (2000..z[, ]z..2000], [(10+5)..(a*b))" ) );
 
         ListNode list = (ListNode) in.getExprs();
-        assertThat( list.getElements().get( 0 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( list.getElements().get( 0 ), is( instanceOf( RangeNode.class ) ) );
         assertThat( list.getElements().get( 0 ).getText(), is( "<=1000" ) );
 
-        assertThat( list.getElements().get( 1 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( list.getElements().get( 1 ), is( instanceOf( RangeNode.class ) ) );
         assertThat( list.getElements().get( 1 ).getText(), is( ">t" ) );
 
         assertThat( list.getElements().get( 2 ), is( instanceOf( NullNode.class ) ) );
@@ -1269,7 +1269,7 @@ public class FEELParserTest {
 
         ListNode rule = (ListNode) list.getElements().get( 0 );
         assertThat( rule.getElements().size(), is( 3 ) );
-        assertThat( rule.getElements().get( 0 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( rule.getElements().get( 0 ), is( instanceOf( RangeNode.class ) ) );
         assertThat( rule.getElements().get( 0 ).getText(), is( ">60" ) );
         assertThat( rule.getElements().get( 1 ), is( instanceOf( StringNode.class ) ) );
         assertThat( rule.getElements().get( 1 ).getText(), is( "\"good\"" ) );
@@ -1383,7 +1383,7 @@ public class FEELParserTest {
         assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage(), is( Msg.createMessage(Msg.INVALID_VARIABLE_NAME_START, "keyword", "for") ) );
     }
 
-    private void assertLocation(String inputExpression, BaseNode number) {
+    public static void assertLocation(String inputExpression, ASTNode number) {
         assertThat( number.getText(), is( inputExpression ) );
         assertThat( number.getStartChar(), is( 0 ) );
         assertThat( number.getStartLine(), is( 1 ) );

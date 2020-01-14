@@ -48,6 +48,7 @@ import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -365,6 +366,23 @@ public class EvalHelper {
                     }
                 case "weekday":
                     result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
+                    break;
+                default:
+                    return PropertyValueResult.notDefined();
+            }
+        } else if (current instanceof Range) {
+            switch (property) {
+                case "start included":
+                    result = ((Range) current).getLowBoundary() == RangeBoundary.CLOSED ? Boolean.TRUE : Boolean.FALSE;
+                    break;
+                case "start":
+                    result = ((Range) current).getLowEndPoint();
+                    break;
+                case "end":
+                    result = ((Range) current).getHighEndPoint();
+                    break;
+                case "end included":
+                    result = ((Range) current).getHighBoundary() == RangeBoundary.CLOSED ? Boolean.TRUE : Boolean.FALSE;
                     break;
                 default:
                     return PropertyValueResult.notDefined();

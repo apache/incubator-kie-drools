@@ -53,6 +53,7 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
 import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -128,7 +129,11 @@ public class CompiledFEELSupport {
                     // using Root object logic to avoid having to eagerly inspect all attributes.
                     ctx.setRootObject(v);
 
-                    Object r = filterExpression.apply(ctx);
+                    // Alignment to FilterExpressionNode: 
+                    // a filter would always return a list with all the elements for which the filter is true.
+                    // In case any element fails in there or the filter expression returns null, it will only exclude the element, but will continue to process the list.
+                    // In case all elements fail, the result will be an empty list.
+                    Object r = filterExpression.apply(new SilentWrappingEvaluationContextImpl(ctx));
                     if (r instanceof Boolean && r == Boolean.TRUE) {
                         results.add(v);
                     }
@@ -423,6 +428,14 @@ public class CompiledFEELSupport {
             return f.invokeReflectively(feelExprCtx, invocationParams);
         } else if (function instanceof UnaryTest) {
             return ((UnaryTest) function).apply(feelExprCtx, ((List)params).get(0));
+        } else if (function instanceof Range) {
+            // alignment to FunctionInvocationNode
+            List<?> ps = (List<?>) params;
+            if (ps.size() == 1) {
+                return ((Range) function).includes(ps.get(0));
+            } else {
+                feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, ps.size()), null));
+            }
         }
         return null;
     }

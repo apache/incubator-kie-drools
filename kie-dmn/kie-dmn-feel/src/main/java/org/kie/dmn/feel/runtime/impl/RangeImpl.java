@@ -59,16 +59,51 @@ public class RangeImpl
 
     @Override
     public Boolean includes(Object param) {
-        if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) < 0 && highEndPoint.compareTo( param ) > 0;
-        } else if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) < 0 && highEndPoint.compareTo( param ) >= 0;
-        } else if ( lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.OPEN ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) <= 0 && highEndPoint.compareTo( param ) > 0;
-        } else if ( lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.CLOSED ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) <= 0 && highEndPoint.compareTo( param ) >= 0;
+        if (param == null) {
+            return null;
         }
-        return null;
+        if (lowEndPoint == null) {
+            if (highEndPoint == null) {
+                return null;
+            } else {
+                return negInfRangeIncludes(param);
+            }
+        } else {
+            if (highEndPoint == null) {
+                return posInfRangeIncludes(param);
+            } else {
+                return finiteRangeIncludes(param);
+            }
+        }
+    }
+
+    private Boolean finiteRangeIncludes(Object param) {
+        if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
+            return lowEndPoint.compareTo(param) < 0 && highEndPoint.compareTo(param) > 0;
+        } else if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED) {
+            return lowEndPoint.compareTo(param) < 0 && highEndPoint.compareTo(param) >= 0;
+        } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.OPEN) {
+            return lowEndPoint.compareTo(param) <= 0 && highEndPoint.compareTo(param) > 0;
+        } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.CLOSED) {
+            return lowEndPoint.compareTo(param) <= 0 && highEndPoint.compareTo(param) >= 0;
+        }
+        throw new RuntimeException("unknown boundary combination");
+    }
+
+    private Boolean posInfRangeIncludes(Object param) {
+        if (lowBoundary == RangeBoundary.OPEN) {
+            return lowEndPoint.compareTo(param) < 0;
+        } else {
+            return lowEndPoint.compareTo(param) <= 0;
+        }
+    }
+
+    private Boolean negInfRangeIncludes(Object param) {
+        if (highBoundary == RangeBoundary.OPEN) {
+            return highEndPoint.compareTo(param) > 0;
+        } else {
+            return highEndPoint.compareTo(param) >= 0;
+        }
     }
 
     @Override
