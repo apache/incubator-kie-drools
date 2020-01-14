@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.drools.testcoverage.common.model.Person;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -137,6 +139,38 @@ public class ForAllTest {
         } finally {
             ksession.dispose();
         }
+    }
 
+    @Test
+    public void testWithDate() throws Exception {
+        // DROOLS-4925
+
+        String pkg = "org.drools.compiler.integrationtests.operators";
+
+        String drl =
+                "package " + pkg + ";\n" +
+                "declare Fact\n" +
+                "    d : java.util.Date\n" +
+                "end\n" +
+                "\n" +
+                "rule \"forall with date\" when\n" +
+                "  forall(Fact(d == \"01-Jan-2020\"))\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        FactType factType = kbase.getFactType(pkg, "Fact");
+
+        for (int i = 0; i < 3; i++) {
+            Object fact = factType.newInstance();
+            factType.set(fact, "d", df.parse("01-Jan-2020"));
+            ksession.insert(fact);
+        }
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }
