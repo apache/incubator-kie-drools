@@ -151,7 +151,7 @@ public enum HitPolicy {
     }
 
     /**
-     * First – return the first match in rule order 
+     * First – return the first match in rule order
      */
     public static Object first(
             EvaluationContext ctx,
@@ -187,7 +187,12 @@ public enum HitPolicy {
                     .distinct()
                     .count();
             if ( distinctOutputEntry > 1 ) {
-                throw new RuntimeException( "multiple rules can match, but they [must] all have the same output" );
+                List<Integer> ruleMatches = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                return new HitPolicyViolationEvent(
+                        FEELEvent.Severity.ERROR,
+                        "'Multiple rules can match, but they [must] all have the same output'"  + dt.getName() + "'. Matched rules: " + ruleMatches,
+                        dt.getName(),
+                        ruleMatches );
             }
 
             ctx.notifyEvt( () -> {
@@ -232,7 +237,7 @@ public enum HitPolicy {
     }
 
     /**
-     * Output order – return a list of outputs in the order of the output values list 
+     * Output order – return a list of outputs in the order of the output values list
      */
     public static Object outputOrder(
             EvaluationContext ctx,
@@ -314,7 +319,7 @@ public enum HitPolicy {
 
     /**
      * Rule order – return a list of outputs in rule order
-     * Collect – return a list of the outputs in arbitrary order 
+     * Collect – return a list of the outputs in arbitrary order
      */
     public static Object ruleOrder(
             EvaluationContext ctx,
@@ -437,7 +442,7 @@ public enum HitPolicy {
     }
 
     /**
-     * C+ – return the sum of the outputs 
+     * C+ – return the sum of the outputs
      */
     public static Object sumCollect(
             EvaluationContext ctx,
