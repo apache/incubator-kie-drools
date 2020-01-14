@@ -1,0 +1,41 @@
+@startuml
+'default
+top to bottom direction
+
+package "PMML Module" {
+
+package "PMML Library" {
+    component marshaller [
+        PMML Marshaller
+        This component is only responsible of plain marshalling/unmarshalling,
+        generating kie-agnostic objects.
+        It may also be an already existing library (jpmml ?)
+        ]
+    component compiler [
+        PMML Compiler
+        This component uses objects created by the Marshaller and
+        iterate/navigate them to create more user-friendly
+        objects/model
+        ]
+    component implementations [
+        PMML Algorithm implementations
+        For every "algorithm" there will be a specific module, to have them
+        easily replaceable/pluggable.
+        Compiler will invoke them, if they are available in the classpath.
+        ]
+}
+
+component assembler [
+        PMML Assembler
+        This component is the connection point from the kie environment
+        (kie-server, kie-knowledge-base, etc) and the PMML Library.
+        It translates objects created by the Compiler to the kie-environment model.
+        ]
+
+
+compiler ..> marshaller : use
+compiler ..> implementations : use
+assembler --> "PMML Library" : use
+}
+
+@enduml
