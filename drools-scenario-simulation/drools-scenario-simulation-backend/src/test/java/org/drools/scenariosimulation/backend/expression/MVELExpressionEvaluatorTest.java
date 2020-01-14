@@ -24,6 +24,7 @@ import java.util.HashMap;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mvel2.CompileException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -105,6 +106,16 @@ public class MVELExpressionEvaluatorTest {
                 .isEqualTo(Double.valueOf("1.234"));
 
         assertEquals("Value", evaluator.evaluateLiteralExpression("# \"Value\"", String.class.getCanonicalName(), Collections.emptyList()));
+
+        assertEquals(3, evaluator.evaluateLiteralExpression("# a = 1; b = 2; a+b;", Integer.class.getCanonicalName(), Collections.emptyList()));
+
+        assertEquals("Test", evaluator.evaluateLiteralExpression("# a = \"Te\"; b = \"st\"; a+b;", String.class.getCanonicalName(), Collections.emptyList()));
+
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("# a = 1 b = 2 a+b;", Integer.class.getCanonicalName(), Collections.emptyList()))
+                .isInstanceOf(CompileException.class);
+
+        assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("# a = 1; a+b;", Integer.class.getCanonicalName(), Collections.emptyList()))
+                .isInstanceOf(CompileException.class);
 
         assertEquals(Arrays.asList("Bob", "Michael"), evaluator.evaluateLiteralExpression(mvelExpression("a = \"Bob\";\n" +
                                                                                                                  "test = new java.util.ArrayList();\n" +
