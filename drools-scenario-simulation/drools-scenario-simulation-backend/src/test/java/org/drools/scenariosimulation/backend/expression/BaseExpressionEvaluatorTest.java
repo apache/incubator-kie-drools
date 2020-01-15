@@ -16,6 +16,8 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -208,5 +210,19 @@ public class BaseExpressionEvaluatorTest {
 
         listJsonString = "[{\"" + VALUE + "\" : \"\"}]";
         assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionListVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("10").toString();
+        List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionMapVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
+        Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
     }
 }
