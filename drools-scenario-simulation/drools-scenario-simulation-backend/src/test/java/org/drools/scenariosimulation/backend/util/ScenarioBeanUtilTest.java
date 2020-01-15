@@ -201,6 +201,9 @@ public class ScenarioBeanUtilTest {
         assertEquals("1", revertValue(1));
         assertEquals("1", revertValue(1L));
         assertEquals("1.0d", revertValue(1.0d));
+        assertEquals("NaN", revertValue(Double.NaN));
+        assertEquals("Infinity", revertValue(Double.POSITIVE_INFINITY));
+        assertEquals("-Infinity", revertValue(Double.NEGATIVE_INFINITY));
         assertEquals("1.0f", revertValue(1.0f));
         assertEquals("a", revertValue('a'));
         assertEquals("1", revertValue((short) 1));
@@ -220,6 +223,12 @@ public class ScenarioBeanUtilTest {
         assertEquals("1", revertValue(convertValue(Long.class.getCanonicalName(), "1", classLoader)));
         assertEquals("1.0d", revertValue(convertValue(double.class.getCanonicalName(), "1", classLoader)));
         assertEquals("1.0d", revertValue(convertValue(Double.class.getCanonicalName(), "1", classLoader)));
+        assertEquals("NaN", revertValue(convertValue(double.class.getCanonicalName(), "NaN", classLoader)));
+        assertEquals("NaN", revertValue(convertValue(Double.class.getCanonicalName(), "NaN", classLoader)));
+        assertEquals("Infinity", revertValue(convertValue(double.class.getCanonicalName(), "Infinity", classLoader)));
+        assertEquals("Infinity", revertValue(convertValue(Double.class.getCanonicalName(), "Infinity", classLoader)));
+        assertEquals("-Infinity", revertValue(convertValue(double.class.getCanonicalName(), "-Infinity", classLoader)));
+        assertEquals("-Infinity", revertValue(convertValue(Double.class.getCanonicalName(), "-Infinity", classLoader)));
         assertEquals("1.0f", revertValue(convertValue(float.class.getCanonicalName(), "1", classLoader)));
         assertEquals("1.0f", revertValue(convertValue(Float.class.getCanonicalName(), "1", classLoader)));
         assertEquals("1.0d", revertValue(convertValue(double.class.getCanonicalName(), "1.0", classLoader)));

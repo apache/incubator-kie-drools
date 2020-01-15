@@ -23,6 +23,7 @@ import org.drools.compiler.lang.descr.GlobalDescr;
  */
 public interface GlobalDescrBuilder
     extends
+    AnnotatedDescrBuilder<GlobalDescrBuilder>,
     DescrBuilder<PackageDescrBuilder, GlobalDescr> {
 
     /**
