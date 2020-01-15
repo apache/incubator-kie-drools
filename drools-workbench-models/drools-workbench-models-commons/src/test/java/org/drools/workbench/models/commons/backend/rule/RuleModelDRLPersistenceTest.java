@@ -1733,6 +1733,56 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
+    public void testInsertForFieldsNamesThatStartWithLowerCaseAndContinueWithCapitalLetter() {
+
+        final RuleModel model = new RuleModel();
+        model.name = "test setter where the field starts with a lower letter and continue with capital";
+
+        model.addAttribute(new RuleAttribute("dialect",
+                                             "java"));
+
+        final FactPattern pattern = new FactPattern("Person");
+        final SingleFieldConstraint constraint = new SingleFieldConstraint();
+        constraint.setFieldType(DataType.TYPE_BOOLEAN);
+        constraint.setFieldName("aFIELD");
+        constraint.setOperator("==");
+        constraint.setValue("false");
+        constraint.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        final SingleFieldConstraint constraintWithShortName = new SingleFieldConstraint();
+        constraintWithShortName.setFieldType(DataType.TYPE_BOOLEAN);
+        constraintWithShortName.setFieldName("eE");
+        constraintWithShortName.setOperator("==");
+        constraintWithShortName.setValue("true");
+        constraintWithShortName.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        pattern.addConstraint(constraint);
+        pattern.addConstraint(constraintWithShortName);
+
+        model.addLhsItem(pattern);
+
+        final ActionInsertFact actionInsertFact = new ActionInsertFact("Person");
+        actionInsertFact.addFieldValue(new ActionFieldValue("aFIELD",
+                                                            "true",
+                                                            DataType.TYPE_BOOLEAN));
+        actionInsertFact.addFieldValue(new ActionFieldValue("eE",
+                                                            "false",
+                                                            DataType.TYPE_BOOLEAN));
+        model.addRhsItem(actionInsertFact);
+
+        final String expected = "rule \"test setter where the field starts with a lower letter and continue with capital\" \n"
+                + "\tdialect \"java\"\n when \n"
+                + "     Person(aFIELD == false, eE == true) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setaFIELD( true ); \n"
+                + "fact0.seteE( false ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
+
+        checkMarshalling(expected,
+                         model);
+    }
+
+    @Test
     public void testLiteralBigIntegerJava() {
 
         RuleModel m = new RuleModel();
@@ -4474,7 +4524,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
-    public void testRHSChangeMultipleFieldsModifyBoth() {
+    public void testRHSChangeMultipleFieldsModifyAll() {
         String expected = "" +
                 "rule \"my rule\" \n" +
                 "  dialect \"mvel\"\n" +
@@ -4483,7 +4533,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "  then\n" +
                 "    modify( $p ) {\n" +
                 "      setName( \"Fred\" ),\n" +
-                "      setAge( 55 )\n" +
+                "      setAge( 55 ),\n" +
+                "      setaField( \"Value\" )\n" +
                 "    }\n" +
                 "end\n";
         final RuleModel m = new RuleModel();
@@ -4505,8 +4556,13 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         afv2.setType(DataType.TYPE_NUMERIC_INTEGER);
         afv2.setNature(FieldNatureType.TYPE_LITERAL);
         afv2.setValue("55");
+        ActionFieldValue afv3 = new ActionFieldValue();
+        afv3.setField("aField");
+        afv3.setType(DataType.TYPE_STRING);
+        afv3.setNature(FieldNatureType.TYPE_LITERAL);
+        afv3.setValue("Value");
 
-        auf.setFieldValues(new ActionFieldValue[]{afv1, afv2});
+        auf.setFieldValues(new ActionFieldValue[]{afv1, afv2, afv3});
         m.rhs = new IAction[]{auf};
 
         m.name = "my rule";

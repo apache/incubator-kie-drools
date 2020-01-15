@@ -35,6 +35,8 @@ import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -337,6 +339,20 @@ public class DTAnalysis {
 
     private Collection gapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
+            List<String> names = ddtaTable.getColIDsStringWithoutEnum()
+                                          .stream()
+                                          .map(id -> sourceDT.getInput().get(id - 1))
+                                          .map(InputClause::getInputExpression)
+                                          .map(LiteralExpression::getText)
+                                          .collect(Collectors.toList());
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING,
+                                                                       names),
+                                                 Msg.DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING.getType()));
+            return results;
+        }
         for (Hyperrectangle gap : gaps) {
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,

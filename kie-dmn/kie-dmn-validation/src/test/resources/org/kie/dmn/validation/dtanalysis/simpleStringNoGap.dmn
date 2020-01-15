@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_9FAFAB9D-DBF2-4EAB-9F77-5E6635B6FA6D" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_88418792-2978-4743-9BFC-AAD079553C08" name="justin1" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_9FAFAB9D-DBF2-4EAB-9F77-5E6635B6FA6D">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_AFDA029B-5789-4E09-842A-B08F55189D63" name="Relationship to primary">
+    <dmn:extensionElements/>
+    <dmn:variable id="_312E0E49-CB1E-4AAB-990A-A1690B2B2B9B" name="Relationship to primary" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_BAD49D02-FE42-4F74-A5CD-476372AAD0D2" name="my decision">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E9CC7C9A-A3F5-45AD-BCC8-1B2E44268692" name="my decision" typeRef="boolean"/>
+    <dmn:informationRequirement id="_A5DD5AF7-5A1E-4DA4-986D-4CBE8204CD85">
+      <dmn:requiredInput href="#_AFDA029B-5789-4E09-842A-B08F55189D63"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_3D5BDDEF-8B71-4797-8662-5026A9C2A112" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_5A7B4885-AC9A-4BA4-B550-B1C9E1E9C186">
+        <dmn:inputExpression id="_F9A9BF67-3A7D-4511-B289-A92AA6B9994F" typeRef="string">
+          <dmn:text>Relationship to primary</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_AC364B19-E443-40A2-B7EF-3DE89FAA4B24"/>
+      <dmn:rule id="_BEF6FDBA-3138-4A2B-BB9B-6FD629DE3B72">
+        <dmn:inputEntry id="_B9F9EA67-BE1F-4CBC-9DF0-339E63BBB95A">
+          <dmn:text>"Self"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0B2347C3-55B5-46FF-BD50-AB80AD759DB8">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_C95A790E-2068-480C-B67D-02F5B4DEE40A">
+        <dmn:inputEntry id="_725B2EDF-190D-4C85-B03C-4879712E5EDA">
+          <dmn:text>"Step Child"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_EAD3BA52-4D61-4CCF-8F69-762F1D8F6091">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>

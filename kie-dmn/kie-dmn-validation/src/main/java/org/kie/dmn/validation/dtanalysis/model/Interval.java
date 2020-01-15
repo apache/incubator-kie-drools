@@ -286,6 +286,12 @@ public class Interval {
         return results;
     }
 
+    public boolean isSingularity() {
+        return lowerBound.getBoundaryType() == RangeBoundary.CLOSED &&
+               upperBound.getBoundaryType() == RangeBoundary.CLOSED &&
+               BoundValueComparator.compareValueDispatchingToInf(lowerBound, upperBound) == 0;
+    }
+
     public static boolean adjOrOverlap(List<Interval> intervalsA, List<Interval> intervalsB) {
         List<Interval> otherIntervals = new ArrayList<>(intervalsB);
         for (Interval i : intervalsA) {
