@@ -36,6 +36,7 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.IterationContextNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NamedParameterNode;
@@ -215,4 +216,10 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
     public T visit(AtLiteralNode n) {
         return defaultVisit(n);
     }
+
+    @Override
+    public T visit(ListTypeNode n) {
+        return defaultVisit(n);
+    }
+
 }

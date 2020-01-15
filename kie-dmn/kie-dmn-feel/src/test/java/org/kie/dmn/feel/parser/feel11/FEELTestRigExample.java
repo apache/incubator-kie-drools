@@ -29,7 +29,7 @@ public class FEELTestRigExample {
     public static void main(String[] args) throws Exception {
         try (Scanner sysin = new Scanner(System.in)) {
 
-            final String FEEL_EXPRESSION = "sum(my variable+2)";
+            final String FEEL_EXPRESSION = "{list: 3, r : list < 3}.r";
 
             // Set FEEL variables name+type in scope:
             Map<String, Type> variablesInScopeTypes = new HashMap<>();

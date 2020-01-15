@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+π * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.IterationContextNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NamedParameterNode;
@@ -287,6 +288,14 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         return DirectCompilerResult.of(
                 Expressions.determineTypeFromName(n.getText()),
                 BuiltInType.UNKNOWN);
+    }
+
+    @Override
+    public DirectCompilerResult visit(ListTypeNode n) {
+        DirectCompilerResult expr = n.getGenTypeNode().accept(this);
+        return DirectCompilerResult.of(Expressions.genListType(expr.getExpression()),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(expr));
     }
 
     @Override

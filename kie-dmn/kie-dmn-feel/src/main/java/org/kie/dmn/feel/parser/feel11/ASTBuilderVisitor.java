@@ -42,6 +42,7 @@ import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
@@ -585,6 +586,18 @@ public class ASTBuilderVisitor
     @Override
     public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
         return ASTBuilderFactory.newTypeNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitListType(FEEL_1_1Parser.ListTypeContext ctx) {
+        TypeNode type = (TypeNode) visit(ctx.type());
+        return new ListTypeNode(ctx, type);
+    }
+
+    @Override
+    public BaseNode visitContextType(FEEL_1_1Parser.ContextTypeContext ctx) {
+        // TODO here.
+        return null;
     }
 
     @Override

@@ -85,7 +85,10 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"null instance of string", Boolean.FALSE , null},  // See FEEL spec table 49.
                 {"\"foo\" instance of any", Boolean.TRUE , null},
                 {"10 instance of any", Boolean.TRUE , null},
-                {"duration instance of function", Boolean.TRUE , null}
+                {"duration instance of function", Boolean.TRUE , null},
+                {"[1,2,3] instance of list<number>", Boolean.TRUE , null},
+                {"[1,2,3] instance of list < number>", Boolean.TRUE , null},
+                {"[1,2,\"asd\"] instance of list<number>", Boolean.FALSE , null},
         };
         return addAdditionalParameters(cases, false);
     }

@@ -42,6 +42,7 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -54,6 +55,7 @@ public class Expressions {
 
     public static final ClassOrInterfaceType NamedParamterT = parseClassOrInterfaceType(NamedParameter.class.getCanonicalName());
     public static final ClassOrInterfaceType FormalParamterT = parseClassOrInterfaceType(BaseFEELFunction.Param.class.getCanonicalName());
+    public static final ClassOrInterfaceType GenListTypeT = parseClassOrInterfaceType(GenListType.class.getCanonicalName());
     private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
 
     public static class NamedLambda {
@@ -384,6 +386,10 @@ public class Expressions {
     public static MethodCallExpr determineTypeFromName(String typeAsText) {
         return new MethodCallExpr(BuiltInTypeT, "determineTypeFromName")
                 .addArgument(new StringLiteralExpr(typeAsText));
+    }
+
+    public static ObjectCreationExpr genListType(Expression gen) {
+        return new ObjectCreationExpr(null, GenListTypeT, new NodeList<>(gen));
     }
 
     public static Expression contains(Expression expr, Expression value) {

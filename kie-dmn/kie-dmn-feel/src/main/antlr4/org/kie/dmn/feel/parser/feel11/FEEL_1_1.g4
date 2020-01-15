@@ -114,15 +114,12 @@ quantifiedExpression
 
 // #54
 type
-    : LISTLT type '>' #listType
-    | CONTEXTLT Identifier ':' type ( ',' Identifier ':' type )* '>' #contextType
-    | FUNCTION #qnType
-    | FUNCTION '<' type ( COMMA type )* '>' '->' type #functionType
-    | qualifiedName #qnType
+    : sk=Identifier {$sk.getText().equals("list");} '<' type '>'                                                #listType
+    | sk=Identifier {$sk.getText().equals("context");} '<' Identifier ':' type ( ',' Identifier ':' type )* '>' #contextType
+    | FUNCTION                                                                                                  #qnType
+    | FUNCTION '<' type ( COMMA type )* '>' '->' type                                                           #functionType
+    | qualifiedName                                                                                             #qnType
     ;
-
-LISTLT : 'list' '<' ;
-CONTEXTLT : 'context' '<' ;
 
 // #56
 list
