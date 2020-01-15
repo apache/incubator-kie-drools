@@ -29,6 +29,7 @@ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 
 @ApplicationScoped
 @Repository("in-memory")
@@ -37,16 +38,16 @@ public class InMemoryJobRepository extends BaseReactiveJobRepository implements 
     private final Map<String, ScheduledJob> jobMap = new ConcurrentHashMap<>();
 
     public InMemoryJobRepository() {
-        super(null);
+        super(null, null);
     }
 
     @Inject
-    public InMemoryJobRepository(Vertx vertx) {
-        super(vertx);
+    public InMemoryJobRepository(Vertx vertx, JobStreams jobStreams) {
+        super(vertx, jobStreams);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> save(ScheduledJob job) {
+    public CompletionStage<ScheduledJob> doSave(ScheduledJob job) {
         return runAsync(() -> {
             jobMap.put(job.getId(), job);
             return job;

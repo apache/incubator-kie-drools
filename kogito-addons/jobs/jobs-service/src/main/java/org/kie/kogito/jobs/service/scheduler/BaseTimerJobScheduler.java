@@ -77,7 +77,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
         return ReactiveStreams
                 //1- check if the job is already scheduled
                 .fromCompletionStage(jobRepository.exists(job.getId()))
-                .flatMap(exists -> exists
+                .flatMap(exists -> Boolean.TRUE.equals(exists)
                         ? handleExistingJob(job)
                         : ReactiveStreams.of(Boolean.TRUE))
                 .filter(Boolean.TRUE::equals)
@@ -110,18 +110,19 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                         j -> {
                             switch (j.getStatus()) {
                                 case SCHEDULED:
-                                    return handleExpirationTime(j)
+                                    return wasPeriodicScheduled(j)
+                                            ? handleJobExecutionSuccess(j)
+                                            //return empty since the job was already processed
+                                            .map(periodic -> CompletableFuture.completedFuture(null))
+                                            : handleExpirationTime(j)
+                                            .map(scheduled -> ScheduledJob.builder()
+                                                    .of(scheduled)
+                                                    .status(JobStatus.CANCELED)
+                                                    .build())
                                             .map(CompletableFuture::completedFuture)
                                             .map(this::cancel);
                                 case RETRY:
                                     return handleRetry(CompletableFuture.completedFuture(j));
-                                case PERIODIC_SCHEDULED:
-                                    return handleJobExecutionSuccess(ScheduledJob.builder()
-                                                                             .of(j)
-                                                                             .status(JobStatus.SCHEDULED)
-                                                                             .build())
-                                            //return empty since the job was already processed
-                                            .map(periodic -> CompletableFuture.completedFuture(null));
                                 default:
                                     //empty to break the stream processing
                                     return ReactiveStreams.empty();
@@ -142,33 +143,41 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .isPresent();
     }
 
+    private boolean wasPeriodicScheduled(ScheduledJob job) {
+        //jobs was executed more than once
+        return Optional.ofNullable(job)
+                .filter(j -> j.getExecutionCounter() > 1)
+                .isPresent();
+    }
+
     public PublisherBuilder<ScheduledJob> handleJobExecutionSuccess(ScheduledJob futureJob) {
         return ReactiveStreams.of(futureJob)
+                .map(job -> ScheduledJob.builder().of(job).incrementExecutionCounter().build())
                 //check if it is a repeatable job
                 .flatMap(job -> job.hasInterval()
-                        .filter(interval -> JobStatus.SCHEDULED.equals(job.getStatus()))
-                        //schedule periodic job for the first time, if previous status is SCHEDULED
-                        .map(interval -> doPeriodicSchedule(Duration.ofMillis(interval), job)
+                        .filter(interval -> !wasPeriodicScheduled(job))
+                        //schedule periodic job for the first time only
+                        .map(Duration::ofMillis)
+                        .map(interval -> doPeriodicSchedule(interval, job)
                                 .map(scheduledId -> ScheduledJob
                                         .builder()
                                         .of(job)
-                                        .incrementExecutionCounter()
                                         .scheduledId(scheduledId)
-                                        .status(JobStatus.PERIODIC_SCHEDULED)
+                                        .expirationTime(DateUtil.now().plus(interval))
+                                        .status(JobStatus.SCHEDULED)
                                         .build())
                                 .flatMapCompletionStage(jobRepository::save))
-                        //handle already PERIODIC_SCHEDULED
+                        //handle already periodic scheduled (after the first time)
                         .orElseGet(() -> ReactiveStreams.fromCompletionStage(
                                 job.hasInterval()
                                         //handle already periodic scheduled job
                                         .map(interval -> Optional.of(job)
+                                                .filter(this::wasPeriodicScheduled)
                                                 .filter(this::validLimit)
-                                                .map(ScheduledJob::getStatus)
-                                                .filter(JobStatus.PERIODIC_SCHEDULED::equals)
                                                 .map(s -> ScheduledJob
                                                         .builder()
                                                         .of(job)
-                                                        .incrementExecutionCounter()
+                                                        .expirationTime(DateUtil.now().plus(Duration.ofMillis(interval)))
                                                         .build())
                                                 .map(jobRepository::save)
                                                 .orElse(null))
@@ -243,13 +252,12 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                                    .status(JobStatus.ERROR)
                                    .build())
                 //final state, removing the job
-                .map(j -> Optional.of(j)
-                        .map(Job::getId)
-                        .map(id -> jobRepository
-                                .delete(id)
-                                .thenApply(deleted -> j)))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(j -> jobRepository
+                        .delete(j)
+                        .thenApply(deleted -> {
+                            LOGGER.warn("Retry limit exceeded for job{}", j);
+                            return j;
+                        }))
                 .orElse(null);
     }
 
@@ -268,13 +276,8 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .peek(job -> LOGGER.debug("Cancel Job Scheduling {}", job))
                 .flatMap(scheduledJob -> ReactiveStreams.of(scheduledJob)
                         .flatMapRsPublisher(this::doCancel)
-                        .map(c -> ScheduledJob
-                                .builder()
-                                .of(scheduledJob)
-                                .status(JobStatus.CANCELED)
-                                .build()))
+                        .map(c -> scheduledJob))
                 //final state, removing the job
-                .map(Job::getId)
                 .flatMapCompletionStage(jobRepository::delete)
                 .findFirst()
                 .run()
@@ -283,7 +286,13 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
 
     @Override
     public CompletionStage<ScheduledJob> cancel(String jobId) {
-        return cancel(jobRepository.get(jobId));
+        return cancel(jobRepository
+                              .get(jobId)
+                              .thenApply(scheduledJob -> ScheduledJob
+                                      .builder()
+                                      .of(scheduledJob)
+                                      .status(JobStatus.CANCELED)
+                                      .build()));
     }
 
     public abstract Publisher<Boolean> doCancel(ScheduledJob scheduledJob);

@@ -24,7 +24,6 @@ import javax.inject.Singleton;
 
 import io.quarkus.runtime.StartupEvent;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
 import org.kie.kogito.jobs.service.utils.ErrorHandling;
@@ -44,7 +43,7 @@ public class JobSchedulerManager {
 
     CompletionStage<Void> loadScheduledJobs(@Observes StartupEvent startupEvent) {
         LOGGER.info("Loading scheduled jobs");
-        return repository.findByStatus(JobStatus.SCHEDULED, JobStatus.RETRY, JobStatus.PERIODIC_SCHEDULED)
+        return repository.findByStatus(JobStatus.SCHEDULED, JobStatus.RETRY)
                 //is is necessary to skip error on the publisher to continue processing, otherwise the subscribe
                 // terminated
                 .flatMapRsPublisher(t -> ErrorHandling.skipErrorPublisher(scheduler::schedule, t))

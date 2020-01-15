@@ -31,6 +31,7 @@ public class HttpConverters {
         return HttpMethod.valueOf(method.name());
     }
 
+    @SuppressWarnings("squid:S00112")
     public URL convertURL(String url){
         try {
             return new URL(url);

@@ -70,6 +70,17 @@
       <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+    </dependency>
+
+    <!-- Data Index Integration -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
+    </dependency>
+
     <!-- Persistence -->
     <dependency>
       <groupId>io.quarkus</groupId>

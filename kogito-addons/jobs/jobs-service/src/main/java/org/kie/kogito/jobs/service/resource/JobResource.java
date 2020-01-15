@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 public class JobResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobResource.class);
+    @SuppressWarnings("squid:S1075")
     public static final String JOBS_PATH = "/jobs";
 
     @Inject
@@ -79,18 +80,6 @@ public class JobResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public CompletionStage<ScheduledJob> get(@PathParam("id") String id) {
-        LOGGER.debug("REST get {}", id);
-        return jobRepository
-                .get(id)
-                .thenApply(result -> Optional
-                        .ofNullable(result)
-                        .orElseThrow(() -> new NotFoundException("Job not found id " + id)));
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/scheduled/{id}")
-    public CompletionStage<ScheduledJob> getScheduledJob(@PathParam("id") String id) {
         LOGGER.debug("REST get {}", id);
         return jobRepository
                 .get(id)

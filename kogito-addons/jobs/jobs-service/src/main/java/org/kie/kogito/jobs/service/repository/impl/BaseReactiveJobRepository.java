@@ -27,13 +27,17 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 
 public abstract class BaseReactiveJobRepository implements ReactiveJobRepository {
 
     private Vertx vertx;
 
-    public BaseReactiveJobRepository(Vertx vertx) {
+    private JobStreams jobStreams;
+
+    public BaseReactiveJobRepository(Vertx vertx, JobStreams jobStreams) {
         this.vertx = vertx;
+        this.jobStreams = jobStreams;
     }
 
     public <T> CompletionStage<T> runAsync(Supplier<T> function) {
@@ -47,5 +51,19 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
         return findAll()
                 .filter(job -> Objects.nonNull(job.getStatus()))
                 .filter(job -> Arrays.stream(status).anyMatch(job.getStatus()::equals));
+    }
+
+    @Override
+    public CompletionStage<ScheduledJob> save(ScheduledJob job) {
+        return doSave(job)
+                .thenApply(jobStreams::publishJobStatusChange);
+    }
+
+    public abstract CompletionStage<ScheduledJob> doSave(ScheduledJob job);
+
+    @Override
+    public CompletionStage<ScheduledJob> delete(ScheduledJob job) {
+        return delete(job.getId())
+                .thenApply(j -> jobStreams.publishJobStatusChange(job));
     }
 }

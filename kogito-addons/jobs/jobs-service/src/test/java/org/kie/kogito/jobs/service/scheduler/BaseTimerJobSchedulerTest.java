@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.reactivestreams.Publisher;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -149,7 +150,7 @@ public abstract class BaseTimerJobSchedulerTest {
 
         Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
 
-        verify(jobRepository, expired ? times(1) : never()).delete(JOB_ID);
+        verify(jobRepository, expired ? times(1) : never()).delete(any(ScheduledJob.class));
         verify(tested(), expired ? never() : times(1)).doSchedule(delayCaptor.capture(), eq(job));
         verify(jobRepository, expired ? never() : times(1)).save(scheduleCaptor.capture());
 
@@ -212,7 +213,7 @@ public abstract class BaseTimerJobSchedulerTest {
     void testHandleJobExecutionSuccessPeriodic() {
         job = createPeriodicJob();
 
-        scheduledJob = ScheduledJob.builder().job(job).status(JobStatus.PERIODIC_SCHEDULED).build();
+        scheduledJob = ScheduledJob.builder().job(job).status(JobStatus.SCHEDULED).build();
 
         PublisherBuilder<ScheduledJob> executionSuccess = tested().handleJobExecutionSuccess(scheduledJob);
         verify(tested(), never()).cancel(scheduleCaptorFuture.capture());
@@ -220,8 +221,8 @@ public abstract class BaseTimerJobSchedulerTest {
         Flowable.fromPublisher(executionSuccess.buildRs()).subscribe(dummyCallback(), dummyCallback());
         verify(jobRepository).save(scheduleCaptor.capture());
         ScheduledJob scheduleCaptorValue = scheduleCaptor.getValue();
-        assertThat(scheduleCaptorValue.getStatus()).isEqualTo(JobStatus.PERIODIC_SCHEDULED);
-        assertThat(scheduleCaptorValue.getExecutionCounter()).isEqualTo(2);
+        assertThat(scheduleCaptorValue.getStatus()).isEqualTo(JobStatus.SCHEDULED);
+        assertThat(scheduleCaptorValue.getExecutionCounter()).isEqualTo(1);
     }
 
     @Test
@@ -266,7 +267,9 @@ public abstract class BaseTimerJobSchedulerTest {
     void testCancel() {
         tested().cancel(JOB_ID);
         verify(jobRepository).get(JOB_ID);
-        verify(tested()).cancel(scheduled);
+        verify(tested()).cancel(scheduleCaptorFuture.capture());
+        scheduleCaptorFuture.getValue()
+                .thenAccept(j -> assertThat(j.getStatus()).isEqualTo(JobStatus.CANCELED));
     }
 
     @Test
@@ -275,6 +278,6 @@ public abstract class BaseTimerJobSchedulerTest {
 
         tested().cancel(scheduled);
         verify(tested()).doCancel(scheduledJob);
-        verify(jobRepository).delete(JOB_ID);
+        verify(jobRepository).delete(scheduledJob);
     }
 }

@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.service.qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Objects;
 
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
@@ -46,6 +47,26 @@ public @interface Repository {
         @Override
         public String value() {
             return value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Literal)) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
+            Literal literal = (Literal) o;
+            return value.equals(literal.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), value);
         }
     }
 }

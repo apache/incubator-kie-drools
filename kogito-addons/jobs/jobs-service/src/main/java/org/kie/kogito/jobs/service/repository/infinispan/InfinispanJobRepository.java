@@ -38,6 +38,7 @@ import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 
 import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.SCHEDULED_JOBS;
 
@@ -49,19 +50,20 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     private QueryFactory queryFactory;
 
     InfinispanJobRepository() {
-        super(null);
+        super(null, null);
     }
 
     @Inject
     public InfinispanJobRepository(Vertx vertx,
+                                   JobStreams jobStreams,
                                    @Remote(SCHEDULED_JOBS) RemoteCache<String, ScheduledJob> cache) {
-        super(vertx);
+        super(vertx, jobStreams);
         this.cache = cache;
         this.queryFactory = Search.getQueryFactory(cache);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> save(ScheduledJob job) {
+    public CompletionStage<ScheduledJob> doSave(ScheduledJob job) {
         return runAsync(() -> cache.put(job.getId(), job))
                 .thenCompose(j -> get(job.getId()));
     }

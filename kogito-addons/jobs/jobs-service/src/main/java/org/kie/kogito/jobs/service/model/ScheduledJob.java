@@ -17,6 +17,7 @@
 package org.kie.kogito.jobs.service.model;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -35,11 +36,10 @@ public class ScheduledJob extends Job {
     public ScheduledJob() {
     }
 
-    private ScheduledJob(Optional<Job> job, String scheduledId, Integer retries, JobStatus status,
-                         ZonedDateTime lastUpdate,
-                         JobExecutionResponse executionResponse, Integer executionCounter) {
+    private ScheduledJob(Optional<Job> job,
+                         Optional<ZonedDateTime> expirationTime) {
         super(job.map(Job::getId).orElse(null),
-              job.map(Job::getExpirationTime).orElse(null),
+              expirationTime.orElse(job.map(Job::getExpirationTime).orElse(null)),
               job.map(Job::getPriority).orElse(null),
               job.map(Job::getCallbackEndpoint).orElse(null),
               job.map(Job::getProcessInstanceId).orElse(null),
@@ -48,12 +48,6 @@ public class ScheduledJob extends Job {
               job.map(Job::getRootProcessId).orElse(null),
               job.map(Job::getRepeatInterval).orElse(null),
               job.map(Job::getRepeatLimit).orElse(null));
-        this.scheduledId = scheduledId;
-        this.retries = retries;
-        this.status = status;
-        this.lastUpdate = lastUpdate;
-        this.executionResponse = executionResponse;
-        this.executionCounter = executionCounter;
     }
 
     public String getScheduledId() {
@@ -101,6 +95,31 @@ public class ScheduledJob extends Job {
                 .toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ScheduledJob)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ScheduledJob that = (ScheduledJob) o;
+        return Objects.equals(getScheduledId(), that.getScheduledId()) &&
+                Objects.equals(getRetries(), that.getRetries()) &&
+                getStatus() == that.getStatus() &&
+                getLastUpdate().equals(that.getLastUpdate()) &&
+                Objects.equals(getExecutionCounter(), that.getExecutionCounter()) &&
+                Objects.equals(getExecutionResponse(), that.getExecutionResponse());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getScheduledId(), getRetries(), getStatus(), getLastUpdate(), getExecutionCounter(), getExecutionResponse());
+    }
+
     public static class ScheduledJobBuilder {
 
         private Job job;
@@ -108,8 +127,9 @@ public class ScheduledJob extends Job {
         private Integer retries = 0;
         private JobStatus status;
         private ZonedDateTime lastUpdate;
+        private ZonedDateTime expirationTime;
         private JobExecutionResponse executionResponse;
-        private Integer executionCounter = 1;
+        private Integer executionCounter = 0;
 
         public ScheduledJobBuilder job(Job job) {
             this.job = job;
@@ -118,6 +138,11 @@ public class ScheduledJob extends Job {
 
         public ScheduledJobBuilder scheduledId(String scheduledId) {
             this.scheduledId = scheduledId;
+            return this;
+        }
+
+        public ScheduledJobBuilder expirationTime(ZonedDateTime expirationTime) {
+            this.expirationTime = expirationTime;
             return this;
         }
 
@@ -166,9 +191,15 @@ public class ScheduledJob extends Job {
         }
 
         public ScheduledJob build() {
-            return new ScheduledJob(Optional.ofNullable(job), scheduledId, retries, status, getLastUpdate(),
-                                    executionResponse,
-                                    executionCounter);
+            ScheduledJob instance = new ScheduledJob(Optional.ofNullable(job), Optional.ofNullable(expirationTime));
+            instance.scheduledId = scheduledId;
+            instance.retries = retries;
+            instance.status = status;
+            instance.lastUpdate = getLastUpdate();
+            instance.executionResponse = executionResponse;
+            instance.executionCounter = executionCounter;
+            instance.executionResponse = executionResponse;
+            return instance;
         }
 
         private ZonedDateTime getLastUpdate() {

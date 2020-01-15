@@ -75,6 +75,11 @@ public class JobRepositoryDelegate implements ReactiveJobRepository {
     }
 
     @Override
+    public CompletionStage<ScheduledJob> delete(ScheduledJob job) {
+        return delegate.delete(job);
+    }
+
+    @Override
     public PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status) {
         return delegate.findByStatus(status);
     }

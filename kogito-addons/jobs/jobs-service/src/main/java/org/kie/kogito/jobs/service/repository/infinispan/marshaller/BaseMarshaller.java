@@ -25,8 +25,10 @@ import org.kie.kogito.jobs.service.utils.DateUtil;
 
 public abstract class BaseMarshaller<T> implements MessageMarshaller<T> {
 
+    public static final String JOB_SERVICE_PKG = "job.service";
+
     public String getPackage() {
-        return "job.service";
+        return JOB_SERVICE_PKG;
     }
 
     protected Instant zonedDateTimeToInstant(ZonedDateTime dateTime) {

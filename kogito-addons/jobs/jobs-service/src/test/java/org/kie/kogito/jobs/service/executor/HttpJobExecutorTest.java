@@ -35,6 +35,7 @@ import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.converters.HttpConverters;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,6 +44,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,14 +61,11 @@ class HttpJobExecutorTest {
     @Mock
     private Vertx vertx;
 
-    @Mock
-    private Emitter<JobExecutionResponse> jobErrorEmitter;
-
-    @Mock
-    private Emitter<JobExecutionResponse> jobSuccessEmitter;
-
     @Spy
     private HttpConverters httpConverters = new HttpConverters();
+
+    @Mock
+    private JobStreams jobStreams;
 
     @Mock
     private WebClient webClient;
@@ -82,7 +81,7 @@ class HttpJobExecutorTest {
     void testExecutePeriodic(@Mock HttpRequest<Buffer> request, @Mock MultiMap params) {
         Job job = JobBuilder.builder().repeatInterval(1l).repeatLimit(10).callbackEndpoint(ENDPOINT).id(JOB_ID).
                 build();
-        ScheduledJob scheduledJob = ScheduledJob.builder().job(job).executionCounter(2).build();
+        ScheduledJob scheduledJob = ScheduledJob.builder().job(job).executionCounter(1).build();
 
         Map queryParams = assertExecuteAndReturnQueryParams(request, params, scheduledJob, false);
         assertThat(queryParams.size()).isEqualTo(1);
@@ -105,7 +104,9 @@ class HttpJobExecutorTest {
         verify(request).queryParams();
         verify(params).addAll(mapCaptor.capture());
         verify(request).send();
-        verify(mockError ? jobErrorEmitter : jobSuccessEmitter).send(responseCaptor.capture());
+        JobExecutionResponse jobExecutionResponse = mockError
+                ? verify(jobStreams).publishJobError(responseCaptor.capture())
+                : verify(jobStreams).publishJobSuccess(responseCaptor.capture());
         JobExecutionResponse value = responseCaptor.getValue();
         assertThat(value.getJobId()).isEqualTo(JOB_ID);
         assertThat(value.getCode()).isEqualTo(mockError ? "500" : "200");

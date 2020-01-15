@@ -24,9 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.OnOverflow;
 import io.vertx.axle.core.Vertx;
 import io.vertx.axle.core.buffer.Buffer;
 import io.vertx.axle.ext.web.client.HttpRequest;
@@ -38,7 +35,7 @@ import org.kie.kogito.jobs.service.converters.HttpConverters;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.stream.AvailableStreams;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,21 +52,8 @@ public class HttpJobExecutor implements JobExecutor {
     @Inject
     HttpConverters httpConverters;
 
-    /**
-     * Publish on Stream of Job Error events
-     */
     @Inject
-    @Channel(AvailableStreams.JOB_ERROR)
-    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
-    Emitter<JobExecutionResponse> jobErrorEmitter;
-
-    /**
-     * Publish on Stream of Job Success events
-     */
-    @Inject
-    @Channel(AvailableStreams.JOB_SUCCESS)
-    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
-    Emitter<JobExecutionResponse> jobSuccessEmitter;
+    JobStreams jobStreams;
 
     @PostConstruct
     void initialize() {
@@ -107,19 +91,19 @@ public class HttpJobExecutor implements JobExecutor {
     private <T extends JobExecutionResponse> PublisherBuilder<T> handleError(T response) {
         LOGGER.info("handle error {}", response);
         return ReactiveStreams.of(response)
-                .peek(jobErrorEmitter::send)
+                .peek(jobStreams::publishJobError)
                 .peek(r -> LOGGER.debug("Error executing job {}.", r));
     }
 
     private <T extends JobExecutionResponse> PublisherBuilder<T> handleSuccess(T response) {
         LOGGER.info("handle success {}", response);
         return ReactiveStreams.of(response)
-                .peek(jobSuccessEmitter::send)
+                .peek(jobStreams::publishJobSuccess)
                 .peek(r -> LOGGER.debug("Success executing job {}.", r));
     }
 
     @Override
-    public CompletionStage<ScheduledJob>  execute(CompletionStage<ScheduledJob> futureJob) {
+    public CompletionStage<ScheduledJob> execute(CompletionStage<ScheduledJob> futureJob) {
         return futureJob
                 .thenCompose(job -> {
                     //Using just POST method for now
@@ -147,18 +131,18 @@ public class HttpJobExecutor implements JobExecutor {
                             .thenApply(response -> response.map(r -> job).orElse(null))
                             .exceptionally(ex -> {
                                 LOGGER.error("Generic error executing job {}", job, ex);
-                                jobErrorEmitter.send(JobExecutionResponse.builder()
-                                                             .message(ex.getMessage())
-                                                             .now()
-                                                             .jobId(job.getId())
-                                                             .build());
+                                jobStreams.publishJobError(JobExecutionResponse.builder()
+                                                                   .message(ex.getMessage())
+                                                                   .now()
+                                                                   .jobId(job.getId())
+                                                                   .build());
                                 return job;
                             });
                 });
     }
 
     private int getRepeatableJobCountDown(ScheduledJob job) {
-        return job.getRepeatLimit() - job.getExecutionCounter();
+        return job.getRepeatLimit() - (job.getExecutionCounter() + 1);
     }
 
     WebClient getClient() {

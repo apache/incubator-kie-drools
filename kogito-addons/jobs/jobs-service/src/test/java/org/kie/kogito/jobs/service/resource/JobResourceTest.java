@@ -111,7 +111,7 @@ public class JobResourceTest {
                 .assertThat()
                 .extract()
                 .as(ScheduledJob.class);
-        assertEquals(scheduledJob, job);
+        assertEquals(scheduledJob.getId(), job.getId());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class JobResourceTest {
                 .assertThat()
                 .extract()
                 .as(ScheduledJob.class);
-        assertEquals(scheduledJob, job);
+        assertEquals(scheduledJob.getId(), job.getId());
         assertEquals(0, scheduledJob.getRetries());
         assertEquals(JobStatus.SCHEDULED, scheduledJob.getStatus());
         assertNotNull(scheduledJob.getScheduledId());

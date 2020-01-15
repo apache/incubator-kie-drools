@@ -32,6 +32,8 @@ public interface ReactiveJobRepository {
 
     CompletionStage<ScheduledJob> delete(String id);
 
+    CompletionStage<ScheduledJob> delete(ScheduledJob job);
+
     PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status);
 
     PublisherBuilder<ScheduledJob> findAll();

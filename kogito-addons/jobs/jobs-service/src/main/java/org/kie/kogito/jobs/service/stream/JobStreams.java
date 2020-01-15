@@ -19,11 +19,15 @@ package org.kie.kogito.jobs.service.stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.smallrye.reactive.messaging.annotations.Broadcast;
+import io.smallrye.reactive.messaging.annotations.Channel;
+import io.smallrye.reactive.messaging.annotations.Emitter;
+import io.smallrye.reactive.messaging.annotations.OnOverflow;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.scheduler.ReactiveJobScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,28 +40,70 @@ public class JobStreams {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobStreams.class);
 
-    private ReactiveJobScheduler<ScheduledJob> jobScheduler;
-
+    /**
+     * Publish on Stream of Job Error events
+     */
     @Inject
-    public JobStreams(ReactiveJobScheduler<ScheduledJob> jobScheduler) {
-        this.jobScheduler = jobScheduler;
+    @Channel(AvailableStreams.JOB_ERROR)
+    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
+    Emitter<JobExecutionResponse> jobErrorEmitter;
+
+    /**
+     * Publish on Stream of Job Success events
+     */
+    @Inject
+    @Channel(AvailableStreams.JOB_SUCCESS)
+    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
+    Emitter<JobExecutionResponse> jobSuccessEmitter;
+
+    /**
+     * Publish on Stream of Job Success events
+     */
+    @Inject
+    @Channel(AvailableStreams.JOB_STATUS_CHANGE)
+    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
+    Emitter<ScheduledJob> jobStatusChangeEmitter;
+
+    public JobExecutionResponse publishJobError(JobExecutionResponse response) {
+        jobErrorEmitter.send(response);
+        return response;
     }
 
+    public JobExecutionResponse publishJobSuccess(JobExecutionResponse response) {
+        jobSuccessEmitter.send(response);
+        return response;
+    }
+
+    public ScheduledJob publishJobStatusChange(ScheduledJob scheduledJob) {
+        jobStatusChangeEmitter.send(scheduledJob);
+        return scheduledJob;
+    }
+
+    //Broadcast Events from Emitter to Streams
+
     @Incoming(AvailableStreams.JOB_ERROR)
+    @Outgoing(AvailableStreams.JOB_ERROR_EVENTS)
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public void jobErrorProcessor(JobExecutionResponse error) {
-        LOGGER.warn("Error received {}", error);
-        jobScheduler.handleJobExecutionError(error)
-                .findFirst()
-                .run();
+    public JobExecutionResponse jobErrorBroadcast(JobExecutionResponse response) {
+        LOGGER.debug("Error broadcast published {}", response);
+        return response;
     }
 
     @Incoming(AvailableStreams.JOB_SUCCESS)
+    @Outgoing(AvailableStreams.JOB_SUCCESS_EVENTS)
+    @Broadcast
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public void jobSuccessProcessor(JobExecutionResponse response) {
-        LOGGER.debug("Success received {}", response);
-        jobScheduler.handleJobExecutionSuccess(response)
-                .findFirst()
-                .run();
+    public JobExecutionResponse jobSuccessBroadcast(JobExecutionResponse response) {
+        LOGGER.debug("Success broadcast published {}", response);
+        return response;
+    }
+
+    @Incoming(AvailableStreams.JOB_STATUS_CHANGE)
+    @Outgoing(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
+    @Broadcast
+    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
+    public ScheduledJob jobStatusChangeBroadcast(ScheduledJob job) {
+        LOGGER.debug("Status change broadcast for Job {}", job);
+        return job;
     }
 }

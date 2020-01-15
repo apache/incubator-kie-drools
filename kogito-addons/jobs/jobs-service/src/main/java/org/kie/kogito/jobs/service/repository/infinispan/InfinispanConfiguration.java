@@ -45,9 +45,13 @@ public class InfinispanConfiguration {
      */
     public static class Caches {
 
+        private Caches(){
+
+        }
+
         public static final String SCHEDULED_JOBS = "SCHEDULED_JOBS";
 
-        public static String[] ALL() {
+        public static String[] all() {
             return new String[]{SCHEDULED_JOBS};
         }
     }
@@ -66,7 +70,7 @@ public class InfinispanConfiguration {
     }
 
     CompletionStage<Void> onStart(@Observes StartupEvent startupEvent) {
-        return ReactiveStreams.of(Caches.ALL())
+        return ReactiveStreams.of(Caches.all())
                 .forEach(name -> cacheManager
                         .map(RemoteCacheManager::administration)
                         .ifPresent(adm -> adm.getOrCreateCache(name, (String) null)))
