@@ -32,6 +32,7 @@ public class JsonUtils {
     }
 
     /**
+     * This method aim is to to evaluate if any possible String is a valid json or not.
      * Given a json in String format, it try to convert it in a <code>JsonNode</code>. In case of success, i.e.
      * the given string is a valid json, it put the <code>JsonNode</code> in a <code>Optional</code>. An empty
      * <code>Optional</code> is passed otherwise.
