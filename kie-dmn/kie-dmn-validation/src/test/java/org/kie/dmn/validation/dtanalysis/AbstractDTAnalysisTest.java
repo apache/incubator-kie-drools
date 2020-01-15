@@ -69,6 +69,18 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         return analysis;
     }
 
+    protected void debugValidatorMsg(List<DMNMessage> dmnMessages) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
+        StringBuilder sbGaps = new StringBuilder("Validator messages:\n");
+        for (DMNMessage msg : dmnMessages) {
+            sbGaps.append(String.format("%8s %s", msg.getLevel(), msg.getText()));
+            sbGaps.append("\n");
+        }
+        LOG.debug(sbGaps.toString());
+    }
+
     protected void debugAnalysis(DTAnalysis analysis) {
         if (!LOG.isDebugEnabled()) {
             return;
