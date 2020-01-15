@@ -583,7 +583,7 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public TypeNode visitType(FEEL_1_1Parser.TypeContext ctx) {
+    public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
         return ASTBuilderFactory.newTypeNode( ctx );
     }
 

@@ -114,11 +114,11 @@ quantifiedExpression
 
 // #54
 type
-    : LISTLT type '>'
-    | CONTEXTLT Identifier ':' type ( ',' Identifier ':' type )* '>'
-    | FUNCTION
-    | FUNCTION '<' type ( COMMA type )* '>' '->' type
-    | qualifiedName
+    : LISTLT type '>' #listType
+    | CONTEXTLT Identifier ':' type ( ',' Identifier ':' type )* '>' #contextType
+    | FUNCTION #qnType
+    | FUNCTION '<' type ( COMMA type )* '>' '->' type #functionType
+    | qualifiedName #qnType
     ;
 
 LISTLT : 'list' '<' ;
