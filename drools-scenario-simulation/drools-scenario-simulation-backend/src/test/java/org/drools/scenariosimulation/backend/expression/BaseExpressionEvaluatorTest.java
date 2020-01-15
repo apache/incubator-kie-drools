@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
