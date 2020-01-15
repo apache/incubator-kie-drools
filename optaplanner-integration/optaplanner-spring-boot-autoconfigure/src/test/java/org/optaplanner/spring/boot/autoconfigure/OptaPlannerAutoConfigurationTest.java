@@ -18,11 +18,14 @@ package org.optaplanner.spring.boot.autoconfigure;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -166,6 +169,25 @@ public class OptaPlannerAutoConfigurationTest {
                 });
     }
 
+    @Test
+    public void solve() {
+        contextRunner
+                .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
+                .run(context -> {
+                    SolverManager solverManager = context.getBean(SolverManager.class);
+                    TestdataSpringSolution problem = new TestdataSpringSolution();
+                    problem.setValueList(IntStream.range(1, 3)
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
+                    problem.setEntityList(IntStream.range(1, 3)
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
+                    SolverJob<TestdataSpringSolution, Long> solverJob = solverManager.solve(1L, problem);
+                    TestdataSpringSolution solution = solverJob.getFinalBestSolution();
+                    assertNotNull(solution);
+                    assertTrue(solution.getScore().getScore() >= 0);
+                });
+    }
 
     @Configuration
     @EntityScan(basePackageClasses = {TestdataSpringSolution.class, TestdataSpringConstraintProvider.class})
