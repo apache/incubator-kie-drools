@@ -634,13 +634,19 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitFreeFormLine(final FreeFormLine ffl) {
+            visitFreeFormLine(ffl,
+                              generatorContextFactory.getMaximumPatternDepth() > 1);
+        }
+
+        public void visitFreeFormLine(final FreeFormLine ffl,
+                                      final boolean isSubPattern) {
             if (ffl.getText() == null) {
                 return;
             }
             String[] lines = ffl.getText().split("\\n|\\r\\n");
             for (String line : lines) {
                 this.buf.append(indentation);
-                if (isDSLEnhanced) {
+                if (!isSubPattern && isDSLEnhanced) {
                     buf.append(">");
                 }
                 this.buf.append(line + "\n");
@@ -648,8 +654,14 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitCompositeFactPattern(final CompositeFactPattern pattern) {
+            visitCompositeFactPattern(pattern,
+                                      generatorContextFactory.getMaximumPatternDepth() > 1);
+        }
+
+        public void visitCompositeFactPattern(final CompositeFactPattern pattern,
+                                              final boolean isSubPattern) {
             buf.append(indentation);
-            if (isDSLEnhanced) {
+            if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
                 buf.append(">");
             }
@@ -676,7 +688,7 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern) {
             visitFromCompositeFactPattern(pattern,
-                                          generatorContextFactory.getMaximumDepth() > 1);
+                                          generatorContextFactory.getMaximumPatternDepth() > 1);
         }
 
         public void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern,
@@ -711,7 +723,7 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern) {
             visitFromCollectCompositeFactPattern(pattern,
-                                                 generatorContextFactory.getMaximumDepth() > 1);
+                                                 generatorContextFactory.getMaximumPatternDepth() > 1);
         }
 
         public void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern,
@@ -765,7 +777,7 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern) {
             visitFromAccumulateCompositeFactPattern(pattern,
-                                                    generatorContextFactory.getMaximumDepth() > 1);
+                                                    generatorContextFactory.getMaximumPatternDepth() > 1);
         }
 
         public void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern,
@@ -848,7 +860,7 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromEntryPointFactPattern(final FromEntryPointFactPattern pattern) {
             visitFromEntryPointFactPattern(pattern,
-                                           generatorContextFactory.getMaximumDepth() > 1);
+                                           generatorContextFactory.getMaximumPatternDepth() > 1);
         }
 
         public void visitFromEntryPointFactPattern(final FromEntryPointFactPattern pattern,

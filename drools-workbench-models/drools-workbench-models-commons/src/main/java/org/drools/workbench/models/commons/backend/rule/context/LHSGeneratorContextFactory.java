@@ -17,6 +17,7 @@ package org.drools.workbench.models.commons.backend.rule.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -73,6 +74,17 @@ public class LHSGeneratorContextFactory {
         for (LHSGeneratorContext gctx : contexts) {
             depth = Math.max(depth,
                              gctx.getDepth());
+        }
+        return depth;
+    }
+
+    public int getMaximumPatternDepth() {
+        int depth = 0;
+        for (LHSGeneratorContext gctx : contexts) {
+            if (Objects.nonNull(gctx.getPattern())) {
+                depth = Math.max(depth,
+                                 gctx.getDepth());
+            }
         }
         return depth;
     }
