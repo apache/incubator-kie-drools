@@ -31,8 +31,10 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
@@ -99,7 +101,7 @@ public final class TestUtils {
         pi.setState(status);
         pi.setStart(ZonedDateTime.now());
         pi.setEnd(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);
-        if(ProcessInstanceState.ERROR.ordinal() == status){
+        if (ProcessInstanceState.ERROR.ordinal() == status) {
             pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         }
         return pi;
@@ -146,6 +148,33 @@ public final class TestUtils {
                 .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state))
                 .time(ZonedDateTime.now())
                 .build();
+    }
+
+    public static KogitoJobCloudEvent getJobCloudEvent(String jobId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+        return KogitoJobCloudEvent.builder()
+                .id(UUID.randomUUID().toString())
+                .data(getJob(jobId, processId, processInstanceId, rootProcessId, rootProcessInstanceId))
+                .build();
+    }
+
+    private static Job getJob(String jobId, String processId, String processInstanceId, String rootProcessId, String rootProcessInstanceId) {
+        Job job = new Job();
+        job.setId(jobId);
+        job.setProcessId(processId);
+        job.setProcessInstanceId(processInstanceId);
+        job.setRootProcessId(rootProcessId);
+        job.setRootProcessInstanceId(rootProcessInstanceId);
+        job.setStatus("EXECUTED");
+        job.setExpirationTime(ZonedDateTime.now());
+        job.setPriority(1);
+        job.setCallbackEndpoint("http://service");
+        job.setRepeatInterval(0l);
+        job.setRepeatLimit(-1);
+        job.setScheduledId(UUID.randomUUID().toString());
+        job.setRetries(10);
+        job.setLastUpdate(ZonedDateTime.now());
+        job.setExecutionCounter(2);
+        return job;
     }
 
     private static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {

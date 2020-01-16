@@ -68,6 +68,11 @@ public class GraphQLQueryOrderByTest {
     }
 
     @Test
+    public void testJobsSort() {
+        testSortBy("Jobs");
+    }
+
+    @Test
     public void testTravelsSort() throws Exception {
         protobufService.registerProtoBufferType(getTravelsProtoBufferFile());
 

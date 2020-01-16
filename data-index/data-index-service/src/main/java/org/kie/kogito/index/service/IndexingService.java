@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -56,6 +57,10 @@ public class IndexingService {
             pi.getNodes().addAll(nodes);
         }
         manager.getProcessInstancesCache().put(pi.getId(), pi);
+    }
+
+    public void indexJob(Job job) {
+        manager.getJobsCache().put(job.getId(), job);
     }
 
     public void indexUserTaskInstance(UserTaskInstance ut) {

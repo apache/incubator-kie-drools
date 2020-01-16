@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
@@ -137,6 +138,36 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.excludedUsers", emptySet())
                 .hasFieldOrPropertyWithValue("data.completed", ZonedDateTime.parse("2019-08-30T11:48:37.828Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("data.started", ZonedDateTime.parse("2019-08-30T11:47:42.886Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+
+        softly.assertAll();
+    }
+
+    @Test
+    public void testJobDeserializer() throws IOException {
+        KogitoJobCloudEvent event = new KogitoJobCloudEventDeserializer().deserialize(null, getJsonEventBytes("job_event.json"));
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(event)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("id", "37692f80-10ab-435c-b410-770421b62a02_0")
+//                .hasFieldOrPropertyWithValue("source", "JobService")
+                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2020-01-10T13:59:23.897507Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("type", "JobEvent")
+                .hasFieldOrPropertyWithValue("specVersion", "0.3")
+                .hasFieldOrPropertyWithValue("schemaURL", null)
+                .hasFieldOrPropertyWithValue("contentType", null)
+                .hasFieldOrPropertyWithValue("data.id", "37692f80-10ab-435c-b410-770421b62a02_0")
+                .hasFieldOrPropertyWithValue("data.processId", "timers")
+                .hasFieldOrPropertyWithValue("data.processInstanceId", "0c110a00-2628-499d-9a9a-5267cb0a3a1d")
+                .hasFieldOrPropertyWithValue("data.rootProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("data.rootProcessId", null)
+                .hasFieldOrPropertyWithValue("data.repeatInterval", null)
+                .hasFieldOrPropertyWithValue("data.repeatLimit", 0)
+                .hasFieldOrPropertyWithValue("data.scheduledId", "0")
+                .hasFieldOrPropertyWithValue("data.retries", 0)
+                .hasFieldOrPropertyWithValue("data.status", "EXECUTED")
+                .hasFieldOrPropertyWithValue("data.executionCounter", 1)
+                .hasFieldOrPropertyWithValue("data.priority", 0)
+                .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-10T13:59:23.746287Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
 
         softly.assertAll();
     }

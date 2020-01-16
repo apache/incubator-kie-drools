@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.event;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
 
-public interface CacheService {
+public class KogitoJobCloudEvent extends KogitoCloudEvent<Job> {
 
-    Cache<String, ProcessInstance> getProcessInstancesCache();
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    Cache<String, UserTaskInstance> getUserTaskInstancesCache();
+    @Override
+    public String toString() {
+        return "KogitoJobCloudEvent{} " + super.toString();
+    }
 
-    Cache<String, Job> getJobsCache();
+    public static final class Builder extends AbstractBuilder<Builder, Job, KogitoJobCloudEvent> {
 
-    Cache<String, ObjectNode> getDomainModelCache(String processId);
+        private Builder() {
+            super(new KogitoJobCloudEvent());
+        }
+    }
 }

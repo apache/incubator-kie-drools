@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -50,8 +51,9 @@ public class GraphQLUtils {
     private static final Map<String, String> QUERIES = new HashMap<>();
 
     static {
-        QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFiledName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFiledName()).collect(joining(", ")));
+        QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).collect(joining(", ")));
+        QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstanceId");
 
         try {
@@ -138,6 +140,10 @@ public class GraphQLUtils {
         return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, "potentialUsers", id);
     }
 
+    public static String getJobById(String id) {
+        return getJobQuery("JobById", id);
+    }
+
     public static String geTravelsByUserTaskId(String id) {
         return getQuery("TravelsByUserTaskId", id);
     }
@@ -167,18 +173,26 @@ public class GraphQLUtils {
     }
 
     private static String getProcessInstanceQuery(String name, String... args) {
-        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(ProcessInstance.class)));
+        return getQuery(name, ProcessInstance.class, args);
     }
 
     private static String getUserTaskInstanceQuery(String name, String... args) {
-        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(UserTaskInstance.class)));
+        return getQuery(name, UserTaskInstance.class, args);
     }
 
+    private static String getJobQuery(String name, String... args) {
+        return getQuery(name, Job.class, args);
+    }
+
+    private static String getQuery(String name, Class clazz, String... args) {
+        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(clazz)));
+    }
+    
     private static Stream<Field> getAllFieldsList(Class clazz) {
         return FieldUtils.getAllFieldsList(clazz).stream().filter(f -> getJacocoPredicate().test(f));
     }
 
-    private static Function<Field, String> getFiledName() {
+    private static Function<Field, String> getFieldName() {
         return field -> {
             if (field.getGenericType() instanceof ParameterizedType) {
                 ParameterizedType genericType = (ParameterizedType) field.getGenericType();
@@ -190,14 +204,14 @@ public class GraphQLUtils {
                                            } catch (Exception ex) {
                                                return Stream.empty();
                                            }
-                                       }).map(f -> getFiledName().apply(f)).collect(joining(", ")));
+                                       }).map(f -> getFieldName().apply(f)).collect(joining(", ")));
                 if (builder.length() > 0) {
                     return field.getName() + " { " + builder.toString() + " }";
                 }
             }
 
             if (field.getType().getName().startsWith("org.kie.kogito.index.model")) {
-                return field.getName() + " { " + getAllFieldsList(field.getType()).map(f -> getFiledName().apply(f)).collect(joining(", ")) + " }";
+                return field.getName() + " { " + getAllFieldsList(field.getType()).map(f -> getFieldName().apply(f)).collect(joining(", ")) + " }";
             }
 
             return field.getName();

@@ -34,11 +34,11 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.InfinispanServerTestResource;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.infinispan.protostream.ProtobufService;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
-import org.kie.kogito.index.model.ProcessInstanceState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +50,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.hasItems;
 import static org.kie.kogito.index.GraphQLUtils.*;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
+import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
@@ -151,6 +151,10 @@ public class IndexingServiceTest {
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.UserTaskInstances", isA(Collection.class));
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Jobs{ id } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Jobs", isA(Collection.class));
     }
 
     @Test
@@ -697,6 +701,41 @@ public class IndexingServiceTest {
                 .body("data.Deals[0].metadata.userTasks[0].started", is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Deals[0].metadata.userTasks[0].completed", is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Deals[0].metadata.userTasks[0].lastUpdate", is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+    }
+
+    @Test
+    public void testJobIndex() throws Exception {
+        String jobId = UUID.randomUUID().toString();
+        String processId = "deals";
+        String processInstanceId = UUID.randomUUID().toString();
+        
+        KogitoJobCloudEvent event = getJobCloudEvent(jobId, processId, processInstanceId, null, null);
+        
+        consumer.onJobEvent(event).toCompletableFuture().get();
+
+        validateJob(getJobById(jobId), event);
+    }
+
+    private void validateJob(String query, KogitoJobCloudEvent event) {
+        LOGGER.debug("GraphQL query: {}", query);
+        given().contentType(ContentType.JSON).body(query)
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200)
+                .body("data.Jobs[0].id", is(event.getData().getId()))
+                .body("data.Jobs[0].processId", is(event.getData().getProcessId()))
+                .body("data.Jobs[0].processInstanceId", is(event.getData().getProcessInstanceId()))
+                .body("data.Jobs[0].rootProcessId", is(event.getData().getRootProcessId()))
+                .body("data.Jobs[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
+                .body("data.Jobs[0].status", is(event.getData().getStatus()))
+                .body("data.Jobs[0].expirationTime", is(formatZonedDateTime(event.getData().getExpirationTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Jobs[0].priority", is(event.getData().getPriority()))
+                .body("data.Jobs[0].callbackEndpoint", is(event.getData().getCallbackEndpoint()))
+                .body("data.Jobs[0].repeatInterval", is(event.getData().getRepeatInterval().intValue()))
+                .body("data.Jobs[0].repeatLimit", is(event.getData().getRepeatLimit()))
+                .body("data.Jobs[0].scheduledId", is(event.getData().getScheduledId()))
+                .body("data.Jobs[0].retries", is(event.getData().getRetries()))
+                .body("data.Jobs[0].lastUpdate", is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()));
     }
 
     private void validateUserTaskInstance(String query, KogitoUserTaskCloudEvent event) {

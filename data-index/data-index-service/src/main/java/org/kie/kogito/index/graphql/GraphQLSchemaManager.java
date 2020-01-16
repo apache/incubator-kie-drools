@@ -53,6 +53,7 @@ import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.json.DataIndexParsingException;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -90,6 +91,7 @@ public class GraphQLSchemaManager {
         GraphQLQueryParserRegistry.get().registerParsers(
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
+                (GraphQLInputObjectType) schema.getType("JobArgument"),
                 (GraphQLInputObjectType) schema.getType("KogitoMetadataArgument")
         );
     }
@@ -109,6 +111,7 @@ public class GraphQLSchemaManager {
                 .type("Query", builder -> {
                     builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);
                     builder.dataFetcher("UserTaskInstances", this::getUserTaskInstancesValues);
+                    builder.dataFetcher("Jobs", this::getJobsValues);
                     return builder;
                 })
                 .type("ProcessInstance", builder -> {
@@ -143,6 +146,10 @@ public class GraphQLSchemaManager {
 
     private Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
         return executeAdvancedQueryForCache(cacheService.getProcessInstancesCache(), env);
+    }
+
+    private Collection<Job> getJobsValues(DataFetchingEnvironment env) {
+        return executeAdvancedQueryForCache(cacheService.getJobsCache(), env);
     }
 
     private <T> List<T> executeAdvancedQueryForCache(Cache<String, T> cache, DataFetchingEnvironment env) {

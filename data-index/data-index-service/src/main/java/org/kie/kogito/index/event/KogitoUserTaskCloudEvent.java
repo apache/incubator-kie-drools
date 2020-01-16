@@ -16,7 +16,6 @@
 
 package org.kie.kogito.index.event;
 
-import java.net.URI;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -66,22 +65,10 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
                 "} " + super.toString();
     }
 
-    public static final class Builder {
-
-        private KogitoUserTaskCloudEvent event;
+    public static final class Builder extends AbstractBuilder<Builder, UserTaskInstance, KogitoUserTaskCloudEvent> {
 
         private Builder() {
-            event = new KogitoUserTaskCloudEvent();
-        }
-
-        public Builder type(String type) {
-            event.setType(type);
-            return this;
-        }
-
-        public Builder source(URI source) {
-            event.setSource(source);
-            return this;
+            super(new KogitoUserTaskCloudEvent());
         }
 
         public Builder userTaskInstanceId(String userTaskInstanceId) {
@@ -89,58 +76,9 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
             return this;
         }
 
-        public Builder id(String id) {
-            event.setId(id);
-            return this;
-        }
-
-        public Builder time(ZonedDateTime time) {
-            event.setTime(time);
-            return this;
-        }
-
-        public Builder schemaURL(URI schemaURL) {
-            event.setSchemaURL(schemaURL);
-            return this;
-        }
-
-        public Builder contentType(String contentType) {
-            event.setContentType(contentType);
-            return this;
-        }
-
         public Builder state(String state) {
             event.setState(state);
             return this;
-        }
-
-        public Builder data(UserTaskInstance data) {
-            event.setData(data);
-            return this;
-        }
-
-        public Builder processInstanceId(String processInstanceId) {
-            event.setProcessInstanceId(processInstanceId);
-            return this;
-        }
-
-        public Builder processId(String processId) {
-            event.setProcessId(processId);
-            return this;
-        }
-
-        public Builder rootProcessInstanceId(String rootProcessInstanceId) {
-            event.setRootProcessInstanceId(rootProcessInstanceId);
-            return this;
-        }
-
-        public Builder rootProcessId(String rootProcessId) {
-            event.setRootProcessId(rootProcessId);
-            return this;
-        }
-
-        public KogitoUserTaskCloudEvent build() {
-            return event;
         }
     }
 }

@@ -35,6 +35,7 @@ import org.infinispan.commons.dataconversion.MediaType;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
 import org.kie.kogito.index.cache.Cache;
 import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class InfinispanCacheManager implements CacheService {
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);
     private static final String PROCESS_INSTANCES_CACHE = "processinstances";
     private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
+    private static final String JOBS_CACHE = "jobs";
     private static final String PROCESS_ID_MODEL_CACHE = "processidmodel";
 
     @Inject
@@ -115,6 +117,11 @@ public class InfinispanCacheManager implements CacheService {
     @Override
     public Cache<String, UserTaskInstance> getUserTaskInstancesCache() {
         return new CacheImpl<>(getOrCreateCache(USER_TASK_INSTANCES_CACHE, cacheTemplateName), UserTaskInstance.class.getName());
+    }
+
+    @Override
+    public Cache<String, Job> getJobsCache() {
+        return new CacheImpl<>(getOrCreateCache(JOBS_CACHE, cacheTemplateName), Job.class.getName());
     }
 
     public Map<String, String> getProtobufCache() {

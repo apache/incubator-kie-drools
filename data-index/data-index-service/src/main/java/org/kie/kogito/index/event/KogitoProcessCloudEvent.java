@@ -86,71 +86,14 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
                 "} " + super.toString();
     }
 
-    public static final class Builder {
-
-        private KogitoProcessCloudEvent event;
+    public static final class Builder extends AbstractBuilder<Builder, ProcessInstance, KogitoProcessCloudEvent> {
 
         private Builder() {
-            event = new KogitoProcessCloudEvent();
-        }
-
-        public Builder type(String type) {
-            event.setType(type);
-            return this;
-        }
-
-        public Builder source(URI source) {
-            event.setSource(source);
-            return this;
-        }
-
-        public Builder id(String id) {
-            event.setId(id);
-            return this;
-        }
-
-        public Builder time(ZonedDateTime time) {
-            event.setTime(time);
-            return this;
-        }
-
-        public Builder schemaURL(URI schemaURL) {
-            event.setSchemaURL(schemaURL);
-            return this;
-        }
-
-        public Builder contentType(String contentType) {
-            event.setContentType(contentType);
-            return this;
-        }
-
-        public Builder data(ProcessInstance data) {
-            event.setData(data);
-            return this;
-        }
-
-        public Builder processInstanceId(String processInstanceId) {
-            event.setProcessInstanceId(processInstanceId);
-            return this;
-        }
-
-        public Builder processId(String processId) {
-            event.setProcessId(processId);
-            return this;
+            super(new KogitoProcessCloudEvent());
         }
 
         public Builder state(Integer state) {
             event.setState(state);
-            return this;
-        }
-
-        public Builder rootProcessInstanceId(String rootProcessInstanceId) {
-            event.setRootProcessInstanceId(rootProcessInstanceId);
-            return this;
-        }
-
-        public Builder rootProcessId(String rootProcessId) {
-            event.setRootProcessId(rootProcessId);
             return this;
         }
 
@@ -167,10 +110,6 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
         public Builder kogitoAddons(String kogitoAddons) {
             event.setKogitoAddons(kogitoAddons);
             return this;
-        }
-
-        public KogitoProcessCloudEvent build() {
-            return event;
         }
     }
 }

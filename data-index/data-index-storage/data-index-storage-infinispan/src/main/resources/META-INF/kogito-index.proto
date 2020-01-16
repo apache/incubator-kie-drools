@@ -169,3 +169,34 @@ message UserTaskInstanceMeta {
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 16;
 }
+
+/* @Indexed */
+message Job {
+
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string processId = 2;
+    /* @Field(store = Store.YES) */
+    optional string processInstanceId = 3;
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    optional string rootProcessId = 4;
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    optional string rootProcessInstanceId = 5;
+    /* @Field(store = Store.YES) */
+    optional int64 expirationTime = 6;
+    /* @Field(store = Store.YES) */
+    optional int32 priority = 7;
+    optional string callbackEndpoint = 8;
+    optional int64 repeatInterval = 9;
+    optional int32 repeatLimit = 10;
+    /* @Field(store = Store.YES) */
+    optional string scheduledId = 11;
+    optional int32 retries = 12;
+    /* @Field(store = Store.YES) */
+    optional string status = 13;
+    /* @Field(store = Store.YES) */
+    optional int64 lastUpdate = 14;
+    optional int32 executionCounter = 15;
+
+}

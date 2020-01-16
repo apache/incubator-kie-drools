@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.cache;
+package org.kie.kogito.index.messaging;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 
-public interface CacheService {
+public class KogitoJobCloudEventDeserializer extends AbstractCloudEventDeserializer<KogitoJobCloudEvent> {
 
-    Cache<String, ProcessInstance> getProcessInstancesCache();
-
-    Cache<String, UserTaskInstance> getUserTaskInstancesCache();
-
-    Cache<String, Job> getJobsCache();
-
-    Cache<String, ObjectNode> getDomainModelCache(String processId);
+    public KogitoJobCloudEventDeserializer() {
+        super(KogitoJobCloudEvent.class);
+    }
 }

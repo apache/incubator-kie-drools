@@ -33,6 +33,7 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.index.event.DomainModelRegisteredEvent;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.json.ProcessInstanceMetaMapper;
@@ -53,6 +54,7 @@ public class ReactiveMessagingEventConsumer {
     private static final String KOGITO_PROCESSDOMAIN_EVENTS = "kogito-processdomain-events";
     private static final String KOGITO_USERTASKDOMAIN_EVENTS = "kogito-usertaskdomain-events";
     private static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
+    private static final String KOGITO_JOBS_EVENTS = "kogito-jobs-events";
 
     @Inject
     IndexingService indexingService;
@@ -103,6 +105,12 @@ public class ReactiveMessagingEventConsumer {
         LOGGER.debug("Task domain received KogitoUserTaskCloudEvent \n{}", event);
         ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
         return sendMessage(json);
+    }
+
+    @Incoming(KOGITO_JOBS_EVENTS)
+    public CompletionStage<Void> onJobEvent(KogitoJobCloudEvent event) {
+        LOGGER.debug("Job received KogitoJobCloudEvent \n{}", event);
+        return CompletableFuture.runAsync(() -> indexingService.indexJob(event.getData()));
     }
 
     private CompletableFuture<Void> sendMessage(ObjectNode json) {

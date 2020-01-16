@@ -121,6 +121,12 @@
       "potentialUsers": []
     }
   },
+  "JobById": {
+    "query": "query ( $id: String ) { Jobs( where: {  id: {  equal : $id } } ){ %s } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
   "TravelsByUserTaskId": {
     "query": "query ( $taskId: String ) { Travels ( where: { metadata: { userTasks: { id : { equal : $taskId } } } } ){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, metadata { lastUpdate, processInstances { id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, lastUpdate, endpoint }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
     "variables": {
