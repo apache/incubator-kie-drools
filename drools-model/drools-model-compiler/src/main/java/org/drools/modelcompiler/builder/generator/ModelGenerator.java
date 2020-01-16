@@ -141,8 +141,8 @@ public class ModelGenerator {
 
 
         for(RuleDescr descr : packageDescr.getRules()) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern)
-                        .withPackageDescr( packageDescr );
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(packageModel, (QueryDescr) descr, context);
             }
@@ -151,11 +151,11 @@ public class ModelGenerator {
         HashSet<RuleUnitDescription> ruleUnitDescriptions = new HashSet<>();
 
         for (RuleDescr descr : packageDescr.getRules()) {
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
-                RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern)
-                        .withPackageDescr( packageDescr );
                 processRule(kbuilder, packageModel, packageDescr, descr, context);
                 RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
                 if (ruleUnitDescr != null) ruleUnitDescriptions.add(ruleUnitDescr);
@@ -170,7 +170,7 @@ public class ModelGenerator {
     private static void processRule(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, RuleContext context) {
         context.setDescr(ruleDescr);
         context.addGlobalDeclarations(packageModel.getGlobals());
-        context.withDialectFromAttributes(ruleDescr.getAttributes().values());
+        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());

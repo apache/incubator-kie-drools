@@ -17,7 +17,6 @@
 package org.drools.core.ruleunit;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,7 +26,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.internal.ruleunit.RuleUnitVariable;
 
 public class RuleUnitDescriptionLoader {
 
@@ -58,11 +56,6 @@ public class RuleUnitDescriptionLoader {
                 .map(name -> ruleUnitDescriptionsCache.computeIfAbsent(name, this::findDescription));
         state = state.hasUnit(result.isPresent());
         return result;
-    }
-
-    public RuleUnitDescription generateDescription(String unitName, List<RuleUnitVariable> unitVariables) {
-        return ruleUnitDescriptionsCache.computeIfAbsent(unitName, name ->
-                RuleUnitComponentFactory.get().createRuleUnitDescription( name, unitVariables ));
     }
 
     private RuleUnitDescription findDescription(final String ruleUnit) {
