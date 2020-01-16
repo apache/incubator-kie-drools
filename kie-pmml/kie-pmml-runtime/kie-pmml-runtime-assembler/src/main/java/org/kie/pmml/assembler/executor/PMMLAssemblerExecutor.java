@@ -31,6 +31,6 @@ public interface PMMLAssemblerExecutor {
      * @param resource
      * @return
      */
-    List<KnowledgeBuilderResult> getResults(Resource resource);
+    List<KnowledgeBuilderResult> getResults(Resource resource) throws Exception;
 
 }

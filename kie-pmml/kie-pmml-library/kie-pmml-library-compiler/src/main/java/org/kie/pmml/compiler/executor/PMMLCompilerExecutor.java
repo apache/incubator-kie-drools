@@ -17,8 +17,7 @@ package org.kie.pmml.compiler.executor;
 
 import java.util.List;
 
-import org.kie.pmml.library.api.model.KiePMML;
-
+import org.kie.pmml.api.model.KiePMMLModel;
 /**
  * Actual implementations are required to convert a <b>PMML</b> xml to
  * to a <code>List&lt;KiePMMLModel&gt;</code>
@@ -30,6 +29,6 @@ public interface PMMLCompilerExecutor {
      * @param source
      * @return
      */
-    List<KiePMML> getResults(String source) throws Exception;
+    List<KiePMMLModel> getResults(String source) throws Exception;
 
 }

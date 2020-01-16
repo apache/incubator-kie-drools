@@ -17,9 +17,10 @@ package org.kie.pmml.regression.executor;
 
 import java.util.logging.Logger;
 
-import org.kie.pmml.library.api.enums.PMMLModelType;
+import org.dmg.pmml.Model;
+import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
-import org.kie.pmml.library.api.model.KiePMML;
 
 /**
  * Default <code>AlgorithmImplementationProvider</code> for <b>Regression</b>
@@ -28,16 +29,22 @@ public class RegressionAlgorithmImplementationProvider implements ModelImplement
 
     private static final Logger log = Logger.getLogger(RegressionAlgorithmImplementationProvider.class.getName());
 
+    private static final PMMLModelType PMML_MODEL_TYPE = PMMLModelType.REGRESSION_MODEL;
+
     @Override
     public PMMLModelType getPMMLModelType() {
         log.info("getPMMLModelType");
-        return PMMLModelType.REGRESSION_MODEL;
+        return PMML_MODEL_TYPE;
     }
 
     @Override
-    public KiePMML getKiePMMLModel(Object node) {
-        log.info("getKiePMMLModel " + node);
-        // TODO @gcardosi
-        return new KiePMML();
+    public KiePMMLModel getKiePMMLModel(Model model) {
+        log.info("getKiePMMLModel " + model);
+        // TODO {gcardosi} verify given name is correct
+        String name = model.getModelName();
+        // TODO {gcardosi} replace with actual model
+        return new KiePMMLModel(name, PMML_MODEL_TYPE) {
+
+        };
     }
 }

@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.assembler.converter;
+package org.kie.pmml.runtime.core.executor;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.enums.PMMLModelType;
 import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.runtime.api.executor.PMMLContext;
 
-/**
- * Actual implementations are required to convert <b>common</b> <code>KiePMMLModel</code>
- * to <code>KnowledgeBuilderResult</code>
- */
-public interface KiePMMLConverter {
+public interface PMMLModelExecutor {
 
     /**
      *
-     * @param source
-     * @return
+     * @return the <code>PMMLModelType</code> this <code>PMMLModelExecutor</code>
+     * is specific for
      */
-    KnowledgeBuilderResult getFromKiePMMLModel(KiePMMLModel source);
+    PMMLModelType getPMMLModelType();
+
+    /**
+     * Evaluate the model, given the context
+     *
+     * @param model the model to evaluate
+     * @param context the context with all the input variables
+     *
+     * @return the result of the evaluation
+     */
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context );
 
 }

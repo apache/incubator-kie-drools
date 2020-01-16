@@ -63,7 +63,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @param resource
      * @throws IOException
      */
-    private void addPackage(KnowledgeBuilderImpl kbuilder, Resource resource) throws IOException {
+    private void addPackage(KnowledgeBuilderImpl kbuilder, Resource resource) throws Exception {
         pmmlAssemblerExecutor.getResults(resource).forEach(kbuilder::addBuilderResult);
     }
 }

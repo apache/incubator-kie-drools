@@ -21,28 +21,28 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.PMML;
-import org.kie.pmml.library.api.enums.PMMLModelType;
+import org.kie.pmml.api.enums.PMMLModelType;
 import org.xml.sax.SAXException;
 
-import static org.kie.pmml.library.api.enums.PMMLModelType.ASSOCIATION_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.BASELINE_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.BAYESIAN_NETWORK_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.CLUSTERING_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.GAUSSIAN_PROCESS_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.GENERAL_REGRESSION_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.MINING_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.NAIVE_BAYES_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.NEAREST_NEIGHBOR_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.NEURAL_NETWORK_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.REGRESSION_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.RULESET_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.SCORECARD_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.SEQUENCE_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.SUPPORT_VECTOR_MACHINE_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.TEXT_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.TIME_SERIES_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.TREE_MODEL;
-import static org.kie.pmml.library.api.enums.PMMLModelType.UNKNOWN;
+import static org.kie.pmml.api.enums.PMMLModelType.ASSOCIATION_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.BASELINE_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.BAYESIAN_NETWORK_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.CLUSTERING_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.GAUSSIAN_PROCESS_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.GENERAL_REGRESSION_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.MINING_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.NAIVE_BAYES_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.NEAREST_NEIGHBOR_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.NEURAL_NETWORK_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.REGRESSION_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.RULESET_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.SCORECARD_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.SEQUENCE_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.SUPPORT_VECTOR_MACHINE_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.TEXT_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.TIME_SERIES_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.TREE_MODEL;
+import static org.kie.pmml.api.enums.PMMLModelType.UNKNOWN;
 
 /**
  * Utility class to decouple <code>PMMLCompilerExecutor</code> from actual marshalling model/implementation.

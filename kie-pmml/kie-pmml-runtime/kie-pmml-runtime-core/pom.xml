@@ -15,6 +15,7 @@
   <description>Execution of PMML models inside KIE runtime environment</description>
 
   <dependencies>
+    <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-api</artifactId>
@@ -22,6 +23,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-api</artifactId>
+    </dependency>
+    <!-- DROOLS/KIE -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
     </dependency>
   </dependencies>
 

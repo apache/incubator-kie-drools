@@ -24,10 +24,10 @@ import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
-import org.kie.pmml.library.api.enums.PMMLModelType;
-import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
-import org.kie.pmml.library.api.model.KiePMML;
+import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.compiler.utils.KiePMMLUtil;
+import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
 import org.xml.sax.SAXException;
 
 /**
@@ -44,7 +44,7 @@ public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
     }
 
     @Override
-    public List<KiePMML> getResults(String source) throws JAXBException, SAXException {
+    public List<KiePMMLModel> getResults(String source) throws JAXBException, SAXException {
         log.info("getResults " + source);
         PMML commonPMMLModel = KiePMMLUtil.load(source);
         return getResults(commonPMMLModel);
@@ -55,7 +55,7 @@ public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
      * @param pmml
      * @return
      */
-    private List<KiePMML> getResults(PMML pmml) {
+    private List<KiePMMLModel> getResults(PMML pmml) {
         log.info("getResults " + pmml);
         return pmml
                 .getModels()
@@ -71,7 +71,7 @@ public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
      * @param model
      * @return
      */
-    private Optional<KiePMML> getFromModel(Model model) {
+    private Optional<KiePMMLModel> getFromModel(Model model) {
         log.info("getFromModel " + model);
         final PMMLModelType pmmlModelType = KiePMMLUtil.getPMMLModelType(model.getModelName());
         log.info("pmmlModelType " + pmmlModelType);

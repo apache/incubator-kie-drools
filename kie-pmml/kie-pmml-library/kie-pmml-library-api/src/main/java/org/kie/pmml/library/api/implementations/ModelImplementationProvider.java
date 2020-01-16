@@ -15,8 +15,9 @@
  */
 package org.kie.pmml.library.api.implementations;
 
-import org.kie.pmml.library.api.enums.PMMLModelType;
-import org.kie.pmml.library.api.model.KiePMML;
+import org.dmg.pmml.Model;
+import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.KiePMMLModel;
 
 /**
  * API for actual PMML model implementations
@@ -25,6 +26,6 @@ public interface ModelImplementationProvider {
 
     PMMLModelType getPMMLModelType();
 
-    KiePMML getKiePMMLModel(Object node);
+    KiePMMLModel getKiePMMLModel(Model model);
 
 }

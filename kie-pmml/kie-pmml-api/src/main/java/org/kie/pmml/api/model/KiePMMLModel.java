@@ -15,20 +15,54 @@
  */
 package org.kie.pmml.api.model;
 
+import java.util.Objects;
+
 import org.kie.pmml.api.enums.PMMLModelType;
 
 /**
- * User-friendly representation of PMML model
+ * KIE representation of PMML model
  */
-public class KiePMMLModel {
+public abstract class KiePMMLModel {
 
-    private PMMLModelType pmmlModelType;
+    private final String modelName;
+    private final PMMLModelType pmmlModelType;
 
-    public KiePMMLModel(PMMLModelType pmmlModelType) {
+    public KiePMMLModel(String modelName, PMMLModelType pmmlModelType) {
+        this.modelName = modelName;
         this.pmmlModelType = pmmlModelType;
+    }
+
+    public String getModelName() {
+        return modelName;
     }
 
     public PMMLModelType getPmmlModelType() {
         return pmmlModelType;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLModel{" +
+                "modelName='" + modelName + '\'' +
+                ", pmmlModelType=" + pmmlModelType +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        KiePMMLModel that = (KiePMMLModel) o;
+        return Objects.equals(getModelName(), that.getModelName()) &&
+                getPmmlModelType() == that.getPmmlModelType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getModelName(), getPmmlModelType());
     }
 }

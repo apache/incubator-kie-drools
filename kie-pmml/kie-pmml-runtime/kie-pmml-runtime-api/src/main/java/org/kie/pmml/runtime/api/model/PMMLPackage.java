@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.model;
+package org.kie.pmml.runtime.api.model;
 
-import java.util.List;
+import java.util.Map;
+
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.pmml.api.model.KiePMMLModel;
 
 /**
- * User-friendly representation of PMML model
+ *
  */
-public class KiePMML {
+public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+    String getNamespace();
 
-    private List<KiePMMLModel> nodes;
+    KiePMMLModel getModel(String name);
 
-    public List<KiePMMLModel> getNodes() {
-        return nodes;
-    }
+    KiePMMLModel getModelById(String id);
 
-    public void setNodes(List<KiePMMLModel> nodes) {
-        this.nodes = nodes;
-    }
+    Map<String, KiePMMLModel> getAllModels();
 }

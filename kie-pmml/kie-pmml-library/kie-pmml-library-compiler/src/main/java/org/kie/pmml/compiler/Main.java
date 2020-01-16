@@ -18,7 +18,7 @@ package org.kie.pmml.compiler;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.kie.pmml.library.api.model.KiePMML;
+import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.compiler.executor.PMMLCompilerExecutor;
 import org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl;
 import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
@@ -33,7 +33,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         PMMLCompilerExecutor executor = new PMMLCompilerExecutorImpl(new ModelImplementationProviderFinderImpl());
         log.info("Calling executor... " + executor.toString());
-        final List<KiePMML> retrieved = executor.getResults("SOURCE");
+        final List<KiePMMLModel> retrieved = executor.getResults("SOURCE");
         log.info("KiePMMLModel retrieved " + retrieved + " " + retrieved.size());
         log.info("..done. Bye!!!");
     }

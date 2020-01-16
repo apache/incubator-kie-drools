@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.assembler.converter;
+package org.kie.pmml.runtime.api.executor;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.api.runtime.Context;
 
-/**
- * Actual implementations are required to convert <b>common</b> <code>KiePMMLModel</code>
- * to <code>KnowledgeBuilderResult</code>
- */
-public interface KiePMMLConverter {
+public interface PMMLContext extends Context {
 
-    /**
-     *
-     * @param source
-     * @return
-     */
-    KnowledgeBuilderResult getFromKiePMMLModel(KiePMMLModel source);
 
 }
