@@ -32,6 +32,8 @@ import org.drools.core.util.ClassUtils;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStream;
+import org.kie.kogito.rules.RuleUnitData;
+import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -42,12 +44,14 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
 
     private final String targetCanonicalName;
     private final String generatedFilePath;
+    private final String packageName;
 
     public RuleUnitDTOSourceClass( Class<?> ruleUnit ) {
         this.ruleUnit = ruleUnit;
 
         this.targetCanonicalName = ruleUnit.getSimpleName() + "DTO";
-        this.generatedFilePath = (ruleUnit.getPackage().getName() + "." + targetCanonicalName).replace('.', '/') + ".java";
+        this.packageName = new ReflectiveRuleUnitDescription(null,(Class<? extends RuleUnitData>) ruleUnit).getPackageName();
+        this.generatedFilePath = (packageName + "." + targetCanonicalName).replace('.', '/') + ".java";
     }
 
     @Override
@@ -58,7 +62,7 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
     @Override
     public String generate() {
         CompilationUnit cu = new CompilationUnit();
-        cu.setPackageDeclaration( ruleUnit.getPackage().getName() );
+        cu.setPackageDeclaration( packageName );
 
         ClassOrInterfaceDeclaration dtoClass = cu.addClass( targetCanonicalName, com.github.javaparser.ast.Modifier.Keyword.PUBLIC );
         dtoClass.addImplementedType( "java.util.function.Supplier<" + ruleUnit.getSimpleName() + ">" );

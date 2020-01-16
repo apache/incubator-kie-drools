@@ -59,7 +59,13 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
 
     @Override
     public String getPackageName() {
-        return ruleUnitClass.getPackage().getName();
+        Package aPackage = ruleUnitClass.getPackage();
+        if (aPackage == null) {
+            String canonicalName = ruleUnitClass.getCanonicalName();
+            return canonicalName.substring(0, canonicalName.length() - getSimpleName().length() - 1);
+        } else {
+            return aPackage.getName();
+        }
     }
 
     @Override
