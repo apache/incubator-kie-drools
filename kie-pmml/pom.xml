@@ -28,12 +28,14 @@
   <artifactId>kie-pmml</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE :: PMML - Module </name>
+  <name>KIE :: PMML</name>
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <modules>
     <module>kie-pmml-library</module>
-    <module>kie-pmml-assembler</module>
+    <module>kie-pmml-models</module>
+    <module>kie-pmml-runtime</module>
+    <module>kie-pmml-api</module>
   </modules>
 
 

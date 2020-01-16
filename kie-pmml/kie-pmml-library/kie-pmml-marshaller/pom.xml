@@ -11,7 +11,7 @@
 
   <artifactId>kie-pmml-marshaller</artifactId>
 
-  <name>KIE :: PMML - Marshaller </name>
+  <name>KIE :: PMML :: Library :: Marshaller </name>
   <description>Kie PMML Marshaller</description>
 
 

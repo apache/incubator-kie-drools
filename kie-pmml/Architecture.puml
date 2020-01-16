@@ -4,38 +4,70 @@ top to bottom direction
 
 package "PMML Module" {
 
+component api [
+        PMML API
+        This component defines API common to all PMML submodules
+        ]
+
 package "PMML Library" {
-    component marshaller [
+    /'component library_marshaller [
         PMML Marshaller
         This component is only responsible of plain marshalling/unmarshalling,
         generating kie-agnostic objects.
         It may also be an already existing library (jpmml ?)
+        ]'/
+    component library_api [
+            PMML Library API
+            Defines common objects shared by both Compiler and
+            model Model implementations, to decouple them
+            ]
+    component library_compiler [
+        PMML Library Compiler
+        Translate original PMML model to the objects
+        that will be stored inside kie knowledge base
         ]
-    component compiler [
-        PMML Compiler
-        This component uses objects created by the Marshaller and
-        iterate/navigate them to create more user-friendly
-        objects/model
-        ]
+}
+
+package "PMML Models" {
     component implementations [
-        PMML Algorithm implementations
-        For every "algorithm" there will be a specific module, to have them
+        PMML Model implementations
+        For every "model" there will be a specific module, to have them
         easily replaceable/pluggable.
         Compiler will invoke them, if they are available in the classpath.
         ]
 }
 
-component assembler [
-        PMML Assembler
-        This component is the connection point from the kie environment
-        (kie-server, kie-knowledge-base, etc) and the PMML Library.
-        It translates objects created by the Compiler to the kie-environment model.
+package "PMML Runtime" {
+
+    component runtime_api [
+        PMML Runtime API
+        This component defines API specific fo Kie runtime environment
         ]
 
+    component runtime_assembler [
+        PMML Runtime Assembler
+        Store objects created by compiler
+        inside kie knowledge base
+        ]
 
-compiler ..> marshaller : use
-compiler ..> implementations : use
-assembler --> "PMML Library" : use
+     component runtime_core [
+             PMML Runtime Core
+             Read objects from kie knowledge base
+             and use them to calculate PMML result
+             based on input data
+         ]
+}
+
+
+/'library_compiler --> marshaller : use'/
+library_api .> api : depends
+runtime_api .> api : depends
+library_compiler ..> library_api : depends
+implementations .> library_api : depends
+library_compiler -> implementations : use
+runtime_core .> runtime_api : depends
+runtime_assembler -> library_compiler : use
+runtime_assembler .> runtime_api : depends
 }
 
 @enduml

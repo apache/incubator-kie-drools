@@ -8,17 +8,16 @@
     <version>7.32.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>kie-pmml-library</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE :: PMML :: Library</name>
-  <description>PMML evaluator</description>
+  <artifactId>kie-pmml-runtime</artifactId>
+  <name>KIE :: PMML :: Runtime </name>
+  <description>Integration inside KIE runtime environment</description>
 
   <modules>
-    <module>kie-pmml-library-api</module>
-    <module>kie-pmml-library-compiler</module>
+    <module>kie-pmml-runtime-api</module>
+    <module>kie-pmml-runtime-assembler</module>
+    <module>kie-pmml-runtime-core</module>
   </modules>
-
 
 </project>

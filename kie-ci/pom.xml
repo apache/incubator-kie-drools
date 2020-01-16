@@ -11,8 +11,12 @@
 
   <groupId>org.kie</groupId>
   <artifactId>kie-ci</artifactId>
+  <packaging>pom</packaging>
 
   <name>KIE :: CI</name>
+  <modules>
+    <module>../kie-pmml/kie-pmml-models</module>
+  </modules>
 
   <properties>
     <java.module.name>org.kie.ci</java.module.name>

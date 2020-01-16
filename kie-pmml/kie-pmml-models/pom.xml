@@ -9,15 +9,14 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-library</artifactId>
+  <artifactId>kie-pmml-models</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE :: PMML :: Library</name>
-  <description>PMML evaluator</description>
+  <name>KIE :: PMML :: Models</name>
+  <description>PMML Models Implementations</description>
 
   <modules>
-    <module>kie-pmml-library-api</module>
-    <module>kie-pmml-library-compiler</module>
+    <module>kie-pmml-regression</module>
   </modules>
 
 
