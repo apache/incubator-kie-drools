@@ -57,6 +57,7 @@ import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
@@ -4290,6 +4291,17 @@ public class RuleModelDRLPersistenceImpl
             for (Expr expr : subExprs) {
                 comp.addConstraint(expr.asFieldConstraint(m,
                                                           factPattern));
+            }
+            String fieldName = "";
+            for (FieldConstraint field : comp.getConstraints()) {
+                if (field instanceof SingleFieldConstraint) {
+                    SingleFieldConstraint constraint = (SingleFieldConstraint) field;
+                    if (StringUtils.isEmpty(constraint.getFieldName()) && !StringUtils.isEmpty(constraint.getOperator())
+                            && (constraint.getOperator().equals("matches") || constraint.getOperator().equals("not matches"))) {
+                        constraint.setFieldName(fieldName);
+                    }
+                    fieldName = constraint.getFieldName();
+                }
             }
             return comp;
         }
