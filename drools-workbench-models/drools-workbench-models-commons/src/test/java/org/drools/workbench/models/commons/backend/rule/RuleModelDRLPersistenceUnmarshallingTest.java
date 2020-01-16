@@ -9696,4 +9696,33 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
                      sfp.getConstraintValueType());
     }
+
+    @Test
+    public void testNestedOr() {
+        final String drl = "rule \"my rule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "(\n" +
+                "   (\n" +
+                "      Term(effectiveDate < \"30-Sep-2018\") and \n" +
+                "      Policy($state : state == \"KS\" || == \"MN\" || == \"NM\" || == \"UT\")\n" +
+                "   )\n" +
+                "   or\n" +
+                "   (\n" +
+                "      Term(effectiveDate < \"23-Jun-2019\") and\n" +
+                "      ( \n" +
+                "         Policy(state == \"AZ\" || == \"IA\" || == \"NE\" || == \"SD\" )\n" +
+                "      ) \n" +
+                "   )\n" +
+                ") \n" +
+                "then \n" +
+                "end\n";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
 }
