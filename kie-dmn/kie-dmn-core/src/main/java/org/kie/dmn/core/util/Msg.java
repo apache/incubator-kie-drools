@@ -142,7 +142,11 @@ public final class Msg {
     public static final Message0 DTANALYSIS_1STNFVIOLATION_RULE_ORDER                = new Message0( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: hit policy Rule Order is a violation of First Normal Form; consider changing for example to Output Order or Collect");
     public static final Message1 DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES           = new Message1( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: Rules %s are duplicates");
     public static final Message2 DTANALYSIS_2NDNFVIOLATION                           = new Message2( DMNMessageType.DECISION_TABLE_2NDNFVIOLATION, "Second Normal Form Violation: Input %s is irrelevant for rules %s. Consider combining these rules over the irrelevant input");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE             = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "We recommend switching to HitPolicy UNIQUE for the Decision Table: %s");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_ANY                = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "We recommend switching to HitPolicy ANY for the Decision Table: %s");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY           = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "We recommend switching to HitPolicy PRIORITY for the Decision Table: %s");
 
+    
     public static interface Message {
         String getMask();
 
