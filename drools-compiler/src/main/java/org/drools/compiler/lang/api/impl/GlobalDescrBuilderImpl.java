@@ -15,7 +15,6 @@
 
 package org.drools.compiler.lang.api.impl;
 
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.GlobalDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.GlobalDescr;
@@ -26,12 +25,6 @@ public class GlobalDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBui
 
     protected GlobalDescrBuilderImpl( PackageDescrBuilder parent ) {
         super( parent, new GlobalDescr() );
-    }
-
-    public AnnotationDescrBuilder<GlobalDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<GlobalDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
-        descr.addAnnotation( annotation.getDescr() );
-        return annotation;
     }
 
     public GlobalDescrBuilder type( String type ) {
