@@ -42,8 +42,6 @@ import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
@@ -61,11 +59,8 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 
-import static com.github.javaparser.utils.Utils.capitalize;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
-import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleContext {
@@ -74,10 +69,8 @@ public class RuleContext {
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
-    private final boolean generatePatternDSL;
-
-    private PackageDescr pkgDescr;
     private RuleDescr descr;
+    private final boolean generatePatternDSL;
 
     private List<DeclarationSpec> allDeclarations = new ArrayList<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
@@ -122,23 +115,6 @@ public class RuleContext {
         this.generatePatternDSL = generatePatternDSL;
     }
 
-    public RuleContext withPackageDescr(PackageDescr pkgDescr) {
-        this.pkgDescr = pkgDescr;
-        return withDialectFromAttributes(pkgDescr.getAttributes());
-    }
-
-    public RuleContext withDialectFromAttributes(Collection<AttributeDescr> attributes) {
-        for (AttributeDescr a : attributes) {
-            if (a.getName().equals("dialect")) {
-                if (a.getValue().equals("mvel")) {
-                    setRuleDialect(RuleDialect.MVEL);
-                }
-                return this;
-            }
-        }
-        return this;
-    }
-
     private void findUnitDescr() {
         if (descr == null) {
             return;
@@ -169,73 +145,7 @@ public class RuleContext {
         if (ruDescr.isPresent()) {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
-            if (isLegacyRuleUnit()) {
-                addCompilationError( new UnknownRuleUnitError( unitName ) );
-            } else {
-                List<RuleUnitVariable> unitVariables = pkgDescr.getGlobals().stream()
-                        .map( g -> new GlobalRuleUnitVariable( typeResolver, g ) )
-                        .collect( toList() );
-                ruleUnitDescr = ruleUnitDescriptionLoader.generateDescription( pkgDescr.getNamespace() + "." + unitName, unitVariables );
-            }
-        }
-    }
-
-    public static class GlobalRuleUnitVariable implements RuleUnitVariable {
-
-        private final GlobalDescr global;
-        private final String name;
-        private final Class<?> type;
-        private final Class<?> dataSourceParameterType;
-        private final Class<?> boxedVarType;
-        private final String getter;
-
-        public GlobalRuleUnitVariable( TypeResolver typeResolver, GlobalDescr global ) {
-            this.global = global;
-            this.name = global.getIdentifier();
-            this.getter = "get" + capitalize(this.name);
-
-            try {
-                if ( global.getAnnotation( "datasource" ) != null ) {
-                    this.type = typeResolver.resolveType( "org.kie.kogito.rules.units.ListDataStore" );
-                    this.dataSourceParameterType = typeResolver.resolveType( global.getType() );;
-                } else {
-                    this.type = typeResolver.resolveType( global.getType() );
-                    this.dataSourceParameterType = null;
-                }
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
-            }
-
-            this.boxedVarType = convertFromPrimitiveType(this.type);
-        }
-
-        public boolean isDataSource() {
-            return dataSourceParameterType != null;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getter() {
-            return getter;
-        }
-
-        public Class<?> getType() {
-            return type;
-        }
-
-        public Class<?> getDataSourceParameterType() {
-            return dataSourceParameterType;
-        }
-
-        public Class<?> getBoxedVarType() {
-            return boxedVarType;
-        }
-
-        @Override
-        public String toString() {
-            return "global " + (isDataSource() ? "@datsource " : "") + global.getType() + " " + name;
+            addCompilationError( new UnknownRuleUnitError( unitName ) );
         }
     }
 
@@ -602,6 +512,17 @@ public class RuleContext {
                 definedVars.remove(v);
                 allDeclarations.add( scopedDeclarations.remove( id + v ) );
             } );
+        }
+    }
+
+    public void setDialectFromAttributes(Collection<AttributeDescr> attributes) {
+        for (AttributeDescr a : attributes) {
+            if (a.getName().equals("dialect")) {
+                if (a.getValue().equals("mvel")) {
+                    setRuleDialect(RuleDialect.MVEL);
+                }
+                return;
+            }
         }
     }
 }
