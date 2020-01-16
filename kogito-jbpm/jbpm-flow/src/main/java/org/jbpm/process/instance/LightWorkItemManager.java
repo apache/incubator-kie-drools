@@ -144,25 +144,7 @@ public class LightWorkItemManager implements WorkItemManager {
     }
 
     public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
-        WorkItem workItem = workItems.get(id);
-        // work item may have been aborted
-        if (workItem != null) {
-            if (!workItem.enforce(policies)) {
-                throw new NotAuthorizedException("Work item can be completed as it does not fulfil policies (e.g. security)");
-            }
-            ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
-            Transition<?> transition = new TransitionToComplete(results, Arrays.asList(policies));
-            eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
-            workItem.setResults(results); 
-            workItem.setPhaseId(Complete.ID);
-            workItem.setPhaseStatus(Complete.STATUS);
-            completePhase.apply(workItem, transition);
-            internalCompleteWorkItem(workItem);
-            
-            eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
-        } else {
-            throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
-        }
+        transitionWorkItem(id, new TransitionToComplete(results, Arrays.asList(policies)));                    
     }
     
     public void internalCompleteWorkItem(WorkItem workItem) {
@@ -178,6 +160,7 @@ public class LightWorkItemManager implements WorkItemManager {
  
     }
     
+    @SuppressWarnings("unchecked")
     public void transitionWorkItem(String id, Transition<?> transition) {
         WorkItem workItem = workItems.get(id);
         // work item may have been aborted
@@ -188,7 +171,15 @@ public class LightWorkItemManager implements WorkItemManager {
                 ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
                 eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
                 
-                handler.transitionToPhase(workItem, this, transition);
+                try {
+                    handler.transitionToPhase(workItem, this, transition);
+                } catch (UnsupportedOperationException e) {
+                    workItem.setResults((Map<String, Object>)transition.data()); 
+                    workItem.setPhaseId(Complete.ID);
+                    workItem.setPhaseStatus(Complete.STATUS);
+                    completePhase.apply(workItem, transition);
+                    internalCompleteWorkItem(workItem);                                        
+                }
                 
                 eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {

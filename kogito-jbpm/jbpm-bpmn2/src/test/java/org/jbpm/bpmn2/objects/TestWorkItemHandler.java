@@ -19,7 +19,11 @@ package org.jbpm.bpmn2.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.workitem.Active;
+import org.jbpm.process.instance.impl.workitem.Complete;
 import org.kie.api.runtime.process.*;
+import org.kie.kogito.process.workitem.Transition;
 
 public class TestWorkItemHandler implements WorkItemHandler {
 
@@ -27,6 +31,13 @@ public class TestWorkItemHandler implements WorkItemHandler {
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         workItems.add(workItem);
+        
+        if (workItem instanceof HumanTaskWorkItem) {
+            HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
+            
+            humanTaskWorkItem.setPhaseId(Active.ID);
+            humanTaskWorkItem.setPhaseStatus(Active.STATUS);
+        }
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -49,6 +60,15 @@ public class TestWorkItemHandler implements WorkItemHandler {
         List<WorkItem> result = new ArrayList<WorkItem>(workItems);
         workItems.clear();
         return result;
+    }
+
+    @Override
+    public void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
+        
+        
+        if (transition.phase().equals(Complete.ID)) {
+            ((org.drools.core.process.instance.WorkItemManager)manager).internalCompleteWorkItem((org.drools.core.process.instance.WorkItem) workItem);
+        }
     }
 
 }

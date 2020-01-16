@@ -17,6 +17,7 @@
     <module>events</module>
     <module>process-management-addon</module>
     <module>jobs</module>
+    <module>predictions</module>
   </modules>
 
   <dependencyManagement>

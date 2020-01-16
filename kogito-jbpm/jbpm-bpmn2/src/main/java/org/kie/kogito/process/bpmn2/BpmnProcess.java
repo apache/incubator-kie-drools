@@ -66,14 +66,18 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     public ProcessInstance<BpmnVariables> createInstance(BpmnVariables variables) {
         return new BpmnProcessInstance(this, variables, this.createLegacyProcessRuntime());
     }
-
+    
     public static List<BpmnProcess> from(Resource resource) {
+        return from(resource, null);
+    }
+
+    public static List<BpmnProcess> from(Resource resource, ProcessConfig config) {
         try {
             XmlProcessReader xmlReader = new XmlProcessReader(
                     BPMN_SEMANTIC_MODULES,
                     Thread.currentThread().getContextClassLoader());
             List<Process> processes = xmlReader.read(resource.getReader());
-            return processes.stream().map(BpmnProcess::new).collect(Collectors.toList());
+            return processes.stream().map(p -> (config == null ? new BpmnProcess(p) : new BpmnProcess(p, config))).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BpmnProcessReaderException(e);
         }

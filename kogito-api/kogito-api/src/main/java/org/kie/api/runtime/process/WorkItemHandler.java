@@ -76,7 +76,7 @@ public interface WorkItemHandler {
      * @param transition life cycle phase to be transition to
      */
     default void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
-        
+        throw new UnsupportedOperationException();
     }
 
 }
