@@ -35,7 +35,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
-        if (isStructured(className)) {
+        if (isStructuredInput(className)) {
             return convertResult(rawExpression, className, genericClasses);
         } else {
             return internalLiteralEvaluation(rawExpression, className);
@@ -44,7 +44,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     @Override
     public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
-        if (resultClass != null && isStructured(resultClass.getCanonicalName())) {
+        if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
             return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
@@ -52,11 +52,20 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     /**
-     * Check if className represents a structured type
-     * @param className Used to determine if a structured type is passed
+     * Check if resultClass represents a structured result
+     * @param resultClass
      * @return
      */
-    protected boolean isStructured(String className) {
+    protected boolean isStructuredResult(Class<?> resultClass) {
+        return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
+    }
+
+    /**
+     * Check if className represents a structured input
+     * @param className
+     * @return
+     */
+    protected boolean isStructuredInput(String className) {
         return ScenarioSimulationSharedUtils.isCollection(className);
     }
 

@@ -247,15 +247,15 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void isStructured() {
-        assertTrue(expressionEvaluatorLocal.isStructured(List.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructured(ArrayList.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructured(LinkedList.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructured(Map.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructured(HashMap.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructured(LinkedHashMap.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructured(Set.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructured(Integer.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructured(String.class.getCanonicalName()));
+    public void isStructuredInput() {
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(List.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(ArrayList.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedList.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(Map.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(HashMap.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedHashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(Set.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(Integer.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(String.class.getCanonicalName()));
     }
 }

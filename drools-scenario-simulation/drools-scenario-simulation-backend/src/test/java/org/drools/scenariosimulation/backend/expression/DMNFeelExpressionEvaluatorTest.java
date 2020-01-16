@@ -230,15 +230,15 @@ public class DMNFeelExpressionEvaluatorTest {
     }
 
     @Test
-    public void isStructured() {
-        assertTrue(expressionEvaluator.isStructured(List.class.getCanonicalName()));
-        assertTrue(expressionEvaluator.isStructured(ArrayList.class.getCanonicalName()));
-        assertTrue(expressionEvaluator.isStructured(LinkedList.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(Map.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(HashMap.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(LinkedHashMap.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(Set.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(Integer.class.getCanonicalName()));
-        assertFalse(expressionEvaluator.isStructured(String.class.getCanonicalName()));
+    public void isStructuredInput() {
+        assertTrue(expressionEvaluator.isStructuredInput(List.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructuredInput(ArrayList.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructuredInput(LinkedList.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Map.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(HashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(LinkedHashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Set.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Integer.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(String.class.getCanonicalName()));
     }
 }
