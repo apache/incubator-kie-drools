@@ -16,11 +16,18 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.kie.api.definition.process.Node;
 
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class AbstractCompositeNodeVisitor extends AbstractVisitor {
 
@@ -51,5 +58,20 @@ public class AbstractCompositeNodeVisitor extends AbstractVisitor {
         }
         
         return expression;
+    }
+    
+    
+    protected void visitVariableScope(String contextNode, VariableScope variableScope, BlockStmt body, Set<String> visitedVariables) {
+        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            for (Variable variable : variableScope.getVariables()) {
+
+                if (!visitedVariables.add(variable.getName())) {
+                    continue;
+                }
+                ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
+                ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
+                addFactoryMethodWithArgs(contextNode, body, "variable", new StringLiteralExpr(variable.getName()), variableValue);
+            }
+        }
     }
 }

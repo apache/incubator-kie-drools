@@ -35,6 +35,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -167,10 +168,14 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 
         VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
 
-        for (Node node : process.getNodes()) {
+        for (Node node : ((WorkflowProcessImpl)process).getNodesRecursively()) {
             if (node instanceof HumanTaskNode) {
                 HumanTaskNode humanTaskNode = (HumanTaskNode) node;
-                usertaskModels.add(new UserTaskModelMetaData(packageName, variableScope, humanTaskNode, process.getId()));
+                VariableScope nodeVariableScope = (VariableScope) ((ContextContainer)humanTaskNode.getNodeContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                if (nodeVariableScope == null) {
+                    nodeVariableScope = variableScope;
+                }
+                usertaskModels.add(new UserTaskModelMetaData(packageName, nodeVariableScope, humanTaskNode, process.getId()));
             }
         }
 

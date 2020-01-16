@@ -277,7 +277,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public WorkItem workItem(String workItemId, Policy<?>... policies) {
-        WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
+        WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstanceImpl)legacyProcessInstance()).getNodeInstances(true)
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId) && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
                 .findFirst()
@@ -294,7 +294,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public List<WorkItem> workItems(Policy<?>... policies) {
-        return ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
+        return ((WorkflowProcessInstanceImpl)legacyProcessInstance()).getNodeInstances(true)
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance)ni).getWorkItem().enforce(policies))
                 .map(ni -> new BaseWorkItem(ni.getId(),

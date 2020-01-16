@@ -16,6 +16,7 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,15 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        CompositeContextNode compositeContextNode = (CompositeContextNode) node;
+        CompositeContextNode compositeContextNode = (CompositeContextNode) node;        
         
         addFactoryMethodWithArgsWithAssignment(factoryField, body, CompositeNodeFactory.class, C_C_NODE_VAR + node.getId(), "compositeNode", new LongLiteralExpr(compositeContextNode.getId()));
         visitMetaData(compositeContextNode.getMetaData(), body, C_C_NODE_VAR + node.getId());
+        VariableScope variableScopeNode = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        
+        if (variableScope != null) {
+            visitVariableScope(C_C_NODE_VAR + node.getId(), variableScopeNode, body, new HashSet<>());
+        }
         
         // visit nodes
         visitNodes(C_C_NODE_VAR + node.getId(), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);      
@@ -77,4 +83,6 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
                                  new LongLiteralExpr(connection.getTo().getId()),
                                  new StringLiteralExpr(getOrDefault((String) ((ConnectionImpl) connection).getMetaData().get("UniqueId"), "")));
     }
+
+    
 }

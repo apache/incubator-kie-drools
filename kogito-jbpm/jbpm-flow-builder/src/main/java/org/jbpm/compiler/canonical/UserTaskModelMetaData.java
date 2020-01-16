@@ -157,7 +157,7 @@ public class UserTaskModelMetaData {
             Variable variable = variableScope.findVariable(entry.getValue());
 
             if (variable == null) {
-                throw new IllegalStateException("Task (input) " + humanTaskNode.getName() + " reference not existing variable " + entry.getKey());
+                throw new IllegalStateException("Task " + humanTaskNode.getName() +" (input) " + entry.getKey() + " reference not existing variable " + entry.getValue());
             }
 
             FieldDeclaration fd = new FieldDeclaration().addVariable(
@@ -247,7 +247,7 @@ public class UserTaskModelMetaData {
             Variable variable = variableScope.findVariable(entry.getValue());
 
             if (variable == null) {
-                throw new IllegalStateException("Task (output) " + humanTaskNode.getName() + " reference not existing variable " + entry.getValue());
+                throw new IllegalStateException("Task " + humanTaskNode.getName() +" (output) " + entry.getKey() + " reference not existing variable " + entry.getValue());
             }
 
             FieldDeclaration fd = new FieldDeclaration().addVariable(
