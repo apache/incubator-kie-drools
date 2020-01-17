@@ -22,11 +22,9 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -115,7 +113,8 @@ public class GraphQLSchemaManager {
                     return builder;
                 })
                 .type("ProcessInstance", builder -> {
-                    builder.dataFetcher("childProcessInstanceId", this::getChildProcessInstancesValues);
+                    builder.dataFetcher("parentProcessInstance", this::getParentProcessInstanceValue);
+                    builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     return builder;
                 })
                 .type("ProcessInstanceState", builder -> {
@@ -136,12 +135,21 @@ public class GraphQLSchemaManager {
         return schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
     }
 
-    private Set<String> getChildProcessInstancesValues(DataFetchingEnvironment env) {
+    private Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
         Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
         query.filter(singletonList(equalTo("parentProcessInstanceId", source.getId())));
-        Collection<ProcessInstance> pil = query.execute();
-        return pil.stream().map(pi -> pi.getId()).collect(Collectors.toSet());
+        return query.execute();
+    }
+
+    private ProcessInstance getParentProcessInstanceValue(DataFetchingEnvironment env) {
+        ProcessInstance source = env.getSource();
+        if (source.getParentProcessInstanceId() == null) {
+            return null;
+        }
+        Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
+        query.filter(singletonList(equalTo("id", source.getParentProcessInstanceId())));
+        return query.execute().get(0);
     }
 
     private Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {

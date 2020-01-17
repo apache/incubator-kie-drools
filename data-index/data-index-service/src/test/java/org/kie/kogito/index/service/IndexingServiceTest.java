@@ -239,7 +239,7 @@ public class IndexingServiceTest {
         KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         indexProcessCloudEvent(endEvent);
 
-        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent, subProcessInstanceId);
 
         KogitoUserTaskCloudEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId, processInstanceId, processId, state);
 
@@ -336,7 +336,7 @@ public class IndexingServiceTest {
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
     }
 
-    private void validateProcessInstance(String query, KogitoProcessCloudEvent event, String... childProcessInstances) {
+    private void validateProcessInstance(String query, KogitoProcessCloudEvent event, String childProcessInstanceId) {
         LOGGER.debug("GraphQL query: {}", query);
         given().contentType(ContentType.JSON).body(query)
                 .when().post("/graphql")
@@ -346,9 +346,12 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].rootProcessId", is(event.getRootProcessId()))
                 .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
                 .body("data.ProcessInstances[0].parentProcessInstanceId", is(event.getParentProcessInstanceId()))
+                .body("data.ProcessInstances[0].parentProcessInstance.id", event.getParentProcessInstanceId() == null ? is(nullValue()) : is(event.getParentProcessInstanceId()))
+                .body("data.ProcessInstances[0].parentProcessInstance.processName", event.getParentProcessInstanceId() == null ? is(nullValue()) : is(event.getData().getProcessName()))
                 .body("data.ProcessInstances[0].start", is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].end", event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].childProcessInstanceId", childProcessInstances == null ? isA(Collection.class) : hasItems(childProcessInstances))
+                .body("data.ProcessInstances[0].childProcessInstances[0].id", childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
+                .body("data.ProcessInstances[0].childProcessInstances[0].processName", childProcessInstanceId == null ? is(nullValue()) : is(event.getData().getProcessName()))
                 .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
                 .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
                 .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
@@ -621,9 +624,9 @@ public class IndexingServiceTest {
         indexProcessCloudEvent(event);
 
         validateProcessInstance(getProcessInstanceByParentProcessInstanceId(processInstanceId), event);
-        validateProcessInstance(getProcessInstanceByIdAndNullParentProcessInstanceId(processInstanceId, true), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndNullParentProcessInstanceId(processInstanceId, true), endEvent, subProcessInstanceId);
         validateProcessInstance(getProcessInstanceByRootProcessInstanceId(processInstanceId), event);
-        validateProcessInstance(getProcessInstanceByIdAndNullRootProcessInstanceId(processInstanceId, true), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndNullRootProcessInstanceId(processInstanceId, true), endEvent, subProcessInstanceId);
         validateProcessInstance(getProcessInstanceById(processInstanceId), endEvent, subProcessInstanceId);
         validateProcessInstance(getProcessInstanceByIdAndParentProcessInstanceId(subProcessInstanceId, processInstanceId), event);
 

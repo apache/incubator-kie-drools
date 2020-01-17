@@ -54,7 +54,8 @@ public class GraphQLUtils {
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstanceId");
+        QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstances { id, processName }");
+        QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", parentProcessInstance { id, processName }");
 
         try {
             JsonNode node = getObjectMapper().readTree(readFileContent("graphql_queries.json"));

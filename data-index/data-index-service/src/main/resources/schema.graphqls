@@ -25,7 +25,8 @@ type ProcessInstance {
     variables: String
     start: DateTime!
     end: DateTime
-    childProcessInstanceId: [String!]
+    parentProcessInstance: ProcessInstance
+    childProcessInstances: [ProcessInstance!]
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!
