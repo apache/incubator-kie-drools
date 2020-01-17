@@ -123,7 +123,7 @@ public class MVELExpressionEvaluatorTest {
                                                                                                                  "test.add(\"Michael\");\n" +
                                                                                                                  "test;"),
                                                                                           ArrayList.class.getCanonicalName(),
-                                                                                          new ArrayList<>()
+                                                                                          Collections.emptyList()
         ));
 
         HashMap<String, String> expectedMap = new HashMap<String, String>() {{
@@ -132,14 +132,14 @@ public class MVELExpressionEvaluatorTest {
 
         assertEquals(expectedMap, evaluator.evaluateLiteralExpression(mvelExpression("[\"Jim\" : \"Person\"]"),
                                                                       HashMap.class.getCanonicalName(),
-                                                                      new ArrayList<>()
+                                                                      Collections.emptyList()
         ));
         assertEquals(expectedMap, evaluator.evaluateLiteralExpression(mvelExpression("a = \"Person\";\n" +
                                                                                              "test = new java.util.HashMap();\n" +
                                                                                              "test.put(\"Jim\", a);\n" +
                                                                                              "test;"),
                                                                       HashMap.class.getCanonicalName(),
-                                                                      new ArrayList<>()
+                                                                      Collections.emptyList()
         ));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("1+", String.class.getCanonicalName(), Collections.emptyList()))
