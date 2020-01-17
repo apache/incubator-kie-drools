@@ -419,6 +419,54 @@ For example, this will generate this JSON:
 }
 ----
 
+
+[[integrationWithQuarkus]]
+== Quarkus
+
+The Quarkus extension for OptaPlanner and its guide is coming soon.
+
+
+[[integrationWithSpringBoot]]
+== Spring Boot
+
+To use OptaPlanner on Spring Boot, add the `optaplanner-spring-boot-starter` dependency
+and read the Spring guide _Constraint solving AI with OptaPlanner_.
+
+[WARNING]
+====
+DRL score calculation is currently incompatible with the dependency `spring-boot-devtools`:
+none of the DRL rules will fire, due to ClassLoader issues.
+====
+
+These properties are supported in Spring's `application.properties`:
+
+optaplanner.solver-manager.parallel-solver-count::
+The number of solvers that run in parallel.
+This directly influences CPU consumption.
+Defaults to `AUTO`.
+optaplanner.solver-config-xml::
+A classpath resource to read the solver configuration XML.
+Defaults to `solverConfig.xml`.
+If this property isn't specified, that file is optional.
+optaplanner.solver.environment-mode::
+Enable runtime assertions to detect common bugs in your implementation during development.
+optaplanner.solver.move-thread-count::
+Enable multithreaded solving for a single problem, which increases CPU consumption.
+Defaults to `NONE`.
+See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
+optaplanner.solver.termination.spent-limit::
+How long the solver can run.
+For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
+optaplanner.solver.termination.unimproved-spent-limit::
+How long the solver can run without finding a new best solution after finding a new best solution.
+For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
+optaplanner.solver.termination.best-score-limit::
+Terminates the solver when a specific or higher score has been reached.
+For example: `0hard/-1000soft` terminates when the best score changes from `0hard/-1200soft` to `0hard/-900soft`.
+Wildcards are supported to replace numbers.
+For example: `0hard/*soft` to terminate when any feasible score is reached.
+
+
 [[integrationWithSoaAndEsb]]
 == SOA and ESB
 
@@ -525,20 +573,6 @@ Let's create a module called __org.optaplanner__:
    </deployment>
 </jboss-deployment-structure>
 ----
-
-
-[[integrationWithSpringBoot]]
-=== Spring Boot
-
-Normally OptaPlanner just works on Spring Boot, simply add the `optaplanner-core` dependency.
-If it has trouble finding classpath resources (such as the solver config, score DRL's and domain classes),
-provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>.
-
-[WARNING]
-====
-Drools score calculation is currently incompatible with the dependency `spring-boot-devtools`:
-none of the DRL rules will fire, due to ClassLoader issues.
-====
 
 
 [[integrationWithJPMS]]
