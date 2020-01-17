@@ -64,6 +64,13 @@ public class DMNFeelExpressionEvaluatorTest {
         List<BigDecimal> contextListValue = Collections.singletonList(BigDecimal.valueOf(23));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [23]").toString(), contextListValue, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [2]").toString(), contextListValue, List.class));
+        List<BigDecimal> contextListValue2 = Arrays.asList(BigDecimal.valueOf(23), BigDecimal.valueOf(32));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32]").toString(), contextListValue2, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32, 123]").toString(), contextListValue2, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class));
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
