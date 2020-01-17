@@ -25,18 +25,18 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-public class DroolsTriToBiGroupByInvoker<A, B, C, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, TriTuple<A, B, C>> {
+public class DroolsTriToBiGroupByInvoker<A, B, C, NewA, NewB>
+        extends DroolsAbstractGroupByInvoker<TriTuple<A, B, C>> {
 
-    private final TriConstraintCollector<A, B, C, ResultContainer, NewB> collector;
+    private final TriConstraintCollector<A, B, C, ?, NewB> collector;
     private final TriFunction<A, B, C, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
     private final Variable<B> bVariable;
     private final Variable<C> cVariable;
 
     public DroolsTriToBiGroupByInvoker(TriFunction<A, B, C, NewA> groupKeyMapping,
-            TriConstraintCollector<A, B, C, ResultContainer, NewB> collector, Variable<A> aVariable,
-            Variable<B> bVariable, Variable<C> cVariable) {
+            TriConstraintCollector<A, B, C, ?, NewB> collector, Variable<A> aVariable, Variable<B> bVariable,
+            Variable<C> cVariable) {
         this.collector = collector;
         this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
@@ -45,7 +45,7 @@ public class DroolsTriToBiGroupByInvoker<A, B, C, ResultContainer, NewA, NewB>
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, TriTuple<A, B, C>, ?> newContext() {
+    protected DroolsAbstractGroupBy<TriTuple<A, B, C>, ?> newContext() {
         return new DroolsTriToBiGroupBy<>(groupKeyMapping, collector);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public interface QuadFunction<A, B, C, D, R> {
      * @param a the first function argument
      * @param b the second function argument
      * @param c the third function argument
-     * @param d the third function argument
+     * @param d the fourth function argument
      * @return the function result
      */
     R apply(A a, B b, C c, D d);

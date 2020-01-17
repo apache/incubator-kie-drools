@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -200,6 +201,21 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
                 new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping, collector);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
+            TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+            TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+            TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping, collectorC, collectorD);
         addChildStream(stream);
         return stream;
     }

@@ -23,11 +23,11 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsTriGroupByAccumulator<A, B, C, ResultContainer, NewA, NewB, NewC>
-    extends DroolsAbstractGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
+    extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;

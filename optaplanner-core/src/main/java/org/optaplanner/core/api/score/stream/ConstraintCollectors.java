@@ -32,14 +32,19 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 
@@ -113,68 +118,165 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countQuad() {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b, c, d) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countLongQuad() {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b, c, d) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
     // ************************************************************************
     // countDistinct
     // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
-        class CountDistinctResultContainer {
-            int count = 0;
-            Map<Object, int[]> objectCountMap = new HashMap<>();
-        }
         return new DefaultUniConstraintCollector<>(
                 CountDistinctResultContainer::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
-                    int[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new int[1]);
-                    if (objectCount[0] == 0) {
-                        resultContainer.count++;
-                    }
-                    objectCount[0]++;
-                    return (() -> {
-                        int[] objectCount2 = resultContainer.objectCountMap.get(value);
-                        if (objectCount2 == null) {
-                            throw new IllegalStateException("Impossible state: the value (" + value
-                                    + ") of A (" + a + ") is removed more times than it was added.");
-                        }
-                        objectCount2[0]--;
-                        if (objectCount2[0] == 0) {
-                            resultContainer.objectCountMap.remove(value);
-                            resultContainer.count--;
-                        }
-                    });
+                    return innerCountDistinct(resultContainer, value);
                 },
                 resultContainer -> resultContainer.count);
     }
 
     public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
-        class CountDistinctResultContainer {
-            long count = 0L;
-            Map<Object, long[]> objectCountMap = new HashMap<>();
-        }
         return new DefaultUniConstraintCollector<>(
-                CountDistinctResultContainer::new,
+                CountDistinctLongResultContainer::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
-                    long[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new long[1]);
-                    if (objectCount[0] == 0L) {
-                        resultContainer.count++;
-                    }
-                    objectCount[0]++;
-                    return (() -> {
-                        long[] objectCount2 = resultContainer.objectCountMap.get(value);
-                        if (objectCount2 == null) {
-                            throw new IllegalStateException("Impossible state: the value (" + value
-                                    + ") of A (" + a + ") is removed more times than it was added.");
-                        }
-                        objectCount2[0]--;
-                        if (objectCount2[0] == 0L) {
-                            resultContainer.objectCountMap.remove(value);
-                            resultContainer.count--;
-                        }
-                    });
+                    return innerCountDistinctLong(resultContainer, value);
                 },
                 resultContainer -> resultContainer.count);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> countDistinct(
+            BiFunction<A, B, ?> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                CountDistinctResultContainer::new,
+                (resultContainer, a, b) -> {
+                    Object value = groupValueMapping.apply(a, b);
+                    return innerCountDistinct(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> countDistinctLong(
+            BiFunction<A, B, ?> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                CountDistinctLongResultContainer::new,
+                (resultContainer, a, b) -> {
+                    Object value = groupValueMapping.apply(a, b);
+                    return innerCountDistinctLong(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countDistinct(
+            TriFunction<A, B, C, ?> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                CountDistinctResultContainer::new,
+                (resultContainer, a, b, c) -> {
+                    Object value = groupValueMapping.apply(a, b, c);
+                    return innerCountDistinct(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countDistinctLong(
+            TriFunction<A, B, C, ?> groupValueMapping) {
+        return new DefaultTriConstraintCollector<>(
+                CountDistinctLongResultContainer::new,
+                (resultContainer, a, b, c) -> {
+                    Object value = groupValueMapping.apply(a, b, c);
+                    return innerCountDistinctLong(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countDistinct(
+            QuadFunction<A, B, C, D, ?> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                CountDistinctResultContainer::new,
+                (resultContainer, a, b, c, d) -> {
+                    Object value = groupValueMapping.apply(a, b, c, d);
+                    return innerCountDistinct(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countDistinctLong(
+            QuadFunction<A, B, C, D, ?> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                CountDistinctLongResultContainer::new,
+                (resultContainer, a, b, c, d) -> {
+                    Object value = groupValueMapping.apply(a, b, c, d);
+                    return innerCountDistinctLong(resultContainer, value);
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    private static class CountDistinctResultContainer {
+        int count = 0;
+        Map<Object, int[]> objectCountMap = new HashMap<>();
+    }
+
+    private static Runnable innerCountDistinct(CountDistinctResultContainer resultContainer, Object value) {
+        int[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new int[1]);
+        if (objectCount[0] == 0L) {
+            resultContainer.count++;
+        }
+        objectCount[0]++;
+        return (() -> {
+            int[] objectCount2 = resultContainer.objectCountMap.get(value);
+            if (objectCount2 == null) {
+                throw new IllegalStateException("Impossible state: the value (" + value +
+                        ") is removed more times than it was added.");
+            }
+            objectCount2[0]--;
+            if (objectCount2[0] == 0L) {
+                resultContainer.objectCountMap.remove(value);
+                resultContainer.count--;
+            }
+        });
+    }
+
+    private static class CountDistinctLongResultContainer {
+        long count = 0L;
+        Map<Object, long[]> objectCountMap = new HashMap<>();
+    }
+
+    private static Runnable innerCountDistinctLong(CountDistinctLongResultContainer resultContainer, Object value) {
+        long[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new long[1]);
+        if (objectCount[0] == 0L) {
+            resultContainer.count++;
+        }
+        objectCount[0]++;
+        return (() -> {
+            long[] objectCount2 = resultContainer.objectCountMap.get(value);
+            if (objectCount2 == null) {
+                throw new IllegalStateException("Impossible state: the value (" + value +
+                        ") is removed more times than it was added.");
+            }
+            objectCount2[0]--;
+            if (objectCount2[0] == 0L) {
+                resultContainer.objectCountMap.remove(value);
+                resultContainer.count--;
+            }
+        });
     }
 
     // ************************************************************************
@@ -227,7 +329,8 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A> UniConstraintCollector<A, ?, Duration> sumDuration(Function<? super A, Duration> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Duration> sumDuration(
+            Function<? super A, Duration> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new Duration[] { Duration.ZERO },
                 (resultContainer, a) -> {
@@ -387,6 +490,78 @@ public final class ConstraintCollectors {
                 () -> new Period[] { Period.ZERO },
                 (resultContainer, a, b, c) -> {
                     Period value = groupValueMapping.apply(a, b, c);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> sum(
+            ToIntQuadFunction<? super A, ? super B, ? super C, ? super D> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b, c, d) -> {
+                    int value = groupValueMapping.applyAsInt(a, b, c, d);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> sumLong(
+            ToLongQuadFunction<? super A, ? super B, ? super C, ? super D> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b, c, d) -> {
+                    long value = groupValueMapping.applyAsLong(a, b, c, d);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal> sumBigDecimal(
+            QuadFunction<? super A, ? super B, ? super C, ? super D, BigDecimal> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new BigDecimal[] { BigDecimal.ZERO },
+                (resultContainer, a, b, c, d) -> {
+                    BigDecimal value = groupValueMapping.apply(a, b, c, d);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigInteger> sumBigInteger(
+            QuadFunction<? super A, ? super B, ? super C, ? super D, BigInteger> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new BigInteger[] { BigInteger.ZERO },
+                (resultContainer, a, b, c, d) -> {
+                    BigInteger value = groupValueMapping.apply(a, b, c, d);
+                    resultContainer[0] = resultContainer[0].add(value);
+                    return (() -> resultContainer[0] = resultContainer[0].subtract(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Duration> sumDuration(
+            QuadFunction<? super A, ? super B, ? super C, ? super D, Duration> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new Duration[] { Duration.ZERO },
+                (resultContainer, a, b, c, d) -> {
+                    Duration value = groupValueMapping.apply(a, b, c, d);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Period> sumPeriod(
+            QuadFunction<? super A, ? super B, ? super C, ? super D, Period> groupValueMapping) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new Period[] { Period.ZERO },
+                (resultContainer, a, b, c, d) -> {
+                    Period value = groupValueMapping.apply(a, b, c, d);
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },

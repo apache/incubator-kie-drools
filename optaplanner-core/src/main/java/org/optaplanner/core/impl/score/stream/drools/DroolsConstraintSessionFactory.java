@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 import static java.util.stream.Collectors.toList;
@@ -81,11 +82,14 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
                      * Tuple<A, B, ...>. In the latter case, we adapt to the former.
                      */
                     if (item instanceof BiTuple) {
-                        BiTuple<?, ?> pair = (BiTuple<?, ?>) item;
-                        return Stream.of(pair.a, pair.b);
+                        BiTuple<?, ?> tuple = (BiTuple<?, ?>) item;
+                        return Stream.of(tuple.a, tuple.b);
                     } else if (item instanceof TriTuple) {
-                        TriTuple<?, ?, ?> pair = (TriTuple<?, ?, ?>) item;
-                        return Stream.of(pair.a, pair.b, pair.c);
+                        TriTuple<?, ?, ?> tuple = (TriTuple<?, ?, ?>) item;
+                        return Stream.of(tuple.a, tuple.b, tuple.c);
+                    } else if (item instanceof QuadTuple) {
+                        QuadTuple<?, ?, ?, ?> tuple = (QuadTuple<?, ?, ?, ?>) item;
+                        return Stream.of(tuple.a, tuple.b, tuple.c, tuple.d);
                     } else {
                         return Stream.of(item);
                     }

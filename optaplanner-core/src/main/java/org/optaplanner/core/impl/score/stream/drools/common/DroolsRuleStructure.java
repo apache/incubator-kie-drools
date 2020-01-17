@@ -34,6 +34,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
@@ -179,8 +180,8 @@ public abstract class DroolsRuleStructure {
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair.b));
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
@@ -194,10 +195,29 @@ public abstract class DroolsRuleStructure {
         Variable<NewB> newB = createVariable("newB");
         Variable<NewC> newC = createVariable("newC");
         DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair.b))
-                .expand(p -> p.bind(newC, pair -> (NewC) pair.c));
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b))
+                .expand(p -> p.bind(newC, tuple -> tuple.c));
         return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD> regroupBiToQuad(
+            Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
+            PatternDSL.PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern,
+            ViewItem<?> accumulatePattern) {
+        Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
+                (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) createVariable(QuadTuple.class, "groupKey", from(newSource));
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        Variable<NewC> newC = createVariable("newC");
+        Variable<NewD> newD = createVariable("newD");
+        DroolsPatternBuilder<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b))
+                .expand(p -> p.bind(newC, tuple -> tuple.c))
+                .expand(p -> p.bind(newD, tuple -> tuple.d));
+        return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 

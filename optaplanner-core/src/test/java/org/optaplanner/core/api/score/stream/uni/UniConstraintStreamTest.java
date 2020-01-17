@@ -777,6 +777,43 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-2, entityGroup1, value1, 2));
     }
 
+    @Test
+    public void groupBy_2Mapping2Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishValue value1 = new TestdataLavishValue("MyValue", solution.getFirstValueGroup());
+        solution.getValueList().add(value1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, value1);
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", entityGroup1, value1);
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue, count(), count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup, value, count, sameCount) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-7, solution.getFirstEntityGroup(), solution.getFirstValue(), 7, 7),
+                assertMatchWithScore(-2, entityGroup1, value1, 2, 2),
+                assertMatchWithScore(-1, entityGroup1, solution.getFirstValue(), 1, 1));
+
+        // Incremental
+        scoreDirector.beforeProblemPropertyChanged(entity2);
+        entity2.setEntityGroup(solution.getFirstEntityGroup());
+        scoreDirector.afterProblemPropertyChanged(entity2);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-8, solution.getFirstEntityGroup(), solution.getFirstValue(), 8, 8),
+                assertMatchWithScore(-2, entityGroup1, value1, 2, 2));
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

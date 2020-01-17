@@ -38,6 +38,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
@@ -110,8 +112,8 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         return mutator.apply(tupleSet, pattern, accumulate);
     }
 
-    protected <NewA, NewB, InTuple, __> DroolsBiCondition<NewA, NewB> groupWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<__, InTuple>> invokerSupplier) {
+    protected <NewA, NewB, InTuple> DroolsBiCondition<NewA, NewB> groupWithCollect(
+            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
         return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
             DroolsBiRuleStructure<NewA, NewB> newRuleStructure =
                     ruleStructure.regroupBi((Variable) var, (PatternDef) pattern, accumulate);
@@ -119,8 +121,8 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         });
     }
 
-    protected <NewA, NewB, NewC, InTuple, __> DroolsTriCondition<NewA, NewB, NewC> groupBiWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<__, InTuple>> invokerSupplier) {
+    protected <NewA, NewB, NewC, InTuple> DroolsTriCondition<NewA, NewB, NewC> groupBiWithCollect(
+            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
         return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
             DroolsTriRuleStructure<NewA, NewB, NewC> newRuleStructure =
                     ruleStructure.regroupBiToTri((Variable) var, (PatternDef) pattern, accumulate);
@@ -128,8 +130,17 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         });
     }
 
-    private <InTuple, R extends DroolsRuleStructure, C extends DroolsCondition<R>, __> C universalGroupWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<__, InTuple>> invokerSupplier,
+    protected <NewA, NewB, NewC, NewD, InTuple> DroolsQuadCondition<NewA, NewB, NewC, NewD> groupBiWithCollectBi(
+            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
+        return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
+            DroolsQuadRuleStructure<NewA, NewB, NewC, NewD> newRuleStructure =
+                    ruleStructure.regroupBiToQuad((Variable) var, (PatternDef) pattern, accumulate);
+            return new DroolsQuadCondition<>(newRuleStructure);
+        });
+    }
+
+    private <InTuple, R extends DroolsRuleStructure, C extends DroolsCondition<R>> C universalGroupWithCollect(
+            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier,
             Mutator<InTuple, R, C> mutator) {
         Variable<Set<InTuple>> tupleSet =
                 (Variable<Set<InTuple>>) ruleStructure.createVariable(Set.class, "tupleSet");

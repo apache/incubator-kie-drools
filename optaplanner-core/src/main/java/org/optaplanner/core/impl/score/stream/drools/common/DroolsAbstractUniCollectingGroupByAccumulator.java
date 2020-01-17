@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.io.Serializable;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple> implements Serializable {
+public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple>
+        implements GroupByAccumulator<InTuple, OutTuple> {
 
     // Containers may be identical in type and contents, yet they should still not count as the same container.
     private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
@@ -33,6 +33,7 @@ public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple,
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
     private final transient Set<OutTuple> resultSet = new LinkedHashSet<>(0);
 
+    @Override
     public Runnable accumulate(InTuple input) {
         KeyTuple key = toKey(input);
         ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
@@ -56,6 +57,7 @@ public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple,
         return count == 1L ? null : count - 1L;
     }
 
+    @Override
     public Set<OutTuple> finish() {
         resultSet.clear();
         for (Map.Entry<KeyTuple, ResultContainer> entry : containersMap.entrySet()) {

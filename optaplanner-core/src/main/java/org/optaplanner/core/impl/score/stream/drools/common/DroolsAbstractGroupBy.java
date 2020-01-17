@@ -23,11 +23,11 @@ import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
 
-public abstract class DroolsAbstractGroupBy<ResultContainer, InTuple, OutTuple> implements Serializable {
+public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
-    private DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> acc;
+    private GroupByAccumulator<InTuple, OutTuple> acc;
 
     public void init() {
         acc = newAccumulator();
@@ -54,6 +54,6 @@ public abstract class DroolsAbstractGroupBy<ResultContainer, InTuple, OutTuple> 
         return acc.finish();
     }
 
-    protected abstract DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> newAccumulator();
+    protected abstract GroupByAccumulator<InTuple, OutTuple> newAccumulator();
 
 }

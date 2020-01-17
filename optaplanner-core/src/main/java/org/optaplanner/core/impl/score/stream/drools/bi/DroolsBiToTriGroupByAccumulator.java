@@ -23,11 +23,11 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, NewC> extends
-        DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
+        DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.function.Predicate;
  * This is the four-arity specialization of {@link Predicate}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
- * whose functional method is {@link #test(Object, Object, Object)}.
+ * whose functional method is {@link #test(Object, Object, Object, Object)}.
  *
  * @param <A> the type of the first argument to the predicate
  * @param <B> the type of the second argument the predicate

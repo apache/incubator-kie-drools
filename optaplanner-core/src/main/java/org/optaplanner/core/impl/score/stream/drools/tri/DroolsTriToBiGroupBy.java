@@ -20,23 +20,23 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsTriToBiGroupBy<A, B, C, ResultContainer, NewA, NewB>
-    extends DroolsAbstractGroupBy<ResultContainer, TriTuple<A, B, C>, BiTuple<NewA, NewB>> {
+final class DroolsTriToBiGroupBy<A, B, C, NewA, NewB>
+    extends DroolsAbstractGroupBy<TriTuple<A, B, C>, BiTuple<NewA, NewB>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyMapping;
-    private final TriConstraintCollector<A, B, C, ResultContainer, NewB> collector;
+    private final TriConstraintCollector<A, B, C, ?, NewB> collector;
 
     public DroolsTriToBiGroupBy(TriFunction<A, B, C, NewA> groupKeyMapping,
-            TriConstraintCollector<A, B, C, ResultContainer, NewB> collector) {
+            TriConstraintCollector<A, B, C, ?, NewB> collector) {
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, ?, BiTuple<NewA, NewB>> newAccumulator() {
+    protected GroupByAccumulator<TriTuple<A, B, C>, BiTuple<NewA, NewB>> newAccumulator() {
         return new DroolsTriToBiGroupByAccumulator<>(groupKeyMapping, collector);
     }
 

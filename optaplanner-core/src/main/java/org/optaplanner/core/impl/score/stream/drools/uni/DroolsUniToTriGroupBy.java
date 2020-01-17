@@ -20,25 +20,25 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC>
-        extends DroolsAbstractGroupBy<ResultContainer, A, TriTuple<NewA, NewB, NewC>> {
+final class DroolsUniToTriGroupBy<A, NewA, NewB, NewC>
+        extends DroolsAbstractGroupBy<A, TriTuple<NewA, NewB, NewC>> {
 
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
-    private final UniConstraintCollector<A, ResultContainer, NewC> collector;
+    private final UniConstraintCollector<A, ?, NewC> collector;
 
     public DroolsUniToTriGroupBy(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
-            UniConstraintCollector<A, ResultContainer, NewC> collector) {
+            UniConstraintCollector<A, ?, NewC> collector) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, A, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+    protected GroupByAccumulator<A, TriTuple<NewA, NewB, NewC>> newAccumulator() {
         return new DroolsUniToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 

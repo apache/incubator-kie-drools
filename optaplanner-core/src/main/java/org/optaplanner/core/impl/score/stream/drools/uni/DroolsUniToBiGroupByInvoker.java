@@ -23,22 +23,22 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsUniToBiGroupByInvoker<A, ResultContainer, NewA, NewB>
-    extends DroolsAbstractGroupByInvoker<ResultContainer, A> {
+public class DroolsUniToBiGroupByInvoker<A, NewA, NewB>
+    extends DroolsAbstractGroupByInvoker<A> {
 
-    private final UniConstraintCollector<A, ResultContainer, NewB> collector;
+    private final UniConstraintCollector<A, ?, NewB> collector;
     private final Function<A, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
 
-    public DroolsUniToBiGroupByInvoker(Function<A, NewA> groupKeyMapping,
-            UniConstraintCollector<A, ResultContainer, NewB> collector, Variable<A> aVariable) {
+    public DroolsUniToBiGroupByInvoker(Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ?, NewB> collector,
+            Variable<A> aVariable) {
         this.collector = collector;
         this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, A, ?> newContext() {
+    protected DroolsAbstractGroupBy<A, ?> newContext() {
         return new DroolsUniToBiGroupBy<>(groupKeyMapping, collector);
     }
 

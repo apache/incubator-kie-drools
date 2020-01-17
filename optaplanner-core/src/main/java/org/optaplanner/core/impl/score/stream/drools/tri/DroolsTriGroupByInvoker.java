@@ -25,10 +25,10 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-public class DroolsTriGroupByInvoker<A, B, C, ResultContainer, NewA, NewB, NewC>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, TriTuple<A, B, C>> {
+public class DroolsTriGroupByInvoker<A, B, C, NewA, NewB, NewC>
+        extends DroolsAbstractGroupByInvoker<TriTuple<A, B, C>> {
 
-    private final TriConstraintCollector<A, B, C, ResultContainer, NewC> collector;
+    private final TriConstraintCollector<A, B, C, ?, NewC> collector;
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;
     private final Variable<A> aVariable;
@@ -36,9 +36,8 @@ public class DroolsTriGroupByInvoker<A, B, C, ResultContainer, NewA, NewB, NewC>
     private final Variable<C> cVariable;
 
     public DroolsTriGroupByInvoker(TriFunction<A, B, C, NewA> groupKeyAMapping,
-            TriFunction<A, B, C, NewB> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainer, NewC> collector, Variable<A> aVariable,
-            Variable<B> bVariable, Variable<C> cVariable) {
+            TriFunction<A, B, C, NewB> groupKeyBMapping, TriConstraintCollector<A, B, C, ?, NewC> collector,
+            Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable) {
         this.collector = collector;
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
@@ -48,7 +47,7 @@ public class DroolsTriGroupByInvoker<A, B, C, ResultContainer, NewA, NewB, NewC>
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, TriTuple<A, B, C>, ?> newContext() {
+    protected DroolsAbstractGroupBy<TriTuple<A, B, C>, ?> newContext() {
         return new DroolsTriGroupBy<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 

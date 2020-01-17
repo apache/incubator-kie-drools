@@ -31,7 +31,7 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 
-public abstract class DroolsAbstractGroupByInvoker<ResultContainer, InTuple> implements Accumulator {
+public abstract class DroolsAbstractGroupByInvoker<InTuple> implements Accumulator {
 
     /**
      * This will memoize the map based on the input array of declarations. For each accumulate, there should only be
@@ -79,8 +79,8 @@ public abstract class DroolsAbstractGroupByInvoker<ResultContainer, InTuple> imp
         castContext(context).accumulate(handle, input);
     }
 
-    private DroolsAbstractGroupBy<ResultContainer, InTuple, ?> castContext(Object context) {
-        return (DroolsAbstractGroupBy<ResultContainer, InTuple, ?>) context;
+    private DroolsAbstractGroupBy<InTuple, ?> castContext(Object context) {
+        return (DroolsAbstractGroupBy<InTuple, ?>) context;
     }
 
     @Override
@@ -105,7 +105,7 @@ public abstract class DroolsAbstractGroupByInvoker<ResultContainer, InTuple> imp
         return null;
     }
 
-    protected abstract DroolsAbstractGroupBy<ResultContainer, InTuple, ?> newContext();
+    protected abstract DroolsAbstractGroupBy<InTuple, ?> newContext();
 
     protected abstract <X> InTuple createInput(Function<Variable<X>, X> valueFinder);
 

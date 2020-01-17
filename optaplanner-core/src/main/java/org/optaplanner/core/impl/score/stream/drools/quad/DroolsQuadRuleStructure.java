@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
 
     public DroolsQuadRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
             Variable<D> dVariable, DroolsPatternBuilder<?> primaryPattern,
-            List<RuleItemBuilder<?>> openRuleItems, LongSupplier variableIdSupplier) {
+            List<RuleItemBuilder<?>> openRuleItems, List<RuleItemBuilder<?>> closedRuleItems, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
@@ -74,7 +74,7 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
         this.d = dVariable;
         this.primaryPattern = primaryPattern;
         this.openRuleItems = Collections.unmodifiableList(openRuleItems);
-        this.closedRuleItems = Collections.emptyList();
+        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
     }
 
     public Variable<A> getA() {

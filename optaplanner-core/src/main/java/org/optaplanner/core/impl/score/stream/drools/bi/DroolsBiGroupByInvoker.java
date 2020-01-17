@@ -25,17 +25,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsBiGroupByInvoker<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, BiTuple<A, B>> {
+public class DroolsBiGroupByInvoker<A, B, NewA, NewB>
+        extends DroolsAbstractGroupByInvoker<BiTuple<A, B>> {
 
-    private final BiConstraintCollector<A, B, ResultContainer, NewB> collector;
+    private final BiConstraintCollector<A, B, ?, NewB> collector;
     private final BiFunction<A, B, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
     private final Variable<B> bVariable;
 
     public DroolsBiGroupByInvoker(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector, Variable<A> aVariable,
-            Variable<B> bVariable) {
+            BiConstraintCollector<A, B, ?, NewB> collector, Variable<A> aVariable, Variable<B> bVariable) {
         this.collector = collector;
         this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
@@ -43,7 +42,7 @@ public class DroolsBiGroupByInvoker<A, B, ResultContainer, NewA, NewB>
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, ?> newContext() {
+    protected DroolsAbstractGroupBy<BiTuple<A, B>, ?> newContext() {
         return new DroolsBiGroupBy<>(groupKeyMapping, collector);
     }
 

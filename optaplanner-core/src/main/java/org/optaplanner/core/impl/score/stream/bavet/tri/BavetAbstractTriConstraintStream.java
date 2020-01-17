@@ -104,6 +104,11 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping, TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC, TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************
