@@ -56,6 +56,16 @@ public class LHSGeneratorContextFactory {
     }
 
     public LHSGeneratorContext newPeerGeneratorContext(final LHSGeneratorContext peer,
+                                                       final IPattern pattern) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext(peer.getParent(),
+                                                               pattern,
+                                                               peer.getDepth(),
+                                                               peer.getOffset() + 1);
+        contexts.add(gc);
+        return gc;
+    }
+
+    public LHSGeneratorContext newPeerGeneratorContext(final LHSGeneratorContext peer,
                                                        final FieldConstraint fieldConstraint) {
         final LHSGeneratorContext gc = new LHSGeneratorContext(peer.getParent(),
                                                                fieldConstraint,

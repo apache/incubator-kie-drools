@@ -102,7 +102,28 @@ public class LHSGeneratorContextFactoryTest {
     }
 
     @Test
-    public void testNewPeerGeneratorContext() {
+    public void testNewPeerGeneratorContextPattern() {
+        final LHSGeneratorContext root = factory.newGeneratorContext();
+
+        assertThat(factory.getGeneratorContexts()).hasSize(1);
+        assertThat(factory.getGeneratorContexts().get(0).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(0).getOffset()).isEqualTo(0);
+
+        final LHSGeneratorContext peer = factory.newPeerGeneratorContext(root, mock(IPattern.class));
+
+        assertThat(factory.getGeneratorContexts()).hasSize(2);
+        assertThat(factory.getGeneratorContexts().get(1).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(1).getOffset()).isEqualTo(1);
+
+        factory.newPeerGeneratorContext(peer, mock(IPattern.class));
+
+        assertThat(factory.getGeneratorContexts()).hasSize(3);
+        assertThat(factory.getGeneratorContexts().get(2).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(2).getOffset()).isEqualTo(2);
+    }
+
+    @Test
+    public void testNewPeerGeneratorContextFieldConstraint() {
         final LHSGeneratorContext root = factory.newGeneratorContext();
 
         assertThat(factory.getGeneratorContexts()).hasSize(1);
@@ -120,6 +141,27 @@ public class LHSGeneratorContextFactoryTest {
         assertThat(factory.getGeneratorContexts()).hasSize(3);
         assertThat(factory.getGeneratorContexts().get(2).getDepth()).isEqualTo(0);
         assertThat(factory.getGeneratorContexts().get(2).getOffset()).isEqualTo(2);
+    }
+
+    @Test
+    public void testNewNewPeerGeneratorContextMixedPatternFieldConstraint() {
+        final LHSGeneratorContext root = factory.newGeneratorContext();
+
+        assertThat(factory.getGeneratorContexts()).hasSize(1);
+        assertThat(factory.getGeneratorContexts().get(0).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(0).getOffset()).isEqualTo(0);
+
+        factory.newPeerGeneratorContext(root, mock(IPattern.class));
+
+        assertThat(factory.getGeneratorContexts()).hasSize(2);
+        assertThat(factory.getGeneratorContexts().get(1).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(1).getOffset()).isEqualTo(1);
+
+        factory.newPeerGeneratorContext(root, mock(FieldConstraint.class));
+
+        assertThat(factory.getGeneratorContexts()).hasSize(3);
+        assertThat(factory.getGeneratorContexts().get(2).getDepth()).isEqualTo(0);
+        assertThat(factory.getGeneratorContexts().get(2).getOffset()).isEqualTo(1);
     }
 
     @Test
