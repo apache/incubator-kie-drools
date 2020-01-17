@@ -30,7 +30,7 @@ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.jobs.service.events.JobDataEvent;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.jobs.service.resource.JobResource;
 import org.kie.kogito.jobs.service.utils.FunctionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,11 @@ public class KafkaJobStreams {
 
     private ObjectMapper objectMapper;
 
-    private Emitter kafkaEmitter;
+    private Emitter<String> kafkaEmitter;
 
     private Optional<Boolean> enabled;
+
+    private String url;
 
     @Inject
     public KafkaJobStreams(ObjectMapper objectMapper,
@@ -53,10 +55,13 @@ public class KafkaJobStreams {
                                    Optional<String> config,
                            @Channel(AvailableStreams.JOB_STATUS_CHANGE_EVENTS_TOPIC)
                            @OnOverflow(value = OnOverflow.Strategy.LATEST)
-                                   Emitter emitter) {
+                                   Emitter<String> emitter,
+                           @ConfigProperty(name = "kogito.service.url", defaultValue = "http://localhost:8080")
+                                   String url) {
         this.objectMapper = objectMapper;
         this.enabled = config.map(Boolean::valueOf).filter(Boolean.TRUE::equals);
         this.kafkaEmitter = emitter;
+        this.url = url;
     }
 
     @Incoming(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
@@ -67,9 +72,7 @@ public class KafkaJobStreams {
                 .map(emitter -> {
                     JobDataEvent event = JobDataEvent
                             .builder()
-                            .time(DateUtil.now())
-                            .id(job.getId())
-                            .source("JobService")
+                            .source(url + JobResource.JOBS_PATH)
                             .data(job)
                             .build();
                     return emitter.send(FunctionsUtil.unchecked(objectMapper::writeValueAsString).apply(event));

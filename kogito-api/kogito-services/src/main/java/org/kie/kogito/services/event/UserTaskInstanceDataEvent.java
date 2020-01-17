@@ -15,96 +15,31 @@
 
 package org.kie.kogito.services.event;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.UUID;
 
-import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 
-public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEventBody> {
-
-    private final String specversion;
-    private final String id;
-    private final String source;
-    private final String type;
-    private final String time;
-    private final UserTaskInstanceEventBody data;
+public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanceEventBody> {
 
     private final String kogitoUserTaskinstanceId;
-    private final String kogitoProcessinstanceId;
-    private final String kogitoRootProcessinstanceId;
-    private final String kogitoProcessId;
-    private final String kogitoRootProcessId;
     private final String kogitoUserTaskinstanceState;
-    
-    private String kogitoAddons;
 
     public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {
-        this.specversion = "0.3";
-        this.id = UUID.randomUUID().toString();
-        this.source = source;
-        this.type = "UserTaskInstanceEvent";
-        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        this.data = body;
 
-        this.kogitoProcessinstanceId = metaData.get(ProcessInstanceEventBody.ID_META_DATA);
-        this.kogitoRootProcessinstanceId = metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA);
-        this.kogitoProcessId = metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA);
-        this.kogitoRootProcessId = metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA);
+        super("UserTaskInstanceEvent",
+              source,
+              body,
+              metaData.get(ProcessInstanceEventBody.ID_META_DATA),
+              metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
+              metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
+              metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
+              addons
+        );
 
         this.kogitoUserTaskinstanceState = metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA);
         this.kogitoUserTaskinstanceId = metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA);
-        
-        this.kogitoAddons = addons;
-    }
-
-    @Override
-    public String getSource() {
-        return source;
-    }
-
-    @Override
-    public UserTaskInstanceEventBody getData() {
-        return data;
-    }
-
-    @Override
-    public String getSpecversion() {
-        return specversion;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public String getTime() {
-        return time;
-    }
-
-    public String getKogitoProcessinstanceId() {
-        return kogitoProcessinstanceId;
-    }
-
-    public String getKogitoRootProcessinstanceId() {
-        return kogitoRootProcessinstanceId;
-    }
-
-    public String getKogitoProcessId() {
-        return kogitoProcessId;
-    }
-
-    public String getKogitoRootProcessId() {
-        return kogitoRootProcessId;
     }
 
     public String getKogitoUserTaskinstanceId() {
@@ -113,9 +48,5 @@ public class UserTaskInstanceDataEvent implements DataEvent<UserTaskInstanceEven
 
     public String getKogitoUserTaskinstanceState() {
         return kogitoUserTaskinstanceState;
-    }
-
-    public String getKogitoAddons() {
-        return kogitoAddons;
     }
 }

@@ -33,5 +33,4 @@ public class ProcessInstanceDataEvent extends AbstractProcessDataEvent<ProcessIn
               metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
               addons);
     }
-
 }
