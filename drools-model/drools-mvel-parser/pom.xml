@@ -21,10 +21,6 @@
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
