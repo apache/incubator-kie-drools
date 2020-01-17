@@ -21,7 +21,6 @@ import java.time.ZonedDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties("executionResponse")
-@SuppressWarnings("Duplicates")
 public class Job {
 
     private String id;

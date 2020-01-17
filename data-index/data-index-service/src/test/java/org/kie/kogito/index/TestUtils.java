@@ -150,21 +150,21 @@ public final class TestUtils {
                 .build();
     }
 
-    public static KogitoJobCloudEvent getJobCloudEvent(String jobId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId) {
+    public static KogitoJobCloudEvent getJobCloudEvent(String jobId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String status) {
         return KogitoJobCloudEvent.builder()
                 .id(UUID.randomUUID().toString())
-                .data(getJob(jobId, processId, processInstanceId, rootProcessId, rootProcessInstanceId))
+                .data(getJob(jobId, processId, processInstanceId, rootProcessId, rootProcessInstanceId, status))
                 .build();
     }
 
-    private static Job getJob(String jobId, String processId, String processInstanceId, String rootProcessId, String rootProcessInstanceId) {
+    private static Job getJob(String jobId, String processId, String processInstanceId, String rootProcessId, String rootProcessInstanceId, String status) {
         Job job = new Job();
         job.setId(jobId);
         job.setProcessId(processId);
         job.setProcessInstanceId(processInstanceId);
         job.setRootProcessId(rootProcessId);
         job.setRootProcessInstanceId(rootProcessInstanceId);
-        job.setStatus("EXECUTED");
+        job.setStatus(status);
         job.setExpirationTime(ZonedDateTime.now());
         job.setPriority(1);
         job.setCallbackEndpoint("http://service");

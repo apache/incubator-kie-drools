@@ -312,6 +312,8 @@ type Subscription {
     ProcessInstanceUpdated: ProcessInstance!
     UserTaskInstanceAdded: UserTaskInstance!
     UserTaskInstanceUpdated: UserTaskInstance!
+    JobAdded: Job!
+    JobUpdated: Job!
 }
 
 enum OrderBy {

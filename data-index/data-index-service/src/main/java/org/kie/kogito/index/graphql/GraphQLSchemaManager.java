@@ -73,6 +73,8 @@ public class GraphQLSchemaManager {
     private static final String PROCESS_INSTANCE_UPDATED = "ProcessInstanceUpdated";
     private static final String USER_TASK_INSTANCE_ADDED = "UserTaskInstanceAdded";
     private static final String USER_TASK_INSTANCE_UPDATED = "UserTaskInstanceUpdated";
+    private static final String JOB_UPDATED = "JobUpdated";
+    private static final String JOB_ADDED = "JobAdded";
 
     @Inject
     CacheService cacheService;
@@ -126,6 +128,8 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher(PROCESS_INSTANCE_UPDATED, getProcessInstanceUpdatedDataFetcher());
                     builder.dataFetcher(USER_TASK_INSTANCE_ADDED, getUserTaskInstanceAddedDataFetcher());
                     builder.dataFetcher(USER_TASK_INSTANCE_UPDATED, getUserTaskInstanceUpdatedDataFetcher());
+                    builder.dataFetcher(JOB_ADDED, getJobAddedDataFetcher());
+                    builder.dataFetcher(JOB_UPDATED, getJobUpdatedDataFetcher());
                     return builder;
                 })
                 .scalar(qlDateTimeScalarType)
@@ -190,27 +194,35 @@ public class GraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
-        return env -> {
-            return createPublisher(PROCESS_INSTANCE_ADDED, producer -> cacheService.getProcessInstancesCache().addObjectCreatedListener(pi -> producer.write(getObjectMapper().convertValue(pi, ObjectNode.class))));
-        };
+        return ojectCreatedPublisher(PROCESS_INSTANCE_ADDED, cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceUpdatedDataFetcher() {
-        return env -> {
-            return createPublisher(PROCESS_INSTANCE_UPDATED, producer -> cacheService.getProcessInstancesCache().addObjectUpdatedListener(pi -> producer.write(getObjectMapper().convertValue(pi, ObjectNode.class))));
-        };
+        return objectUpdatedPublisher(PROCESS_INSTANCE_UPDATED, cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceAddedDataFetcher() {
-        return env -> {
-            return createPublisher(USER_TASK_INSTANCE_ADDED, producer -> cacheService.getUserTaskInstancesCache().addObjectCreatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
-        };
+        return ojectCreatedPublisher(USER_TASK_INSTANCE_ADDED, cacheService.getUserTaskInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceUpdatedDataFetcher() {
-        return env -> {
-            return createPublisher(USER_TASK_INSTANCE_UPDATED, producer -> cacheService.getUserTaskInstancesCache().addObjectUpdatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
-        };
+        return objectUpdatedPublisher(USER_TASK_INSTANCE_UPDATED, cacheService.getUserTaskInstancesCache());
+    }
+
+    private DataFetcher<Publisher<ObjectNode>> getJobUpdatedDataFetcher() {
+        return objectUpdatedPublisher(JOB_UPDATED, cacheService.getJobsCache());
+    }
+
+    private DataFetcher<Publisher<ObjectNode>> getJobAddedDataFetcher() {
+        return ojectCreatedPublisher(JOB_ADDED, cacheService.getJobsCache());
+    }
+
+    private DataFetcher<Publisher<ObjectNode>> ojectCreatedPublisher(String address, Cache cache) {
+        return env -> createPublisher(address, producer -> cache.addObjectCreatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
+    }
+
+    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(String address, Cache cache) {
+        return env -> createPublisher(address, producer -> cache.addObjectUpdatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
     }
 
     private Publisher<ObjectNode> createPublisher(String address, Consumer<MessageProducer<ObjectNode>> consumer) {
@@ -231,15 +243,11 @@ public class GraphQLSchemaManager {
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
-        return env -> {
-            return createPublisher(processId + "Updated", producer -> cacheService.getDomainModelCache(processId).addObjectUpdatedListener(domain -> producer.write(domain)));
-        };
+        return env -> createPublisher(processId + "Updated", producer -> cacheService.getDomainModelCache(processId).addObjectUpdatedListener(producer::write));
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
-        return env -> {
-            return createPublisher(processId + "Added", producer -> cacheService.getDomainModelCache(processId).addObjectCreatedListener(domain -> producer.write(domain)));
-        };
+        return env -> createPublisher(processId + "Added", producer -> cacheService.getDomainModelCache(processId).addObjectCreatedListener(producer::write));
     }
 
     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {

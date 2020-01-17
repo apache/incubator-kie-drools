@@ -36,6 +36,7 @@ import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.TestUtils;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.infinispan.protostream.ProtobufService;
@@ -49,6 +50,7 @@ import static java.lang.String.format;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
+import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
@@ -92,6 +94,16 @@ public class WebSocketSubscriptionTest {
 
         assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "InProgress", "subscription { UserTaskInstanceAdded { id, processInstanceId, processId, state } }", "UserTaskInstanceAdded");
         assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "Completed", "subscription { UserTaskInstanceUpdated { id, processInstanceId, processId, state } }", "UserTaskInstanceUpdated");
+    }
+
+    @Test
+    public void testJobSubscription() throws Exception {
+        String jobId = UUID.randomUUID().toString();
+        String processId = "deals";
+        String processInstanceId = UUID.randomUUID().toString();
+
+        assertJobSubscription(jobId, processId, processInstanceId, "SCHEDULED", "subscription { JobAdded { id, processInstanceId, processId, status } }", "JobAdded");
+        assertJobSubscription(jobId, processId, processInstanceId, "EXECUTED", "subscription { JobUpdated { id, processInstanceId, processId, status } }", "JobUpdated");
     }
 
     @Test
@@ -161,6 +173,22 @@ public class WebSocketSubscriptionTest {
                 a -> a.node("payload.data." + subscriptionName + ".processInstanceId").isEqualTo(processInstanceId),
                 a -> a.node("payload.data." + subscriptionName + ".processId").isEqualTo(processId),
                 a -> a.node("payload.data." + subscriptionName + ".state").isEqualTo(state));
+    }
+
+    private void assertJobSubscription(String taskId, String processId, String processInstanceId, String status, String subscription, String subscriptionName) throws Exception {
+        CompletableFuture<JsonObject> cf = subscribe(subscription);
+
+        KogitoJobCloudEvent event = getJobCloudEvent(taskId, processId, processInstanceId, null, null, status);
+        consumer.onJobEvent(event);
+
+        JsonObject json = cf.get(1, TimeUnit.MINUTES);
+
+        assertThatJson(json.toString()).and(
+                a -> a.node("type").isEqualTo("data"),
+                a -> a.node("payload.data." + subscriptionName + ".id").isEqualTo(taskId),
+                a -> a.node("payload.data." + subscriptionName + ".processInstanceId").isEqualTo(processInstanceId),
+                a -> a.node("payload.data." + subscriptionName + ".processId").isEqualTo(processId),
+                a -> a.node("payload.data." + subscriptionName + ".status").isEqualTo(status));
     }
 
     private CompletableFuture<JsonObject> subscribe(String subscription) throws Exception {

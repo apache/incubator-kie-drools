@@ -712,7 +712,7 @@ public class IndexingServiceTest {
         String processId = "deals";
         String processInstanceId = UUID.randomUUID().toString();
         
-        KogitoJobCloudEvent event = getJobCloudEvent(jobId, processId, processInstanceId, null, null);
+        KogitoJobCloudEvent event = getJobCloudEvent(jobId, processId, processInstanceId, null, null, "EXECUTED");
         
         consumer.onJobEvent(event).toCompletableFuture().get();
 

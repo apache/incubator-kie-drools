@@ -18,6 +18,7 @@ package org.kie.kogito.index.messaging;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -148,26 +149,30 @@ public class KogitoCloudEventDeserializerTest {
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(event)
                 .isNotNull()
-                .hasFieldOrPropertyWithValue("id", "37692f80-10ab-435c-b410-770421b62a02_0")
-//                .hasFieldOrPropertyWithValue("source", "JobService")
-                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2020-01-10T13:59:23.897507Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("id", "2fea1981-321d-40e7-aa82-3730504c1672")
+                .hasFieldOrPropertyWithValue("source", URI.create("http://localhost:8080/jobs"))
+                .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2020-01-16T20:40:58.227215Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "JobEvent")
                 .hasFieldOrPropertyWithValue("specVersion", "0.3")
                 .hasFieldOrPropertyWithValue("schemaURL", null)
                 .hasFieldOrPropertyWithValue("contentType", null)
-                .hasFieldOrPropertyWithValue("data.id", "37692f80-10ab-435c-b410-770421b62a02_0")
-                .hasFieldOrPropertyWithValue("data.processId", "timers")
-                .hasFieldOrPropertyWithValue("data.processInstanceId", "0c110a00-2628-499d-9a9a-5267cb0a3a1d")
+                .hasFieldOrPropertyWithValue("processId", "timerscycle")
+                .hasFieldOrPropertyWithValue("processInstanceId", "7c1d9b38-b462-47c5-8bf2-d9154f54957b")
+                .hasFieldOrPropertyWithValue("rootProcessId", null)
+                .hasFieldOrPropertyWithValue("rootProcessInstanceId", null)
+                .hasFieldOrPropertyWithValue("data.id", "8350b8b6-c5d9-432d-a339-a9fc85f642d4_0")
+                .hasFieldOrPropertyWithValue("data.processId", "timerscycle")
+                .hasFieldOrPropertyWithValue("data.processInstanceId", "7c1d9b38-b462-47c5-8bf2-d9154f54957b")
                 .hasFieldOrPropertyWithValue("data.rootProcessInstanceId", null)
                 .hasFieldOrPropertyWithValue("data.rootProcessId", null)
-                .hasFieldOrPropertyWithValue("data.repeatInterval", null)
-                .hasFieldOrPropertyWithValue("data.repeatLimit", 0)
+                .hasFieldOrPropertyWithValue("data.repeatInterval", 1000L)
+                .hasFieldOrPropertyWithValue("data.repeatLimit", 2147483647)
                 .hasFieldOrPropertyWithValue("data.scheduledId", "0")
                 .hasFieldOrPropertyWithValue("data.retries", 0)
-                .hasFieldOrPropertyWithValue("data.status", "EXECUTED")
-                .hasFieldOrPropertyWithValue("data.executionCounter", 1)
+                .hasFieldOrPropertyWithValue("data.status", "SCHEDULED")
+                .hasFieldOrPropertyWithValue("data.executionCounter", 0)
                 .hasFieldOrPropertyWithValue("data.priority", 0)
-                .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-10T13:59:23.746287Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+                .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-16T20:40:58.918Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
 
         softly.assertAll();
     }
