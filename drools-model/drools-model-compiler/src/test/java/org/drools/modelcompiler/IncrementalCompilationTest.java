@@ -20,6 +20,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.BaseModelTest;
+import org.drools.modelcompiler.BaseModelTest.RUN_TYPE;
+
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -32,6 +37,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
     public IncrementalCompilationTest( RUN_TYPE testRunType ) {
         super( testRunType );
+//        super( RUN_TYPE.PATTERN_DSL );
+
     }
 
     public class Message implements Serializable {
@@ -53,7 +60,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
                 "rule R1 when\n" +
                 "   $m : Message( value.startsWith(\"H\") )\n" +
                 "then\n" +
-                "   System.out.println($m.getValue());" +
+//                "   System.out.println($m.getValue());" +
+                "   System.out.println(\"R1 : $m = \" + Integer.toHexString($m.hashCode()));" +
+//                "   System.out.println(\"     \" + this.getClass().getName());" +
                 "end\n";
 
         String drl2_1 = "package org.drools.incremental\n" +
@@ -61,6 +70,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
                 "rule R2 when\n" +
                 "   $m : Message( value == \"Hi Universe\" )\n" +
                 "then\n" +
+                "   System.out.println(\"R2_1 : $m = \" + Integer.toHexString($m.hashCode()));" +
+//                "   System.out.println(\"     \" + this.getClass().getName());" +
                 "end\n";
 
         String drl2_2 = "package org.drools.incremental\n" +
@@ -68,6 +79,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
                 "rule R2 when\n" +
                 "   $m : Message( value == \"Hello World\" )\n" +
                 "then\n" +
+                "   System.out.println(\"R2_2 : $m = \" + Integer.toHexString($m.hashCode()));" +
+//                "   System.out.println(\"     \" + this.getClass().getName());" +
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
@@ -86,12 +99,18 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
 
+        System.out.println("------------ updateToVersion");
+
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
 
         // continue working with the session
         ksession.insert( new Message( "Hello World" ) );
         assertEquals( 3, ksession.fireAllRules() );
+
+        System.out.println("----- done --------");
+        
+        System.out.println("------------ new session");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -213,5 +232,98 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
         assertEquals( 2, ksession2.fireAllRules() );
+    }
+
+    @Test
+    public void testIdenticalConsequenceButImportChange() {
+        final String drl1 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end";
+
+        final String drl2 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "import " + Address.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "       $a: Address ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        createAndDeployJar(ks, releaseId1, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        Person john = new Person("John", 40);
+        kieSession.insert(john);
+        assertEquals(1, kieSession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        createAndDeployJar(ks, releaseId2, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        Person paul = new Person("Paul", 35);
+        kieSession.insert(paul);
+        final Address address = new Address();
+        kieSession.insert(address);
+        assertEquals(1, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testIdenticalPredicateButImportChange() {
+        // This test also verifies LambdaExtractor
+        final String drl1 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "    then\n" +
+                    "        System.out.println(\"Hello\");\n" +
+                    "end";
+
+        final String drl2 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "import " + Address.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "       $a: Address ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        createAndDeployJar(ks, releaseId1, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        Person john = new Person("John", 40);
+        kieSession.insert(john);
+        assertEquals(0, kieSession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        createAndDeployJar(ks, releaseId2, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        Person paul = new Person("Paul", 35);
+        kieSession.insert(paul);
+        final Address address = new Address();
+        kieSession.insert(address);
+        assertEquals(1, kieSession.fireAllRules());
     }
 }

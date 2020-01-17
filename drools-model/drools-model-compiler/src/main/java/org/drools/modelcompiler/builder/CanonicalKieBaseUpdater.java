@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,6 +35,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.spi.Consequence;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalKiePackages;
 import org.kie.api.builder.model.KieBaseModel;
@@ -125,6 +127,15 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();
+                    if (change.getChangeType() == ChangeType.MERGE) {
+                        // If the change is only LambdaConsequence class name hash (e.g. because 'import' is added),
+                        // set new LambdaConsequence to the old rule without removing/adding the rule
+                        // This is for non-executable-model compatibility. See https://github.com/kiegroup/drools/pull/2715
+                        RuleImpl oldRule = oldKpkg.getRule( changedItemName );
+                        RuleImpl newRule = kpkg.getRule( changedItemName );
+                        mergeRuleWithLambda(oldRule, newRule);
+                        continue;
+                    }
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.REMOVED) {
                         switch (change.getType()) {
                             case GLOBAL:
@@ -186,6 +197,12 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
         }
+    }
+
+    private void mergeRuleWithLambda(RuleImpl oldRule, RuleImpl newRule) {
+        Consequence newConsequence = newRule.getConsequence();
+        oldRule.setConsequence(newConsequence);
+        System.out.println("mergeRuleWithLambda!!");
     }
 
     private List<RuleImpl> getAllRulesInKieBase( CanonicalKieModule kieModule, KieBaseModelImpl model ) {

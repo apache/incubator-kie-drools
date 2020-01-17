@@ -21,8 +21,9 @@ public class MaterializedLambdaConsequenceTest {
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequence2FABA51719447471EAF65717A3CB3A94 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
+                "public enum LambdaConsequence2772A7242C416DBF79E4EDB52918466A implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 "INSTANCE;\n" +
+                "public static final String EXPRESSION_HASH = \"8305FF24AC76CB49E7AAE2C10356A105\";" +
                 "        @Override()\n" +
                 "        public void execute(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) throws Exception {\n" +
                 "            result.setValue(p1.getName() + \" is older than \" + p2.getName());\n" +

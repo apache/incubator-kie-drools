@@ -17,10 +17,13 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -37,8 +40,8 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         super(packageName, ruleClassName);
     }
 
-    protected String className(String expressionString) {
-        return CLASS_NAME_PREFIX + md5Hash(expressionString);
+    protected String className(String sourceCode) {
+        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
     }
 
     @Override
