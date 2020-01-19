@@ -113,7 +113,7 @@ public class AccumulateNode extends BetaNode {
                 List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
                 for ( Declaration decl : accumulate.getRequiredDeclarations() ) {
                     if ( leftObjectType.equals( decl.getPattern().getObjectType() ) ) {
-                        leftMask = leftMask.setAll( calculatePositiveMask( typeDeclaration.getTypeClass(), decl.getPattern().getListenedProperties(), accessibleProperties ) );
+                        leftMask = leftMask.setAll( decl.getPattern().getPositiveWatchMask(accessibleProperties) );
                     }
                 }
             }
