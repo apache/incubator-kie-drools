@@ -785,7 +785,7 @@ public class RuleModelDRLPersistenceImpl
                         throw new IllegalArgumentException("Unsupported pattern " + pattern.getRightPattern() + " for FROM COLLECT");
                     }
                 }
-                if (isDSLEnhanced) {
+                if (!isSubPattern && isDSLEnhanced) {
                     buf.append("\n"); // Just in case we add a row. Not sure what the methods above append.
                     buf.append(indentation);
                     buf.append(">");
@@ -839,33 +839,33 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(",\n");
 
                 if (pattern.useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION)) {
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\t");
                     buf.append(pattern.getFunction());
                 } else {
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\tinit( ");
                     buf.append(pattern.getInitCode());
                     buf.append(" ),\n");
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\taction( ");
                     buf.append(pattern.getActionCode());
                     buf.append(" ),\n");
                     if (pattern.getReverseCode() != null && !pattern.getReverseCode().trim().equals("")) {
-                        if (isDSLEnhanced) {
+                        if (!isSubPattern && isDSLEnhanced) {
                             buf.append(">");
                         }
                         buf.append(indentation + "\treverse( ");
                         buf.append(pattern.getReverseCode());
                         buf.append(" ),\n");
                     }
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\tresult( ");
