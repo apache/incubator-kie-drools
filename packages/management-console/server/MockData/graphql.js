@@ -44,7 +44,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf863',
@@ -91,7 +91,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
@@ -138,7 +138,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
@@ -241,10 +241,19 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: [
-      'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
-      'a1e139d5-4e77-48c9-84ae-34578e904e5a',
-      'a23e6c20-02c2-4c2b-8c5c-e988a0adf863'
+    childProcessInstances: [
+      {
+        id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
+        processName: 'subprocess-1'
+      },
+      {
+        id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+        processName: 'subprocess-2'
+      },
+      {
+        id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf863',
+        processName: 'subprocess-2'
+      }
     ]
   },
   {
@@ -293,7 +302,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
@@ -340,7 +349,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: '538f9feb-5a14-4096-b791-2055b38da7c6',
@@ -434,9 +443,14 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: [
-      'fc1b6535-d557-40df-82c8-b425b9dc531b',
-      'ff65b793-bb88-4567-b7e3-73eee35772a4'
+    childProcessInstances: [
+      {
+        id: 'fc1b6535-d557-40df-82c8-b425b9dc531b',
+        processName: 'subprocess-1'
+      }, {
+        id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
+        processName: 'subprocess-2'
+      }
     ]
   },
   {
@@ -532,9 +546,14 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: [
-      'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-      '2d962eef-45b8-48a9-ad4e-9cde0ad6af88'
+    childProcessInstances: [
+      {
+        id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+        processName: 'subprocess-1'
+      }, {
+        id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
+        processName: 'subprocess-2'
+      }
     ]
   },
   {
@@ -582,7 +601,10 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: ['c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd']
+    childProcessInstances: [{
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+      processName: 'subprocess'
+    }]
   },
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
@@ -629,7 +651,10 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: ['c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc']
+    childProcessInstances: [{
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
+      processName: 'subprocess'
+    }]
   },
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
@@ -676,7 +701,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
@@ -723,6 +748,6 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   }
 ];

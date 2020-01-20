@@ -108,9 +108,9 @@ const ProcessDetails = ({ loading, data }) => {
           ) : (
             ''
           )}
-          {data.ProcessInstances[0].childProcessInstanceId ? (
+          {data.ProcessInstances[0].childProcessInstances ? (
             <FormGroup label="Sub Processes" fieldId="parent">
-              {data.ProcessInstances[0].childProcessInstanceId.map(
+              {data.ProcessInstances[0].childProcessInstances.map(
                 (child, index) => (
                   <div key={child}>
                     <Tooltip content={child}>

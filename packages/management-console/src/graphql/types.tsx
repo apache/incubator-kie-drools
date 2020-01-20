@@ -11,7 +11,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** An ISO-8601 compliant DateTime Scalar */
   DateTime: any;
 };
 
@@ -39,6 +38,64 @@ export type IdArgument = {
   in?: Maybe<Array<Scalars['String']>>;
   equal?: Maybe<Scalars['String']>;
   isNull?: Maybe<Scalars['Boolean']>;
+};
+
+export type Job = {
+  __typename?: 'Job';
+  id: Scalars['String'];
+  processId?: Maybe<Scalars['String']>;
+  processInstanceId?: Maybe<Scalars['String']>;
+  rootProcessInstanceId?: Maybe<Scalars['String']>;
+  rootProcessId?: Maybe<Scalars['String']>;
+  status: JobStatus;
+  expirationTime?: Maybe<Scalars['DateTime']>;
+  priority?: Maybe<Scalars['Int']>;
+  callbackEndpoint?: Maybe<Scalars['String']>;
+  repeatInterval?: Maybe<Scalars['Int']>;
+  repeatLimit?: Maybe<Scalars['Int']>;
+  scheduledId?: Maybe<Scalars['String']>;
+  retries?: Maybe<Scalars['Int']>;
+  lastUpdate?: Maybe<Scalars['DateTime']>;
+  executionCounter?: Maybe<Scalars['Int']>;
+};
+
+export type JobArgument = {
+  and?: Maybe<Array<JobArgument>>;
+  or?: Maybe<Array<JobArgument>>;
+  id?: Maybe<IdArgument>;
+  processId?: Maybe<StringArgument>;
+  processInstanceId?: Maybe<IdArgument>;
+  rootProcessInstanceId?: Maybe<IdArgument>;
+  rootProcessId?: Maybe<StringArgument>;
+  status?: Maybe<JobStatusArgument>;
+  expirationTime?: Maybe<DateArgument>;
+  priority?: Maybe<NumericArgument>;
+  scheduledId?: Maybe<IdArgument>;
+  lastUpdate?: Maybe<DateArgument>;
+};
+
+export type JobOrderBy = {
+  processId?: Maybe<OrderBy>;
+  rootProcessId?: Maybe<OrderBy>;
+  status?: Maybe<OrderBy>;
+  expirationTime?: Maybe<OrderBy>;
+  priority?: Maybe<OrderBy>;
+  retries?: Maybe<OrderBy>;
+  lastUpdate?: Maybe<OrderBy>;
+  executionCounter?: Maybe<OrderBy>;
+};
+
+export enum JobStatus {
+  Error = 'ERROR',
+  Executed = 'EXECUTED',
+  Scheduled = 'SCHEDULED',
+  Retry = 'RETRY',
+  Canceled = 'CANCELED'
+}
+
+export type JobStatusArgument = {
+  equal?: Maybe<JobStatus>;
+  in?: Maybe<Array<Maybe<JobStatus>>>;
 };
 
 export type KogitoMetadata = {
@@ -120,7 +177,8 @@ export type ProcessInstance = {
   variables?: Maybe<Scalars['String']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
-  childProcessInstanceId?: Maybe<Array<Scalars['String']>>;
+  parentProcessInstance?: Maybe<ProcessInstance>;
+  childProcessInstances?: Maybe<Array<ProcessInstance>>;
   error?: Maybe<ProcessInstanceError>;
   addons?: Maybe<Array<Scalars['String']>>;
   lastUpdate: Scalars['DateTime'];
@@ -221,6 +279,7 @@ export type Query = {
   __typename?: 'Query';
   ProcessInstances?: Maybe<Array<Maybe<ProcessInstance>>>;
   UserTaskInstances?: Maybe<Array<Maybe<UserTaskInstance>>>;
+  Jobs?: Maybe<Array<Maybe<Job>>>;
 };
 
 export type QueryProcessInstancesArgs = {
@@ -232,6 +291,12 @@ export type QueryProcessInstancesArgs = {
 export type QueryUserTaskInstancesArgs = {
   where?: Maybe<UserTaskInstanceArgument>;
   orderBy?: Maybe<UserTaskInstanceOrderBy>;
+  pagination?: Maybe<Pagination>;
+};
+
+export type QueryJobsArgs = {
+  where?: Maybe<JobArgument>;
+  orderBy?: Maybe<JobOrderBy>;
   pagination?: Maybe<Pagination>;
 };
 
@@ -255,6 +320,8 @@ export type Subscription = {
   ProcessInstanceUpdated: ProcessInstance;
   UserTaskInstanceAdded: UserTaskInstance;
   UserTaskInstanceUpdated: UserTaskInstance;
+  JobAdded: Job;
+  JobUpdated: Job;
 };
 
 export type UserTaskInstance = {
@@ -370,6 +437,7 @@ export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
           | 'roles'
           | 'state'
           | 'start'
+          | 'lastUpdate'
           | 'addons'
           | 'endpoint'
         > & {
@@ -399,9 +467,11 @@ export type GetChildInstancesQuery = { __typename?: 'Query' } & {
           | 'processId'
           | 'processName'
           | 'parentProcessInstanceId'
+          | 'rootProcessInstanceId'
           | 'roles'
           | 'state'
           | 'start'
+          | 'lastUpdate'
           | 'endpoint'
           | 'addons'
         > & {
@@ -435,10 +505,18 @@ export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
           | 'variables'
           | 'state'
           | 'start'
+          | 'lastUpdate'
           | 'end'
           | 'endpoint'
-          | 'childProcessInstanceId'
         > & {
+            childProcessInstances: Maybe<
+              Array<
+                { __typename?: 'ProcessInstance' } & Pick<
+                  ProcessInstance,
+                  'id' | 'processName'
+                >
+              >
+            >;
             nodes: Array<
               { __typename?: 'NodeInstance' } & Pick<
                 NodeInstance,
@@ -466,6 +544,7 @@ export const GetProcessInstancesDocument = gql`
       roles
       state
       start
+      lastUpdate
       addons
       endpoint
       error {
@@ -533,9 +612,11 @@ export const GetChildInstancesDocument = gql`
       processId
       processName
       parentProcessInstanceId
+      rootProcessInstanceId
       roles
       state
       start
+      lastUpdate
       endpoint
       addons
       error {
@@ -605,9 +686,13 @@ export const GetProcessInstanceByIdDocument = gql`
       variables
       state
       start
+      lastUpdate
       end
       endpoint
-      childProcessInstanceId
+      childProcessInstances {
+        id
+        processName
+      }
       nodes {
         id
         name

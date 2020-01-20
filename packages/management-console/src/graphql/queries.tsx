@@ -64,7 +64,10 @@ const GET_PROCESS_INSTANCE = gql`
       lastUpdate
       end
       endpoint
-      childProcessInstanceId
+      childProcessInstances {
+        id
+        processName
+      }
       nodes {
         id
         name
