@@ -132,7 +132,7 @@
               <id>quarkus-copy-deps-libs-classes</id>
               <phase>generate-resources</phase>
               <goals>
-                <goal>copy-resources</goal>
+                <goal>testResources</goal>
               </goals>
               <configuration>
                 <outputDirectory>${project.build.directory}/test-classes/services/httpcalls-cloud-workitems-quarkus-service/src/main/java</outputDirectory>
@@ -156,7 +156,7 @@
               <id>springboot-copy-deps-libs-classes</id>
               <phase>generate-resources</phase>
               <goals>
-                <goal>copy-resources</goal>
+                <goal>testResources</goal>
               </goals>
               <configuration>
                 <outputDirectory>${project.build.directory}/test-classes/services/httpcalls-cloud-workitems-springboot-service/src/main/java</outputDirectory>
@@ -194,7 +194,7 @@
               <id>quarkus-merge-common-test-resources</id>
               <phase>generate-test-resources</phase>
               <goals>
-                <goal>copy-resources</goal>
+                <goal>testResources</goal>
               </goals>
               <configuration>
                 <overwrite>true</overwrite>
@@ -210,7 +210,7 @@
               <id>springboot-merge-common-test-resources</id>
               <phase>generate-test-resources</phase>
               <goals>
-                <goal>copy-resources</goal>
+                <goal>testResources</goal>
               </goals>
               <configuration>
                 <overwrite>true</overwrite>
