@@ -45,6 +45,7 @@ import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
@@ -80,6 +81,7 @@ import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
@@ -147,6 +149,34 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         return DirectCompilerResult.of(
                 Expressions.stringLiteral(n.getText()), // setString escapes the contents Java-style
                 BuiltInType.STRING);
+    }
+
+    @Override
+    public DirectCompilerResult visit(AtLiteralNode n) {
+        DirectCompilerResult stringLiteral = n.getStringLiteral().accept(this);
+        String value = ((StringLiteralExpr) stringLiteral.getExpression()).asString();
+        String functionName = null;
+        BuiltInType resultType = null;
+        if (value.startsWith("P")) {
+            functionName = "duration";
+            resultType = BuiltInType.DURATION;
+        } else if (value.contains("T")) {
+            functionName = "date and time";
+            resultType = BuiltInType.DATE_TIME;
+        } else if (value.contains(":")) {
+            functionName = "time";
+            resultType = BuiltInType.TIME;
+        } else if (value.contains("-")) {
+            functionName = "date";
+            resultType = BuiltInType.DATE;
+        } else {
+            return DirectCompilerResult.of(CompiledFEELSupport.compiledErrorExpression(Msg.createMessage(Msg.MALFORMED_AT_LITERAL, n.getText())),
+                                           BuiltInType.UNKNOWN);
+        }
+        return DirectCompilerResult.of(Expressions.invoke(FeelCtx.getValue(functionName),
+                                                          stringLiteral.getExpression()),
+                                       resultType)
+                                   .withFD(stringLiteral);
     }
 
     @Override

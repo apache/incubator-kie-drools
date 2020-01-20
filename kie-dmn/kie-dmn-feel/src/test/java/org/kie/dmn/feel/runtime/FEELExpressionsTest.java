@@ -71,8 +71,10 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ foo?bar : 5, result : foo?bar < 10 }.result", Boolean.TRUE , null},
 
                 // unary tests with context evaluation, i.e., the test is defined before the variable "x"
-                {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
-                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null},
+                {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.FALSE, FEELEvent.Severity.ERROR},
+                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", null, FEELEvent.Severity.ERROR},
+                {"{ x : 10, test : > x, y : 20, result : y in ( test ) }.result", Boolean.TRUE , null},
+                {"{ x : 10, test : > x, y : 20, result : test( y ) }.result", Boolean.TRUE , null},
                 {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", null, FEELEvent.Severity.ERROR},
                 
                 {"2 in 2", Boolean.TRUE , null},

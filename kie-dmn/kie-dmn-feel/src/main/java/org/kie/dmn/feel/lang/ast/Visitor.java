@@ -50,4 +50,5 @@ public interface Visitor<T> {
     T visit(UnaryTestNode n);
     T visit(UnaryTestListNode n);
     T visit(FormalParameterNode n);
+    T visit(AtLiteralNode n);
 }

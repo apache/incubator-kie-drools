@@ -31,6 +31,7 @@ public class DDTATable {
     private List<DDTAOutputClause> outputs = new ArrayList<>();
     private Map<List<List<Interval>>, List<Integer>> cacheByInputEntry = new HashMap<>();
     private Map<List<Comparable<?>>, List<Integer>> cacheByOutputEntry = new HashMap<>();
+    private List<Integer> colIDsStringWithoutEnum = new ArrayList<>();
 
     public List<DDTAInputClause> getInputs() {
         return inputs;
@@ -94,4 +95,11 @@ public class DDTATable {
         return Collections.unmodifiableMap(cacheByInputEntry);
     }
 
+    public void addColIdStringWithoutEnum(int colID) {
+        this.colIDsStringWithoutEnum.add(colID);
+    }
+
+    public List<Integer> getColIDsStringWithoutEnum() {
+        return Collections.unmodifiableList(colIDsStringWithoutEnum);
+    }
 }

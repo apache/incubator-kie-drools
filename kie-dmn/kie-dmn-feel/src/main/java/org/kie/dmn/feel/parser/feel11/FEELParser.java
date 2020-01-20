@@ -226,7 +226,7 @@ public class FEELParser {
         }
 
         public List<FEELEvent> getErrors() {
-            return errors;
+            return errors == null ? Collections.emptyList() : errors;
         }
     }
 

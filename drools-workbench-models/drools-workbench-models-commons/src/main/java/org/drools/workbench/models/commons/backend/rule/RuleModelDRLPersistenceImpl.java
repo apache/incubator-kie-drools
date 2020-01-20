@@ -1657,7 +1657,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(fieldValue.getField());
             } else {
                 buf.append(".set");
-                buf.append(Character.toUpperCase(fieldValue.getField().charAt(0)));
+                buf.append(formatFieldFirstCharacterToFitDroolsCoreStandards(fieldValue.getField()));
                 buf.append(fieldValue.getField().substring(1));
             }
             buf.append("( ");
@@ -1719,7 +1719,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(fieldValue.getField());
             } else {
                 buf.append("set");
-                buf.append(Character.toUpperCase(fieldValue.getField().charAt(0)));
+                buf.append(formatFieldFirstCharacterToFitDroolsCoreStandards(fieldValue.getField()));
                 buf.append(fieldValue.getField().substring(1));
             }
             buf.append("( ");
@@ -1732,6 +1732,14 @@ public class RuleModelDRLPersistenceImpl
                                                      final ActionFieldValue fieldValue) {
             if (doesPeerHaveOutput(gctx)) {
                 buf.append(", \n");
+            }
+        }
+
+        private char formatFieldFirstCharacterToFitDroolsCoreStandards(final String fieldName) {
+            if (fieldName.length() > 1 && Character.isLowerCase(fieldName.charAt(0)) && Character.isUpperCase(fieldName.charAt(1))) {
+                return fieldName.charAt(0);
+            } else {
+                return Character.toUpperCase(fieldName.charAt(0));
             }
         }
 
@@ -4125,7 +4133,8 @@ public class RuleModelDRLPersistenceImpl
             } else if (value.startsWith("(")) {
                 if (operator != null && operator.contains("in")) {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-                    con.setValue(String.join(", ", ListSplitter.split("\"", true, unwrapParenthesis(value))));
+                    String[] split = ListSplitter.splitPreserveQuotes("\"", true, unwrapParenthesis(value));
+                    con.setValue(String.join(", ", split));
                 } else {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                     con.setValue(unwrapParenthesis(value));

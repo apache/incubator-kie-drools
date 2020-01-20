@@ -191,6 +191,12 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "minutes", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "seconds", BuiltInType.NUMBER ));
                         break;
+                    case RANGE:
+                        this.currentScope.define(new VariableSymbol("start included", BuiltInType.BOOLEAN));
+                        this.currentScope.define(new VariableSymbol("start", BuiltInType.UNKNOWN));
+                        this.currentScope.define(new VariableSymbol("end", BuiltInType.UNKNOWN));
+                        this.currentScope.define(new VariableSymbol("end included", BuiltInType.BOOLEAN));
+                        break;
                     // table 53 applies only to type(e) is a date/time/duration
                     case UNKNOWN:
                         enableDynamicResolution();

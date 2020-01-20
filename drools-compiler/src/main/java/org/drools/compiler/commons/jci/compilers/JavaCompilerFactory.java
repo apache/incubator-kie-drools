@@ -24,28 +24,15 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
 import org.drools.core.util.ClassUtils;
 
-
 /**
  * Creates JavaCompilers
- * 
- * TODO use META-INF discovery mechanism
  */
-public final class JavaCompilerFactory {
+public enum JavaCompilerFactory {
 
-    /**
-     * @deprecated will be remove after the next release, please create an instance yourself
-     */
-    private static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
+    INSTANCE;
 
     private final Map classCache = new HashMap();
     
-    /**
-     * @deprecated will be remove after the next release, please create an instance yourself
-     */
-    public static JavaCompilerFactory getInstance() {
-        return JavaCompilerFactory.INSTANCE;
-    }
-
     /**
      * Tries to guess the class name by convention. So for compilers
      * following the naming convention

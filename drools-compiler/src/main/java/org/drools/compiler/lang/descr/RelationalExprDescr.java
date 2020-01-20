@@ -84,6 +84,12 @@ public class RelationalExprDescr extends BaseDescr {
         createOrGetOperator().setNegated( negated );
     }
 
+    @Override
+    public BaseDescr negate() {
+        setNegated( !isNegated() );
+        return this;
+    }
+
     public List<String> getParameters() {
         return operator != null ? operator.getParameters() : null;
     }

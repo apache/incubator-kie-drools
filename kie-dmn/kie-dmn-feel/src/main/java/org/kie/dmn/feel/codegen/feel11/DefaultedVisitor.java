@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import org.kie.dmn.feel.lang.ast.ASTNode;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
@@ -210,4 +211,8 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
         return defaultVisit(n);
     }
 
+    @Override
+    public T visit(AtLiteralNode n) {
+        return defaultVisit(n);
+    }
 }

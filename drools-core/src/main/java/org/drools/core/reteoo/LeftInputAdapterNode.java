@@ -50,6 +50,9 @@ import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
  * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a
@@ -116,8 +119,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         Class objectClass = ((ClassWireable) objectType).getClassType();
         return isPropertyReactive( context, objectClass ) ?
-               calculatePositiveMask( objectClass, pattern.getListenedProperties(),
-                                      getAccessibleProperties( context.getKnowledgeBase(), objectClass ) ) :
+               pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getKnowledgeBase() ) ) :
                AllSetBitMask.get();
     }
 

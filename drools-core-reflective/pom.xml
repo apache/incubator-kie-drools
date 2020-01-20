@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools</artifactId>
-        <version>7.32.0-SNAPSHOT</version>
+        <version>7.33.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>drools-core-reflective</artifactId>
@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <java.module.name>org.drools.drools-core-reflective</java.module.name>
+        <java.module.name>org.drools.droolscorereflective</java.module.name>
     </properties>
 
     <dependencies>

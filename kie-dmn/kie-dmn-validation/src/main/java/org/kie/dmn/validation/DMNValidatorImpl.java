@@ -336,7 +336,7 @@ public class DMNValidatorImpl implements DMNValidator {
                             if (flags.contains(ANALYZE_DECISION_TABLE)) {
                                 List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model);
                                 List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
-                                results.addAll(dtAnalysisResults);
+                                results.addAllUnfiltered(dtAnalysisResults);
                             }
                         } else {
                             throw new IllegalStateException("Compiled model is null!");

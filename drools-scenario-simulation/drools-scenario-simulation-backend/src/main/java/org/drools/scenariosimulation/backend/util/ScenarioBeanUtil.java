@@ -56,7 +56,7 @@ public class ScenarioBeanUtil {
         for (Map.Entry<List<String>, Object> param : params.entrySet()) {
 
             // direct mapping already considered
-            if(param.getKey().isEmpty()) {
+            if (param.getKey().isEmpty()) {
                 continue;
             }
 
@@ -201,7 +201,7 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
             return Long.toString((Long) cleanValue);
         } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
-            return cleanValue + "d";
+            return revertDouble((Double) cleanValue);
         } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
             return cleanValue + "f";
         } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
@@ -276,5 +276,12 @@ public class ScenarioBeanUtil {
 
     private static String cleanStringForNumberParsing(String rawValue) {
         return rawValue.replaceAll("(-)\\s*([0-9])", "$1$2");
+    }
+
+    private static String revertDouble(Double doubleValue) {
+        if (Double.isInfinite(doubleValue) || Double.isNaN(doubleValue)) {
+            return String.valueOf(doubleValue);
+        }
+        return doubleValue + "d";
     }
 }

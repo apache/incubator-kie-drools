@@ -41,6 +41,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
         final Object[][] cases = new Object[][] {
                 // date/time/duration function invocations
                 { "date(\"2016-07-29\")", DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) , null},
+                { "@\"2016-07-29\"", DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) , null},
                 { "date(\"-0105-07-29\")", DateTimeFormatter.ISO_DATE.parse( "-0105-07-29", LocalDate::from ) , null}, // 105 BC
                 {"date(\"2016-15-29\")", null , FEELEvent.Severity.ERROR },
                 { "date(\"2016-12-48\")", null , FEELEvent.Severity.ERROR },
@@ -52,6 +53,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date( date and time(\"2016-07-29T05:48:23.765-05:00\") )", LocalDate.of( 2016, 7, 29 ) , null},
                 { "date( date and time(\"2016-07-29T05:48:23Z\") )", LocalDate.of( 2016, 7, 29 ) , null},
                 { "time(\"23:59:00\")", DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) , null},
+                { "@\"23:59:00\"", DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) , null},
                 { "time(\"05:48:23.765\")", DateTimeFormatter.ISO_TIME.parse( "05:48:23.765", LocalTime::from ) , null},
                 { "time(\"23:59:00z\")", DateTimeFormatter.ISO_TIME.parse( "23:59:00z", OffsetTime::from ) , null},
                 { "time(\"13:20:00-05:00\")", DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", OffsetTime::from ) , null},
@@ -61,15 +63,19 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time( date and time(\"2016-07-29T05:48:23Z\") )", OffsetTime.of( 5, 48, 23, 0, ZoneOffset.UTC ) , null},
                 { "time( date and time(\"2016-07-29T05:48:23.765-05:00\") )", OffsetTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) , null},
                 { "date and time(\"2016-07-29T05:48:23\")", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
+                { "@\"2016-07-29T05:48:23\"", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "date and time( 2016, 7, 29, 5, 48, 23 )", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "date and time(\"2016-07-29T05:48:23Z\")", ZonedDateTime.of(2016, 7, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
                 { "date and time( 2016, 7, 29, 5, 48, 23, -5 )", OffsetDateTime.of(2016, 7, 29, 5, 48, 23, 0, ZoneOffset.ofHours( -5 ) ) , null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\")", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) , null},
                 { "date and time(date(\"2016-07-29\"), time(\"05:48:23.765-05:00\") )", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) , null},
                 { "duration( \"P2DT20H14M\" )", Duration.parse( "P2DT20H14M" ) , null},
+                { "@\"P2DT20H14M\"", Duration.parse( "P2DT20H14M" ) , null},
                 { "duration( \"P2Y2M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
+                { "@\"P2Y2M\"", ComparablePeriod.parse( "P2Y2M" ) , null},
                 { "duration( \"P26M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", ComparablePeriod.parse( "P1Y8M" ) , null},
+                { "@\"xyz\"", null , FEELEvent.Severity.ERROR },
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
