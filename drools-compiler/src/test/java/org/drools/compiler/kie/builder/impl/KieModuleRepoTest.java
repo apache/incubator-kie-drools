@@ -3,7 +3,6 @@ package org.drools.compiler.kie.builder.impl;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,8 +78,8 @@ public class KieModuleRepoTest {
 
     @After
     public void after() throws Exception {
-        setFinalField(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
-        setFinalField(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
+        setCacheSize(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
+        setCacheSize(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
     }
 
     /**
@@ -132,17 +131,10 @@ public class KieModuleRepoTest {
        return numKieModules;
     }
 
-    private static void setFinalField(final Field field, final Object fieldObject, final Object newValue) throws Exception {
+    private static void setCacheSize( final Field field, final Object fieldObject, final Object newValue ) throws Exception {
         // make accessible
         field.setAccessible(true);
-
-        // make non-final
-        final Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL );
-
         field.set(null, newValue);
-
         field.set(fieldObject, newValue);
     }
 
@@ -487,8 +479,8 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectsCausesOldProjectEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 3);
-        setFinalField(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
+        setCacheSize(maxSizeGaCacheField, null, 3);
+        setCacheSize(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
         for( int i = 0; i < releaseIds.length; ++i ) {
@@ -518,8 +510,8 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectVersionsCausesOldVersionEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
-        setFinalField(maxSizeGaVersionsCacheField, null, 3);
+        setCacheSize(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
+        setCacheSize(maxSizeGaVersionsCacheField, null, 3);
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
         for( int i = 0; i < releaseIds.length; ++i ) {
@@ -567,8 +559,8 @@ public class KieModuleRepoTest {
     @Test
     public void testOldKieModulesLRUCache() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 2);
-        setFinalField(maxSizeGaVersionsCacheField, null, 4);
+        setCacheSize(maxSizeGaCacheField, null, 2);
+        setCacheSize(maxSizeGaVersionsCacheField, null, 4);
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[9];
         for( int i = 0; i < releaseIds.length; ++i ) {

@@ -318,11 +318,11 @@ public class KieRepositoryImpl
         // PROPERTIES -------------------------------------------------------------------------------------------------------------
 
         public static final String CACHE_GA_MAX_PROPERTY = "kie.repository.project.cache.size";
-        static final int MAX_SIZE_GA_CACHE // made changeable for test purposes
+        static int MAX_SIZE_GA_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_GA_MAX_PROPERTY, "100"));
 
         public static final String CACHE_VERSIONS_MAX_PROPERTY = "kie.repository.project.versions.cache.size";
-        static final int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
+        static int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_VERSIONS_MAX_PROPERTY, "10"));
 
         // FIELDS -----------------------------------------------------------------------------------------------------------------
