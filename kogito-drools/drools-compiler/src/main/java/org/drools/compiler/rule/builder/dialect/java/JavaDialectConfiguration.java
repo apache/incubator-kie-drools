@@ -68,7 +68,7 @@ public class JavaDialectConfiguration
         ECLIPSE, NATIVE
     }
 
-    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "9", "10", "11"};
+    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "9", "10", "11", "12"};
 
     private String                      languageLevel;
 
