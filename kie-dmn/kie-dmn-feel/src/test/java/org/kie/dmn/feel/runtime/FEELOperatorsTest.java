@@ -89,6 +89,10 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"[1,2,3] instance of list<number>", Boolean.TRUE , null},
                 {"[1,2,3] instance of list < number>", Boolean.TRUE , null},
                 {"[1,2,\"asd\"] instance of list<number>", Boolean.FALSE , null},
+                {"123 instance of context<name:string, age:number>", Boolean.FALSE , null},
+                {"{ name : \"John\" } instance of context<name:string, age:number>", Boolean.FALSE , null},
+                {"{ name : \"John\", age : 47 } instance of context<name:string, age:number>", Boolean.TRUE , null},
+                {"{ name : \"John\", age : 47, country : \"IT\" } instance of context<name:string, age:number>", Boolean.TRUE , null},
         };
         return addAdditionalParameters(cases, false);
     }

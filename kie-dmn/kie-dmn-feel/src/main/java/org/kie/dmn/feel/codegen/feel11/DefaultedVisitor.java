@@ -24,6 +24,7 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
@@ -219,6 +220,11 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
 
     @Override
     public T visit(ListTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
+    public T visit(ContextTypeNode n) {
         return defaultVisit(n);
     }
 

@@ -52,4 +52,5 @@ public interface Visitor<T> {
     T visit(FormalParameterNode n);
     T visit(AtLiteralNode n);
     T visit(ListTypeNode n);
+    T visit(ContextTypeNode n);
 }

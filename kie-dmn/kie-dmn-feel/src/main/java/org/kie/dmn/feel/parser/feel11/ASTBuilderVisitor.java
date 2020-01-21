@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
@@ -36,6 +37,7 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.InNode;
@@ -55,6 +57,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.TypeContext;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
@@ -596,8 +599,24 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitContextType(FEEL_1_1Parser.ContextTypeContext ctx) {
-        // TODO here.
-        return null;
+        List<String> pNames = new ArrayList<>();
+        for (TerminalNode id : ctx.Identifier()) {
+            pNames.add(id.getText());
+        }
+        if (!pNames.get(0).equals("context")) {
+            throw new IllegalStateException("grammar rule changed.");
+        } else {
+            pNames.remove(0);
+        }
+        List<TypeNode> pTypes = new ArrayList<>();
+        for (TypeContext t : ctx.type()) {
+            pTypes.add((TypeNode) visit(t));
+        }
+        Map<String, TypeNode> gens = new HashMap<>();
+        for (int i = 0; i < pNames.size(); i++) {
+            gens.put(pNames.get(i), pTypes.get(i));
+        }
+        return new ContextTypeNode(ctx, gens);
     }
 
     @Override

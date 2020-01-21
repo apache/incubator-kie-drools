@@ -530,6 +530,4 @@ public class CompiledFEELSupport {
     public static BigDecimal pow(BigDecimal l, BigDecimal r) {
         return BigDecimalMath.pow( l, r, MathContext.DECIMAL128 );
     }
-
-
 }

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +52,7 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
@@ -296,6 +298,17 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         return DirectCompilerResult.of(Expressions.genListType(expr.getExpression()),
                                        BuiltInType.UNKNOWN,
                                        mergeFDs(expr));
+    }
+
+    @Override
+    public DirectCompilerResult visit(ContextTypeNode n) {
+        Map<String, DirectCompilerResult> fields = new HashMap<>();
+        for (Entry<String, TypeNode> kv : n.getGen().entrySet()) {
+            fields.put(kv.getKey(), kv.getValue().accept(this));
+        }
+        return DirectCompilerResult.of(Expressions.genContextType(fields),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(fields.values().stream().collect(Collectors.toList())));
     }
 
     @Override
