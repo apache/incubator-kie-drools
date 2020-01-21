@@ -91,14 +91,19 @@ public class TypeDeclarationTest extends BaseModelTest {
         assertEquals( 1, rules );
     }
 
+    public interface ValuesProvider {
+        Map<String, String> getValues();
+    }
+
     @Test
     public void testGenericsMap() throws Exception {
         // DROOLS-4939
         String str =
               "package org.drools.compiler\n" +
+              "import " + ValuesProvider.class.getCanonicalName() + "\n" +
               "import java.util.Map\n" +
-              "declare Node\n" +
-              "    values: Map<String,String>\n" +
+              "declare Node extends ValuesProvider\n" +
+              "    values: Map<String, String>\n" +
               "end\n" +
               "rule R1 when\n" +
               "   $node: Node( values.get(\"value\").length == 4 )\n" +
