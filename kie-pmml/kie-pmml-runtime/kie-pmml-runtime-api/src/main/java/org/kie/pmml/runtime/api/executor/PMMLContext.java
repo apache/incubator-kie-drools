@@ -15,9 +15,12 @@
  */
 package org.kie.pmml.runtime.api.executor;
 
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
 
 public interface PMMLContext extends Context {
+
+    PMMLRequestData getRequestData();
 
 
 }

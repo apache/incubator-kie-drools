@@ -17,34 +17,32 @@ package org.kie.pmml.regression.executor;
 
 import java.util.logging.Logger;
 
-import org.dmg.pmml.Model;
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.regression.RegressionModel;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
+import org.kie.pmml.regression.factories.KiePMMLRegressionModelFactory;
+
+import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
  * Default <code>AlgorithmImplementationProvider</code> for <b>Regression</b>
  */
-public class RegressionAlgorithmImplementationProvider implements ModelImplementationProvider {
+public class RegressionAlgorithmImplementationProvider implements ModelImplementationProvider<RegressionModel> {
 
     private static final Logger log = Logger.getLogger(RegressionAlgorithmImplementationProvider.class.getName());
 
-    private static final PMMLModelType PMML_MODEL_TYPE = PMMLModelType.REGRESSION_MODEL;
-
     @Override
-    public PMMLModelType getPMMLModelType() {
+    public PMML_MODEL getPMMLModelType() {
         log.info("getPMMLModelType");
         return PMML_MODEL_TYPE;
     }
 
     @Override
-    public KiePMMLModel getKiePMMLModel(Model model) {
-        log.info("getKiePMMLModel " + model);
-        // TODO {gcardosi} verify given name is correct
-        String name = model.getModelName();
-        // TODO {gcardosi} replace with actual model
-        return new KiePMMLModel(name, PMML_MODEL_TYPE) {
-
-        };
+    public KiePMMLModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
+        log.info("getKiePMMLModel " + dataDictionary + " " + model);
+        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
     }
 }

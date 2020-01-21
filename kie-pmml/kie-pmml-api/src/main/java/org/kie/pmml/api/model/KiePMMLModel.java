@@ -17,34 +17,31 @@ package org.kie.pmml.api.model;
 
 import java.util.Objects;
 
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.abstracts.KiePMMLNamed;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel {
+public abstract class KiePMMLModel extends KiePMMLNamed {
 
-    private final String modelName;
-    private final PMMLModelType pmmlModelType;
+    private static final long serialVersionUID = -6845971260164057040L;
+    private final PMML_MODEL pmmlMODEL;
 
-    public KiePMMLModel(String modelName, PMMLModelType pmmlModelType) {
-        this.modelName = modelName;
-        this.pmmlModelType = pmmlModelType;
+    public KiePMMLModel(String name, PMML_MODEL pmmlMODEL) {
+        super(name);
+        this.pmmlMODEL = pmmlMODEL;
     }
 
-    public String getModelName() {
-        return modelName;
-    }
-
-    public PMMLModelType getPmmlModelType() {
-        return pmmlModelType;
+    public PMML_MODEL getPmmlMODEL() {
+        return pmmlMODEL;
     }
 
     @Override
     public String toString() {
         return "KiePMMLModel{" +
-                "modelName='" + modelName + '\'' +
-                ", pmmlModelType=" + pmmlModelType +
+                "name='" + name + '\'' +
+                ", pmmlModelType=" + pmmlMODEL +
                 '}';
     }
 
@@ -57,12 +54,12 @@ public abstract class KiePMMLModel {
             return false;
         }
         KiePMMLModel that = (KiePMMLModel) o;
-        return Objects.equals(getModelName(), that.getModelName()) &&
-                getPmmlModelType() == that.getPmmlModelType();
+        return Objects.equals(getName(), that.getName()) &&
+                getPmmlMODEL() == that.getPmmlMODEL();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getModelName(), getPmmlModelType());
+        return Objects.hash(getName(), getPmmlMODEL());
     }
 }

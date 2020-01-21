@@ -16,8 +16,9 @@
 package org.kie.pmml.runtime.core.executor;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 
 public interface PMMLModelExecutor {
@@ -27,7 +28,7 @@ public interface PMMLModelExecutor {
      * @return the <code>PMMLModelType</code> this <code>PMMLModelExecutor</code>
      * is specific for
      */
-    PMMLModelType getPMMLModelType();
+    PMML_MODEL getPMMLModelType();
 
     /**
      * Evaluate the model, given the context
@@ -36,7 +37,8 @@ public interface PMMLModelExecutor {
      * @param context the context with all the input variables
      *
      * @return the result of the evaluation
+     * @throws KiePMMLException
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context );
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context ) throws KiePMMLException;
 
 }

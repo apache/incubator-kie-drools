@@ -24,6 +24,10 @@
       <artifactId>kie-pmml-library-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
     </dependency>
@@ -39,6 +43,11 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-library-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

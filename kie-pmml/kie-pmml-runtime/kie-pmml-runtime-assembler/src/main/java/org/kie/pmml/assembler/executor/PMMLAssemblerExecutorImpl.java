@@ -15,33 +15,20 @@
  */
 package org.kie.pmml.assembler.executor;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.kie.api.internal.assembler.KieAssemblerService;
-import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.ResultSeverity;
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.assembler.converter.KiePMMLConverter;
 import org.kie.pmml.compiler.executor.PMMLCompilerExecutor;
 import org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl;
 import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
-import org.kie.pmml.runtime.api.model.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +116,7 @@ public class PMMLAssemblerExecutorImpl implements KieAssemblerService {
 //            kbuilderImpl.addBuilderResult(new PMMLKnowledgeBuilderError(ResultSeverity.ERROR, resource, "Unable to compile PMML model for the resource"));
 //            logger.error( "Unable to compile PMML model for resource {}", resource.getSourcePath() );
 //        }
-        return new KiePMMLModel("NAME", PMMLModelType.UNKNOWN) {
+        return new KiePMMLModel("NAME", PMML_MODEL.REGRESSION_MODEL) {
         };
     }
 

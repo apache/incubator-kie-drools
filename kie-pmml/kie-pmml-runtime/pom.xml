@@ -18,6 +18,7 @@
     <module>kie-pmml-runtime-api</module>
     <module>kie-pmml-runtime-assembler</module>
     <module>kie-pmml-runtime-core</module>
+    <module>kie-pmml-runtime-regression</module>
   </modules>
 
 </project>

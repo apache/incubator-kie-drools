@@ -15,17 +15,19 @@
  */
 package org.kie.pmml.library.api.implementations;
 
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 
 /**
  * API for actual PMML model implementations
  */
-public interface ModelImplementationProvider {
+public interface ModelImplementationProvider<T extends Model> {
 
-    PMMLModelType getPMMLModelType();
+    PMML_MODEL getPMMLModelType();
 
-    KiePMMLModel getKiePMMLModel(Model model);
+    KiePMMLModel getKiePMMLModel(DataDictionary dataDictionary, T model) throws KiePMMLException;
 
 }

@@ -24,7 +24,8 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.enums.PMMLModelType;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
@@ -60,14 +61,14 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         logger.info("getModels " + modelName);
         return getModels()
                 .parallelStream()
-                .filter(model -> Objects.equals(modelName, model.getModelName()))
+                .filter(model -> Objects.equals(modelName, model.getName()))
                 .findFirst();
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context) {
+    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context) throws KiePMMLException {
         logger.info("evaluate " + model + " " + context);
-        Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlModelType());
+        Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context) : new PMML4Result();
     }
 
@@ -75,11 +76,11 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * Returns an <code>Optional&lt;PMMLModelExecutor&gt;</code> to allow
      * incremental development of different model-specific executors
      *
-     * @param pmmlModelType
+     * @param pmmlMODEL
      * @return
      */
-    private Optional<PMMLModelExecutor> getFromPMMLModelType(PMMLModelType pmmlModelType) {
-        logger.info("getFromPMMLModelType " + pmmlModelType);
+    private Optional<PMMLModelExecutor> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
+        logger.info("getFromPMMLModelType " + pmmlMODEL);
         // TODO {gcardosi}
         return Optional.empty();
     }

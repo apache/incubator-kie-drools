@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 
 public interface PMMLRuntime {
@@ -52,7 +53,7 @@ public interface PMMLRuntime {
      *
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context );
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context ) throws KiePMMLException;
 
 
 }

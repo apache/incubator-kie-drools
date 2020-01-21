@@ -13,32 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.enums;
+package org.kie.pmml.api.exceptions;
 
-/**
- * PMML algorithms
- *
- */
-public enum PMMLModelType {
+public class KieDataFieldException extends KiePMMLException {
 
-    ASSOCIATION_MODEL,
-    BAYESIAN_NETWORK_MODEL,
-    BASELINE_MODEL,
-    CLUSTERING_MODEL,
-    GAUSSIAN_PROCESS_MODEL,
-    GENERAL_REGRESSION_MODEL,
-    MINING_MODEL,
-    NAIVE_BAYES_MODEL,
-    NEAREST_NEIGHBOR_MODEL,
-    NEURAL_NETWORK_MODEL,
-    REGRESSION_MODEL,
-    RULESET_MODEL,
-    SEQUENCE_MODEL,
-    SCORECARD_MODEL,
-    SUPPORT_VECTOR_MACHINE_MODEL,
-    TEXT_MODEL,
-    TIME_SERIES_MODEL,
-    TREE_MODEL,
-    UNKNOWN;
+    private static final long serialVersionUID = -2024081845051149460L;
 
+    public KieDataFieldException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public KieDataFieldException(String message) {
+        super(message);
+    }
 }
