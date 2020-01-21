@@ -177,7 +177,7 @@ public class FieldDefinition
     		return getterName;
 	    }
         String prefix;
-        if ( "boolean".equals( this.type ) ) {
+        if ( "boolean".equals( this.type.getRawType() ) ) {
             prefix = "is";
         } else {
             prefix = "get";
