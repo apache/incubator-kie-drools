@@ -78,6 +78,7 @@ import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.DynamicValueSupplier;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
@@ -138,14 +139,17 @@ import org.kie.api.definition.type.Role;
 import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
+import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -647,7 +651,21 @@ public class KiePackagesBuilder {
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
+        addReactiveMasksToPattern( pattern, modelPattern );
+
         return pattern;
+    }
+
+    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
+        if (pattern.getListenedProperties() != null) {
+            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
+            if (patternMetadata != null) {
+                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
+                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
+
+            }
+        }
     }
 
     private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {

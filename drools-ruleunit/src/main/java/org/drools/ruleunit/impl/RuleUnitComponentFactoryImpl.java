@@ -16,8 +16,6 @@
 
 package org.drools.ruleunit.impl;
 
-import java.util.List;
-
 import org.drools.ruleunit.DataSource;
 import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.command.pmml.ApplyPmmlModelCommandExecutorImpl;
@@ -25,18 +23,12 @@ import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.ApplyPmmlModelCommandExecutor;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.internal.ruleunit.RuleUnitVariable;
 
 public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
 
     @Override
     public RuleUnitDescription createRuleUnitDescription( KiePackage pkg, Class<?> ruleUnitClass ) {
         return new RuleUnitDescriptionImpl( pkg, ruleUnitClass );
-    }
-
-    @Override
-    public RuleUnitDescription createRuleUnitDescription( String unitName, List<RuleUnitVariable> unitVariables ) {
-        return null;
     }
 
     @Override

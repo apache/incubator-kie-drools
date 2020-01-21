@@ -430,7 +430,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * globalStatement := GLOBAL annotation* type ID
+     * globalStatement := GLOBAL type ID
      *
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -450,13 +450,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     DroolsEditorType.KEYWORD);
             if (state.failed)
                 return null;
-
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(global);
-                if (state.failed)
-                    return null;
-            }
 
             // type
             String type = type();
