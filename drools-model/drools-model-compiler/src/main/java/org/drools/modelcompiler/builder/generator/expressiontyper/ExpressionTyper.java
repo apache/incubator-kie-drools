@@ -408,14 +408,12 @@ public class ExpressionTyper {
             addReactOnProperty(me.getNameAsString(), me.getArguments());
         }
 
-        Expression previous;
-        java.lang.reflect.Type typeCursor;
         if(!teCursor.isPresent()) {
             return new TypedExpressionResult(empty(), context);
-        } else {
-            previous = teCursor.get().expressionCursor;
-            typeCursor = teCursor.get().typeCursor;
         }
+
+        Expression previous = teCursor.get().expressionCursor;
+        java.lang.reflect.Type typeCursor = teCursor.get().typeCursor;
 
         List<Node> childrenWithoutFirst = childrenNodes.subList(1, childrenNodes.size());
         for (Node part : childrenWithoutFirst) {
@@ -688,10 +686,25 @@ public class ExpressionTyper {
 
         java.lang.reflect.Type genericReturnType = m.getGenericReturnType();
         if (genericReturnType instanceof TypeVariable) {
-            return new TypedExpressionCursor(methodCallExpr, originalTypeCursor);
+            if (originalTypeCursor instanceof ParameterizedType) {
+                return new TypedExpressionCursor( methodCallExpr, getActualType( rawClassCursor, ( ParameterizedType ) originalTypeCursor, ( TypeVariable ) genericReturnType ) );
+            } else {
+                return new TypedExpressionCursor(methodCallExpr, Object.class);
+            }
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
         }
+    }
+
+    private java.lang.reflect.Type getActualType(Class<?> rawClassCursor, ParameterizedType originalTypeCursor, TypeVariable genericReturnType) {
+        int genericPos = 0;
+        for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
+            if (typeVar.equals( genericReturnType )) {
+                return (( ParameterizedType ) originalTypeCursor).getActualTypeArguments()[genericPos];
+            }
+            genericPos++;
+        }
+        throw new RuntimeException( "Unknonw generic type " + genericReturnType + " for type " + originalTypeCursor );
     }
 
     private TypedExpressionCursor objectCreationExpr(ObjectCreationExpr objectCreationExpr) {

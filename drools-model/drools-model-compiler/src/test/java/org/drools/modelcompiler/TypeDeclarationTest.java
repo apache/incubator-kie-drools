@@ -16,6 +16,8 @@
 package org.drools.modelcompiler;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -83,6 +85,35 @@ public class TypeDeclarationTest extends BaseModelTest {
         FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
         Object parent = nodeType.newInstance();
         nodeType.set( parent, "values", Arrays.asList("test") );
+        ksession.insert( parent );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+
+    @Test
+    public void testGenericsMap() throws Exception {
+        // DROOLS-4939
+        String str =
+              "package org.drools.compiler\n" +
+              "import java.util.Map\n" +
+              "declare Node\n" +
+              "    values: Map<String,String>\n" +
+              "end\n" +
+              "rule R1 when\n" +
+              "   $node: Node( values.get(\"value\").length == 4 )\n" +
+              "then\n" +
+              "   System.out.println( $node );\n" +
+              "end";
+
+        KieSession ksession = getKieSession( str );
+        KieBase kbase = ksession.getKieBase();
+
+        FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
+        Object parent = nodeType.newInstance();
+        Map<String,String> map = new HashMap<>();
+        map.put("value", "test");
+        nodeType.set( parent, "values", map );
         ksession.insert( parent );
 
         int rules = ksession.fireAllRules();
