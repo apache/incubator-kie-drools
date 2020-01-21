@@ -36,7 +36,6 @@ public class KiePMMLRegressionModelTest {
     private static final String ALGORITHM_NAME = "multinom";
     private static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.REGRESSION;
     private static final MODEL_TYPE _MODEL_TYPE = MODEL_TYPE.LINEAR_REGRESSION;
-    private static final List<Object> OUTPUT_FIELDS = new ArrayList<>();
     private static final REGRESSION_NORMALIZATION_METHOD _REGRESSION_NORMALIZATION_METHOD = REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX;
     private static final List<KiePMMLRegressionTable> REGRESSION_TABLES = new ArrayList<>();
     private static final boolean SCORABLE = true;
@@ -50,7 +49,6 @@ public class KiePMMLRegressionModelTest {
                 .withAlgorithmName(ALGORITHM_NAME)
                 .withMiningFunction(_MINING_FUNCTION)
                 .withModelType(_MODEL_TYPE)
-                .withOutputFields(OUTPUT_FIELDS)
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
                 .withRegressionTables(REGRESSION_TABLES)
                 .withScorable(SCORABLE)
@@ -62,7 +60,6 @@ public class KiePMMLRegressionModelTest {
         assertEquals(ALGORITHM_NAME, retrieved.getAlgorithmName());
         assertEquals(_MINING_FUNCTION, retrieved.getMiningFunction());
         assertEquals(_MODEL_TYPE, retrieved.getModelType());
-        assertEquals(OUTPUT_FIELDS, retrieved.getOutputFields());
         assertEquals(_REGRESSION_NORMALIZATION_METHOD, retrieved.getRegressionNormalizationMethod());
         assertEquals(SCORABLE, retrieved.isScorable());
         assertEquals(TARGETFIELD_NAME, retrieved.getTargetFieldName());

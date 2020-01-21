@@ -37,6 +37,15 @@ public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor
     }
 
     @Override
+    public String toString() {
+        return "KiePMMLCategoricalPredictor{" +
+                "value=" + value +
+                ", coefficient=" + coefficient +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

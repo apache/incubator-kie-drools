@@ -49,7 +49,6 @@ public class TestUtils {
     public static final String ALGORITHM_NAME = "linearRegression";
     public static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.REGRESSION;
     public static final MODEL_TYPE _MODEL_TYPE = MODEL_TYPE.LINEAR_REGRESSION;
-    public static final List<Object> OUTPUT_FIELDS = new ArrayList<>();
     public static final REGRESSION_NORMALIZATION_METHOD _REGRESSION_NORMALIZATION_METHOD = REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX;
     public static final List<KiePMMLRegressionTable> REGRESSION_TABLES = new ArrayList<>();
     public static final boolean SCORABLE = true;
@@ -69,7 +68,6 @@ public class TestUtils {
                 .withAlgorithmName(ALGORITHM_NAME)
                 .withMiningFunction(_MINING_FUNCTION)
                 .withModelType(_MODEL_TYPE)
-                .withOutputFields(OUTPUT_FIELDS)
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
                 .withRegressionTables(REGRESSION_TABLES)
                 .withScorable(SCORABLE)

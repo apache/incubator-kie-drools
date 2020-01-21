@@ -53,7 +53,6 @@ public class KiePMMLRegressionTable implements Serializable {
         return categoricalPredictorMaps.containsKey(fieldName) ? Optional.of(categoricalPredictorMaps.get(fieldName)) : Optional.empty();
     }
 
-
     public Number getIntercept() {
         return intercept;
     }
@@ -76,6 +75,20 @@ public class KiePMMLRegressionTable implements Serializable {
 
     public Set<KiePMMLPredictorTerm> getPredictorTerms() {
         return predictorTerms;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLRegressionTable{" +
+                "intercept=" + intercept +
+                ", targetCategory=" + targetCategory +
+                ", extensions=" + extensions +
+                ", numericPredictors=" + numericPredictors +
+                ", categoricalPredictors=" + categoricalPredictors +
+                ", predictorTerms=" + predictorTerms +
+                ", numericPredictorsMap=" + numericPredictorsMap +
+                ", categoricalPredictorMaps=" + categoricalPredictorMaps +
+                '}';
     }
 
     private KiePMMLRegressionTable() {

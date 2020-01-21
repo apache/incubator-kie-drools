@@ -19,20 +19,20 @@ import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.regression.factories.KiePMMLRegressionModelFactory;
 
 import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
- * Default <code>AlgorithmImplementationProvider</code> for <b>Regression</b>
+ * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
-public class RegressionAlgorithmImplementationProvider implements ModelImplementationProvider<RegressionModel> {
+public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
 
-    private static final Logger log = Logger.getLogger(RegressionAlgorithmImplementationProvider.class.getName());
+    private static final Logger log = Logger.getLogger(RegressionModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -41,8 +41,8 @@ public class RegressionAlgorithmImplementationProvider implements ModelImplement
     }
 
     @Override
-    public KiePMMLModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
+    public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
         log.info("getKiePMMLModel " + dataDictionary + " " + model);
-        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
+        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel( dataDictionary, model);
     }
 }

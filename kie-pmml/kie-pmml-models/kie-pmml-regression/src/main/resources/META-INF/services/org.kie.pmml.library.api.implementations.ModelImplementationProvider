@@ -1,2 +1,2 @@
 # SPI implementation
-org.kie.pmml.regression.executor.RegressionAlgorithmImplementationProvider
+org.kie.pmml.regression.executor.RegressionModelImplementationProvider

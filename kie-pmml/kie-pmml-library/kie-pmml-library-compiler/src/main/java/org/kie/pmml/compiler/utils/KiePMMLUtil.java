@@ -49,7 +49,7 @@ public class KiePMMLUtil {
      *
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
-    private static PMML load(InputStream is) throws SAXException, JAXBException {
+    public static PMML load(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
     }
 }

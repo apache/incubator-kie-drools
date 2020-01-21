@@ -52,11 +52,11 @@ public class PMMLIsRegresssionModelExecutorTest {
     }
 
     @Test
-    public void evaluateRegressionWIthModel() {
+    public void evaluateRegressionWithModel() {
     }
 
     @Test
-    public void evaluateRegressionWIthTable() throws KiePMMLException {
+    public void evaluateRegressionWithTable() throws KiePMMLException {
         commonEvaluate(20, 1950, STREET);
         commonEvaluate(20, 1950, CARPARK);
         commonEvaluate(59, 3750, STREET);

@@ -34,10 +34,6 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
     private static final long serialVersionUID = 2690863539104500649L;
 
-   /* private List<KiePMMLDataField<?>> dataFields = new ArrayList<>();
-    private List<KiePMMLExtension> extensions;
-    private List<KiePMMLMiningField> miningFields = new ArrayList<>();*/
-    private List<Object> outputFields = new ArrayList<>();
     private List<KiePMMLRegressionTable> regressionTables = new ArrayList<>();
 
     private MINING_FUNCTION miningFunction;
@@ -53,25 +49,8 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return new Builder(name);
     }
 
-
     public static PMML_MODEL getPmmlModelType() {
         return PMML_MODEL_TYPE;
-    }
-
-   /* public List<KiePMMLDataField<?>> getDataFields() {
-        return dataFields;
-    }
-
-    public List<KiePMMLExtension> getExtensions() {
-        return extensions;
-    }
-
-    public List<KiePMMLMiningField> getMiningFields() {
-        return miningFields;
-    }*/
-
-    public List<Object> getOutputFields() {
-        return outputFields;
     }
 
     public List<KiePMMLRegressionTable> getRegressionTables() {
@@ -102,16 +81,26 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return regressionNormalizationMethod;
     }
 
-    public void setRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod) {
-        this.regressionNormalizationMethod = regressionNormalizationMethod;
-    }
-
     public boolean isScorable() {
         return isScorable;
     }
 
     public boolean isRegression() {
         return Objects.equals(MINING_FUNCTION.REGRESSION, miningFunction) && (targetFieldName == null || Objects.equals(OP_TYPE.CONTINUOUS, targetOpType));
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLRegressionModel{" +
+                "regressionTables=" + regressionTables +
+                ", miningFunction=" + miningFunction +
+                ", algorithmName='" + algorithmName + '\'' +
+                ", modelType=" + modelType +
+                ", targetFieldName='" + targetFieldName + '\'' +
+                ", targetOpType=" + targetOpType +
+                ", regressionNormalizationMethod=" + regressionNormalizationMethod +
+                ", isScorable=" + isScorable +
+                '}';
     }
 
     private KiePMMLRegressionModel(String modelName) {
@@ -128,26 +117,6 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
         public KiePMMLRegressionModel build() {
             return toBuild;
-        }
-
-       /* public Builder withDataFields(List<KiePMMLDataField<?>> dataFields) {
-            toBuild.dataFields = dataFields;
-            return this;
-        }
-
-        public Builder withExtensions(List<KiePMMLExtension> extensions) {
-            toBuild.extensions = extensions;
-            return this;
-        }
-
-        public Builder withMiningFields(List<KiePMMLMiningField> miningFields) {
-            toBuild.miningFields = miningFields;
-            return this;
-        }*/
-
-        public Builder withOutputFields(List<Object> outputFields) {
-            toBuild.outputFields = outputFields;
-            return this;
         }
 
         public Builder withRegressionTables(List<KiePMMLRegressionTable> regressionTables) {
