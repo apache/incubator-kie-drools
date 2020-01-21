@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Consequence;
+import org.drools.model.functions.IntrospectableLambda;
+import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -43,7 +48,12 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -1960,5 +1970,35 @@ public class CompilerTest extends BaseModelTest {
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+    }
+
+    @Test
+    public void testConsequenceNoVariable() throws Exception {
+        // DROOLS-4924
+        String str =
+                "package defaultpkg;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  System.out.println(\"Hello\");\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
+            RuleImpl rule = (RuleImpl)ksession.getKieBase().getRule("defaultpkg", "R");
+            Consequence consequence = rule.getConsequence();
+            Field field = LambdaConsequence.class.getDeclaredField("consequence");
+            field.setAccessible(true);
+            org.drools.model.Consequence internalConsequence = (org.drools.model.Consequence) field.get(consequence);
+            Object lambda = ((IntrospectableLambda) internalConsequence.getBlock()).getLambda();
+            assertThat(lambda.getClass().getName(), startsWith("defaultpkg.LambdaConsequence")); // materialized Lambda
+        }
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }
