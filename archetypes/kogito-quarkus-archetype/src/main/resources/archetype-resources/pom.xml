@@ -173,6 +173,7 @@
       <plugin>
         <groupId>io.openapitools.swagger</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
+        <version>${version.swagger.plugin}</version>
         <configuration>
           <resourcePackages>
             <resourcePackage>org.kie.kogito.examples</resourcePackage>
