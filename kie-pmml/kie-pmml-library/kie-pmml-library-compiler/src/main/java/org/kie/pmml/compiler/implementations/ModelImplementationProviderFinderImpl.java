@@ -25,7 +25,7 @@ import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
 
 /**
- * Default <code>AlgorithmImplementationProviderFinder</code> using Java SPI
+ * Default <code>ModelImplementationProviderFinder</code> using Java SPI
  */
 public class ModelImplementationProviderFinderImpl implements ModelImplementationProviderFinder {
 
@@ -34,6 +34,7 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
     private ServiceLoader<ModelImplementationProvider> loader = ServiceLoader.load(ModelImplementationProvider.class);
 
     @Override
+    @SuppressWarnings("rawtypes")
     public List<ModelImplementationProvider> getImplementations(boolean refresh) {
         log.info("getImplementations " + refresh);
         List<ModelImplementationProvider> toReturn = new ArrayList<>();
@@ -44,6 +45,7 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
         return toReturn;
     }
 
+    @SuppressWarnings("rawtypes")
     private Iterator<ModelImplementationProvider> getProviders(boolean refresh) {
         if (refresh) {
             loader.reload();

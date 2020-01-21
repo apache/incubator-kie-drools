@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.executor;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.kie.pmml.api.model.KiePMMLModel;
@@ -25,10 +26,10 @@ import org.kie.pmml.api.model.KiePMMLModel;
 public interface PMMLCompilerExecutor {
 
     /**
-     * Read the given <code>String</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
-     * @param source
+     * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code>
+     * @param inputStream
      * @return
      */
-    List<KiePMMLModel> getResults(String source) throws Exception;
+    List<KiePMMLModel> getResults(InputStream inputStream) throws Exception;
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.core;
+package org.kie.pmml.library.testutils;
 
 import java.io.File;
 import java.io.IOException;

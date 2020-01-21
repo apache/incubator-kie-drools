@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.executor;
+package org.kie.pmml.compiler.executor;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
+import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
 import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
 import org.kie.pmml.library.testutils.TestUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -37,22 +36,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class RegressionModelImplementationProviderTest {
+public class PMMLCompilerExecutorImplTest {
 
-    private final static RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
-
-    @Test
-    public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, PROVIDER.getPMMLModelType());
-    }
+    private static final PMMLCompilerExecutor EXECUTOR = new PMMLCompilerExecutorImpl(new ModelImplementationProviderFinderImpl());
 
     @Test
-    public void getKiePMMLModel() throws Exception {
-        final PMML pmml = TestUtils.loadFromFile("LinearRegressionSample.xml");
-        assertNotNull(pmml);
-        assertEquals(1, pmml.getModels().size());
-        commonVerifyKiePMMLRegressionModel(PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0)));
+    public void getResults() throws Exception {
+        final List<KiePMMLModel> results = EXECUTOR.getResults(TestUtils.getInputStream("LinearRegressionSample.xml"));
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        assertTrue(results.get(0) instanceof KiePMMLRegressionModel);
+        commonVerifyKiePMMLRegressionModel((KiePMMLRegressionModel) results.get(0));
     }
+
+    // TODO {gcardosi} Carbon-copy of org.kie.pmml.regression.executor.RegressionModelImplementationProviderTest
 
     private void commonVerifyKiePMMLRegressionModel(KiePMMLRegressionModel retrieved) {
         assertNotNull(retrieved);
@@ -112,6 +109,4 @@ public class RegressionModelImplementationProviderTest {
         assertEquals(value, retrieved.getValue());
         assertEquals(coefficient, retrieved.getCoefficient());
     }
-
-
 }

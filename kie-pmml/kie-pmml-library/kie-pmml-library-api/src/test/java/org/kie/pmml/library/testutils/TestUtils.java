@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.core;
+package org.kie.pmml.library.testutils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -32,13 +32,12 @@ import static org.junit.Assert.assertTrue;
 public class TestUtils {
 
     /**
-     * Load a <code>PMML</code> from the given <b>file</b>
+     * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
      * @param fileName
      * @return
-     * @throws SAXException
-     * @throws JAXBException
+     * @throws IOException
      */
-    public static PMML loadFromFile(String fileName) throws SAXException, JAXBException, IOException {
+    public static FileInputStream getInputStream(String fileName) throws IOException {
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
         String filePath = ResourceHelper.getResourcesByExtension(extension)
                 .filter(path -> path.endsWith(fileName))
@@ -47,7 +46,19 @@ public class TestUtils {
         assertNotNull(filePath);
         File sourceFile = new File(filePath);
         assertTrue(sourceFile.exists());
-        return loadFromInputStream(new FileInputStream(sourceFile));
+        return new FileInputStream(sourceFile);
+    }
+
+    /**
+     * Load a <code>PMML</code> from the given <b>file</b>
+     * @param fileName
+     * @return
+     * @throws SAXException
+     * @throws JAXBException
+     * @throws IOException
+     */
+    public static PMML loadFromFile(String fileName) throws SAXException, JAXBException, IOException {
+        return loadFromInputStream(getInputStream(fileName));
     }
 
     /**

@@ -28,14 +28,15 @@
       <artifactId>kie-pmml-models-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-core</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
+    </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-library-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -56,9 +57,10 @@
         <artifactId>kie-pmml-models-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- TEST -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-core</artifactId>
+        <artifactId>kie-pmml-library-api</artifactId>
         <classifier>tests</classifier>
         <scope>test</scope>
         <version>${version.org.kie}</version>

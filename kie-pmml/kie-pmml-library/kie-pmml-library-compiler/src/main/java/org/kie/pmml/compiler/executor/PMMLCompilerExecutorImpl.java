@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.executor;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -48,9 +49,9 @@ public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
     }
 
     @Override
-    public List<KiePMMLModel> getResults(String source) throws JAXBException, SAXException, KiePMMLException {
-        log.info("getResults " + source);
-        PMML commonPMMLModel = KiePMMLUtil.load(source);
+    public List<KiePMMLModel> getResults(InputStream inputStream) throws JAXBException, SAXException, KiePMMLException {
+        log.info("getResults " + inputStream);
+        PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
         return getResults(commonPMMLModel);
     }
 
@@ -83,7 +84,7 @@ public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
     @SuppressWarnings("unchecked")
     private Optional<KiePMMLModel> getFromModel(DataDictionary dataDictionary, Model model) throws KiePMMLException {
         log.info("getFromModel " + model);
-        final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getModelName());
+        final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         log.info("pmmlModelType " + pmmlMODEL);
         return modelImplementationProviderFinder.getImplementations(false)
                 .stream()
