@@ -441,9 +441,15 @@ public abstract class AccumulateVisitor {
     }
 
     private TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
-        final Class clazz = context.getDeclarationById(variableName)
-                .map(DeclarationSpec::getDeclarationClass)
-                .orElseThrow(RuntimeException::new);
+        final Optional<Class> clazzFromDeclaration = context.getDeclarationById(variableName)
+                .map(DeclarationSpec::getDeclarationClass);
+
+        Class clazz;
+        try {
+            clazz = context.getTypeResolver().resolveType(variableName);
+        } catch (ClassNotFoundException e) {
+            clazz = clazzFromDeclaration.orElseThrow(RuntimeException::new);
+        }
 
         return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, null, clazz, context.getTypeResolver());
     }
