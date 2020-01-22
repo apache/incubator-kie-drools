@@ -98,7 +98,7 @@ public class SortFunctionTest {
             }
 
             @Override
-            public List<List<String>> getParameterNames() {
+            public List<List<String>> getParameters() {
                 return null;
             }
 
@@ -122,7 +122,7 @@ public class SortFunctionTest {
             }
 
             @Override
-            public List<List<String>> getParameterNames() {
+            public List<List<String>> getParameters() {
                 return null;
             }
 

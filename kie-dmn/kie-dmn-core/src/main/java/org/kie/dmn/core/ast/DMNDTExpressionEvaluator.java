@@ -72,7 +72,7 @@ public class DMNDTExpressionEvaluator
         EventResults r = null;
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
-            List<String> paramNames = dt.getParameterNames().get( 0 );
+            List<String> paramNames = dt.getParameters().get( 0 );
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));

@@ -47,7 +47,7 @@ public class JavaFunction
         this.method = method;
     }
 
-    public List<List<String>> getParameterNames() {
+    public List<List<String>> getParameters() {
         return Arrays.asList( parameters );
     }
 

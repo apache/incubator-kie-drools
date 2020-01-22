@@ -66,7 +66,7 @@ public class DTInvokerFunction
         return dt;
     }
 
-    public List<List<String>> getParameterNames() {
+    public List<List<String>> getParameters() {
         return Collections.singletonList( dt.getParameterNames() );
     }
 
