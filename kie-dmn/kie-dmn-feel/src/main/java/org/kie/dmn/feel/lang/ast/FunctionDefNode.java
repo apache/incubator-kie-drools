@@ -110,7 +110,7 @@ public class FunctionDefNode
                                         paramTypes[i] = getType( paramTypeNames[i] );
                                     }
                                     Method method = clazz.getMethod( methodName, paramTypes );
-                                    return new JavaFunction(ANONYMOUS, params.stream().map(Param::getName).collect(Collectors.toList()), clazz, method);
+                                    return new JavaFunction(ANONYMOUS, params, clazz, method);
                                 } else {
                                     ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, getText()) ) );
                                     return null;

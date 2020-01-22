@@ -78,7 +78,7 @@ public class DMNFunctionWithReturnType extends BaseFEELFunction {
     }
 
     @Override
-    public List<List<String>> getParameters() {
+    public List<List<Param>> getParameters() {
         return wrapped.getParameters();
     }
 

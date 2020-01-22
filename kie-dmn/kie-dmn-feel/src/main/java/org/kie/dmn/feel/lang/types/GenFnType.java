@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.FEELFunction.Param;
 
 public class GenFnType implements SimpleType {
 
@@ -38,7 +39,7 @@ public class GenFnType implements SimpleType {
     public boolean isInstanceOf(Object o) {
         if (o instanceof FEELFunction) {
             FEELFunction oFn = (FEELFunction) o;
-            List<List<String>> signs = oFn.getParameters().stream().filter(sign -> sign.size() == argsGen.size()).collect(Collectors.toList());
+            List<List<Param>> signs = oFn.getParameters().stream().filter(sign -> sign.size() == argsGen.size()).collect(Collectors.toList());
             
             return true;
         } else {

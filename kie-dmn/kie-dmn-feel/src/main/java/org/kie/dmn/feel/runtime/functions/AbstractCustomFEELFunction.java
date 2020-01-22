@@ -34,7 +34,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomFEELFunction.class);
 
-    final List<BaseFEELFunction.Param> parameters;
+    final List<FEELFunction.Param> parameters;
     protected final B body;
 
     public AbstractCustomFEELFunction(String name, List<BaseFEELFunction.Param> parameters, B body) {
@@ -78,8 +78,8 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
 
     protected abstract Object internalInvoke(EvaluationContext ctx);
 
-    public List<List<String>> getParameters() {
-        return Arrays.asList(parameters.stream().map(FEELFunction.Param::getName).collect(Collectors.toList()));
+    public List<List<Param>> getParameters() {
+        return Arrays.asList(parameters);
     }
 
     String getSignature() {

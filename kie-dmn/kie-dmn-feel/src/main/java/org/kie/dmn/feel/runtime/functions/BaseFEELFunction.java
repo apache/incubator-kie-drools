@@ -123,7 +123,7 @@ public abstract class BaseFEELFunction
                 }
             } else {
                 if ( isNamedParams ) {
-                    params = rearrangeParameters( params, this.getParameters().get( 0 ) );
+                    params = rearrangeParameters(params, this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
                 }
                 Object result = invoke( ctx, params );
                 if ( result instanceof Either ) {
@@ -280,7 +280,7 @@ public abstract class BaseFEELFunction
     }
 
     @Override
-    public List<List<String>> getParameters() {
+    public List<List<Param>> getParameters() {
         // TODO: we could implement this method using reflection, just for consistency,
         // but it is not used at the moment
         return Collections.emptyList();

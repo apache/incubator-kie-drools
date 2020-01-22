@@ -39,11 +39,18 @@ public class GenListType implements SimpleType {
         if ( value == null ) {
             return true; // a null-value can be assigned to any type.
         }
+        if (!(value instanceof Collection)) {
+            return gen.isAssignableValue(value);
+        }
         return isInstanceOf(value);
     }
 
     @Override
     public String getName() {
         return "[anonymous]";
+    }
+
+    public Type getGen() {
+        return gen;
     }
 }
