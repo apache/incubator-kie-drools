@@ -895,8 +895,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                FieldDefinition fieldDef) {
         FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
                                          fieldDef.getName(),
-                                         BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ),
-                                         null,
+                                         fieldDef.getGenericType().getDescriptor(),
+                                         fieldDef.getGenericType().getSignature(),
                                          null );
 
 
@@ -1243,9 +1243,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getWriteMethod(),
-                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                            new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) )} ),
-                    null,
+                    "(" + fieldDef.getGenericType().getDescriptor() + ")V",
+                    fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
                     null );
             mv.visitCode();
             Label l0 = null;
@@ -1312,9 +1311,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getReadMethod(),
-                    Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ),
-                            new Type[]{} ),
-                    null,
+                    "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
+                    fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
                     null );
             mv.visitCode();
             Label l0 = null;

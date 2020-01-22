@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
@@ -112,6 +116,67 @@ public class TypeDeclarationTest {
         aType.set( a, "fieldB", b );
         ksession.insert( a );
         ksession.insert( b );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+
+    @Test
+    public void testGenerics() throws Exception {
+        // DROOLS-4939
+        String drl =
+                "package org.drools.compiler\n" +
+                        "import java.util.List\n" +
+                        "declare Node\n" +
+                        "    values: List<String>\n" +
+                        "end\n" +
+                        "rule R1 when\n" +
+                        "   $node: Node( values.get(0).length == 4 )\n" +
+                        "then\n" +
+                        "   System.out.println( $node );\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
+        Object parent = nodeType.newInstance();
+        nodeType.set( parent, "values", Arrays.asList("test") );
+        ksession.insert( parent );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+
+    public interface ValuesProvider {
+        Map<String, String> getValues();
+    }
+
+    @Test
+    public void testGenericsMap() throws Exception {
+        // DROOLS-4939
+        String drl =
+                "package org.drools.compiler\n" +
+                        "import " + ValuesProvider.class.getCanonicalName() + "\n" +
+                        "import java.util.Map\n" +
+                        "declare Node extends ValuesProvider\n" +
+                        "    values: Map<String, String>\n" +
+                        "end\n" +
+                        "rule R1 when\n" +
+                        "   $node: Node( values.get(\"value\").length == 4 )\n" +
+                        "then\n" +
+                        "   System.out.println( $node );\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
+        Object parent = nodeType.newInstance();
+        Map<String,String> map = new HashMap<>();
+        map.put("value", "test");
+        nodeType.set( parent, "values", map );
+        ksession.insert( parent );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );

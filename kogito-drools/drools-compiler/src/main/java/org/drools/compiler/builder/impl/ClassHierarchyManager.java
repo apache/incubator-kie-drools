@@ -110,7 +110,7 @@ public class ClassHierarchyManager {
         for (AbstractClassTypeDeclarationDescr tdescr : unsortedDescrs) {
             for (TypeFieldDescr field : tdescr.getFields().values()) {
                 QualifiedName name = tdescr.getType();
-                QualifiedName typeName = new QualifiedName(field.getPattern().getObjectType());
+                QualifiedName typeName = new QualifiedName(field.getPattern().getGenericType().getRawType());
                 if (!hasCircularDependency(name, typeName, taxonomy)) {
                     if (cache.containsKey(typeName)) {
                         taxonomy.get(name).add(typeName);

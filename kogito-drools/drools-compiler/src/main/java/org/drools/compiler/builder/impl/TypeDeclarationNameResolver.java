@@ -170,19 +170,10 @@ public class TypeDeclarationNameResolver {
                                          List<TypeDefinition> unresolvedTypes) {
 
         for (TypeFieldDescr field : typeDescr.getFields().values()) {
-            String declaredType = field.getPattern().getObjectType();
-            String resolved = resolveName(declaredType,
-                                          typeDescr,
-                                          packageDescr,
-                                          typeResolver,
-                                          unresolvedTypes,
-                                          true);
-
-            if (resolved != null) {
-                field.getPattern().setObjectType(resolved);
-            } else {
+            boolean resolved = field.getPattern().resolveObjectType( type -> resolveName(type, typeDescr, packageDescr, typeResolver, unresolvedTypes, true) );
+            if (!resolved) {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
-                                                                   "Cannot resolve type '" + declaredType + " for field " + field.getFieldName() +
+                                                                   "Cannot resolve type '" + field.getPattern().getObjectType() + " for field " + field.getFieldName() +
                                                                            " in declared type " + typeDescr.getTypeName()));
             }
         }

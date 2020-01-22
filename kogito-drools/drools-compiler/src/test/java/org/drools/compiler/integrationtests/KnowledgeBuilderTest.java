@@ -103,7 +103,7 @@ public class KnowledgeBuilderTest {
                 .build();
 
         if ( kbuilder2.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+            fail( kbuilder2.getErrors().toString() );
         }
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

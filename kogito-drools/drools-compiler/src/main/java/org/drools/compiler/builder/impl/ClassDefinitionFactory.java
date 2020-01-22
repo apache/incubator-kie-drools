@@ -36,6 +36,7 @@ import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
+import org.drools.core.factmodel.GenericTypeDefinition;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -227,13 +228,10 @@ public class ClassDefinitionFactory {
         BitSet occupiedPositions = new BitSet(fields.size());
 
         for (TypeFieldDescr field : fields.values()) {
-            String typeName = field.getPattern().getObjectType();
-            String typeNameKey = typeName;
-            String fullFieldType = kbuilder != null ?
-                    TypeDeclarationUtils.toBuildableType(typeNameKey, kbuilder.getRootClassLoader()) :
-                    typeNameKey;
+            GenericTypeDefinition genericType = field.getPattern().getGenericType()
+                    .map( type -> TypeDeclarationUtils.toBuildableType(type, kbuilder != null ? kbuilder.getRootClassLoader() : null) );
 
-            FieldDefinition fieldDef = new FieldDefinition(field.getFieldName(), fullFieldType);
+            FieldDefinition fieldDef = new FieldDefinition(field.getFieldName(), genericType);
             fieldDefs.add(fieldDef);
 
             if (field.hasOverride()) {

@@ -41,7 +41,7 @@ public class FieldDefinition
         Comparable<FieldDefinition> {
 
     private String             name       = null;
-    private String             type       = null;
+    private GenericTypeDefinition type;
     private boolean            key        = false;
     private boolean            inherited  = false;
     private String             overriding = null;
@@ -61,28 +61,19 @@ public class FieldDefinition
     public FieldDefinition() {
     }
 
-    /**
-     * Default constructor
-     *
-     * @param name the field's name
-     * @param type the fully qualified fields type
-     */
-    public FieldDefinition(String name,
-                           String type) {
-        this( name,
-                type,
-                false );
+    public FieldDefinition(String name, String type) {
+        this( name, new GenericTypeDefinition( type ) );
     }
 
-    /**
-     * Default constructor
-     *
-     * @param name the field's name
-     * @param type the fully qualified fields type
-     */
-    public FieldDefinition(String name,
-                           String type,
-                           boolean key) {
+    public FieldDefinition(String name, GenericTypeDefinition type) {
+        this( name, type, false );
+    }
+
+    public FieldDefinition(String name, String type, boolean key) {
+        this( name, new GenericTypeDefinition( type ), key );
+    }
+
+    public FieldDefinition(String name, GenericTypeDefinition type, boolean key) {
         this.name = name;
         this.type = type;
         this.key = key;
@@ -95,7 +86,7 @@ public class FieldDefinition
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         this.name = (String) in.readObject();
-        this.type = (String) in.readObject();
+        this.type = (GenericTypeDefinition) in.readObject();
         this.key = in.readBoolean();
         this.accessor = (ClassFieldAccessor) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
@@ -141,18 +132,22 @@ public class FieldDefinition
         this.name = name;
     }
 
+    public GenericTypeDefinition getGenericType() {
+        return this.type;
+    }
+
     /**
      * @return Returns the fully qualified type.
      */
     public String getTypeName() {
-        return this.type;
+        return this.type.getRawType();
     }
 
     /**
      * @param type The fully qualified type to set.
      */
     public void setTypeName(String type) {
-        this.type = type;
+        this.type = new GenericTypeDefinition(type);
     }
 
     public Class< ? > getType() {
@@ -182,7 +177,7 @@ public class FieldDefinition
     		return getterName;
 	    }
         String prefix;
-        if ( "boolean".equals( this.type ) ) {
+        if ( "boolean".equals( this.type.getRawType() ) ) {
             prefix = "is";
         } else {
             prefix = "get";

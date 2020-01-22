@@ -275,7 +275,9 @@ public class TypeDeclarationUtils {
         String prefix = "";
 
         String coreType = arrayDim == 0 ? className : className.substring(0, className.indexOf("["));
-        coreType = typeName2ClassName(coreType, loader);
+        if (loader != null) {
+            coreType = typeName2ClassName( coreType, loader );
+        }
 
         if (arrayDim > 0) {
             coreType = BuildUtils.getTypeDescriptor(coreType);

@@ -212,6 +212,17 @@ public class ClassDefinition
         this.interfaces = (interfaces != null) ? interfaces : new String[0];
     }
 
+    public final void addInterface(String interfaze) {
+        if (interfaces == null) {
+            interfaces = new String[] { interfaze };
+        } else {
+            String[] i2 = new String[interfaces.length+1];
+            System.arraycopy( interfaces, 0, i2, 0, interfaces.length );
+            i2[interfaces.length] = interfaze;
+            this.interfaces = i2;
+        }
+    }
+
     /**
      * @return Returns the superClass.
      */
