@@ -98,8 +98,8 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         return pattern.getParentNode().map(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+            LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
+            LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
             Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
 

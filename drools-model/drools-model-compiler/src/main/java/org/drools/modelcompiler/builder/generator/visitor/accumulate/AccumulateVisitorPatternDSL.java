@@ -83,9 +83,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         oldBinding.ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            Expression argument = newBindingExpression.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) argument;
+            LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
+            LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
             Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
 
