@@ -90,19 +90,22 @@ public abstract class AbstractVisitor {
         return variableMethod;
     }
 
-    protected Statement makeAssignment(Variable v) {
-        ClassOrInterfaceType type = parseClassOrInterfaceType(v.getType().getStringType());
+    public static Statement makeAssignment(Variable v) {
         String name = v.getName();
+        return makeAssignment(name, v);
+    }
 
+    public static Statement makeAssignment(String targetLocalVariable, Variable processVariable) {
+        ClassOrInterfaceType type = parseClassOrInterfaceType(processVariable.getType().getStringType());
         // `type` `name` = (`type`) `kcontext.getVariable
         AssignExpr assignExpr = new AssignExpr(
-                                               new VariableDeclarationExpr(type, name),
+                                               new VariableDeclarationExpr(type, targetLocalVariable),
                                                new CastExpr(
                                                             type,
                                                             new MethodCallExpr(
                                                                                new NameExpr(KCONTEXT_VAR),
                                                                                "getVariable")
-                                                                                             .addArgument(new StringLiteralExpr(name))),
+                                                                                             .addArgument(new StringLiteralExpr(targetLocalVariable))),
                                                AssignExpr.Operator.ASSIGN);
 
         return new ExpressionStmt(assignExpr);

@@ -6,7 +6,7 @@ class Template {
         public org.kie.kogito.rules.RuleUnit<$Type$> unit() {
             return null;
         }
-        public void unbind(org.kie.api.runtime.process.ProcessContext kcontext, $Type$ model) {
+        public void unbind(org.kie.api.runtime.process.ProcessContext kcontext, $Type$ unit) {
 
         }
     };

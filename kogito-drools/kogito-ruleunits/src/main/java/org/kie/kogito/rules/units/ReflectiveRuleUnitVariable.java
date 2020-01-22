@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
+import static org.drools.core.util.StringUtils.capitalize;
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.reflective.util.ClassUtils.getter2property;
 
@@ -17,8 +18,8 @@ public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
     private final Class<?> dataSourceParameterType;
     private final Class<?> boxedVarType;
     private final String getter;
+    private final String setter;
     private final Method getterMethod;
-
 
     public ReflectiveRuleUnitVariable(String name, Method getterMethod) {
         Objects.requireNonNull(name, "Invalid name was given: null");
@@ -41,6 +42,7 @@ public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
 
         this.name = name;
         this.getter = getterMethod.getName();
+        this.setter = "set" + capitalize(name);
         this.getterMethod = getterMethod;
         this.type = getterMethod.getReturnType();
         this.dataSourceParameterType = getUnitVarType(getterMethod);
@@ -76,6 +78,11 @@ public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
     @Override
     public String getter() {
         return getter;
+    }
+
+    @Override
+    public String setter() {
+        return setter;
     }
 
     @Override

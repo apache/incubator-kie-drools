@@ -44,7 +44,9 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -122,7 +124,7 @@ public class ModelMetaData {
                         new EnclosedExpr(value)));
     }
 
-    public MethodCallExpr callGetter(String targetVar, String field) {        
+    public MethodCallExpr callGetter(String targetVar, String field) {
         String getter = "get" + StringUtils.capitalize(field); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), getter);
     }

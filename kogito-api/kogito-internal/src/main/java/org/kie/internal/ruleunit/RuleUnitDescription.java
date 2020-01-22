@@ -46,6 +46,8 @@ public interface RuleUnitDescription {
 
     boolean hasVar( String name );
 
+    RuleUnitVariable getVar(String name);
+
     Collection<String> getUnitVars();
 
     Collection<? extends RuleUnitVariable> getUnitVarDeclarations();

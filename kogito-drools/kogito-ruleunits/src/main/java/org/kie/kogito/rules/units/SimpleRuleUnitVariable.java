@@ -12,10 +12,12 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
     private final Class<?> dataSourceParameterType;
     private final Class<?> boxedVarType;
     private final String getter;
+    private final String setter;
 
     public SimpleRuleUnitVariable(String name, Class<?> type, Class<?> dataSourceParameterType) {
         this.name = name;
         this.getter = "get" + capitalize(name);
+        this.setter = "set" + capitalize(name);
         this.type = type;
         this.dataSourceParameterType = dataSourceParameterType;
         this.boxedVarType = convertFromPrimitiveType(type);
@@ -35,6 +37,10 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
 
     public String getter() {
         return getter;
+    }
+
+    public String setter() {
+        return setter;
     }
 
     public Class<?> getType() {

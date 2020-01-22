@@ -46,6 +46,11 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     }
 
     @Override
+    public RuleUnitVariable getVar(String name) {
+        return varDeclarations.get(name);
+    }
+
+    @Override
     public Collection<String> getUnitVars() {
         return varDeclarations.keySet();
     }

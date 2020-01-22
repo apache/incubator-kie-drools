@@ -13,8 +13,10 @@ end
 
 rule singlePerson_add_note when
     p: /singlePerson[ age == 50 ]
+    s: /singleString[ this == "hello" ]
 then
     p.setAdult(true);
+    singleString.remove(s);
 	singleString.add("Now the life starts again");
 end
 

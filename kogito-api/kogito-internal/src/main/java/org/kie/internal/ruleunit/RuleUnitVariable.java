@@ -8,6 +8,8 @@ public interface RuleUnitVariable {
 
     String getter();
 
+    String setter();
+
     Class<?> getType();
 
     Class<?> getDataSourceParameterType();
