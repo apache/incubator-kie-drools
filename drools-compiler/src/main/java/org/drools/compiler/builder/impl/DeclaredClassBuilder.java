@@ -86,9 +86,10 @@ public class DeclaredClassBuilder {
         try {
             if (typeDescr instanceof TypeDeclarationDescr && !((TypeDeclarationDescr) typeDescr).isTrait()
                     && typeResolver.resolveType(def.getSuperClass()).isInterface()) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Interfaces cannot be used as super types of normal classes: " + def.getSuperClass()));
-                return false;
+                def.addInterface( def.getSuperClass() );
+                def.setSuperClass( null );
             }
+
             for (String sup : def.getInterfaces()) {
                 if (!typeResolver.resolveType(sup).isInterface()) {
                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Non-interface type used as super interface : " + sup));
