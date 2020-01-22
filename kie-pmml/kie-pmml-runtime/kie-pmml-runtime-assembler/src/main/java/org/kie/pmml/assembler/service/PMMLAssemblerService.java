@@ -15,20 +15,35 @@
  */
 package org.kie.pmml.assembler.service;
 
-import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.pmml.assembler.executor.PMMLAssemblerExecutor;
+import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.assembler.container.PMMLPackageImpl;
+import org.kie.pmml.compiler.executor.PMMLCompiler;
+import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
+import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
+import org.kie.pmml.runtime.api.container.PMMLPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
-    private PMMLAssemblerExecutor pmmlAssemblerExecutor;
+    public static final String PMML_COMPILER_CACHE_KEY = "PMML_COMPILER_CACHE_KEY";
+    private static final Logger logger = LoggerFactory.getLogger(PMMLAssemblerService.class);
 
     @Override
     public ResourceType getResourceType() {
@@ -36,34 +51,42 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public synchronized void addResource(Object kbuilder, Resource resource, ResourceType type,
-                                         ResourceConfiguration configuration) throws Exception {
-        addPackage((KnowledgeBuilderImpl) kbuilder, resource);
+    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurations(kbuilderImpl, resources));
     }
 
     @Override
-    public synchronized void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources,
-                                          ResourceType type) throws Exception {
-        for (ResourceWithConfiguration rd : resources) {
-            if (rd.getBeforeAdd() != null) {
-                rd.getBeforeAdd().accept(kbuilder);
-            }
-            addResource(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
-            if (rd.getAfterAdd() != null) {
-                rd.getAfterAdd().accept(kbuilder);
-            }
-        }
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
+        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        addModels(kbuilderImpl, getKiePMMLModelsFromResource(kbuilderImpl, resource));
     }
 
-    /**
-     * This method does the work of calling the PMML compiler and then assembling the results
-     * into packages that are added to the KnowledgeBuilder
-     *
-     * @param kbuilder
-     * @param resource
-     * @throws IOException
-     */
-    private void addPackage(KnowledgeBuilderImpl kbuilder, Resource resource) throws Exception {
-        pmmlAssemblerExecutor.getResults(resource).forEach(kbuilder::addBuilderResult);
+    protected void addModels(KnowledgeBuilderImpl kbuilderImpl, List<KiePMMLModel> toAdd) {
+        // TODO {gcardosi} verify correct creation/adding of PMMLPackage
+        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry( new PackageDescr() );
+        InternalKnowledgePackage kpkgs = pkgReg.getPackage();
+        ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
+        PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
+        pmmlPkg.addAll(toAdd);
+    }
+
+    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) throws Exception {
+        return resourceWithConfigurations.stream()
+                .map(ResourceWithConfiguration::getResource)
+                .flatMap(throwingFunctionWrapper(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream()))
+                .collect(Collectors.toList());
+    }
+
+    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws Exception {
+        PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
+        return pmmlCompiler.getResults(resource.getInputStream());
+    }
+
+    private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
+        // TODO {gcardosi} for the moment being it uses the default ModelImplementationProviderFinder
+        // to retrieve model implementations
+        return new PMMLCompilerImpl(new ModelImplementationProviderFinderImpl());
     }
 }

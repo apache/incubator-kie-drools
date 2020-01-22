@@ -36,9 +36,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class PMMLCompilerExecutorImplTest {
+public class PMMLCompilerImplTest {
 
-    private static final PMMLCompilerExecutor EXECUTOR = new PMMLCompilerExecutorImpl(new ModelImplementationProviderFinderImpl());
+    private static final PMMLCompiler EXECUTOR = new PMMLCompilerImpl(new ModelImplementationProviderFinderImpl());
 
     @Test
     public void getResults() throws Exception {

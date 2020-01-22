@@ -29,7 +29,7 @@ import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
-import org.kie.pmml.runtime.api.model.PMMLPackage;
+import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.assembler.converter;
+package org.kie.pmml.compiler.executor;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import java.io.InputStream;
+import java.util.List;
+
 import org.kie.pmml.api.model.KiePMMLModel;
-
 /**
- * Actual implementations are required to convert <b>common</b> <code>KiePMMLModel</code>
- * to <code>KnowledgeBuilderResult</code>
+ * Actual implementations are required to convert a <b>PMML</b> xml to
+ * to a <code>List&lt;KiePMMLModel&gt;</code>
  */
-public interface KiePMMLConverter {
+public interface PMMLCompiler {
 
     /**
-     *
-     * @param source
+     * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code>
+     * @param inputStream
      * @return
      */
-    KnowledgeBuilderResult getFromKiePMMLModel(KiePMMLModel source);
+    List<KiePMMLModel> getResults(InputStream inputStream) throws Exception;
 
 }

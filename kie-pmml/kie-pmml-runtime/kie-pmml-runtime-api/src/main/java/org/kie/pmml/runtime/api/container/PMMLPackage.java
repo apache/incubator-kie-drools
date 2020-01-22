@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.assembler.executor;
+package org.kie.pmml.runtime.api.container;
 
 import java.util.List;
+import java.util.Map;
 
-import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.pmml.api.model.KiePMMLModel;
 
 /**
- * Actual implementations are required to convert a <code>Resource</code>
- * to a <code>List&lt;KnowledgeBuilderResult&gt;</code>
+ *
  */
-public interface PMMLAssemblerExecutor {
+public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
 
-    /**
-     * Read the given <code>Resource</code> to returns a <code>List&lt;KnowledgeBuilderResult&gt;</code>
-     * @param resource
-     * @return
-     */
-    List<KnowledgeBuilderResult> getResults(Resource resource) throws Exception;
+    KiePMMLModel getModelByName(String name);
 
+    Map<String, KiePMMLModel> getAllModels();
+
+    void addAll(List<KiePMMLModel> toAdd);
 }

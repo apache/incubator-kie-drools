@@ -36,15 +36,15 @@ import org.xml.sax.SAXException;
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 /**
- * PMMLCompilerExecutor default implementation
+ * <code>PMMLCompiler</code> default implementation
  */
-public class PMMLCompilerExecutorImpl implements PMMLCompilerExecutor {
+public class PMMLCompilerImpl implements PMMLCompiler {
 
-    private static final Logger log = Logger.getLogger(PMMLCompilerExecutorImpl.class.getName());
+    private static final Logger log = Logger.getLogger(PMMLCompilerImpl.class.getName());
 
     private ModelImplementationProviderFinder modelImplementationProviderFinder;
 
-    public PMMLCompilerExecutorImpl(ModelImplementationProviderFinder modelImplementationProviderFinder) {
+    public PMMLCompilerImpl(ModelImplementationProviderFinder modelImplementationProviderFinder) {
         this.modelImplementationProviderFinder = modelImplementationProviderFinder;
     }
 
