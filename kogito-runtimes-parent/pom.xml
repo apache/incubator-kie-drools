@@ -54,9 +54,9 @@
     <module>drools</module>
     <module>jbpm</module>
     <module>optaplanner</module>
+    <module>kogito-codegen</module>
     <module>addons</module>
     <module>kogito-maven-plugin</module>
-    <module>kogito-codegen</module>
     <module>archetypes</module>
     <module>data-index</module>
   </modules>

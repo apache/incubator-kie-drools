@@ -31,6 +31,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SerializedPackageMergeTwoSteps2Test {
     
-    @Test
+    @Test @Disabled
     public void testBuildAndSerializePackagesInTwoSteps2() throws IOException, ClassNotFoundException    {        
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
