@@ -123,7 +123,16 @@ class GeneratedClassDeclaration {
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDescr> inheritedFields) {
         boolean hasSuper = typeDeclaration.getSuperTypeName() != null;
         if (hasSuper) {
-            generatedClass.addExtendedType(typeDeclaration.getSuperTypeName());
+            try {
+                Class<?> resolvedSuper = typeResolver.resolveType( typeDeclaration.getSuperTypeName() );
+                if (resolvedSuper.isInterface()) {
+                    generatedClass.addImplementedType(typeDeclaration.getSuperTypeName());
+                } else {
+                    generatedClass.addExtendedType(typeDeclaration.getSuperTypeName());
+                }
+            } catch (ClassNotFoundException e) {
+                generatedClass.addExtendedType(typeDeclaration.getSuperTypeName());
+            }
         }
 
         LinkedHashMap<String, TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
