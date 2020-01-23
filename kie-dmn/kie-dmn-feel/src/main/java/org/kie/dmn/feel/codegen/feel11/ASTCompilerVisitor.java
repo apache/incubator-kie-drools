@@ -308,7 +308,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         for (Entry<String, TypeNode> kv : n.getGen().entrySet()) {
             fields.put(kv.getKey(), kv.getValue().accept(this));
         }
-        return DirectCompilerResult.of(Expressions.genContextType(fields),
+        return DirectCompilerResult.of(Expressions.genContextType(fields.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getExpression()))),
                                        BuiltInType.UNKNOWN,
                                        mergeFDs(fields.values().stream().collect(Collectors.toList())));
     }

@@ -399,14 +399,14 @@ public class Expressions {
         return new ObjectCreationExpr(null, GenListTypeT, new NodeList<>(gen));
     }
 
-    public static Expression genContextType(Map<String, DirectCompilerResult> fields) {
+    public static Expression genContextType(Map<String, Expression> fields) {
         final ClassOrInterfaceType sie = parseClassOrInterfaceType(java.util.AbstractMap.SimpleImmutableEntry.class.getCanonicalName());
         sie.setTypeArguments(parseClassOrInterfaceType(String.class.getCanonicalName()),
                              parseClassOrInterfaceType(org.kie.dmn.feel.lang.Type.class.getCanonicalName()));
         List<Expression> entryParams = fields.entrySet().stream().map(e -> new ObjectCreationExpr(null,
                                                                                                   sie,
                                                                                                   new NodeList<>(stringLiteral(e.getKey()),
-                                                                                                                 e.getValue().getExpression())))
+                                                                                                                 e.getValue())))
                                              .collect(Collectors.toList());
         MethodCallExpr mOf = new MethodCallExpr(new NameExpr(java.util.stream.Stream.class.getCanonicalName()), "of");
         entryParams.forEach(mOf::addArgument);
