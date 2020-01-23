@@ -2350,17 +2350,13 @@ public class RuleModelDRLPersistenceImpl
         return packageDescr.getRules().get(0);
     }
 
-    private RuleDescr parseDrl(final String drl) {
-        DrlParser drlParser = new DrlParser();
-        PackageDescr packageDescr;
-        try {
-            packageDescr = drlParser.parse(true, drl);
-            if (drlParser.hasErrors()) {
-                throw new RuleModelUnmarshallingException();
-            }
-        } catch (DroolsParserException e) {
-            throw new RuntimeException(e);
+    private RuleDescr parseDrl(final String drl) throws DroolsParserException {
+        final DrlParser drlParser = new DrlParser();
+        final PackageDescr packageDescr = drlParser.parse(true, drl);
+        if (drlParser.hasErrors()) {
+            throw new RuleModelUnmarshallingException();
         }
+
         return packageDescr.getRules().get(0);
     }
 
