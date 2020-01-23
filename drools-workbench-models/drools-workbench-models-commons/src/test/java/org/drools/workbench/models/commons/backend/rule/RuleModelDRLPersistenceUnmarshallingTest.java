@@ -32,6 +32,7 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
@@ -9643,5 +9644,56 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEquals("a, \"b, something\", c()", fieldConstraint.getValue());
         assertEqualsIgnoreWhitespace(drl,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void testSingleFieldConstraintOperatorWithoutSpace() {
+        assertSingleFieldConstraintOperatorNoSpace(Operator.EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.NOT_EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.LESS.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.LESS_OR_EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.GREATER.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.GREATER_OR_EQUAL.getOperatorString());
+    }
+
+    private void assertSingleFieldConstraintOperatorNoSpace(final String operator) {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( age" + operator + "55 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals("Applicant",
+                     fp.getFactType());
+
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     sfp.getFactType());
+        assertEquals("age",
+                     sfp.getFieldName());
+        assertEquals(operator,
+                     sfp.getOperator());
+        assertEquals("55",
+                     sfp.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     sfp.getConstraintValueType());
     }
 }

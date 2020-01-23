@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2786,7 +2787,7 @@ public class RuleModelDRLPersistenceImpl
             }
             int opPos = expr.indexOf(opString);
             if (opPos >= 0 &&
-                    isNotMethodName(expr, opPos) &&
+                    isNotMethodName(expr, opString, opPos) &&
                     !isInQuote(expr, opPos) &&
                     !(Character.isLetter(opString.charAt(0)) &&
                             (expr.length() == opPos + opString.length() || Character.isLetter(expr.charAt(opPos + opString.length())) ||
@@ -2816,7 +2817,16 @@ public class RuleModelDRLPersistenceImpl
     }
 
     private static boolean isNotMethodName(final String expression,
+                                           final String potentialOperator,
                                            final int operatorPosition) {
+        if (Objects.equals(potentialOperator, Operator.EQUAL.getOperatorString()) ||
+                Objects.equals(potentialOperator, Operator.NOT_EQUAL.getOperatorString()) ||
+                Objects.equals(potentialOperator, Operator.LESS.getOperatorString()) ||
+                Objects.equals(potentialOperator, Operator.LESS_OR_EQUAL.getOperatorString()) ||
+                Objects.equals(potentialOperator, Operator.GREATER.getOperatorString()) ||
+                Objects.equals(potentialOperator, Operator.GREATER_OR_EQUAL.getOperatorString())) {
+            return true;
+        }
         return operatorPosition == 0 || expression.charAt(operatorPosition - 1) == ' ';
     }
 
