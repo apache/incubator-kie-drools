@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -4286,24 +4287,35 @@ public class RuleModelDRLPersistenceImpl
 
         public FieldConstraint asFieldConstraint(final RuleModel m,
                                                  final FactPattern factPattern) {
-            CompositeFieldConstraint comp = new CompositeFieldConstraint();
+            final CompositeFieldConstraint comp = new CompositeFieldConstraint();
             comp.setCompositeJunctionType(connector.equals("&&") ? CompositeFieldConstraint.COMPOSITE_TYPE_AND : CompositeFieldConstraint.COMPOSITE_TYPE_OR);
-            for (Expr expr : subExprs) {
+            for (final Expr expr : subExprs) {
                 comp.addConstraint(expr.asFieldConstraint(m,
                                                           factPattern));
             }
+            convertLegacyMatchesToNewFormat(comp);
+            return comp;
+        }
+
+        /**
+         * Fact(something != null && matches "P.*") = was supported before, now is deprecated.
+         * It breaks the UI if user has a rule with this case, so we convert to the new format:
+         * Fact(something != null && something matches "P.*")
+         *                           ^^^^^^^^
+         * @param comp The CompositeFieldConstraint with legacy 'matches'.
+         */
+        private void convertLegacyMatchesToNewFormat(final CompositeFieldConstraint comp) {
             String fieldName = "";
             for (FieldConstraint field : comp.getConstraints()) {
                 if (field instanceof SingleFieldConstraint) {
                     SingleFieldConstraint constraint = (SingleFieldConstraint) field;
-                    if (StringUtils.isEmpty(constraint.getFieldName()) && !StringUtils.isEmpty(constraint.getOperator())
-                            && (constraint.getOperator().equals("matches") || constraint.getOperator().equals("not matches"))) {
+                    if (StringUtils.isEmpty(constraint.getFieldName())
+                            && (Objects.equals(constraint.getOperator(), "matches") || Objects.equals(constraint.getOperator(), "not matches"))) {
                         constraint.setFieldName(fieldName);
                     }
                     fieldName = constraint.getFieldName();
                 }
             }
-            return comp;
         }
     }
 

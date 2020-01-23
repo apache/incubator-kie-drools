@@ -5061,11 +5061,6 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     @Test
     public void testMatchesLegacyToNewVersion() {
 
-        // Fact(something != null && matches "P.*") = was supported before, now is deprecated.
-        // It breaks the UI if user has a rule with this case, so we convert to the new format:
-        // Fact(something != null && something matches "P.*")
-        //                           ^^^^^^^^^
-
         final String factMvel = "Fact";
         final String symbol = "symbol";
 
