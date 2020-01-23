@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.library.testutils;
+package org.kie.test.util.filesystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,13 +23,15 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility that provide classPath scan to retrieve resources
  */
-// TODO {gcardosi} this is a carbon-copy of org.drools.scenariosimulation.backend.util.ResourceHelper: move it in a shared package
 public class ResourceHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResourceHelper.class);
 
     private ResourceHelper() {
     }
@@ -43,9 +45,9 @@ public class ResourceHelper {
      * @param extension to find
      * @return stream of matching resources
      */
-    public static Stream<String> getResourcesByExtension(String extension) throws IOException {
+    public static Stream<String> getResourcesByExtension(String extension) {
         return Arrays.stream(getClassPathElements())
-                .flatMap(throwingFunctionWrapper(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$"))));
+                .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$")));
     }
 
     /**
@@ -54,7 +56,7 @@ public class ResourceHelper {
      * @param pattern to find
      * @return stream of matching resources
      */
-    static Stream<String> internalGetResources(String path, Pattern pattern) throws IOException {
+    static Stream<String> internalGetResources(String path, Pattern pattern) {
         final File file = new File(path);
         if (!file.isDirectory()) {
             return Stream.empty();
@@ -69,11 +71,11 @@ public class ResourceHelper {
      * @return stream of matching resources
      * @throws IOException
      */
-    public static Stream<String> getResourcesFromDirectory(File directory, Pattern pattern) throws IOException {
+    public static Stream<String> getResourcesFromDirectory(File directory, Pattern pattern) {
         if (directory == null || directory.listFiles() == null) {
             return Stream.empty();
         }
-        return Arrays.stream(Objects.requireNonNull(directory.listFiles())).flatMap(throwingFunctionWrapper(
+        return Arrays.stream(Objects.requireNonNull(directory.listFiles())).flatMap(
                 elem -> {
                     if (elem.isDirectory()) {
                         return getResourcesFromDirectory(elem, pattern);
@@ -84,10 +86,10 @@ public class ResourceHelper {
                                 return Stream.of(fileName);
                             }
                         } catch (final IOException e) {
-                            throw new IOException("Impossible to access to resources", e);
+                            logger.error("Failed top retrieve resources from directory " + directory.getAbsolutePath() + " with pattern " + pattern.pattern(), e);
                         }
                     }
                     return Stream.empty();
-                }));
+                });
     }
 }

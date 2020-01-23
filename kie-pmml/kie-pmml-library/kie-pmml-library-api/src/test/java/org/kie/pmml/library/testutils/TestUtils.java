@@ -16,8 +16,6 @@
 package org.kie.pmml.library.testutils;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,28 +24,10 @@ import javax.xml.bind.JAXBException;
 import org.dmg.pmml.PMML;
 import org.xml.sax.SAXException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.kie.test.util.filesystem.FileUtils.getInputStream;
 
 public class TestUtils {
 
-    /**
-     * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public static FileInputStream getInputStream(String fileName) throws IOException {
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String filePath = ResourceHelper.getResourcesByExtension(extension)
-                .filter(path -> path.endsWith(fileName))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(filePath);
-        File sourceFile = new File(filePath);
-        assertTrue(sourceFile.exists());
-        return new FileInputStream(sourceFile);
-    }
 
     /**
      * Load a <code>PMML</code> from the given <b>file</b>

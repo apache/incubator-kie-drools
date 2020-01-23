@@ -31,11 +31,11 @@ import org.drools.core.io.impl.InputStreamResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
+import org.kie.test.util.filesystem.ResourceHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
