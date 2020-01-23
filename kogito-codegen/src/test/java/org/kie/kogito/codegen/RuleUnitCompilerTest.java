@@ -16,15 +16,18 @@
 
 package org.kie.kogito.codegen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.rules.multiunit.MultiUnit;
 import org.kie.kogito.codegen.unit.AdultUnit;
 import org.kie.kogito.codegen.unit.PersonsUnit;
 import org.kie.kogito.rules.DataHandle;
+import org.kie.kogito.rules.DataObserver;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnit;
@@ -32,7 +35,6 @@ import org.kie.kogito.rules.RuleUnitInstance;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -173,5 +175,24 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         assertTrue( adultData18.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
         assertEquals( 1, adultData21.getResults().getResults().size() );
         assertTrue( adultData21.getResults().getResults().containsAll( asList("Mario") ) );
+    }
+
+    @Test
+    public void generateSinglePackageSingleUnit() throws Exception {
+        Application application = generateCodeRulesOnly(
+                        "org/kie/kogito/codegen/rules/multiunit/MultiUnit.drl",
+                        "org/kie/kogito/codegen/rules/multiunit/MultiUnit2.drl");
+
+        ArrayList<String> strings = new ArrayList<>();
+
+        RuleUnit<MultiUnit> mu = application.ruleUnits().create(MultiUnit.class);
+        MultiUnit data = new MultiUnit();
+        RuleUnitInstance<MultiUnit> instance = mu.createInstance(data);
+        data.getValues().subscribe(DataObserver.of(v -> { if (v!=null) strings.add((String) v); }));
+        data.getValues().add("start");
+        instance.fire();
+
+        assertEquals(asList("start", "middle", "done"), strings);
+
     }
 }

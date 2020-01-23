@@ -1,0 +1,9 @@
+package org.kie.kogito.codegen.rules.multiunit;
+unit MultiUnit;
+
+rule finish when
+    middle: /values # String [ this == "middle" ]
+then
+    values.remove(middle);
+    values.add("done");
+end

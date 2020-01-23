@@ -1,0 +1,9 @@
+package org.kie.kogito.codegen.rules.multiunit;
+unit MultiUnit;
+
+rule putValues when
+    start: /values # String [ this == "start" ]
+then
+    values.remove(start);
+    values.add("middle");
+end
