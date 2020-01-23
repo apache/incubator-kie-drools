@@ -34,6 +34,7 @@ import static org.kie.pmml.runtime.regression.executor.TestUtils.AGE_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.INTERCEPT;
+import static org.kie.pmml.runtime.regression.executor.TestUtils.MODEL_NAME;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.SALARY_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.STREET;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.STREET_COEFF;
@@ -68,7 +69,7 @@ public class PMMLIsRegresssionModelExecutorTest {
         inputData.put("age", age);
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(inputData);
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
         PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetFieldName(), getKiePMMLRegressionTable(), pmmlRequestData);
         assertNotNull(retrieved);
         System.out.println(retrieved);

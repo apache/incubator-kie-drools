@@ -15,10 +15,10 @@
  */
 package org.kie.pmml.assembler.container;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.kie.api.io.ResourceType;
@@ -53,7 +53,7 @@ public class PMMLPackageImpl implements PMMLPackage {
     }
 
     @Override
-    public void addAll(List<KiePMMLModel> toAdd) {
+    public void addAll(Collection<KiePMMLModel> toAdd) {
         toAdd.forEach(this::add);
     }
 

@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.runtime.api.container;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.internal.io.ResourceTypePackage;
@@ -30,5 +30,5 @@ public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
 
     Map<String, KiePMMLModel> getAllModels();
 
-    void addAll(List<KiePMMLModel> toAdd);
+    void addAll(Collection<KiePMMLModel> toAdd);
 }

@@ -29,6 +29,11 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-runtime-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel</artifactId>
         <version>${version.org.kie}</version>
@@ -110,7 +115,7 @@
     <!-- Used to provide a default binding for PMML, and test in this module -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
+      <artifactId>kie-pmml-runtime-core</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>

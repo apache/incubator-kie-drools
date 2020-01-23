@@ -73,12 +73,14 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
         // org.kie.pmml.assembler.service.PMMLAssemblerService.addModels(KnowledgeBuilderImpl, List<KiePMMLModel>) ->
         // org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr) ->
         // kBase is null
-        Results res = ks.newKieBuilder( kfs ).buildAll().getResults();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        kieBuilder.getKieModule().getReleaseId();
+        Results res = kieBuilder.getResults();
         assertNotNull(res);
         assertTrue(res.getMessages(Message.Level.ERROR).isEmpty());
         // FIXME:
         // This kBase has no knowledge of the InternalKnowledgePackage created inside org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr)
-        KieBase kbase = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).getKieBase();
+        KieBase kbase = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
         KieSession session = kbase.newKieSession();
         // FIXME:
         // This pmmlRuntime in turns has no knowledge of the InternalKnowledgePackage created inside org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr)
@@ -106,7 +108,7 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
         inputData.put("age", age);
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(inputData);
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetFieldName(), kiePMMLRegressionModel.getRegressionTables().get(0), pmmlRequestData);
         assertNotNull(retrieved);
         System.out.println(retrieved);

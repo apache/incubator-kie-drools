@@ -1,0 +1,3 @@
+org.kie.api.internal.assembler.KieAssemblers = org.kie.pmml.assembler.service.PMMLAssemblerService
+org.kie.api.internal.runtime.KieRuntimes = org.kie.pmml.runtime.core.service.PMMLRuntimeService
+org.kie.api.internal.weaver.KieWeavers = org.kie.pmml.assembler.PMMLWeaverService

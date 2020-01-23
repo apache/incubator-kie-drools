@@ -71,20 +71,4 @@
     </dependencies>
   </dependencyManagement>
 
-<!--  <build>-->
-<!--    <plugins>-->
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-surefire-plugin</artifactId>-->
-<!--        <configuration>-->
-<!--          <additionalClasspathElements>-->
-<!--            <additionalClasspathElement>../../kie-pmml-models/kie-pmml-models-core/target/kie-pmml-models-core-${version.org.kie}.jar</additionalClasspathElement>-->
-<!--            <additionalClasspathElement>../../kie-pmml-models/kie-pmml-models-regression/target/kie-pmml-models-regression-${version.org.kie}.jar</additionalClasspathElement>-->
-<!--          </additionalClasspathElements>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-<!--    </plugins>-->
-<!--  </build>-->
-
-
 </project>

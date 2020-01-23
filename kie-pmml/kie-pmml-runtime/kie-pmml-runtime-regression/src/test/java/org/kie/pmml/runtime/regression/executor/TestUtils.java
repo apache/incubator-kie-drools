@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ import org.kie.pmml.api.model.regression.enums.MODEL_TYPE;
 import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.runtime.core.utils.PMMLRequestDataBuilder;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-2-1/Regression.html>Regression</a>
@@ -98,11 +100,15 @@ public class TestUtils {
         return toReturn;
     }
 
-    public static PMMLRequestData getPMMLRequestData(Map<String, Object> parameters) {
+    public static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
-        PMMLRequestData toReturn = new PMMLRequestData(correlationId);
-        parameters.forEach(toReturn::addRequestParam);
-        return toReturn;
+        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            Object pValue = entry.getValue();
+            Class class1 = pValue.getClass();
+            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
+        }
+        return pmmlRequestDataBuilder.build();
     }
 
 

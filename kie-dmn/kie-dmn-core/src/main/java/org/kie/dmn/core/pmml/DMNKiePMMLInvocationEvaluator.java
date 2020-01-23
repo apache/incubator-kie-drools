@@ -40,7 +40,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
-import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
+import org.kie.pmml.runtime.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
