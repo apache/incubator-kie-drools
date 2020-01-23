@@ -26,8 +26,7 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.RuleUnitFactory;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.decision.DecisionModel;
 
 /**
  *
@@ -65,10 +64,10 @@ public class RuleSetNodeFactory extends NodeFactory {
         return this;
     }
     
-    public RuleSetNodeFactory dmnGroup(String namespace, String model, String decision, Supplier<DMNRuntime> supplier) {
+    public RuleSetNodeFactory decision(String namespace, String model, String decision, Supplier<DecisionModel> supplier) {
         getRuleSetNode().setRuleType(RuleSetNode.RuleType.decision(namespace, model, decision));
         getRuleSetNode().setLanguage(RuleSetNode.DMN_LANG);
-        getRuleSetNode().setDmnRuntime(supplier);
+        getRuleSetNode().setDecisionModel(supplier);
         return this;
     }
     

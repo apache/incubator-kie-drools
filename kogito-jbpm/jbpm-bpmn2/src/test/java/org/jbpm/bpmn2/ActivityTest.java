@@ -1651,7 +1651,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
     }
     
-    @Disabled
     @Test
     public void testDMNBusinessRuleTask()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(

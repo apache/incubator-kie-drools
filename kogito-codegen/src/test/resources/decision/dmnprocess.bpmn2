@@ -1,0 +1,152 @@
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_Y5NDwB81EDiXeq2AO6t0ng" exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_ageItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_yearsOfServiceItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_vacationDaysItem" structureRef="java.math.BigDecimal"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputXItem" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputXItem" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_decisionInputXItem" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_AgeInputXItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_Years-of-ServiceInputXItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_Total-Vacation-DaysOutputXItem" structureRef="java.math.BigInteger"/>
+  <bpmn2:process id="DmnProcess" drools:packageName="decision" drools:version="1.0" drools:adHoc="false" name="DmnProcess" isExecutable="true" processType="Public">
+    <bpmn2:property id="age" itemSubjectRef="_ageItem" name="age"/>
+    <bpmn2:property id="yearsOfService" itemSubjectRef="_yearsOfServiceItem" name="yearsOfService"/>
+    <bpmn2:property id="vacationDays" itemSubjectRef="_vacationDaysItem" name="vacationDays"/>
+    <bpmn2:sequenceFlow id="_14DB8038-D485-4BCE-BFD9-7A98B9DC3361" sourceRef="_3EDB5055-D95B-43D0-A87A-A827EE7229A7" targetRef="_C61E8BCD-A87D-4976-B519-FF3DB53CE306">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.source">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_BB6D2A53-9775-4654-AC1B-31E35737510A" sourceRef="_BF61E48E-A824-4D10-8198-A17D3F081B70" targetRef="_3EDB5055-D95B-43D0-A87A-A827EE7229A7">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.source">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="_C61E8BCD-A87D-4976-B519-FF3DB53CE306">
+      <bpmn2:incoming>_14DB8038-D485-4BCE-BFD9-7A98B9DC3361</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:businessRuleTask id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7" name="Task" implementation="http://www.jboss.org/drools/dmn">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue>Task</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_BB6D2A53-9775-4654-AC1B-31E35737510A</bpmn2:incoming>
+      <bpmn2:outgoing>_14DB8038-D485-4BCE-BFD9-7A98B9DC3361</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_Y5YC4B81EDiXeq2AO6t0ng">
+        <bpmn2:dataInput id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputX" drools:dtype="java.lang.String" itemSubjectRef="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputXItem" name="namespace"/>
+        <bpmn2:dataInput id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX" drools:dtype="java.lang.String" itemSubjectRef="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputXItem" name="model"/>
+        <bpmn2:dataInput id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7_AgeInputX" drools:dtype="Integer" itemSubjectRef="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_AgeInputXItem" name="Age"/>
+        <bpmn2:dataInput id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Years-of-ServiceInputX" drools:dtype="Integer" itemSubjectRef="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_Years-of-ServiceInputXItem" name="Years of Service"/>
+        <bpmn2:dataOutput id="_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Total-Vacation-DaysOutputX" drools:dtype="java.math.BigInteger" itemSubjectRef="__3EDB5055-D95B-43D0-A87A-A827EE7229A7_Total-Vacation-DaysOutputXItem" name="Total Vacation Days"/>
+        <bpmn2:inputSet id="_Y5bGMB81EDiXeq2AO6t0ng">
+          <bpmn2:dataInputRefs>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_AgeInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Years-of-ServiceInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_Y5btQB81EDiXeq2AO6t0ng">
+          <bpmn2:dataOutputRefs>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Total-Vacation-DaysOutputX</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_Y5btQR81EDiXeq2AO6t0ng">
+        <bpmn2:targetRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_Y5cUUB81EDiXeq2AO6t0ng">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Y5c7YB81EDiXeq2AO6t0ng">decision</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Y5fXoB81EDiXeq2AO6t0ng">_3EDB5055-D95B-43D0-A87A-A827EE7229A7_namespaceInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Y5fXoR81EDiXeq2AO6t0ng">
+        <bpmn2:targetRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_Y5fXoh81EDiXeq2AO6t0ng">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Y5fXox81EDiXeq2AO6t0ng">VacationDays</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Y5fXpB81EDiXeq2AO6t0ng">_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Y5fXpR81EDiXeq2AO6t0ng">
+        <bpmn2:sourceRef>age</bpmn2:sourceRef>
+        <bpmn2:targetRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_AgeInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Y5fXph81EDiXeq2AO6t0ng">
+        <bpmn2:sourceRef>yearsOfService</bpmn2:sourceRef>
+        <bpmn2:targetRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Years-of-ServiceInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_Y5f-sB81EDiXeq2AO6t0ng">
+        <bpmn2:sourceRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_Total-Vacation-DaysOutputX</bpmn2:sourceRef>
+        <bpmn2:targetRef>vacationDays</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:businessRuleTask>
+    <bpmn2:startEvent id="_BF61E48E-A824-4D10-8198-A17D3F081B70">
+      <bpmn2:outgoing>_BB6D2A53-9775-4654-AC1B-31E35737510A</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="DmnProcess">
+      <bpmndi:BPMNShape id="shape__BF61E48E-A824-4D10-8198-A17D3F081B70" bpmnElement="_BF61E48E-A824-4D10-8198-A17D3F081B70">
+        <dc:Bounds height="56" width="56" x="392" y="428"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3EDB5055-D95B-43D0-A87A-A827EE7229A7" bpmnElement="_3EDB5055-D95B-43D0-A87A-A827EE7229A7">
+        <dc:Bounds height="102" width="154" x="528" y="405"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__C61E8BCD-A87D-4976-B519-FF3DB53CE306" bpmnElement="_C61E8BCD-A87D-4976-B519-FF3DB53CE306">
+        <dc:Bounds height="56" width="56" x="762" y="428"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__BF61E48E-A824-4D10-8198-A17D3F081B70_to_shape__3EDB5055-D95B-43D0-A87A-A827EE7229A7" bpmnElement="_BB6D2A53-9775-4654-AC1B-31E35737510A">
+        <di:waypoint x="448" y="456"/>
+        <di:waypoint x="528" y="456"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__3EDB5055-D95B-43D0-A87A-A827EE7229A7_to_shape__C61E8BCD-A87D-4976-B519-FF3DB53CE306" bpmnElement="_14DB8038-D485-4BCE-BFD9-7A98B9DC3361">
+        <di:waypoint x="682" y="456"/>
+        <di:waypoint x="762" y="456"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_Y5ia8B81EDiXeq2AO6t0ng" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="_BF61E48E-A824-4D10-8198-A17D3F081B70">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="_3EDB5055-D95B-43D0-A87A-A827EE7229A7">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_Y5NDwB81EDiXeq2AO6t0ng</bpmn2:source>
+    <bpmn2:target>_Y5NDwB81EDiXeq2AO6t0ng</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

@@ -35,6 +35,8 @@ import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
+
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 	
     private static final String NAMESPACE_PROP = "namespace";
@@ -62,22 +64,6 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         }
         ruleSetNode.setLanguage(language);
 
-		String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
-        if (ruleFlowGroup == null) {
-            String namespace = (String) ruleSetNode.removeParameter(NAMESPACE_PROP);
-            String model = (String) ruleSetNode.removeParameter(MODEL_PROP);
-            String decision = (String) ruleSetNode.removeParameter(DECISION_PROP);
-
-            if (namespace != null && model != null && decision != null) {
-                ruleSetNode.setRuleType(RuleSetNode.RuleType.decision(
-                        namespace,
-                        model,
-                        decision));
-            }
-        } else {
-			ruleSetNode.setRuleType(RuleSetNode.RuleType.of(ruleFlowGroup, language));
-		}
-
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -89,6 +75,19 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
                 readDataOutputAssociation(xmlNode, ruleSetNode, dataOutputs);
             }
             xmlNode = xmlNode.getNextSibling();
+        }
+
+        String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
+        if (language.equals(DMN_LANG)) {
+            String namespace = (String) ruleSetNode.removeParameter(NAMESPACE_PROP);
+            String model = (String) ruleSetNode.removeParameter(MODEL_PROP);
+            String decision = (String) ruleSetNode.removeParameter(DECISION_PROP);
+            ruleSetNode.setRuleType(RuleSetNode.RuleType.decision(
+                    namespace,
+                    model,
+                    decision));
+        } else {
+            ruleSetNode.setRuleType(RuleSetNode.RuleType.of(ruleFlowGroup, language));
         }
 
         handleScript(ruleSetNode, element, "onEntry");

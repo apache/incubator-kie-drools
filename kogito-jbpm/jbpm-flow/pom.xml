@@ -37,20 +37,9 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-internal</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-api</artifactId>
-        </exclusion>        
-      </exclusions>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-dmn</artifactId>
     </dependency>
 
     <dependency>

@@ -75,38 +75,41 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         String nodeName = ruleSetNode.getName();
 
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, RuleSetNodeFactory.class, "ruleSetNode" + node.getId(), "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(nodeName, "Rule")));
-        // build supplier for either KieRuntime or DMNRuntime
-        BlockStmt actionBody = new BlockStmt();
-        LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
+        String callTargetName = "ruleSetNode" + node.getId();
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, RuleSetNodeFactory.class, callTargetName, "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
+        addFactoryMethodWithArgs(body, callTargetName, "name", new StringLiteralExpr(getOrDefault(nodeName, "Rule")));
 
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
         if (ruleType.getName().isEmpty()) {
             throw new IllegalArgumentException(
-                    MessageFormat.format("Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
+                    MessageFormat.format(
+                            "Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
         }
 
+        NameExpr methodScope = new NameExpr(callTargetName);
+        MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
-            handleRuleFlowGroup(node, body, actionBody, lambda, ruleType);
+            m = handleRuleFlowGroup(ruleType);
         } else if (ruleType.isRuleUnit()) {
-            handleRuleUnit(node, body, variableScope, metadata, ruleSetNode, nodeName, ruleType);
+            m = handleRuleUnit(variableScope, metadata, ruleSetNode, nodeName, ruleType);
         } else if (ruleType.isDecision()) {
-            handleDecision(node, body, actionBody, lambda, (RuleSetNode.RuleType.Decision) ruleType);
+            m = handleDecision((RuleSetNode.RuleType.Decision) ruleType);
         } else {
             throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + ruleSetNode.getLanguage());
         }
+        m.setScope(methodScope);
+        body.addStatement(m);
 
         for (Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
-            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
+            addFactoryMethodWithArgs(body, callTargetName, "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
         for (Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
-            addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
+            addFactoryMethodWithArgs(body, callTargetName, "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
 
-        visitMetaData(ruleSetNode.getMetaData(), body, "ruleSetNode" + node.getId());
+        visitMetaData(ruleSetNode.getMetaData(), body, callTargetName);
 
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "done");
+        addFactoryMethodWithArgs(body, callTargetName, "done");
 
         if (ruleType.isRuleUnit()) {
             if (ruleSetNode.getInMappings().isEmpty()) {
@@ -120,17 +123,32 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         }
     }
 
-    private void handleDecision(Node node, BlockStmt body, BlockStmt actionBody, LambdaExpr lambda, RuleSetNode.RuleType.Decision ruleType) {
-        RuleSetNode.RuleType.Decision decisionModel = ruleType;
-        MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(new NameExpr("app"), "dmnRuntimeBuilder");
-        actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "dmnGroup", new StringLiteralExpr(decisionModel.getNamespace()),
-                                 new StringLiteralExpr(decisionModel.getModel()),
-                                 decisionModel.getDecision() == null ? new NullLiteralExpr() : new StringLiteralExpr(decisionModel.getDecision()),
-                                 lambda);
+    private MethodCallExpr handleDecision(RuleSetNode.RuleType.Decision ruleType) {
+
+        StringLiteralExpr namespace = new StringLiteralExpr(ruleType.getNamespace());
+        StringLiteralExpr model = new StringLiteralExpr(ruleType.getModel());
+        Expression decision = ruleType.getDecision() == null ?
+                new NullLiteralExpr() : new StringLiteralExpr(ruleType.getDecision());
+
+        MethodCallExpr decisionModels =
+                new MethodCallExpr(new NameExpr("app"), "decisionModels");
+        MethodCallExpr decisionModel =
+                new MethodCallExpr(decisionModels, "getDecisionModel")
+                        .addArgument(namespace)
+                        .addArgument(model);
+
+        BlockStmt actionBody = new BlockStmt();
+        LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
+        actionBody.addStatement(new ReturnStmt(decisionModel));
+
+        return new MethodCallExpr("decision")
+                        .addArgument(namespace)
+                        .addArgument(model)
+                        .addArgument(decision)
+                        .addArgument(lambda);
     }
 
-    private void handleRuleUnit(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleSetNode.RuleType ruleType) {
+    private MethodCallExpr handleRuleUnit(VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleSetNode.RuleType ruleType) {
         String unitName = ruleType.getName();
         ProcessContextMetaModel processContext = new ProcessContextMetaModel(variableScope, contextClassLoader);
         RuleUnitDescription description;
@@ -148,7 +166,10 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode);
         Expression ruleUnitFactory = handler.invoke();
 
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleUnit", new StringLiteralExpr(ruleType.getName()), ruleUnitFactory);
+        return new MethodCallExpr("ruleUnit")
+                        .addArgument(new StringLiteralExpr(ruleType.getName()))
+                        .addArgument(ruleUnitFactory);
+
     }
 
     private GeneratedRuleUnitDescription generateRuleUnitDescription(String unitName, ProcessContextMetaModel processContext) {
@@ -163,12 +184,22 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         return d;
     }
 
-    private void handleRuleFlowGroup(Node node, BlockStmt body, BlockStmt actionBody, LambdaExpr lambda, RuleSetNode.RuleType ruleType) {
+    private MethodCallExpr handleRuleFlowGroup( RuleSetNode.RuleType ruleType) {
+        // build supplier for rule runtime
+        BlockStmt actionBody = new BlockStmt();
+        LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
+
         MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
                 new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "ruleRuntimeBuilder");
-        MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
+        MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(
+                ruleRuntimeBuilder, "newKieSession",
+                NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
         actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
-        addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleType.getName()), lambda);
+
+        return new MethodCallExpr("ruleFlowGroup")
+                .addArgument(new StringLiteralExpr(ruleType.getName()))
+                .addArgument(lambda);
+
     }
 
     private Class<?> loadUnitClass(String nodeName, String unitName, String packageName) throws ClassNotFoundException {

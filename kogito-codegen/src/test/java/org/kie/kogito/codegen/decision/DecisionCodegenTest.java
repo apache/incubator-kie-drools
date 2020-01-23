@@ -32,7 +32,7 @@ public class DecisionCodegenTest {
         DecisionCodegen codegenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision").toAbsolutePath());
 
         List<GeneratedFile> generatedFiles = codegenerator.generate();
-        assertEquals(1, generatedFiles.size());
+        assertEquals(2, generatedFiles.size());
 
         ClassOrInterfaceDeclaration classDeclaration = codegenerator.moduleGenerator().classDeclaration();
         assertNotNull(classDeclaration);

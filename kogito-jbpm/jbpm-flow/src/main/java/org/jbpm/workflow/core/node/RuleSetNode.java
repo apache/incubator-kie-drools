@@ -31,7 +31,7 @@ import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.rules.RuleUnitData;
 
 /**
@@ -192,7 +192,7 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     
     private Map<String, Object> parameters = new HashMap<String, Object>();
     
-    private Supplier<DMNRuntime> dmnRuntime;
+    private Supplier<DecisionModel> decisionModel;
     private Supplier<KieRuntime> kieRuntime;
     private RuleUnitFactory<RuleUnitData> ruleUnitFactory;
 
@@ -212,12 +212,12 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
         this.language = language;
     }
 
-    public Supplier<DMNRuntime> getDmnRuntime() {
-        return dmnRuntime;
+    public Supplier<DecisionModel> getDecisionModel() {
+        return decisionModel;
     }
     
-    public void setDmnRuntime(Supplier<DMNRuntime> dmnRuntime) {
-        this.dmnRuntime = dmnRuntime;
+    public void setDecisionModel(Supplier<DecisionModel> decisionModel) {
+        this.decisionModel = decisionModel;
     }
     
     public Supplier<KieRuntime> getKieRuntime() {

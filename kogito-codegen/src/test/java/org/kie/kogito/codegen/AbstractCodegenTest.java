@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +36,7 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
+import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.slf4j.Logger;
@@ -55,20 +57,21 @@ public class AbstractCodegenTest {
     }
 
     protected Application generateCodeRulesOnly(String... rules) throws Exception {
-        return generateCode( Collections.emptyList(), Arrays.asList(rules), Collections.emptyList(), true );
+        return generateCode( Collections.emptyList(), Arrays.asList(rules), Collections.emptyList(), Collections.emptyList(), true );
     }
 
     protected Application generateRulesFromJava(String... javaSourceCode) throws Exception {
-        return generateCode(Collections.emptyList(), Collections.emptyList(), Arrays.asList(javaSourceCode), true);
+        return generateCode(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(javaSourceCode), true);
     }
 
     protected Application generateCode(List<String> processResources, List<String> rulesResources ) throws Exception {
-        return generateCode( processResources, rulesResources, Collections.emptyList(), false );
+        return generateCode( processResources, rulesResources, Collections.emptyList(), Collections.emptyList(), false );
     }
 
     protected Application generateCode(
             List<String> processResources,
             List<String> rulesResources,
+            List<String> decisionResources,
             List<String> javaRulesResources,
             boolean hasRuleUnit) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File("src/test/resources"));
@@ -90,6 +93,14 @@ public class AbstractCodegenTest {
                                                                    .stream()
                                                                    .map(resource -> new File("src/test/resources", resource))
                                                                    .collect(Collectors.toList())));
+        }
+
+
+        if (!decisionResources.isEmpty()) {
+            appGen.withGenerator(DecisionCodegen.ofFiles(Paths.get("src/test/resources").toAbsolutePath(), decisionResources
+                                                                    .stream()
+                                                                    .map(resource -> new File("src/test/resources", resource))
+                                                                    .collect(Collectors.toList())));
         }
 
         if (!javaRulesResources.isEmpty()) {
