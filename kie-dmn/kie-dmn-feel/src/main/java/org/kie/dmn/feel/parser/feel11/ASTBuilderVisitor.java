@@ -40,6 +40,7 @@ import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
@@ -617,6 +618,16 @@ public class ASTBuilderVisitor
             gens.put(pNames.get(i), pTypes.get(i));
         }
         return new ContextTypeNode(ctx, gens);
+    }
+
+    @Override
+    public BaseNode visitFunctionType(FEEL_1_1Parser.FunctionTypeContext ctx) {
+        List<TypeNode> argTypes = new ArrayList<>();
+        for (TypeContext t : ctx.type()) {
+            argTypes.add((TypeNode) visit(t));
+        }
+        TypeNode type = argTypes.remove(argTypes.size() - 1);
+        return new FunctionTypeNode(ctx, argTypes, type);
     }
 
     @Override

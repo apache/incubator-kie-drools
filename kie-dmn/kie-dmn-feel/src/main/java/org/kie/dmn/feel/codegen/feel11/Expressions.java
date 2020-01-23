@@ -46,6 +46,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.lang.types.GenFnType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -61,6 +62,7 @@ public class Expressions {
     public static final ClassOrInterfaceType FormalParamterT = parseClassOrInterfaceType(BaseFEELFunction.Param.class.getCanonicalName());
     public static final ClassOrInterfaceType GenListTypeT = parseClassOrInterfaceType(GenListType.class.getCanonicalName());
     public static final ClassOrInterfaceType MapBackedTypeT = parseClassOrInterfaceType(MapBackedType.class.getCanonicalName());
+    public static final ClassOrInterfaceType GenFnTypeT = parseClassOrInterfaceType(GenFnType.class.getCanonicalName());
     private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
 
     public static class NamedLambda {
@@ -413,6 +415,15 @@ public class Expressions {
                                                 "toMap").addArgument(new MethodReferenceExpr(new NameExpr(java.util.Map.Entry.class.getCanonicalName()), new NodeList<>(), "getKey"))
                                                         .addArgument(new MethodReferenceExpr(new NameExpr(java.util.Map.Entry.class.getCanonicalName()), new NodeList<>(), "getValue")));
         return new ObjectCreationExpr(null, MapBackedTypeT, new NodeList<>(stringLiteral("[anonymous]"), mCollect));
+    }
+
+    public static ObjectCreationExpr genFnType(List<Expression> args, Expression ret) {
+        return new ObjectCreationExpr(null,
+                                      GenFnTypeT,
+                                      new NodeList<>(new MethodCallExpr(new NameExpr(java.util.Arrays.class.getCanonicalName()),
+                                                                        "asList",
+                                                                        new NodeList<>(args)),
+                                                     ret));
     }
 
     public static Expression contains(Expression expr, Expression value) {

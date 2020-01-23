@@ -31,6 +31,7 @@ import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.IfExpressionNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
@@ -225,6 +226,11 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
 
     @Override
     public T visit(ContextTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
+    public T visit(FunctionTypeNode n) {
         return defaultVisit(n);
     }
 

@@ -93,6 +93,13 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"{ name : \"John\" } instance of context<name:string, age:number>", Boolean.FALSE , null},
                 {"{ name : \"John\", age : 47 } instance of context<name:string, age:number>", Boolean.TRUE , null},
                 {"{ name : \"John\", age : 47, country : \"IT\" } instance of context<name:string, age:number>", Boolean.TRUE , null},
+                {"123 instance of function<number> -> boolean", Boolean.FALSE , null},
+                {"{ f : function(age) true,              r : f instance of function<number> -> Any }.r", Boolean.TRUE , null},
+                {"{ f : function(age) true,              r : f instance of function<Any> -> Any }.r", Boolean.TRUE , null},
+                {"{ f : function(age) true,              r : f instance of function<Any, Any> -> Any }.r", Boolean.FALSE , null},
+                {"{ f : function(age : number) age > 18, r : f instance of function<number> -> Any }.r", Boolean.TRUE , null},
+                {"{ f : function(age : number) age > 18, r : f instance of function<Any> -> Any }.r", Boolean.FALSE , null},
+                {"{ f : function(age : Any) true       , r : f instance of function<number> -> Any }.r", Boolean.TRUE , null},
         };
         return addAdditionalParameters(cases, false);
     }

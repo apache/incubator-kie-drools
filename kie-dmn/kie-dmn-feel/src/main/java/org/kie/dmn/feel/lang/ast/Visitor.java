@@ -53,4 +53,5 @@ public interface Visitor<T> {
     T visit(AtLiteralNode n);
     T visit(ListTypeNode n);
     T visit(ContextTypeNode n);
+    T visit(FunctionTypeNode n);
 }

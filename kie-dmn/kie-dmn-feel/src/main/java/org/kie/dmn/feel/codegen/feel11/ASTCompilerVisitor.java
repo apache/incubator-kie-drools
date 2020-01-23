@@ -21,6 +21,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,6 +60,7 @@ import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.IfExpressionNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
@@ -309,6 +311,20 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         return DirectCompilerResult.of(Expressions.genContextType(fields),
                                        BuiltInType.UNKNOWN,
                                        mergeFDs(fields.values().stream().collect(Collectors.toList())));
+    }
+
+    @Override
+    public DirectCompilerResult visit(FunctionTypeNode n) {
+        List<DirectCompilerResult> args = new ArrayList<>();
+        for (TypeNode arg : n.getArgTypes()) {
+            args.add(arg.accept(this));
+        }
+        DirectCompilerResult ret = n.getRetType().accept(this);
+        return DirectCompilerResult.of(Expressions.genFnType(args.stream().map(DirectCompilerResult::getExpression).collect(Collectors.toList()),
+                                                             ret.getExpression()),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(args))
+                                   .withFD(ret);
     }
 
     @Override

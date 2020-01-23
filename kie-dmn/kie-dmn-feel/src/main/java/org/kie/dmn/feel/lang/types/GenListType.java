@@ -53,4 +53,10 @@ public class GenListType implements SimpleType {
     public Type getGen() {
         return gen;
     }
+
+    @Override
+    public boolean conformsTo(Type t) {
+        return (t instanceof GenListType && this.gen.conformsTo(((GenListType) t).gen)) || t == BuiltInType.LIST;
+    }
+
 }

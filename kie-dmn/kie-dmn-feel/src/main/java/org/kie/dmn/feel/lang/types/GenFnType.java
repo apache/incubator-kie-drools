@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
@@ -39,9 +40,13 @@ public class GenFnType implements SimpleType {
     public boolean isInstanceOf(Object o) {
         if (o instanceof FEELFunction) {
             FEELFunction oFn = (FEELFunction) o;
-            List<List<Param>> signs = oFn.getParameters().stream().filter(sign -> sign.size() == argsGen.size()).collect(Collectors.toList());
-            
-            return true;
+            List<List<Param>> signatures = oFn.getParameters().stream().filter(signature -> signature.size() == argsGen.size()).collect(Collectors.toList());
+            for (List<Param> signature : signatures) {
+                if (signature.size() == argsGen.size() && IntStream.range(0, argsGen.size()).allMatch(i -> argsGen.get(i).conformsTo(signature.get(i).type))) {
+                    return true;
+                }
+            }
+            return false;
         } else {
             return false;
         }
@@ -58,5 +63,17 @@ public class GenFnType implements SimpleType {
     @Override
     public String getName() {
         return "[anonymous]";
+    }
+
+    @Override
+    public boolean conformsTo(Type t) {
+        if (t instanceof GenFnType) {
+            GenFnType fnT = (GenFnType) t;
+            return fnT.argsGen.size() == this.argsGen.size() &&
+                   IntStream.range(0, argsGen.size()).allMatch(i -> fnT.argsGen.get(i).conformsTo(this.argsGen.get(i))) &&
+                   this.returnGen.conformsTo(fnT.returnGen);
+        } else {
+            return t == BuiltInType.FUNCTION;
+        }
     }
 }
