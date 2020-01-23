@@ -114,11 +114,11 @@ quantifiedExpression
 
 // #54
 type
-    : sk=Identifier {$sk.getText().equals("list");} '<' type '>'                                                #listType
-    | sk=Identifier {$sk.getText().equals("context");} '<' Identifier ':' type ( ',' Identifier ':' type )* '>' #contextType
-    | FUNCTION                                                                                                  #qnType
-    | FUNCTION '<' type ( COMMA type )* '>' '->' type                                                           #functionType
-    | qualifiedName                                                                                             #qnType
+    : sk=Identifier {$sk.getText().equals("list");} LT type GT                                                        #listType
+    | sk=Identifier {$sk.getText().equals("context");} LT Identifier COLON type ( COMMA Identifier COLON type )* GT   #contextType
+    | FUNCTION                                                                                                        #qnType
+    | FUNCTION LT type ( COMMA type )* GT RARROW type                                                                 #functionType
+    | qualifiedName                                                                                                   #qnType
     ;
 
 // #56
@@ -737,6 +737,8 @@ GE : '>=';
 NOTEQUAL : '!=';
 
 COLON : ':';
+
+RARROW : '->';
 
 POW : '**';
 ADD : '+';
