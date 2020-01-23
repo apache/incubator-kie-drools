@@ -613,14 +613,23 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitFactPattern(final FactPattern pattern) {
-            buf.append(indentation);
-            if (isDSLEnhanced) {
+            visitFactPattern(pattern,
+                             rootContext);
+        }
+
+        protected void visitFactPattern(final FactPattern pattern,
+                                        final LHSGeneratorContext parentContext) {
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern);
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
+            if (!isSubPattern) {
+                buf.append(indentation);
+            }
+            if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
                 buf.append(">");
             }
 
-            final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                              pattern);
             preGeneratePattern(gctx);
 
             generateFactPattern(pattern,
@@ -630,17 +639,29 @@ public class RuleModelDRLPersistenceImpl
             }
 
             postGeneratePattern(gctx);
-            buf.append("\n");
+            if (!isSubPattern) {
+                buf.append("\n");
+            }
         }
 
         public void visitFreeFormLine(final FreeFormLine ffl) {
+            visitFreeFormLine(ffl,
+                              rootContext);
+        }
+
+        protected void visitFreeFormLine(final FreeFormLine ffl,
+                                         final LHSGeneratorContext parentContext) {
             if (ffl.getText() == null) {
                 return;
             }
+
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, ffl);
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
             String[] lines = ffl.getText().split("\\n|\\r\\n");
             for (String line : lines) {
                 this.buf.append(indentation);
-                if (isDSLEnhanced) {
+                if (!isSubPattern && isDSLEnhanced) {
                     buf.append(">");
                 }
                 this.buf.append(line + "\n");
@@ -648,15 +669,24 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitCompositeFactPattern(final CompositeFactPattern pattern) {
+            visitCompositeFactPattern(pattern,
+                                      rootContext);
+        }
+
+        protected void visitCompositeFactPattern(final CompositeFactPattern pattern,
+                                                 final LHSGeneratorContext parentContext) {
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern);
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
             buf.append(indentation);
-            if (isDSLEnhanced) {
+            if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
                 buf.append(">");
             }
             if (CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals(pattern.getType())) {
-                renderCompositeFOL(pattern);
+                renderCompositeFOL(pattern, gctx);
             } else if (CompositeFactPattern.COMPOSITE_TYPE_NOT.equals(pattern.getType())) {
-                renderCompositeFOL(pattern);
+                renderCompositeFOL(pattern, gctx);
             } else if (CompositeFactPattern.COMPOSITE_TYPE_OR.equals(pattern.getType())) {
                 buf.append("( ");
                 if (pattern.getPatterns() != null) {
@@ -667,6 +697,7 @@ public class RuleModelDRLPersistenceImpl
                             buf.append(" ");
                         }
                         renderSubPattern(pattern,
+                                         gctx,
                                          i);
                     }
                 }
@@ -676,11 +707,14 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern) {
             visitFromCompositeFactPattern(pattern,
-                                          generatorContextFactory.getMaximumDepth() > 1);
+                                          rootContext);
         }
 
-        public void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern,
-                                                  final boolean isSubPattern) {
+        protected void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern,
+                                                     final LHSGeneratorContext parentContext) {
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern.getFactPattern());
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
             buf.append(indentation);
             if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
@@ -688,13 +722,9 @@ public class RuleModelDRLPersistenceImpl
             }
 
             if (pattern.getFactPattern() != null) {
-                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                                  pattern.getFactPattern());
-
-                final boolean _isSubPattern = gctx.getDepth() > 1;
 
                 // DROOLS-1308 - wraps from pattern in parenthesis
-                if (!_isSubPattern) {
+                if (!isSubPattern) {
                     buf.append("(");
                 }
                 generateFactPattern(pattern.getFactPattern(),
@@ -702,7 +732,7 @@ public class RuleModelDRLPersistenceImpl
 
                 buf.append(" from ");
                 renderExpression(pattern.getExpression());
-                if (!_isSubPattern) {
+                if (!isSubPattern) {
                     buf.append(")");
                 }
                 buf.append("\n");
@@ -711,11 +741,14 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern) {
             visitFromCollectCompositeFactPattern(pattern,
-                                                 generatorContextFactory.getMaximumDepth() > 1);
+                                                 rootContext);
         }
 
-        public void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern,
-                                                         final boolean isSubPattern) {
+        protected void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern,
+                                                            final LHSGeneratorContext parentContext) {
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern.getFactPattern());
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
             buf.append(indentation);
             if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
@@ -723,38 +756,36 @@ public class RuleModelDRLPersistenceImpl
             }
 
             if (pattern.getFactPattern() != null) {
-                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                                  pattern.getFactPattern());
                 generateFactPattern(pattern.getFactPattern(),
                                     gctx);
-
-                final boolean _isSubPattern = gctx.getDepth() > 1;
 
                 buf.append(" from collect ( ");
 
                 if (pattern.getRightPattern() != null) {
+                    final LHSGeneratorContext childContext = generatorContextFactory.newChildGeneratorContext(gctx, pattern.getFactPattern());
                     if (pattern.getRightPattern() instanceof FactPattern) {
-                        generateFactPattern((FactPattern) pattern.getRightPattern(),
-                                            generatorContextFactory.newGeneratorContext());
+                        visitFactPattern((FactPattern) pattern.getRightPattern(),
+                                         childContext);
                     } else if (pattern.getRightPattern() instanceof FromAccumulateCompositeFactPattern) {
                         visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) pattern.getRightPattern(),
-                                                                _isSubPattern);
+                                                                childContext);
                     } else if (pattern.getRightPattern() instanceof FromCollectCompositeFactPattern) {
                         visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) pattern.getRightPattern(),
-                                                             _isSubPattern);
+                                                             childContext);
                     } else if (pattern.getRightPattern() instanceof FromEntryPointFactPattern) {
                         visitFromEntryPointFactPattern((FromEntryPointFactPattern) pattern.getRightPattern(),
-                                                       _isSubPattern);
+                                                       childContext);
                     } else if (pattern.getRightPattern() instanceof FromCompositeFactPattern) {
                         visitFromCompositeFactPattern((FromCompositeFactPattern) pattern.getRightPattern(),
-                                                      _isSubPattern);
+                                                      childContext);
                     } else if (pattern.getRightPattern() instanceof FreeFormLine) {
-                        visitFreeFormLine((FreeFormLine) pattern.getRightPattern());
+                        visitFreeFormLine((FreeFormLine) pattern.getRightPattern(),
+                                          childContext);
                     } else {
                         throw new IllegalArgumentException("Unsupported pattern " + pattern.getRightPattern() + " for FROM COLLECT");
                     }
                 }
-                if (isDSLEnhanced) {
+                if (!isSubPattern && isDSLEnhanced) {
                     buf.append("\n"); // Just in case we add a row. Not sure what the methods above append.
                     buf.append(indentation);
                     buf.append(">");
@@ -765,11 +796,14 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern) {
             visitFromAccumulateCompositeFactPattern(pattern,
-                                                    generatorContextFactory.getMaximumDepth() > 1);
+                                                    rootContext);
         }
 
-        public void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern,
-                                                            final boolean isSubPattern) {
+        protected void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern,
+                                                               final LHSGeneratorContext parentContext) {
+            final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern.getFactPattern());
+            final boolean isSubPattern = gctx.getDepth() > 0;
+
             buf.append(indentation);
             if (!isSubPattern && isDSLEnhanced) {
                 // adding passthrough markup
@@ -777,31 +811,27 @@ public class RuleModelDRLPersistenceImpl
             }
 
             if (pattern.getFactPattern() != null) {
-                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                                  pattern.getFactPattern());
                 generateFactPattern(pattern.getFactPattern(),
                                     gctx);
 
-                final boolean _isSubPattern = gctx.getDepth() > 1;
-
                 buf.append(" from accumulate ( ");
                 if (pattern.getSourcePattern() != null) {
+                    final LHSGeneratorContext childContext = generatorContextFactory.newChildGeneratorContext(gctx, pattern.getFactPattern());
                     if (pattern.getSourcePattern() instanceof FactPattern) {
-                        final LHSGeneratorContext soucrceGctx = generatorContextFactory.newGeneratorContext();
                         generateFactPattern((FactPattern) pattern.getSourcePattern(),
-                                            soucrceGctx);
+                                            childContext);
                     } else if (pattern.getSourcePattern() instanceof FromAccumulateCompositeFactPattern) {
                         visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) pattern.getSourcePattern(),
-                                                                _isSubPattern);
+                                                                childContext);
                     } else if (pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern) {
                         visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) pattern.getSourcePattern(),
-                                                             _isSubPattern);
+                                                             childContext);
                     } else if (pattern.getSourcePattern() instanceof FromEntryPointFactPattern) {
                         visitFromEntryPointFactPattern((FromEntryPointFactPattern) pattern.getSourcePattern(),
-                                                       _isSubPattern);
+                                                       childContext);
                     } else if (pattern.getSourcePattern() instanceof FromCompositeFactPattern) {
                         visitFromCompositeFactPattern((FromCompositeFactPattern) pattern.getSourcePattern(),
-                                                      _isSubPattern);
+                                                      childContext);
                     } else {
                         throw new IllegalArgumentException("Unsupported pattern " + pattern.getSourcePattern() + " for FROM ACCUMULATE");
                     }
@@ -809,33 +839,33 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(",\n");
 
                 if (pattern.useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION)) {
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\t");
                     buf.append(pattern.getFunction());
                 } else {
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\tinit( ");
                     buf.append(pattern.getInitCode());
                     buf.append(" ),\n");
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\taction( ");
                     buf.append(pattern.getActionCode());
                     buf.append(" ),\n");
                     if (pattern.getReverseCode() != null && !pattern.getReverseCode().trim().equals("")) {
-                        if (isDSLEnhanced) {
+                        if (!isSubPattern && isDSLEnhanced) {
                             buf.append(">");
                         }
                         buf.append(indentation + "\treverse( ");
                         buf.append(pattern.getReverseCode());
                         buf.append(" ),\n");
                     }
-                    if (isDSLEnhanced) {
+                    if (!isSubPattern && isDSLEnhanced) {
                         buf.append(">");
                     }
                     buf.append(indentation + "\tresult( ");
@@ -848,32 +878,36 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitFromEntryPointFactPattern(final FromEntryPointFactPattern pattern) {
             visitFromEntryPointFactPattern(pattern,
-                                           generatorContextFactory.getMaximumDepth() > 1);
+                                           rootContext);
         }
 
-        public void visitFromEntryPointFactPattern(final FromEntryPointFactPattern pattern,
-                                                   final boolean isSubPattern) {
-            buf.append(indentation);
-            if (!isSubPattern && isDSLEnhanced) {
-                // adding passthrough markup
-                buf.append(">");
-            }
-
+        protected void visitFromEntryPointFactPattern(final FromEntryPointFactPattern pattern,
+                                                      final LHSGeneratorContext parentContext) {
             if (pattern.getFactPattern() != null) {
-                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                                  pattern.getFactPattern());
+                final LHSGeneratorContext gctx = generatorContextFactory.newPeerGeneratorContext(parentContext, pattern.getFactPattern());
+                final boolean isSubPattern = gctx.getDepth() > 0;
+
+                buf.append(indentation);
+                if (!isSubPattern && isDSLEnhanced) {
+                    // adding passthrough markup
+                    buf.append(">");
+                }
+
                 generateFactPattern(pattern.getFactPattern(),
                                     gctx);
                 buf.append(" from entry-point \"" + pattern.getEntryPointName() + "\"\n");
             }
         }
 
-        private void renderCompositeFOL(final CompositeFactPattern pattern) {
+        private void renderCompositeFOL(final CompositeFactPattern pattern,
+                                        final LHSGeneratorContext parentContext) {
             buf.append(pattern.getType());
             if (pattern.getPatterns() != null) {
                 buf.append(" (");
                 for (int i = 0; i < pattern.getPatterns().length; i++) {
+                    final LHSGeneratorContext childContext = generatorContextFactory.newChildGeneratorContext(parentContext, pattern);
                     renderSubPattern(pattern,
+                                     childContext,
                                      i);
                     if (i != pattern.getPatterns().length - 1) {
                         buf.append(" and ");
@@ -884,25 +918,24 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void renderSubPattern(final CompositeFactPattern pattern,
+                                      final LHSGeneratorContext parentContext,
                                       final int subIndex) {
             if (pattern.getPatterns() == null || pattern.getPatterns().length == 0) {
                 return;
             }
             IFactPattern subPattern = pattern.getPatterns()[subIndex];
             if (subPattern instanceof FactPattern) {
-                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
-                                                                                                  subPattern);
                 this.generateFactPattern((FactPattern) subPattern,
-                                         gctx);
+                                         parentContext);
             } else if (subPattern instanceof FromAccumulateCompositeFactPattern) {
                 this.visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) subPattern,
-                                                             true);
+                                                             parentContext);
             } else if (subPattern instanceof FromCollectCompositeFactPattern) {
                 this.visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) subPattern,
-                                                          true);
+                                                          parentContext);
             } else if (subPattern instanceof FromCompositeFactPattern) {
                 this.visitFromCompositeFactPattern((FromCompositeFactPattern) subPattern,
-                                                   true);
+                                                   parentContext);
             } else {
                 throw new IllegalStateException("Unsupported Pattern: " + subPattern.getClass().getName());
             }
@@ -4225,7 +4258,6 @@ public class RuleModelDRLPersistenceImpl
             return value.substring(0, value.length() - 1);
         }
     }
-
 
     /**
      * If the bound type is not in the DMO it probably hasn't been imported.

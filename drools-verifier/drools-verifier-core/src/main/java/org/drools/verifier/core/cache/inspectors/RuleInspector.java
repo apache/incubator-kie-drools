@@ -282,7 +282,13 @@ public class RuleInspector
                     continue;
                 }
 
-                if (condition instanceof FieldCondition) {
+                if (condition instanceof BRLCondition) {
+                    final BRLCondition brlCondition = (BRLCondition) condition;
+
+                    if (rule.getConditions().where(Condition.columnUUID().is(brlCondition.getColumn().getUuidKey())).select().exists()) {
+                        return false;
+                    }
+                } else if (condition instanceof FieldCondition) {
                     final FieldCondition fieldCondition = (FieldCondition) condition;
                     final Conditions conditions = rule.getPatterns()
                             .where(Pattern.name()
