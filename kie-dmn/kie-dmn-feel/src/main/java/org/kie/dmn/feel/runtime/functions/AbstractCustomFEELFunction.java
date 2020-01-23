@@ -78,6 +78,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
 
     protected abstract Object internalInvoke(EvaluationContext ctx);
 
+    @Override
     public List<List<Param>> getParameters() {
         return Arrays.asList(parameters);
     }
