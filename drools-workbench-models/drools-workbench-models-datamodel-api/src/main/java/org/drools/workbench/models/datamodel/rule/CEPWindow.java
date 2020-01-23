@@ -101,7 +101,10 @@ public class CEPWindow
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(operator, parameters);
+        int result = operator != null ? operator.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }
