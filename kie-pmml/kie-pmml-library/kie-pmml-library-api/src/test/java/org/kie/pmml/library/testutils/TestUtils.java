@@ -22,9 +22,11 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.PMML;
+import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
 
-import static org.kie.test.util.filesystem.FileUtils.getInputStream;
+
+
 
 public class TestUtils {
 
@@ -38,7 +40,7 @@ public class TestUtils {
      * @throws IOException
      */
     public static PMML loadFromFile(String fileName) throws SAXException, JAXBException, IOException {
-        return loadFromInputStream(getInputStream(fileName));
+        return loadFromInputStream(FileUtils.getInputStream(fileName));
     }
 
     /**

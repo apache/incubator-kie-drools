@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-regression</artifactId>
+  <artifactId>kie-pmml-models-regression</artifactId>
 
   <name>KIE :: PMML :: Models :: Regression</name>
   <description>PMML Regression implementation</description>
@@ -36,6 +36,11 @@
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-api</artifactId>
       <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -38,6 +38,13 @@
         <artifactId>kie-pmml-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- TEST -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
+        <version>${version.org.kie}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

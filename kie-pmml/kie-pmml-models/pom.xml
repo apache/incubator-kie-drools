@@ -17,7 +17,7 @@
 
   <modules>
     <module>kie-pmml-models-core</module>
-    <module>kie-pmml-regression</module>
+    <module>kie-pmml-models-regression</module>
   </modules>
 
 

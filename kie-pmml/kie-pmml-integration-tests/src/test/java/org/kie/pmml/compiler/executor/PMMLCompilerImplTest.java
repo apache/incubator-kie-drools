@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.test.util.filesystem.FileUtils.getInputStream;
 
 public class PMMLCompilerImplTest {
 
@@ -42,7 +43,7 @@ public class PMMLCompilerImplTest {
 
     @Test
     public void getResults() throws Exception {
-        final List<KiePMMLModel> results = EXECUTOR.getResults(TestUtils.getInputStream("LinearRegressionSample.xml"));
+        final List<KiePMMLModel> results = EXECUTOR.getResults(getInputStream("LinearRegressionSample.xml"));
         assertNotNull(results);
         assertEquals(1, results.size());
         assertTrue(results.get(0) instanceof KiePMMLRegressionModel);

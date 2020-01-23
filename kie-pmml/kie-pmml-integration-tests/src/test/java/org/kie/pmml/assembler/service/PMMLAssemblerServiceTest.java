@@ -16,9 +16,6 @@
 
 package org.kie.pmml.assembler.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -28,6 +25,7 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.InputStreamResource;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.Resource;
@@ -35,11 +33,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
-import org.kie.test.util.filesystem.ResourceHelper;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.kie.test.util.filesystem.FileUtils.getInputStream;
 
 public class PMMLAssemblerServiceTest {
 
@@ -66,7 +62,7 @@ public class PMMLAssemblerServiceTest {
             assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML ));
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML );
             assertNotNull(pmmlPackage.getAllModels());
-            assertEquals(4, pmmlPackage.getAllModels().size());
+            Assert.assertEquals(4, pmmlPackage.getAllModels().size());
             assertNotNull(pmmlPackage.getAllModels().get("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getModelByName("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getAllModels().get("Second sample for first linear regression"));
@@ -76,7 +72,6 @@ public class PMMLAssemblerServiceTest {
             assertNotNull(pmmlPackage.getAllModels().get("Second sample for second linear regression"));
             assertNotNull(pmmlPackage.getModelByName("Second sample for second linear regression"));
         } );
-
     }
 
     @Test
@@ -87,7 +82,7 @@ public class PMMLAssemblerServiceTest {
             assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML ));
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML );
             assertNotNull(pmmlPackage.getAllModels());
-            assertEquals(2, pmmlPackage.getAllModels().size());
+            Assert.assertEquals(2, pmmlPackage.getAllModels().size());
             assertNotNull(pmmlPackage.getAllModels().get("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getModelByName("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getAllModels().get("Second sample for first linear regression"));
@@ -107,21 +102,4 @@ public class PMMLAssemblerServiceTest {
     public void getKiePMMLModelsFromResource() {
     }
 
-    /**
-     * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    private FileInputStream getInputStream(String fileName) throws IOException {
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String filePath = ResourceHelper.getResourcesByExtension(extension)
-                .filter(path -> path.endsWith(fileName))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(filePath);
-        File sourceFile = new File(filePath);
-        assertTrue(sourceFile.exists());
-        return new FileInputStream(sourceFile);
-    }
 }

@@ -20,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Utility to access files
@@ -35,13 +34,11 @@ public class FileUtils {
      */
     public static FileInputStream getInputStream(String fileName) throws IOException {
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String filePath = ResourceHelper.getResourcesByExtension(extension)
-                .filter(path -> path.endsWith(fileName))
+        File sourceFile = ResourceHelper.getResourcesByExtension(extension)
+                .filter(file -> file.getName().equals(fileName))
                 .findFirst()
                 .orElse(null);
-        assertNotNull(filePath);
-        File sourceFile = new File(filePath);
-        assertTrue(sourceFile.exists());
+        assertNotNull(sourceFile);
         return new FileInputStream(sourceFile);
     }
 

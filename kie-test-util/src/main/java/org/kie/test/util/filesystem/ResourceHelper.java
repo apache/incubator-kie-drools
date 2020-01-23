@@ -45,7 +45,7 @@ public class ResourceHelper {
      * @param extension to find
      * @return stream of matching resources
      */
-    public static Stream<String> getResourcesByExtension(String extension) {
+    public static Stream<File> getResourcesByExtension(String extension) {
         return Arrays.stream(getClassPathElements())
                 .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$")));
     }
@@ -56,7 +56,7 @@ public class ResourceHelper {
      * @param pattern to find
      * @return stream of matching resources
      */
-    static Stream<String> internalGetResources(String path, Pattern pattern) {
+    static Stream<File> internalGetResources(String path, Pattern pattern) {
         final File file = new File(path);
         if (!file.isDirectory()) {
             return Stream.empty();
@@ -71,7 +71,7 @@ public class ResourceHelper {
      * @return stream of matching resources
      * @throws IOException
      */
-    public static Stream<String> getResourcesFromDirectory(File directory, Pattern pattern) {
+    public static Stream<File> getResourcesFromDirectory(File directory, Pattern pattern) {
         if (directory == null || directory.listFiles() == null) {
             return Stream.empty();
         }
@@ -81,9 +81,8 @@ public class ResourceHelper {
                         return getResourcesFromDirectory(elem, pattern);
                     } else {
                         try {
-                            String fileName = elem.getCanonicalPath();
-                            if (pattern.matcher(fileName).matches()) {
-                                return Stream.of(fileName);
+                            if (pattern.matcher(elem.getCanonicalPath()).matches()) {
+                                return Stream.of(elem);
                             }
                         } catch (final IOException e) {
                             logger.error("Failed top retrieve resources from directory " + directory.getAbsolutePath() + " with pattern " + pattern.pattern(), e);
