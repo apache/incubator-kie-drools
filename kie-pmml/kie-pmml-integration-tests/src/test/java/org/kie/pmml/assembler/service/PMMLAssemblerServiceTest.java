@@ -35,7 +35,7 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
 
 import static org.junit.Assert.assertNotNull;
-import static org.kie.test.util.filesystem.FileUtils.getInputStream;
+import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class PMMLAssemblerServiceTest {
 
@@ -47,12 +47,12 @@ public class PMMLAssemblerServiceTest {
     @Before
     public void setUp() throws Exception {
         knowledgeBuilder = new KnowledgeBuilderImpl(new KnowledgeBaseImpl("TESTING", new RuleBaseConfiguration()));
-        firstSampleResource = new InputStreamResource(getInputStream("FirstLinearRegressionSample.xml"));
+        firstSampleResource = new InputStreamResource(getFileInputStream("FirstLinearRegressionSample.xml"));
     }
 
     @Test
     public void addResources() throws Exception {
-        Resource secondSampleResource = new InputStreamResource(getInputStream("SecondLinearRegressionSample.xml"));
+        Resource secondSampleResource = new InputStreamResource(getFileInputStream("SecondLinearRegressionSample.xml"));
         ResourceWithConfiguration firstResourceWithConfiguration = new ResourceWithConfigurationImpl(firstSampleResource, new ResourceConfigurationImpl(), o -> { }, o -> { });
         ResourceWithConfiguration secondResourceWithConfiguration = new ResourceWithConfigurationImpl(secondSampleResource, new ResourceConfigurationImpl(), o -> { }, o -> { });
         Collection<ResourceWithConfiguration> resources = Arrays.asList(firstResourceWithConfiguration, secondResourceWithConfiguration);

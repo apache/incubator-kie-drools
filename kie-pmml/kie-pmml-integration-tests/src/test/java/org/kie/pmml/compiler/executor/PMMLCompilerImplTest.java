@@ -29,13 +29,12 @@ import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
 import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
-import org.kie.pmml.library.testutils.TestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.test.util.filesystem.FileUtils.getInputStream;
+import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class PMMLCompilerImplTest {
 
@@ -43,7 +42,7 @@ public class PMMLCompilerImplTest {
 
     @Test
     public void getResults() throws Exception {
-        final List<KiePMMLModel> results = EXECUTOR.getResults(getInputStream("LinearRegressionSample.xml"));
+        final List<KiePMMLModel> results = EXECUTOR.getResults(getFileInputStream("LinearRegressionSample.xml"));
         assertNotNull(results);
         assertEquals(1, results.size());
         assertTrue(results.get(0) instanceof KiePMMLRegressionModel);

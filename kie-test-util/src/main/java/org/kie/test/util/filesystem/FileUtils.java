@@ -27,18 +27,29 @@ import static org.junit.Assert.assertNotNull;
 public class FileUtils {
 
     /**
+     * Retrieve the <code>File</code> of the given <b>file</b>
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public static File getFile(String fileName)  {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        File toReturn = ResourceHelper.getResourcesByExtension(extension)
+                .filter(file -> file.getName().equals(fileName))
+                .findFirst()
+                .orElse(null);
+        assertNotNull(toReturn);
+        return toReturn;
+    }
+
+    /**
      * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
      * @param fileName
      * @return
      * @throws IOException
      */
-    public static FileInputStream getInputStream(String fileName) throws IOException {
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        File sourceFile = ResourceHelper.getResourcesByExtension(extension)
-                .filter(file -> file.getName().equals(fileName))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(sourceFile);
+    public static FileInputStream getFileInputStream(String fileName) throws IOException {
+        File sourceFile = getFile(fileName);
         return new FileInputStream(sourceFile);
     }
 

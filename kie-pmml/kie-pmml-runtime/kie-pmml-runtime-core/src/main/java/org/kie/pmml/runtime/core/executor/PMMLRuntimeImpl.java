@@ -21,15 +21,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
-import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +37,9 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class );
 
-    private final InternalKnowledgeBase knowledgeBase;
+    private final KieBase knowledgeBase;
 
-    public PMMLRuntimeImpl(InternalKnowledgeBase knowledgeBase) {
+    public PMMLRuntimeImpl(KieBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
     }
 
@@ -60,7 +60,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     public Optional<KiePMMLModel> getModel(String modelName) {
         logger.info("getModels " + modelName);
         return getModels()
-                .parallelStream()
+                .stream()
                 .filter(model -> Objects.equals(modelName, model.getName()))
                 .findFirst();
     }

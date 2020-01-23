@@ -40,7 +40,7 @@ public class TestUtils {
      * @throws IOException
      */
     public static PMML loadFromFile(String fileName) throws SAXException, JAXBException, IOException {
-        return loadFromInputStream(FileUtils.getInputStream(fileName));
+        return loadFromInputStream(FileUtils.getFileInputStream(fileName));
     }
 
     /**
