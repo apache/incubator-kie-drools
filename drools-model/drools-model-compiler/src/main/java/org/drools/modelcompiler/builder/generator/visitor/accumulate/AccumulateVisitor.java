@@ -242,9 +242,19 @@ public abstract class AccumulateVisitor {
     private void methodCallExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         final Expression parameterConverted = convertParameter(accumulateFunctionParameter);
         final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
-        final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
-        final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
+        String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
+
+        Class clazz;
+        try {
+            clazz = context.getTypeResolver().resolveType(rootNodeName);
+            rootNodeName = "pippo"; // this has to be a different name than the class otherwise the parsing of the constraint will fail.
+        } catch (ClassNotFoundException e) {
+            clazz = context.getDeclarationById(rootNodeName)
+                    .map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
+        }
+
+        final TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRootNode.getWithoutRootNode(), null, clazz, context.getTypeResolver());
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
@@ -438,20 +448,6 @@ public abstract class AccumulateVisitor {
             throw new AccumulateParsingFailedException("Root node of expression should be a declaration");
         }
         return rootNodeName;
-    }
-
-    private TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
-        final Optional<Class> clazzFromDeclaration = context.getDeclarationById(variableName)
-                .map(DeclarationSpec::getDeclarationClass);
-
-        Class clazz;
-        try {
-            clazz = context.getTypeResolver().resolveType(variableName);
-        } catch (ClassNotFoundException e) {
-            clazz = clazzFromDeclaration.orElseThrow(RuntimeException::new);
-        }
-
-        return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, null, clazz, context.getTypeResolver());
     }
 
     Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
