@@ -32,4 +32,28 @@ public abstract class KiePMMLExtensionedNamed extends KiePMMLNamed {
     public List<KiePMMLExtension> getExtensions() {
         return extensions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        KiePMMLExtensionedNamed that = (KiePMMLExtensionedNamed) o;
+
+        return extensions != null ? extensions.equals(that.extensions) : that.extensions == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (extensions != null ? extensions.hashCode() : 0);
+        return result;
+    }
 }

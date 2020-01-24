@@ -42,12 +42,10 @@ public class KiePMMLRegressionModelTest {
     private static final String TARGETFIELD_NAME = "TARGETFIELD_NAME";
     private static final OP_TYPE _OP_TYPE = OP_TYPE.CONTINUOUS;
 
-
     @Test
     public void buildWithAll() {
-        final KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
+        final KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, _MINING_FUNCTION)
                 .withAlgorithmName(ALGORITHM_NAME)
-                .withMiningFunction(_MINING_FUNCTION)
                 .withModelType(_MODEL_TYPE)
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
                 .withRegressionTables(REGRESSION_TABLES)
@@ -68,12 +66,9 @@ public class KiePMMLRegressionModelTest {
 
     @Test
     public void isRegressionTrue() {
-        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
-                .withMiningFunction(MINING_FUNCTION.REGRESSION)
-                .build();
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.REGRESSION).build();
         assertTrue(retrieved.isRegression());
-        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
-                .withMiningFunction(MINING_FUNCTION.REGRESSION)
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.REGRESSION)
                 .withTargetFieldName(TARGETFIELD_NAME)
                 .withTargetOpType(OP_TYPE.CONTINUOUS)
                 .build();
@@ -82,22 +77,17 @@ public class KiePMMLRegressionModelTest {
 
     @Test
     public void isRegressionFalse() {
-        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
-                .withMiningFunction(MINING_FUNCTION.CLASSIFICATION)
-                .build();
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION).build();
         assertFalse(retrieved.isRegression());
-        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
-                .withMiningFunction(MINING_FUNCTION.REGRESSION)
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.REGRESSION)
                 .withTargetFieldName(TARGETFIELD_NAME)
                 .withTargetOpType(OP_TYPE.CATEGORICAL)
                 .build();
         assertFalse(retrieved.isRegression());
-        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME)
-                .withMiningFunction(MINING_FUNCTION.REGRESSION)
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.REGRESSION)
                 .withTargetFieldName(TARGETFIELD_NAME)
                 .withTargetOpType(OP_TYPE.ORDINAL)
                 .build();
         assertFalse(retrieved.isRegression());
     }
-
 }

@@ -49,9 +49,8 @@ public class KiePMMLRegressionModelFactory {
                 .filter(field -> Objects.equals(targetFieldName.orElse(null), field.getName().getValue()))
                 .findFirst()
                 .map(throwingFunctionWrapper(field -> OP_TYPE.byName(field.getOpType().value())));
-        return KiePMMLRegressionModel.builder(name)
+        return KiePMMLRegressionModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
-                .withMiningFunction(MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withModelType(model.getModelType() != null ? MODEL_TYPE.byName(model.getModelType().value()) : null)
                 .withTargetOpType(opType.orElse(null))
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))

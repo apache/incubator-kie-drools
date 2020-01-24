@@ -36,7 +36,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
     private List<KiePMMLRegressionTable> regressionTables = new ArrayList<>();
 
-    private MINING_FUNCTION miningFunction;
+    private final MINING_FUNCTION miningFunction;
     private String algorithmName;
     private MODEL_TYPE modelType;
     private String targetFieldName;
@@ -44,9 +44,8 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = null;
     private boolean isScorable = true;
 
-
-    public static Builder builder(String name) {
-        return new Builder(name);
+    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
+        return new Builder(name, miningFunction);
     }
 
     public static PMML_MODEL getPmmlModelType() {
@@ -103,16 +102,17 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
                 '}';
     }
 
-    private KiePMMLRegressionModel(String modelName) {
+    private KiePMMLRegressionModel(String modelName, MINING_FUNCTION miningFunction) {
         super(modelName, PMML_MODEL_TYPE);
+        this.miningFunction = miningFunction;
     }
 
     public static class Builder {
 
         private KiePMMLRegressionModel toBuild;
 
-        private Builder(String name) {
-            this.toBuild = new KiePMMLRegressionModel(name);
+        private Builder(String name, MINING_FUNCTION miningFunction) {
+            this.toBuild = new KiePMMLRegressionModel(name, miningFunction);
         }
 
         public KiePMMLRegressionModel build() {
@@ -121,11 +121,6 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
         public Builder withRegressionTables(List<KiePMMLRegressionTable> regressionTables) {
             toBuild.regressionTables = regressionTables;
-            return this;
-        }
-
-        public Builder withMiningFunction(MINING_FUNCTION miningFunction) {
-            toBuild.miningFunction = miningFunction;
             return this;
         }
 

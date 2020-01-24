@@ -66,9 +66,8 @@ public class TestUtils {
 
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME)
+        return KiePMMLRegressionModel.builder(MODEL_NAME, _MINING_FUNCTION)
                 .withAlgorithmName(ALGORITHM_NAME)
-                .withMiningFunction(_MINING_FUNCTION)
                 .withModelType(_MODEL_TYPE)
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
                 .withRegressionTables(REGRESSION_TABLES)

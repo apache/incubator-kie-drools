@@ -16,15 +16,61 @@
 package org.kie.pmml.api.model.tree;
 
 import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 
+/**
+ * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html>Tree</a>
+ */
 public class KiePMMLTreeModel extends KiePMMLModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TREE_MODEL;
 
     private static final long serialVersionUID = 3107205976845585067L;
 
-    public KiePMMLTreeModel(String name, PMML_MODEL pmmlMODEL) {
-        super(name, pmmlMODEL);
+    private final MINING_FUNCTION miningFunction;
+    private String algorithmName;
+
+    private KiePMMLTreeModel(String name, MINING_FUNCTION miningFunction) {
+        super(name, PMML_MODEL_TYPE);
+        this.miningFunction = miningFunction;
+    }
+
+    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
+        return new Builder(name, miningFunction);
+    }
+
+    public MINING_FUNCTION getMiningFunction() {
+        return miningFunction;
+    }
+
+    public String getAlgorithmName() {
+        return algorithmName;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLTreeModel{" +
+                "miningFunction=" + miningFunction +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    public static class Builder {
+
+        private KiePMMLTreeModel toBuild;
+
+        private Builder(String name, MINING_FUNCTION miningFunction) {
+            this.toBuild = new KiePMMLTreeModel(name, miningFunction);
+        }
+
+        public KiePMMLTreeModel build() {
+            return toBuild;
+        }
+
+        public Builder withAlgorithmName(String algorithmName) {
+            toBuild.algorithmName = algorithmName;
+            return this;
+        }
     }
 }
