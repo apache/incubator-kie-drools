@@ -36,11 +36,13 @@ import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
+import org.drools.core.factmodel.GenericTypeDefinition;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.util.AnnotationFactory;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.EnumClassDefinition;
@@ -56,7 +58,6 @@ import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
-import org.drools.core.addon.TypeResolver;
 
 public class ClassDefinitionFactory {
 
@@ -227,13 +228,10 @@ public class ClassDefinitionFactory {
         BitSet occupiedPositions = new BitSet(fields.size());
 
         for (TypeFieldDescr field : fields.values()) {
-            String typeName = field.getPattern().getObjectType();
-            String typeNameKey = typeName;
-            String fullFieldType = kbuilder != null ?
-                    TypeDeclarationUtils.toBuildableType(typeNameKey, kbuilder.getRootClassLoader()) :
-                    typeNameKey;
+            GenericTypeDefinition genericType = field.getPattern().getGenericType()
+                    .map( type -> TypeDeclarationUtils.toBuildableType(type, kbuilder != null ? kbuilder.getRootClassLoader() : null) );
 
-            FieldDefinition fieldDef = new FieldDefinition(field.getFieldName(), fullFieldType);
+            FieldDefinition fieldDef = new FieldDefinition(field.getFieldName(), genericType);
             fieldDefs.add(fieldDef);
 
             if (field.hasOverride()) {

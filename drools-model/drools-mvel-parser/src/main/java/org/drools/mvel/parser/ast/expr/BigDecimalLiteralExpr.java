@@ -24,7 +24,6 @@
 package org.drools.mvel.parser.ast.expr;
 
 import java.math.BigDecimal;
-import javax.annotation.Generated;
 
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
@@ -52,7 +51,6 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
     /**
      * This constructor is used by the parser and is considered private.
      */
-    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public BigDecimalLiteralExpr(TokenRange tokenRange, String value) {
         super(tokenRange, value);
         customInitialization();
@@ -73,7 +71,6 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null) {
             return false;
@@ -99,13 +96,11 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public BigDecimalLiteralExpr clone() {
         return (BigDecimalLiteralExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public LongLiteralExprMetaModel getMetaModel() {
         return JavaParserMetaModel.longLiteralExprMetaModel;
     }
