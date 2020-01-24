@@ -37,7 +37,9 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -68,6 +70,10 @@ public class DMNFeelExpressionEvaluatorTest {
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [2]").toString(), contextListValue, List.class));
         List<BigDecimal> contextListValue2 = Arrays.asList(BigDecimal.valueOf(23), BigDecimal.valueOf(32));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32]").toString(), contextListValue2, List.class));
+        assertFalse("Collection unary expression needs to start with ?",
+                    expressionEvaluator.evaluateUnaryExpression(new TextNode("[23, 32]").toString(),
+                                                                contextListValue2,
+                                                                List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32, 123]").toString(), contextListValue2, List.class));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class));
@@ -91,7 +97,7 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression("{key_a : 1}", Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
-        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression( new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
+        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValueListExpression.size() == 2);
         assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
         assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
@@ -199,6 +205,18 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(result.size() == 2);
         assertEquals(BigDecimal.ONE, result.get(0));
         assertEquals(BigDecimal.TEN, result.get(1));
+    }
+
+    @Test
+    public void expressionObjectListTest() {
+        String expressionCollectionJsonString = new TextNode("[{age:10},{name:\"John\"}]").toString();
+        List<Map<String, Object>> result =
+                (List<Map<String, Object>>) expressionEvaluator.convertResult(expressionCollectionJsonString,
+                                                                              List.class.getCanonicalName(),
+                                                                              Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertThat(result.get(0)).containsOnly(entry("age", BigDecimal.TEN));
+        assertThat(result.get(1)).containsOnly(entry("name", "John"));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -141,6 +141,23 @@ public class MVELExpressionEvaluatorTest {
                                                                       HashMap.class.getCanonicalName(),
                                                                       Collections.emptyList()
         ));
+        assertEquals(expectedMap,
+                     evaluator.evaluateLiteralExpression(
+                             mvelExpression("a = \"Person\";test = new java.util.HashMap();test.put(\"Jim\", a);test;"),
+                             HashMap.class.getCanonicalName(),
+                             Collections.emptyList()
+                     ));
+        assertEquals(Collections.emptyMap(),
+                     evaluator.evaluateLiteralExpression(
+                             mvelExpression("a = \"Person\";\n" +
+                                                    "test = new java.util.HashMap();\n" +
+                                                    "test.put(\"Jim\", a);\n" +
+                                                    "test;\n" +
+                                                    "test.clear();\n" +
+                                                    "test;"),
+                             HashMap.class.getCanonicalName(),
+                             Collections.emptyList()
+                     ));
 
         assertThatThrownBy(() -> evaluator.evaluateLiteralExpression("1+", String.class.getCanonicalName(), Collections.emptyList()))
                 .isInstanceOf(RuntimeException.class);
