@@ -274,5 +274,4 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     protected abstract BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode);
-
 }

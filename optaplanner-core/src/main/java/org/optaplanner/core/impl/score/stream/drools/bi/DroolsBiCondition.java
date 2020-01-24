@@ -70,11 +70,11 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         Predicate3<Object, A, B> filter = (__, a, b) -> predicate.test(a, b);
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
-        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
-                ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getShelvedRuleItems(), ruleStructure.getPrerequisites(),
+                ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
     }
 

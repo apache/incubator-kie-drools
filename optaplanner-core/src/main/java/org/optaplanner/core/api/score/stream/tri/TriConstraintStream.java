@@ -77,7 +77,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * so it creates and checks every combination of [A, B] and C.
      * @param otherStream never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D
+     * @return never null, a stream that matches every combination of [A, B, C] and D
      */
     default <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream) {
         return join(otherStream, new NoneQuadJoiner<>());
@@ -94,7 +94,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param otherStream never null
      * @param joiner never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which the {@link QuadJoiner} is true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which the {@link QuadJoiner}
+     * is true
      */
     <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D> joiner);
 
@@ -109,7 +110,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      * @param otherClass never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D
+     * @return never null, a stream that matches every combination of [A, B, C] and D
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass) {
         return join(otherClass, new NoneQuadJoiner<>());
@@ -130,7 +131,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param otherClass never null
      * @param joiner never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which the {@link QuadJoiner} is true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which the {@link QuadJoiner}
+     * is true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
         return join(getConstraintFactory().from(otherClass), joiner);
@@ -142,8 +144,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which all the {@link QuadJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
+     * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2) {
@@ -157,8 +159,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which all the {@link QuadJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
+     * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
@@ -173,8 +175,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param joiner3 never null
      * @param joiner4 never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which all the {@link QuadJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
+     * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3, QuadJoiner<A, B, C, D> joiner4) {
@@ -190,8 +192,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param otherClass never null
      * @param joiners never null
      * @param <D> the type of the fourth matched fact
-     * @return a stream that matches every combination of [A, B, C] and D for which all the {@link QuadJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
+     * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
         return join(otherClass, AbstractQuadJoiner.merge(joiners));

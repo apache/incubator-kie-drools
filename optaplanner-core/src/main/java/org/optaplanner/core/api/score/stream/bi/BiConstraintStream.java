@@ -76,7 +76,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * so it creates and checks every combination of [A, B] and C.
      * @param otherStream never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C
+     * @return never null, a stream that matches every combination of [A, B] and C
      */
     default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream) {
         return join(otherStream, new NoneTriJoiner<>());
@@ -93,7 +93,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherStream never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which the {@link TriFunction} is true
+     * @return never null, a stream that matches every combination of [A, B] and C for which the {@link TriFunction} is
+     * true
      */
     <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
 
@@ -108,7 +109,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      * @param otherClass never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C
+     * @return never null, a stream that matches every combination of [A, B] and C
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass) {
         return join(otherClass, new NoneTriJoiner<>());
@@ -129,7 +130,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which the {@link TriJoiner} is true
+     * @return never null, a stream that matches every combination of [A, B] and C for which the {@link TriJoiner} is
+     * true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return join(getConstraintFactory().from(otherClass), joiner);
@@ -141,8 +143,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
@@ -156,8 +158,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
@@ -172,8 +174,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner3 never null
      * @param joiner4 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
@@ -189,8 +191,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherClass never null
      * @param joiners never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
-     * are true
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         return join(otherClass, AbstractTriJoiner.merge(joiners));

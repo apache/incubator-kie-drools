@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     // ************************************************************************
 
     @Override
-    public Function<A, Object> getLeftMapping(int joinerId) {
-        return (Function<A, Object>) leftMappings[joinerId];
+    public Function<A, Object> getLeftMapping(int index) {
+        return (Function<A, Object>) leftMappings[index];
     }
 
     @Override
@@ -73,8 +73,8 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<B, Object> getRightMapping(int joinerId) {
-        return (Function<B, Object>) rightMappings[joinerId];
+    public Function<B, Object> getRightMapping(int index) {
+        return (Function<B, Object>) rightMappings[index];
     }
 
     @Override

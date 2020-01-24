@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
 
-import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
@@ -34,8 +34,9 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     private final Variable<B> b;
     private final Variable<C> c;
     private final DroolsPatternBuilder<?> primaryPattern;
-    private final List<RuleItemBuilder<?>> openRuleItems;
-    private final List<RuleItemBuilder<?>> closedRuleItems;
+    private final List<ViewItemBuilder<?>> shelved;
+    private final List<ViewItemBuilder<?>> prerequisites;
+    private final List<ViewItemBuilder<?>> dependents;
 
     /**
      * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
@@ -50,28 +51,30 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
         this.a = abRuleStructure.getA();
         this.b = abRuleStructure.getB();
         this.c = cRuleStructure.getA();
-        this.primaryPattern = cRuleStructure.getPrimaryPattern();
-        List<RuleItemBuilder<?>> newOpenItems = new ArrayList<>();
-        newOpenItems.addAll(abRuleStructure.getOpenRuleItems());
-        newOpenItems.add(abRuleStructure.getPrimaryPattern().build());
-        newOpenItems.addAll(cRuleStructure.getOpenRuleItems());
-        this.openRuleItems = Collections.unmodifiableList(newOpenItems);
-        List<RuleItemBuilder<?>> newClosedItems = new ArrayList<>();
-        newClosedItems.addAll(abRuleStructure.getClosedRuleItems());
-        newClosedItems.addAll(cRuleStructure.getClosedRuleItems());
-        this.closedRuleItems = Collections.unmodifiableList(newClosedItems);
+        this.primaryPattern = cRuleStructure.getPrimaryPatternBuilder();
+        List<ViewItemBuilder<?>> newShelved = new ArrayList<>(abRuleStructure.getShelvedRuleItems());
+        newShelved.addAll(cRuleStructure.getShelvedRuleItems());
+        this.shelved = Collections.unmodifiableList(newShelved);
+        List<ViewItemBuilder<?>> newOpenItems = new ArrayList<>(abRuleStructure.getPrerequisites());
+        newOpenItems.add(abRuleStructure.getPrimaryPatternBuilder().build());
+        newOpenItems.addAll(abRuleStructure.getDependents());
+        newOpenItems.addAll(cRuleStructure.getPrerequisites());
+        this.prerequisites = Collections.unmodifiableList(newOpenItems);
+        this.dependents = Collections.unmodifiableList(cRuleStructure.getDependents());
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
-            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> openRuleItems,
-            List<RuleItemBuilder<?>> closedRuleItems, LongSupplier variableIdSupplier) {
+            DroolsPatternBuilder<?> primaryPattern, List<ViewItemBuilder<?>> shelved,
+            List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
+            LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
         this.primaryPattern = primaryPattern;
-        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
-        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
+        this.shelved = Collections.unmodifiableList(shelved);
+        this.prerequisites = Collections.unmodifiableList(prerequisites);
+        this.dependents = Collections.unmodifiableList(dependents);
     }
 
     public Variable<A> getA() {
@@ -87,17 +90,22 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
         return (DroolsPatternBuilder<Object>) primaryPattern;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getOpenRuleItems() {
-        return openRuleItems;
+    public List<ViewItemBuilder<?>> getShelvedRuleItems() {
+        return shelved;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getClosedRuleItems() {
-        return closedRuleItems;
+    public List<ViewItemBuilder<?>> getPrerequisites() {
+        return prerequisites;
+    }
+
+    @Override
+    public List<ViewItemBuilder<?>> getDependents() {
+        return dependents;
     }
 }

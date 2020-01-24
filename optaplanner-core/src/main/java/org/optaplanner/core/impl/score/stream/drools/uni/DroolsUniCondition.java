@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
@@ -27,10 +29,12 @@ import java.util.function.UnaryOperator;
 
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
+import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -39,8 +43,11 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
@@ -165,6 +172,87 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         // And finally we return the new condition that is based on the new A and B patterns.
         return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
+    }
+
+    public <B> DroolsUniCondition<A> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+        int indexOfFirstFilter = -1;
+        // Prepare the joiner and filter that will be used in the pattern
+        AbstractBiJoiner<A, B> finalJoiner = null;
+        BiPredicate<A, B> finalFilter = null;
+        for (int i = 0; i < biJoiners.length; i++) {
+            AbstractBiJoiner<A, B> biJoiner = (AbstractBiJoiner<A, B>) biJoiners[i];
+            boolean hasAFilter = indexOfFirstFilter >= 0;
+            if (biJoiner instanceof NoneBiJoiner && biJoiners.length > 1) {
+                throw new IllegalStateException("If present, " + NoneBiJoiner.class + " must be the only joiner, got "
+                        + Arrays.toString(biJoiners) + " instead.");
+            } else if (!(biJoiner instanceof FilteringBiJoiner)) {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
+                            + biJoiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    finalJoiner = finalJoiner == null ?
+                            biJoiner :
+                            AbstractBiJoiner.merge(finalJoiner, biJoiner);
+                }
+            } else {
+                if (!hasAFilter) { // From now on, we only allow filtering joiners.
+                    indexOfFirstFilter = i;
+                }
+                // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+                finalFilter = finalFilter == null ?
+                        biJoiner.getFilter() :
+                        finalFilter.and(biJoiner.getFilter());
+            }
+        }
+        return applyJoiners(otherClass, finalJoiner, finalFilter);
+    }
+
+    private <B> DroolsUniCondition<A> applyJoiners(Class<B> otherClass, AbstractBiJoiner<A, B> biJoiner,
+            BiPredicate<A, B> biPredicate) {
+        Declaration<B> toExist = PatternDSL.declarationOf(otherClass);
+        PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
+        if (biJoiner == null) {
+            return applyFilters(ruleStructure, existencePattern, biPredicate);
+        }
+        JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
+        // We rebuild the A pattern, binding variables for left parts of the joins.
+        Function<PatternDSL.PatternDef<Object>, PatternDSL.PatternDef<Object>> aJoiner = UnaryOperator.identity();
+        Variable[] joinVars = new Variable[joinerTypes.length];
+        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+            // For each mapping, bind one join variable.
+            int currentMappingIndex = mappingIndex;
+            Variable<Object> joinVar = ruleStructure.createVariable("joinVar" + currentMappingIndex);
+            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
+            aJoiner = aJoiner.andThen(p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
+            joinVars[currentMappingIndex] = joinVar;
+        }
+        DroolsUniRuleStructure<A> newARuleStructure = ruleStructure.amend(aJoiner::apply);
+        // We create the B pattern, joining with the new A pattern using its freshly bound join variables.
+        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+            // For each mapping, bind a join variable from A to B and index the binding.
+            int currentMappingIndex = mappingIndex;
+            JoinerType joinerType = joinerTypes[currentMappingIndex];
+            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
+            Function<B, Object> rightMapping = biJoiner.getRightMapping(currentMappingIndex);
+            Predicate2<B, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
+                return joinerType.matches(a, rightMapping.apply(b));
+            };
+            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                    currentMappingIndex, rightMapping::apply, leftMapping::apply);
+            existencePattern = existencePattern.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
+                        joinVars[currentMappingIndex], predicate, index);
+        }
+        // And finally we add the filter to the B pattern
+        return applyFilters(newARuleStructure, existencePattern, biPredicate);
+    }
+
+    private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> targetRuleStructure,
+            PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
+        PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
+                existencePattern :
+                existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
+                        (b, a) -> biPredicate.test(a, b));
+        return new DroolsUniCondition<>(targetRuleStructure.exists(possiblyFilteredexistencePattern));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

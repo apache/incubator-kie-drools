@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package org.optaplanner.core.impl.score.stream.quad;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner implements QuadJoiner<A, B, C, D> {
@@ -50,11 +48,11 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner impl
         return new CompositeQuadJoiner<>(joinerList);
     }
 
-    public abstract TriFunction<A, B, C, Object> getLeftMapping(int joinerId);
+    public abstract TriFunction<A, B, C, Object> getLeftMapping(int index);
 
     public abstract TriFunction<A, B, C, Object[]> getLeftCombinedMapping();
 
-    public abstract Function<D, Object> getRightMapping(int joinerId);
+    public abstract Function<D, Object> getRightMapping(int index);
 
     public abstract Function<D, Object[]> getRightCombinedMapping();
 

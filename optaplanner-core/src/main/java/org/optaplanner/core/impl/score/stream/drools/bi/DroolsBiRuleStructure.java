@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
 
-import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
@@ -32,42 +32,37 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     private final Variable<A> a;
     private final Variable<B> b;
     private final DroolsPatternBuilder<?> targetPattern;
-    private final List<RuleItemBuilder<?>> openRuleItems;
-    private final List<RuleItemBuilder<?>> closedRuleItems;
+    private final List<ViewItemBuilder<?>> shelved;
+    private final List<ViewItemBuilder<?>> prerequisites;
+    private final List<ViewItemBuilder<?>> dependents;
 
-    /**
-     * Builds a final version of the A pattern as it will no longer be mutated, and turns the B pattern into the new
-     * primary pattern.
-     * @param aRuleStructure
-     * @param bRuleStructure
-     * @param variableIdSupplier
-     */
     public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure, DroolsUniRuleStructure<B> bRuleStructure,
             LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
-        this.targetPattern = bRuleStructure.getPrimaryPattern();
-        List<RuleItemBuilder<?>> newOpenItems = new ArrayList<>();
-        newOpenItems.addAll(aRuleStructure.getOpenRuleItems());
-        newOpenItems.add(aRuleStructure.getPrimaryPattern().build());
-        newOpenItems.addAll(bRuleStructure.getOpenRuleItems());
-        this.openRuleItems = Collections.unmodifiableList(newOpenItems);
-        List<RuleItemBuilder<?>> newClosedItems = new ArrayList<>();
-        newClosedItems.addAll(aRuleStructure.getClosedRuleItems());
-        newClosedItems.addAll(bRuleStructure.getClosedRuleItems());
-        this.closedRuleItems = Collections.unmodifiableList(newClosedItems);
+        this.targetPattern = bRuleStructure.getPrimaryPatternBuilder();
+        List<ViewItemBuilder<?>> newShelved = new ArrayList<>(aRuleStructure.getShelvedRuleItems());
+        newShelved.addAll(bRuleStructure.getShelvedRuleItems());
+        this.shelved = Collections.unmodifiableList(newShelved);
+        List<ViewItemBuilder<?>> newOpenItems = new ArrayList<>(aRuleStructure.getPrerequisites());
+        newOpenItems.add(aRuleStructure.getPrimaryPatternBuilder().build());
+        newOpenItems.addAll(aRuleStructure.getDependents());
+        newOpenItems.addAll(bRuleStructure.getPrerequisites());
+        this.prerequisites = Collections.unmodifiableList(newOpenItems);
+        this.dependents = Collections.unmodifiableList(bRuleStructure.getDependents());
     }
 
     public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
-            List<RuleItemBuilder<?>> openRuleItems, List<RuleItemBuilder<?>> closedRuleItems,
-            LongSupplier variableIdSupplier) {
+            List<ViewItemBuilder<?>> shelved, List<ViewItemBuilder<?>> prerequisites,
+            List<ViewItemBuilder<?>> dependents, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.targetPattern = targetPattern;
-        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
-        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
+        this.shelved = Collections.unmodifiableList(shelved);
+        this.prerequisites = Collections.unmodifiableList(prerequisites);
+        this.dependents = Collections.unmodifiableList(dependents);
     }
 
     public Variable<A> getA() {
@@ -79,18 +74,22 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+    public List<ViewItemBuilder<?>> getShelvedRuleItems() {
+        return shelved;
+    }
+
+    @Override
+    public List<ViewItemBuilder<?>> getPrerequisites() {
+        return prerequisites;
+    }
+
+    @Override
+    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
         return (DroolsPatternBuilder<Object>) targetPattern;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getOpenRuleItems() {
-        return openRuleItems;
+    public List<ViewItemBuilder<?>> getDependents() {
+        return dependents;
     }
-
-    @Override
-    public List<RuleItemBuilder<?>> getClosedRuleItems() {
-        return closedRuleItems;
-    }
-
 }

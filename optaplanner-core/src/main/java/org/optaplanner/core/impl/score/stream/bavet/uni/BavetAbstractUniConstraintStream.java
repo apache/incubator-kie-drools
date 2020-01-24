@@ -41,6 +41,8 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstrai
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
@@ -76,8 +78,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <B> BiConstraintStream<A, B> join(
-                UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+    public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
@@ -90,8 +91,23 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         }
         if (!(joiner instanceof AbstractBiJoiner)) {
             throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
+        } else if (joiner instanceof FilteringBiJoiner) {
+            return join(otherStream)
+                    .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
         }
         AbstractBiJoiner<A, B> castedJoiner = (AbstractBiJoiner<A, B>) joiner;
+        for (JoinerType type: castedJoiner.getJoinerTypes()) {
+            switch (type) {
+                case EQUAL:
+                case LESS_THAN:
+                case LESS_THAN_OR_EQUAL:
+                case GREATER_THAN:
+                case GREATER_THAN_OR_EQUAL:
+                    continue;
+                default:
+                    throw new UnsupportedOperationException("Unsupported joiner type (" + type + ").");
+            }
+        }
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraintFactory, this, true, castedJoiner.getLeftCombinedMapping(), indexFactory);
@@ -103,6 +119,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         leftBridge.setJoinStream(joinStream);
         rightBridge.setJoinStream(joinStream);
         return joinStream;
+    }
+
+    // ************************************************************************
+    // If (Not) Exists
+    // ************************************************************************
+
+    @Override
+    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

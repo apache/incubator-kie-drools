@@ -304,6 +304,15 @@
           "methodName": "groupBy",
           "elementKind": "method",
           "justification": "Implemented groupBy() for all constraint stream cardinalities."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifExists(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifExists",
+          "elementKind": "method",
+          "justification": "Introduced ifExists() to UniConstraintStream."
         }
       ]
     }

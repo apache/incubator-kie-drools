@@ -18,9 +18,11 @@ package org.optaplanner.core.api.score.stream.bi;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -45,6 +47,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValu
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -207,6 +210,58 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    public void join_1Filtering() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
+        TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
+        solution.getValueList().add(value1);
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), value1);
+        entity1.setStringProperty("MyString");
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(), value2);
+        entity2.setStringProperty(null);
+        solution.getEntityList().add(entity2);
+        TestdataLavishExtra extra1 = new TestdataLavishExtra("MyExtra 1");
+        extra1.setStringProperty("MyString");
+        solution.getExtraList().add(extra1);
+        TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
+        extra2.setStringProperty(null);
+        solution.getExtraList().add(extra2);
+        TestdataLavishExtra extra3 = new TestdataLavishExtra("MyExtra 3");
+        extra3.setStringProperty("MyString");
+        solution.getExtraList().add(extra3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishValue.class, filtering((entity, value) -> Objects.equals(entity.getValue(), value)))
+                    .join(TestdataLavishExtra.class, equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, value1, extra1),
+                assertMatch(entity1, value1, extra3),
+                assertMatch(entity2, value2, extra2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterEntityRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(entity1, value1, extra1),
+                assertMatch(entity1, value1, extra3));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    @Test
     public void join_2Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -254,6 +309,58 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.afterEntityRemoved(entity2);
         assertScore(scoreDirector,
                 assertMatch(entity1, value1, extra3));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    @Test
+    public void join_filtering_comesLast() {
+        Assertions.assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishValue.class, filtering((a, b) -> false),
+                            equal(TestdataLavishEntity::getValue, Function.identity()))
+                    .join(TestdataLavishExtra.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void join_mixedEqualsAndFiltering() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
+        TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
+        solution.getValueList().add(value1);
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), value1);
+        entity1.setStringProperty("MyString");
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(), value2);
+        entity2.setStringProperty(null);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishValue.class,
+                            equal(TestdataLavishEntity::getValue, Function.identity()),
+                            filtering((entity, value) -> value.getCode().contains("1")))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, value1));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterEntityRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(entity1, value1));
 
         // Incremental
         scoreDirector.beforeEntityRemoved(entity1);

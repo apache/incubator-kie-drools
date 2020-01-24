@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,11 +48,11 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
         return new CompositeTriJoiner<>(joinerList);
     }
 
-    public abstract BiFunction<A, B, Object> getLeftMapping(int joinerId);
+    public abstract BiFunction<A, B, Object> getLeftMapping(int index);
 
     public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
 
-    public abstract Function<C, Object> getRightMapping(int joinerId);
+    public abstract Function<C, Object> getRightMapping(int index);
 
     public abstract Function<C, Object[]> getRightCombinedMapping();
 

@@ -22,8 +22,10 @@ import java.util.function.LongSupplier;
 import java.util.function.UnaryOperator;
 
 import org.drools.model.PatternDSL;
-import org.drools.model.RuleItemBuilder;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
@@ -31,25 +33,28 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
 
     private final Variable<A> a;
     private final DroolsPatternBuilder<?> aPattern;
-    private final List<RuleItemBuilder<?>> openRuleItems;
-    private final List<RuleItemBuilder<?>> closedRuleItems;
+    private final List<ViewItemBuilder<?>> shelved;
+    private final List<ViewItemBuilder<?>> prerequisites;
+    private final List<ViewItemBuilder<?>> dependents;
 
     public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
-            List<RuleItemBuilder<?>> openRuleItems, List<RuleItemBuilder<?>> closedRuleItems,
-            LongSupplier variableIdSupplier) {
+            List<ViewItemBuilder<?>> shelved, List<ViewItemBuilder<?>> prerequisites,
+            List<ViewItemBuilder<?>> dependents, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.aPattern = aPattern;
-        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
-        this.closedRuleItems = Collections.unmodifiableList(closedRuleItems);
+        this.shelved = Collections.unmodifiableList(prerequisites);
+        this.prerequisites = Collections.unmodifiableList(shelved);
+        this.dependents = Collections.unmodifiableList(dependents);
     }
 
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
         this.a = (Variable<A>) createVariable(aClass,"base");
         this.aPattern = new DroolsPatternBuilder<>(a);
-        this.openRuleItems = Collections.emptyList();
-        this.closedRuleItems = Collections.emptyList();
+        this.shelved = Collections.emptyList();
+        this.prerequisites = Collections.emptyList();
+        this.dependents = Collections.emptyList();
     }
 
     public Variable<A> getA() {
@@ -57,29 +62,34 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+    public List<ViewItemBuilder<?>> getShelvedRuleItems() {
+        return shelved;
+    }
+
+    @Override
+    public List<ViewItemBuilder<?>> getPrerequisites() {
+        return prerequisites;
+    }
+
+    @Override
+    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
         return (DroolsPatternBuilder<Object>) aPattern;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getOpenRuleItems() {
-        return openRuleItems;
+    public List<ViewItemBuilder<?>> getDependents() {
+        return dependents;
     }
 
-    @Override
-    public List<RuleItemBuilder<?>> getClosedRuleItems() {
-        return closedRuleItems;
-    }
-
-    /**
-     * Add another condition on the primary pattern without changing anything else about the rule.
-     *
-     * @param expander
-     * @return
-     */
-    public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDSL.PatternDef<Object>> expander) {
-        return new DroolsUniRuleStructure<>(a, getPrimaryPattern().expand(expander), openRuleItems, closedRuleItems,
+    public <B> DroolsUniRuleStructure<A> exists(PatternDef<B> existencePattern) {
+        ExprViewItem item = PatternDSL.exists(existencePattern);
+        return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
                 getVariableIdSupplier());
+    }
+
+    public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDef<Object>> expander) {
+        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
+                dependents, getVariableIdSupplier());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN
 public class JoinerTypeTest {
 
     @Test
-    public void equals() {
+    public void equal() {
         assertTrue(EQUAL.matches(1, 1));
         assertFalse(EQUAL.matches(1, 2));
         assertFalse(EQUAL.matches(1, null));

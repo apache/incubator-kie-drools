@@ -32,6 +32,7 @@ import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
+import org.drools.model.view.ViewItemBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
@@ -67,7 +68,7 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
             DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge,
             BiFunction<PatternDef<Object>, Variable<InTuple>, PatternDef<Object>> bindFunction) {
         Variable<InTuple> tupleVariable = ruleStructure.createVariable("tuple");
-        PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
+        PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> bindFunction.apply(p, tupleVariable))
                 .build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
@@ -98,7 +99,7 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
             BiFunction<PatternDef<Object>, Variable<InTuple>, PatternDef<Object>> bindFunction,
             Mutator<InTuple, R, C> mutator) {
         Variable<InTuple> mappedVariable = ruleStructure.createVariable("biMapped");
-        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
+        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> bindFunction.apply(p, mappedVariable))
                 .build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
@@ -147,7 +148,7 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         PatternDSL.PatternDef<Set<InTuple>> pattern = pattern(tupleSet)
                 .expr("Non-empty", set -> !set.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        PatternDSL.PatternDef<Object> innerCollectingPattern = ruleStructure.getPrimaryPattern().build();
+        PatternDSL.PatternDef<Object> innerCollectingPattern = ruleStructure.getPrimaryPatternBuilder().build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerCollectingPattern);
         ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern, accFunction(invokerSupplier).as(tupleSet));
         return mutator.apply(tupleSet, pattern, accumulate);
@@ -177,8 +178,10 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
     }
 
     protected ViewItem<?> getInnerAccumulatePattern(PatternDef<Object> mainAccumulatePattern) {
-        ViewItem[] items = Stream.concat(ruleStructure.getOpenRuleItems().stream(), Stream.of(mainAccumulatePattern))
-                .toArray(ViewItem[]::new);
+        Stream<ViewItemBuilder<?>> primaryAndPrerequisites = Stream.concat(ruleStructure.getPrerequisites().stream(),
+                Stream.of(mainAccumulatePattern));
+        Stream<ViewItemBuilder<?>> all = Stream.concat(primaryAndPrerequisites, ruleStructure.getDependents().stream());
+        ViewItem[] items = all.toArray(ViewItem[]::new);
         return PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
     }
 

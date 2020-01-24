@@ -59,11 +59,11 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         Variable<C> cVariable = ruleStructure.getC();
-        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
-                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
-                ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getShelvedRuleItems(), ruleStructure.getPrerequisites(),
+                ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(newRuleStructure);
     }
 

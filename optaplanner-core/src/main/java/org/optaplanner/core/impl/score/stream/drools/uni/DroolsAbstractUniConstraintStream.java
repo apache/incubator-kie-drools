@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
@@ -52,7 +53,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public DroolsAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
-        DroolsFilterUniConstraintStream<Solution_, A> stream = new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
+        DroolsFilterUniConstraintStream<Solution_, A> stream =
+                new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -63,12 +65,28 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+        if (joiner instanceof FilteringBiJoiner) {
+            return join(otherStream)
+                .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
+        }
         DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
                 (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
                 this, castOtherStream, joiner);
         addChildStream(stream);
         castOtherStream.addChildStream(stream);
+        return stream;
+    }
+
+    // ************************************************************************
+    // If (Not) Exists
+    // ************************************************************************
+
+    @Override
+    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        DroolsExistsUniConstraintStream<Solution_, A> stream =
+                new DroolsExistsUniConstraintStream<>(constraintFactory, this, otherClass, joiners);
+        addChildStream(stream);
         return stream;
     }
 

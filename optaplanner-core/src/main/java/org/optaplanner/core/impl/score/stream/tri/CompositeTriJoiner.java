@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     // ************************************************************************
 
     @Override
-    public BiFunction<A, B, Object> getLeftMapping(int joinerId) {
-        return (BiFunction<A, B, Object>) leftMappings[joinerId];
+    public BiFunction<A, B, Object> getLeftMapping(int index) {
+        return (BiFunction<A, B, Object>) leftMappings[index];
     }
 
     @Override
@@ -74,8 +74,8 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     }
 
     @Override
-    public Function<C, Object> getRightMapping(int joinerId) {
-        return (Function<C, Object>) rightMappings[joinerId];
+    public Function<C, Object> getRightMapping(int index) {
+        return (Function<C, Object>) rightMappings[index];
     }
 
     @Override

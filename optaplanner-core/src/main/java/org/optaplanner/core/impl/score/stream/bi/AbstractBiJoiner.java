@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
@@ -25,8 +26,18 @@ import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
 
+    private final BiPredicate<A, B> filter;
+
+    protected AbstractBiJoiner() {
+        this.filter = null;
+    }
+
+    protected AbstractBiJoiner(BiPredicate<A, B> filter) {
+        this.filter = filter;
+    }
+
     @SafeVarargs
-    public final static <A, B> AbstractBiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
+    public static <A, B> AbstractBiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
         List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>(joiners.length);
         for (BiJoiner<A, B> joiner : joiners) {
             if (joiner instanceof NoneBiJoiner) {
@@ -36,6 +47,7 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
             } else if (joiner instanceof CompositeBiJoiner) {
                 joinerList.addAll(((CompositeBiJoiner<A, B>) joiner).getJoinerList());
             } else {
+                // Filtering joiners are merged by composing their filter lambdas.
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
         }
@@ -47,12 +59,16 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
         return new CompositeBiJoiner<>(joinerList);
     }
 
-    public abstract Function<A, Object> getLeftMapping(int joinerId);
+    public abstract Function<A, Object> getLeftMapping(int index);
 
     public abstract Function<A, Object[]> getLeftCombinedMapping();
 
-    public abstract Function<B, Object> getRightMapping(int joinerId);
+    public abstract Function<B, Object> getRightMapping(int index);
 
     public abstract Function<B, Object[]> getRightCombinedMapping();
+
+    public BiPredicate<A, B> getFilter() {
+        return filter;
+    }
 
 }

@@ -54,11 +54,11 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
         Variable<B> bVariable = ruleStructure.getB();
         Variable<C> cVariable = ruleStructure.getC();
         Variable<D> dVariable = ruleStructure.getD();
-        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, dVariable, filter));
         DroolsQuadRuleStructure<A, B, C, D> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable, bVariable,
-                cVariable, dVariable, newTargetPattern, ruleStructure.getOpenRuleItems(),
-                ruleStructure.getClosedRuleItems(), ruleStructure.getVariableIdSupplier());
+                cVariable, dVariable, newTargetPattern, ruleStructure.getShelvedRuleItems(),
+                ruleStructure.getPrerequisites(), ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
         return new DroolsQuadCondition<>(newRuleStructure);
     }
 

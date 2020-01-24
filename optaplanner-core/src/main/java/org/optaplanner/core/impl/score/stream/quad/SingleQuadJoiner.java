@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public final class SingleQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B,
     // ************************************************************************
 
     @Override
-    public TriFunction<A, B, C, Object> getLeftMapping(int joinerId) {
+    public TriFunction<A, B, C, Object> getLeftMapping(int index) {
         return (TriFunction<A, B, C, Object>) leftMapping;
     }
 
@@ -65,7 +65,7 @@ public final class SingleQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B,
     }
 
     @Override
-    public Function<D, Object> getRightMapping(int joinerId) {
+    public Function<D, Object> getRightMapping(int index) {
         return (Function<D, Object>) rightMapping;
     }
 
