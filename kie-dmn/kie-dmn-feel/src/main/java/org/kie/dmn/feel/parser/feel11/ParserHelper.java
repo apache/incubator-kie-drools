@@ -24,6 +24,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -306,13 +307,13 @@ public class ParserHelper {
             return BuiltInType.UNKNOWN;
         } else if( Number.class.isAssignableFrom(clazz) ) {
             return BuiltInType.NUMBER;
-        } else if( String.class.isAssignableFrom(clazz) ) {
+        } else if( String.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz) ) {
             return BuiltInType.STRING;
         } else if( LocalDate.class.isAssignableFrom(clazz) ) {
             return BuiltInType.DATE;
         } else if( LocalTime.class.isAssignableFrom(clazz) || OffsetTime.class.isAssignableFrom(clazz) ) {
             return BuiltInType.TIME;
-        } else if( ZonedDateTime.class.isAssignableFrom(clazz) || OffsetDateTime.class.isAssignableFrom(clazz) || LocalDateTime.class.isAssignableFrom(clazz) ) {
+        } else if( ZonedDateTime.class.isAssignableFrom(clazz) || OffsetDateTime.class.isAssignableFrom(clazz) || LocalDateTime.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) ) {
             return BuiltInType.DATE_TIME;
         } else if (Duration.class.isAssignableFrom(clazz) || ChronoPeriod.class.isAssignableFrom(clazz)) {
             return BuiltInType.DURATION;
