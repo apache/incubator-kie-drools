@@ -23,7 +23,7 @@ import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.services.KieAssemblersImpl;
-import org.kie.pmml.assembler.converter.PMMLAssemblerService;
+import org.kie.pmml.assembler.PMMLAssemblerService;
 
 public class KieBaseTest {
 
