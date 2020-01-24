@@ -1281,8 +1281,7 @@ The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
-<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>
-support constraint matches automatically,
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
@@ -1319,8 +1318,7 @@ because multiple ``Indictment``s can share the same `ConstraintMatch`.
 
 [NOTE]
 ====
-<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>
-support constraint matches automatically,
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====

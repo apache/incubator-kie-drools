@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,8 +67,15 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
             }
         } else {
             if (aMemberAccessor == null) {
-                // Return 0 to keep original order
-                return bMemberAccessor == null ? 0 : -1;
+                if (bMemberAccessor == null) {
+                    if (a instanceof Comparable) {
+                        return ((Comparable) a).compareTo(b);
+                    } else { // Return 0 to keep original order.
+                        return 0;
+                    }
+                } else {
+                    return -1;
+                }
             } else if (bMemberAccessor == null) {
                 return 1;
             }

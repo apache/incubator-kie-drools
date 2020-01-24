@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
@@ -91,7 +92,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
              * over and over again. However, there are possibly thousands of instances of this class, and each will get its own
              * comparator. Therefore, the caching is only partially effective.
              */
-            Comparator<Object> comparator = new ConstraintJustificationComparator();
+            Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
             for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
                 Object left = justificationList.get(i);
                 Object right = other.justificationList.get(i);

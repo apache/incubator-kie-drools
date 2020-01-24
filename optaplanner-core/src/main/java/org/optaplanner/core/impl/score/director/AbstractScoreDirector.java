@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -707,26 +708,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + ") is disabled.\n"
                     + "  Check your score constraints manually.";
         }
-        Collection<ConstraintMatchTotal> corruptedConstraintMatchTotals = getConstraintMatchTotals();
-        Collection<ConstraintMatchTotal> uncorruptedConstraintMatchTotals
-                = uncorruptedScoreDirector.getConstraintMatchTotals();
 
-        // The order of justificationLists for score rules that include accumulates isn't stable, so we make it stable.
-        ClassAndPlanningIdComparator comparator = new ClassAndPlanningIdComparator(false);
-        for (ConstraintMatchTotal constraintMatchTotal : corruptedConstraintMatchTotals) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().sort(comparator);
-            }
-        }
-        for (ConstraintMatchTotal constraintMatchTotal : uncorruptedConstraintMatchTotals) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().sort(comparator);
-            }
-        }
-
-        Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
+        Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(getConstraintMatchTotals());
         Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);
-        Map<List<Object>, ConstraintMatch> missingMap = createConstraintMatchMap(uncorruptedConstraintMatchTotals);
+        Map<List<Object>, ConstraintMatch> missingMap =
+                createConstraintMatchMap(uncorruptedScoreDirector.getConstraintMatchTotals());
         excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
         missingMap.keySet().removeAll(corruptedMap.keySet());
 
@@ -782,16 +768,17 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     private Map<List<Object>, ConstraintMatch> createConstraintMatchMap(
             Collection<ConstraintMatchTotal> constraintMatchTotals) {
+        Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
         Map<List<Object>, ConstraintMatch> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                ConstraintMatch previousConstraintMatch = constraintMatchMap.put(
-                        Arrays.<Object>asList(
-                                constraintMatchTotal.getConstraintPackage(),
-                                constraintMatchTotal.getConstraintName(),
-                                constraintMatch.getJustificationList(),
-                                constraintMatch.getScore()),
-                        constraintMatch);
+                // The order of justificationLists for score rules that include accumulates isn't stable, so we make it.
+                List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
+                Collections.sort(justificationList, comparator);
+                // And now we store the reference to the constraint match.
+                List<Object> key = Arrays.asList(constraintMatchTotal.getConstraintPackage(),
+                        constraintMatchTotal.getConstraintName(), justificationList, constraintMatch.getScore());
+                ConstraintMatch previousConstraintMatch = constraintMatchMap.put(key, constraintMatch);
                 if (previousConstraintMatch != null) {
                     throw new IllegalStateException("Score corruption because the constraintMatch (" + constraintMatch
                             + ") was added twice for constraintMatchTotal (" + constraintMatchTotal
