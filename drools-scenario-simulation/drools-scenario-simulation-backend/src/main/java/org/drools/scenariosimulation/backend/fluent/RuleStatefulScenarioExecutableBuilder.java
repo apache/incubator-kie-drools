@@ -28,10 +28,10 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
@@ -47,13 +47,13 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
 
     private final static String DEFAULT_APPLICATION = "defaultApplication";
 
-    protected static final BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
-        KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
-        if (kieSessionModel == null) {
-            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
+    protected static final BiFunction<String, KieContainer, KieSessionConfiguration> forcePseudoClock = (sn, kc) -> {
+        KieSessionConfiguration kieSessionConfiguration = kc.getKieSessionConfiguration(sn);
+        if (kieSessionConfiguration == null) {
+            throw new ScenarioException("Impossible to find a KieSession with name " + sn);
         }
-        kieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
-        return kc;
+        kieSessionConfiguration.setOption(ClockTypeOption.get("pseudo"));
+        return kieSessionConfiguration;
     };
 
     protected RuleStatefulScenarioExecutableBuilder(KieContainer kieContainer, String kieSessionName) {
