@@ -2,8 +2,8 @@
 = Score configuration
 :imagesdir: ../..
 
-OptaPlanner will search for the `Solution` with the highest ``Score``.
-This example uses a ``HardSoftScore``, which means OptaPlanner will look for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
+OptaPlanner searches for the solution with the highest ``Score``.
+This example uses a ``HardSoftScore``, which means OptaPlanner looks for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
 
 image::QuickStart/CloudBalancingScoreConfiguration/scoreComparisonCloudBalancing.png[align="center"]
 

@@ -411,10 +411,10 @@ Consider the following example of a `ProblemFactChange` implementation in the cl
     }
 ----
 
-. Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``.
+. Any change in a `ProblemFactChange` must be done on the `@PlanningSolution` instance of ``scoreDirector.getWorkingSolution()``.
 
 . The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
-* The `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
+* The `workingSolution` in the `Solver` is never the same solution instance as in the rest of your application: it is a planning clone.
 * A planning clone also clones the planning entities and planning entity collections.
 +
 So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.

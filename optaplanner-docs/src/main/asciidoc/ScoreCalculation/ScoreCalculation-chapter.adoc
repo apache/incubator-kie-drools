@@ -15,14 +15,15 @@
 [[whatIsAScore]]
 === What is a score?
 
-Every `Solution` has a score.
+Every `@PlanningSolution` class has a score.
 The score is an objective way to compare two solutions.
 The solution with the higher score is better.
-The `Solver` aims to find the `Solution` with the highest `Score` of all possible solutions.
-The _best solution_ is the `Solution` with the highest `Score` that `Solver` has encountered during solving,
+The `Solver` aims to find the solution with the highest `Score` of all possible solutions.
+The _best solution_ is the solution with the highest `Score` that `Solver` has encountered during solving,
 which might be the __optimal solution__.
 
-OptaPlanner cannot automatically know which `Solution` is best for your business, so you need to tell it how to calculate the score of a given `Solution` according to your business needs.
+OptaPlanner cannot automatically know which solution is best for your business,
+so you need to tell it how to calculate the score of a given `@PlanningSolution` instance according to your business needs.
 If you forget or are unable to implement an important business constraint, the solution is probably useless:
 
 image::ScoreCalculation/optimalWithIncompleteConstraints.png[align="center"]
@@ -413,7 +414,7 @@ you'll need to write custom glue code too.
 [[scoreCalculationTypes]]
 === Score calculation types
 
-There are several ways to calculate the `Score` of a ``Solution``:
+There are several ways to calculate the `Score` of a solution:
 
 * **<<easyJavaScoreCalculation,Easy Java score calculation>>**: Implement all constraints together in a single method in Java (or another JVM language). Does not scale.
 * **<<constraintStreams,Constraint streams score calculation>>**: Implement each constraint as a separate ConstraintStream in Java (or another JVM language). Fast and scalable.
@@ -429,7 +430,7 @@ The score calculation must be read-only.
 It must not change the planning entities or the problem facts in any way.
 For example, it must not call a setter method on a planning entity in the score calculation.
 
-OptaPlanner will not recalculate the score of a `Solution` if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled).
+OptaPlanner does not recalculate the score of a solution if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled).
 For example, after a winning step is done, there is no need to calculate the score because that move was done and undone earlier.
 As a result, there is no guarantee that changes applied during score calculation actually happen.
 
@@ -860,7 +861,7 @@ Comparing the best score with the original's best score is pointless: it's compa
 [[incrementalScoreCalculation]]
 === Incremental score calculation (with deltas)
 
-When a `Solution` changes, incremental score calculation (AKA delta based score calculation)
+When a solution changes, incremental score calculation (AKA delta based score calculation)
 calculates the delta with the previous state to find the new ``Score``,
 instead of recalculating the entire score on every solution evaluation.
 
@@ -895,7 +896,7 @@ then turn them into <<cachedProblemFact,cached problem facts>>.
 
 If you know a certain constraint can never be broken (or it is always broken), do not write a score constraint for it.
 For example in n queens, the score calculation does not check if multiple queens occupy the same column,
-because a ``Queen``'s `column` never changes and every `Solution` starts with each `Queen` on a different ``column``.
+because a ``Queen``'s `column` never changes and every solution starts with each `Queen` on a different ``column``.
 
 [NOTE]
 ====
@@ -1241,7 +1242,7 @@ The `try` ARM will call `ScoreDirector.close()` when the `ScoreDirector` becomes
 to avoid a memory leak, especially with <<droolsScoreCalculation,Drools score calculation>>.
 ====
 
-Then use it when you need to calculate the `Score` of a ``Solution``:
+Then use it when you need to calculate the `Score` of a solution:
 
 [source,java,options="nowrap"]
 ----

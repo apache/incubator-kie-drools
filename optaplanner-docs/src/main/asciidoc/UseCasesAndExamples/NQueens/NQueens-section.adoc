@@ -126,7 +126,7 @@ public class NQueens {
 . *Finding the Solution*
 +
 A single `NQueens` instance contains a list of all `Queen` instances.
-It is the `Solution` implementation which will be supplied to, solved by, and retrieved from the Solver.
+It is the solution implementation which is supplied to, solved by, and retrieved from the ``Solver``.
 
 Notice that in the four queens example, NQueens's `getN()` method will always return four.
 

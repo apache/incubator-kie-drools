@@ -71,8 +71,8 @@ The word _maybe_ is to indicate that the advice is not guaranteed to be right in
 
 === Generics
 
-. The `Solution` class is often passed as a generic type parameter to subsystems.
-. The `PlanningEntity` class(es) are rarely passed as a generic type parameter because there could be multiple planning entities.
+. The `@PlanningSolution` class is often passed as a generic type parameter to subsystems.
+. The `@PlanningEntity` class(es) are rarely passed as a generic type parameter because there could be multiple planning entities.
 
 === Lifecycle
 

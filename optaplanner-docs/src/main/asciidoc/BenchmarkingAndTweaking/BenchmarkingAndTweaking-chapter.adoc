@@ -175,8 +175,8 @@ but instead are added to the tail of the solver phases list.
 [[solutionFileIOInterface]]
 ==== `SolutionFileIO` interface
 
-The benchmarker needs to be able to read the input files to load a ``Solution``.
-Also, it optionally writes the best `Solution` of each benchmark to an output file.
+The benchmarker needs to be able to read the input files to load a problem.
+Also, it optionally writes the best solution of each benchmark to an output file.
 It does that through the `SolutionFileIO` interface which has a read and write method:
 
 [source,java,options="nowrap"]
@@ -198,7 +198,7 @@ There are several ways to serialize a solution:
 ==== `XStreamSolutionFileIO: serialize to and from an XML format
 
 To use the `XStreamSolutionFileIO` instance to read and write solutions,
-configure your `Solution` class as an ``xStreamAnnotatedClass``:
+configure your `@PlanningSolution` class as an ``xStreamAnnotatedClass``:
 
 [source,xml,options="nowrap"]
 ----

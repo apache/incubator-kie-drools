@@ -13,7 +13,7 @@
 
 Solving a planning problem with OptaPlanner consists of the following steps:
 
-. *Model your planning problem* as a class that implements the interface ``Solution``, for example the class ``NQueens``.
+. *Model your planning problem* as a class annotated with the ``@PlanningSolution`` annotation, for example the ``NQueens`` class.
 . **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
 . *Load a problem data set* from your data layer, for example a Four Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(problem)` which returns the best solution found.
@@ -481,7 +481,8 @@ public class CloudProcessDifficultyComparator implements Comparator<CloudProcess
 }
 ----
 
-Alternatively, you can also set a `difficultyWeightFactoryClass` to the `@PlanningEntity` annotation, so that you have access to the rest of the problem facts from the `Solution` too:
+Alternatively, you can also set a `difficultyWeightFactoryClass` to the `@PlanningEntity` annotation,
+so that you have access to the rest of the problem facts from the solution too:
 
 [source,java,options="nowrap"]
 ----
@@ -619,7 +620,7 @@ So a nullable variable is always considered initialized, even when a custom `rei
 
 A planning entity is initialized if all of its planning variables are initialized.
 
-A `Solution` is initialized if all of its planning entities are initialized.
+A solution is initialized if all of its planning entities are initialized.
 
 
 [[planningValueAndPlanningValueRange]]
@@ -667,12 +668,13 @@ The return type of that method can be three types:
 
 
 [[valueRangeProviderOnSolution]]
-===== `ValueRangeProvider` on the `Solution`
+===== `ValueRangeProvider` on the solution
 
 All instances of the same planning entity class share the same set of possible planning values for that planning variable.
 This is the most common way to configure a value range.
 
-The `Solution` implementation has method that returns a `Collection` (or a ``ValueRange``). Any value from that `Collection` is a possible planning value for this planning variable.
+The `@PlanningSolution` implementation has method that returns a `Collection` (or a ``ValueRange``).
+Any value from that `Collection` is a possible planning value for this planning variable.
 
 [source,java,options="nowrap"]
 ----
@@ -1096,7 +1098,7 @@ Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>>
 [[scoreOfASolution]]
 ==== `Score` of asSolution (`@PlanningScore`)
 
-A `Solution` requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
+A `@PlanningSolution` class requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
 The score property is `null` if the score hasn't been calculated yet.
 The `score` property is typed to the specific `Score` implementation of your use case.
 For example, `NQueens` uses a <<simpleScore,SimpleScore>>:
@@ -1295,7 +1297,8 @@ There are many ways to clone, such as a shallow clone, deep clone, ... This cont
 A planning clone of a solution must fulfill these requirements:
 
 * The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
-* The clone must use different, cloned instances of the entities and entity collections. Changes to an original `Solution` entity's variables must not affect its clone.
+* The clone must use different, cloned instances of the entities and entity collections.
+Changes to an original solution entity's variables must not affect its clone.
 
 image::PlannerConfiguration/solutionCloning.png[align="center"]
 
@@ -1401,7 +1404,7 @@ If A is cloned, then its variable must point to the clone of B, not the original
 [[createAnUninitializedSolution]]
 ==== Create an uninitialized solution
 
-Create a `Solution` instance to represent your planning problem's dataset, so it can be set on the `Solver` as the planning problem to solve.
+Create a `@PlanningSolution` instance to represent your planning problem's dataset, so it can be set on the `Solver` as the planning problem to solve.
 For example in n queens, an `NQueens` instance is created with the required `Column` and `Row` instances and every `Queen` set to a different `column` and every `row` set to ``null``.
 
 [source,java,options="nowrap"]
@@ -1435,7 +1438,7 @@ For example in n queens, an `NQueens` instance is created with the required `Col
 .Uninitialized Solution for the Four Queens Puzzle
 image::PlannerConfiguration/uninitializedNQueens04.png[align="left"]
 
-Usually, most of this data comes from your data layer, and your `Solution` implementation just aggregates that data and creates the uninitialized planning entity instances to plan:
+Usually, most of this data comes from your data layer, and your solution implementation just aggregates that data and creates the uninitialized planning entity instances to plan:
 
 [source,java,options="nowrap"]
 ----
@@ -1466,7 +1469,7 @@ Usually, most of this data comes from your data layer, and your `Solution` imple
 [[theSolverInterface]]
 === The `Solver` interface
 
-A `Solver` implementation will solve your planning problem.
+A `Solver` implementation solves your planning problem.
 
 [source,java,options="nowrap"]
 ----
@@ -1489,12 +1492,13 @@ It is built with a ``SolverFactory``, there is no need to implement it yourself.
 Solving a problem is quite easy once you have:
 
 * A `Solver` built from a solver configuration
-* A `Solution` that represents the planning problem instance
+* A `@PlanningSolution` that represents the planning problem instance
 
 Just provide the planning problem as argument to the `solve()` method and it will return the best solution found:
 
 [source,java,options="nowrap"]
 ----
+    NQueens problem = ...;
     NQueens bestSolution = solver.solve(problem);
 ----
 
@@ -1508,14 +1512,15 @@ Depending on a number of factors (including problem size, how much time the `Sol
 
 [NOTE]
 ====
-The `Solution` instance given to the method `solve(Solution)` is changed by the ``Solver``, but do not mistake it for the best solution.
+The solution instance given to the method `solve(solution)` is changed by the ``Solver``,
+but do not mistake it for the best solution.
 
-The `Solution` instance returned by the methods `solve(Solution)` or `getBestSolution()` is most likely <<cloningASolution,a planning clone>> of the instance given to the method ``solve(Solution)``, which implies it is a different instance.
+The solution instance returned by the methods `solve(solution)` or `getBestSolution()` is most likely <<cloningASolution,a planning clone>> of the instance given to the method ``solve(solution)``, which implies it is a different instance.
 ====
 
 [NOTE]
 ====
-The `Solution` instance given to the `solve(Solution)` method does not need to be uninitialized.
+The solution instance given to the `solve(Solution)` method does not need to be uninitialized.
 It can be partially or fully initialized, which is often the case in <<repeatedPlanning,repeated planning>>.
 ====
 
@@ -1589,7 +1594,7 @@ It also allows you to benchmark certain refactorings (such as a score constraint
 ====
 Despite the reproducible mode, your application might still not be fully reproducible because of:
 
-* Use of `HashSet` (or another `Collection` which has an inconsistent order between JVM runs) for collections of planning entities or planning values (but not normal problem facts), especially in the `Solution` implementation. Replace it with ``LinkedHashSet``.
+* Use of `HashSet` (or another `Collection` which has an inconsistent order between JVM runs) for collections of planning entities or planning values (but not normal problem facts), especially in the solution implementation. Replace it with ``LinkedHashSet``.
 * Combining a time gradient dependent algorithms (most notably Simulated Annealing) together with time spent termination. A sufficiently large difference in allocated CPU time will influence the time gradient values. Replace Simulated Annealing with Late Acceptance. Or instead, replace time spent termination with step count termination.
 
 ====
