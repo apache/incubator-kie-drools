@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-pmml-models</artifactId>
+    <groupId>org.drools</groupId>
+    <version>7.33.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-tree</artifactId>
+
+  <name>KIE :: PMML :: Models :: Tree</name>
+  <description>PMML Trees implementation</description>
+
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-library-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-core</artifactId>
+    </dependency>
+    <!-- External -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+    </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-library-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-library-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- TEST -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-library-api</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>
