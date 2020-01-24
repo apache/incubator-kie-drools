@@ -19,6 +19,7 @@ package org.kie.internal.builder.fluent;
 import java.util.function.BiFunction;
 
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 public interface KieContainerFluent {
 
@@ -26,7 +27,7 @@ public interface KieContainerFluent {
 
     KieSessionFluent newSession(String sessionName);
 
-    KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieContainer> customizer);
+    KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieSessionConfiguration> kieSessionConfigurationCustomizer);
 
     DMNRuntimeFluent newDMNRuntime();
 }
