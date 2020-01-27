@@ -24,6 +24,11 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-legacy</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
         <classifier>tests</classifier>
@@ -97,7 +102,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
+      <artifactId>kie-pmml-legacy</artifactId>
       <scope>test</scope>
     </dependency>
 

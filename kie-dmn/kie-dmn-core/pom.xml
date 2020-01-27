@@ -30,7 +30,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-core</artifactId>
+        <artifactId>kie-pmml-legacy</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>
@@ -115,7 +115,7 @@
     <!-- Used to provide a default binding for PMML, and test in this module -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-core</artifactId>
+      <artifactId>kie-pmml-legacy</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
