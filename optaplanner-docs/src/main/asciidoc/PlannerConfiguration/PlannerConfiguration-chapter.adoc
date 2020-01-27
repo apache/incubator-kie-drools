@@ -1469,7 +1469,7 @@ Usually, most of this data comes from your data layer, and your solution impleme
 [[theSolverInterface]]
 === The `Solver` interface
 
-A `Solver` implementation solves your planning problem.
+A `Solver` solves your planning problem.
 
 [source,java,options="nowrap"]
 ----
@@ -1482,8 +1482,12 @@ public interface Solver<Solution_> {
 ----
 
 A `Solver` can only solve one planning problem instance at a time.
-A `Solver` should only be accessed from a single thread, except for the methods that are specifically javadocced as being thread-safe.
 It is built with a ``SolverFactory``, there is no need to implement it yourself.
+
+A `Solver` should only be accessed from a single thread, except for the methods that are specifically javadocced as being thread-safe.
+The `solve()` method hogs the current thread.
+This can cause HTTP timeouts for REST services and it requires extra code to solve multiple datasets in parallel.
+To avoid such issues, use a <<solverManager, `SolverManager`>> instead.
 
 
 [[solvingAProblem]]
@@ -1795,3 +1799,143 @@ The following types are supported:
 
 For most use cases, the randomType has no significant impact on the average quality of the best solution on multiple datasets.
 If you want to confirm this on your use case, use the <<benchmarker,benchmarker>>.
+
+
+[[solverManager]]
+== SolverManager
+
+A `SolverManager` is a facade for one or more `Solver` instances.
+Its `solve(...)` methods differ from the normal `Solver.solve(...)` method, such that:
+
+* *`SolverManager.solve(...)` returns immediately*: it schedules a problem for asynchronous solving without blocking the calling thread.
+* *`SolverManager.solve(...)` solves multiple planning problems* of the same domain, in parallel.
+
+Internally a `SolverManager` manages a thread pool of solver threads, which call `Solver.solve(...)`,
+and a thread pool of consumer threads, which handle best solution changed events.
+
+In <<integrationWithQuarkus,Quarkus>> and <<integrationWithSpringBoot,Spring Boot>>,
+the `SolverManager` instance is automatically injected in your code.
+Otherwise, build a `SolverManager` instance with the `create(...)` method:
+
+[source,java,options="nowrap"]
+----
+SolverConfig solverConfig = SolverConfig.createFromXmlResource(".../cloudBalancingSolverConfig.xml");
+SolverManager<CloudBalance, UUID> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
+----
+
+Each problem submitted to the `SolverManager.solve(...)` methods needs a unique problem ID,
+to distinguish with other problems in other calls,
+such as `getSolverStatus(problemId)` and `terminateEarly(problemId)`.
+The problem ID must be an immutable class, such as `Long`, `String` or `java.util.UUID`.
+
+The `SolverManagerConfig` class has a `parallelSolverCount` property,
+that controls how many solvers are run in parallel.
+For example, if set to `4`, submitting five problems
+has four problems solving immediately, and the fifth one starts when another one ends.
+So if those problems solve for 5 minutes each, the fifth problem takes 10 minutes to finish.
+By default, `parallelSolverCount` is set to `AUTO`, which resolves to half the CPU cores,
+regardless of the <<multithreadedSolving,`moveThreadCount`>> of the solvers.
+
+To retrieve the best solution, after solving terminates normally, use `SolverJob.getFinalBestSolution()`:
+
+[source,java,options="nowrap"]
+----
+CloudBalance problem1 = ...;
+UUID problemId = UUID.randomUUID();
+// Returns immediately
+SolverJob<CloudBalance, UUID> solverJob = solverManager.solve(problemId, problem1);
+...
+CloudBalance solution1;
+try {
+    // Returns only after solving terminates
+    solution1 = solverJob.getFinalBestSolution();
+} catch (InterruptedException | ExecutionException e) {
+    throw ...;
+}
+----
+
+However, there are better approaches, both for solving batch problems before an end-user needs the solution
+as well as for live solving while an end-user is actively waiting for the solution, as explained below.
+
+The current `SolverManager` implementation runs on a single computer node,
+but future work aims to distribute solver loads across a cloud.
+
+
+[[solverManagerSolveBatch]]
+=== Solve batch problems
+
+At night, batch solving a great approach to deliver solid plans by breakfast, because:
+
+* There are typically few or no problem changes in the middle of the night.
+Some organizations even enforce a deadline, for example, _submit all day off requests before midnight_.
+* The solvers can run for much longer, often hours, because nobody's waiting for it and CPU resources are often cheaper.
+
+To solve a multiple datasets in parallel (limited by `parallelSolverCount`),
+call `solve(...)` for each dataset:
+
+[source,java,options="nowrap"]
+----
+public class TimeTableService {
+
+    private SolverManager<TimeTable, Long> solverManager;
+
+    // Returns immediately, call it for every dataset
+    public void solveBatch(Long timeTableId) {
+        solverManager.solve(timeTableId,
+                // Called once, when solving starts
+                this::findById,
+                // Called once, when solving ends
+                this::save);
+    }
+
+    public TimeTable findById(Long id) {...}
+
+    public void save(TimeTable timeTable) {...}
+
+}
+----
+
+A solid plan delivered by breakfast is great,
+even if you need to react on problem changes during the day.
+
+
+[[solverManagerSolveAndListen]]
+=== Solve and listen to show progress to the end-user
+
+When the solver is running and an end-user is waiting for that solution,
+it's vital to show progress to the end-user.
+Display the best score so far and visualize the best solution so far.
+
+To handle intermediate best solutions, use `solveAndListen(...)`:
+
+[source,java,options="nowrap"]
+----
+public class TimeTableService {
+
+    private SolverManager<TimeTable, Long> solverManager;
+
+    // Returns immediately
+    public void solveLive(Long timeTableId) {
+        solverManager.solveAndListen(timeTableId,
+                // Called once, when solving starts
+                this::findById,
+                // Called multiple times, for every best solution change
+                this::save);
+    }
+
+    public TimeTable findById(Long id) {...}
+
+    public void save(TimeTable timeTable) {...}
+
+    public void stopSolving(Long timeTableId) {
+        solverManager.terminateEarly(timeTableId);
+    }
+
+}
+----
+
+This implementation is using the database to communicate with the UI, which polls the database.
+More advanced implementations push the best solutions directly to the UI or a messaging queue.
+
+If the user is satisfied with the intermediate best solution
+and tired of waiting for a better one, call `SolverManager.terminateEarly(problemId)`.
