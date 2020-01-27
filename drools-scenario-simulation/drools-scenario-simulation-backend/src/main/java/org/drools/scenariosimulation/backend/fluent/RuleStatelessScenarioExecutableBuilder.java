@@ -23,17 +23,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactIdentifier;
-import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
 
 public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecutableBuilder {
 
@@ -75,12 +72,6 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
 
     @Override
     public Map<String, Object> run() {
-        KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(sessionName);
-        if (kieSessionModel == null) {
-            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
-        }
-        kieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
-
         StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession(sessionName);
 
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
