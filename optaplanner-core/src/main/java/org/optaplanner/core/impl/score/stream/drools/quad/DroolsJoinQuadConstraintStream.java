@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
 
     private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, D> rightParentStream;
-    private final DroolsQuadCondition<A, B, C, D> condition;
+    private final DroolsQuadCondition<A, B, C, D, ?> condition;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
@@ -44,7 +44,7 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> getCondition() {
+    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
         return condition;
     }
 

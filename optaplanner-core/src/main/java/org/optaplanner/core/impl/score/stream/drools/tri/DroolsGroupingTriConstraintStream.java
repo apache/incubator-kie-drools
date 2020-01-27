@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
         extends DroolsAbstractTriConstraintStream<Solution_, NewA, NewB, NewC> {
 
-    private final DroolsTriCondition<NewA, NewB, NewC> condition;
+    private final DroolsTriCondition<NewA, NewB, NewC, ?> condition;
 
     public <A, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
@@ -69,7 +69,7 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
     }
 
     @Override
-    public DroolsTriCondition<NewA, NewB, NewC> getCondition() {
+    public DroolsTriCondition<NewA, NewB, NewC, ?> getCondition() {
         return condition;
     }
 

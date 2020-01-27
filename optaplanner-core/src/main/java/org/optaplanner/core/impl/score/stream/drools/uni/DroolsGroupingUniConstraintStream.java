@@ -36,7 +36,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
     private final DroolsAbstractConstraintStream<Solution_> parent;
-    private final DroolsUniCondition<NewA> condition;
+    private final DroolsUniCondition<NewA, ?> condition;
 
     public <A> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping) {
@@ -117,7 +117,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
     // ************************************************************************
 
     @Override
-    public DroolsUniCondition<NewA> getCondition() {
+    public DroolsUniCondition<NewA, ?> getCondition() {
         return condition;
     }
 

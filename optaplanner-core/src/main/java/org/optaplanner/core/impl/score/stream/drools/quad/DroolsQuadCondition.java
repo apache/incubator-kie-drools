@@ -37,32 +37,35 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 
 import static org.drools.model.DSL.on;
 
-public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<DroolsQuadRuleStructure<A, B, C, D>> {
+public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
+        DroolsCondition<PatternVar, DroolsQuadRuleStructure<A, B, C, D, PatternVar>> {
 
-    public DroolsQuadCondition(DroolsQuadRuleStructure<A, B, C, D> ruleStructure) {
+    public DroolsQuadCondition(DroolsQuadRuleStructure<A, B, C, D, PatternVar> ruleStructure) {
         super(ruleStructure);
     }
 
-    public DroolsQuadCondition<A, B, C, D> andFilter(QuadPredicate<A, B, C, D> predicate) {
-        Predicate5<Object, A, B, C, D> filter = (__, a, b, c, d) -> predicate.test(a, b, c, d);
+    public DroolsQuadCondition<A, B, C, D, PatternVar> andFilter(QuadPredicate<A, B, C, D> predicate) {
+        Predicate5<PatternVar, A, B, C, D> filter = (__, a, b, c, d) -> predicate.test(a, b, c, d);
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         Variable<C> cVariable = ruleStructure.getC();
         Variable<D> dVariable = ruleStructure.getD();
-        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
+        DroolsPatternBuilder<PatternVar> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, dVariable, filter));
-        DroolsQuadRuleStructure<A, B, C, D> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable, bVariable,
-                cVariable, dVariable, newTargetPattern, ruleStructure.getShelvedRuleItems(),
+        DroolsQuadRuleStructure<A, B, C, D, PatternVar> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable,
+                bVariable, cVariable, dVariable, newTargetPattern, ruleStructure.getShelvedRuleItems(),
                 ruleStructure.getPrerequisites(), ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
         return new DroolsQuadCondition<>(newRuleStructure);
     }
 
-    public <NewA, __> DroolsUniCondition<NewA> andCollect(QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
+    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
+            QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
         DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge =
                 new DroolsQuadAccumulateFunctionBridge<>(collector);
         return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
@@ -70,20 +73,20 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 (d, a, b, c) -> new QuadTuple<>(a, b, c, (D) d)));
     }
 
-    public <NewA> DroolsUniCondition<NewA> andGroup(QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
+    public <NewA> DroolsUniCondition<NewA, NewA> andGroup(QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
         return super.group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
                 ruleStructure.getC(), (d, a, b, c) -> groupKeyMapping.apply(a, b, c, (D) d)));
     }
 
-    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
+    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupWithCollect(
             QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
         return groupWithCollect(() -> new DroolsQuadToBiGroupByInvoker<>(groupKeyMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
     }
 
-    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupBi(
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
         return groupBi((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
                 ruleStructure.getC(), (d, a, b, c) -> {
                     final NewA newA = groupKeyAMapping.apply(a, b, c, (D) d);
@@ -92,17 +95,17 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 }));
     }
 
-    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
-            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, __, NewC> collector) {
+    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>>
+    andGroupBiWithCollect(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, __, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsQuadToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collector, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD> andGroupBiWithCollectBi(
-            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+    andGroupBiWithCollectBi(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
@@ -137,10 +140,9 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
 
     private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(
             Global<ScoreHolder> scoreHolderGlobal, Block6<Drools, ScoreHolder, A, B, C, D> consequenceImpl) {
-        ConsequenceBuilder._5<ScoreHolder, A, B, C, D> consequence =
-                on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC(),
-                        ruleStructure.getD())
-                        .execute(consequenceImpl);
+        ConsequenceBuilder._5<ScoreHolder, A, B, C, D> consequence = on(scoreHolderGlobal, ruleStructure.getA(),
+                ruleStructure.getB(), ruleStructure.getC(), ruleStructure.getD())
+                .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
 

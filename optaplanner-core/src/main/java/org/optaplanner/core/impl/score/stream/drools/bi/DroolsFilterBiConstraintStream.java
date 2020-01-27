@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstr
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
-    private final DroolsBiCondition<A, B> condition;
+    private final DroolsBiCondition<A, B, ?> condition;
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
@@ -34,7 +34,7 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
     }
 
     @Override
-    public DroolsBiCondition<A, B> getCondition() {
+    public DroolsBiCondition<A, B, ?> getCondition() {
         return condition;
     }
 

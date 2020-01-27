@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final DroolsQuadCondition<A, B, C, D> condition;
+    private final DroolsQuadCondition<A, B, C, D, ?> condition;
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
@@ -35,7 +35,7 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> getCondition() {
+    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
         return condition;
     }
 

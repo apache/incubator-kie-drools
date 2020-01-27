@@ -313,6 +313,15 @@
           "methodName": "ifExists",
           "elementKind": "method",
           "justification": "Introduced ifExists() to UniConstraintStream."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifNotExists(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifNotExists",
+          "elementKind": "method",
+          "justification": "Introduced ifNotExists() to UniConstraintStream."
         }
       ]
     }

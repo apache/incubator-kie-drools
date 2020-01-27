@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
 
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsBiCondition<A, B> condition = parent.getCondition();
+        DroolsBiCondition<A, B, ?> condition = parent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -99,7 +99,7 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     }
 
     @Override
-    public DroolsBiCondition<A, B> getCondition() {
+    public DroolsBiCondition<A, B, ?> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own BiCondition.");
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final DroolsUniCondition<A> condition;
+    private final DroolsUniCondition<A, ?> condition;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
@@ -48,7 +48,7 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public DroolsUniCondition<A> getCondition() {
+    public DroolsUniCondition<A, ?> getCondition() {
         return condition;
     }
 

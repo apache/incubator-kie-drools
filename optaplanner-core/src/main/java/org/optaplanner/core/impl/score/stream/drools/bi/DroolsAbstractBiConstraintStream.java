@@ -229,7 +229,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     protected abstract DroolsAbstractConstraintStream<Solution_> getParent();
 
-    public abstract DroolsBiCondition<A, B> getCondition();
+    public abstract DroolsBiCondition<A, B, ?> getCondition();
 
     @Override
     public boolean isGroupByAllowed() {

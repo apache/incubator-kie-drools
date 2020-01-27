@@ -53,6 +53,8 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 
@@ -60,13 +62,14 @@ import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 
-public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleStructure<A>> {
+public final class DroolsUniCondition<A, PatternVar>
+        extends DroolsCondition<PatternVar, DroolsUniRuleStructure<A, PatternVar>> {
 
     public DroolsUniCondition(Class<A> aVariableType, LongSupplier variableIdSupplier) {
         this(new DroolsUniRuleStructure<>(aVariableType, variableIdSupplier));
     }
 
-    public DroolsUniCondition(DroolsUniRuleStructure<A> ruleStructure) {
+    public DroolsUniCondition(DroolsUniRuleStructure<A, PatternVar> ruleStructure) {
         super(ruleStructure);
     }
 
@@ -87,32 +90,33 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         }
     }
 
-    public DroolsUniCondition<A> andFilter(Predicate<A> predicate) {
-        Predicate1<Object> filter = a -> predicate.test((A) a);
-        AlphaIndex<Object, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,
+    public DroolsUniCondition<A, PatternVar> andFilter(Predicate<A> predicate) {
+        Predicate1<PatternVar> filter = a -> predicate.test((A) a);
+        AlphaIndex<PatternVar, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,
                 a -> predicate.test((A) a), true);
-        UnaryOperator<PatternDSL.PatternDef<Object>> patternWithFilter =
+        UnaryOperator<PatternDef<PatternVar>> patternWithFilter =
                 p -> p.expr("Filter using " + predicate, filter, index);
-        DroolsUniRuleStructure<A> newStructure = ruleStructure.amend(patternWithFilter);
+        DroolsUniRuleStructure<A, PatternVar> newStructure = ruleStructure.amend(patternWithFilter);
         return new DroolsUniCondition<>(newStructure);
     }
 
-    public <NewA, __> DroolsUniCondition<NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
+    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
+            UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
         return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
     }
 
-    public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
+    public <NewA> DroolsUniCondition<NewA, NewA> andGroup(Function<A, NewA> groupKeyMapping) {
         return group((pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a)));
     }
 
-    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupWithCollect(
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ?, NewB> collector) {
         return groupWithCollect(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector,
                 getRuleStructure().getA()));
     }
 
-    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(Function<A, NewA> groupKeyAMapping,
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupBi(Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
         return groupBi((pattern, tuple) -> pattern.bind(tuple, a -> {
             final NewA newA = groupKeyAMapping.apply((A) a);
@@ -121,24 +125,25 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         }));
     }
 
-    public <NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+    public <NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> andGroupBiWithCollect(
             Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ?, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsUniToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collector, getRuleStructure().getA()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD> andGroupBiWithCollectBi(
-            Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+    andGroupBiWithCollectBi(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsUniToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA()));
     }
 
-    public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
+    public <B, BPatternVar> DroolsBiCondition<A, B, BPatternVar> andJoin(DroolsUniCondition<B, BPatternVar> bCondition,
+            AbstractBiJoiner<A, B> biJoiner) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
-        Function<PatternDSL.PatternDef<Object>, PatternDSL.PatternDef<Object>> aJoiner = UnaryOperator.identity();
+        Function<PatternDef<PatternVar>, PatternDef<PatternVar>> aJoiner = UnaryOperator.identity();
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
@@ -148,33 +153,42 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             aJoiner = aJoiner.andThen(p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
             joinVars[currentMappingIndex] = joinVar;
         }
-        DroolsUniRuleStructure<A> newARuleStructure = ruleStructure.amend(aJoiner::apply);
+        DroolsUniRuleStructure<A, PatternVar> newARuleStructure = ruleStructure.amend(aJoiner::apply);
         // We rebuild the B pattern, joining with the new A pattern using its freshly bound join variables.
-        Function<PatternDSL.PatternDef<Object>, PatternDSL.PatternDef<Object>> bJoiner = UnaryOperator.identity();
+        Function<PatternDef<BPatternVar>, PatternDef<BPatternVar>> bJoiner = UnaryOperator.identity();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
             int currentMappingIndex = mappingIndex;
             JoinerType joinerType = joinerTypes[currentMappingIndex];
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
             Function<B, Object> rightMapping = biJoiner.getRightMapping(currentMappingIndex);
-            Function1<Object, Object> rightExtractor = b -> rightMapping.apply((B) b);
-            Predicate2<Object, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
+            Function1<BPatternVar, Object> rightExtractor = b -> rightMapping.apply((B) b);
+            Predicate2<BPatternVar, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
                 return joinerType.matches(a, rightExtractor.apply(b));
             };
             bJoiner = bJoiner.andThen(p -> {
-                        BetaIndex<Object, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                        BetaIndex<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
                                 currentMappingIndex, rightExtractor, leftMapping::apply);
                         return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
                                 joinVars[currentMappingIndex], predicate, index);
                     });
         }
-        DroolsUniRuleStructure<B> newBRuleStructure = bCondition.ruleStructure.amend(bJoiner::apply);
+        DroolsUniRuleStructure<B, BPatternVar> newBRuleStructure = bCondition.ruleStructure.amend(bJoiner::apply);
         // And finally we return the new condition that is based on the new A and B patterns.
         return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }
 
-    public <B> DroolsUniCondition<A> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+    public <B> DroolsUniCondition<A, PatternVar> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+        return andIfExistsOrNot(true, otherClass, biJoiners);
+    }
+
+    public <B> DroolsUniCondition<A, PatternVar> andIfNotExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+        return andIfExistsOrNot(false, otherClass, biJoiners);
+    }
+
+    private <B> DroolsUniCondition<A, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<B> otherClass,
+            BiJoiner<A, B>... biJoiners) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractBiJoiner<A, B> finalJoiner = null;
@@ -204,19 +218,19 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         finalFilter.and(biJoiner.getFilter());
             }
         }
-        return applyJoiners(otherClass, finalJoiner, finalFilter);
+        return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
     }
 
-    private <B> DroolsUniCondition<A> applyJoiners(Class<B> otherClass, AbstractBiJoiner<A, B> biJoiner,
-            BiPredicate<A, B> biPredicate) {
+    private <B> DroolsUniCondition<A, PatternVar> applyJoiners(Class<B> otherClass, AbstractBiJoiner<A, B> biJoiner,
+            BiPredicate<A, B> biPredicate, boolean shouldExist) {
         Declaration<B> toExist = PatternDSL.declarationOf(otherClass);
         PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (biJoiner == null) {
-            return applyFilters(ruleStructure, existencePattern, biPredicate);
+            return applyFilters(ruleStructure, existencePattern, biPredicate, shouldExist);
         }
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
-        Function<PatternDSL.PatternDef<Object>, PatternDSL.PatternDef<Object>> aJoiner = UnaryOperator.identity();
+        Function<PatternDef<PatternVar>, PatternDef<PatternVar>> aJoiner = UnaryOperator.identity();
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
@@ -226,7 +240,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             aJoiner = aJoiner.andThen(p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
             joinVars[currentMappingIndex] = joinVar;
         }
-        DroolsUniRuleStructure<A> newARuleStructure = ruleStructure.amend(aJoiner::apply);
+        DroolsUniRuleStructure<A, PatternVar> newARuleStructure = ruleStructure.amend(aJoiner::apply);
         // We create the B pattern, joining with the new A pattern using its freshly bound join variables.
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
@@ -243,16 +257,17 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         joinVars[currentMappingIndex], predicate, index);
         }
         // And finally we add the filter to the B pattern
-        return applyFilters(newARuleStructure, existencePattern, biPredicate);
+        return applyFilters(newARuleStructure, existencePattern, biPredicate, shouldExist);
     }
 
-    private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> targetRuleStructure,
-            PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
+    private <B> DroolsUniCondition<A, PatternVar> applyFilters(
+            DroolsUniRuleStructure<A, PatternVar> targetRuleStructure, PatternDef<B> existencePattern,
+            BiPredicate<A, B> biPredicate, boolean shouldExist) {
         PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
                 existencePattern :
                 existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                         (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(targetRuleStructure.exists(possiblyFilteredexistencePattern));
+        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredexistencePattern, shouldExist));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

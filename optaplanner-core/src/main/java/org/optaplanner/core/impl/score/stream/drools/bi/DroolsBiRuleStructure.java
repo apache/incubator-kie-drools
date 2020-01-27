@@ -27,17 +27,17 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
+public class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
     private final Variable<B> b;
-    private final DroolsPatternBuilder<?> targetPattern;
+    private final DroolsPatternBuilder<PatternVar> targetPattern;
     private final List<ViewItemBuilder<?>> shelved;
     private final List<ViewItemBuilder<?>> prerequisites;
     private final List<ViewItemBuilder<?>> dependents;
 
-    public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure, DroolsUniRuleStructure<B> bRuleStructure,
-            LongSupplier variableIdSupplier) {
+    public <APatternVar> DroolsBiRuleStructure(DroolsUniRuleStructure<A, APatternVar> aRuleStructure,
+            DroolsUniRuleStructure<B, PatternVar> bRuleStructure, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
@@ -53,9 +53,10 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
         this.dependents = Collections.unmodifiableList(bRuleStructure.getDependents());
     }
 
-    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
-            List<ViewItemBuilder<?>> shelved, List<ViewItemBuilder<?>> prerequisites,
-            List<ViewItemBuilder<?>> dependents, LongSupplier variableIdSupplier) {
+    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable,
+            DroolsPatternBuilder<PatternVar> targetPattern, List<ViewItemBuilder<?>> shelved,
+            List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
+            LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
@@ -84,8 +85,8 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
-        return (DroolsPatternBuilder<Object>) targetPattern;
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return targetPattern;
     }
 
     @Override

@@ -29,15 +29,15 @@ import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
-public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
+public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
-    private final DroolsPatternBuilder<?> aPattern;
+    private final DroolsPatternBuilder<PatternVar> aPattern;
     private final List<ViewItemBuilder<?>> shelved;
     private final List<ViewItemBuilder<?>> prerequisites;
     private final List<ViewItemBuilder<?>> dependents;
 
-    public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
+    public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<PatternVar> aPattern,
             List<ViewItemBuilder<?>> shelved, List<ViewItemBuilder<?>> prerequisites,
             List<ViewItemBuilder<?>> dependents, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
@@ -51,7 +51,7 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
         this.a = (Variable<A>) createVariable(aClass,"base");
-        this.aPattern = new DroolsPatternBuilder<>(a);
+        this.aPattern = new DroolsPatternBuilder<>((Variable<PatternVar>) a);
         this.shelved = Collections.emptyList();
         this.prerequisites = Collections.emptyList();
         this.dependents = Collections.emptyList();
@@ -72,8 +72,8 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
-        return (DroolsPatternBuilder<Object>) aPattern;
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return aPattern;
     }
 
     @Override
@@ -81,13 +81,16 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
         return dependents;
     }
 
-    public <B> DroolsUniRuleStructure<A> exists(PatternDef<B> existencePattern) {
+    public <B> DroolsUniRuleStructure<A, PatternVar> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
         ExprViewItem item = PatternDSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = PatternDSL.not(item);
+        }
         return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
                 getVariableIdSupplier());
     }
 
-    public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDef<Object>> expander) {
+    public DroolsUniRuleStructure<A, PatternVar> amend(UnaryOperator<PatternDef<PatternVar>> expander) {
         return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
                 dependents, getVariableIdSupplier());
     }

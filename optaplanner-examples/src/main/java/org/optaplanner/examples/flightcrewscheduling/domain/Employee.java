@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,8 @@ public class Employee extends AbstractPersistable {
     }
 
     public long countInvalidConnections() {
+        // TODO Cache this to improve example performance.
+        // Especially useful for Constraint Streams, by which this is called multiple times per Employee.
         long count = 0L;
         FlightAssignment previousAssignment = null;
         for (FlightAssignment assignment : flightAssignmentSet) {

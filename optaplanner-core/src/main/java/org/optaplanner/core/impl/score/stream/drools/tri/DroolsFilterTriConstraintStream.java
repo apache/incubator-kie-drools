@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final DroolsTriCondition<A, B, C> condition;
+    private final DroolsTriCondition<A, B, C, ?> condition;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
@@ -35,7 +35,7 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public DroolsTriCondition<A, B, C> getCondition() {
+    public DroolsTriCondition<A, B, C, ?> getCondition() {
         return condition;
     }
 

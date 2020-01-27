@@ -28,12 +28,12 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
+public class DroolsTriRuleStructure<A, B, C, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
     private final Variable<B> b;
     private final Variable<C> c;
-    private final DroolsPatternBuilder<?> primaryPattern;
+    private final DroolsPatternBuilder<PatternVar> primaryPattern;
     private final List<ViewItemBuilder<?>> shelved;
     private final List<ViewItemBuilder<?>> prerequisites;
     private final List<ViewItemBuilder<?>> dependents;
@@ -45,8 +45,8 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
      * @param cRuleStructure
      * @param variableIdSupplier
      */
-    public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
-            DroolsUniRuleStructure<C> cRuleStructure, LongSupplier variableIdSupplier) {
+    public <AbPatternVar> DroolsTriRuleStructure(DroolsBiRuleStructure<A, B, AbPatternVar> abRuleStructure,
+            DroolsUniRuleStructure<C, PatternVar> cRuleStructure, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = abRuleStructure.getA();
         this.b = abRuleStructure.getB();
@@ -64,7 +64,7 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
-            DroolsPatternBuilder<?> primaryPattern, List<ViewItemBuilder<?>> shelved,
+            DroolsPatternBuilder<PatternVar> primaryPattern, List<ViewItemBuilder<?>> shelved,
             List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
             LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
@@ -90,8 +90,8 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
-        return (DroolsPatternBuilder<Object>) primaryPattern;
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return primaryPattern;
     }
 
     @Override

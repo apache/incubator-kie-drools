@@ -35,7 +35,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final DroolsAbstractConstraintStream<Solution_> parent;
-    private final DroolsBiCondition<NewA, NewB> condition;
+    private final DroolsBiCondition<NewA, NewB, ?> condition;
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
@@ -102,7 +102,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
     }
 
     @Override
-    public DroolsBiCondition<NewA, NewB> getCondition() {
+    public DroolsBiCondition<NewA, NewB, ?> getCondition() {
         return condition;
     }
 

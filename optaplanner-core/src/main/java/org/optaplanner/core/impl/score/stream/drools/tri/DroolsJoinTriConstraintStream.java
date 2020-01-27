@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, C> rightParentStream;
-    private final DroolsTriCondition<A, B, C> condition;
+    private final DroolsTriCondition<A, B, C, ?> condition;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
@@ -44,7 +44,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public DroolsTriCondition<A, B, C> getCondition() {
+    public DroolsTriCondition<A, B, C, ?> getCondition() {
         return condition;
     }
 

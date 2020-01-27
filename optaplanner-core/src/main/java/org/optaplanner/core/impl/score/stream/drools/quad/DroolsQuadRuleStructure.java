@@ -28,13 +28,13 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
+public class DroolsQuadRuleStructure<A, B, C, D, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
     private final Variable<B> b;
     private final Variable<C> c;
     private final Variable<D> d;
-    private final DroolsPatternBuilder<?> primaryPattern;
+    private final DroolsPatternBuilder<PatternVar> primaryPattern;
     private final List<ViewItemBuilder<?>> shelved;
     private final List<ViewItemBuilder<?>> prerequisites;
     private final List<ViewItemBuilder<?>> dependents;
@@ -46,8 +46,8 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
      * @param dRuleStructure
      * @param variableIdSupplier
      */
-    public DroolsQuadRuleStructure(DroolsTriRuleStructure<A, B, C> abcRuleStructure,
-            DroolsUniRuleStructure<D> dRuleStructure, LongSupplier variableIdSupplier) {
+    public <AbcPatternVar> DroolsQuadRuleStructure(DroolsTriRuleStructure<A, B, C, AbcPatternVar> abcRuleStructure,
+            DroolsUniRuleStructure<D, PatternVar> dRuleStructure, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = abcRuleStructure.getA();
         this.b = abcRuleStructure.getB();
@@ -66,7 +66,7 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
     }
 
     public DroolsQuadRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
-            Variable<D> dVariable, DroolsPatternBuilder<?> primaryPattern, List<ViewItemBuilder<?>> shelved,
+            Variable<D> dVariable, DroolsPatternBuilder<PatternVar> primaryPattern, List<ViewItemBuilder<?>> shelved,
             List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
             LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
@@ -97,8 +97,8 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPatternBuilder() {
-        return (DroolsPatternBuilder<Object>) primaryPattern;
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return primaryPattern;
     }
 
     @Override

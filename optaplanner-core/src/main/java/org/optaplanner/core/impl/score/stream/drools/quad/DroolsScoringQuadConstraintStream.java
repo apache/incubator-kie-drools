@@ -84,7 +84,7 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsQuadCondition<A, B, C, D> condition =
+        DroolsQuadCondition<A, B, C, D, ?> condition =
                 ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
@@ -100,7 +100,7 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> getCondition() {
+    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own QuadCondition.");
     }
 

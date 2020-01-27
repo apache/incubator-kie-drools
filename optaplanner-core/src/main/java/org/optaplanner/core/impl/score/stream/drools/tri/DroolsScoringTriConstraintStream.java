@@ -84,7 +84,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent =
                 (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
-        DroolsTriCondition<A, B, C> condition = actualParent.getCondition();
+        DroolsTriCondition<A, B, C, ?> condition = actualParent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -99,7 +99,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public DroolsTriCondition<A, B, C> getCondition() {
+    public DroolsTriCondition<A, B, C, ?> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own TriCondition.");
     }
 
