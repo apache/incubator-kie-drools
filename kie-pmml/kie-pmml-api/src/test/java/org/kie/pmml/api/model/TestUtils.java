@@ -17,6 +17,7 @@ package org.kie.pmml.api.model;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,14 @@ public class TestUtils {
             } else {
                 assertFalse(toEvaluate.get());
             }
+        }
+    }
+
+    public static void commonEvaluate(Optional<String> toEvaluate, boolean expectedNull, String expectedValue) {
+        if (expectedNull) {
+            assertFalse(toEvaluate.isPresent());
+        } else {
+            assertEquals(expectedValue, toEvaluate.get());
         }
     }
 

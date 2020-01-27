@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
 
 import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate;
 
@@ -31,14 +33,40 @@ public class KiePMMLNode implements Serializable {
     private List<KiePMMLPredicate> kiePMMLPredicates;
     private List<KiePMMLNode> kiePMMLNodes;
 
-    public boolean evaluate(Map<String, Object> values) {
-        boolean toReturn = true;
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public Optional<String> evaluate(Map<String, Object> values) {
+        BinaryOperator<Optional<Boolean>> binaryOperator = getBooleanOperator();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
-//                toReturn = toReturn && kiePMMLPredicate.evaluate(Collections.singletonMap(entry.getKey(), entry.getValue()));
+            if (kiePMMLPredicates != null) {
+                Optional<Boolean> evaluation = Optional.empty();
+                for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
+                    evaluation = binaryOperator.apply(Optional.empty(), kiePMMLPredicate.evaluate(Collections.singletonMap(entry.getKey(), entry.getValue())));
+                }
+                // If there is a matching predicates, ev
+                if (evaluation.isPresent() || evaluation.get()) {
+                    if (kiePMMLNodes != null) {
+                        for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
+                            Optional<String> nodeEvaluation = kiePMMLNode.evaluate(values);
+                            if (nodeEvaluation.isPresent()) {
+                                return nodeEvaluation;
+                            }
+                        }
+                    }
+                }
+            }
+            if (kiePMMLNodes != null) {
+                for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
+                    Optional<String> evaluation = kiePMMLNode.evaluate(values);
+                    if (evaluation.isPresent()) {
+                        return evaluation;
+                    }
+                }
             }
         }
-        return toReturn;
+       return Optional.empty();
     }
 
     public String getId() {
@@ -55,6 +83,15 @@ public class KiePMMLNode implements Serializable {
 
     public List<KiePMMLNode> getKiePMMLNodes() {
         return kiePMMLNodes;
+    }
+
+    private BinaryOperator<Optional<Boolean>> getBooleanOperator() {
+        return (aBoolean, aBoolean2) -> {
+            if (!aBoolean.isPresent()) {
+                return aBoolean2;
+            } else
+                return aBoolean2.map(value -> Optional.of(aBoolean.get() && aBoolean2.get())).orElse(aBoolean);
+        };
     }
 
     private KiePMMLNode() {

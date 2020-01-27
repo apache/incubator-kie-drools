@@ -32,12 +32,6 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     private String name;
     private Object value;
 
-    private KiePMMLSimplePredicate(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-        super(extensions);
-        this.name = name;
-        this.operator = operator;
-    }
-
     public static Builder builder(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
         return new Builder(name, extensions, operator);
     }
@@ -146,6 +140,12 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
                 ", extensions=" + extensions +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    private KiePMMLSimplePredicate(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
+        super(extensions);
+        this.name = name;
+        this.operator = operator;
     }
 
     public static class Builder {

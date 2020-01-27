@@ -67,4 +67,26 @@ public class FunctionUtils {
         }};
     }
 
+    /**
+     *
+     * @param k1
+     * @param v1
+     * @param k2
+     * @param v2
+     * @param k3
+     * @param v3
+     * @param k4
+     * @param v4
+     *
+     * @return
+     */
+    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2,  K k3, V v3,  K k4, V v4) {
+        return new HashMap<K, V>() {{
+            put(k1, v1);
+            put(k2, v2);
+            put(k3, v3);
+            put(k4, v4);
+        }};
+    }
+
 }
