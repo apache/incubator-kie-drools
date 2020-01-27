@@ -26,11 +26,11 @@ import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieContainerFluent;
@@ -76,11 +76,11 @@ public class RuleStatefulScenarioExecutableBuilderTest {
     @Test
     public void testPseudoClock() {
         KieContainer kieContainerMock = mock(KieContainer.class);
-        when(kieContainerMock.getKieSessionModel(anyString())).thenReturn(null);
+        when(kieContainerMock.getKieSessionConfiguration(anyString())).thenReturn(null);
         assertThatThrownBy(() -> RuleStatefulScenarioExecutableBuilder.forcePseudoClock.apply(null, kieContainerMock))
                 .isInstanceOf(ScenarioException.class);
 
-        when(kieContainerMock.getKieSessionModel(anyString())).thenReturn(mock(KieSessionModel.class));
+        when(kieContainerMock.getKieSessionConfiguration(anyString())).thenReturn(mock(KieSessionConfiguration.class));
         RuleStatefulScenarioExecutableBuilder.forcePseudoClock.apply(null, kieContainerMock);
     }
 

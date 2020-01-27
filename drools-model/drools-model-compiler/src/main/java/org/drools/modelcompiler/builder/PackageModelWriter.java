@@ -67,7 +67,7 @@ public class PackageModelWriter {
         private final String name, source;
 
         DomainClassesMetadata(PackageModel packageModel) {
-            this(packageModel.getName() + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + ".java",
+            this(packageModel.getPathName() + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + ".java",
                     packageModel.getDomainClassesMetadataSource());
         }
 

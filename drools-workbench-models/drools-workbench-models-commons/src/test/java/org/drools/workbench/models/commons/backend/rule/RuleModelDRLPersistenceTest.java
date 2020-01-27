@@ -5057,4 +5057,51 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
         checkMarshalling(expected, model);
     }
+
+    @Test
+    public void testMatchesLegacyToNewVersion() {
+
+        final String factMvel = "Fact";
+        final String symbol = "symbol";
+
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                factMvel + "(" + symbol + " != null && matches \"P.*\")\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m = ruleModelPersistence.unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+
+        assertEquals(1, m.lhs.length);
+        assertTrue(m.lhs[0].getClass().isAssignableFrom(FactPattern.class));
+
+        final FactPattern fact = (FactPattern) m.lhs[0];
+
+        assertEquals(1, fact.getNumberOfConstraints());
+        assertTrue(fact.getConstraint(0).getClass().isAssignableFrom(CompositeFieldConstraint.class));
+
+        final CompositeFieldConstraint composite = (CompositeFieldConstraint) fact.getConstraint(0);
+
+        assertEquals(CompositeFieldConstraint.COMPOSITE_TYPE_AND, composite.getCompositeJunctionType());
+
+        assertTrue(composite.getConstraint(0).getClass().isAssignableFrom(SingleFieldConstraint.class));
+
+        final SingleFieldConstraint left = (SingleFieldConstraint) composite.getConstraint(0);
+        final SingleFieldConstraint right = (SingleFieldConstraint) composite.getConstraint(1);
+
+
+        assertEquals(factMvel, left.getFactType());
+        assertEquals(symbol, left.getFieldName());
+        assertEquals("!= null", left.getOperator());
+        assertEquals(null, left.getValue());
+
+        assertEquals(factMvel, right.getFactType());
+        assertEquals(symbol, right.getFieldName());
+        assertEquals("matches", right.getOperator());
+        assertEquals("P.*", right.getValue());
+    }
 }
