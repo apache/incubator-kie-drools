@@ -32,21 +32,19 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
+import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
+import org.kie.pmml.runtime.core.PMMLContextImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.PMMLKieBaseUtil.createKieBaseWithPMML;
-import static org.kie.pmml.runtime.regression.executor.PMMLIsRegresssionModelExecutor.evaluateRegression;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.AGE_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK_COEFF;
@@ -69,21 +67,13 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( ResourceFactory.newFileResource( getFile("LinearRegressionSample.xml") ).setResourceType( ResourceType.PMML ) );
-        // FIXME following this call:
-        // org.kie.pmml.assembler.service.PMMLAssemblerService.addModels(KnowledgeBuilderImpl, List<KiePMMLModel>) ->
-        // org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr) ->
-        // kBase is null
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         kieBuilder.getKieModule().getReleaseId();
         Results res = kieBuilder.getResults();
         assertNotNull(res);
         assertTrue(res.getMessages(Message.Level.ERROR).isEmpty());
-        // FIXME:
-        // This kBase has no knowledge of the InternalKnowledgePackage created inside org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr)
         KieBase kbase = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
         KieSession session = kbase.newKieSession();
-        // FIXME:
-        // This pmmlRuntime in turns has no knowledge of the InternalKnowledgePackage created inside org.drools.compiler.builder.impl.KnowledgeBuilderImpl.createPackageRegistry(PackageDescr)
         pmmlRuntime = session.getKieRuntime(PMMLRuntime.class);
         assertNotNull(pmmlRuntime);
     }
@@ -109,7 +99,8 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
-        PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetFieldName(), kiePMMLRegressionModel.getRegressionTables().get(0), pmmlRequestData);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PMML4Result retrieved = pmmlRuntime.evaluate(model.get(), pmmlContext);
         assertNotNull(retrieved);
         System.out.println(retrieved);
         assertNotNull(retrieved.getResultVariables());

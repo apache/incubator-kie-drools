@@ -16,10 +16,12 @@
 package org.kie.pmml.api.model.regression.predictors;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor {
 
     private static final long serialVersionUID = -3937947927611073965L;
+    private static final Logger logger = Logger.getLogger(KiePMMLCategoricalPredictor.class.getName());
     private Object value;
 
     public KiePMMLCategoricalPredictor(String name, Object value, Number coefficient) {
@@ -33,7 +35,9 @@ public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor
 
     @Override
     public double evaluate(Object input) {
-        return Objects.equals(value, input) ? coefficient.doubleValue() : 0.0;
+        double toReturn = Objects.equals(value, input) ? coefficient.doubleValue() : 0.0;
+        logger.info(this.toString() +  " evaluate " + input + " return " + toReturn);
+        return toReturn;
     }
 
     @Override

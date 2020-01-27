@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.core.executor;
+package org.kie.pmml.runtime.core.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,8 @@ import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
+import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;
+import org.kie.pmml.runtime.core.executor.PMMLModelExecutorFinderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +40,11 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class );
 
     private final KieBase knowledgeBase;
+    private final PMMLModelExecutorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(KieBase knowledgeBase) {
+    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
+        this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
 
     @Override
@@ -81,7 +85,9 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      */
     private Optional<PMMLModelExecutor> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
         logger.info("getFromPMMLModelType " + pmmlMODEL);
-        // TODO {gcardosi}
-        return Optional.empty();
+        return pmmlModelExecutorFinder.getImplementations(false)
+                .stream()
+                .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
+                .findFirst();
     }
 }

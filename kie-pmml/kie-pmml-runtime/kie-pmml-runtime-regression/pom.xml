@@ -27,6 +27,11 @@
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-core</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>

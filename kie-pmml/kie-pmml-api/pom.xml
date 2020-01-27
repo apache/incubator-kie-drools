@@ -11,10 +11,15 @@
 
   <artifactId>kie-pmml-api</artifactId>
 
-  <name>KIE :: PMML :: Library :: API </name>
+  <name>KIE :: PMML :: API </name>
   <description>API for PMML module</description>
 
   <dependencies>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
       <groupId>org.assertj</groupId>

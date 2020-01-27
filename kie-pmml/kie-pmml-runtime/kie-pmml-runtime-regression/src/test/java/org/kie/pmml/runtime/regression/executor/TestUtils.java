@@ -62,7 +62,7 @@ public class TestUtils {
     public static final double CARPARK_COEFF = 41.1;
     public static final double STREET_COEFF = 325.03;
     public static final double AGE_COEFF = 7.1;
-    public static final double SALARY_COEFF = 7.1;
+    public static final double SALARY_COEFF = 0.01;
 
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel() {

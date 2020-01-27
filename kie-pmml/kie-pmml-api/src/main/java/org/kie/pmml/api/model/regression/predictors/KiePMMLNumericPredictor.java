@@ -18,10 +18,13 @@ package org.kie.pmml.api.model.regression.predictors;
 import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
 
     private static final long serialVersionUID = -1694608925806912507L;
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLNumericPredictor.class.getName());
     private int exponent;
 
     public KiePMMLNumericPredictor(String name, int exponent, Number coefficient) {
@@ -39,7 +42,9 @@ public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
             throw new KiePMMLException("Expected a Number, received a " + input.getClass().getName());
         }
         double inputDouble = ((Number)input).doubleValue();
-        return exponent == 1 ? inputDouble * coefficient.doubleValue() : Math.pow(inputDouble, exponent) * coefficient.doubleValue();
+        double toReturn = exponent == 1 ? inputDouble * coefficient.doubleValue() : Math.pow(inputDouble, exponent) * coefficient.doubleValue();
+        logger.info(this.toString() +  " evaluate " + input + " return " + toReturn);
+        return toReturn;
     }
 
     @Override

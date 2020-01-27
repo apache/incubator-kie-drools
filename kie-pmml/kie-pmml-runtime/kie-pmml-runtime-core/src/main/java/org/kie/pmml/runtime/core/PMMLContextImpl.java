@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.api.implementations;
+package org.kie.pmml.runtime.core;
 
-import java.util.List;
+import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.runtime.api.executor.PMMLContext;
 
-/**
- * Actual implementation is required to retrieve a
- * <code>List&lt;ModelImplementationProvider&gt;</code> out from the classes found in the classpath
- */
-public interface ModelImplementationProviderFinder {
+public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
-    /**
-     * Retrieve all the <code>ModelImplementationProvider</code> implementations in the classpath
-     * @param refresh pass <code>true</code> to reload classes from classpath; <code>false</code> to use cached ones
-     * @return
-     */
-    List<ModelImplementationProvider> getImplementations(boolean refresh);
+    private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
+
+    public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
+        super();
+        set(PMML_REQUEST_DATA, pmmlRequestData);
+    }
+
+    @Override
+    public PMMLRequestData getRequestData() {
+        return (PMMLRequestData) get(PMML_REQUEST_DATA);
+    }
 
 }

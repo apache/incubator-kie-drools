@@ -11,7 +11,7 @@
 
   <artifactId>kie-pmml-library-compiler</artifactId>
 
-  <name>KIE :: PMML :: Library :: Compiler </name>
+  <name>KIE :: PMML :: Library :: Compiler</name>
   <description>PMML Compiler</description>
 
 
