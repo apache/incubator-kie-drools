@@ -16,8 +16,12 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.util.Optional;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 
@@ -54,13 +58,32 @@ public class ExpressionEvaluatorFactory {
             return getOrCreateDMNExpressionEvaluator();
         }
 
-        Object rawValue = factMappingValue.getRawValue();
+        String rawValue = (String) factMappingValue.getRawValue();
 
-        if (rawValue instanceof String && ((String) rawValue).trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+        if (isAnMVELExpression(rawValue)) {
             return getOrCreateMVELExpressionEvaluator();
         } else {
             return getOrCreateBaseExpressionEvaluator();
         }
+    }
+
+    /**
+     * A rawValue is an MVEL expression if:
+     * - NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#')
+     * - COLLECTION CASE: It's a JSON String node, which is used only when an expression is set
+     *   (in other cases it's a JSON Object (Map) or a JSON Array (List)) and it's value starts with MVEL_ESCAPE_SYMBOL ('#')
+     * @param rawValue
+     * @return
+     */
+    protected boolean isAnMVELExpression(String rawValue) {
+        /* NOT COLLECTIONS CASE */
+        if (rawValue.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            return true;
+        }
+        /* COLLECTION CASE */
+        Optional<JsonNode> optionalNode = JsonUtils.convertFromStringToJSONNode(rawValue);
+        return optionalNode.filter(
+                jsonNode -> jsonNode.isTextual() && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)).isPresent();
     }
 
     private ExpressionEvaluator getOrCreateBaseExpressionEvaluator() {

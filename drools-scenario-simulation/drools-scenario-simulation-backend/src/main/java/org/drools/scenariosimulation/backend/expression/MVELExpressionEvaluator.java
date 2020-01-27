@@ -19,14 +19,18 @@ package org.drools.scenariosimulation.backend.expression;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.core.util.MVELSafeHelper;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MALFORMED_MVEL_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.compareValues;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
@@ -84,10 +88,28 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return evaluator.executeExpression(compiledExpression, params);
     }
 
+    /**
+     * The clean works in the following ways:
+     * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#');
+     * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case, removing
+     *                    the MVEL_ESCAPE_SYMBOL ('#');
+     * In both cases, the given String must start with MVEL_ESCAPE_SYMBOL.
+     * All other cases are wrong: a <code>IllegalArgumentException</code> is thrown.
+     * @param rawExpression
+     * @return
+     */
     protected String cleanExpression(String rawExpression) {
-        if (rawExpression == null || !rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
-            throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
+        if (rawExpression != null && rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
         }
-        return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+        Optional<JsonNode> optionalJSONNode = JsonUtils.convertFromStringToJSONNode(rawExpression);
+        if (optionalJSONNode.isPresent()) {
+            JsonNode jsonNode = optionalJSONNode.get();
+            if (jsonNode.isTextual() && jsonNode.asText() != null && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+                String expression = jsonNode.asText();
+                return expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+            }
+        }
+        throw new IllegalArgumentException(MALFORMED_MVEL_EXPRESSION + "'" + rawExpression + "'");
     }
 }

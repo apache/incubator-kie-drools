@@ -19,8 +19,11 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -241,5 +244,18 @@ public class AbstractExpressionEvaluatorTest {
         assertTrue(expressionEvaluatorLocal.isEmptyText(new TextNode("")));
         assertFalse(expressionEvaluatorLocal.isEmptyText(new TextNode(VALUE)));
         assertTrue(expressionEvaluatorLocal.isEmptyText(new ObjectNode(factory)));
+    }
+
+    @Test
+    public void isStructuredInput() {
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(List.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(ArrayList.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedList.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(Map.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(HashMap.class.getCanonicalName()));
+        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedHashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(Set.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(Integer.class.getCanonicalName()));
+        assertFalse(expressionEvaluatorLocal.isStructuredInput(String.class.getCanonicalName()));
     }
 }
