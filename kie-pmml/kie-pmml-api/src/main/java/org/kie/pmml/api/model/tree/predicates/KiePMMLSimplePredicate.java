@@ -36,7 +36,8 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         return new Builder(name, extensions, operator);
     }
 
-    @Override
+    // TODO {gcardosi} re-implement with native drools rules
+    /*@Override
     public Optional<Boolean> evaluate(Map<String, Object> values) {
         final Map.Entry<String, Object> entry = values.entrySet().iterator().next();
         String inputName = entry.getKey();
@@ -90,7 +91,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
                 toReturn = true;
         }
         return Optional.of(toReturn);
-    }
+    }*/
 
     public String getName() {
         return name;

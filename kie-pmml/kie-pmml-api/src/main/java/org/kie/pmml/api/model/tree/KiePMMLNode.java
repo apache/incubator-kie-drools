@@ -16,9 +16,7 @@
 package org.kie.pmml.api.model.tree;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 
@@ -30,14 +28,15 @@ public class KiePMMLNode implements Serializable {
 
     private String id;
     private String score;
-    private List<KiePMMLPredicate> kiePMMLPredicates;
+    private KiePMMLPredicate kiePMMLPredicate;
     private List<KiePMMLNode> kiePMMLNodes;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public Optional<String> evaluate(Map<String, Object> values) {
+    // TODO {gcardosi} re-implement with native drools rules
+    /*public Optional<String> evaluate(Map<String, Object> values) {
         BinaryOperator<Optional<Boolean>> binaryOperator = getBooleanOperator();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             if (kiePMMLPredicates != null) {
@@ -67,7 +66,7 @@ public class KiePMMLNode implements Serializable {
             }
         }
        return Optional.empty();
-    }
+    }*/
 
     public String getId() {
         return id;
@@ -77,8 +76,8 @@ public class KiePMMLNode implements Serializable {
         return score;
     }
 
-    public List<KiePMMLPredicate> getKiePMMLPredicates() {
-        return kiePMMLPredicates;
+    public KiePMMLPredicate getKiePMMLPredicate() {
+        return kiePMMLPredicate;
     }
 
     public List<KiePMMLNode> getKiePMMLNodes() {
@@ -119,8 +118,8 @@ public class KiePMMLNode implements Serializable {
             return this;
         }
 
-        public Builder withKiePMMLPredicates(List<KiePMMLPredicate> kiePMMLPredicates) {
-            toBuild.kiePMMLPredicates = kiePMMLPredicates;
+        public Builder withKiePMMLPredicates(KiePMMLPredicate kiePMMLPredicate) {
+            toBuild.kiePMMLPredicate = kiePMMLPredicate;
             return this;
         }
 

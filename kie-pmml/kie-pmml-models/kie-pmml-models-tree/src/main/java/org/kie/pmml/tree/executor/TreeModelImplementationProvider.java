@@ -23,13 +23,12 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
+import org.kie.pmml.tree.factories.KiePMMLTreeModelFactory;
 
 import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
 
-//import org.kie.pmml.regression.factories.KiePMMLRegressionModelFactory;
-
 /**
- * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
+ * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
  */
 public class TreeModelImplementationProvider implements ModelImplementationProvider<TreeModel, KiePMMLTreeModel> {
 
@@ -44,7 +43,6 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     @Override
     public KiePMMLTreeModel getKiePMMLModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
         log.info("getKiePMMLModel " + dataDictionary + " " + model);
-        return null;
-//        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel( dataDictionary, model);
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
     }
 }

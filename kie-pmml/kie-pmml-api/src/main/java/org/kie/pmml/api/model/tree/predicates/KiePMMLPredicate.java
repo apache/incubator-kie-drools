@@ -21,8 +21,6 @@ import java.util.Optional;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.abstracts.KiePMMLExtensioned;
-import org.kie.pmml.api.model.abstracts.KiePMMLExtensionedNamed;
-import org.kie.pmml.api.model.tree.enums.OPERATOR;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
@@ -35,12 +33,12 @@ public abstract class KiePMMLPredicate extends KiePMMLExtensioned {
         super(extensions);
     }
 
+    // TODO {gcardosi} re-implement with native drools rules
     /**
      * Returns the evaluation of the given <code>values</code> if the current <code>KiePMMLPredicate</code> or one of its
      * child is referred to inside the given <b>values</b>, otherwise an <code>Optional.empty()</code>
-     *
      * @param values
      * @return
-     */
-    public abstract Optional<Boolean> evaluate(Map<String, Object> values);
+     *//*
+    public abstract Optional<Boolean> evaluate(Map<String, Object> values);*/
 }

@@ -46,7 +46,8 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         return new Builder(extensions, booleanOperator);
     }
 
-    @Override
+    // TODO {gcardosi} re-implement with native drools rules
+   /* @Override
     public Optional<Boolean> evaluate(Map<String, Object> values) {
         Optional<Boolean> toReturn = Optional.empty();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
@@ -55,7 +56,7 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
             }
         }
         return toReturn;
-    }
+    }*/
 
     public BOOLEAN_OPERATOR getBooleanOperator() {
         return booleanOperator;

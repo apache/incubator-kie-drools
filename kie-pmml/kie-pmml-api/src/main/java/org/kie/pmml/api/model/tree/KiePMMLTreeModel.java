@@ -28,12 +28,20 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     private static final long serialVersionUID = 3107205976845585067L;
 
+    private KiePMMLNode node;
+
     private final MINING_FUNCTION miningFunction;
     private String algorithmName;
+    private String targetFieldName;
+
 
     private KiePMMLTreeModel(String name, MINING_FUNCTION miningFunction) {
         super(name, PMML_MODEL_TYPE);
         this.miningFunction = miningFunction;
+    }
+
+    public KiePMMLNode getNode() {
+        return node;
     }
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
@@ -46,6 +54,10 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     public String getAlgorithmName() {
         return algorithmName;
+    }
+
+    public String getTargetFieldName() {
+        return targetFieldName;
     }
 
     @Override
@@ -70,6 +82,16 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
         public Builder withAlgorithmName(String algorithmName) {
             toBuild.algorithmName = algorithmName;
+            return this;
+        }
+
+        public Builder withNode(KiePMMLNode node) {
+            toBuild.node = node;
+            return this;
+        }
+
+        public Builder withTargetFieldName(String targetFieldName) {
+            toBuild.targetFieldName = targetFieldName;
             return this;
         }
     }

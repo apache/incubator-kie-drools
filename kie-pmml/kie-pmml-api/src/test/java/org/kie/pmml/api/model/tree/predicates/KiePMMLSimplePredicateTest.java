@@ -17,20 +17,15 @@
 package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.tree.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.api.model.TestUtils.commonEvaluate;
 
 public class KiePMMLSimplePredicateTest {
 
@@ -58,7 +53,8 @@ public class KiePMMLSimplePredicateTest {
         assertEquals(VALUE, retrieved.getValue());
     }
 
-    @Test
+    // TODO {gcardosi} re-implement with native drools rules
+    /*@Test
     public void evaluateByFieldName() {
         double doubleValue = 34.6;
         KiePMMLSimplePredicate retrieved = KiePMMLSimplePredicate.builder(NAME, EXTENSIONS, _OPERATOR)
@@ -145,6 +141,6 @@ public class KiePMMLSimplePredicateTest {
         commonEvaluate(retrieved.evaluate(Collections.singletonMap(NAME, doubleValue)), false, true);
         commonEvaluate(retrieved.evaluate(Collections.singletonMap(NAME, 34.7)), false, true);
         commonEvaluate(retrieved.evaluate(Collections.singletonMap(NAME, 34.5)), false, false);
-    }
+    }*/
 
 }

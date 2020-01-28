@@ -17,20 +17,15 @@
 package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.api.model.tree.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.kie.pmml.api.functionals.FunctionUtils.mapOf;
-import static org.kie.pmml.api.model.TestUtils.commonEvaluate;
 
 public class KiePMMLCompoundPredicateTest {
 
@@ -55,7 +50,8 @@ public class KiePMMLCompoundPredicateTest {
         assertEquals(PREDICATES, retrieved.getKiePMMLPredicates());
     }
 
-    @Test
+    // TODO {gcardosi} re-implement with native drools rules
+    /*@Test
     public void evaluateByName() {
         final KiePMMLSimplePredicate temperature = KiePMMLSimplePredicate.builder("TEMPERATURE", EXTENSIONS, OPERATOR.GREATER_THAN).withValue(36.9).build();
         KiePMMLCompoundPredicate retrieved = KiePMMLCompoundPredicate.builder(EXTENSIONS, BOOLEAN_OPERATOR.AND)
@@ -112,5 +108,5 @@ public class KiePMMLCompoundPredicateTest {
         commonEvaluate(retrieved.evaluate(mapOf("TEMPERATURE", 36.9, "HR" , 81)), false, true);
         commonEvaluate(retrieved.evaluate(mapOf("TEMPERATURE", 38, "HR" , 80)), false, true);
         commonEvaluate(retrieved.evaluate(mapOf("TEMPERATURE", 36.9, "HR" , 80)), false, false);
-    }
+    }*/
 }
