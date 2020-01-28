@@ -52,6 +52,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     private final String exprId;
     private String patternBinding;
+    private String accumulateBinding;
     private boolean isPatternBindingUnification = false;
 
     private String exprBinding;
@@ -169,7 +170,15 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.patternBinding = patternBinding;
     }
 
-    public SingleDrlxParseSuccess setExprBinding(String exprBinding) {
+    public String getAccumulateBinding() {
+        return accumulateBinding;
+    }
+
+    public void setAccumulateBinding( String accumulateBinding ) {
+        this.accumulateBinding = accumulateBinding;
+    }
+
+    public SingleDrlxParseSuccess setExprBinding( String exprBinding) {
         this.exprBinding = exprBinding;
         return this;
     }

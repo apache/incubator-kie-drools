@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +56,7 @@ import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.drools.modelcompiler.dsl.flow.D;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -1582,5 +1585,172 @@ public class FlowTest {
         ksession.insert( new StockTick( "ACME" ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testAcc() {
+        final org.drools.model.Global<java.util.List> var_result = D.globalOf(java.util.List.class,
+                "defaultpkg",
+                "result");
+        final org.drools.model.Variable<org.drools.modelcompiler.AccumulateTest.Interval> var_GENERATED_$pattern_Interval$1$ = D.declarationOf(org.drools.modelcompiler.AccumulateTest.Interval.class,
+                DomainClassesMetadataD1C56613297DE289A075652FE12C51F7.org_drools_modelcompiler_AccumulateTest_Interval_Metadata_INSTANCE,
+                "GENERATED_$pattern_Interval$1$");
+        final org.drools.model.Variable<java.time.LocalDateTime> var_$start = D.declarationOf(java.time.LocalDateTime.class,
+                DomainClassesMetadataD1C56613297DE289A075652FE12C51F7.java_time_LocalDateTime_Metadata_INSTANCE,
+                "$start");
+        final org.drools.model.Variable<java.time.LocalDateTime> var_$end = D.declarationOf(java.time.LocalDateTime.class,
+                DomainClassesMetadataD1C56613297DE289A075652FE12C51F7.java_time_LocalDateTime_Metadata_INSTANCE,
+                "$end");
+        final org.drools.model.Variable<Long> var_2F47AF97F50D92F05C2FD7C167AA97B1 = D.declarationOf(Long.class,
+                "2F47AF97F50D92F05C2FD7C167AA97B1");
+        final org.drools.model.Variable<java.lang.Long> var_$count = D.declarationOf(java.lang.Long.class,
+                DomainClassesMetadataD1C56613297DE289A075652FE12C51F7.java_lang_Long_Metadata_INSTANCE,
+                "$count");
+        org.drools.model.Rule rule = D.rule("Rule1").build(
+                D.accumulate(D.and(
+                        D.bind(var_2F47AF97F50D92F05C2FD7C167AA97B1).as(var_GENERATED_$pattern_Interval$1$,
+                                var_$start,
+                                var_$end,
+                                (_this, $start, $end) -> Duration.between($start,
+                                        $end)
+                                        .toMinutes()),
+                        D.bind(var_$start).as(var_GENERATED_$pattern_Interval$1$,
+                        (org.drools.modelcompiler.AccumulateTest.Interval _this) -> _this.getStart()).reactOn("start"),
+                        D.bind(var_$end).as(var_GENERATED_$pattern_Interval$1$,
+                                (org.drools.modelcompiler.AccumulateTest.Interval _this) -> _this.getEnd()).reactOn("end")
+                        ),
+                        D.accFunction(org.drools.core.base.accumulators.LongSumAccumulateFunction::new,
+                                var_2F47AF97F50D92F05C2FD7C167AA97B1).as(var_$count)),
+                D.on(var_result,
+                        var_$count).execute(LambdaConsequenceA6C63EF27486D79ED7DA90A614023D74.INSTANCE));
+
+        Model model = new ModelImpl().addRule(rule).addGlobal( var_result );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = kieBase.newKieSession();
+        ReteDumper.dumpRete( ksession );
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new AccumulateTest.Interval(
+                LocalDateTime.of(2020, 1, 22, 11, 43),
+                LocalDateTime.of(2020, 1, 22, 12, 43)
+        ));
+
+        ksession.fireAllRules();
+
+        assertEquals(60, result.iterator().next().longValue());
+    }
+
+    public enum LambdaConsequenceA6C63EF27486D79ED7DA90A614023D74 implements org.drools.model.functions.Block2<java.util.List, java.lang.Long> {
+
+        INSTANCE;
+
+        @Override()
+        public void execute(java.util.List result, java.lang.Long $count) throws Exception {
+            result.add($count);
+        }
+    }
+    public static class DomainClassesMetadataD1C56613297DE289A075652FE12C51F7 {
+
+        public static final org.drools.model.DomainClassMetadata java_lang_Long_Metadata_INSTANCE = new java_lang_Long_Metadata();
+        private static class java_lang_Long_Metadata implements org.drools.model.DomainClassMetadata {
+
+            @Override
+            public Class<?> getDomainClass() {
+                return java.lang.Long.class;
+            }
+
+            @Override
+            public int getPropertiesSize() {
+                return 0;
+            }
+
+            @Override
+            public int getPropertyIndex( String name ) {
+                switch(name) {
+                }
+                throw new RuntimeException("Unknown property '" + name + "' for class class class java.lang.Long");
+            }
+        }
+
+        public static final org.drools.model.DomainClassMetadata java_util_List_Metadata_INSTANCE = new java_util_List_Metadata();
+        private static class java_util_List_Metadata implements org.drools.model.DomainClassMetadata {
+
+            @Override
+            public Class<?> getDomainClass() {
+                return java.util.List.class;
+            }
+
+            @Override
+            public int getPropertiesSize() {
+                return 1;
+            }
+
+            @Override
+            public int getPropertyIndex( String name ) {
+                switch(name) {
+                    case "empty": return 0;
+                }
+                throw new RuntimeException("Unknown property '" + name + "' for class class interface java.util.List");
+            }
+        }
+
+        public static final org.drools.model.DomainClassMetadata org_drools_modelcompiler_AccumulateTest_Interval_Metadata_INSTANCE = new org_drools_modelcompiler_AccumulateTest_Interval_Metadata();
+        private static class org_drools_modelcompiler_AccumulateTest_Interval_Metadata implements org.drools.model.DomainClassMetadata {
+
+            @Override
+            public Class<?> getDomainClass() {
+                return org.drools.modelcompiler.AccumulateTest.Interval.class;
+            }
+
+            @Override
+            public int getPropertiesSize() {
+                return 2;
+            }
+
+            @Override
+            public int getPropertyIndex( String name ) {
+                switch(name) {
+                    case "end": return 0;
+                    case "start": return 1;
+                }
+                throw new RuntimeException("Unknown property '" + name + "' for class class class org.drools.modelcompiler.AccumulateTest$Interval");
+            }
+        }
+
+        public static final org.drools.model.DomainClassMetadata java_time_LocalDateTime_Metadata_INSTANCE = new java_time_LocalDateTime_Metadata();
+        private static class java_time_LocalDateTime_Metadata implements org.drools.model.DomainClassMetadata {
+
+            @Override
+            public Class<?> getDomainClass() {
+                return java.time.LocalDateTime.class;
+            }
+
+            @Override
+            public int getPropertiesSize() {
+                return 11;
+            }
+
+            @Override
+            public int getPropertyIndex( String name ) {
+                switch(name) {
+                    case "chronology": return 0;
+                    case "dayOfMonth": return 1;
+                    case "dayOfWeek": return 2;
+                    case "dayOfYear": return 3;
+                    case "hour": return 4;
+                    case "minute": return 5;
+                    case "month": return 6;
+                    case "monthValue": return 7;
+                    case "nano": return 8;
+                    case "second": return 9;
+                    case "year": return 10;
+                }
+                throw new RuntimeException("Unknown property '" + name + "' for class class class java.time.LocalDateTime");
+            }
+        }
+
     }
 }

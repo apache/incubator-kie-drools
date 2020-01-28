@@ -107,7 +107,7 @@ public abstract class AccumulateVisitor {
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
         accumulateDSL.addArgument(accumulateExprs);
 
-        context.pushExprPointer(accumulateExprs::addArgument);
+        pushAccumulateContext( accumulateExprs );
 
         try {
             Set<String> externalDeclrs = new HashSet<>( context.getAvailableBindings() );
@@ -135,6 +135,8 @@ public abstract class AccumulateVisitor {
             postVisit();
         }
     }
+
+    protected abstract void pushAccumulateContext( MethodCallExpr accumulateExprs );
 
     private void classicAccumulate(MethodCallExpr accumulateDSL) {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
@@ -242,9 +244,21 @@ public abstract class AccumulateVisitor {
     private void methodCallExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         final Expression parameterConverted = convertParameter(accumulateFunctionParameter);
         final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
-        final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
-        final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
+        String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
+
+        Optional<DeclarationSpec> decl = context.getDeclarationById(rootNodeName);
+
+        Class<?> clazz = decl.map(DeclarationSpec::getDeclarationClass)
+                .orElseGet( () -> {
+                    try {
+                        return context.getTypeResolver().resolveType(rootNodeName);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException( e );
+                    }
+                } );
+
+        final TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRootNode.getWithoutRootNode(), null, clazz, context.getTypeResolver());
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
@@ -257,9 +271,14 @@ public abstract class AccumulateVisitor {
         final Class accumulateFunctionResultType = accumulateFunction.getResultType();
         final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
 
-        final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, printConstraint(parameterConverted));
+        SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) new ConstraintParser(context, context.getPackageModel())
+                .drlxParse(clazz, decl.isPresent() ? rootNodeName : null, printConstraint(parameterConverted));
 
-        optNewBinding = drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, (SingleDrlxParseSuccess) drlxParseResult));
+        if (!decl.isPresent() && input instanceof PatternDescr) {
+            drlxParseResult.setAccumulateBinding( ((PatternDescr)input).getIdentifier() );
+        }
+
+        optNewBinding = drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, drlxParseResult));
     }
 
     private class ReplaceBindingVisitor implements  ParseResultVisitor<Optional<NewBinding>> {
@@ -293,7 +312,9 @@ public abstract class AccumulateVisitor {
             context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
 
             List<String> ids = new ArrayList<>();
-            ids.add(singleResult.getPatternBinding());
+            if (singleResult.getPatternBinding() != null) {
+                ids.add( singleResult.getPatternBinding() );
+            }
             if (input instanceof PatternDescr) {
                 ids.add(((PatternDescr) input).getIdentifier());
             }
@@ -438,14 +459,6 @@ public abstract class AccumulateVisitor {
             throw new AccumulateParsingFailedException("Root node of expression should be a declaration");
         }
         return rootNodeName;
-    }
-
-    private TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
-        final Class clazz = context.getDeclarationById(variableName)
-                .map(DeclarationSpec::getDeclarationClass)
-                .orElseThrow(RuntimeException::new);
-
-        return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, null, clazz, context.getTypeResolver());
     }
 
     Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {

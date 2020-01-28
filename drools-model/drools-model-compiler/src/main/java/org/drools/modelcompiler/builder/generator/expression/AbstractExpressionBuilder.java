@@ -42,7 +42,6 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -54,6 +53,7 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
 import static java.util.Optional.ofNullable;
+
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
@@ -104,7 +104,7 @@ public abstract class AbstractExpressionBuilder {
 
     public abstract MethodCallExpr buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult);
 
-    public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult );
+    public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult);
 
     protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.getExpr() instanceof EnclosedExpr) {

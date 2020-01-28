@@ -314,6 +314,10 @@ public class RuleContext {
         return exprPointer.pop();
     }
 
+    public Consumer<Expression> peekExprPointer() {
+        return exprPointer.peek();
+    }
+
     public int getExprPointerLevel() {
         return exprPointer.size();
     }
