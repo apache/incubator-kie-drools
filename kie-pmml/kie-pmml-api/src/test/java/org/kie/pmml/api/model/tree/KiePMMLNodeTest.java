@@ -109,14 +109,14 @@ public class KiePMMLNodeTest {
                                                                                                getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.GREATER_THAN, 50)));
         KiePMMLNode willPlayLevel3 = KiePMMLNode.builder()
                 .withScore(WILL_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.LESS_THAN, 80))).build();
+                .withKiePMMLPredicate(getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.LESS_THAN, 80)).build();
         KiePMMLNode noPlayLevel3 = KiePMMLNode.builder()
                 .withScore(NO_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.GREATER_OR_EQUAL, 80))).build();
+                .withKiePMMLPredicate(getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.GREATER_OR_EQUAL, 80)).build();
 
         KiePMMLNode willPlayLevel2 = KiePMMLNode.builder()
                 .withScore(WILL_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(compoundPredicate1))
+                .withKiePMMLPredicate(compoundPredicate1)
                 .withKiePMMLNodes(Arrays.asList(willPlayLevel3, noPlayLevel3))
                 .build();
 
@@ -125,13 +125,13 @@ public class KiePMMLNodeTest {
                                                                                                 getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.LESS_OR_EQUAL, 50)));
         KiePMMLNode noPlayLevel2WillPlay = KiePMMLNode.builder()
                 .withScore(NO_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(compoundPredicate2))
+                .withKiePMMLPredicate(compoundPredicate2)
                 .build();
 
         KiePMMLSimplePredicate simplePredicate1 = getKiePMMLSimplePredicate(OUTLOOK, OPERATOR.EQUAL, SUNNY);
         KiePMMLNode willPlayLevel1 = KiePMMLNode.builder()
                 .withScore(WILL_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(simplePredicate1))
+                .withKiePMMLPredicate(simplePredicate1)
                 .withKiePMMLNodes(Arrays.asList(willPlayLevel2, noPlayLevel2WillPlay))
                 .build();
 
@@ -144,14 +144,14 @@ public class KiePMMLNodeTest {
                                                                                                 getKiePMMLSimplePredicate(WINDY, OPERATOR.EQUAL, false)));
         KiePMMLNode mayPlayLevel2 = KiePMMLNode.builder()
                 .withScore(MAY_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(compoundPredicate3))
+                .withKiePMMLPredicate(compoundPredicate3)
                 .build();
         KiePMMLCompoundPredicate compoundPredicate4 = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND,
                                                                                   Arrays.asList(getKiePMMLSimplePredicate(OUTLOOK, OPERATOR.EQUAL, RAIN),
                                                                                                 getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.LESS_THAN, 70)));
         KiePMMLNode noPlayLevel2MayPlay = KiePMMLNode.builder()
                 .withScore(NO_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(compoundPredicate4))
+                .withKiePMMLPredicate(compoundPredicate4)
                 .build();
 
 
@@ -160,7 +160,7 @@ public class KiePMMLNodeTest {
                                                                                                 getKiePMMLSimplePredicate(OUTLOOK, OPERATOR.EQUAL, RAIN)));
         KiePMMLNode mayPlayLevel1 = KiePMMLNode.builder()
                 .withScore(MAY_PLAY)
-                .withKiePMMLPredicates(Collections.singletonList(compoundPredicate5))
+                .withKiePMMLPredicate(compoundPredicate5)
                 .withKiePMMLNodes(Arrays.asList(mayPlayLevel2, noPlayLevel2MayPlay))
                 .build();
         WILL_PLAY_NODE = KiePMMLNode.builder()
@@ -179,18 +179,16 @@ public class KiePMMLNodeTest {
         assertNotNull(retrieved);
         assertNull(retrieved.getId());
         assertNull(retrieved.getKiePMMLNodes());
-        assertNull(retrieved.getKiePMMLPredicates());
+        assertNull(retrieved.getKiePMMLPredicate());
         assertNull(retrieved.getScore());
         retrieved = KiePMMLNode.builder()
                 .withId(ID)
                 .withKiePMMLNodes(NODES)
-                .withKiePMMLPredicates(PREDICATES)
                 .withScore(SCORE)
                 .build();
         assertNotNull(retrieved);
         assertEquals(ID, retrieved.getId());
         assertEquals(NODES, retrieved.getKiePMMLNodes());
-        assertEquals(PREDICATES, retrieved.getKiePMMLPredicates());
         assertEquals(SCORE, retrieved.getScore());
     }
 

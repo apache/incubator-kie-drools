@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.tree.BranchNode;
+import org.dmg.pmml.tree.ClassifierNode;
+import org.dmg.pmml.tree.ComplexNode;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.tree.KiePMMLNode;
@@ -40,10 +43,13 @@ public class KiePMMLNodeFactory {
 
     public static KiePMMLNode getNode(Node node) throws KiePMMLException {
         log.info("getNode " + node);
-        return KiePMMLNode.builder()
+        KiePMMLNode.Builder builder = KiePMMLNode.builder()
                 .withScore(node.getScore().toString())
-                .withKiePMMLPredicates(getPredicate(node.getPredicate()))
-                .withKiePMMLNodes(getNodes(node.getNodes()))
+                .withKiePMMLPredicate(getPredicate(node.getPredicate()));
+        if (node instanceof BranchNode || node instanceof ClassifierNode || node instanceof ComplexNode) {
+            builder = builder.withKiePMMLNodes(getNodes(node.getNodes()));
+        }
+        return builder
                 .build();
     }
 }

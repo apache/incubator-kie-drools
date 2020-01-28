@@ -21,15 +21,19 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.True;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.model.tree.enums.OPERATOR;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLCompoundPredicate;
+import org.kie.pmml.api.model.tree.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.api.model.tree.predicates.KiePMMLTruePredicate;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
@@ -51,6 +55,10 @@ public class KiePMMLPredicateFactory {
             return getKiePMMLSimplePredicate((SimplePredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
             return getKiePMMLCompoundPredicate((CompoundPredicate) predicate);
+        } else if (predicate instanceof True) {
+            return getKiePMMLTruePredicate((True) predicate);
+        } else if (predicate instanceof False) {
+            return getKiePMMLFalsePredicate((False) predicate);
         } else {
             throw new KiePMMLException("Predicate of type " + predicate.getClass().getName() + " not managed, yet");
         }
@@ -65,6 +73,16 @@ public class KiePMMLPredicateFactory {
     public static KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(CompoundPredicate predicate) throws KiePMMLException {
         return KiePMMLCompoundPredicate.builder(Collections.emptyList(), BOOLEAN_OPERATOR.byName(predicate.getBooleanOperator().value()))
                 .withKiePMMLPredicates(getPredicates(predicate.getPredicates()))
+                .build();
+    }
+
+    public static KiePMMLTruePredicate getKiePMMLTruePredicate(True predicate) throws KiePMMLException {
+        return KiePMMLTruePredicate.builder(Collections.emptyList())
+                .build();
+    }
+
+    public static KiePMMLFalsePredicate getKiePMMLFalsePredicate(False predicate) throws KiePMMLException {
+        return KiePMMLFalsePredicate.builder(Collections.emptyList())
                 .build();
     }
 }

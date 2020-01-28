@@ -1,4 +1,4 @@
-<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+<PMML xmlns="http://www.dmg.org/PMML-4_2" version="4.2">
   <Header copyright="www.dmg.org" description="A very small binary tree model to show structure."/>
   <DataDictionary numberOfFields="5">
     <DataField name="temperature" optype="continuous" dataType="double"/>

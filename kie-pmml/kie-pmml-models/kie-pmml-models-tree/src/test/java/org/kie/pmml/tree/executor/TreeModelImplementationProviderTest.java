@@ -20,14 +20,20 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.tree.TreeModel;
 import org.junit.Test;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 import org.kie.pmml.library.testutils.TestUtils;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TreeModelImplementationProviderTest {
 
@@ -40,11 +46,18 @@ public class TreeModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModel() throws JAXBException, SAXException, IOException {
+    public void getKiePMMLModel() throws JAXBException, SAXException, IOException, KiePMMLException {
         final PMML pmml = TestUtils.loadFromFile("TreeSample.xml");
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
-//        commonVerifyKiePMMLRegressionModel(PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0)));
+        assertTrue(pmml.getModels().get(0) instanceof TreeModel);
+        final TreeModel originalModel = (TreeModel) pmml.getModels().get(0);
+        commonVerifyKiePMMLTreeModel(originalModel, PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), originalModel));
+    }
+
+    private void commonVerifyKiePMMLTreeModel(TreeModel originalModel, KiePMMLTreeModel kiePMMLTreeModel) {
+        assertEquals(originalModel.getModelName(), kiePMMLTreeModel.getName());
+        // TODO {gcardosi} complete test
 
     }
 }

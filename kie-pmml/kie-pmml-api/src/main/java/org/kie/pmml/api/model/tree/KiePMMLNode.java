@@ -118,7 +118,7 @@ public class KiePMMLNode implements Serializable {
             return this;
         }
 
-        public Builder withKiePMMLPredicates(KiePMMLPredicate kiePMMLPredicate) {
+        public Builder withKiePMMLPredicate(KiePMMLPredicate kiePMMLPredicate) {
             toBuild.kiePMMLPredicate = kiePMMLPredicate;
             return this;
         }
