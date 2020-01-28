@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
 import org.junit.Test;
@@ -64,8 +66,8 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void verifyNullTest() {
-        assertTrue(expressionEvaluator.verifyResult("[]", null));
-        assertFalse(expressionEvaluator.verifyResult("[{\"" + VALUE + "\" : \"result\"}]", null));
+        assertTrue(expressionEvaluator.verifyResult("[]", null, null));
+        assertFalse(expressionEvaluator.verifyResult("[{\"" + VALUE + "\" : \"result\"}]", null, null));
     }
 
     @Test
@@ -112,9 +114,9 @@ public class BaseExpressionEvaluatorTest {
         genericClasses.add(Integer.class.getCanonicalName());
         Map<String, Integer> resultToTest = new HashMap<>();
         resultToTest.put("Home", 120);
-        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest));
+        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null));
         resultToTest.put("Home", 20);
-        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest));
+        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null));
 
         String mapOfStringJson = "{\"key1\" : {\"" + VALUE + "\" : \"value1\"}, \"key2\" : {\"" + VALUE + "\" : \"value2\"}}";
         Map<String, String> mapStringStringToCheck = new HashMap<>();
@@ -162,9 +164,9 @@ public class BaseExpressionEvaluatorTest {
         element.setPhones(phones);
         toCheck.put("first", element);
 
-        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck));
+        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck, null));
         phones.put("number", -1);
-        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck));
+        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck, null));
     }
 
     @SuppressWarnings("unchecked")
@@ -181,10 +183,10 @@ public class BaseExpressionEvaluatorTest {
         assertEquals(2, parsedValue.get(1).getNames().size());
         assertTrue(parsedValue.get(1).getNames().contains("Anna"));
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue));
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue, null));
 
         parsedValue.get(1).setNames(new ArrayList<>());
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue));
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue, null));
     }
 
     @SuppressWarnings("unchecked")
@@ -200,12 +202,26 @@ public class BaseExpressionEvaluatorTest {
         listJsonString = "[{\"" + VALUE + "\" : \"> 10\"}]";
         List<Integer> toCheck = Collections.singletonList(13);
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null));
 
         listJsonString = "[{\"" + VALUE + "\" : \"> 100\"}]";
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck));
+        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck, null));
 
         listJsonString = "[{\"" + VALUE + "\" : \"\"}]";
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck));
+        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionListVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("10").toString();
+        List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionMapVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
+        Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
     }
 }

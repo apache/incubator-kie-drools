@@ -2351,6 +2351,16 @@ public class RuleModelDRLPersistenceImpl
         return packageDescr.getRules().get(0);
     }
 
+    private RuleDescr parseDrl(final String drl) throws DroolsParserException {
+        final DrlParser drlParser = new DrlParser();
+        final PackageDescr packageDescr = drlParser.parse(true, drl);
+        if (drlParser.hasErrors()) {
+            throw new RuleModelUnmarshallingException();
+        }
+
+        return packageDescr.getRules().get(0);
+    }
+
     private boolean parseAttributes(final RuleModel m,
                                     final Map<String, AttributeDescr> attributes) {
         boolean isJavaDialect = false;
@@ -2702,6 +2712,10 @@ public class RuleModelDRLPersistenceImpl
                                                               final boolean isJavaDialect,
                                                               final Map<String, String> boundParams,
                                                               final PackageDataModelOracle dmo) {
+        if (conditionalDescr.getDescrs().stream().anyMatch(d -> d instanceof ConditionalElementDescr)) {
+            throw new RuleModelUnmarshallingException();
+        }
+
         CompositeFactPattern comp;
         if (conditionalDescr instanceof NotDescr) {
             comp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT);
@@ -4371,12 +4385,18 @@ public class RuleModelDRLPersistenceImpl
     }
 
     //Simple fall-back parser of DRL
-    public RuleModel getSimpleRuleModel(final String drl) {
+    private RuleModel getSimpleRuleModel(final String drl) {
         final RuleModel rm = new RuleModel();
         rm.setPackageName(PackageNameParser.parsePackageName(drl));
         rm.setImports(ImportsParser.parseImports(drl));
 
-        final Pattern rulePattern = Pattern.compile(".*\\s?rule\\s+(.+?)\\s+.*",
+        try {
+            parseAttributes(rm, parseDrl(drl).getAttributes());
+        } catch (Exception e) {
+            //Discard. We're unable to retrieve the rule attributes from the DRL
+        }
+
+        final Pattern rulePattern = Pattern.compile(".*\\s?rule\\s+\"(.+?)\"\\s+.*",
                                                     Pattern.DOTALL);
         final Pattern lhsPattern = Pattern.compile(".*\\s+when\\s+(.+?)\\s+then.*",
                                                    Pattern.DOTALL);

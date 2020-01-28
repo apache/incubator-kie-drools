@@ -54,6 +54,9 @@ public class ConstantsHolder {
     public static final List<String> SETTINGS = Collections.unmodifiableList(Arrays.asList(DMO_SESSION_NODE, "dmnFilePath", "type", "fileName", "kieSession",
                                                                                            "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"));
 
+    public static final String MALFORMED_RAW_DATA_MESSAGE = "Malformed raw data";
+    public static final String MALFORMED_MVEL_EXPRESSION = "Malformed MVEL expression";
+
     private ConstantsHolder() {
         // Not instantiable
     }

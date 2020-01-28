@@ -18,12 +18,18 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -31,7 +37,9 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -55,6 +63,20 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
         assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class));
+        List<BigDecimal> contextListValue = Collections.singletonList(BigDecimal.valueOf(23));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [23]").toString(), contextListValue, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [2]").toString(), contextListValue, List.class));
+        List<BigDecimal> contextListValue2 = Arrays.asList(BigDecimal.valueOf(23), BigDecimal.valueOf(32));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32]").toString(), contextListValue2, List.class));
+        assertFalse("Collection unary expression needs to start with ?",
+                    expressionEvaluator.evaluateUnaryExpression(new TextNode("[23, 32]").toString(),
+                                                                contextListValue2,
+                                                                List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32, 123]").toString(), contextListValue2, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class));
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -75,6 +97,10 @@ public class DMNFeelExpressionEvaluatorTest {
         Map<String, Object> parsedValue = (Map<String, Object>) expressionEvaluator.evaluateLiteralExpression("{key_a : 1}", Map.class.getCanonicalName(), Collections.emptyList());
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
+        List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
+        assertTrue(parsedValueListExpression.size() == 2);
+        assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
+        assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
 
         assertThatThrownBy(() -> expressionEvaluator
                 .evaluateLiteralExpression("SPEED", String.class.getCanonicalName(), null))
@@ -170,5 +196,74 @@ public class DMNFeelExpressionEvaluatorTest {
         for (FEELEvent event : events) {
             feel.getListeners().forEach(listener -> listener.onEvent(event));
         }
+    }
+
+    @Test
+    public void expressionListTest() {
+        String expressionCollectionJsonString = new TextNode("[ 1, 10 ]").toString();
+        List<BigDecimal> result = (List<BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertEquals(BigDecimal.ONE, result.get(0));
+        assertEquals(BigDecimal.TEN, result.get(1));
+    }
+
+    @Test
+    public void expressionObjectListTest() {
+        String expressionCollectionJsonString = new TextNode("[{age:10},{name:\"John\"}]").toString();
+        List<Map<String, Object>> result =
+                (List<Map<String, Object>>) expressionEvaluator.convertResult(expressionCollectionJsonString,
+                                                                              List.class.getCanonicalName(),
+                                                                              Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertThat(result.get(0)).containsOnly(entry("age", BigDecimal.TEN));
+        assertThat(result.get(1)).containsOnly(entry("name", "John"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionListTest_Wrong() {
+        String expressionCollectionJsonString = new TextNode("[ 1 : 234").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
+    }
+
+    @Test
+    public void expressionMapTest() {
+        String expressionCollectionJsonString = new TextNode("{ x : 5, y : 3 }").toString();
+        Map<String, BigDecimal> result = (Map<String, BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
+        assertTrue(result.size() == 2);
+        assertEquals(BigDecimal.valueOf(5), result.get("x"));
+        assertEquals(BigDecimal.valueOf(3), result.get("y"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void expressionMapTest_Wrong() {
+        String expressionCollectionJsonString = new TextNode(": 5 y : 3 }").toString();
+        expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
+    }
+
+    @Test
+    public void expressionListVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("10").toString();
+        List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class));
+    }
+
+    @Test
+    public void expressionMapVerifyResultTest() {
+        String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
+        Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
+    }
+
+    @Test
+    public void isStructuredInput() {
+        assertTrue(expressionEvaluator.isStructuredInput(List.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructuredInput(ArrayList.class.getCanonicalName()));
+        assertTrue(expressionEvaluator.isStructuredInput(LinkedList.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Map.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(HashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(LinkedHashMap.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Set.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(Integer.class.getCanonicalName()));
+        assertFalse(expressionEvaluator.isStructuredInput(String.class.getCanonicalName()));
     }
 }
