@@ -1864,7 +1864,7 @@ but future work aims to distribute solver loads across a cloud.
 [[solverManagerSolveBatch]]
 === Solve batch problems
 
-At night, batch solving a great approach to deliver solid plans by breakfast, because:
+At night, batch solving is a great approach to deliver solid plans by breakfast, because:
 
 * There are typically few or no problem changes in the middle of the night.
 Some organizations even enforce a deadline, for example, _submit all day off requests before midnight_.
