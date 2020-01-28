@@ -1,0 +1,15 @@
+package org.kie.pmml.runtime.tree.executor
+
+import org.kie.pmml.api.model.tree.KiePMMLTreeModel
+import org.kie.api.pmml.PMML4Result
+
+rule "Get Tree"
+when
+  $m : KiePMMLTreeModel($nm:name, name != null)
+  $p : PMML4Result()
+then
+   System.out.println($nm);
+   $p.setResultCode("PUPPA");
+   $p.updateResultVariable("name", $nm);
+
+end

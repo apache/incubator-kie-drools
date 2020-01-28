@@ -19,6 +19,7 @@
     <module>kie-pmml-runtime-assembler</module>
     <module>kie-pmml-runtime-core</module>
     <module>kie-pmml-runtime-regression</module>
+    <module>kie-pmml-runtime-tree</module>
   </modules>
 
 </project>

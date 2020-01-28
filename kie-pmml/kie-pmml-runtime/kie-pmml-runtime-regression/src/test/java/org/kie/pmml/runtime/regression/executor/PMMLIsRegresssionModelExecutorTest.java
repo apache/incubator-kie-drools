@@ -25,6 +25,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +46,8 @@ import static org.kie.pmml.runtime.regression.executor.TestUtils.getKiePMMLRegre
 import static org.kie.pmml.runtime.regression.executor.TestUtils.getPMMLRequestData;
 
 public class PMMLIsRegresssionModelExecutorTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(PMMLIsRegresssionModelExecutorTest.class);
 
     private KiePMMLRegressionModel kiePMMLRegressionModel;
 
@@ -72,7 +76,7 @@ public class PMMLIsRegresssionModelExecutorTest {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
         PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetFieldName(), getKiePMMLRegressionTable(), pmmlRequestData);
         assertNotNull(retrieved);
-        System.out.println(retrieved);
+        logger.info(retrieved.toString());
         assertNotNull(retrieved.getResultVariables());
         assertTrue(retrieved.getResultVariables().containsKey(TARGETFIELD_NAME));
         double expected = INTERCEPT + AGE_COEFF * age + SALARY_COEFF * salary;
@@ -83,6 +87,6 @@ public class PMMLIsRegresssionModelExecutorTest {
         }
         double retrievedDouble = (double)retrieved.getResultVariables().get(TARGETFIELD_NAME);
         assertEquals(expected, retrievedDouble, 0.00001);
-        System.out.println("Expected " + expected + " retrieved " + retrievedDouble);
+        logger.info("Expected " + expected + " retrieved " + retrievedDouble);
     }
 }
