@@ -63,6 +63,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
@@ -90,7 +91,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -2790,6 +2790,49 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         String[] decisionIds = new String[]{};
         runtime.evaluateById(dmnModel, context, decisionIds);
+    }
+
+    public static class JavaPojoCharUtilDate {
+
+        private final String surname;
+        private final Character initial;
+        private final java.util.Date when;
+
+        public JavaPojoCharUtilDate(String surname, Character initial, java.util.Date when) {
+            super();
+            this.surname = surname;
+            this.initial = initial;
+            this.when = when;
+        }
+
+        public String getSurname() {
+            return surname;
+        }
+
+        @FEELProperty("name initial")
+        public Character getInitial() {
+            return initial;
+        }
+
+        public java.util.Date getWhen() {
+            return when;
+        }
+    }
+
+    @Test
+    public void testJavaPojoCharUtilDate() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("javaPojoCharUtilDate.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5eaccc88-cbf0-4c58-945a-952d8bf974ed", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("my data", new JavaPojoCharUtilDate("Doe", new Character('J'), new java.util.Date(2020, 0, 28, 10, 15)));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("my decision").getResult(), is("The person: Doe J., on the 28 of the month 1 at the 10 hour."));
     }
 }
 
