@@ -1484,7 +1484,7 @@ public interface Solver<Solution_> {
 A `Solver` can only solve one planning problem instance at a time.
 It is built with a ``SolverFactory``, there is no need to implement it yourself.
 
-A `Solver` should only be accessed from a single thread, except for the methods that are specifically javadocced as being thread-safe.
+A `Solver` should only be accessed from a single thread, except for the methods that are specifically documented in javadoc as being thread-safe.
 The `solve()` method hogs the current thread.
 This can cause HTTP timeouts for REST services and it requires extra code to solve multiple datasets in parallel.
 To avoid such issues, use a <<solverManager, `SolverManager`>> instead.
