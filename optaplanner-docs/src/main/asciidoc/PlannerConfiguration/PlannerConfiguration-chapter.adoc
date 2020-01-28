@@ -1938,4 +1938,4 @@ This implementation is using the database to communicate with the UI, which poll
 More advanced implementations push the best solutions directly to the UI or a messaging queue.
 
 If the user is satisfied with the intermediate best solution
-and tired of waiting for a better one, call `SolverManager.terminateEarly(problemId)`.
+and does not want to wait for a better one, call `SolverManager.terminateEarly(problemId)`.
