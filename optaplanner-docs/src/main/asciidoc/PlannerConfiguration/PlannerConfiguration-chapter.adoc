@@ -1832,7 +1832,7 @@ The `SolverManagerConfig` class has a `parallelSolverCount` property,
 that controls how many solvers are run in parallel.
 For example, if set to `4`, submitting five problems
 has four problems solving immediately, and the fifth one starts when another one ends.
-So if those problems solve for 5 minutes each, the fifth problem takes 10 minutes to finish.
+If those problems solve for 5 minutes each, the fifth problem takes 10 minutes to finish.
 By default, `parallelSolverCount` is set to `AUTO`, which resolves to half the CPU cores,
 regardless of the <<multithreadedSolving,`moveThreadCount`>> of the solvers.
 
