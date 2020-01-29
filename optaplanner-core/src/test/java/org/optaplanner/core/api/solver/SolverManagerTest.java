@@ -16,11 +16,12 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -29,7 +30,6 @@ import java.util.function.Function;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -39,8 +39,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
@@ -246,86 +247,152 @@ public class SolverManagerTest {
     }
 
     /**
-     * In order to effectively test the terminateEarly() and close() methods there had to be a way how to make the job
-     * status change in a deterministic way while solving jobs on separate threads. The test waits for a status change in
-     * a loop and time-outs when it doesn't reach it's expected status.
+     * Tests whether SolverManager can solve on multiple threads problems that use multiple thread counts.
      */
-    @Ignore("https://issues.redhat.com/browse/PLANNER-1836")
-    @Test
-    public void terminateEarlyAndClose() throws InterruptedException {
+    @Test(timeout = 600_000)
+    public void multipleThreadSolvingWithSolverManager() throws ExecutionException, InterruptedException {
+        int processCount = Runtime.getRuntime().availableProcessors();
+        CyclicBarrier barrier = new CyclicBarrier(processCount);
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
+                .withPhases(new ConstructionHeuristicPhaseConfig(),
+                            new CustomPhaseConfig().withCustomPhaseCommands(
+                                    scoreDirector -> {
+                                        try {
+                                            barrier.await();
+                                        } catch (InterruptedException | BrokenBarrierException e) {
+                                            fail("Cyclic barrier failed.");
+                                        }
+                                    }))
+                // Adds moveThreadCount to the solver config.
+                .withMoveThreadCount(String.valueOf(processCount));
+        // Creates solverManagerConfig with multiple threads.
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
+                solverConfig, new SolverManagerConfig().withParallelSolverCount(String.valueOf(processCount)));
 
-        // Having only one solver running at the same time is important for predicting solver status behaviour.
-        SolverManager<TestdataSolution, Long> solverManager =
-                SolverManager.create(solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
+        List<SolverJob<TestdataSolution, Long>> jobs = new ArrayList<>();
+        for (long i = 0; i < processCount; i++) {
+            jobs.add(solverManager.solve(i, PlannerTestUtils.generateTestdataSolution("s" + i)));
+        }
 
-        Long firstProblemId = 1L;
-        Long secondProblemId = 2L;
-
-        // Submit the first problem. Status changes from SOLVING_SCHEDULED to SOLVING_ACTIVE.
-        solverManager.solve(firstProblemId, PlannerTestUtils.generateTestdataSolution("s1"));
-        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.SOLVING_ACTIVE);
-
-        // Second problem not yet submitted to solverManager, tries to terminate it leading to a debug output:
-        // DEBUG Ignoring terminateEarly() call because problemId (1) is not solving.
-        // Asserting a logger message was determined as being too complex for using only on this
-        // one occurrence and would result in cluttering up the code. The output was checked manually.
-        solverManager.terminateEarly(secondProblemId);
-        assertSame(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(secondProblemId));
-        // Did not affect the actively solving job.
-        assertSame(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(firstProblemId));
-
-        // Schedule second job while waiting for the first job to finish. It stays in the SOLVING_SCHEDULED status.
-        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
-        assertSame(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(secondProblemId));
-
-        // Terminate second job which is in scheduled status. The status changes from SOLVING_SCHEDULED to NOT_SOLVING
-        solverManager.terminateEarly(secondProblemId);
-        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
-
-        // Reschedule second job. It reintroduces it to the solverManager by changing status from NOT_SOLVING to
-        // SOLVING_SCHEDULED in which it stays.
-        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
-        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.SOLVING_SCHEDULED);
-
-        // Terminate the first job which triggers it to change it's status from SOLVING_ACTIVE to NOT_SOLVING.
-        // Automatically starts working on the second job. Its status changes from STATUS_SCHEDULED to STATUS_ACTIVE.
-        solverManager.terminateEarly(firstProblemId);
-        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.NOT_SOLVING);
-        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.SOLVING_ACTIVE);
-
-        // Terminate the second job, its status changes from SOLVING_ACTIVE to NOT_SOLVING. Both jobs stopped solving.
-        solverManager.terminateEarly(secondProblemId);
-        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
-        assertSame(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(firstProblemId));
-
-        // Reintroduce the problems to solverManager and attempt to close them all at once using solverManager.close().
-        // The first job's status changes from SOLVING_ACTIVE to NOT_SOLVING.
-        // The second job's status changes from SOLVING_SCHEDULED to NOT_SOLVING.
-        solverManager.solve(firstProblemId, PlannerTestUtils.generateTestdataSolution("s1"));
-        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.SOLVING_ACTIVE);
-
-        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
-        assertSame(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(secondProblemId));
-
-        solverManager.close();
-        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.NOT_SOLVING);
-        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
+        for (SolverJob<TestdataSolution, Long> job : jobs) {
+            assertSolutionInitialized(job.getFinalBestSolution());
+        }
     }
 
-    private void waitForJobStatusChangeOrTimeout(SolverManager<TestdataSolution, Long> solverManager, Long problemId, SolverStatus expectedStatusChange) throws InterruptedException {
-        long t = System.currentTimeMillis();
-        long end = t + 5000;
-        // Check every 5 milliseconds for solverJob status change for 5 seconds at maximum, otherwise time-out and fail.
-        while (t < end) {
-            if (solverManager.getSolverStatus(problemId) == expectedStatusChange) {
-                return;
-            }
-            TimeUnit.MILLISECONDS.sleep(5);
-            t = System.currentTimeMillis();
+    /**
+     * Tests whether SolverManager can cope with the situation when more problems than processors are submitted.
+     * In addition, the test verifies whether solving with consumers is affected by this.
+     */
+    @Test(timeout = 600_000)
+    public void moreProblemsThanCpus() throws InterruptedException, ExecutionException {
+        // Use twice the amount of processes than available processors.
+        int problemCount = Runtime.getRuntime().availableProcessors() * 2;
+
+        SolverManager<TestdataSolution, Integer> solverManager = createSolverManagerTestableByDifferentConsumers(problemCount);
+
+        assertSolveWithoutConsumer(problemCount, solverManager);
+        assertSolveWithBestSolutionConsumer(problemCount, solverManager);
+        assertSolveWithFinalBestSolutionConsumer(problemCount, solverManager);
+    }
+
+    private SolverManager<TestdataSolution, Integer> createSolverManagerTestableByDifferentConsumers(int processCount) {
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(0);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(0));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }), new CustomPhaseConfig().withCustomPhaseCommands(
+                        (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                            TestdataSolution solution = scoreDirector.getWorkingSolution();
+                            TestdataEntity entity = solution.getEntityList().get(1);
+                            scoreDirector.beforeVariableChanged(entity, "value");
+                            entity.setValue(solution.getValueList().get(1));
+                            scoreDirector.afterVariableChanged(entity, "value");
+                            scoreDirector.triggerVariableListeners();
+                        }));
+
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount(String.valueOf(processCount));
+
+        return SolverManager.create(solverConfig, solverManagerConfig);
+    }
+
+    private void assertSolveWithoutConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
+        List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>(processCount);
+
+        for (int id = 0; id < processCount; id++) {
+            jobs.add(solverManager.solve(id, PlannerTestUtils.generateTestdataSolution("s" + id, 2)));
         }
-        fail("Job with id " + problemId + " took too long and timed-out not changing its status from "
-                     + solverManager.getSolverStatus(problemId) + " to " + expectedStatusChange + ".");
+
+        for (SolverJob<TestdataSolution, Integer> job : jobs) {
+            assertSolutionInitialized(job.getFinalBestSolution());
+        }
+    }
+
+    private void assertSolveWithBestSolutionConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException {
+        int bestSolutionEventTriggeredCountExpected = processCount * 2;
+        CountDownLatch bestSolutionConsumerLatch = new CountDownLatch(bestSolutionEventTriggeredCountExpected);
+
+        AtomicInteger bestSolutionEventTriggerCount = new AtomicInteger();
+        Consumer<TestdataSolution> bestSolutionConsumer = bestSolution -> {
+            bestSolutionEventTriggerCount.incrementAndGet();
+            bestSolutionConsumerLatch.countDown();
+        };
+        for (int id = 0; id < processCount; id++) {
+            solverManager.solveAndListen(
+                    id,
+                    problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
+                    bestSolutionConsumer, null);
+        }
+        bestSolutionConsumerLatch.await();
+
+        assertThat(bestSolutionEventTriggerCount.intValue()).isSameAs(bestSolutionEventTriggeredCountExpected);
+    }
+
+    private void assertSolveWithFinalBestSolutionConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException {
+        int finalBestSolutionEventTriggeredCountExpected = processCount;
+        CountDownLatch finalBestSolutionConsumerLatch = new CountDownLatch(finalBestSolutionEventTriggeredCountExpected);
+
+        AtomicInteger finalBestSolutionEventTriggerCount = new AtomicInteger();
+        Consumer<TestdataSolution> finalBestSolutionConsumer = finalBestSolution -> {
+            finalBestSolutionEventTriggerCount.incrementAndGet();
+            finalBestSolutionConsumerLatch.countDown();
+        };
+        for (int id = 0; id < processCount; id++) {
+            solverManager.solve(
+                    id,
+                    problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
+                    finalBestSolutionConsumer, null);
+        }
+        finalBestSolutionConsumerLatch.await();
+
+        assertThat(finalBestSolutionEventTriggerCount.intValue()).isSameAs(finalBestSolutionEventTriggeredCountExpected);
+    }
+
+    @Test(timeout = 600_000)
+    public void runSameIdProcesses() {
+        SolverManagerConfig config = new SolverManagerConfig().withParallelSolverCount("2");
+
+        CyclicBarrier barrier = new CyclicBarrier(2);
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        scoreDirector -> {
+                            try {
+                                barrier.await();
+                            } catch (InterruptedException | BrokenBarrierException e) {
+                                fail("Cyclic barrier failed.");
+                            }
+                        }));
+
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, config);
+
+        solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("solver"));
+        assertThatThrownBy(() -> solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("solver")))
+                .isInstanceOf(IllegalStateException.class).hasMessageContaining("already solving");
     }
 }
