@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -30,9 +31,11 @@ import java.util.function.Function;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -246,32 +249,28 @@ public class SolverManagerTest {
         assertTrue(eventCount.get() < 4);
     }
 
-    /**
-     * Tests whether SolverManager can solve on multiple threads problems that use multiple thread counts.
-     */
-    @Test(timeout = 600_000)
-    public void multipleThreadSolvingWithSolverManager() throws ExecutionException, InterruptedException {
+    @Test
+    public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
-        CyclicBarrier barrier = new CyclicBarrier(processCount);
+        CyclicBarrier barrier = new CyclicBarrier(processCount / 2);
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new ConstructionHeuristicPhaseConfig(),
-                            new CustomPhaseConfig().withCustomPhaseCommands(
-                                    scoreDirector -> {
-                                        try {
-                                            barrier.await();
-                                        } catch (InterruptedException | BrokenBarrierException e) {
-                                            fail("Cyclic barrier failed.");
-                                        }
-                                    }))
+                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+                        scoreDirector -> {
+                            try {
+                                barrier.await();
+                            } catch (InterruptedException | BrokenBarrierException e) {
+                                fail("Cyclic barrier failed.");
+                            }
+                        }), new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig())
+                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
                 // Adds moveThreadCount to the solver config.
-                .withMoveThreadCount(String.valueOf(processCount));
+                .withMoveThreadCount("AUTO");
         // Creates solverManagerConfig with multiple threads.
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                solverConfig, new SolverManagerConfig().withParallelSolverCount(String.valueOf(processCount)));
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
 
         List<SolverJob<TestdataSolution, Long>> jobs = new ArrayList<>();
         for (long i = 0; i < processCount; i++) {
-            jobs.add(solverManager.solve(i, PlannerTestUtils.generateTestdataSolution("s" + i)));
+            jobs.add(solverManager.solve(i, PlannerTestUtils.generateTestdataSolution("s" + i, 10)));
         }
 
         for (SolverJob<TestdataSolution, Long> job : jobs) {
@@ -279,13 +278,9 @@ public class SolverManagerTest {
         }
     }
 
-    /**
-     * Tests whether SolverManager can cope with the situation when more problems than processors are submitted.
-     * In addition, the test verifies whether solving with consumers is affected by this.
-     */
     @Test(timeout = 600_000)
-    public void moreProblemsThanCpus() throws InterruptedException, ExecutionException {
-        // Use twice the amount of processes than available processors.
+    public void  submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
+        // Use twice the amount of problems than available processors.
         int problemCount = Runtime.getRuntime().availableProcessors() * 2;
 
         SolverManager<TestdataSolution, Integer> solverManager = createSolverManagerTestableByDifferentConsumers(problemCount);
@@ -315,15 +310,15 @@ public class SolverManagerTest {
                             scoreDirector.triggerVariableListeners();
                         }));
 
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount(String.valueOf(processCount));
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
         return SolverManager.create(solverConfig, solverManagerConfig);
     }
 
-    private void assertSolveWithoutConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
-        List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>(processCount);
+    private void assertSolveWithoutConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
+        List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>(problemCount);
 
-        for (int id = 0; id < processCount; id++) {
+        for (int id = 0; id < problemCount; id++) {
             jobs.add(solverManager.solve(id, PlannerTestUtils.generateTestdataSolution("s" + id, 2)));
         }
 
@@ -332,51 +327,65 @@ public class SolverManagerTest {
         }
     }
 
-    private void assertSolveWithBestSolutionConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager)
-            throws InterruptedException {
-        int bestSolutionEventTriggeredCountExpected = processCount * 2;
+    private void assertSolveWithBestSolutionConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException, ExecutionException {
+        // Triggers twice for every problem, a best solution is generated after each phase.
+        int bestSolutionEventTriggeredCountExpected = problemCount * 2;
         CountDownLatch bestSolutionConsumerLatch = new CountDownLatch(bestSolutionEventTriggeredCountExpected);
+
+        List<TestdataSolution> consumedBestSolutions = Collections.synchronizedList(new ArrayList<>(problemCount));
 
         AtomicInteger bestSolutionEventTriggerCount = new AtomicInteger();
         Consumer<TestdataSolution> bestSolutionConsumer = bestSolution -> {
+            consumedBestSolutions.add(bestSolution);
             bestSolutionEventTriggerCount.incrementAndGet();
             bestSolutionConsumerLatch.countDown();
         };
-        for (int id = 0; id < processCount; id++) {
-            solverManager.solveAndListen(
+
+        List<TestdataSolution> jobFinalBestSolutions = new ArrayList<>(problemCount);
+        for (int id = 0; id < problemCount; id++) {
+            jobFinalBestSolutions.add(solverManager.solveAndListen(
                     id,
                     problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
-                    bestSolutionConsumer, null);
+                    bestSolutionConsumer, null).getFinalBestSolution());
         }
         bestSolutionConsumerLatch.await();
 
         assertThat(bestSolutionEventTriggerCount.intValue()).isSameAs(bestSolutionEventTriggeredCountExpected);
+        assertThat(consumedBestSolutions).containsAll(jobFinalBestSolutions);
     }
 
-    private void assertSolveWithFinalBestSolutionConsumer(int processCount, SolverManager<TestdataSolution, Integer> solverManager)
-            throws InterruptedException {
-        int finalBestSolutionEventTriggeredCountExpected = processCount;
+    private void assertSolveWithFinalBestSolutionConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException, ExecutionException {
+        // Triggers once once at the end of solving for each problem.
+        int finalBestSolutionEventTriggeredCountExpected = problemCount;
         CountDownLatch finalBestSolutionConsumerLatch = new CountDownLatch(finalBestSolutionEventTriggeredCountExpected);
+
+        List<TestdataSolution> consumedFinalBestSolutions = Collections.synchronizedList(new ArrayList<>(problemCount));
 
         AtomicInteger finalBestSolutionEventTriggerCount = new AtomicInteger();
         Consumer<TestdataSolution> finalBestSolutionConsumer = finalBestSolution -> {
+            consumedFinalBestSolutions.add(finalBestSolution);
             finalBestSolutionEventTriggerCount.incrementAndGet();
             finalBestSolutionConsumerLatch.countDown();
         };
-        for (int id = 0; id < processCount; id++) {
-            solverManager.solve(
+
+        List<TestdataSolution> jobFinalBestSolutions = new ArrayList<>(problemCount);
+        for (int id = 0; id < problemCount; id++) {
+            jobFinalBestSolutions.add(solverManager.solve(
                     id,
                     problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
-                    finalBestSolutionConsumer, null);
+                    finalBestSolutionConsumer, null).getFinalBestSolution());
         }
         finalBestSolutionConsumerLatch.await();
 
         assertThat(finalBestSolutionEventTriggerCount.intValue()).isSameAs(finalBestSolutionEventTriggeredCountExpected);
+        assertThat(consumedFinalBestSolutions).containsAll(jobFinalBestSolutions);
     }
 
     @Test(timeout = 600_000)
-    public void runSameIdProcesses() {
-        SolverManagerConfig config = new SolverManagerConfig().withParallelSolverCount("2");
+    public void runSameIdProcesses_throwsIllegalStateException() {
+        SolverManagerConfig config = new SolverManagerConfig();
 
         CyclicBarrier barrier = new CyclicBarrier(2);
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
