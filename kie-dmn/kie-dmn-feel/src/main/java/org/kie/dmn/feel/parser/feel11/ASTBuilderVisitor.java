@@ -589,6 +589,15 @@ public class ASTBuilderVisitor
 
     @Override
     public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
+        List<String> qns = new ArrayList<>();
+        if (ctx.qualifiedName() != null) {
+            ctx.qualifiedName().nameRef().forEach(nr -> qns.add(nr.getText()));
+        } else if (ctx.FUNCTION() != null) {
+            qns.add("function");
+        } else {
+            throw new IllegalStateException("grammar rule changed.");
+        }
+        System.out.println(qns);
         return ASTBuilderFactory.newTypeNode( ctx );
     }
 

@@ -85,13 +85,13 @@ public class ParserHelper {
         LOG.trace("pushTypeScope()");
         // -- start of external.
         ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
-        currentScope.define(new TypeSymbol("my list", BuiltInType.LIST));
-        currentScope.define(new TypeSymbol("my context", BuiltInType.CONTEXT));
+        newTypeScope.define(new TypeSymbol("my list"));
+        newTypeScope.define(new TypeSymbol("my context"));
 
-        ScopeImpl import1 = new ScopeImpl("my import", currentScope);
-        currentScope.define(new TypeSymbol("my import", BuiltInType.UNKNOWN));
+        ScopeImpl import1 = new ScopeImpl("my import", newTypeScope);
+        newTypeScope.define(new TypeSymbol("my import"));
 
-        import1.define(new TypeSymbol("my list2", BuiltInType.LIST));
+        import1.define(new TypeSymbol("my list2"));
 
         Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> currentScope.define(t));
         // -- end of external
