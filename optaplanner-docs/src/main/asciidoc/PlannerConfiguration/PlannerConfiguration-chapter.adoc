@@ -1804,10 +1804,11 @@ If you want to confirm this on your use case, use the <<benchmarker,benchmarker>
 [[solverManager]]
 == SolverManager
 
-A `SolverManager` is a facade for one or more `Solver` instances.
+A `SolverManager` is a facade for one or more `Solver` instances
+to simplify solve planning problems in REST and other enterprise services.
 Its `solve(...)` methods differ from the normal `Solver.solve(...)` method, such that:
 
-* *`SolverManager.solve(...)` returns immediately*: it schedules a problem for asynchronous solving without blocking the calling thread.
+* *`SolverManager.solve(...)` returns immediately*: it schedules a problem for asynchronous solving without blocking the calling thread. This avoids HTTP timeout issues.
 * *`SolverManager.solve(...)` solves multiple planning problems* of the same domain, in parallel.
 
 Internally a `SolverManager` manages a thread pool of solver threads, which call `Solver.solve(...)`,
