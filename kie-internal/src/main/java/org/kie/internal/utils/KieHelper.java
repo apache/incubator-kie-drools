@@ -81,7 +81,7 @@ public class KieHelper {
     }
 
     public KieContainer getKieContainer() {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
+        KieBuilder kieBuilder = buildAllWithDrlOrDefault();
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
@@ -90,8 +90,18 @@ public class KieHelper {
         return kieContainer;
     }
 
+    private KieBuilder buildAllWithDrlOrDefault() {
+        Class<? extends KieBuilder.ProjectType> canonicalModelKieProjectClass;
+        try {
+            canonicalModelKieProjectClass = (Class<? extends KieBuilder.ProjectType>) Class.forName("org.drools.compiler.kie.builder.impl.DrlProject");
+            return ks.newKieBuilder( kfs, classLoader ).buildAll(canonicalModelKieProjectClass);
+        } catch (ClassNotFoundException e) {
+            return ks.newKieBuilder( kfs, classLoader ).buildAll();
+        }
+    }
+
     public Results verify() {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
+        KieBuilder kieBuilder = buildAllWithDrlOrDefault();
         return kieBuilder.getResults();
     }
 

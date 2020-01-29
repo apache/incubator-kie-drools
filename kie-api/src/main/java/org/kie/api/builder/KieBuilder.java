@@ -59,4 +59,9 @@ public interface KieBuilder {
      * Returns the KieModule for which this KieBuilder has been created
      */
     KieModule getKieModule();
+
+    /**
+     * Returns the KieModule for which this KieBuilder has been created of the specific projectClass
+     */
+    KieModule getKieModule( Class<? extends ProjectType> projectClass );
 }
