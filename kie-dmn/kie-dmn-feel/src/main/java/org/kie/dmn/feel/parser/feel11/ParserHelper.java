@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -38,6 +39,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
+import org.kie.dmn.feel.lang.types.TypeSymbol;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -77,6 +79,24 @@ public class ParserHelper {
     public void pushScope(Type type) {
         LOG.trace("pushScope()");
         currentScope = new ScopeImpl( currentName.peek(), currentScope, type );
+    }
+
+    public void pushTypeScope() {
+        LOG.trace("pushTypeScope()");
+        // -- start of external.
+        ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
+        currentScope.define(new TypeSymbol("my list", BuiltInType.LIST));
+        currentScope.define(new TypeSymbol("my context", BuiltInType.CONTEXT));
+
+        ScopeImpl import1 = new ScopeImpl("my import", currentScope);
+        currentScope.define(new TypeSymbol("my import", BuiltInType.UNKNOWN));
+
+        import1.define(new TypeSymbol("my list2", BuiltInType.LIST));
+
+        Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> currentScope.define(t));
+        // -- end of external
+        newTypeScope.setParentScope(currentScope);
+        currentScope = newTypeScope;
     }
 
     public void popScope() {

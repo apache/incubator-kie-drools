@@ -114,6 +114,12 @@ quantifiedExpression
 
 // #54
 type
+@init {
+    helper.pushTypeScope();
+}
+@after {
+    helper.popScope();
+}
     : sk=Identifier {$sk.getText().equals("list");} LT type GT                                                        #listType
     | sk=Identifier {$sk.getText().equals("context");} LT Identifier COLON type ( COMMA Identifier COLON type )* GT   #contextType
     | FUNCTION                                                                                                        #qnType
