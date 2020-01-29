@@ -78,6 +78,29 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class));
         assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class));
 
+        Map<String, Object> firstMap = new HashMap<>();
+        firstMap.put("Price", new BigDecimal(2000));
+        firstMap.put("Name", "PC");
+        Map<String, Object> secondMap = new HashMap<>();
+        secondMap.put("Price", new BigDecimal(3300));
+        secondMap.put("Name", "CAR");
+        String firstParameter = "{Price: 2000,Name:\"PC\"}";
+        String secondParameter = "{Price:3300, Name:\"CAR\"}";
+        List<Map<String, Object>> context = Arrays.asList(firstMap, secondMap);
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + firstParameter + ", " + secondParameter + "]").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2001,Name:\"PC\"}, {Price:3301,Name:\"CAR\"}]").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2000, Name:\"PCA\"}, {Price:3300,Name:\"CARE\"}]").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Pric: 2000, Name:\"PC\"}, {Price:3300,Names:\"CARE\"}]").toString(), context, List.class));
+        /* Different order: Failure */
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + secondParameter + ", " + firstParameter + "]").toString(), context, List.class));
+        /* IN operator */
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(firstParameter + " in ?").toString(), context, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(secondParameter + " in ?").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 2001,Name:\"PC\"} in ?").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 3300,Name:\"CARE\"} in ?").toString(), context, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + firstParameter + " in ?) and ("+ secondParameter +" in ?)").toString(), context, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + secondParameter + " in ?) and ("+ firstParameter +" in ?)").toString(), context, List.class));
+
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Error during evaluation:");
