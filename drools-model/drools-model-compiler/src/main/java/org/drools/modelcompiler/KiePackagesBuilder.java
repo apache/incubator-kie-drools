@@ -443,7 +443,7 @@ public class KiePackagesBuilder {
                     pattern = new Pattern( 0, JAVA_CLASS_OBJECT_TYPE );
                 }
 
-                PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
+                PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
                 Set<String> usedVariableName = new LinkedHashSet<>();
                 Binding binding = null;
 
@@ -453,7 +453,7 @@ public class KiePackagesBuilder {
                     }
 
                     if ( !sourcePattern.getBindings().isEmpty() ) {
-                        binding = ( Binding ) sourcePattern.getBindings().iterator().next();
+                        binding = sourcePattern.getBindings().iterator().next();
                         for (Variable var: binding.getInputVariables()) {
                             usedVariableName.add(var.getName());
                         }

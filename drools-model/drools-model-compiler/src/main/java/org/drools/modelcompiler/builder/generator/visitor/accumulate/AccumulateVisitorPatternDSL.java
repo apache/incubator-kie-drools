@@ -48,6 +48,11 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     @Override
+    protected void pushAccumulateContext( MethodCallExpr accumulateExprs ) {
+        context.pushExprPointer(accumulateExprs::addArgument);
+    }
+
+    @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
@@ -83,10 +88,10 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         oldBinding.ifPresent(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+            LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
+            LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
-            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
+            Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
 
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);

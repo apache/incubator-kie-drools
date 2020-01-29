@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
@@ -53,6 +54,25 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     @Override
+    protected void pushAccumulateContext( MethodCallExpr accumulateExprs ) {
+        context.pushExprPointer(new FlowExpressionConsumer( accumulateExprs ));
+    }
+
+    public static class FlowExpressionConsumer implements Consumer<Expression> {
+
+        private final MethodCallExpr accumulateExprs;
+
+        public FlowExpressionConsumer( MethodCallExpr accumulateExprs ) {
+            this.accumulateExprs = accumulateExprs;
+        }
+
+        @Override
+        public void accept( Expression expression ) {
+            accumulateExprs.addArgument( expression );
+        }
+    }
+
+    @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
@@ -73,7 +93,12 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
                 Optional<MethodCallExpr> lastBinding = Optional.ofNullable(findLastBinding(allExpressions));
                 composeTwoBindingIntoExpression(newBindingExpression, lastBinding, accumulateDSL);
             } else {
-                replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
+                MethodCallExpr lastPattern = findLastPattern(allExpressions);
+                if (lastPattern != null) {
+                    replaceBindingWithPatternBinding( newBindingExpression, lastPattern );
+                } else {
+                    ((FlowExpressionConsumer)context.peekExprPointer()).accumulateExprs.getArguments().add( 0, newBindingExpression );
+                }
                 newBindingResults.add( newBinding );
             }
         });
@@ -98,10 +123,10 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         return pattern.getParentNode().map(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+            LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
+            LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
-            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
+            Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
 
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);
@@ -128,10 +153,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     private void replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {
-        if (lastPattern == null) {
-            return;
-        }
-
         final Expression bindingId = lastPattern.getArgument(1);
 
         bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId)).ifPresent( name -> {
