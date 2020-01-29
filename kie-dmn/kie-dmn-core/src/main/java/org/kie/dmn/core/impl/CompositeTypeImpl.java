@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
 
 public class CompositeTypeImpl
         extends BaseDMNTypeImpl {
@@ -140,16 +141,9 @@ public class CompositeTypeImpl
             return true; // a null-value can be assigned to any type.
         } else {
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
-                Method getter = EvalHelper.getGenericAccessor( o.getClass(), f.getKey() );
-                if ( getter != null ) {
-                    Object invoked;
-                    try {
-                        invoked = getter.invoke( o );
-                    } catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-                        return false;
-                    }
-                    Object fieldValue = EvalHelper.coerceNumber( invoked );
-                    if ( !f.getValue().isAssignableValue( fieldValue ) ) {
+                PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
+                if (fValue.isDefined()) {
+                    if (!f.getValue().isAssignableValue(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
                         return false;
                     }
                 } else {
