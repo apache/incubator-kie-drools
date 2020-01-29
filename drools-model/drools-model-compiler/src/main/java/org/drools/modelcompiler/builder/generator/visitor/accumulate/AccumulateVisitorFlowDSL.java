@@ -61,7 +61,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     public static class FlowExpressionConsumer implements Consumer<Expression> {
 
         private final MethodCallExpr accumulateExprs;
-        private boolean insertAsFirst;
 
         public FlowExpressionConsumer( MethodCallExpr accumulateExprs ) {
             this.accumulateExprs = accumulateExprs;
@@ -69,15 +68,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
         @Override
         public void accept( Expression expression ) {
-            if (insertAsFirst) {
-                accumulateExprs.getArguments().add( 0, expression );
-            } else {
-                accumulateExprs.addArgument( expression );
-            }
-        }
-
-        public void setInsertAsFirst( boolean insertAsFirst ) {
-            this.insertAsFirst = insertAsFirst;
+            accumulateExprs.addArgument( expression );
         }
     }
 
@@ -106,10 +97,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
                 if (lastPattern != null) {
                     replaceBindingWithPatternBinding( newBindingExpression, lastPattern );
                 } else {
-                    FlowExpressionConsumer flowExpressionConsumer = (FlowExpressionConsumer)context.peekExprPointer();
-                    flowExpressionConsumer.setInsertAsFirst( true );
-                    context.addExpression( newBindingExpression );
-                    flowExpressionConsumer.setInsertAsFirst( false );
+                    ((FlowExpressionConsumer)context.peekExprPointer()).accumulateExprs.getArguments().add( 0, newBindingExpression );
                 }
                 newBindingResults.add( newBinding );
             }
