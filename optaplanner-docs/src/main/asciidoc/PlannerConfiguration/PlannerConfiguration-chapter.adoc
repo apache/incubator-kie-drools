@@ -1823,9 +1823,9 @@ SolverConfig solverConfig = SolverConfig.createFromXmlResource(".../cloudBalanci
 SolverManager<CloudBalance, UUID> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
 ----
 
-Each problem submitted to the `SolverManager.solve(...)` methods needs a unique problem ID,
-to distinguish with other problems in other calls,
-such as `getSolverStatus(problemId)` and `terminateEarly(problemId)`.
+Each problem submitted to the `SolverManager.solve(...)` methods needs a unique problem ID.
+Later calls to `getSolverStatus(problemId)` or `terminateEarly(problemId)` use that problem ID
+to distinguish between the planning problems.
 The problem ID must be an immutable class, such as `Long`, `String` or `java.util.UUID`.
 
 The `SolverManagerConfig` class has a `parallelSolverCount` property,
@@ -1902,9 +1902,10 @@ even if you need to react on problem changes during the day.
 [[solverManagerSolveAndListen]]
 === Solve and listen to show progress to the end-user
 
-When the solver is running and an end-user is waiting for that solution,
-it's vital to show progress to the end-user.
-Display the best score so far and visualize the best solution so far.
+When a solver is running while an end-user is waiting for that solution,
+the user might need to wait for several minutes or hours before receiving a result.
+To assure the user that everything is going well,
+show progress by displaying the best solution and best score attained so far.
 
 To handle intermediate best solutions, use `solveAndListen(...)`:
 
@@ -1938,4 +1939,4 @@ This implementation is using the database to communicate with the UI, which poll
 More advanced implementations push the best solutions directly to the UI or a messaging queue.
 
 If the user is satisfied with the intermediate best solution
-and does not want to wait for a better one, call `SolverManager.terminateEarly(problemId)`.
+and does not want to wait any longer for a better one, call `SolverManager.terminateEarly(problemId)`.
