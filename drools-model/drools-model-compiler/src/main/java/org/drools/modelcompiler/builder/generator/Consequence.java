@@ -248,7 +248,7 @@ public class Consequence {
 
 
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
+        MethodCallExpr executeCall = new MethodCallExpr(onCall != null ? onCall : new NameExpr("D"), EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
