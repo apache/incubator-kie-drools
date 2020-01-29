@@ -76,6 +76,7 @@ class TestGenTestWriter {
         imports.add("org.kie.api.builder.KieFileSystem");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
+        imports.add("org.drools.compiler.kie.builder.impl.DrlProject");
         if (!scoreDrlFileList.isEmpty()) {
             imports.add("java.io.File");
         }
@@ -126,7 +127,7 @@ class TestGenTestWriter {
                     .append("                .newClassPathResource(\"").append(drl).append("\"));\n");
         });
         sb
-                .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
+                .append("        kieServices.newKieBuilder(kfs).buildAll(DrlProject.class);\n")
                 .append("        KieContainer kieContainer = kieServices.newKieContainer("
                         + "kieServices.getRepository().getDefaultReleaseId());\n")
                 .append("        KieSession kieSession = kieContainer.newKieSession();\n\n");
