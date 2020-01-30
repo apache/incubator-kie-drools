@@ -31,10 +31,11 @@ import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.TypeSymbol;
 
-public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
+public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTypeRegistry {
 
     protected Map<String, Map<String, DMNType>> types = new HashMap<>();
     protected Map<String, QName> aliases;
@@ -73,10 +74,12 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
         }
     }
 
+    @Override
     public Scope getItemDefScope() {
         return feelTypesScope;
     }
 
+    @Override
     public Type resolveFEELType(List<String> qns) {
         if (qns.size() == 1) {
             return feelTypesScope.resolve(qns.get(0)).getType();

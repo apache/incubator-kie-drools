@@ -25,6 +25,7 @@ public class TempTest extends BaseFEELTest {
     @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
+                                                {"123 instance of context<name:string, age:number>", Boolean.FALSE, null},
                                                 {"123 instance of my import.my list2", Boolean.TRUE, null},
         };
         return addAdditionalParameters(cases, false);
