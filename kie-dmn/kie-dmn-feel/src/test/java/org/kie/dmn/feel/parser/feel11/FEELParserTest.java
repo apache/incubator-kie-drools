@@ -1402,7 +1402,7 @@ public class FEELParserTest {
 
         ParseTree tree = parser.expression();
 
-        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
         BaseNode expr = v.visit( tree );
         return expr;
     }

@@ -35,7 +35,7 @@ public class FormalParameterNode extends BaseNode {
         if (type != null) {
             this.type = type;
         } else {
-            TypeNode synthetic = new TypeNode();
+            TypeNode synthetic = new CTypeNode(BuiltInType.UNKNOWN);
             synthetic.copyLocationAttributesFrom(name);
             synthetic.setText(SimpleType.ANY);
             this.type = synthetic;

@@ -116,7 +116,7 @@ public class DirectCompilerUnaryTestsTest {
         if (listener.isError()) {
             directResult = CompiledFEELSupport.compiledErrorUnaryTest(listener.event().getMessage());
         } else {
-            ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+            ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
             BaseNode node = v.visit(tree);
             BaseNode transformed = node.accept(new ASTUnaryTestTransform()).node();
             directResult = transformed.accept(new ASTCompilerVisitor());

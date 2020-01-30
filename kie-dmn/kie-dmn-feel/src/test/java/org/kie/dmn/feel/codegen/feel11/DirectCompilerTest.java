@@ -481,7 +481,7 @@ public class DirectCompilerTest {
 
         ParseTree tree = parser.compilation_unit();
 
-        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
         BaseNode node = v.visit(tree);
         DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
         

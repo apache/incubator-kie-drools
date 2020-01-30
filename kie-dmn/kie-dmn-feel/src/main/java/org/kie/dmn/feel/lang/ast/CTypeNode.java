@@ -19,22 +19,24 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 
-public abstract class TypeNode
-        extends BaseNode {
+public class CTypeNode extends TypeNode {
 
-    public TypeNode() {
+    private final Type type;
+
+    public CTypeNode(Type type) {
         super();
+        this.type = type;
     }
 
-    public TypeNode(ParserRuleContext ctx) {
+    public CTypeNode(ParserRuleContext ctx, Type type) {
         super( ctx );
+        this.type = type;
     }
 
     @Override
     public Type evaluate(EvaluationContext ctx) {
-        return BuiltInType.determineTypeFromName( getText() );
+        return type;
     }
 
     @Override
