@@ -8,16 +8,17 @@ import axios from "axios";
 import BaseLayout from "./components/Templates/BaseComponent/BaseLayout";
 
 const client = new ApolloClient({
-  uri: process.env.KOGITO_DATAINDEX_HTTP_URL +"/graphql",
+  uri: process.env.KOGITO_DATAINDEX_HTTP_URL + "/graphql",
   request: (operation) => {
-    if(process.env.KOGITO_AUTH_ENABLED){
+    if (process.env.KOGITO_AUTH_ENABLED) {
       const kcInfo = JSON.parse(localStorage.getItem("keycloakData"));
       const token = kcInfo.token;
       operation.setContext({
-      headers: {
-        authorization: token ? `Bearer ${token}` : ''
-      }
-    })}
+        headers: {
+          authorization: token ? `Bearer ${token}` : ''
+        }
+      })
+    }
   }
 });
 
@@ -30,16 +31,16 @@ const appRender = () => {
   )
 };
 
-if(process.env.KOGITO_AUTH_ENABLED) {
+if (process.env.KOGITO_AUTH_ENABLED) {
   const keycloakConf = {
     realm: process.env.KOGITO_KEYCLOAK_REALM,
-    url: process.env.KOGITO_KEYCLOAK_URL +"/auth",
+    url: process.env.KOGITO_KEYCLOAK_URL + "/auth",
     clientId: process.env.KOGITO_KEYCLOAK_CLIENT_ID
   };
 
   const kc = Keycloak(keycloakConf);
 
-  kc.init({onLoad: "login-required"})
+  kc.init({ onLoad: "login-required" })
     .success(authenticated => {
       if (authenticated) {
         localStorage.setItem("keycloakData", JSON.stringify(kc));
@@ -60,7 +61,3 @@ if(process.env.KOGITO_AUTH_ENABLED) {
 } else {
   appRender();
 }
-
-
-
-

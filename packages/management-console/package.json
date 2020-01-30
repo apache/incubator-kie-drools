@@ -137,13 +137,13 @@
     ],
     "transform": {
       "^.+\\.(js|ts|tsx)$": "../../config/Jest-config/test-preprocessor.js",
-      "\\.(js|ts|tsx)$": "../../node_modules/babel-jest"
+      "\\.(js|ts|tsx)$": "../../node_modules/babel-jest",
+      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },
     "testMatch": [
       "**/tests/*.(ts|tsx|js)"
     ],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMock.js",
       "\\.(scss|sass|css)$": "identity-obj-proxy"
     },
     "transformIgnorePatterns": [

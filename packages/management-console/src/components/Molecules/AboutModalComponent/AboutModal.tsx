@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   AboutModal,
-  Button,
   TextContent,
+  Text,
   TextList,
   TextListItem
 } from '@patternfly/react-core';
 import './AboutModal.css';
+import aboutPageLogo from '../../../static/kogitoLogoAboutPage.svg';
+import aboutPageBackground from '../../../static/KogitoAbout.png';
+import { version } from '../../../../package.json';
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
@@ -20,29 +23,55 @@ const AboutModalBox: React.FC<IOwnProps> = ({
     <AboutModal
       isOpen={isOpenProp}
       onClose={handleModalToggleProp}
-      trademark="Trademark and copyright information here"
+      trademark="Management Console is part of Kogito, an open source software released under the Apache Software License 2.0"
       brandImageAlt="Kogito Logo"
-      brandImageSrc={require('../../../static/kogito_about_logo.png')}
-      productName="Kogito"
+      brandImageSrc={aboutPageLogo}
+      backgroundImageSrc={aboutPageBackground}
     >
       <TextContent>
+        <Text component="h5" />
         <TextList component="dl">
-          <TextListItem component="dt">CFME Version</TextListItem>
-          <TextListItem component="dd">5.5.3.4.20102789036450</TextListItem>
-          <TextListItem component="dt">Cloudforms Version</TextListItem>
-          <TextListItem component="dd">4.1</TextListItem>
-          <TextListItem component="dt">Server Name</TextListItem>
-          <TextListItem component="dd">40DemoMaster</TextListItem>
-          <TextListItem component="dt">User Name</TextListItem>
-          <TextListItem component="dd">Administrator</TextListItem>
-          <TextListItem component="dt">User Role</TextListItem>
+          <TextListItem component="dt">Version: </TextListItem>
+          <TextListItem component="dd">{version}</TextListItem>
+          <TextListItem component="dt">License information: </TextListItem>
           <TextListItem component="dd">
-            EvmRole-super_administrator
+            <a
+              href="https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE"
+              target="_blank"
+            >
+              https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE
+            </a>
           </TextListItem>
-          <TextListItem component="dt">Browser Version</TextListItem>
-          <TextListItem component="dd">601.2</TextListItem>
-          <TextListItem component="dt">Browser OS</TextListItem>
-          <TextListItem component="dd">Mac</TextListItem>
+          <TextListItem component="dt">Report a bug: </TextListItem>
+          <TextListItem component="dd">
+            <a href="https://issues.redhat.com/projects/KOGITO" target="_blank">
+              https://issues.redhat.com/projects/KOGITO
+            </a>
+          </TextListItem>
+          <TextListItem component="dt">Get involved/help/docs: </TextListItem>
+          <TextListItem component="dd">
+            <a
+              href="https://github.com/kiegroup/kogito-runtimes/wiki"
+              target="_blank"
+            >
+              https://github.com/kiegroup/kogito-runtimes/wiki
+            </a>
+          </TextListItem>
+          <TextListItem component="dt">Kogito URL: </TextListItem>
+          <TextListItem component="dd">
+            <a href="http://kogito.kie.org" target="_blank">
+              http://kogito.kie.org
+            </a>
+          </TextListItem>
+          <TextListItem component="dt">Data-Index URL: </TextListItem>
+          <TextListItem component="dd">
+            <a
+              href={process.env.KOGITO_DATAINDEX_URL + '/graphql'}
+              target="_blank"
+            >
+              {process.env.KOGITO_DATAINDEX_HTTP_URL + '/graphql'}
+            </a>
+          </TextListItem>
         </TextList>
       </TextContent>
     </AboutModal>

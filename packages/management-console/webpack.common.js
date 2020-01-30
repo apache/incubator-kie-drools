@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
-
 const BG_IMAGES_DIRNAME = 'bgimages';
 
 module.exports = {
@@ -38,8 +37,6 @@ module.exports = {
       },
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
-        // only process modules with this loader
-        // if they live under a 'fonts' or 'pficon' directory
         include: [
           path.resolve('../../node_modules/patternfly/dist/fonts'),
           path.resolve(
@@ -53,7 +50,8 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@patternfly/patternfly/assets/pficon'
-          )
+          ),
+          path.resolve('./src/static')
         ],
         use: {
           loader: 'file-loader',
@@ -81,23 +79,9 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        // only process SVG modules with this loader if they live under a 'bgimages' directory
-        // this is primarily useful when applying a CSS background using an SVG
         include: input => input.indexOf(BG_IMAGES_DIRNAME) > -1,
         use: {
           loader: 'svg-url-loader',
-          options: {}
-        }
-      },
-      {
-        test: /\.svg$/,
-        include: input =>
-          input.indexOf(BG_IMAGES_DIRNAME) === -1 &&
-          input.indexOf('fonts') === -1 &&
-          input.indexOf('background-filter') === -1 &&
-          input.indexOf('pficon') === -1,
-        use: {
-          loader: 'raw-loader',
           options: {}
         }
       },
