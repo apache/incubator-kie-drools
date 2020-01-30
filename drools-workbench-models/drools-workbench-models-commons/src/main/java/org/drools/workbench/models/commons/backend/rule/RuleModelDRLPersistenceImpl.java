@@ -3125,24 +3125,31 @@ public class RuleModelDRLPersistenceImpl
         //identified as an explicit operation above; normally where the RHS line began with such a call. Therefore it is likely the
         // variable they are modifying was recorded as Free Format DRL and hence the "sets" need to be Free Format DRL too.
         for (Map.Entry<String, List<String>> entry : setStatements.entrySet()) {
-            if (boundParams.containsKey(entry.getKey())) {
-                ActionSetField action = new ActionSetField(entry.getKey());
-                addSettersToAction(entry.getValue(),
-                                   action,
-                                   entry.getKey(),
-                                   boundParams,
-                                   dmo,
-                                   m,
-                                   isJavaDialect);
+            if (boundParams.containsKey(entry.getKey()) && SetStatementValidator.validate(entry.getValue())) {
+                final ActionSetField action = new ActionSetField(entry.getKey());
+                final List<String> setters = entry.getValue();
+                if (setters != null) {
+                    for (final String statement : setters) {
+                        addSetterToAction(action,
+                                          entry.getKey(),
+                                          boundParams,
+                                          dmo,
+                                          m,
+                                          isJavaDialect,
+                                          statement);
+                    }
+                }
                 m.addRhsItem(action,
                              setStatementsPosition.get(entry.getKey()));
             } else {
-                FreeFormLine action = new FreeFormLine();
                 StringBuilder sb = new StringBuilder();
                 for (String setter : entry.getValue()) {
                     sb.append(setter).append("\n");
                 }
-                action.setText(sb.toString());
+                String drl = sb.toString();
+
+                FreeFormLine action = new FreeFormLine();
+                action.setText(drl);
                 m.addRhsItem(action,
                              setStatementsPosition.get(entry.getKey()));
             }
@@ -3304,20 +3311,36 @@ public class RuleModelDRLPersistenceImpl
                                     final boolean isJavaDialect) {
         if (setters != null) {
             for (String statement : setters) {
-                int dotPos = statement.indexOf('.');
-                int argStart = statement.indexOf('(');
-                String methodName = statement.substring(dotPos + 1,
-                                                        argStart).trim();
                 addSetterToAction(action,
                                   variable,
                                   boundParams,
                                   dmo,
                                   model,
                                   isJavaDialect,
-                                  statement,
-                                  methodName);
+                                  statement);
             }
         }
+    }
+
+    private void addSetterToAction(final ActionFieldList action,
+                                   final String variable,
+                                   final Map<String, String> boundParams,
+                                   final PackageDataModelOracle dmo,
+                                   final RuleModel model,
+                                   final boolean isJavaDialect,
+                                   final String statement) {
+        final int dotPos = statement.indexOf('.');
+        final int argStart = statement.indexOf('(');
+        final String methodName = statement.substring(dotPos + 1,
+                                                      argStart).trim();
+        addSetterToAction(action,
+                          variable,
+                          boundParams,
+                          dmo,
+                          model,
+                          isJavaDialect,
+                          statement,
+                          methodName);
     }
 
     private void addModifiersToAction(final String modifiers,
