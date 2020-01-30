@@ -18,7 +18,9 @@ package org.optaplanner.core.api.solver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -32,10 +34,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -51,18 +53,10 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSoluti
 
 public class SolverManagerTest {
 
-    @Test(timeout = 600_000)
+    @Test(timeout = 1_000)
     public void solveBatch_2InParallel() throws ExecutionException, InterruptedException {
-        CyclicBarrier barrier = new CyclicBarrier(2);
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> {
-                            try {
-                                barrier.await();
-                            } catch (InterruptedException | BrokenBarrierException e) {
-                                fail("Cyclic barrier failed.");
-                            }
-                        }), new ConstructionHeuristicPhaseConfig());
+                .withPhases(createPhaseWithConcurrentSolvingStart(2), new ConstructionHeuristicPhaseConfig());
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
                 solverConfig, new SolverManagerConfig().withParallelSolverCount("2"));
 
@@ -75,7 +69,19 @@ public class SolverManagerTest {
         assertSolutionInitialized(solverJob2.getFinalBestSolution());
     }
 
-    @Test(timeout = 600_000)
+    private CustomPhaseConfig createPhaseWithConcurrentSolvingStart(int barrierPartiesCount) {
+        CyclicBarrier barrier = new CyclicBarrier(barrierPartiesCount);
+        return new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> {
+                    try {
+                        barrier.await();
+                    } catch (InterruptedException | BrokenBarrierException e) {
+                        fail("Cyclic barrier failed.");
+                    }
+                });
+    }
+
+    @Test(timeout = 1_000)
     public void getSolverStatus() throws InterruptedException, BrokenBarrierException, ExecutionException {
         CyclicBarrier solverThreadReadyBarrier = new CyclicBarrier(2);
         CyclicBarrier mainThreadReadyBarrier = new CyclicBarrier(2);
@@ -249,156 +255,167 @@ public class SolverManagerTest {
         assertTrue(eventCount.get() < 4);
     }
 
+    @Ignore("A test that runs forever and is here to investigate a faulty thread-creating behavior.")
     @Test
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
-        CyclicBarrier barrier = new CyclicBarrier(processCount / 2);
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> {
-                            try {
-                                barrier.await();
-                            } catch (InterruptedException | BrokenBarrierException e) {
-                                fail("Cyclic barrier failed.");
-                            }
-                        }), new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig())
-                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
+                .withPhases(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig())
+//                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
                 // Adds moveThreadCount to the solver config.
                 .withMoveThreadCount("AUTO");
         // Creates solverManagerConfig with multiple threads.
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
+        SolverManager<TestdataSolution, Integer> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
 
-        List<SolverJob<TestdataSolution, Long>> jobs = new ArrayList<>();
-        for (long i = 0; i < processCount; i++) {
+        List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>();
+        for (int i = 0; i < processCount; i++) {
             jobs.add(solverManager.solve(i, PlannerTestUtils.generateTestdataSolution("s" + i, 10)));
         }
 
-        for (SolverJob<TestdataSolution, Long> job : jobs) {
+        assertInitializedJobs(jobs);
+    }
+
+    private void assertInitializedJobs(List<SolverJob<TestdataSolution, Integer>> jobs) throws InterruptedException, ExecutionException {
+        for (SolverJob<TestdataSolution, Integer> job : jobs) {
+            // Method getFinalBestSolution() waits for the solving to finish, therefore it ensures synchronization.
             assertSolutionInitialized(job.getFinalBestSolution());
         }
     }
 
-    @Test(timeout = 600_000)
-    public void  submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
+    @Test(timeout = 2_000)
+    public void submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
         // Use twice the amount of problems than available processors.
         int problemCount = Runtime.getRuntime().availableProcessors() * 2;
 
         SolverManager<TestdataSolution, Integer> solverManager = createSolverManagerTestableByDifferentConsumers();
-
-        assertSolveWithoutConsumer(problemCount, solverManager);
-        assertSolveWithBestSolutionConsumer(problemCount, solverManager);
-        assertSolveWithFinalBestSolutionConsumer(problemCount, solverManager);
+        assertDifferentSolveMethods(problemCount, solverManager);
     }
 
     private SolverManager<TestdataSolution, Integer> createSolverManagerTestableByDifferentConsumers() {
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        (ScoreDirector<TestdataSolution> scoreDirector) -> {
-                            TestdataSolution solution = scoreDirector.getWorkingSolution();
-                            TestdataEntity entity = solution.getEntityList().get(0);
-                            scoreDirector.beforeVariableChanged(entity, "value");
-                            entity.setValue(solution.getValueList().get(0));
-                            scoreDirector.afterVariableChanged(entity, "value");
-                            scoreDirector.triggerVariableListeners();
-                        }), new CustomPhaseConfig().withCustomPhaseCommands(
-                        (ScoreDirector<TestdataSolution> scoreDirector) -> {
-                            TestdataSolution solution = scoreDirector.getWorkingSolution();
-                            TestdataEntity entity = solution.getEntityList().get(1);
-                            scoreDirector.beforeVariableChanged(entity, "value");
-                            entity.setValue(solution.getValueList().get(1));
-                            scoreDirector.afterVariableChanged(entity, "value");
-                            scoreDirector.triggerVariableListeners();
-                        }));
+                .withPhases(createGraduallyInitializedPhaseConfigs());
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
         return SolverManager.create(solverConfig, solverManagerConfig);
     }
 
-    private void assertSolveWithoutConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
+    private PhaseConfig[] createGraduallyInitializedPhaseConfigs() {
+        PhaseConfig[] configs = new PhaseConfig[2];
+        for (int x = 0; x < 2; x++) {
+            configs[x] = createSetXEntityToXValuePhaseConfig(x);
+        }
+        return configs;
+    }
+
+    private CustomPhaseConfig createSetXEntityToXValuePhaseConfig(int x) {
+        return new CustomPhaseConfig().withCustomPhaseCommands(
+                (ScoreDirector<TestdataSolution> scoreDirector) -> {
+                    TestdataSolution solution = scoreDirector.getWorkingSolution();
+                    TestdataEntity entity = solution.getEntityList().get(x);
+                    scoreDirector.beforeVariableChanged(entity, "value");
+                    entity.setValue(solution.getValueList().get(x));
+                    scoreDirector.afterVariableChanged(entity, "value");
+                    scoreDirector.triggerVariableListeners();
+                });
+    }
+
+    private void assertDifferentSolveMethods(int problemCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
+        assertSolveWithoutConsumer(problemCount, solverManager);
+        assertSolveWithConsumer(problemCount, solverManager, true);
+        assertSolveWithConsumer(problemCount, solverManager, false);
+    }
+
+    private void assertSolveWithoutConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException, ExecutionException {
         List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>(problemCount);
 
         for (int id = 0; id < problemCount; id++) {
-            jobs.add(solverManager.solve(id, PlannerTestUtils.generateTestdataSolution("s" + id, 2)));
+            jobs.add(solverManager.solve(id, PlannerTestUtils.generateTestdataSolution(Integer.toString(id))));
         }
-
-        for (SolverJob<TestdataSolution, Integer> job : jobs) {
-            assertSolutionInitialized(job.getFinalBestSolution());
-        }
+        assertInitializedJobs(jobs);
     }
 
-    private void assertSolveWithBestSolutionConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
-            throws InterruptedException, ExecutionException {
-        // Triggers twice for every problem, a best solution is generated after each phase.
-        int bestSolutionEventTriggeredCountExpected = problemCount * 2;
-        CountDownLatch bestSolutionConsumerLatch = new CountDownLatch(bestSolutionEventTriggeredCountExpected);
+    private void assertSolveWithConsumer(
+            int problemCount, SolverManager<TestdataSolution, Integer> solverManager, boolean onlyFinalBestSolutions)
+            throws ExecutionException, InterruptedException {
 
-        List<TestdataSolution> consumedBestSolutions = Collections.synchronizedList(new ArrayList<>(problemCount));
+        // Two solutions for every problem.
+        Map<Integer, List<TestdataSolution>> consumedSolutions = new HashMap<>(problemCount * 2);
 
-        AtomicInteger bestSolutionEventTriggerCount = new AtomicInteger();
-        Consumer<TestdataSolution> bestSolutionConsumer = bestSolution -> {
-            consumedBestSolutions.add(bestSolution);
-            bestSolutionEventTriggerCount.incrementAndGet();
-            bestSolutionConsumerLatch.countDown();
-        };
+        List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>(problemCount);
 
-        List<TestdataSolution> jobFinalBestSolutions = new ArrayList<>(problemCount);
         for (int id = 0; id < problemCount; id++) {
-            jobFinalBestSolutions.add(solverManager.solveAndListen(
-                    id,
-                    problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
-                    bestSolutionConsumer, null).getFinalBestSolution());
+            List<TestdataSolution> consumedBestSolutions = Collections.synchronizedList(new ArrayList<>());
+            String solutionName = Integer.toString(id);
+            if (onlyFinalBestSolutions) {
+                jobs.add(solverManager.solve(
+                        id,
+                        problemId -> PlannerTestUtils.generateTestdataSolution(solutionName, 2),
+                        consumedBestSolutions::add, null));
+            } else {
+                jobs.add(solverManager.solveAndListen(
+                        id,
+                        problemId -> PlannerTestUtils.generateTestdataSolution(solutionName, 2),
+                        consumedBestSolutions::add, null));
+            }
+            consumedSolutions.put(id, consumedBestSolutions);
         }
-        bestSolutionConsumerLatch.await();
-
-        assertThat(bestSolutionEventTriggerCount.intValue()).isSameAs(bestSolutionEventTriggeredCountExpected);
-        assertThat(consumedBestSolutions).containsAll(jobFinalBestSolutions);
+        assertInitializedJobs(jobs);
+        assertConsumedSolutions(problemCount, onlyFinalBestSolutions, consumedSolutions);
     }
 
-    private void assertSolveWithFinalBestSolutionConsumer(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
-            throws InterruptedException, ExecutionException {
-        // Triggers once once at the end of solving for each problem.
-        int finalBestSolutionEventTriggeredCountExpected = problemCount;
-        CountDownLatch finalBestSolutionConsumerLatch = new CountDownLatch(finalBestSolutionEventTriggeredCountExpected);
-
-        List<TestdataSolution> consumedFinalBestSolutions = Collections.synchronizedList(new ArrayList<>(problemCount));
-
-        AtomicInteger finalBestSolutionEventTriggerCount = new AtomicInteger();
-        Consumer<TestdataSolution> finalBestSolutionConsumer = finalBestSolution -> {
-            consumedFinalBestSolutions.add(finalBestSolution);
-            finalBestSolutionEventTriggerCount.incrementAndGet();
-            finalBestSolutionConsumerLatch.countDown();
-        };
-
-        List<TestdataSolution> jobFinalBestSolutions = new ArrayList<>(problemCount);
-        for (int id = 0; id < problemCount; id++) {
-            jobFinalBestSolutions.add(solverManager.solve(
-                    id,
-                    problemId -> PlannerTestUtils.generateTestdataSolution("s" + problemId, 2),
-                    finalBestSolutionConsumer, null).getFinalBestSolution());
+    private void assertConsumedSolutions(int problemCount, boolean onlyFinalBestSolutions, Map<Integer, List<TestdataSolution>> consumedSolutions) {
+        if (onlyFinalBestSolutions) {
+            assertConsumedFinalBestSolutions(problemCount, consumedSolutions);
+        } else {
+            assertConsumedBestSolutions(problemCount, consumedSolutions);
         }
-        finalBestSolutionConsumerLatch.await();
-
-        assertThat(finalBestSolutionEventTriggerCount.intValue()).isSameAs(finalBestSolutionEventTriggeredCountExpected);
-        assertThat(consumedFinalBestSolutions).containsAll(jobFinalBestSolutions);
     }
 
-    @Test(timeout = 600_000)
+    private void assertConsumedFinalBestSolutions(int problemCount, Map<Integer, List<TestdataSolution>> consumedSolutions) {
+        for (int i = 0; i < problemCount; i++) {
+            assertThat(consumedSolutions.get(i)).hasSize(1);
+            TestdataSolution solution = consumedSolutions.get(i).get(0);
+            assertConsumedFinalBestSolution(solution);
+        }
+    }
+
+    private void assertConsumedFinalBestSolution(TestdataSolution solution) {
+        TestdataEntity entity = solution.getEntityList().get(0);
+        assertThat(entity.getCode()).isEqualTo("e1");
+        assertThat(entity.getValue().getCode()).isEqualTo("v1");
+        entity = solution.getEntityList().get(1);
+        assertThat(entity.getCode()).isEqualTo("e2");
+        assertThat(entity.getValue().getCode()).isEqualTo("v2");
+    }
+
+    private void assertConsumedBestSolutions(int problemCount, Map<Integer, List<TestdataSolution>> consumedSolutions) {
+        for (int i = 0; i < problemCount; i++) {
+            assertThat(consumedSolutions.get(i)).hasSize(2);
+            assertConsumedFirstBestSolution(consumedSolutions.get(i).get(0));
+            assertConsumedFinalBestSolution(consumedSolutions.get(i).get(1));
+        }
+    }
+
+    private void assertConsumedFirstBestSolution(TestdataSolution solution) {
+        TestdataEntity entity = solution.getEntityList().get(0);
+        assertThat(entity.getCode()).isEqualTo("e1");
+        assertThat(entity.getValue().getCode()).isEqualTo("v1");
+        entity = solution.getEntityList().get(1);
+        assertThat(entity.getCode()).isEqualTo("e2");
+        assertThat(entity.getValue()).isNull();
+    }
+
+    @Test(timeout = 100)
     public void runSameIdProcesses_throwsIllegalStateException() {
-        SolverManagerConfig config = new SolverManagerConfig();
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
-        CyclicBarrier barrier = new CyclicBarrier(2);
-        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> {
-                            try {
-                                barrier.await();
-                            } catch (InterruptedException | BrokenBarrierException e) {
-                                fail("Cyclic barrier failed.");
-                            }
-                        }));
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(createPhaseWithConcurrentSolvingStart(2));
 
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, config);
+        SolverManager<TestdataSolution, Long> solverManager =
+                SolverManager.create(solverConfig, solverManagerConfig);
 
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("solver"));
         assertThatThrownBy(() -> solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("solver")))
