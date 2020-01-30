@@ -24,7 +24,6 @@ import java.util.Map;
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
 import org.drools.model.View;
-import org.drools.model.functions.IntrospectableLambda;
 import org.drools.model.patterns.CompositePatterns;
 
 public class RuleImpl implements Rule, ModelComponent {
@@ -125,18 +124,5 @@ public class RuleImpl implements Rule, ModelComponent {
     @Override
     public String toString() {
         return "Rule: " +  pkg + "." + name + " (view: " + view + ", consequences: " + consequences + ")";
-    }
-
-    public static boolean areDifferentInLambdaClassNameHash(RuleImpl o1, RuleImpl o2) {
-        System.out.println("areDifferentInLambdaClassNameHash : " + o1.getName());
-        String consequenceName1 = ((IntrospectableLambda) o1.getDefaultConsequence().getBlock()).getLambda().getClass().getName();
-        String consequenceName2 = ((IntrospectableLambda) o2.getDefaultConsequence().getBlock()).getLambda().getClass().getName();
-        System.out.println("  consequenceName1 = " + consequenceName1);
-        System.out.println("  consequenceName2 = " + consequenceName2);
-        if (!consequenceName1.equals(consequenceName2)) {
-            System.out.println("  Different!!!");
-            return true;
-        }
-        return false;
     }
 }

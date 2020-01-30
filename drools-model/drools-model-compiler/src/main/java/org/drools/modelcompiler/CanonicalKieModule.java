@@ -54,7 +54,6 @@ import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
-import org.drools.model.impl.RuleImpl;
 import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.reflective.ResourceProvider;
@@ -544,11 +543,6 @@ public class CanonicalKieModule implements InternalKieModule {
             if ( compare == 0 ) {
                 if ( !areEqualInModel( currentOld, currentNew ) ) {
                     registerChange( mainChangeSet, changes, type, ChangeType.UPDATED, currentOld );
-                } else {
-                    // Considered as equal in model. It means LambdaHash are equal. So now check class name hash
-                    if (currentOld instanceof RuleImpl && RuleImpl.areDifferentInLambdaClassNameHash( (RuleImpl)currentOld, (RuleImpl)currentNew )) {
-                        registerChange( mainChangeSet, changes, type, ChangeType.MERGE, currentOld );
-                    }
                 }
                 if ( oldRulesIterator.hasNext() ) {
                     currentOld = oldRulesIterator.next();

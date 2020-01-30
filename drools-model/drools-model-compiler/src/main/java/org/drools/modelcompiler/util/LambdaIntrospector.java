@@ -48,7 +48,6 @@ public class LambdaIntrospector implements LambdaPrinter {
     public String getLambdaFingerprint(Object lambda) {
         if(lambda.toString().equals("INSTANCE")) { // Materialized lambda
             return getExpressionHash(lambda);
-//            return lambda.getClass().getCanonicalName();
         }
 
         if (lambda instanceof IntrospectableLambda ) {
