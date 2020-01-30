@@ -18,21 +18,28 @@ package org.kie.dmn.core.compiler;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
+import org.kie.dmn.feel.lang.types.TypeSymbol;
 
 public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
 
     protected Map<String, Map<String, DMNType>> types = new HashMap<>();
     protected Map<String, QName> aliases;
     protected ScopeImpl feelTypesScope = new ScopeImpl(); // no parent scope, intentional.
+    protected Map<String, ScopeImpl> feelTypesScopeChildLU = new HashMap<>();
 
     protected abstract String feelNS();
 
@@ -44,6 +51,7 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
 
         for (String name : BuiltInType.UNKNOWN.getNames()) {
             feelTypes.put(name, unknown());
+            feelTypesScope.define(new TypeSymbol(name, BuiltInType.UNKNOWN));
         }
 
         for( BuiltInType type : BuiltInType.values() ) {
@@ -60,8 +68,42 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
                     feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, type );
                 }
                 feelTypes.put( name, feelPrimitiveType );
+                feelTypesScope.define(new TypeSymbol(name, type));
             }
         }
+    }
+
+    public Scope getItemDefScope() {
+        return feelTypesScope;
+    }
+
+    public Type resolveFEELType(List<String> qns) {
+        if (qns.size() == 1) {
+            return feelTypesScope.resolve(qns.get(0)).getType();
+        } else if (qns.size() == 2 && feelTypesScopeChildLU.containsKey(qns.get(0))) {
+            return feelTypesScopeChildLU.get(qns.get(0)).resolve(qns.get(1)).getType();
+        } else {
+            throw new IllegalStateException("Inconsistent state when resolving for qns: " + qns.toString());
+        }
+    }
+
+    protected void registerAsFEELType(DMNType dmnType) {
+        Optional<String> optAliasKey = keyfromNS(dmnType.getNamespace());
+        Type feelType = ((BaseDMNTypeImpl) dmnType).getFeelType();
+        if (!optAliasKey.isPresent()) {
+            feelTypesScope.define(new TypeSymbol(dmnType.getName(), feelType));
+        } else {
+            String aliasKey = optAliasKey.get();
+            feelTypesScopeChildLU.computeIfAbsent(aliasKey, k -> {
+                ScopeImpl importScope = new ScopeImpl(k, feelTypesScope);
+                feelTypesScope.define(new TypeSymbol(k, null));
+                return importScope;
+            }).define(new TypeSymbol(dmnType.getName(), feelType));
+        }
+    }
+
+    private Optional<String> keyfromNS(String ns) {
+        return aliases == null ? Optional.empty() : aliases.entrySet().stream().filter(kv -> kv.getValue().getNamespaceURI().equals(ns)).map(kv -> kv.getKey()).findFirst();
     }
 
     @Override
@@ -79,6 +121,7 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
             return typesMap.get( type.getName() );
         }
         typesMap.put( type.getName(), type );
+        registerAsFEELType(type);
         return type;
     }
 
