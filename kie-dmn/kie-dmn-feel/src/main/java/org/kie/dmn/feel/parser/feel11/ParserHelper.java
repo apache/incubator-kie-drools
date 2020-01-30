@@ -86,13 +86,13 @@ public class ParserHelper {
         // -- start of external.
         ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
         Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> newTypeScope.define(t));
-        newTypeScope.define(new TypeSymbol("my list"));
-        newTypeScope.define(new TypeSymbol("my context"));
+        newTypeScope.define(new TypeSymbol("my list", null));
+        newTypeScope.define(new TypeSymbol("my context", null));
 
         ScopeImpl import1 = new ScopeImpl("my import", newTypeScope);
-        newTypeScope.define(new TypeSymbol("my import"));
+        newTypeScope.define(new TypeSymbol("my import", null));
 
-        import1.define(new TypeSymbol("my list2"));
+        import1.define(new TypeSymbol("my list2", null));
 
         // -- end of external
         newTypeScope.setParentScope(currentScope);
