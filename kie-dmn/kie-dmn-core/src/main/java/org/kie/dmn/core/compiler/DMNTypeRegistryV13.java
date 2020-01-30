@@ -16,6 +16,10 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -27,6 +31,10 @@ public class DMNTypeRegistryV13 extends DMNTypeRegistryAbstract {
                                                               BuiltInType.UNKNOWN.getName(),
                                                               null, true, null, null,
                                                               BuiltInType.UNKNOWN );
+
+    public DMNTypeRegistryV13(Map<String, QName> aliases) {
+        super(aliases);
+    }
 
     @Override
     public DMNType unknown() {

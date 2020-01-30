@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
@@ -28,10 +30,12 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
 
     protected Map<String, Map<String, DMNType>> types = new HashMap<>();
+    protected Map<String, QName> aliases;
 
     protected abstract String feelNS();
 
-    public DMNTypeRegistryAbstract() {
+    public DMNTypeRegistryAbstract(Map<String, QName> aliases) {
+        this.aliases = aliases;
         String feelNamespace = feelNS();
         Map<String, DMNType> feelTypes = new HashMap<>(  );
         types.put( feelNamespace, feelTypes );
