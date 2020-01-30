@@ -151,14 +151,19 @@ public class ScopeImpl
 
     private void initializeTokenTree() {
         LOG.trace("[]: initializeTokenTree()");
-        tokenTree = new TokenTree();
-        for( String symbol : symbols.keySet() ) {
-            List<String> tokens = tokenize( symbol );
-            tokenTree.addName( tokens );
-        }
+        tokenTree = tokenTreeFromSymbols(getSymbols());
     }
 
-    private List<String> tokenize(String symbol) {
+    public static TokenTree tokenTreeFromSymbols(Map<String, Symbol> symbols) {
+        TokenTree tt = new TokenTree();
+        for( String symbol : symbols.keySet() ) {
+            List<String> tokens = tokenize( symbol );
+            tt.addName(tokens);
+        }
+        return tt;
+    }
+
+    private static List<String> tokenize(String symbol) {
         CharStream input = CharStreams.fromString(symbol);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         List<String> tokens = new ArrayList<>(  );

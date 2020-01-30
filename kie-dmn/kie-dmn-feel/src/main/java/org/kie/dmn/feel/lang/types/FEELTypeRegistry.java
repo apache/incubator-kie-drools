@@ -28,7 +28,7 @@ import org.kie.dmn.feel.lang.Type;
  */
 public interface FEELTypeRegistry {
 
-    Scope getItemDefScope();
+    Scope getItemDefScope(Scope parent);
 
     Type resolveFEELType(List<String> qns);
 

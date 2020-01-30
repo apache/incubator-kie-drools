@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -41,7 +40,6 @@ import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
-import org.kie.dmn.feel.lang.types.TypeSymbol;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -89,25 +87,24 @@ public class ParserHelper {
     }
 
     public void pushTypeScope() {
+        LOG.trace("pushTypeScope()");
+        Scope newTypeScope = typeRegistry.getItemDefScope(currentScope);
+        currentScope = newTypeScope;
         //        LOG.trace("pushTypeScope()");
-        //        ScopeImpl newTypeScope = (ScopeImpl) typeRegistry.getItemDefScope();
+        //        // -- start of external.
+        //        ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
+        //        Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> newTypeScope.define(t));
+        //        newTypeScope.define(new TypeSymbol("my list", null));
+        //        newTypeScope.define(new TypeSymbol("my context", null));
+        //
+        //        ScopeImpl import1 = new ScopeImpl("my import", newTypeScope);
+        //        newTypeScope.define(new TypeSymbol("my import", null));
+        //
+        //        import1.define(new TypeSymbol("my list2", null));
+        //
+        //        // -- end of external
         //        newTypeScope.setParentScope(currentScope);
         //        currentScope = newTypeScope;
-        LOG.trace("pushTypeScope()");
-        // -- start of external.
-        ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
-        Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> newTypeScope.define(t));
-        newTypeScope.define(new TypeSymbol("my list", null));
-        newTypeScope.define(new TypeSymbol("my context", null));
-
-        ScopeImpl import1 = new ScopeImpl("my import", newTypeScope);
-        newTypeScope.define(new TypeSymbol("my import", null));
-
-        import1.define(new TypeSymbol("my list2", null));
-
-        // -- end of external
-        newTypeScope.setParentScope(currentScope);
-        currentScope = newTypeScope;
     }
 
     public void popScope() {

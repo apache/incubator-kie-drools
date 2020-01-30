@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.TypeSymbol;
+import org.kie.dmn.feel.lang.types.WrappingScopeImpl;
 
 public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTypeRegistry {
 
@@ -75,8 +76,8 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
     }
 
     @Override
-    public Scope getItemDefScope() {
-        return feelTypesScope;
+    public Scope getItemDefScope(Scope parent) {
+        return new WrappingScopeImpl(feelTypesScope, parent);
     }
 
     @Override

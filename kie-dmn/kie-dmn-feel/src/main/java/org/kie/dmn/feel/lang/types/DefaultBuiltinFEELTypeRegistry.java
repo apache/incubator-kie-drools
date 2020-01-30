@@ -25,7 +25,7 @@ public enum DefaultBuiltinFEELTypeRegistry implements FEELTypeRegistry {
     }
 
     @Override
-    public Scope getItemDefScope() {
-        return BUILTIN_TYPE_SCOPE;
+    public Scope getItemDefScope(Scope parent) {
+        return new WrappingScopeImpl(BUILTIN_TYPE_SCOPE, parent);
     }
 }
