@@ -29,12 +29,14 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFEELCtxWrapper;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
@@ -99,6 +101,10 @@ public class DMNFunctionDefinitionEvaluator
         public FormalParameter(String name, DMNType type) {
             this.name = name;
             this.type = type;
+        }
+
+        public FEELFunction.Param asFEELParam() {
+            return new FEELFunction.Param(name, ((BaseDMNTypeImpl) type).getFeelType());
         }
     }
 
@@ -187,8 +193,9 @@ public class DMNFunctionDefinitionEvaluator
             return true;
         }
 
-        public List<List<String>> getParameterNames() {
-            return Collections.singletonList( parameters.stream().map( p -> p.name ).collect( Collectors.toList()) );
+        @Override
+        public List<List<Param>> getParameters() {
+            return Collections.singletonList(parameters.stream().map(FormalParameter::asFEELParam).collect(Collectors.toList()));
         }
 
         public List<List<DMNType>> getParameterTypes() {

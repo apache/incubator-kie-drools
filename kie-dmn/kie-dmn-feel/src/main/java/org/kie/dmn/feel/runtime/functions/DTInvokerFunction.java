@@ -16,17 +16,18 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
 
 public class DTInvokerFunction
         extends BaseFEELFunction {
@@ -66,8 +67,9 @@ public class DTInvokerFunction
         return dt;
     }
 
-    public List<List<String>> getParameterNames() {
-        return Collections.singletonList( dt.getParameterNames() );
+    @Override
+    public List<List<Param>> getParameters() {
+        return Collections.singletonList(dt.getParameterNames().stream().map(n -> new Param(n, BuiltInType.UNKNOWN)).collect(Collectors.toList()));
     }
 
     @Override

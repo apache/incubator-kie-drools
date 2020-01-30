@@ -35,6 +35,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
@@ -119,22 +120,27 @@ public class ParserHelper {
             }
         } else { 
             Symbol resolved = this.currentScope.resolve(name);
-            if ( resolved != null && resolved.getType() instanceof CompositeType ) {
+            Type scopeType = resolved != null ? resolved.getType() : null;
+            if (scopeType instanceof GenListType) {
+                scopeType = ((GenListType) scopeType).getGen();
+            }
+
+            if (resolved != null && scopeType instanceof CompositeType) {
                 pushName(name);
-                pushScope(resolved.getType());
-                CompositeType type = (CompositeType) resolved.getType();
+                pushScope(scopeType);
+                CompositeType type = (CompositeType) scopeType;
                 for ( Map.Entry<String, Type> f : type.getFields().entrySet() ) {
                     this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
-            } else if (resolved != null && resolved.getType() instanceof SimpleType) {
+            } else if (resolved != null && scopeType instanceof SimpleType) {
                 BuiltInType resolvedBIType = null;
-                if (resolved.getType() instanceof BuiltInType) {
-                    resolvedBIType = (BuiltInType) resolved.getType();
-                } else if (resolved.getType() instanceof AliasFEELType) {
-                    resolvedBIType = ((AliasFEELType) resolved.getType()).getBuiltInType();
+                if (scopeType instanceof BuiltInType) {
+                    resolvedBIType = (BuiltInType) scopeType;
+                } else if (scopeType instanceof AliasFEELType) {
+                    resolvedBIType = ((AliasFEELType) scopeType).getBuiltInType();
                 } else {
-                    throw new UnsupportedOperationException("Unsupported BIType " + resolved.getType() + "!");
+                    throw new UnsupportedOperationException("Unsupported BIType " + scopeType + "!");
                 }
                 pushName(name);
                 pushScope(resolvedBIType);

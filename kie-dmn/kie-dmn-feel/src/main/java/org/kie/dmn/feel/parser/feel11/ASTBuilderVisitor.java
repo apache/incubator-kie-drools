@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
@@ -36,12 +37,15 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
@@ -54,6 +58,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.TypeContext;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
@@ -583,8 +588,46 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public TypeNode visitType(FEEL_1_1Parser.TypeContext ctx) {
+    public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
         return ASTBuilderFactory.newTypeNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitListType(FEEL_1_1Parser.ListTypeContext ctx) {
+        TypeNode type = (TypeNode) visit(ctx.type());
+        return new ListTypeNode(ctx, type);
+    }
+
+    @Override
+    public BaseNode visitContextType(FEEL_1_1Parser.ContextTypeContext ctx) {
+        List<String> pNames = new ArrayList<>();
+        for (TerminalNode id : ctx.Identifier()) {
+            pNames.add(id.getText());
+        }
+        if (!pNames.get(0).equals("context")) {
+            throw new IllegalStateException("grammar rule changed.");
+        } else {
+            pNames.remove(0);
+        }
+        List<TypeNode> pTypes = new ArrayList<>();
+        for (TypeContext t : ctx.type()) {
+            pTypes.add((TypeNode) visit(t));
+        }
+        Map<String, TypeNode> gens = new HashMap<>();
+        for (int i = 0; i < pNames.size(); i++) {
+            gens.put(pNames.get(i), pTypes.get(i));
+        }
+        return new ContextTypeNode(ctx, gens);
+    }
+
+    @Override
+    public BaseNode visitFunctionType(FEEL_1_1Parser.FunctionTypeContext ctx) {
+        List<TypeNode> argTypes = new ArrayList<>();
+        for (TypeContext t : ctx.type()) {
+            argTypes.add((TypeNode) visit(t));
+        }
+        TypeNode type = argTypes.remove(argTypes.size() - 1);
+        return new FunctionTypeNode(ctx, argTypes, type);
     }
 
     @Override
