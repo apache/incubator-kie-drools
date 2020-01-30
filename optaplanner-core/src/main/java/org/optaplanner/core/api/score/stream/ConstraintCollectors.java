@@ -310,13 +310,19 @@ public final class ConstraintCollectors {
     public static <A, Result> UniConstraintCollector<A, ?, Result> sum(Function<? super A, Result> groupValueMapping,
             Result zero, BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
         return new DefaultUniConstraintCollector<>(
-                () -> (Result[]) Array.newInstance(zero.getClass(), 1),
+                () -> createContainer(zero),
                 (resultContainer, a) -> {
                     Result value = groupValueMapping.apply(a);
                     resultContainer[0] = adder.apply(resultContainer[0], value);
                     return () -> resultContainer[0] = subtractor.apply(resultContainer[0], value);
                 },
                 resultContainer -> resultContainer[0]);
+    }
+
+    private static <Result> Result[] createContainer(Result initialValue) {
+        Result[] container = (Result[]) Array.newInstance(initialValue.getClass(), 1);
+        container[0] = initialValue;
+        return container;
     }
 
     public static <A> UniConstraintCollector<A, ?, BigDecimal> sumBigDecimal(
@@ -366,7 +372,7 @@ public final class ConstraintCollectors {
             BiFunction<? super A, ? super B, Result> groupValueMapping, Result zero, BinaryOperator<Result> adder,
             BinaryOperator<Result> subtractor) {
         return new DefaultBiConstraintCollector<>(
-                () -> (Result[]) Array.newInstance(zero.getClass(), 1),
+                () -> createContainer(zero),
                 (resultContainer, a, b) -> {
                     Result value = groupValueMapping.apply(a, b);
                     resultContainer[0] = adder.apply(resultContainer[0], value);
@@ -423,7 +429,7 @@ public final class ConstraintCollectors {
             TriFunction<? super A, ? super B, ? super C, Result> groupValueMapping, Result zero,
             BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
         return new DefaultTriConstraintCollector<>(
-                () -> (Result[]) Array.newInstance(zero.getClass(), 1),
+                () -> createContainer(zero),
                 (resultContainer, a, b, c) -> {
                     Result value = groupValueMapping.apply(a, b, c);
                     resultContainer[0] = adder.apply(resultContainer[0], value);
@@ -480,7 +486,7 @@ public final class ConstraintCollectors {
             QuadFunction<? super A, ? super B, ? super C, ? super D, Result> groupValueMapping, Result zero,
             BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
         return new DefaultQuadConstraintCollector<>(
-                () -> (Result[]) Array.newInstance(zero.getClass(), 1),
+                () -> createContainer(zero),
                 (resultContainer, a, b, c, d) -> {
                     Result value = groupValueMapping.apply(a, b, c, d);
                     resultContainer[0] = adder.apply(resultContainer[0], value);
