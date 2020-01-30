@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,13 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.ScopeImpl;
 
 public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry {
 
     protected Map<String, Map<String, DMNType>> types = new HashMap<>();
     protected Map<String, QName> aliases;
+    protected ScopeImpl feelTypesScope = new ScopeImpl(); // no parent scope, intentional.
 
     protected abstract String feelNS();
 
