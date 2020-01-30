@@ -86,16 +86,16 @@ public class ScopeImpl
 
     public Symbol resolve(String id) {
         Symbol s = symbols.get( EvalHelper.normalizeVariableName( id ) );
-        if ( s == null && parentScope != null ) {
-            return parentScope.resolve( id );
+        if (s == null && getParentScope() != null) {
+            return getParentScope().resolve(id);
         }
         return s;
     }
 
     public Symbol resolve(String[] qualifiedName) {
         Symbol root = symbols.get( EvalHelper.normalizeVariableName( qualifiedName[0] ) );
-        if ( root == null && parentScope != null ) {
-            return parentScope.resolve( qualifiedName );
+        if (root == null && getParentScope() != null) {
+            return getParentScope().resolve(qualifiedName);
         } else if( root != null ) {
             Symbol currentSymbol = root;
             for( int i = 1; i < qualifiedName.length && currentSymbol != null; i++ ) {
@@ -137,15 +137,15 @@ public class ScopeImpl
             initializeTokenTree();
         }
         this.tokenTree.start( token );
-        if( this.parentScope != null ) {
-            this.parentScope.start( token );
+        if (this.getParentScope() != null) {
+            this.getParentScope().start(token);
         }
     }
 
     public boolean followUp( String token, boolean isPredict ) {
         LOG.trace("[{}]: followUp() {}", name, token);
         // must call followup on parent scope
-        boolean parent = this.parentScope != null && this.parentScope.followUp(token, isPredict);
+        boolean parent = this.getParentScope() != null && this.getParentScope().followUp(token, isPredict);
         return this.tokenTree.followUp( token, !isPredict ) || parent;
     }
 
@@ -175,7 +175,7 @@ public class ScopeImpl
     public String toString() {
         return "Scope{" +
                " name='" + name + '\'' +
-               ", parentScope='" + ( parentScope != null ? parentScope.getName() : "<null>" ) +
+               ", parentScope='" + (getParentScope() != null ? getParentScope().getName() : "<null>") +
                "' }";
     }
 
