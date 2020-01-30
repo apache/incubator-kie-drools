@@ -15,15 +15,15 @@
  */
 package org.kie.pmml.api.model.tree.predicates;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
@@ -31,32 +31,49 @@ import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;
 public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     private static final long serialVersionUID = -1996390505352151403L;
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);
 
     private final BOOLEAN_OPERATOR booleanOperator;
-    private final BinaryOperator<Optional<Boolean>> operatorFunction;
+    private final BinaryOperator<Boolean> operatorFunction;
     private List<KiePMMLPredicate> kiePMMLPredicates;
 
-    private KiePMMLCompoundPredicate(List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator, BinaryOperator<Optional<Boolean>> operatorFunction) {
-        super(extensions);
+    private KiePMMLCompoundPredicate(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator, BinaryOperator<Boolean> operatorFunction) {
+        super(id, extensions);
         this.booleanOperator = booleanOperator;
         this.operatorFunction = operatorFunction;
     }
 
+    /**
+     * Builder to provide a defined <b>id</b>
+     * @param  id
+     * @return
+     */
+    public static Builder builder(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
+        return new Builder(id, extensions, booleanOperator);
+    }
+
+    /**
+     * Builder to auto-generate the <b>id</b>
+     * @return
+     */
     public static Builder builder(List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
         return new Builder(extensions, booleanOperator);
     }
 
-    // TODO {gcardosi} re-implement with native drools rules
-   /* @Override
-    public Optional<Boolean> evaluate(Map<String, Object> values) {
-        Optional<Boolean> toReturn = Optional.empty();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
-                toReturn = operatorFunction.apply(toReturn, kiePMMLPredicate.evaluate(Collections.singletonMap(entry.getKey(), entry.getValue())));
-            }
+    @Override
+    public boolean evaluate(Map<String, Object> values) {
+        logger.info(String.format("evaluate %s", this.toString()));
+        Boolean toReturn = null;
+        for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
+            toReturn = operatorFunction.apply(toReturn, kiePMMLPredicate.evaluate(values));
         }
-        return toReturn;
-    }*/
+        logger.info(String.format("return %s", toReturn));
+        return toReturn != null ? toReturn : false;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public BOOLEAN_OPERATOR getBooleanOperator() {
         return booleanOperator;
@@ -66,12 +83,62 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         return kiePMMLPredicates;
     }
 
+    @Override
+    public String toString() {
+        return "KiePMMLCompoundPredicate{" +
+                "booleanOperator=" + booleanOperator +
+                ", operatorFunction=" + operatorFunction +
+                ", kiePMMLPredicates=" + kiePMMLPredicates +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", extensions=" + extensions +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        KiePMMLCompoundPredicate that = (KiePMMLCompoundPredicate) o;
+
+        if (booleanOperator != that.booleanOperator) {
+            return false;
+        }
+        if (operatorFunction != null ? !operatorFunction.equals(that.operatorFunction) : that.operatorFunction != null) {
+            return false;
+        }
+        return kiePMMLPredicates != null ? kiePMMLPredicates.equals(that.kiePMMLPredicates) : that.kiePMMLPredicates == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (booleanOperator != null ? booleanOperator.hashCode() : 0);
+        result = 31 * result + (operatorFunction != null ? operatorFunction.hashCode() : 0);
+        result = 31 * result + (kiePMMLPredicates != null ? kiePMMLPredicates.hashCode() : 0);
+        return result;
+    }
+
     public static class Builder {
 
+        private static final AtomicInteger counter = new AtomicInteger(1);
         private KiePMMLCompoundPredicate toBuild;
 
+        private Builder(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
+            this.toBuild = new KiePMMLCompoundPredicate(id, extensions, booleanOperator, getInnerBinaryOperator(booleanOperator));
+        }
+
         private Builder(List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
-            this.toBuild = new KiePMMLCompoundPredicate(extensions, booleanOperator, getOuterBinaryOperator(getInnerBinaryOperator(booleanOperator)));
+            String id = "CompoundPredicate-" + counter.getAndAdd(1);
+            this.toBuild = new KiePMMLCompoundPredicate(id, extensions, booleanOperator, getInnerBinaryOperator(booleanOperator));
         }
 
         public KiePMMLCompoundPredicate build() {
@@ -79,6 +146,7 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         }
 
         public KiePMMLCompoundPredicate.Builder withKiePMMLPredicates(List<KiePMMLPredicate> kiePMMLPredicates) {
+            kiePMMLPredicates.forEach(predicate -> predicate.parentId = toBuild.id);
             toBuild.kiePMMLPredicates = kiePMMLPredicates;
             return this;
         }
@@ -86,27 +154,18 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         private BinaryOperator<Boolean> getInnerBinaryOperator(BOOLEAN_OPERATOR booleanOperator) {
             switch (booleanOperator) {
                 // logic here is
-                // First boolean
+                // first boolean may be null (initial evaluation) so we start taking the second boolean
                 case OR:
-                    return (aBoolean, aBoolean2) -> aBoolean || aBoolean2;
+                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean || aBoolean2 : aBoolean2;
                 case AND:
-                    return (aBoolean, aBoolean2) -> aBoolean && aBoolean2;
+                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
                 case XOR:
-                    return (aBoolean, aBoolean2) -> aBoolean ^ aBoolean2;
+                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
                 // TODO {gcardosi} How to manage?
                 case SURROGATE:
                 default:
                     return (aBoolean, aBoolean2) -> aBoolean;
             }
-        }
-
-        private BinaryOperator<Optional<Boolean>> getOuterBinaryOperator(BinaryOperator<Boolean> binaryOperator) {
-            return (aBoolean, aBoolean2) -> {
-                if (!aBoolean.isPresent()) {
-                    return aBoolean2;
-                } else
-                    return aBoolean2.map(value -> Optional.of(binaryOperator.apply(aBoolean.get(), value))).orElse(aBoolean);
-            };
         }
     }
 }

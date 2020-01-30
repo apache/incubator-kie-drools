@@ -45,6 +45,6 @@ public enum FIELD_USAGE_TYPE {
     }
 
     public static FIELD_USAGE_TYPE byName(String name) throws KieEnumException {
-        return  Arrays.stream(FIELD_USAGE_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+        return  Arrays.stream(FIELD_USAGE_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find FIELD_USAGE_TYPE with name: " + name));
     }
 }

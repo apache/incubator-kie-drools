@@ -18,7 +18,6 @@ package org.kie.pmml.api.model.abstracts;
 import java.util.List;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.abstracts.KiePMMLExtensionedNamed;
 
 public abstract class KiePMMLExtensionedTerm extends KiePMMLExtensionedNamed {
 

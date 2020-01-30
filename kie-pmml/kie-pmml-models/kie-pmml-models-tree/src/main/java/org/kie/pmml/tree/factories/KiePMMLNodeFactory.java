@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.BranchNode;
 import org.dmg.pmml.tree.ClassifierNode;
 import org.dmg.pmml.tree.ComplexNode;
@@ -33,23 +34,25 @@ public class KiePMMLNodeFactory {
 
     private static final Logger log = Logger.getLogger(KiePMMLNodeFactory.class.getName());
 
-    private KiePMMLNodeFactory() {
-    }
 
-    public static List<KiePMMLNode> getNodes(List<Node> nodes) throws KiePMMLException {
+
+    public static List<KiePMMLNode> getNodes(List<Node> nodes, DataDictionary dataDictionary) throws KiePMMLException {
         log.info("getNodes " + nodes);
-        return nodes.stream().map(throwingFunctionWrapper(KiePMMLNodeFactory::getNode)).collect(Collectors.toList());
+        return nodes.stream().map(throwingFunctionWrapper(node -> getNode(node, dataDictionary))).collect(Collectors.toList());
     }
 
-    public static KiePMMLNode getNode(Node node) throws KiePMMLException {
+    public static KiePMMLNode getNode(Node node, DataDictionary dataDictionary) throws KiePMMLException {
         log.info("getNode " + node);
         KiePMMLNode.Builder builder = KiePMMLNode.builder()
                 .withScore(node.getScore().toString())
-                .withKiePMMLPredicate(getPredicate(node.getPredicate()));
+                .withKiePMMLPredicate(getPredicate(node.getPredicate(), dataDictionary));
         if (node instanceof BranchNode || node instanceof ClassifierNode || node instanceof ComplexNode) {
-            builder = builder.withKiePMMLNodes(getNodes(node.getNodes()));
+            builder = builder.withKiePMMLNodes(getNodes(node.getNodes(), dataDictionary));
         }
         return builder
                 .build();
+    }
+
+    private KiePMMLNodeFactory() {
     }
 }

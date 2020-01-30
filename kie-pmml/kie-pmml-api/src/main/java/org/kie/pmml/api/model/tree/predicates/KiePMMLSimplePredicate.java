@@ -17,10 +17,12 @@ package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.tree.enums.OPERATOR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
@@ -28,70 +30,40 @@ import org.kie.pmml.api.model.tree.enums.OPERATOR;
 public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     private static final long serialVersionUID = -1996390505352151403L;
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);
+
     private final OPERATOR operator;
     private String name;
     private Object value;
 
+    /**
+     * Builder to provide a defined <b>id</b>
+     * @param  id
+     * @return
+     */
+    public static Builder builder(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
+        return new Builder(id, name, extensions, operator);
+    }
+
+    /**
+     * Builder to auto-generate the <b>id</b>
+     * @return
+     */
     public static Builder builder(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
         return new Builder(name, extensions, operator);
     }
 
-    // TODO {gcardosi} re-implement with native drools rules
-    /*@Override
-    public Optional<Boolean> evaluate(Map<String, Object> values) {
-        final Map.Entry<String, Object> entry = values.entrySet().iterator().next();
-        String inputName = entry.getKey();
-        Object inputValue = entry.getValue();
-        if (!this.name.equals(inputName)) {
-            return Optional.empty();
-        }
-        boolean toReturn;
-        switch (operator) {
-            case EQUAL:
-                toReturn = value.equals(inputValue);
-                break;
-            case NOT_EQUAL:
-                toReturn = !value.equals(inputValue);
-                break;
-            case LESS_THAN:
-                if (inputValue instanceof Number && value instanceof Number) {
-                    toReturn = ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();
-                } else {
-                    // TODO {gcardosi}
-                    toReturn = true;
-                }
-                break;
-            case LESS_OR_EQUAL:
-                if (inputValue instanceof Number && value instanceof Number) {
-                    toReturn = ((Number) inputValue).doubleValue() <= ((Number) value).doubleValue();
-                } else {
-                    // TODO {gcardosi}
-                    toReturn = true;
-                }
-                break;
-            case GREATER_THAN:
-                if (inputValue instanceof Number && value instanceof Number) {
-                    toReturn = ((Number) inputValue).doubleValue() > ((Number) value).doubleValue();
-                } else {
-                    // TODO {gcardosi}
-                    toReturn = true;
-                }
-                break;
-            case GREATER_OR_EQUAL:
-                if (inputValue instanceof Number && value instanceof Number) {
-                    toReturn = ((Number) inputValue).doubleValue() >= ((Number) value).doubleValue();
-                } else {
-                    // TODO {gcardosi}
-                    toReturn = true;
-                }
-                break;
-            case IS_MISSING:
-            case IS_NOT_MISSING:
-            default:
-                toReturn = true;
-        }
-        return Optional.of(toReturn);
-    }*/
+    @Override
+    public boolean evaluate(Map<String, Object> values) {
+        logger.info(String.format("evaluate %s", this.toString()));
+        boolean toReturn = false;
+       if (values.containsKey(name)) {
+           logger.info("found matching parameter, evaluate ");
+           toReturn = evaluation(values.get(name));
+       }
+        logger.info(String.format("return %s", toReturn));
+       return toReturn;
+    }
 
     public String getName() {
         return name;
@@ -106,6 +78,18 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     }
 
     @Override
+    public String toString() {
+        return "KiePMMLSimplePredicate{" +
+                "operator=" + operator +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", extensions=" + extensions +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -113,13 +97,16 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         KiePMMLSimplePredicate that = (KiePMMLSimplePredicate) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (operator != that.operator) {
             return false;
         }
-        if (operator != that.operator) {
+        if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
         return value != null ? value.equals(that.value) : that.value == null;
@@ -127,34 +114,69 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = super.hashCode();
         result = 31 * result + (operator != null ? operator.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "KiePMMLSimplePredicate{" +
-                "operator=" + operator +
-                ", value=" + value +
-                ", extensions=" + extensions +
-                ", name='" + name + '\'' +
-                '}';
+    private boolean evaluation(Object inputValue) {
+        logger.info(String.format("evaluation %s", inputValue));
+        switch (operator) {
+            case EQUAL:
+                return value.equals(inputValue);
+            case NOT_EQUAL:
+                return !value.equals(inputValue);
+            case LESS_THAN:
+                if (inputValue instanceof Number && value instanceof Number) {
+                    return ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();
+                } else {
+                    return false;
+                }
+            case LESS_OR_EQUAL:
+                if (inputValue instanceof Number && value instanceof Number) {
+                    return ((Number) inputValue).doubleValue() <= ((Number) value).doubleValue();
+                } else {
+                    return false;
+                }
+            case GREATER_THAN:
+                if (inputValue instanceof Number && value instanceof Number) {
+                    return ((Number) inputValue).doubleValue() > ((Number) value).doubleValue();
+                } else {
+                    return false;
+                }
+            case GREATER_OR_EQUAL:
+                if (inputValue instanceof Number && value instanceof Number) {
+                    return ((Number) inputValue).doubleValue() >= ((Number) value).doubleValue();
+                } else {
+                    return false;
+                }
+            case IS_MISSING:
+            case IS_NOT_MISSING:
+            default:
+                return true;
+        }
     }
 
-    private KiePMMLSimplePredicate(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-        super(extensions);
+    private KiePMMLSimplePredicate(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
+        super(id, extensions);
         this.name = name;
         this.operator = operator;
     }
 
     public static class Builder {
 
+        private static final AtomicInteger counter = new AtomicInteger(1);
         private KiePMMLSimplePredicate toBuild;
 
+        private Builder(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
+            this.toBuild = new KiePMMLSimplePredicate(id, name, extensions, operator);
+        }
+
         private Builder(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-            this.toBuild = new KiePMMLSimplePredicate(name, extensions, operator);
+            String id = "SimplePredicate-" + counter.getAndAdd(1);
+            this.toBuild = new KiePMMLSimplePredicate(id, name, extensions, operator);
         }
 
         public KiePMMLSimplePredicate build() {

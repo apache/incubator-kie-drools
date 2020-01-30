@@ -15,18 +15,26 @@
  */
 package org.kie.pmml.tree.factories;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
+import org.kie.pmml.api.exceptions.KieDataFieldException;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.model.enums.DATA_TYPE;
 import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.model.tree.enums.OPERATOR;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLCompoundPredicate;
@@ -44,17 +52,22 @@ public class KiePMMLPredicateFactory {
     private KiePMMLPredicateFactory() {
     }
 
-    public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates)throws KiePMMLException {
+    public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) throws KiePMMLException {
         log.info("getPredicates " + predicates);
-        return predicates.stream().map(throwingFunctionWrapper(KiePMMLPredicateFactory::getPredicate)).collect(Collectors.toList());
+        return predicates.stream().map(throwingFunctionWrapper(predicate -> getPredicate(predicate, dataDictionary))).collect(Collectors.toList());
     }
 
-    public static KiePMMLPredicate getPredicate(Predicate predicate) throws KiePMMLException {
+    public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) throws KiePMMLException {
         log.info("getPredicate " + predicate);
         if (predicate instanceof SimplePredicate) {
-            return getKiePMMLSimplePredicate((SimplePredicate) predicate);
+            final DataType dataType = dataDictionary.getDataFields().stream()
+                    .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
+                    .map(DataField::getDataType)
+                    .findFirst()
+                    .orElseThrow(() -> new KiePMMLException("Failed to find DataField for predicate " + ((SimplePredicate) predicate).getField().getValue()));
+            return getKiePMMLSimplePredicate((SimplePredicate) predicate, dataType);
         } else if (predicate instanceof CompoundPredicate) {
-            return getKiePMMLCompoundPredicate((CompoundPredicate) predicate);
+            return getKiePMMLCompoundPredicate((CompoundPredicate) predicate, dataDictionary);
         } else if (predicate instanceof True) {
             return getKiePMMLTruePredicate((True) predicate);
         } else if (predicate instanceof False) {
@@ -64,15 +77,15 @@ public class KiePMMLPredicateFactory {
         }
     }
 
-    public static KiePMMLSimplePredicate getKiePMMLSimplePredicate(SimplePredicate predicate) throws KieEnumException {
+    public static KiePMMLSimplePredicate getKiePMMLSimplePredicate(SimplePredicate predicate, DataType dataType) throws KiePMMLException {
         return KiePMMLSimplePredicate.builder(predicate.getField().getValue(), Collections.emptyList(), OPERATOR.byName(predicate.getOperator().value()))
-                .withValue(predicate.getValue())
+                .withValue(getActualValue(predicate.getValue(), dataType))
                 .build();
     }
 
-    public static KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(CompoundPredicate predicate) throws KiePMMLException {
+    public static KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(CompoundPredicate predicate, DataDictionary dataDictionary) throws KiePMMLException {
         return KiePMMLCompoundPredicate.builder(Collections.emptyList(), BOOLEAN_OPERATOR.byName(predicate.getBooleanOperator().value()))
-                .withKiePMMLPredicates(getPredicates(predicate.getPredicates()))
+                .withKiePMMLPredicates(getPredicates(predicate.getPredicates(), dataDictionary))
                 .build();
     }
 
@@ -84,5 +97,50 @@ public class KiePMMLPredicateFactory {
     public static KiePMMLFalsePredicate getKiePMMLFalsePredicate(False predicate) throws KiePMMLException {
         return KiePMMLFalsePredicate.builder(Collections.emptyList())
                 .build();
+    }
+
+    private static Object getActualValue(Object rawValue, DataType dataType) throws KiePMMLException {
+        DATA_TYPE data_type = DATA_TYPE.byName(dataType.value());
+        final Class<?> mappedClass = data_type.getMappedClass();
+        if (mappedClass.isAssignableFrom(rawValue.getClass())) {
+            // No cast/transformation needed
+            return rawValue;
+        }
+        if (rawValue instanceof String) {
+            String stringValue = (String) rawValue;
+            try {
+                switch (data_type) {
+                    case STRING:
+                        return stringValue;
+                    case INTEGER:
+                        return Integer.parseInt(stringValue);
+                    case FLOAT:
+                        return Float.parseFloat(stringValue);
+                    case DOUBLE:
+                        return Double.parseDouble(stringValue);
+                    case BOOLEAN:
+                        return Boolean.parseBoolean(stringValue);
+                    case DATE:
+                        return LocalDate.parse(stringValue);
+                    case TIME:
+                        return LocalTime.parse(stringValue);
+                    case DATE_TIME:
+                        return LocalDateTime.parse(stringValue);
+                    case DATE_DAYS_SINCE_0:
+                    case DATE_DAYS_SINCE_1960:
+                    case DATE_DAYS_SINCE_1970:
+                    case DATE_DAYS_SINCE_1980:
+                    case TIME_SECONDS:
+                    case DATE_TIME_SECONDS_SINCE_0:
+                    case DATE_TIME_SECONDS_SINCE_1960:
+                    case DATE_TIME_SECONDS_SINCE_1970:
+                    case DATE_TIME_SECONDS_SINCE_1980:
+                        return Long.parseLong(stringValue);
+                }
+            } catch (Exception e) {
+                throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
+            }
+        }
+        throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
     }
 }

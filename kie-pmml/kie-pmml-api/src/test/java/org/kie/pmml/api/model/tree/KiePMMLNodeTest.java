@@ -37,7 +37,6 @@ public class KiePMMLNodeTest {
 
     private final String ID = "ID";
     private final static List<KiePMMLNode> NODES = new ArrayList<>();
-    private final static List<KiePMMLPredicate> PREDICATES = new ArrayList<>();
     private final String SCORE = "SCORE";
     private final String WILL_PLAY = "will play";
     private final String NO_PLAY = "no play";
@@ -177,12 +176,11 @@ public class KiePMMLNodeTest {
         KiePMMLNode retrieved = KiePMMLNode.builder()
                 .build();
         assertNotNull(retrieved);
-        assertNull(retrieved.getId());
+        assertNotNull(retrieved.getId());
         assertNull(retrieved.getKiePMMLNodes());
         assertNull(retrieved.getKiePMMLPredicate());
         assertNull(retrieved.getScore());
-        retrieved = KiePMMLNode.builder()
-                .withId(ID)
+        retrieved = KiePMMLNode.builder(ID)
                 .withKiePMMLNodes(NODES)
                 .withScore(SCORE)
                 .build();

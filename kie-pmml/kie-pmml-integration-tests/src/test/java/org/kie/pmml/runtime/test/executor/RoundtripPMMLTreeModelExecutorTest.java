@@ -52,6 +52,18 @@ import static org.kie.test.util.filesystem.FileUtils.getFile;
 public class RoundtripPMMLTreeModelExecutorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLTreeModelExecutorTest.class);
+    private static final String modelName = "golfing";
+    private final String SCORE = "SCORE";
+    private final String WILL_PLAY = "will play";
+    private final String NO_PLAY = "no play";
+    private final String MAY_PLAY = "may play";
+    private final String HUMIDITY = "humidity";
+    private final String TEMPERATURE = "temperature";
+    private final String OUTLOOK = "outlook";
+    private final String SUNNY = "sunny";
+    private final String WINDY = "windy";
+    private final String OVERCAST = "overcast";
+    private final String RAIN = "rain";
 
     private PMMLRuntime pmmlRuntime;
 
@@ -73,22 +85,107 @@ public class RoundtripPMMLTreeModelExecutorTest {
 
     @Test
     public void evaluateTree() throws KiePMMLException {
-        String modelName = "golfing";
-        commonEvaluate(modelName);
-    }
-
-    private void commonEvaluate(String modelName) throws KiePMMLException {
         final Optional<KiePMMLModel> model = pmmlRuntime.getModel(modelName);
         assertTrue(model.isPresent());
         assertEquals(PMML_MODEL.TREE_MODEL, model.get().getPmmlMODEL());
         assertTrue(model.get() instanceof KiePMMLTreeModel);
-        KiePMMLTreeModel kiePMMLTreeModel = (KiePMMLTreeModel)model.get();
+    }
+
+    @Test
+    public void evaluateWillPlay_1() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+    }
+
+    @Test
+    public void evaluateWillPlay_2() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(TEMPERATURE, 65);
+        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+    }
+
+    @Test
+    public void evaluateWillPlay_3() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(TEMPERATURE, 65);
+        inputData.put(HUMIDITY, 65);
+        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+    }
+
+    @Test
+    public void evaluateWillPlay_4() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(TEMPERATURE, 65);
+        inputData.put(HUMIDITY, 95);
+        commonEvaluate(model, modelName, inputData, NO_PLAY);
+    }
+
+    @Test
+    public void evaluateWillPlay_5() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(HUMIDITY, 95);
+        inputData.put(TEMPERATURE, 95);
+        commonEvaluate(model, modelName, inputData, NO_PLAY);
+    }
+
+    @Test
+    public void evaluateWillPlay_6() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(HUMIDITY, 95);
+        inputData.put(TEMPERATURE, 40);
+        commonEvaluate(model, modelName, inputData, NO_PLAY);
+    }
+
+    @Test
+    public void evaluateMayPlay_1() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, OVERCAST);
+        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+        inputData.put(OUTLOOK, RAIN);
+        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+    }
+
+    @Test
+    public void evaluateMayPlay_2() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, OVERCAST);
+        inputData.put(TEMPERATURE, 80);
+        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+    }
+
+    @Test
+    public void evaluateMayPlay_3() throws Exception {
+        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(OUTLOOK, RAIN);
+        inputData.put(HUMIDITY, 40);
+        commonEvaluate(model, modelName, inputData, NO_PLAY);
+    }
+
+
+    private void commonEvaluate(KiePMMLModel model, String modelName, Map<String, Object> inputData, String expectedScore) throws KiePMMLException {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
-        PMML4Result retrieved = pmmlRuntime.evaluate(model.get(), pmmlContext);
+        PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext);
         assertNotNull(retrieved);
         logger.info(retrieved.toString());
-        assertNotNull(retrieved.getResultVariables());
+        final Map<String, Object> resultVariables = retrieved.getResultVariables();
+        assertNotNull(resultVariables);
+        assertTrue(resultVariables.containsKey("score"));
+        assertEquals(expectedScore, resultVariables.get("score"));
     }
 }

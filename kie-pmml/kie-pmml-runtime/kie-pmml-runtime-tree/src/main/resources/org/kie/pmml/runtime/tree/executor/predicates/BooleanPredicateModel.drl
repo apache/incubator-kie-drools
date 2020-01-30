@@ -1,0 +1,11 @@
+package org.kie.pmml.runtime.tree.executor.predicates
+
+import org.kie.pmml.api.model.tree.KiePMMLTreeModel
+import org.kie.api.pmml.PMML4Result
+import org.kie.api.pmml.PMMLRequestData
+
+/*
+function boolean evaluateBooleanPredicate(String predicateName) {
+    return Boolean.getBoolean(predicateName.toLowerCase());
+}
+*/

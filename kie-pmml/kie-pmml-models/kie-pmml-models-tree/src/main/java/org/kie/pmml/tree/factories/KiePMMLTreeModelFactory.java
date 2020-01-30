@@ -44,7 +44,7 @@ public class KiePMMLTreeModelFactory {
                 .findFirst();
         return KiePMMLTreeModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
-                .withNode(getNode(model.getNode()))
+                .withNode(getNode(model.getNode(), dataDictionary))
                 .withTargetFieldName(targetFieldName.orElse(null))
                 .build();
     }

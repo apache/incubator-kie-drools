@@ -1,15 +1,184 @@
 package org.kie.pmml.runtime.tree.executor
 
+import org.kie.pmml.api.model.tree.KiePMMLNode
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel
+import org.kie.pmml.api.model.tree.enums.OPERATOR
+import org.kie.pmml.api.model.tree.predicates.KiePMMLCompoundPredicate
+import org.kie.pmml.api.model.tree.predicates.KiePMMLFalsePredicate
+import org.kie.pmml.api.model.tree.predicates.KiePMMLTruePredicate
+import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate
+import org.kie.pmml.api.model.tree.predicates.KiePMMLSimplePredicate
+import org.kie.api.pmml.ParameterInfo
 import org.kie.api.pmml.PMML4Result
+import org.kie.api.pmml.PMMLRequestData
+
+import java.util.Map
+import java.util.HashMap
+
+/*function boolean evaluatePredicate(KiePMMLPredicate toEvaluate) {
+
+}
+
+function boolean evaluateCompoundPredicate(KiePMMLCompoundPredicate toEvaluate) {
+
+}
+
+function boolean evaluateSimplePredicate(KiePMMLPredicate toEvaluate) {
+
+}
+
+function boolean evaluateTruePredicate(KiePMMLTruePredicate toEvaluate) {
+    return true;
+}*/
+
+/*function boolean evaluateNumber(Number value, OPERATOR operator, Number inputValue) {
+        System.out.println("evaluateNumber " + value + " " + operator + " " + inputValue);
+        boolean toReturn;
+        switch (operator) {
+            case EQUAL:
+                toReturn = value.equals(inputValue);
+                break;
+            case NOT_EQUAL:
+                toReturn = !value.equals(inputValue);
+                break;
+            case LESS_THAN:
+                toReturn = inputValue.doubleValue() < value.doubleValue();
+                break;
+            case LESS_OR_EQUAL:
+                toReturn = inputValue.doubleValue() <= value.doubleValue();
+                break;
+            case GREATER_THAN:
+                toReturn = inputValue.doubleValue() > value.doubleValue();
+                break;
+            case GREATER_OR_EQUAL:
+                toReturn = inputValue.doubleValue() >= value.doubleValue();
+                break;
+            case IS_MISSING:
+            case IS_NOT_MISSING:
+            default:
+                toReturn = false;
+        }
+        System.out.println("return " + toReturn);
+        return toReturn;
+}
+
+function boolean evaluateObject(Object value, OPERATOR operator, Object inputValue) {
+        System.out.println("evaluateObject " + value + " " + operator + " " + inputValue);
+        boolean toReturn;
+        switch (operator) {
+            case EQUAL:
+                toReturn = value.equals(inputValue);
+                break;
+            case NOT_EQUAL:
+                toReturn = !value.equals(inputValue);
+                break;
+            case LESS_THAN:
+            case LESS_OR_EQUAL:
+            case GREATER_THAN:
+            case GREATER_OR_EQUAL:
+            case IS_MISSING:
+            case IS_NOT_MISSING:
+            default:
+                toReturn = false;
+        }
+         System.out.println("return " + toReturn);
+        return toReturn;
+}*/
 
 rule "Get Tree"
 when
-  $m : KiePMMLTreeModel($nm:name, name != null)
-  $p : PMML4Result()
+  $m : KiePMMLTreeModel($nm:name, name != null);
+  $res : PMML4Result();
 then
+   System.out.println("\r\n*****************");
+   System.out.println("Fired Get Tree for KiePMMLTreeModel " + $m);
    System.out.println($nm);
-   $p.setResultCode("PUPPA");
-   $p.updateResultVariable("name", $nm);
-
+   $res.updateResultVariable("name", $nm);
 end
+
+rule "Get Tree With Node" extends "Get Tree"
+when
+   $inputValues: Map()
+   KiePMMLTreeModel(node != null, node.evaluate($inputValues) != null, $node : node);
+then
+   System.out.println("\r\n*****************");
+   System.out.println("Fired Get Tree With Node for KiePMMLTreeModel " + $m);
+   System.out.println("vvvvvvvvvvvvv");
+   System.out.println("\tFound " + $node);
+   System.out.println("Update result");
+   $res.updateResultVariable("score", $node.getResult());
+end
+//
+//rule "Evaluate Node' nodes"
+//when
+//   $node : KiePMMLNode(/*kiePMMLNodes != null, $nodes:kiePMMLNodes*/);
+//   eval($node.evaluate())
+//   $node : KiePMMLNode() from $nodes;
+//then
+////   System.out.println("\r\n*****************");
+////   System.out.println("Fired Evaluate Node' nodes for " + $parentNode);
+////   System.out.println("vvvvvvvvvvvvv");
+////   System.out.println("\tinsert " + $node);
+//   insert($node);
+//end
+//
+//rule "Evaluate Node' predicate"
+//when
+//   $node : KiePMMLNode(kiePMMLPredicate != null, $predicate:kiePMMLPredicate);
+//then
+////   System.out.println("\r\n*****************");
+////   System.out.println("Fired Evaluate Node' predicate for node " + $node);
+////   System.out.println("vvvvvvvvvvvvv");
+//   System.out.println("\tinsert " + $predicate);
+//   insert($predicate);
+//end
+//
+//rule "Evaluate Compound Predicate"
+//when
+//   $parentPredicate: KiePMMLCompoundPredicate($predicates : kiePMMLPredicates);
+//   $predicate : KiePMMLPredicate() from $predicates;
+//then
+////   System.out.println("\r\n*****************");
+////   System.out.println("Fired Evaluate Compound Predicate " + $predicate);
+//    System.out.println("\tinsert " + $predicate);
+//    insert($predicate);
+//end
+//
+//rule "Evaluate True Predicate"
+//when
+//   $predicate: KiePMMLTruePredicate();
+//then
+////   System.out.println("\r\n*****************");
+////   System.out.println("Fired Evaluate True Predicate " + $predicate);
+//end
+//
+//rule "Evaluate False Predicate"
+//when
+//   $predicate: KiePMMLFalsePredicate();
+//then
+////   System.out.println("\r\n*****************");
+////   System.out.println("Fired Evaluate False Predicate " + $predicate);
+//end
+//
+//rule "Evaluate Simple NotNumber Predicate"
+//when
+//   $predicate: KiePMMLSimplePredicate(!(value instanceof Number), $predicateValue : value, $name: name, $operator : operator);
+//   $prm: ParameterInfo(name == $name, !(value instanceof Number), $inputValue : value);
+//   eval(evaluateObject($predicateValue, $operator, $inputValue));
+//
+//then
+//   System.out.println("\r\n*****************");
+//   System.out.println("Fired Evaluate Simple NotNumber Predicate " + $predicate);
+//end
+//
+//rule "Evaluate Simple Number Predicate"
+//when
+//   $predicate: KiePMMLSimplePredicate(value instanceof Number, $predicateValue : value#Number, $name: name, $operator : operator);
+//   $prm: ParameterInfo(name == $name, value instanceof Number, $inputValue : value#Number);
+//   eval(evaluateNumber($predicateValue, $operator, $inputValue));
+//then
+//   System.out.println("\r\n*****************");
+//   System.out.println("Fired Evaluate Simple Number Predicate " + $predicate);
+////    System.out.println("Map " + $map);
+////   System.out.println(Boolean.toString(evaluateNumber((Number) $value, $predicate.getOperator(), (Number) $prm.get($name))));
+//end
