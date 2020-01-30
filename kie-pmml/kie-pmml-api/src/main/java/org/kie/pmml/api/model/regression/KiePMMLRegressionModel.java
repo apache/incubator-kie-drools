@@ -36,7 +36,6 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
     private List<KiePMMLRegressionTable> regressionTables = new ArrayList<>();
 
-    private final MINING_FUNCTION miningFunction;
     private String algorithmName;
     private MODEL_TYPE modelType;
     private String targetFieldName;
@@ -54,10 +53,6 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
     public List<KiePMMLRegressionTable> getRegressionTables() {
         return regressionTables;
-    }
-
-    public MINING_FUNCTION getMiningFunction() {
-        return miningFunction;
     }
 
     public String getAlgorithmName() {
@@ -99,24 +94,44 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
                 ", targetOpType=" + targetOpType +
                 ", regressionNormalizationMethod=" + regressionNormalizationMethod +
                 ", isScorable=" + isScorable +
+                ", pmmlMODEL=" + pmmlMODEL +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
                 '}';
     }
 
-    private KiePMMLRegressionModel(String modelName, MINING_FUNCTION miningFunction) {
-        super(modelName, PMML_MODEL_TYPE);
-        this.miningFunction = miningFunction;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLRegressionModel that = (KiePMMLRegressionModel) o;
+        return isScorable == that.isScorable &&
+                Objects.equals(regressionTables, that.regressionTables) &&
+                miningFunction == that.miningFunction &&
+                Objects.equals(algorithmName, that.algorithmName) &&
+                modelType == that.modelType &&
+                Objects.equals(targetFieldName, that.targetFieldName) &&
+                targetOpType == that.targetOpType &&
+                regressionNormalizationMethod == that.regressionNormalizationMethod;
     }
 
-    public static class Builder {
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), regressionTables, miningFunction, algorithmName, modelType, targetFieldName, targetOpType, regressionNormalizationMethod, isScorable);
+    }
 
-        private KiePMMLRegressionModel toBuild;
+    public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
-            this.toBuild = new KiePMMLRegressionModel(name, miningFunction);
-        }
-
-        public KiePMMLRegressionModel build() {
-            return toBuild;
+            super(name, "RegressionModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLRegressionModel::new);
         }
 
         public Builder withRegressionTables(List<KiePMMLRegressionTable> regressionTables) {

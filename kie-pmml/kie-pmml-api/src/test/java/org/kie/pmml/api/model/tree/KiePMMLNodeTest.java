@@ -35,7 +35,6 @@ import static org.junit.Assert.assertNull;
 
 public class KiePMMLNodeTest {
 
-    private final String ID = "ID";
     private final static List<KiePMMLNode> NODES = new ArrayList<>();
     private final String SCORE = "SCORE";
     private final String WILL_PLAY = "will play";
@@ -180,12 +179,11 @@ public class KiePMMLNodeTest {
         assertNull(retrieved.getKiePMMLNodes());
         assertNull(retrieved.getKiePMMLPredicate());
         assertNull(retrieved.getScore());
-        retrieved = KiePMMLNode.builder(ID)
+        retrieved = KiePMMLNode.builder()
                 .withKiePMMLNodes(NODES)
                 .withScore(SCORE)
                 .build();
         assertNotNull(retrieved);
-        assertEquals(ID, retrieved.getId());
         assertEquals(NODES, retrieved.getKiePMMLNodes());
         assertEquals(SCORE, retrieved.getScore());
     }

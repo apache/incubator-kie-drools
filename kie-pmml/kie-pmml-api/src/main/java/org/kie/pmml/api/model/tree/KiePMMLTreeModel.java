@@ -30,15 +30,9 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     private KiePMMLNode node;
 
-    private final MINING_FUNCTION miningFunction;
     private String algorithmName;
     private String targetFieldName;
 
-
-    private KiePMMLTreeModel(String name, MINING_FUNCTION miningFunction) {
-        super(name, PMML_MODEL_TYPE);
-        this.miningFunction = miningFunction;
-    }
 
     public KiePMMLNode getNode() {
         return node;
@@ -46,10 +40,6 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
         return new Builder(name, miningFunction);
-    }
-
-    public MINING_FUNCTION getMiningFunction() {
-        return miningFunction;
     }
 
     public String getAlgorithmName() {
@@ -60,25 +50,12 @@ public class KiePMMLTreeModel extends KiePMMLModel {
         return targetFieldName;
     }
 
-    @Override
-    public String toString() {
-        return "KiePMMLTreeModel{" +
-                "miningFunction=" + miningFunction +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    public static class Builder {
-
-        private KiePMMLTreeModel toBuild;
+    public static class Builder extends KiePMMLModel.Builder<KiePMMLTreeModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
-            this.toBuild = new KiePMMLTreeModel(name, miningFunction);
+            super(name, "TreeModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLTreeModel::new);
         }
 
-        public KiePMMLTreeModel build() {
-            return toBuild;
-        }
 
         public Builder withAlgorithmName(String algorithmName) {
             toBuild.algorithmName = algorithmName;

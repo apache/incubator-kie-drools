@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.model.tree;
+package org.kie.pmml.api.model.mining.segmentation;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.kie.pmml.api.model.abstracts.KiePMMLIDed;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KiePMMLNode extends KiePMMLIDed {
+public class KiePMMLSegmentation extends KiePMMLIDed {
 
     private static final long serialVersionUID = 8447087369287427969L;
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLNode.class);
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentation.class);
 
     private String score;
     private String result;
     private KiePMMLPredicate kiePMMLPredicate;
-    private List<KiePMMLNode> kiePMMLNodes;
+    private List<KiePMMLSegmentation> kiePMMLNodes;
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -42,6 +42,7 @@ public class KiePMMLNode extends KiePMMLIDed {
         return new Builder();
     }
 
+
     public boolean evaluate(Map<String, Object> values) {
         result = null;
         logger.info(String.format("%s: evaluate %s", id, this.score));
@@ -50,7 +51,7 @@ public class KiePMMLNode extends KiePMMLIDed {
             logger.info(String.format("%s: preliminary set %s", id, score));
             result = score;
             if (kiePMMLNodes != null) {
-                for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
+                for (KiePMMLSegmentation kiePMMLNode : kiePMMLNodes) {
                     if (kiePMMLNode.evaluate(values)) {
                         logger.info(String.format("%s: matching node, update set %s", id, kiePMMLNode.result));
                         result = kiePMMLNode.result;
@@ -60,7 +61,7 @@ public class KiePMMLNode extends KiePMMLIDed {
             }
             return true;
         }
-        logger.info(String.format("%s: no matching predicate, set %s", id, result));
+        logger.info(String.format("%s: no matching predicate, set %s", id,  result));
         return false;
     }
 
@@ -76,7 +77,7 @@ public class KiePMMLNode extends KiePMMLIDed {
         return kiePMMLPredicate;
     }
 
-    public List<KiePMMLNode> getKiePMMLNodes() {
+    public List<KiePMMLSegmentation> getKiePMMLNodes() {
         return kiePMMLNodes;
     }
 
@@ -89,18 +90,18 @@ public class KiePMMLNode extends KiePMMLIDed {
             return false;
         }
 
-        KiePMMLNode that = (KiePMMLNode) o;
+        KiePMMLSegmentation that = (KiePMMLSegmentation) o;
 
-        if (!Objects.equals(id, that.id)) {
+        if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
-        if (!Objects.equals(score, that.score)) {
+        if (score != null ? !score.equals(that.score) : that.score != null) {
             return false;
         }
-        if (!Objects.equals(kiePMMLPredicate, that.kiePMMLPredicate)) {
+        if (kiePMMLPredicate != null ? !kiePMMLPredicate.equals(that.kiePMMLPredicate) : that.kiePMMLPredicate != null) {
             return false;
         }
-        return Objects.equals(kiePMMLNodes, that.kiePMMLNodes);
+        return kiePMMLNodes != null ? kiePMMLNodes.equals(that.kiePMMLNodes) : that.kiePMMLNodes == null;
     }
 
     @Override
@@ -122,10 +123,14 @@ public class KiePMMLNode extends KiePMMLIDed {
                 '}';
     }
 
-    public static class Builder extends KiePMMLIDed.Builder<KiePMMLNode> {
+    public static class Builder extends KiePMMLIDed.Builder<KiePMMLSegmentation>  {
 
         private Builder() {
-            super("Node-", KiePMMLNode::new);
+            super("Segmentation-", KiePMMLSegmentation::new);
+        }
+
+        public KiePMMLSegmentation build() {
+            return toBuild;
         }
 
         public Builder withScore(String score) {
@@ -139,7 +144,7 @@ public class KiePMMLNode extends KiePMMLIDed {
             return this;
         }
 
-        public Builder withKiePMMLNodes(List<KiePMMLNode> kiePMMLNodes) {
+        public Builder withKiePMMLNodes(List<KiePMMLSegmentation> kiePMMLNodes) {
             // TODO {gcardosi} fix this
             kiePMMLNodes.forEach(node -> node.parentId = toBuild.id);
             toBuild.kiePMMLNodes = kiePMMLNodes;

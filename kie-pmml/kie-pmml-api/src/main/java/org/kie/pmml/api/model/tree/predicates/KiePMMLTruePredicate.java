@@ -17,7 +17,7 @@ package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.slf4j.Logger;
@@ -32,19 +32,6 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicate.class);
 
     private final String name = "True";
-
-    private KiePMMLTruePredicate(String id, List<KiePMMLExtension> extensions) {
-        super(id, extensions);
-    }
-
-    /**
-     * Builder to provide a defined <b>id</b>
-     * @param id
-     * @return
-     */
-    public static Builder builder(String id, List<KiePMMLExtension> extensions) {
-        return new Builder(id, extensions);
-    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -68,9 +55,9 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
     public String toString() {
         return "KiePMMLTruePredicate{" +
                 "name='" + name + '\'' +
+                ", extensions=" + extensions +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
-                ", extensions=" + extensions +
                 '}';
     }
 
@@ -85,35 +72,20 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
         if (!super.equals(o)) {
             return false;
         }
-
         KiePMMLTruePredicate that = (KiePMMLTruePredicate) o;
-
-        return name != null ? name.equals(that.name) : that.name == null;
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), name);
     }
 
-    public static class Builder {
-
-        private static final AtomicInteger counter = new AtomicInteger(1);
-        private KiePMMLTruePredicate toBuild;
-
-        private Builder(String id, List<KiePMMLExtension> extensions) {
-            this.toBuild = new KiePMMLTruePredicate(id, extensions);
-        }
+    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLTruePredicate> {
 
         private Builder(List<KiePMMLExtension> extensions) {
-            String id = "TruePredicate-" + counter.getAndAdd(1);
-            this.toBuild = new KiePMMLTruePredicate(id, extensions);
-        }
+            super(extensions, "TruePredicate-", KiePMMLTruePredicate::new);
 
-        public KiePMMLTruePredicate build() {
-            return toBuild;
         }
     }
 }

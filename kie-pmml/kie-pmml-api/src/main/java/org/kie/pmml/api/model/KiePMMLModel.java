@@ -16,32 +16,40 @@
 package org.kie.pmml.api.model;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
-import org.kie.pmml.api.model.abstracts.KiePMMLNamed;
+import org.kie.pmml.api.model.abstracts.KiePMMLIDedNamed;
+import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel extends KiePMMLNamed {
+public abstract class KiePMMLModel extends KiePMMLIDedNamed {
 
     private static final long serialVersionUID = -6845971260164057040L;
-    private final PMML_MODEL pmmlMODEL;
+    protected PMML_MODEL pmmlMODEL;
+    protected MINING_FUNCTION miningFunction;
 
-    public KiePMMLModel(String name, PMML_MODEL pmmlMODEL) {
-        super(name);
-        this.pmmlMODEL = pmmlMODEL;
+    protected KiePMMLModel() {
     }
 
     public PMML_MODEL getPmmlMODEL() {
         return pmmlMODEL;
     }
 
+    public MINING_FUNCTION getMiningFunction() {
+        return miningFunction;
+    }
+
     @Override
     public String toString() {
         return "KiePMMLModel{" +
-                "name='" + name + '\'' +
-                ", pmmlModelType=" + pmmlMODEL +
+                "pmmlMODEL=" + pmmlMODEL +
+                ", miningFunction=" + miningFunction +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
                 '}';
     }
 
@@ -53,13 +61,27 @@ public abstract class KiePMMLModel extends KiePMMLNamed {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         KiePMMLModel that = (KiePMMLModel) o;
-        return Objects.equals(getName(), that.getName()) &&
-                getPmmlMODEL() == that.getPmmlMODEL();
+        return pmmlMODEL == that.pmmlMODEL &&
+                miningFunction == that.miningFunction;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getPmmlMODEL());
+        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction);
     }
+
+    public static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
+
+        protected Builder(String name, String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
+            super(name, prefix, supplier);
+            toBuild.pmmlMODEL = pmmlMODEL;
+            toBuild.miningFunction = miningFunction;
+        }
+    }
+
+
 }

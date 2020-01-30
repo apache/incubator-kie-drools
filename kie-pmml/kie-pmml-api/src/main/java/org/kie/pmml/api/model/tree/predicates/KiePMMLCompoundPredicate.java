@@ -17,7 +17,7 @@ package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
@@ -34,23 +34,9 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);
 
     private final BOOLEAN_OPERATOR booleanOperator;
-    private final BinaryOperator<Boolean> operatorFunction;
+    private BinaryOperator<Boolean> operatorFunction;
     private List<KiePMMLPredicate> kiePMMLPredicates;
 
-    private KiePMMLCompoundPredicate(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator, BinaryOperator<Boolean> operatorFunction) {
-        super(id, extensions);
-        this.booleanOperator = booleanOperator;
-        this.operatorFunction = operatorFunction;
-    }
-
-    /**
-     * Builder to provide a defined <b>id</b>
-     * @param  id
-     * @return
-     */
-    public static Builder builder(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
-        return new Builder(id, extensions, booleanOperator);
-    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -89,9 +75,9 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
                 "booleanOperator=" + booleanOperator +
                 ", operatorFunction=" + operatorFunction +
                 ", kiePMMLPredicates=" + kiePMMLPredicates +
+                ", extensions=" + extensions +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
-                ", extensions=" + extensions +
                 '}';
     }
 
@@ -106,47 +92,30 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         if (!super.equals(o)) {
             return false;
         }
-
         KiePMMLCompoundPredicate that = (KiePMMLCompoundPredicate) o;
-
-        if (booleanOperator != that.booleanOperator) {
-            return false;
-        }
-        if (operatorFunction != null ? !operatorFunction.equals(that.operatorFunction) : that.operatorFunction != null) {
-            return false;
-        }
-        return kiePMMLPredicates != null ? kiePMMLPredicates.equals(that.kiePMMLPredicates) : that.kiePMMLPredicates == null;
+        return booleanOperator == that.booleanOperator &&
+                Objects.equals(operatorFunction, that.operatorFunction) &&
+                Objects.equals(kiePMMLPredicates, that.kiePMMLPredicates);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (booleanOperator != null ? booleanOperator.hashCode() : 0);
-        result = 31 * result + (operatorFunction != null ? operatorFunction.hashCode() : 0);
-        result = 31 * result + (kiePMMLPredicates != null ? kiePMMLPredicates.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), booleanOperator, operatorFunction, kiePMMLPredicates);
     }
 
-    public static class Builder {
+    private KiePMMLCompoundPredicate(BOOLEAN_OPERATOR booleanOperator) {
+        this.booleanOperator = booleanOperator;
+    }
 
-        private static final AtomicInteger counter = new AtomicInteger(1);
-        private KiePMMLCompoundPredicate toBuild;
-
-        private Builder(String id, List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
-            this.toBuild = new KiePMMLCompoundPredicate(id, extensions, booleanOperator, getInnerBinaryOperator(booleanOperator));
-        }
+    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLCompoundPredicate> {
 
         private Builder(List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
-            String id = "CompoundPredicate-" + counter.getAndAdd(1);
-            this.toBuild = new KiePMMLCompoundPredicate(id, extensions, booleanOperator, getInnerBinaryOperator(booleanOperator));
-        }
-
-        public KiePMMLCompoundPredicate build() {
-            return toBuild;
+            super(extensions, "CompoundPredicate-", () -> new KiePMMLCompoundPredicate(booleanOperator));
+            toBuild.operatorFunction = getInnerBinaryOperator(booleanOperator);
         }
 
         public KiePMMLCompoundPredicate.Builder withKiePMMLPredicates(List<KiePMMLPredicate> kiePMMLPredicates) {
-            kiePMMLPredicates.forEach(predicate -> predicate.parentId = toBuild.id);
+            kiePMMLPredicates.forEach(predicate -> predicate.setParentId(toBuild.id));
             toBuild.kiePMMLPredicates = kiePMMLPredicates;
             return this;
         }

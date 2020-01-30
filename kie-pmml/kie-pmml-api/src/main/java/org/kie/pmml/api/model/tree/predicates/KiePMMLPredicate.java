@@ -15,26 +15,18 @@
  */
 package org.kie.pmml.api.model.tree.predicates;
 
-import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.abstracts.KiePMMLExtensioned;
+import org.kie.pmml.api.model.abstracts.KiePMMLIDedExtensioned;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
-public abstract class KiePMMLPredicate extends KiePMMLExtensioned {
+public abstract class KiePMMLPredicate extends KiePMMLIDedExtensioned {
 
     private static final long serialVersionUID = -1996390505352151403L;
 
-    protected final String id;
-
-    protected String parentId;
-
-    protected KiePMMLPredicate(String id, List<KiePMMLExtension> extensions) {
-        super(extensions);
-        this.id = id;
+    protected KiePMMLPredicate() {
     }
 
     /**
@@ -45,39 +37,4 @@ public abstract class KiePMMLPredicate extends KiePMMLExtensioned {
      */
     public abstract boolean evaluate(Map<String, Object> values);
 
-    public String getId() {
-        return id;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        KiePMMLPredicate that = (KiePMMLPredicate) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        return parentId != null ? parentId.equals(that.parentId) : that.parentId == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
-        return result;
-    }
 }

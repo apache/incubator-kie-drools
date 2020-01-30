@@ -19,17 +19,20 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.api.model.abstracts.KiePMMLIDed;
 import org.kie.pmml.api.model.abstracts.KiePMMLNamed;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLRegressionTablePredictor;
+import org.kie.pmml.api.model.tree.KiePMMLNode;
 
-public class KiePMMLRegressionTable implements Serializable {
+public class KiePMMLRegressionTable extends KiePMMLIDed {
 
     private static final long serialVersionUID = 1703573265998162350L;
     private Number intercept;
@@ -88,22 +91,45 @@ public class KiePMMLRegressionTable implements Serializable {
                 ", predictorTerms=" + predictorTerms +
                 ", numericPredictorsMap=" + numericPredictorsMap +
                 ", categoricalPredictorMaps=" + categoricalPredictorMaps +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLRegressionTable that = (KiePMMLRegressionTable) o;
+        return Objects.equals(intercept, that.intercept) &&
+                Objects.equals(targetCategory, that.targetCategory) &&
+                Objects.equals(extensions, that.extensions) &&
+                Objects.equals(numericPredictors, that.numericPredictors) &&
+                Objects.equals(categoricalPredictors, that.categoricalPredictors) &&
+                Objects.equals(predictorTerms, that.predictorTerms) &&
+                Objects.equals(numericPredictorsMap, that.numericPredictorsMap) &&
+                Objects.equals(categoricalPredictorMaps, that.categoricalPredictorMaps);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), intercept, targetCategory, extensions, numericPredictors, categoricalPredictors, predictorTerms, numericPredictorsMap, categoricalPredictorMaps);
     }
 
     private KiePMMLRegressionTable() {
     }
 
-    public static class Builder {
-
-        private KiePMMLRegressionTable toBuild;
+    public static class Builder  extends KiePMMLIDed.Builder<KiePMMLRegressionTable> {
 
         private Builder() {
-            this.toBuild = new KiePMMLRegressionTable();
-        }
-
-        public KiePMMLRegressionTable build() {
-            return toBuild;
+            super("RegressionTable-", KiePMMLRegressionTable::new);
         }
 
         public Builder withIntercept(Number intercept) {

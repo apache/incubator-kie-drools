@@ -17,7 +17,7 @@ package org.kie.pmml.api.model.tree.predicates;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.tree.enums.OPERATOR;
@@ -36,14 +36,6 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     private String name;
     private Object value;
 
-    /**
-     * Builder to provide a defined <b>id</b>
-     * @param  id
-     * @return
-     */
-    public static Builder builder(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-        return new Builder(id, name, extensions, operator);
-    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -83,9 +75,9 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
                 "operator=" + operator +
                 ", name='" + name + '\'' +
                 ", value=" + value +
+                ", extensions=" + extensions +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
-                ", extensions=" + extensions +
                 '}';
     }
 
@@ -100,25 +92,15 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         if (!super.equals(o)) {
             return false;
         }
-
         KiePMMLSimplePredicate that = (KiePMMLSimplePredicate) o;
-
-        if (operator != that.operator) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        return value != null ? value.equals(that.value) : that.value == null;
+        return operator == that.operator &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (operator != null ? operator.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), operator, name, value);
     }
 
     private boolean evaluation(Object inputValue) {
@@ -159,28 +141,15 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         }
     }
 
-    private KiePMMLSimplePredicate(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-        super(id, extensions);
+    private KiePMMLSimplePredicate(String name, OPERATOR operator) {
         this.name = name;
         this.operator = operator;
     }
 
-    public static class Builder {
-
-        private static final AtomicInteger counter = new AtomicInteger(1);
-        private KiePMMLSimplePredicate toBuild;
-
-        private Builder(String id, String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-            this.toBuild = new KiePMMLSimplePredicate(id, name, extensions, operator);
-        }
+    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLSimplePredicate>  {
 
         private Builder(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
-            String id = "SimplePredicate-" + counter.getAndAdd(1);
-            this.toBuild = new KiePMMLSimplePredicate(id, name, extensions, operator);
-        }
-
-        public KiePMMLSimplePredicate build() {
-            return toBuild;
+            super(extensions, "SimplePredicate-", () -> new KiePMMLSimplePredicate(name, operator));
         }
 
         public KiePMMLSimplePredicate.Builder withValue(Object value) {

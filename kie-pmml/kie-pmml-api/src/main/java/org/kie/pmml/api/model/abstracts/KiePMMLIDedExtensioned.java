@@ -13,44 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.model.tree.predicates;
+package org.kie.pmml.api.model.abstracts;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_False>False</a>
- */
-public class KiePMMLFalsePredicate extends KiePMMLPredicate {
+public abstract class KiePMMLIDedExtensioned extends KiePMMLIDed {
 
-    private static final long serialVersionUID = -1996390505352151403L;
-    private final String name = "False";
+    private static final long serialVersionUID = 7584716149775970999L;
+    protected List<KiePMMLExtension> extensions;
 
-    /**
-     * Builder to auto-generate the <b>id</b>
-     * @return
-     */
-    public static Builder builder(List<KiePMMLExtension> extensions) {
-        return new Builder(extensions);
+    protected KiePMMLIDedExtensioned() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean evaluate(Map<String, Object> values) {
-        return false;
+    public List<KiePMMLExtension> getExtensions() {
+        return extensions;
     }
 
     @Override
     public String toString() {
-        return "KiePMMLFalsePredicate{" +
-                "name='" + name + '\'' +
-                ", extensions=" + extensions +
+        return "KiePMMLIDedExtensioned{" +
+                "extensions=" + extensions +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
                 '}';
@@ -67,20 +53,20 @@ public class KiePMMLFalsePredicate extends KiePMMLPredicate {
         if (!super.equals(o)) {
             return false;
         }
-        KiePMMLFalsePredicate that = (KiePMMLFalsePredicate) o;
-        return Objects.equals(name, that.name);
+        KiePMMLIDedExtensioned that = (KiePMMLIDedExtensioned) o;
+        return Objects.equals(extensions, that.extensions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name);
+        return Objects.hash(super.hashCode(), extensions);
     }
 
-    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLFalsePredicate> {
+    public static class Builder<T extends KiePMMLIDedExtensioned> extends KiePMMLIDed.Builder<T> {
 
-        private Builder(List<KiePMMLExtension> extensions) {
-            super(extensions, "FalsePredicate-", KiePMMLFalsePredicate::new);
-
+        protected Builder(List<KiePMMLExtension> extensions, String prefix, Supplier<T> supplier) {
+            super(prefix, supplier);
+            toBuild.extensions = extensions;
         }
     }
 }
