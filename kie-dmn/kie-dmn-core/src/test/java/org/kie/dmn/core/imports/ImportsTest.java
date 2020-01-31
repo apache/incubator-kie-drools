@@ -398,5 +398,39 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("greet").getResult(), is("Hi, John Doe"));
         assertThat(evaluateAll.getDecisionResultByName("greet2").getResult(), is("Hello, John Doe"));
     }
+
+    @Test
+    public void testImportInstanceOf() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("instanceof base model.dmn",
+                                                                                       this.getClass(),
+                                                                                       "instanceof checks.dmn");
+
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/definitions/_6ecff8d8-42d6-4e77-9759-83c2f3fae418",
+                                                        "base model");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_153cb253-2904-468e-b6dc-42bc016c0ddd",
+                                                   "checks");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = runtime.newContext();
+
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("is a list?").getResult(), is(true));
+        assertThat(evaluateAll.getDecisionResultByName("is a base person?").getResult(), is(true));
+        assertThat(evaluateAll.getDecisionResultByName("is a this model person?").getResult(), is(true));
+        assertThat(evaluateAll.getDecisionResultByName("with missing age is a base person?").getResult(), is(false));
+        assertThat(evaluateAll.getDecisionResultByName("with missing age is a this model person?").getResult(), is(false));
+        assertThat(evaluateAll.getDecisionResultByName("with address is a this model person?").getResult(), is(true));
+        assertThat(evaluateAll.getDecisionResultByName("is yes no persons?").getResult(), is(false));
+        assertThat(evaluateAll.getDecisionResultByName("is yes no collection of ps?").getResult(), is(false));
+        assertThat(evaluateAll.getDecisionResultByName("is yes yes persons?").getResult(), is(true));
+        assertThat(evaluateAll.getDecisionResultByName("is yes yes collection of ps?").getResult(), is(true));
+    }
 }
 
