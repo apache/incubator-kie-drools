@@ -602,7 +602,7 @@ public class ASTBuilderVisitor
         } else {
             throw new IllegalStateException("grammar rule changed.");
         }
-        return ASTBuilderFactory.newTypeNode(ctx, typeRegistry.resolveFEELType(qns));
+        return ASTBuilderFactory.newCTypeNode(ctx, typeRegistry.resolveFEELType(qns));
     }
 
     @Override
