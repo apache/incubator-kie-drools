@@ -25,6 +25,7 @@ import java.util.List;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.CTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
@@ -34,7 +35,6 @@ import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 
@@ -105,7 +105,7 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
     }
 
     @Override
-    public UnaryTestSubexpr visit(TypeNode n) {
+    public UnaryTestSubexpr visit(CTypeNode n) {
         return new SimpleUnaryExpression(n);
     }
 

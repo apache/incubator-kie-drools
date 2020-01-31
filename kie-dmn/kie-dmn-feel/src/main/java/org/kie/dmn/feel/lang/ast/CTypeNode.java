@@ -43,4 +43,8 @@ public class CTypeNode extends TypeNode {
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
+
+    public Type getType() {
+        return type;
+    }
 }
