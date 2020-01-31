@@ -22,6 +22,9 @@ import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.mining.segmentation.KiePMMLSegmentation;
 
+/**
+ * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
+ */
 public class KiePMMLMiningModel extends KiePMMLModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.MINING_MODEL;
@@ -34,10 +37,6 @@ public class KiePMMLMiningModel extends KiePMMLModel {
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
         return new Builder(name, miningFunction);
-    }
-
-    public MINING_FUNCTION getMiningFunction() {
-        return miningFunction;
     }
 
     public String getAlgorithmName() {

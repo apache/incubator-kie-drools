@@ -16,69 +16,46 @@
 package org.kie.pmml.api.model.mining.segmentation;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 
-import org.kie.pmml.api.model.abstracts.KiePMMLIDed;
-import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate;
+import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.api.model.abstracts.KiePMMLIDedExtensioned;
+import org.kie.pmml.api.model.mining.enums.MULTIPLE_MODEL_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KiePMMLSegmentation extends KiePMMLIDed {
+/**
+ * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation>Segmentation</a>
+ */
+public class KiePMMLSegmentation extends KiePMMLIDedExtensioned {
 
     private static final long serialVersionUID = 8447087369287427969L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentation.class);
 
-    private String score;
-    private String result;
-    private KiePMMLPredicate kiePMMLPredicate;
-    private List<KiePMMLSegmentation> kiePMMLNodes;
+    private final MULTIPLE_MODEL_METHOD multipleModelMethod;
+    private List<KiePMMLSegment> segments;
 
     /**
      * Builder to auto-generate the <b>id</b>
      * @return
      */
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
+        return new Builder(extensions, multipleModelMethod);
     }
 
-
-    public boolean evaluate(Map<String, Object> values) {
-        result = null;
-        logger.info(String.format("%s: evaluate %s", id, this.score));
-        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
-            logger.info(String.format("%s: matching predicate, evaluating... ", id));
-            logger.info(String.format("%s: preliminary set %s", id, score));
-            result = score;
-            if (kiePMMLNodes != null) {
-                for (KiePMMLSegmentation kiePMMLNode : kiePMMLNodes) {
-                    if (kiePMMLNode.evaluate(values)) {
-                        logger.info(String.format("%s: matching node, update set %s", id, kiePMMLNode.result));
-                        result = kiePMMLNode.result;
-                        break;
-                    }
-                }
-            }
-            return true;
-        }
-        logger.info(String.format("%s: no matching predicate, set %s", id,  result));
-        return false;
+    public MULTIPLE_MODEL_METHOD getMultipleModelMethod() {
+        return multipleModelMethod;
     }
 
-    public String getScore() {
-        return score;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public KiePMMLPredicate getKiePMMLPredicate() {
-        return kiePMMLPredicate;
-    }
-
-    public List<KiePMMLSegmentation> getKiePMMLNodes() {
-        return kiePMMLNodes;
+    @Override
+    public String toString() {
+        return "KiePMMLSegmentation{" +
+                "multipleModelMethod=" + multipleModelMethod +
+                ", segments=" + segments +
+                ", extensions=" + extensions +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
+                '}';
     }
 
     @Override
@@ -89,65 +66,31 @@ public class KiePMMLSegmentation extends KiePMMLIDed {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
+        if (!super.equals(o)) {
+            return false;
+        }
         KiePMMLSegmentation that = (KiePMMLSegmentation) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        if (score != null ? !score.equals(that.score) : that.score != null) {
-            return false;
-        }
-        if (kiePMMLPredicate != null ? !kiePMMLPredicate.equals(that.kiePMMLPredicate) : that.kiePMMLPredicate != null) {
-            return false;
-        }
-        return kiePMMLNodes != null ? kiePMMLNodes.equals(that.kiePMMLNodes) : that.kiePMMLNodes == null;
+        return multipleModelMethod == that.multipleModelMethod &&
+                Objects.equals(segments, that.segments);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (score != null ? score.hashCode() : 0);
-        result = 31 * result + (kiePMMLPredicate != null ? kiePMMLPredicate.hashCode() : 0);
-        result = 31 * result + (kiePMMLNodes != null ? kiePMMLNodes.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), multipleModelMethod, segments);
     }
 
-    @Override
-    public String toString() {
-        return "KiePMMLNode{" +
-                "id='" + id + '\'' +
-                ", score='" + score + '\'' +
-                ", kiePMMLPredicate=" + kiePMMLPredicate +
-                ", kiePMMLNodes=" + kiePMMLNodes +
-                '}';
+    private KiePMMLSegmentation(MULTIPLE_MODEL_METHOD multipleModelMethod) {
+        this.multipleModelMethod = multipleModelMethod;
     }
 
-    public static class Builder extends KiePMMLIDed.Builder<KiePMMLSegmentation>  {
+    public static class Builder extends KiePMMLIDedExtensioned.Builder<KiePMMLSegmentation> {
 
-        private Builder() {
-            super("Segmentation-", KiePMMLSegmentation::new);
+        private Builder(List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
+            super(extensions, "Segmentation-", () -> new KiePMMLSegmentation(multipleModelMethod));
         }
 
-        public KiePMMLSegmentation build() {
-            return toBuild;
-        }
-
-        public Builder withScore(String score) {
-            toBuild.score = score;
-            return this;
-        }
-
-        public Builder withKiePMMLPredicate(KiePMMLPredicate kiePMMLPredicate) {
-            kiePMMLPredicate.setParentId(toBuild.id);
-            toBuild.kiePMMLPredicate = kiePMMLPredicate;
-            return this;
-        }
-
-        public Builder withKiePMMLNodes(List<KiePMMLSegmentation> kiePMMLNodes) {
-            // TODO {gcardosi} fix this
-            kiePMMLNodes.forEach(node -> node.parentId = toBuild.id);
-            toBuild.kiePMMLNodes = kiePMMLNodes;
+        public Builder withSegments(List<KiePMMLSegment> segments) {
+            toBuild.segments = segments;
             return this;
         }
     }
