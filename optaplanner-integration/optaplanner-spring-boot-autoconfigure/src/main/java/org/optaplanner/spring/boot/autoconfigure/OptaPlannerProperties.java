@@ -24,6 +24,9 @@ public class OptaPlannerProperties {
 
     public static final String DEFAULT_SOLVER_CONFIG_URL = "solverConfig.xml";
 
+    @NestedConfigurationProperty
+    private SolverManagerProperties solverManager;
+
     /**
      * A classpath resource to read the solver configuration XML.
      * Defaults to {@value DEFAULT_SOLVER_CONFIG_URL}.
@@ -33,12 +36,18 @@ public class OptaPlannerProperties {
 
     @NestedConfigurationProperty
     private SolverProperties solver;
-    @NestedConfigurationProperty
-    private SolverManagerProperties solverManager;
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public SolverManagerProperties getSolverManager() {
+        return solverManager;
+    }
+
+    public void setSolverManager(SolverManagerProperties solverManager) {
+        this.solverManager = solverManager;
+    }
 
     public String getSolverConfigXml() {
         return solverConfigXml;
@@ -54,14 +63,6 @@ public class OptaPlannerProperties {
 
     public void setSolver(SolverProperties solver) {
         this.solver = solver;
-    }
-
-    public SolverManagerProperties getSolverManager() {
-        return solverManager;
-    }
-
-    public void setSolverManager(SolverManagerProperties solverManager) {
-        this.solverManager = solverManager;
     }
 
 }

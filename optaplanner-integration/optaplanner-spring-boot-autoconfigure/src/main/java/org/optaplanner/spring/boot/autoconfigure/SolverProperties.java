@@ -33,10 +33,10 @@ public class SolverProperties {
      * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
      * or formula based on the available processor count.
      */
-    private String moveThreadCount = null;
+    private String moveThreadCount;
 
     @NestedConfigurationProperty
-    private TerminationProperties termination = new TerminationProperties();
+    private TerminationProperties termination;
 
     // ************************************************************************
     // Getters/setters

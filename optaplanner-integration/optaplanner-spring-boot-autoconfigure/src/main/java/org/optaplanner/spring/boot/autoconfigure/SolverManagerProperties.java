@@ -25,7 +25,7 @@ public class SolverManagerProperties {
      * Defaults to {@value SolverManagerConfig#PARALLEL_SOLVER_COUNT_AUTO}.
      * Other options include a number or formula based on the available processor count.
      */
-    private String parallelSolverCount = null;
+    private String parallelSolverCount;
 
     // ************************************************************************
     // Getters/setters

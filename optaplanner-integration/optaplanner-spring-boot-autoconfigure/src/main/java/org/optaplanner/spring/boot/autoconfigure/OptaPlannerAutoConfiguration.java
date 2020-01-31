@@ -73,8 +73,16 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
-        return SolverFactory.create(solverConfig);
+    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverFactory solverFactory) {
+        // TODO supply ThreadFactory
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        SolverManagerProperties solverManagerProperties = optaPlannerProperties.getSolverManager();
+        if (solverManagerProperties != null) {
+            if (solverManagerProperties.getParallelSolverCount() != null) {
+                solverManagerConfig.setParallelSolverCount(solverManagerProperties.getParallelSolverCount());
+            }
+        }
+        return SolverManager.create(solverFactory, solverManagerConfig);
     }
 
     @Bean
@@ -85,14 +93,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager(SolverFactory solverFactory) {
-        // TODO supply ThreadFactory
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
-        SolverManagerProperties solverManagerProperties = optaPlannerProperties.getSolverManager();
-        if (solverManagerProperties != null) {
-            solverManagerConfig.setParallelSolverCount(solverManagerProperties.getParallelSolverCount());
-        }
-        return SolverManager.create(solverFactory, solverManagerConfig);
+    public <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
+        return SolverFactory.create(solverConfig);
     }
 
     @Bean
@@ -218,13 +220,13 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     }
 
     private void applyTerminationProperties(SolverConfig solverConfig, SolverProperties solverProperties) {
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        if (terminationConfig == null) {
+            terminationConfig = new TerminationConfig();
+            solverConfig.setTerminationConfig(terminationConfig);
+        }
         TerminationProperties terminationProperties = solverProperties.getTermination();
         if (terminationProperties != null) {
-            TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
-            if (terminationConfig == null) {
-                terminationConfig = new TerminationConfig();
-                solverConfig.setTerminationConfig(terminationConfig);
-            }
             if (terminationProperties.getSpentLimit() != null) {
                 terminationConfig.overwriteSpentLimit(terminationProperties.getSpentLimit());
             }
