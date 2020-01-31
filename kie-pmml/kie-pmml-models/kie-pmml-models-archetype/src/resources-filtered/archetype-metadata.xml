@@ -38,6 +38,9 @@ under the License.
     <requiredProperty key="artifactModelName">
       <defaultValue>${modelName.toLowerCase()}</defaultValue>
     </requiredProperty>
+    <requiredProperty key="modelNameUppercase">
+      <defaultValue>${modelName.toUpperCase()}</defaultValue>
+    </requiredProperty>
     <requiredProperty key="groupId">
       <defaultValue>${groupId}</defaultValue>
     </requiredProperty>

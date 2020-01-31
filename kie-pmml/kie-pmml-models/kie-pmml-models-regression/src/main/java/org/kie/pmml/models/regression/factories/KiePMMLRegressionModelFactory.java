@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.regression.factories;
+package org.kie.pmml.models.regression.factories;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import javax.swing.text.html.Option;
-
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
@@ -32,7 +29,7 @@ import org.kie.pmml.api.model.regression.enums.MODEL_TYPE;
 import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.regression.factories.KiePMMLRegressionTableFactory.getRegressionTables;
+import static org.kie.pmml.models.regression.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 
 public class KiePMMLRegressionModelFactory {
 

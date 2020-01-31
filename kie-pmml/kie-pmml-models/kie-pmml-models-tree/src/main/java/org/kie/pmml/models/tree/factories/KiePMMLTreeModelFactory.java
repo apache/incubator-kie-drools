@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.tree.factories;
+package org.kie.pmml.models.tree.factories;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -25,7 +25,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 
-import static org.kie.pmml.tree.factories.KiePMMLNodeFactory.getNode;
+import static org.kie.pmml.models.tree.factories.KiePMMLNodeFactory.getNode;
 
 public class KiePMMLTreeModelFactory {
 

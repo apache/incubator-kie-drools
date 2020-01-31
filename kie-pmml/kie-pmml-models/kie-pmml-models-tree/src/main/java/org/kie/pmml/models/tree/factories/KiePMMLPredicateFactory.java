@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.tree.factories;
+package org.kie.pmml.models.tree.factories;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +32,6 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
 import org.kie.pmml.api.exceptions.KieDataFieldException;
-import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.DATA_TYPE;
 import org.kie.pmml.api.model.tree.enums.BOOLEAN_OPERATOR;

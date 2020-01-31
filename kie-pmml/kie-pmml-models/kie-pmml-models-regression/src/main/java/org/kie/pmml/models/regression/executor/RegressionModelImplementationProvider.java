@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.tree.executor;
+package org.kie.pmml.models.regression.executor;
 
 import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.tree.TreeModel;
+import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
+import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
-import org.kie.pmml.tree.factories.KiePMMLTreeModelFactory;
+import org.kie.pmml.models.regression.factories.KiePMMLRegressionModelFactory;
 
-import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
- * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
+ * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
-public class TreeModelImplementationProvider implements ModelImplementationProvider<TreeModel, KiePMMLTreeModel> {
+public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
 
-    private static final Logger log = Logger.getLogger(TreeModelImplementationProvider.class.getName());
+    private static final Logger log = Logger.getLogger(RegressionModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -41,8 +41,8 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
+    public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
         log.info("getKiePMMLModel " + dataDictionary + " " + model);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
+        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
     }
 }

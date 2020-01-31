@@ -27,7 +27,7 @@ public class MiningModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, PROVIDER.getPMMLModelType());
+        assertEquals(PMML_MODEL.MINING_MODEL, PROVIDER.getPMMLModelType());
     }
 
     @Test

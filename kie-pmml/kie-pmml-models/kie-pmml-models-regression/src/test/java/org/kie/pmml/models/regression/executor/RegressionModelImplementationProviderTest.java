@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.executor;
+package org.kie.pmml.models.regression.executor;
 
 import java.util.List;
 import java.util.Optional;

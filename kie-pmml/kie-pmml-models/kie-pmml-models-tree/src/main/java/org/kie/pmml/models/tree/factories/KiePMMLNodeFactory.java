@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.tree.factories;
+package org.kie.pmml.models.tree.factories;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -28,7 +28,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.tree.KiePMMLNode;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.tree.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.models.tree.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLNodeFactory {
 

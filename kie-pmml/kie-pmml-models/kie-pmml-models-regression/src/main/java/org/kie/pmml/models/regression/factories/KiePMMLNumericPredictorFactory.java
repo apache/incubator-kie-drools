@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.regression.factories;
+package org.kie.pmml.models.regression.factories;
 
 import java.util.List;
 import java.util.Set;
@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.NumericPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
-
-import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 
 public class KiePMMLNumericPredictorFactory {
 

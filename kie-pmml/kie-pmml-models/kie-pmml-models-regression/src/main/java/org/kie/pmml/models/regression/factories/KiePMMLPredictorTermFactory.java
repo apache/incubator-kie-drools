@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.regression.factories;
+package org.kie.pmml.models.regression.factories;
 
 import java.util.List;
 import java.util.Set;

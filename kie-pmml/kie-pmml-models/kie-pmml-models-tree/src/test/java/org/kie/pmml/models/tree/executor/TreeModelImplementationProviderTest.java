@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.tree.executor;
+package org.kie.pmml.models.tree.executor;
 
 import java.io.IOException;
 

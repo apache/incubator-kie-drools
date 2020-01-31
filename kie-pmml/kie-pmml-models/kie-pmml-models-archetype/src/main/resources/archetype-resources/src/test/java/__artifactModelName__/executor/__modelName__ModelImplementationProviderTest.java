@@ -30,7 +30,7 @@ public class ${modelName}ModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, PROVIDER.getPMMLModelType());
+        assertEquals(PMML_MODEL.${modelNameUppercase}_MODEL, PROVIDER.getPMMLModelType());
     }
 
     @Test

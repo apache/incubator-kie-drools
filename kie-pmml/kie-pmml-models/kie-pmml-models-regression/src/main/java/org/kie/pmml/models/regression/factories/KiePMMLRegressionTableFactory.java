@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.regression.factories;
+package org.kie.pmml.models.regression.factories;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,9 +23,7 @@ import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
 
 import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
-import static org.kie.pmml.regression.factories.KiePMMLCategoricalPredictorFactory.getKiePMMLCategoricalPredictors;
-import static org.kie.pmml.regression.factories.KiePMMLNumericPredictorFactory.getKiePMMLNumericPredictors;
-import static org.kie.pmml.regression.factories.KiePMMLPredictorTermFactory.getKiePMMLPredictorTerms;
+import static org.kie.pmml.models.regression.factories.KiePMMLNumericPredictorFactory.getKiePMMLNumericPredictors;
 
 public class KiePMMLRegressionTableFactory {
 
@@ -40,10 +38,10 @@ public class KiePMMLRegressionTableFactory {
         log.info("getRegressionTable " + regressionTable);
         return KiePMMLRegressionTable.builder()
                 .withIntercept(regressionTable.getIntercept())
-                .withCategoricalPredictors(getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors()))
+                .withCategoricalPredictors(KiePMMLCategoricalPredictorFactory.getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors()))
                 .withExtensions(getKiePMMLExtensions(regressionTable.getExtensions()))
                 .withNumericPredictors(getKiePMMLNumericPredictors(regressionTable.getNumericPredictors()))
-                .withPredictorTerms(getKiePMMLPredictorTerms(regressionTable.getPredictorTerms()))
+                .withPredictorTerms(KiePMMLPredictorTermFactory.getKiePMMLPredictorTerms(regressionTable.getPredictorTerms()))
                 .withTargetCategory(regressionTable.getTargetCategory())
                 .build();
     }
