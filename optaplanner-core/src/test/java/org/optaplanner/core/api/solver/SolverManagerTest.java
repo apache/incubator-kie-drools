@@ -255,7 +255,7 @@ public class SolverManagerTest {
         assertTrue(eventCount.get() < 4);
     }
 
-    @Ignore("A test that runs forever and is here to investigate a faulty thread-creating behavior.")
+    @Ignore("https://issues.redhat.com/browse/PLANNER-1837")
     @Test
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
