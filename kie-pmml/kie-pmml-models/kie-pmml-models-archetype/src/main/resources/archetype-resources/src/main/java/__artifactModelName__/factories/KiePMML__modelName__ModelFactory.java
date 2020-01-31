@@ -20,8 +20,6 @@ package org.kie.pmml.models.${artifactModelName}.factories;
 
 import java.util.logging.Logger;
 
-import javax.swing.text.html.Option;
-
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.${artifactModelName}.${modelName}Model;
 import org.kie.pmml.api.exceptions.KiePMMLException;

@@ -21,6 +21,7 @@ import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.mining.segmentation.KiePMMLSegmentation;
+import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
@@ -121,5 +122,11 @@ public class KiePMMLMiningModel extends KiePMMLModel {
             toBuild.segmentation = segmentation;
             return this;
         }
+
+        @Override
+        public Builder withTargetField(String targetField) {
+            return (Builder) super.withTargetField(targetField);
+        }
+
     }
 }

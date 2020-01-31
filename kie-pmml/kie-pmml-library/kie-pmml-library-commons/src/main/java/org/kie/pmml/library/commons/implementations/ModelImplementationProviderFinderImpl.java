@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.implementations;
+package org.kie.pmml.library.commons.implementations;
 
 import java.util.ArrayList;
 import java.util.Iterator;

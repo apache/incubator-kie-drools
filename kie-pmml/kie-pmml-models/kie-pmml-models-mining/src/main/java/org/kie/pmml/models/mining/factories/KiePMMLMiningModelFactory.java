@@ -15,15 +15,17 @@
  */
 package org.kie.pmml.models.mining.factories;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
-import javax.swing.text.html.Option;
-
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.MiningField;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.mining.KiePMMLMiningModel;
 
+import static org.kie.pmml.models.mining.factories.KiePMMLSegmentationFactory.getSegmentation;
 
 public class KiePMMLMiningModelFactory {
 
@@ -34,7 +36,16 @@ public class KiePMMLMiningModelFactory {
 
     public static KiePMMLMiningModel getKiePMMLMiningModel(DataDictionary dataDictionary, MiningModel model) throws KiePMMLException {
         log.info("getKiePMMLModel " + model);
-        // TODO
-        return null;
+        String name = model.getModelName();
+        Optional<String> targetFieldName = model.getMiningSchema().getMiningFields().stream()
+                .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()))
+                .map(miningField -> miningField.getName().getValue())
+                .findFirst();
+        return KiePMMLMiningModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
+                .withAlgorithmName(model.getAlgorithmName())
+                .withScorable(model.isScorable())
+                .withSegmentation(getSegmentation(model.getSegmentation(), dataDictionary))
+                .withTargetField(targetFieldName.orElse(null))
+                .build();
     }
 }

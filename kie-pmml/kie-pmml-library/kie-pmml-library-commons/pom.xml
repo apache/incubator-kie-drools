@@ -3,23 +3,22 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.drools</groupId>
     <artifactId>kie-pmml-library</artifactId>
+    <groupId>org.drools</groupId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-library-compiler</artifactId>
+  <artifactId>kie-pmml-library-commons</artifactId>
 
-  <name>KIE :: PMML :: Library :: Compiler</name>
-  <description>PMML Compiler</description>
-
+  <name>KIE :: PMML :: Library :: Commons </name>
+  <description>Kie PMML Commons</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-commons</artifactId>
+      <artifactId>kie-pmml-library-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
@@ -36,7 +35,7 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-commons</artifactId>
+        <artifactId>kie-pmml-library-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
@@ -50,7 +49,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 
 
 

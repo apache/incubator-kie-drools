@@ -35,13 +35,13 @@ public class PMMLIsRegresssionModelExecutor {
 
     public static PMML4Result evaluateRegression(KiePMMLRegressionModel regressionModel, PMMLContext context) throws KiePMMLException {
         final List<KiePMMLRegressionTable> regressionTables = regressionModel.getRegressionTables();
-        if (StringUtils.isEmpty(regressionModel.getTargetFieldName().trim())) {
-            throw new KiePMMLException("TargetField required, retrieved " + regressionModel.getTargetFieldName());
+        if (StringUtils.isEmpty(regressionModel.getTargetField().trim())) {
+            throw new KiePMMLException("TargetField required, retrieved " + regressionModel.getTargetField());
         }
         if (regressionTables.size() != 1) {
             throw new KiePMMLModelException("Expected one RegressionTable, retrieved " + regressionTables.size());
         }
-        return evaluateRegression(regressionModel.getTargetFieldName(), regressionTables.get(0), context.getRequestData());
+        return evaluateRegression(regressionModel.getTargetField(), regressionTables.get(0), context.getRequestData());
     }
 
     public static PMML4Result evaluateRegression(String targetFieldName, KiePMMLRegressionTable regressionTable, PMMLRequestData requestData) throws KiePMMLException {

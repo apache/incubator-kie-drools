@@ -20,19 +20,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.regression.KiePMMLPredictorTerm;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
 import org.kie.pmml.api.model.regression.enums.MODEL_TYPE;
@@ -72,8 +63,8 @@ public class TestUtils {
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
                 .withRegressionTables(REGRESSION_TABLES)
                 .withScorable(SCORABLE)
-                .withTargetFieldName(TARGETFIELD_NAME)
                 .withTargetOpType(_OP_TYPE)
+                .withTargetField(TARGETFIELD_NAME)
                 .build();
     }
 

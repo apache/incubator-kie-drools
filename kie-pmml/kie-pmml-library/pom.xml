@@ -17,6 +17,7 @@
 
   <modules>
     <module>kie-pmml-library-api</module>
+    <module>kie-pmml-library-commons</module>
     <module>kie-pmml-library-compiler</module>
   </modules>
 

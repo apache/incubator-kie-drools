@@ -24,16 +24,14 @@ import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.utils.KiePMMLUtil;
-import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
 import org.xml.sax.SAXException;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.library.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -42,11 +40,6 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     private static final Logger log = Logger.getLogger(PMMLCompilerImpl.class.getName());
 
-    private ModelImplementationProviderFinder modelImplementationProviderFinder;
-
-    public PMMLCompilerImpl(ModelImplementationProviderFinder modelImplementationProviderFinder) {
-        this.modelImplementationProviderFinder = modelImplementationProviderFinder;
-    }
 
     @Override
     public List<KiePMMLModel> getResults(InputStream inputStream) throws JAXBException, SAXException, KiePMMLException {
@@ -66,30 +59,10 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         return pmml
                 .getModels()
                 .stream()
-                .map(throwingFunctionWrapper(model -> getFromModel(dataDictionary, model)))
+                .map(throwingFunctionWrapper(model -> getFromDataDictionaryAndModel(dataDictionary, model)))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Read the given <code>DataDictionary</code> and <code>Model</code>> to returns a <code>Optional&lt;KiePMMLModel&gt;</code>
-     *
-     *
-     * @param dataDictionary
-     * @param model
-     * @return
-     * @throws KiePMMLException
-     */
-    @SuppressWarnings("unchecked")
-    private Optional<KiePMMLModel> getFromModel(DataDictionary dataDictionary, Model model) throws KiePMMLException {
-        log.info("getFromModel " + model);
-        final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
-        log.info("pmmlModelType " + pmmlMODEL);
-        return modelImplementationProviderFinder.getImplementations(false)
-                .stream()
-                .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
-                .map(throwingFunctionWrapper(implementation -> implementation.getKiePMMLModel(dataDictionary, model)))
-                .findFirst();
-    }
 }

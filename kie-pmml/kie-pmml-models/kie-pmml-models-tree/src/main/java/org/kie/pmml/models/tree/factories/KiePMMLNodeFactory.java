@@ -28,7 +28,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.tree.KiePMMLNode;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.models.tree.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.models.core.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLNodeFactory {
 

@@ -33,7 +33,6 @@ import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
-import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +84,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
-        // TODO {gcardosi} for the moment being it uses the default ModelImplementationProviderFinder
         // to retrieve model implementations
-        return new PMMLCompilerImpl(new ModelImplementationProviderFinderImpl());
+        return new PMMLCompilerImpl();
     }
 }

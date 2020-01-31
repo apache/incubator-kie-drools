@@ -30,6 +30,7 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
     private static final long serialVersionUID = -6845971260164057040L;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
+    protected String targetField;
 
     protected KiePMMLModel() {
     }
@@ -42,11 +43,16 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
         return miningFunction;
     }
 
+    public String getTargetField() {
+        return targetField;
+    }
+
     @Override
     public String toString() {
         return "KiePMMLModel{" +
                 "pmmlMODEL=" + pmmlMODEL +
                 ", miningFunction=" + miningFunction +
+                ", targetField='" + targetField + '\'' +
                 ", name='" + name + '\'' +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
@@ -66,20 +72,26 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
         }
         KiePMMLModel that = (KiePMMLModel) o;
         return pmmlMODEL == that.pmmlMODEL &&
-                miningFunction == that.miningFunction;
+                miningFunction == that.miningFunction &&
+                Objects.equals(targetField, that.targetField);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction);
+        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction, targetField);
     }
 
-    public static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
+    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
 
         protected Builder(String name, String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
             super(name, prefix, supplier);
             toBuild.pmmlMODEL = pmmlMODEL;
             toBuild.miningFunction = miningFunction;
+        }
+
+        public Builder<T> withTargetField(String targetField) {
+            toBuild.targetField = targetField;
+            return this;
         }
     }
 

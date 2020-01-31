@@ -35,6 +35,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-library-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-compiler</artifactId>
       <scope>test</scope>
     </dependency>
@@ -136,6 +141,12 @@
         <classifier>tests</classifier>
         <scope>test</scope>
         <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-library-commons</artifactId>
+        <version>${version.org.kie}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

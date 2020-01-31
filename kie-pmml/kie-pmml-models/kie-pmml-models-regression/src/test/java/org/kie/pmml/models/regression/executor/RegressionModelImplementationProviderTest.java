@@ -59,7 +59,7 @@ public class RegressionModelImplementationProviderTest {
         assertEquals(MINING_FUNCTION.REGRESSION, retrieved.getMiningFunction());
         assertEquals("linearRegression", retrieved.getAlgorithmName());
         assertNull(retrieved.getModelType());
-        assertEquals("number_of_claims", retrieved.getTargetFieldName());
+        assertEquals("number_of_claims", retrieved.getTargetField());
         assertEquals(OP_TYPE.CONTINUOUS, retrieved.getTargetOpType());
         assertEquals(REGRESSION_NORMALIZATION_METHOD.NONE, retrieved.getRegressionNormalizationMethod());
         assertTrue(retrieved.isScorable());

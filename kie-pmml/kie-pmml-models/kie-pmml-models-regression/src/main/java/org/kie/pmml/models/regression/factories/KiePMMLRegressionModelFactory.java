@@ -53,7 +53,7 @@ public class KiePMMLRegressionModelFactory {
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))
                 .withRegressionTables(getRegressionTables(model.getRegressionTables()))
                 .withScorable(model.isScorable())
-                .withTargetFieldName(targetFieldName.orElse(null))
+                .withTargetField(targetFieldName.orElse(null))
                 .build();
     }
 }

@@ -74,7 +74,7 @@ public class PMMLIsRegresssionModelExecutorTest {
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetFieldName(), getKiePMMLRegressionTable(), pmmlRequestData);
+        PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetField(), getKiePMMLRegressionTable(), pmmlRequestData);
         assertNotNull(retrieved);
         logger.info(retrieved.toString());
         assertNotNull(retrieved.getResultVariables());

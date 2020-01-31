@@ -15,9 +15,12 @@
  */
 package org.kie.pmml.api.model.tree;
 
+import java.util.Objects;
+
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html>Tree</a>
@@ -31,7 +34,6 @@ public class KiePMMLTreeModel extends KiePMMLModel {
     private KiePMMLNode node;
 
     private String algorithmName;
-    private String targetFieldName;
 
 
     public KiePMMLNode getNode() {
@@ -46,8 +48,39 @@ public class KiePMMLTreeModel extends KiePMMLModel {
         return algorithmName;
     }
 
-    public String getTargetFieldName() {
-        return targetFieldName;
+    @Override
+    public String toString() {
+        return "KiePMMLTreeModel{" +
+                "node=" + node +
+                ", algorithmName='" + algorithmName + '\'' +
+                ", pmmlMODEL=" + pmmlMODEL +
+                ", miningFunction=" + miningFunction +
+                ", targetField='" + targetField + '\'' +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLTreeModel treeModel = (KiePMMLTreeModel) o;
+        return Objects.equals(node, treeModel.node) &&
+                Objects.equals(algorithmName, treeModel.algorithmName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), node, algorithmName);
     }
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLTreeModel> {
@@ -67,9 +100,10 @@ public class KiePMMLTreeModel extends KiePMMLModel {
             return this;
         }
 
-        public Builder withTargetFieldName(String targetFieldName) {
-            toBuild.targetFieldName = targetFieldName;
-            return this;
+        @Override
+        public Builder withTargetField(String targetField) {
+            return (Builder) super.withTargetField(targetField);
         }
+
     }
 }

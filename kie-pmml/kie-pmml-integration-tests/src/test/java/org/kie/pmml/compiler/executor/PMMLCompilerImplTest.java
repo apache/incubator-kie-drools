@@ -28,7 +28,6 @@ import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
 import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.compiler.implementations.ModelImplementationProviderFinderImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +37,7 @@ import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class PMMLCompilerImplTest {
 
-    private static final PMMLCompiler EXECUTOR = new PMMLCompilerImpl(new ModelImplementationProviderFinderImpl());
+    private static final PMMLCompiler EXECUTOR = new PMMLCompilerImpl();
 
     @Test
     public void getResults() throws Exception {
@@ -56,7 +55,7 @@ public class PMMLCompilerImplTest {
         assertEquals(MINING_FUNCTION.REGRESSION, retrieved.getMiningFunction());
         assertEquals("linearRegression", retrieved.getAlgorithmName());
         assertNull(retrieved.getModelType());
-        assertEquals("number_of_claims", retrieved.getTargetFieldName());
+        assertEquals("number_of_claims", retrieved.getTargetField());
         assertEquals(OP_TYPE.CONTINUOUS, retrieved.getTargetOpType());
         assertEquals(REGRESSION_NORMALIZATION_METHOD.NONE, retrieved.getRegressionNormalizationMethod());
         assertTrue(retrieved.isScorable());
