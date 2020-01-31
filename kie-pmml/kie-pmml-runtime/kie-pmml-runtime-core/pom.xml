@@ -18,31 +18,28 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-api</artifactId>
     </dependency>
-    <!-- DROOLS/KIE -->
+    <!-- DROOLS -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- DROOLS -->
+      <!-- EXTERNAL -->
+      <!-- TEST -->
     </dependencies>
   </dependencyManagement>
 

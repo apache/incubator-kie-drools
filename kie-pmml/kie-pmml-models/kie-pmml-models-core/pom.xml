@@ -18,17 +18,21 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
+      <artifactId>kie-pmml-library-api</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-model</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
     </dependency>
-    <!-- TEST -->
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
@@ -38,14 +42,19 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-library-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- EXTERNAL -->
+      <!-- TEST -->
+       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-library-api</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

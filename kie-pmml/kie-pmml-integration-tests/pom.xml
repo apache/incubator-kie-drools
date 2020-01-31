@@ -15,13 +15,13 @@
   <description>Module to run integration tests</description>
 
   <dependencies>
+    <!-- TEST -->
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Library -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-api</artifactId>

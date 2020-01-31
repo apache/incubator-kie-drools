@@ -15,23 +15,36 @@
   <description>API specific for KIE runtime environment</description>
 
   <dependencies>
+    <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-api</artifactId>
     </dependency>
+    <!-- DROOLS -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
+    </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- DROOLS -->
+      <!-- EXTERNAL -->
+      <!-- TEST -->
     </dependencies>
   </dependencyManagement>
 

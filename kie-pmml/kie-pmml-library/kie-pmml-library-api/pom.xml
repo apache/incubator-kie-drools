@@ -15,10 +15,12 @@
   <description>API specific for PMML library</description>
 
   <dependencies>
+    <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-api</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
@@ -33,11 +35,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
         <groupId>org.kie</groupId>

@@ -15,10 +15,7 @@
   <description>Population of KIE knowledge base</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
-    </dependency>
+    <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-api</artifactId>
@@ -27,10 +24,7 @@
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-compiler</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
+    <!-- DROOLS -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
@@ -44,20 +38,11 @@
       <artifactId>drools-core</artifactId>
     </dependency>
     <!-- TEST -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-api</artifactId>
@@ -68,6 +53,8 @@
         <artifactId>kie-pmml-library-compiler</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- EXTERNAL -->
+      <!-- TEST -->
     </dependencies>
   </dependencyManagement>
 

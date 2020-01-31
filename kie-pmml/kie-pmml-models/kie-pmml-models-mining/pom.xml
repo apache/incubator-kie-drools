@@ -9,10 +9,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-tree</artifactId>
+  <artifactId>kie-pmml-models-mining</artifactId>
 
-  <name>KIE :: PMML :: Models :: Tree</name>
-  <description>PMML Trees implementation</description>
+  <name>KIE :: PMML :: Models :: Mining</name>
+  <description>PMML Mining implementation</description>
 
   <dependencies>
     <!-- PMML -->
@@ -21,22 +21,7 @@
       <artifactId>kie-pmml-models-core</artifactId>
     </dependency>
     <!-- EXTERNAL -->
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
     <!-- TEST -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -49,13 +34,6 @@
       </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 

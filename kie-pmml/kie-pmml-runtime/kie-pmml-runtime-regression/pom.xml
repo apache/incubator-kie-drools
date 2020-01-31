@@ -17,40 +17,22 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-core</artifactId>
     </dependency>
     <!-- EXTERNAL -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
+    <!-- TEST -->
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
+      <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- EXTERNAL -->
+      <!-- TEST -->
     </dependencies>
   </dependencyManagement>
 
