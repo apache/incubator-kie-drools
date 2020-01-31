@@ -20,6 +20,8 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.config.solver.testutil.corruptedmoves.factory.TestdataCorruptedEntityUndoMoveFactory;
+import org.optaplanner.core.config.solver.testutil.corruptedmoves.factory.TestdataCorruptedUndoMoveFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -27,8 +29,6 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo.factory.TestdataCorruptedEntityUndoMoveFactory;
-import org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo.factory.TestdataCorruptedUndoMoveFactory;
 import org.optaplanner.core.impl.testdata.phase.custom.TestdataFirstValueInitializer;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataStepScoreListener;
 import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedDifferentValuesCalculator;
@@ -64,7 +64,7 @@ public class EnvironmentModeTest {
     @Before
     public void setUpSolverConfig() {
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
-            .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
+                .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
@@ -153,14 +153,14 @@ public class EnvironmentModeTest {
     }
 
     private void assertReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
-        assertGeneratingSameNumbers(((DefaultSolver) solver1).getRandomFactory(),
-                                    ((DefaultSolver) solver2).getRandomFactory());
+        assertGeneratingSameNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
+                                    ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertSameScoreSeries(solver1, solver2);
     }
 
     private void assertNonReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
-        assertGeneratingDifferentNumbers(((DefaultSolver) solver1).getRandomFactory(),
-                                         ((DefaultSolver) solver2).getRandomFactory());
+        assertGeneratingDifferentNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
+                                         ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertDifferentScoreSeries(solver1, solver2);
     }
 
@@ -231,12 +231,12 @@ public class EnvironmentModeTest {
                         .isNotEqualTo(random2.nextInt())));
     }
 
-    private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+    private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                                                            .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted(Class<? extends MoveListFactory> move) {
+    private void setSolverConfigMoveListFactoryClassToCorrupted(Class<? extends MoveListFactory<TestdataSolution>> move) {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
 

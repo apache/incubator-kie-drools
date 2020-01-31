@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo.factory;
+package org.optaplanner.core.config.solver.testutil.corruptedmoves.factory;
 
 public class TestdataCorruptedEntityUndoMoveFactory extends AbstractTestdataCorruptedUndoMoveTotalMappingFactory {
 

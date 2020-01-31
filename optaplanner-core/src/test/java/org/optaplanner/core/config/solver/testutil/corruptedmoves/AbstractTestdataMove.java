@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.heuristic.move.corrupted.undo;
+package org.optaplanner.core.config.solver.testutil.corruptedmoves;
 
 import java.util.Collection;
 import java.util.Collections;
