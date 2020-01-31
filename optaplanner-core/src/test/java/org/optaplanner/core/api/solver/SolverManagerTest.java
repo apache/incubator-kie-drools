@@ -407,7 +407,7 @@ public class SolverManagerTest {
         assertThat(entity.getValue()).isNull();
     }
 
-    @Test(timeout = 100)
+    @Test(timeout = 1_000)
     public void runSameIdProcesses_throwsIllegalStateException() {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
