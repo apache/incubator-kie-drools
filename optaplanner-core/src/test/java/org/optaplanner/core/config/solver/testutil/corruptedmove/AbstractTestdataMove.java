@@ -1,4 +1,4 @@
-package org.optaplanner.core.config.solver.testutil.corruptedmoves;
+package org.optaplanner.core.config.solver.testutil.corruptedmove;
 
 import java.util.Collection;
 import java.util.Collections;

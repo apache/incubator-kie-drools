@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.score.director;
+package org.optaplanner.core.config.solver.testutil.calculator;
 
 public class TestdataDifferentValuesCalculator extends AbstractTestdataDifferentValuesCalculator {
 

@@ -1,8 +1,10 @@
 package org.optaplanner.core.config.solver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -13,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
@@ -20,19 +23,21 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.config.solver.testutil.corruptedmoves.factory.TestdataCorruptedEntityUndoMoveFactory;
-import org.optaplanner.core.config.solver.testutil.corruptedmoves.factory.TestdataCorruptedUndoMoveFactory;
+import org.optaplanner.core.config.solver.testutil.calculator.TestdataCorruptedDifferentValuesCalculator;
+import org.optaplanner.core.config.solver.testutil.calculator.TestdataDifferentValuesCalculator;
+import org.optaplanner.core.config.solver.testutil.corruptedmove.factory.TestdataCorruptedEntityUndoMoveFactory;
+import org.optaplanner.core.config.solver.testutil.corruptedmove.factory.TestdataCorruptedUndoMoveFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.phase.custom.TestdataFirstValueInitializer;
-import org.optaplanner.core.impl.testdata.phase.event.TestdataStepScoreListener;
-import org.optaplanner.core.impl.testdata.score.director.TestdataCorruptedDifferentValuesCalculator;
-import org.optaplanner.core.impl.testdata.score.director.TestdataDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -248,5 +253,47 @@ public class EnvironmentModeTest {
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         solverConfig.withPhases(initializerPhaseConfig, localSearchPhaseConfig);
+    }
+
+    public static class TestdataFirstValueInitializer implements CustomPhaseCommand<TestdataSolution> {
+
+        @Override
+        public void changeWorkingSolution(ScoreDirector<TestdataSolution> scoreDirector) {
+            TestdataSolution solution = scoreDirector.getWorkingSolution();
+            TestdataValue firstValue = solution.getValueList().get(0);
+
+            for (TestdataEntity entity : solution.getEntityList()) {
+                scoreDirector.beforeVariableChanged(entity, "value");
+                entity.setValue(firstValue);
+                scoreDirector.afterVariableChanged(entity, "value");
+            }
+
+            scoreDirector.triggerVariableListeners();
+            Score<?> score = scoreDirector.calculateScore();
+
+            if (!score.isSolutionInitialized()) {
+                throw new IllegalStateException("The solution (" + TestdataEntity.class.getSimpleName()
+                                                        + ") was not fully initialized by CustomSolverPhase: ("
+                                                        + this.getClass().getCanonicalName() + ")");
+            }
+        }
+    }
+
+    public static class TestdataStepScoreListener extends PhaseLifecycleListenerAdapter<TestdataSolution> {
+
+        private List<Score> scores = new ArrayList<>();
+
+        @Override
+        public void stepEnded(AbstractStepScope<TestdataSolution> stepScope) {
+            TestdataSolution solution = stepScope.getWorkingSolution();
+
+            if (solution.getScore() != null) {
+                scores.add(solution.getScore());
+            }
+        }
+
+        public List<Score> getScores() {
+            return scores;
+        }
     }
 }

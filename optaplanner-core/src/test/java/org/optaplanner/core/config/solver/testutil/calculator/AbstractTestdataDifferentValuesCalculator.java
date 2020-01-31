@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.score.director;
+package org.optaplanner.core.config.solver.testutil.calculator;
 
 import java.util.HashSet;
 import java.util.Set;

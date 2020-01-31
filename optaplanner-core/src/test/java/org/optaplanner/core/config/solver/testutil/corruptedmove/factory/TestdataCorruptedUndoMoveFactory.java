@@ -1,4 +1,4 @@
-package org.optaplanner.core.config.solver.testutil.corruptedmoves.factory;
+package org.optaplanner.core.config.solver.testutil.corruptedmove.factory;
 
 public class TestdataCorruptedUndoMoveFactory extends AbstractTestdataCorruptedUndoMoveTotalMappingFactory {
 
