@@ -46,15 +46,15 @@ class FlowTestHarness {
         Variable<Person> olderV = declarationOf(Person.class);
 
         Rule rule = FlowDSL.rule("beta")
-                .build(expr("exprA", markV, mypackage.LambdaPredicate56AA696D2EE62C6ECE1B5C31777F66E5.INSTANCE)
-                               .indexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractor846E23768399BF25B413BAD5FE67FDDE.INSTANCE, "Mark")
+                .build(expr("exprA", markV, mypackage.LambdaPredicate3BC479A1F3E07E22E6B04B826FEF3203.INSTANCE)
+                               .indexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractor78CC335A6E209E33128956DF6E4B90ED.INSTANCE, "Mark")
                                .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                        bind(markAge).as(markV, (Person person) -> person.getAge()).reactOn("age"),
-                       expr("exprB", olderV, mypackage.LambdaPredicateD04955B52DA08C4828E78DD5EA434F76.INSTANCE)
-                               .indexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractor567C73E592F0273030C30289C142FA39.INSTANCE, "Mark")
+                       expr("exprB", olderV, mypackage.LambdaPredicate3EA0E684DE1924A84F80BB5426A04F64.INSTANCE)
+                               .indexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractorD03FF943D0CED6BB0500A27A09B6EAC2.INSTANCE, "Mark")
                                .reactOn("name"),
-                       expr("exprC", olderV, markAge, mypackage.LambdaPredicateD27508B746925618D36E184D99E8CFF4.INSTANCE)
-                               .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractor57148B6C957469EB75DC3BF92FE9F648.INSTANCE, int.class::cast)
+                       expr("exprC", olderV, markAge, mypackage.LambdaPredicateA3D5CA75190A6BB79FD366E1965112D9.INSTANCE)
+                               .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractor049CBA16FC61AA14BE778D120A8067C6.INSTANCE, int.class::cast)
                                .reactOn("age"),
                        on(olderV, markV).execute((Drools drools, Person p1, Person p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
                 );
@@ -86,17 +86,17 @@ class FlowTestHarness {
         Variable<Person> olderV = declarationOf(Person.class);
 
         Rule rule = FlowDSL.rule("beta")
-                .build(expr("exprA", markV, mypackage.LambdaPredicate56AA696D2EE62C6ECE1B5C31777F66E5.INSTANCE)
-                               .indexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractor846E23768399BF25B413BAD5FE67FDDE.INSTANCE, "Mark")
+                .build(expr("exprA", markV, mypackage.LambdaPredicate3BC479A1F3E07E22E6B04B826FEF3203.INSTANCE)
+                               .indexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractor78CC335A6E209E33128956DF6E4B90ED.INSTANCE, "Mark")
                                .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                        bind(markAge).as(markV, (Person person) -> person.getAge()).reactOn("age"),
-                       expr("exprB", olderV, mypackage.LambdaPredicateD04955B52DA08C4828E78DD5EA434F76.INSTANCE)
-                               .indexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractor567C73E592F0273030C30289C142FA39.INSTANCE, "Mark")
+                       expr("exprB", olderV, mypackage.LambdaPredicate3EA0E684DE1924A84F80BB5426A04F64.INSTANCE)
+                               .indexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractorD03FF943D0CED6BB0500A27A09B6EAC2.INSTANCE, "Mark")
                                .reactOn("name"),
-                       expr("exprC", olderV, markAge, mypackage.LambdaPredicateD27508B746925618D36E184D99E8CFF4.INSTANCE)
-                               .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractor57148B6C957469EB75DC3BF92FE9F648.INSTANCE, int.class::cast)
+                       expr("exprC", olderV, markAge, mypackage.LambdaPredicateA3D5CA75190A6BB79FD366E1965112D9.INSTANCE)
+                               .indexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractor049CBA16FC61AA14BE778D120A8067C6.INSTANCE, int.class::cast)
                                .reactOn("age"),
-                       on(olderV, markV).execute(mypackage.LambdaConsequenceF05A49D9F4440F84A71770B1FFB3FB3B.INSTANCE)
+                       on(olderV, markV).execute(mypackage.LambdaConsequenceCA6B859E4B5D8DD93F77DEA7176C8970.INSTANCE)
                 );
     }
 

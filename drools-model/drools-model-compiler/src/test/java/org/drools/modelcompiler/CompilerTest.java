@@ -62,7 +62,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test(timeout = 5000)
-    public void testPropertyReactvity() {
+    public void testPropertyReactivity() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +

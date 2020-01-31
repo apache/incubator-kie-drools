@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -213,5 +215,98 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
         assertEquals( 2, ksession2.fireAllRules() );
+    }
+
+    @Test
+    public void testIdenticalConsequenceButImportChange() {
+        final String drl1 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end";
+
+        final String drl2 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "import " + Address.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "       $a: Address ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        createAndDeployJar(ks, releaseId1, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        Person john = new Person("John", 40);
+        kieSession.insert(john);
+        assertEquals(1, kieSession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        createAndDeployJar(ks, releaseId2, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        Person paul = new Person("Paul", 35);
+        kieSession.insert(paul);
+        final Address address = new Address();
+        kieSession.insert(address);
+        assertEquals(1, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testIdenticalPredicateButImportChange() {
+        // This test also verifies LambdaExtractor
+        final String drl1 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "    then\n" +
+                    "        System.out.println(\"Hello\");\n" +
+                    "end";
+
+        final String drl2 = "package org.drools.test\n" +
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                    "import " + Address.class.getCanonicalName() + "\n" +
+                    "rule R\n" +
+                    "    when\n" +
+                    "       $p: Person (name == \"Paul\")\n" +
+                    "       $a: Address ()\n" +
+                    "    then\n" +
+                    "        System.out.println(\"$p.getAge() = \" + $p.getAge());\n" +
+                    "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        createAndDeployJar(ks, releaseId1, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        Person john = new Person("John", 40);
+        kieSession.insert(john);
+        assertEquals(0, kieSession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        createAndDeployJar(ks, releaseId2, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        Person paul = new Person("Paul", 35);
+        kieSession.insert(paul);
+        final Address address = new Address();
+        kieSession.insert(address);
+        assertEquals(1, kieSession.fireAllRules());
     }
 }

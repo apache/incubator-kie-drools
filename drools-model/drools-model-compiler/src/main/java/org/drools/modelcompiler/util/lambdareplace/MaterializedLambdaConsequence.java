@@ -37,8 +37,8 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         super(packageName, ruleClassName);
     }
 
-    protected String className(String expressionString) {
-        return CLASS_NAME_PREFIX + md5Hash(expressionString);
+    protected String className(String sourceCode) {
+        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
     }
 
     @Override
