@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
@@ -100,10 +101,10 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
-        } else if(shouldCoerceBToMap()) {
+        } else if (shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
-        } else if (Boolean.class.isAssignableFrom(leftClass) && !Boolean.class.isAssignableFrom(rightClass)) {
-             coercedRight = coerceBoolean(right);
+        } else if (isBoolean(leftClass) && !isBoolean(rightClass)) {
+            coercedRight = coerceBoolean(right);
         } else {
             coercedRight = right;
         }
@@ -116,6 +117,10 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private boolean isBoolean(Class<?> leftClass) {
+        return Boolean.class.isAssignableFrom(leftClass) || boolean.class.isAssignableFrom(leftClass);
     }
 
     private boolean shouldCoerceBToMap() {
@@ -136,7 +141,6 @@ public class CoercedExpression {
                 && !Boolean.class.isAssignableFrom(rightClass)
                 && !String.class.isAssignableFrom(rightClass)
                 && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
-
     }
 
     private TypedExpression castToClass(Class<?> clazz) {
@@ -159,12 +163,16 @@ public class CoercedExpression {
     }
 
     private static TypedExpression coerceToDate(TypedExpression typedExpression) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, STRING_TO_DATE_METHOD );
-        methodCallExpr.addArgument( typedExpression.getExpression() );
-        return new TypedExpression( methodCallExpr, Date.class );
+        MethodCallExpr methodCallExpr = new MethodCallExpr(null, STRING_TO_DATE_METHOD);
+        methodCallExpr.addArgument(typedExpression.getExpression());
+        return new TypedExpression(methodCallExpr, Date.class);
     }
 
     private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
+        if (typedExpression.getType() == ClassUtil.NullType.class) {
+            return typedExpression;
+        }
+
         final Expression expression = typedExpression.getExpression();
         if (expression instanceof BooleanLiteralExpr) {
             return typedExpression;

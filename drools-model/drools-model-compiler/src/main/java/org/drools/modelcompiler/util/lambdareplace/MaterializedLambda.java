@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
@@ -34,13 +35,16 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.modelcompiler.builder.JavaParserCompiler;
+
+import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 abstract class MaterializedLambda {
 
     final List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
     protected final String packageName;
-    protected String className;
+    protected String temporaryClassName;
 
     LambdaExpr lambdaExpr;
     private String ruleClassName;
@@ -58,7 +62,7 @@ abstract class MaterializedLambda {
         }
 
         lambdaExpr = expression.asLambdaExpr();
-        className = className(expressionString);
+        temporaryClassName = className(expressionString);
 
         parseParameters();
 
@@ -68,6 +72,9 @@ abstract class MaterializedLambda {
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
+
+        String className = className(JavaParserCompiler.getPrettyPrinter().print(compilationUnit));
+        classDeclaration.setName(className);
 
         return new CreatedClass(compilationUnit, className, packageName);
     }
@@ -107,10 +114,13 @@ abstract class MaterializedLambda {
     }
 
     private EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration lambdaClass = compilationUnit.addEnum(className);
+        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassName);
         lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
+
+        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", StaticJavaParser.parseExpression("\"" + (md5Hash(lambdaExpr.toString())) + "\""),
+                                            Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
         return lambdaClass;
     }
 
@@ -130,7 +140,7 @@ abstract class MaterializedLambda {
                 .collect(Collectors.toList());
     }
 
-    abstract String className(String expressionString);
+    abstract String className(String sourceCode);
 
     abstract ClassOrInterfaceType functionType();
 

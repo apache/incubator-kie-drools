@@ -21,11 +21,13 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,18 +53,21 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.IfExpressionNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.IterationContextNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NamedParameterNode;
@@ -287,6 +292,39 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         return DirectCompilerResult.of(
                 Expressions.determineTypeFromName(n.getText()),
                 BuiltInType.UNKNOWN);
+    }
+
+    @Override
+    public DirectCompilerResult visit(ListTypeNode n) {
+        DirectCompilerResult expr = n.getGenTypeNode().accept(this);
+        return DirectCompilerResult.of(Expressions.genListType(expr.getExpression()),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(expr));
+    }
+
+    @Override
+    public DirectCompilerResult visit(ContextTypeNode n) {
+        Map<String, DirectCompilerResult> fields = new HashMap<>();
+        for (Entry<String, TypeNode> kv : n.getGen().entrySet()) {
+            fields.put(kv.getKey(), kv.getValue().accept(this));
+        }
+        return DirectCompilerResult.of(Expressions.genContextType(fields.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getExpression()))),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(fields.values().stream().collect(Collectors.toList())));
+    }
+
+    @Override
+    public DirectCompilerResult visit(FunctionTypeNode n) {
+        List<DirectCompilerResult> args = new ArrayList<>();
+        for (TypeNode arg : n.getArgTypes()) {
+            args.add(arg.accept(this));
+        }
+        DirectCompilerResult ret = n.getRetType().accept(this);
+        return DirectCompilerResult.of(Expressions.genFnType(args.stream().map(DirectCompilerResult::getExpression).collect(Collectors.toList()),
+                                                             ret.getExpression()),
+                                       BuiltInType.UNKNOWN,
+                                       mergeFDs(args))
+                                   .withFD(ret);
     }
 
     @Override

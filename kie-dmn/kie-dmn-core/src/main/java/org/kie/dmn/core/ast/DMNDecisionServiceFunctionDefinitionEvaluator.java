@@ -177,8 +177,8 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             return true;
         }
 
-        public List<List<String>> getParameterNames() {
-            return Collections.singletonList(parameters.stream().map(p -> p.name).collect(Collectors.toList()));
+        public List<List<Param>> getParameters() {
+            return Collections.singletonList(parameters.stream().map(FormalParameter::asFEELParam).collect(Collectors.toList()));
         }
 
         public List<List<DMNType>> getParameterTypes() {

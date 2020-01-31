@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -98,7 +99,7 @@ public class SortFunctionTest {
             }
 
             @Override
-            public List<List<String>> getParameterNames() {
+            public List<List<Param>> getParameters() {
                 return null;
             }
 
@@ -122,7 +123,7 @@ public class SortFunctionTest {
             }
 
             @Override
-            public List<List<String>> getParameterNames() {
+            public List<List<Param>> getParameters() {
                 return null;
             }
 

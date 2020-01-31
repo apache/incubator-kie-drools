@@ -9725,4 +9725,85 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEqualsIgnoreWhitespace(drl,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
     }
+
+    @Test
+    public void normalDRLWithTemplateKeys() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(@{param2});\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(@{removeDelimitingQuotes(param2)});\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+        assertTrue(model.rhs[0] instanceof ActionSetField);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void oneSetterTwoTemplateKeys() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\", married == \"@{param2}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello($person.getName(), @{param3}, @{param4}));\n" +
+                "System.out.println(hello($person.getName(), @{param5}, @{param6}));\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\", married == \"@{removeDelimitingQuotes(param2)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello($person.getName(), @{param3}, @{param4}));\n" +
+                "System.out.println(hello($person.getName(), @{param5}, @{param6}));\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void methodInSetter() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\", married == \"@{param2}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello(@{param3}));\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\", married == \"@{removeDelimitingQuotes(param2)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello(@{param3}));\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
 }

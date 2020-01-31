@@ -16,11 +16,11 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.util.List;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
-
-import java.util.Arrays;
-import java.util.List;
+import org.kie.dmn.feel.lang.Type;
 
 /**
  * An interface for all FEEL functions, custom or built-in
@@ -40,11 +40,11 @@ public interface FEELFunction {
     Symbol getSymbol();
 
     /**
-     * Returns the parameter names for each supported signature.
+     * Returns the parameter for each supported signature.
      *
-     * @return a List of Lists of Strings with the parameter names. For
+     * @return a List of Lists of Strings with the parameters. For
      *         a function with multiple signatures, each element of the
-     *         list returns the names of the parameters of one signature.
+     *         list returns the parameters of one signature.
      *         E.g.:
      *
      *         the substring function has 2 supported signatures:
@@ -57,7 +57,7 @@ public interface FEELFunction {
      *         { { "string", "start position" },
      *           { "string", "start position", "length" } }
      */
-    List<List<String>> getParameterNames();
+    List<List<Param>> getParameters();
 
     /**
      * Invokes the function reflectively based on the parameters
@@ -68,4 +68,23 @@ public interface FEELFunction {
      */
     Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
+    public static class Param {
+
+        public final String name;
+        public final Type type;
+
+        public Param(String name, Type type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+    }
 }

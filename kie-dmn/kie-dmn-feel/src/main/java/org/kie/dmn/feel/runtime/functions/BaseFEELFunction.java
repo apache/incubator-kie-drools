@@ -34,7 +34,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -124,7 +123,7 @@ public abstract class BaseFEELFunction
                 }
             } else {
                 if ( isNamedParams ) {
-                    params = rearrangeParameters( params, this.getParameterNames().get( 0 ) );
+                    params = rearrangeParameters(params, this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
                 }
                 Object result = invoke( ctx, params );
                 if ( result instanceof Either ) {
@@ -281,7 +280,7 @@ public abstract class BaseFEELFunction
     }
 
     @Override
-    public List<List<String>> getParameterNames() {
+    public List<List<Param>> getParameters() {
         // TODO: we could implement this method using reflection, just for consistency,
         // but it is not used at the moment
         return Collections.emptyList();
@@ -414,27 +413,6 @@ public abstract class BaseFEELFunction
             return score;
         }
 
-    }
-
-    public static class Param {
-    
-        public final String name;
-        public final Type type;
-    
-        public Param(String name, Type type) {
-            super();
-            this.name = name;
-            this.type = type;
-        }
-    
-        public String getName() {
-            return name;
-        }
-    
-        public Type getType() {
-            return type;
-        }
-    
     }
 
 }

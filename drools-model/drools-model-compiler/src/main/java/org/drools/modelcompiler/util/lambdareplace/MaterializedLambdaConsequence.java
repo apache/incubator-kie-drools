@@ -37,8 +37,8 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         super(packageName, ruleClassName);
     }
 
-    protected String className(String expressionString) {
-        return CLASS_NAME_PREFIX + md5Hash(expressionString);
+    protected String className(String sourceCode) {
+        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         }
 
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
-        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("Exception")));
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new VoidType());
 

@@ -16,38 +16,38 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JavaFunction
         extends BaseFEELFunction {
 
     private static final Logger logger = LoggerFactory.getLogger( JavaFunction.class );
 
-    private final List<String> parameters;
+    private final List<Param> parameters;
     private final Class        clazz;
     private final Method       method;
 
-    public JavaFunction(String name, List<String> parameters, Class clazz, Method method) {
+    public JavaFunction(String name, List<Param> params, Class clazz, Method method) {
         super( name );
-        this.parameters = parameters;
+        this.parameters = params;
         this.clazz = clazz;
         this.method = method;
     }
 
-    public List<List<String>> getParameterNames() {
+    @Override
+    public List<List<Param>> getParameters() {
         return Arrays.asList( parameters );
     }
 
@@ -60,7 +60,7 @@ public class JavaFunction
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {
-                ctx.setValue( parameters.get( i ), params[i] );
+                ctx.setValue(parameters.get(i).name, params[i]);
             }
             Object[] actualParams = prepareParams( params );
             Object result = method.invoke( clazz, actualParams );
@@ -135,7 +135,7 @@ public class JavaFunction
     }
 
     private String getSignature() {
-        return getName() + "( " + parameters.stream().collect( Collectors.joining( ", " ) ) + " )";
+        return getName() + "( " + parameters.stream().map(Param::getName).collect(Collectors.joining(", ")) + " )";
     }
 
     @Override

@@ -36,4 +36,6 @@ public interface Type {
      * @return if value can be assigned to the type represented by this type. If the parameter is null, returns true. 
      */
     boolean isAssignableValue(Object value);
+
+    boolean conformsTo(Type t);
 }

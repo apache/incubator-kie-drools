@@ -29,7 +29,7 @@ public class LambdaUtil {
 
     }
 
-    public static Expression compose(LambdaExpr l1, LambdaExpr l2) {
+    public static Expression appendNewLambdaToOld(LambdaExpr l1, LambdaExpr l2) {
         ExpressionStmt l1ExprStmt = (ExpressionStmt) l1.getBody();
         ExpressionStmt l2ExprStmt = (ExpressionStmt) l2.getBody();
 

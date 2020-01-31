@@ -178,4 +178,10 @@ public enum BuiltInType implements SimpleType {
         }
         return isInstanceOf(value, this);
     }
+
+    @Override
+    public boolean conformsTo(Type t) {
+        return t == UNKNOWN || this == t;
+    }
+
 }

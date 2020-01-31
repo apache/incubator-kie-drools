@@ -6,6 +6,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -159,6 +160,14 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("$one << $shift", long.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("$one << $shift", long.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void doNotCastNullLiteral() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".isApproved()", java.lang.Boolean.class);
+        final TypedExpression right = expr("null", ClassUtil.NullType.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("null", ClassUtil.NullType.class), coerce.getCoercedRight());
     }
 
     @Test(expected = CoercedExpression.CoercedExpressionException.class)

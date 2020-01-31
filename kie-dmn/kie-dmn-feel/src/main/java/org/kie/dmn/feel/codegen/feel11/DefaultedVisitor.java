@@ -24,18 +24,21 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
 import org.kie.dmn.feel.lang.ast.IfExpressionNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.IterationContextNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
 import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NamedParameterNode;
@@ -215,4 +218,20 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
     public T visit(AtLiteralNode n) {
         return defaultVisit(n);
     }
+
+    @Override
+    public T visit(ListTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
+    public T visit(ContextTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
+    public T visit(FunctionTypeNode n) {
+        return defaultVisit(n);
+    }
+
 }

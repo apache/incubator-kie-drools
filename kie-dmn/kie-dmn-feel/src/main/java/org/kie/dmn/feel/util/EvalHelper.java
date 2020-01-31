@@ -392,6 +392,11 @@ public class EvalHelper {
             if ( getter != null ) {
                 try {
                     result = getter.invoke(current);
+                    if (result instanceof Character) {
+                        result = result.toString();
+                    } else if ( result instanceof java.util.Date ) {
+                        result = java.time.Instant.ofEpochMilli(((java.util.Date) result).getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    }
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     e.printStackTrace();
                     return PropertyValueResult.of(Either.ofLeft(e));

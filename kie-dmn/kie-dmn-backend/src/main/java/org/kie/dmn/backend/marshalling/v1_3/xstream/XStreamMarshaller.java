@@ -59,6 +59,7 @@ import org.kie.dmn.model.v1_3.TDefinitions;
 import org.kie.dmn.model.v1_3.TElementCollection;
 import org.kie.dmn.model.v1_3.TExpression;
 import org.kie.dmn.model.v1_3.TFunctionDefinition;
+import org.kie.dmn.model.v1_3.TFunctionItem;
 import org.kie.dmn.model.v1_3.TGroup;
 import org.kie.dmn.model.v1_3.TImport;
 import org.kie.dmn.model.v1_3.TImportedValues;
@@ -226,6 +227,7 @@ public class XStreamMarshaller
         xStream.alias("encapsulatedLogic", TFunctionDefinition.class);
         xStream.alias("expression", TExpression.class);
         xStream.alias("formalParameter", TInformationItem.class);
+        xStream.alias("functionItem", TFunctionItem.class);
         xStream.alias("functionDefinition", TFunctionDefinition.class);
         xStream.alias("group", TGroup.class);
         xStream.alias("impactedPerformanceIndicator", TDMNElementReference.class);
@@ -256,6 +258,7 @@ public class XStreamMarshaller
         xStream.alias("outputValues", TUnaryTests.class);
         xStream.alias("owner", TDMNElementReference.class);
         xStream.alias("parameter", TInformationItem.class);
+        xStream.alias("parameters", TInformationItem.class);
         xStream.alias("performanceIndicator", TPerformanceIndicator.class);
         xStream.alias("relation", TRelation.class);
         xStream.alias("requiredAuthority", TDMNElementReference.class);
@@ -354,6 +357,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new RelationConverter( xStream ) );
         xStream.registerConverter(new TextAnnotationConverter( xStream ) );
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
+        xStream.registerConverter(new FunctionItemConverter( xStream ) );
         
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );

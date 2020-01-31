@@ -39,8 +39,8 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     }
 
     @Override
-    String className(String expressionString) {
-        return CLASS_NAME_PREFIX + md5Hash(expressionString);
+    String className(String sourceCode) {
+        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
     }
 
     @Override

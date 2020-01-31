@@ -20,6 +20,8 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -30,6 +32,7 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -41,7 +44,10 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.lang.types.GenFnType;
+import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -54,6 +60,9 @@ public class Expressions {
 
     public static final ClassOrInterfaceType NamedParamterT = parseClassOrInterfaceType(NamedParameter.class.getCanonicalName());
     public static final ClassOrInterfaceType FormalParamterT = parseClassOrInterfaceType(BaseFEELFunction.Param.class.getCanonicalName());
+    public static final ClassOrInterfaceType GenListTypeT = parseClassOrInterfaceType(GenListType.class.getCanonicalName());
+    public static final ClassOrInterfaceType MapBackedTypeT = parseClassOrInterfaceType(MapBackedType.class.getCanonicalName());
+    public static final ClassOrInterfaceType GenFnTypeT = parseClassOrInterfaceType(GenFnType.class.getCanonicalName());
     private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
 
     public static class NamedLambda {
@@ -384,6 +393,37 @@ public class Expressions {
     public static MethodCallExpr determineTypeFromName(String typeAsText) {
         return new MethodCallExpr(BuiltInTypeT, "determineTypeFromName")
                 .addArgument(new StringLiteralExpr(typeAsText));
+    }
+
+    public static ObjectCreationExpr genListType(Expression gen) {
+        return new ObjectCreationExpr(null, GenListTypeT, new NodeList<>(gen));
+    }
+
+    public static Expression genContextType(Map<String, Expression> fields) {
+        final ClassOrInterfaceType sie = parseClassOrInterfaceType(java.util.AbstractMap.SimpleImmutableEntry.class.getCanonicalName());
+        sie.setTypeArguments(parseClassOrInterfaceType(String.class.getCanonicalName()),
+                             parseClassOrInterfaceType(org.kie.dmn.feel.lang.Type.class.getCanonicalName()));
+        List<Expression> entryParams = fields.entrySet().stream().map(e -> new ObjectCreationExpr(null,
+                                                                                                  sie,
+                                                                                                  new NodeList<>(stringLiteral(e.getKey()),
+                                                                                                                 e.getValue())))
+                                             .collect(Collectors.toList());
+        MethodCallExpr mOf = new MethodCallExpr(new NameExpr(java.util.stream.Stream.class.getCanonicalName()), "of");
+        entryParams.forEach(mOf::addArgument);
+        MethodCallExpr mCollect = new MethodCallExpr(mOf, "collect");
+        mCollect.addArgument(new MethodCallExpr(new NameExpr(java.util.stream.Collectors.class.getCanonicalName()),
+                                                "toMap").addArgument(new MethodReferenceExpr(new NameExpr(java.util.Map.Entry.class.getCanonicalName()), new NodeList<>(), "getKey"))
+                                                        .addArgument(new MethodReferenceExpr(new NameExpr(java.util.Map.Entry.class.getCanonicalName()), new NodeList<>(), "getValue")));
+        return new ObjectCreationExpr(null, MapBackedTypeT, new NodeList<>(stringLiteral("[anonymous]"), mCollect));
+    }
+
+    public static ObjectCreationExpr genFnType(List<Expression> args, Expression ret) {
+        return new ObjectCreationExpr(null,
+                                      GenFnTypeT,
+                                      new NodeList<>(new MethodCallExpr(new NameExpr(java.util.Arrays.class.getCanonicalName()),
+                                                                        "asList",
+                                                                        new NodeList<>(args)),
+                                                     ret));
     }
 
     public static Expression contains(Expression expr, Expression value) {
