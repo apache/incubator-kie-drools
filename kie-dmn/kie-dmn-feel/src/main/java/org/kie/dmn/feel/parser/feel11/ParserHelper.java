@@ -90,21 +90,6 @@ public class ParserHelper {
         LOG.trace("pushTypeScope()");
         Scope newTypeScope = typeRegistry.getItemDefScope(currentScope);
         currentScope = newTypeScope;
-        //        LOG.trace("pushTypeScope()");
-        //        // -- start of external.
-        //        ScopeImpl newTypeScope = new ScopeImpl("typeScope", null); // null intentional 
-        //        Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> newTypeScope.define(t));
-        //        newTypeScope.define(new TypeSymbol("my list", null));
-        //        newTypeScope.define(new TypeSymbol("my context", null));
-        //
-        //        ScopeImpl import1 = new ScopeImpl("my import", newTypeScope);
-        //        newTypeScope.define(new TypeSymbol("my import", null));
-        //
-        //        import1.define(new TypeSymbol("my list2", null));
-        //
-        //        // -- end of external
-        //        newTypeScope.setParentScope(currentScope);
-        //        currentScope = newTypeScope;
     }
 
     public void popScope() {

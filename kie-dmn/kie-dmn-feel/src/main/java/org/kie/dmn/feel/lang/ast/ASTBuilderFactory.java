@@ -153,7 +153,7 @@ public class ASTBuilderFactory {
         return new DashNode( ctx );
     }
 
-    public static TypeNode newTypeNode(ParserRuleContext ctx, Type type) {
+    public static CTypeNode newCTypeNode(ParserRuleContext ctx, Type type) {
         return new CTypeNode(ctx, type);
     }
 
