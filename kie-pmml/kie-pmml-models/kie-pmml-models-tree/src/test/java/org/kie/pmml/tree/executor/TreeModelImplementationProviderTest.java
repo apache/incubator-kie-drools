@@ -20,8 +20,6 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.Test;
