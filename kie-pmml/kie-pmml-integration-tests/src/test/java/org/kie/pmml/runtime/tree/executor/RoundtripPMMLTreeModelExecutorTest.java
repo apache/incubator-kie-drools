@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.runtime.test.executor;
+package org.kie.pmml.runtime.tree.executor;
 
 import java.util.HashMap;
 import java.util.Map;

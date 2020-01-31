@@ -16,7 +16,6 @@
 package org.kie.pmml.api.model.mining.segmentation;
 
 import java.util.List;
-import java.util.Map;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.KiePMMLModel;
@@ -42,26 +41,16 @@ public class KiePMMLSegment extends KiePMMLIDedExtensioned {
         return new Builder(extensions, kiePMMLPredicate, model);
     }
 
-    public boolean evaluate(Map<String, Object> values) {
-//        result = null;
-//        logger.info(String.format("%s: evaluate %s", id, this.score));
-//        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
-//            logger.info(String.format("%s: matching predicate, evaluating... ", id));
-//            logger.info(String.format("%s: preliminary set %s", id, score));
-//            result = score;
-//            if (kiePMMLNodes != null) {
-//                for (KiePMMLSegment kiePMMLNode : kiePMMLNodes) {
-//                    if (kiePMMLNode.evaluate(values)) {
-//                        logger.info(String.format("%s: matching node, update set %s", id, kiePMMLNode.result));
-//                        result = kiePMMLNode.result;
-//                        break;
-//                    }
-//                }
-//            }
-//            return true;
-//        }
-//        logger.info(String.format("%s: no matching predicate, set %s", id, result));
-        return false;
+    public double getWeight() {
+        return weight;
+    }
+
+    public KiePMMLPredicate getKiePMMLPredicate() {
+        return kiePMMLPredicate;
+    }
+
+    public KiePMMLModel getModel() {
+        return model;
     }
 
     private KiePMMLSegment(KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
