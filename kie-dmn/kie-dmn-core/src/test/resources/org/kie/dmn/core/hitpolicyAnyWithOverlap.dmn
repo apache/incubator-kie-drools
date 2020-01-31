@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_84872d6e-44c2-4c7c-a5b1-46be7b672fc8" id="_84872d6e-44c2-4c7c-a5b1-46be7b672fc8" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_84872d6e-44c2-4c7c-a5b1-46be7b672fc8" exporter="DMN Modeler" exporterVersion="6.7.1.202001272226" triso:logoChoice="Default">
+    <semantic:inputData id="_829bd3b8-a640-4a32-a522-c039639e874a" name="a number">
+        <semantic:variable name="a number" id="_b3798968-09a3-4fc5-9332-331289eff4c7" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_b356e90f-b8f6-4604-9fc2-82e9f0ffcaa7" name="a decision">
+        <semantic:variable name="a decision" id="_a8f99060-17c3-490d-8c6b-13a515f92a35" typeRef="string"/>
+        <semantic:informationRequirement id="_082a010d-eb9c-4fe3-b0a2-22b3238929d8">
+            <semantic:requiredInput href="#_829bd3b8-a640-4a32-a522-c039639e874a"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_437a5e17-bb3c-4f08-ad23-9141a7d9aea2" hitPolicy="ANY" outputLabel="a decision" typeRef="string" triso:expressionId="_875998de-c195-43fc-b937-eb7d317bddb9">
+            <semantic:input id="_5a9c9f30-dc6f-4c32-b93c-634b026c1997" label="a number">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>a number</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_abbe8457-21bd-4505-bbea-054ff49568ea" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_4616e623-f275-4b9a-8150-3758ce1d9276">
+                <semantic:inputEntry id="_910246e3-7839-4b3b-bdad-6b7b0c02c89f">
+                    <semantic:text>&gt;0</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_d7f3263c-bcc9-4a1e-b321-959118b8a4fb">
+                    <semantic:text>"positive"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_5fc82402-f7ca-4c64-b052-505f2ac746a7">
+                <semantic:inputEntry id="_302277fc-dfd6-4589-8bf4-3695f6fe13bf">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_b61bf925-e558-4e97-a56a-2d1df1297a30">
+                    <semantic:text>"boh"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>
