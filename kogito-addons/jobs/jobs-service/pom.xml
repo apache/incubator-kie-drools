@@ -79,6 +79,16 @@
       <artifactId>infinispan-query-dsl</artifactId>
     </dependency>
 
+    <!-- Health Check -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>infinispan-quarkus-health-addon</artifactId>
+    </dependency>
+
     <!-- Testing -->
     <dependency>
       <groupId>io.quarkus</groupId>

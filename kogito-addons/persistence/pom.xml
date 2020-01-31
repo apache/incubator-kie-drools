@@ -11,5 +11,6 @@
   <description>Kogito Persistence Implementations</description>
   <modules>
     <module>infinispan-persistence-addon</module>
+    <module>infinispan-quarkus-health-addon</module>
   </modules>
 </project>

@@ -22,14 +22,17 @@ import java.util.concurrent.CompletionStage;
 import javax.annotation.Priority;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.interceptor.Interceptor;
 
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.health.Readiness;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.kie.kogito.infinispan.health.InfinispanHealthCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +48,7 @@ public class InfinispanConfiguration {
      */
     public static class Caches {
 
-        private Caches(){
+        private Caches() {
 
         }
 
@@ -67,7 +70,7 @@ public class InfinispanConfiguration {
         this.cacheManager = persistence
                 .filter("infinispan"::equals)
                 .map(p -> cacheManagerInstance.get());
-    }
+    } 
 
     CompletionStage<Void> onStart(@Observes StartupEvent startupEvent) {
         return ReactiveStreams.of(Caches.all())
@@ -76,5 +79,16 @@ public class InfinispanConfiguration {
                         .ifPresent(adm -> adm.getOrCreateCache(name, (String) null)))
                 .run()
                 .thenAccept(c -> LOGGER.info("Executed Infinispan configuration"));
+    }
+
+    @Produces
+    @Readiness
+    public InfinispanHealthCheck infinispanHealthCheck(@ConfigProperty(name = PERSISTENCE_CONFIG_KEY)
+                                                               Optional<String> persistence,
+                                                       Instance<RemoteCacheManager> cacheManagerInstance) {
+        return persistence
+                .filter("infinispan"::equals)
+                .map(p -> new InfinispanHealthCheck(cacheManagerInstance))
+                .orElse(null);
     }
 }
