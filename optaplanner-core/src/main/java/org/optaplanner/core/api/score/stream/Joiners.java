@@ -21,6 +21,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -30,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
 /**
@@ -170,6 +172,10 @@ public final class Joiners {
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
         return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
+        return new FilteringTriJoiner<>(filter);
     }
 
     // ************************************************************************

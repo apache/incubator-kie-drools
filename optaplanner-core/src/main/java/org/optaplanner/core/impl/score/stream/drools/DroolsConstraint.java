@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,8 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,19 +90,12 @@ public class DroolsConstraint<Solution_> implements Constraint {
         return constraintName;
     }
 
-    public int getConstraintStreamCardinality() {
-        if (scoringStream instanceof UniConstraintStream) {
-            return 1;
-        } else if (scoringStream instanceof BiConstraintStream) {
-            return 2;
-        } else if (scoringStream instanceof TriConstraintStream) {
-            return 3;
-        } else if (scoringStream instanceof QuadConstraintStream) {
-            return 4;
-        } else {
-            throw new UnsupportedOperationException("Unknown cardinality for constraint stream (" + scoringStream
-                    + ").");
-        }
+    /**
+     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
+     * @return never null, never empty
+     */
+    public Class[] getExpectedJustificationTypes() {
+        return scoringStream.getExpectedJustificationTypes();
     }
 
     @Override

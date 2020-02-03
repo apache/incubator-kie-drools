@@ -69,6 +69,28 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     // ************************************************************************
+    // If (Not) Exists
+    // ************************************************************************
+
+    @Override
+    public <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(true, otherClass, joiners);
+    }
+
+    @Override
+    public <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(false, otherClass, joiners);
+    }
+
+    private <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
+            TriJoiner<A, B, C>... joiners) {
+        DroolsExistsBiConstraintStream<Solution_, A, B> stream =
+                new DroolsExistsBiConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        addChildStream(stream);
+        return stream;
+    }
+
+    // ************************************************************************
     // Group by
     // ************************************************************************
 

@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.google.common.base.Functions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -178,6 +179,76 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
             scoreDirector.afterEntityRemoved(entity);
         });
         assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+    }
+
+    @Test
+    public void existsAfterGroupBy() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
+                    .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Functions.identity()))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2),
+                assertMatchWithScore(-2, entityGroup1, 2));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup1);
+        solution.getEntityGroupList().remove(entityGroup1);
+        scoreDirector.afterProblemFactRemoved(entityGroup1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
+    }
+
+    @Test
+    public void groupByAfterExists() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .ifExists(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Functions.identity()))
+                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2),
+                assertMatchWithScore(-2, entityGroup1, 2));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup1);
+        solution.getEntityGroupList().remove(entityGroup1);
+        scoreDirector.afterProblemFactRemoved(entityGroup1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
     }
 
 }

@@ -21,13 +21,24 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
+    private final TriPredicate<A, B, C> filter;
+
+    protected AbstractTriJoiner() {
+        this.filter = null;
+    }
+
+    protected AbstractTriJoiner(TriPredicate<A, B, C> filter) {
+        this.filter = filter;
+    }
+
     @SafeVarargs
-    public final static <A, B, C> TriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
+    public final static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
         for (TriJoiner<A, B, C> joiner : joiners) {
             if (joiner instanceof NoneTriJoiner) {
@@ -55,5 +66,9 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
     public abstract Function<C, Object> getRightMapping(int index);
 
     public abstract Function<C, Object[]> getRightCombinedMapping();
+
+    public TriPredicate<A, B, C> getFilter() {
+        return filter;
+    }
 
 }

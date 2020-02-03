@@ -200,4 +200,9 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
             TriFunction<Variable<Set<InTuple>>, PatternDef<Set<InTuple>>, ViewItem<?>, C> {
 
     }
+
+    public Class[] getExpectedJustificationTypes() {
+        return ruleStructure.getExpectedJustificationTypes();
+    }
+
 }

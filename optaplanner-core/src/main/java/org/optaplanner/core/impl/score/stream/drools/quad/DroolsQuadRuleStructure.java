@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
+import java.util.stream.Stream;
 
+import org.drools.model.Argument;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
@@ -114,6 +116,11 @@ public class DroolsQuadRuleStructure<A, B, C, D, PatternVar> extends DroolsRuleS
     @Override
     public List<ViewItemBuilder<?>> getDependents() {
         return dependents;
+    }
+
+    @Override
+    protected Class[] getVariableTypes() {
+        return Stream.of(a, b, c, d).map(Argument::getType).toArray(Class[]::new);
     }
 
 }

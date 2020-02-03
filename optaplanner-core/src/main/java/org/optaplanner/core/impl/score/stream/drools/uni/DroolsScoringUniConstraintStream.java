@@ -112,6 +112,11 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     }
 
     @Override
+    public Class[] getExpectedJustificationTypes() {
+        return parent.getCondition().getExpectedJustificationTypes();
+    }
+
+    @Override
     public String toString() {
         return "Scoring()";
     }

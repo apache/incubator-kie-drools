@@ -29,7 +29,6 @@ import java.util.function.UnaryOperator;
 
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
-import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -100,8 +99,7 @@ public final class DroolsUniCondition<A, PatternVar>
         return new DroolsUniCondition<>(newStructure);
     }
 
-    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
-            UniConstraintCollector<A, __, NewA> collector) {
+    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
         return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
     }
@@ -223,7 +221,7 @@ public final class DroolsUniCondition<A, PatternVar>
 
     private <B> DroolsUniCondition<A, PatternVar> applyJoiners(Class<B> otherClass, AbstractBiJoiner<A, B> biJoiner,
             BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        Declaration<B> toExist = PatternDSL.declarationOf(otherClass);
+        Variable<B> toExist = (Variable<B>) ruleStructure.createVariable(otherClass, "toExist");
         PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (biJoiner == null) {
             return applyFilters(ruleStructure, existencePattern, biPredicate, shouldExist);
@@ -263,11 +261,11 @@ public final class DroolsUniCondition<A, PatternVar>
     private <B> DroolsUniCondition<A, PatternVar> applyFilters(
             DroolsUniRuleStructure<A, PatternVar> targetRuleStructure, PatternDef<B> existencePattern,
             BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
+        PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ?
                 existencePattern :
                 existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                         (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredexistencePattern, shouldExist));
+        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

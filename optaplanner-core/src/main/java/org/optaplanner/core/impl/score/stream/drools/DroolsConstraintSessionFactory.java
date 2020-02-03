@@ -16,10 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
@@ -32,11 +34,9 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
@@ -58,14 +58,8 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
-        /*
-         * Used to convert justification list to the same format as the one used by Bavet constraint streams.
-         * This is necessary because CS-D uses some advanced Drools constructions leveraging various metadata objects.
-         * Had we not called this converter, these metadata objects (such as Pair instances) would have been present in
-         * the justification list, defeating its purpose.
-         */
-        scoreHolder.setJustificationListConverter((justificationList, rule) -> unpair((List<Object>) justificationList,
-                constraints.get(rule).getConstraintStreamCardinality()));
+        scoreHolder.setJustificationListConverter((justificationList, rule) ->
+                matchJustificationsToOutput((List<Object>) justificationList, constraints.get(rule).getExpectedJustificationTypes()));
         constraints.forEach((rule, constraint) -> scoreHolder.configureConstraintWeight(rule,
                 constraint.extractConstraintWeight(workingSolution)));
         KieSession kieSession = kieBase.newKieSession();
@@ -74,28 +68,65 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
         return new DroolsConstraintSession<>(constraintMatchEnabled, kieSession, scoreHolder);
     }
 
-    private static List<Object> unpair(List<Object> justificationList, int expectedJustificationCount) {
-        return justificationList.stream()
-                .flatMap(item -> {
-                    /*
-                     * In the case of Drools-based CS, the justification may be both in the form of (A, B, ...) and
-                     * Tuple<A, B, ...>. In the latter case, we adapt to the former.
-                     */
-                    if (item instanceof BiTuple) {
-                        BiTuple<?, ?> tuple = (BiTuple<?, ?>) item;
-                        return Stream.of(tuple.a, tuple.b);
-                    } else if (item instanceof TriTuple) {
-                        TriTuple<?, ?, ?> tuple = (TriTuple<?, ?, ?>) item;
-                        return Stream.of(tuple.a, tuple.b, tuple.c);
-                    } else if (item instanceof QuadTuple) {
-                        QuadTuple<?, ?, ?, ?> tuple = (QuadTuple<?, ?, ?, ?>) item;
-                        return Stream.of(tuple.a, tuple.b, tuple.c, tuple.d);
-                    } else {
-                        return Stream.of(item);
-                    }
-                })
-                .limit(expectedJustificationCount) // Match cardinality of the constraint stream.
-                .collect(toList());
+    /**
+     * Converts justification list to another justification list, this one matching the expected scoring stream.
+     * For example, if a scoring stream of cardinality 2 operates on facts of A and B, the list returned by this
+     * method will only have these two facts. Order is not guaranteed.
+     *
+     * <p>
+     * Due to the nature of the justification list coming from Drools, this method is very fragile.
+     * The facts often come unordered and mixed with other facts not relevant to the problem at hand.
+     * Therefore, this method is a set of heuristics that makes all the constraint stream tests pass.
+     * However, it is possible that, as new constraint stream building block combinations are tested, the set of
+     * heuristics inside this method will have to be redesigned.
+     *
+     * @param justificationList unordered list of justifications coming from the score director
+     * @param expectedTypes as defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}
+     * @return never null
+     */
+    private static List<Object> matchJustificationsToOutput(List<Object> justificationList, Class... expectedTypes) {
+        if (expectedTypes.length == 0) {
+            throw new IllegalStateException("Impossible: there are no 0-cardinality constraint streams.");
+        }
+        Object[] matching = new Object[expectedTypes.length];
+        // First process non-Object matches, as those are the most descriptive.
+        for (int i = 0; i < expectedTypes.length; i++) {
+            Class expectedType = expectedTypes[i];
+            if (Objects.equals(expectedType, Object.class)) {
+                continue;
+            }
+            Object match = justificationList.stream()
+                    .filter(j -> expectedType.isAssignableFrom(j.getClass()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Impossible: no justification of type ("
+                            + expectedType + ")."));
+            justificationList.remove(match);
+            matching[i] = match;
+        }
+        // Fill the remaining places with Object matches, but keep their original order coming from expectedMatches.
+        for (int i = 0; i < expectedTypes.length; i++) {
+            if (matching[i] != null) {
+                continue;
+            }
+            Object match = justificationList.stream()
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Impossible: there are no more constraint matches."));
+            justificationList.remove(match);
+            matching[i] = match;
+        }
+        if (matching.length > 1) {
+            // The justifications will be enumerated. A, B, C, ...
+            return Arrays.asList(matching);
+        }
+        Object item = matching[0];
+        Class expectedType = expectedTypes[0];
+        if (FactTuple.class.isAssignableFrom(expectedType)) {
+            // The justifications will all come from a single tuple (eg. BiTuple<A, B>).
+            return ((FactTuple) item).asList();
+        } else {
+            // This comes from a uni stream.
+            return Collections.singletonList(item);
+        }
     }
 
 }

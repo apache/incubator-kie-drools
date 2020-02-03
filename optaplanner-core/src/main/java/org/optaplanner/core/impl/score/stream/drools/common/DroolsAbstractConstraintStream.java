@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,6 +110,15 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     @Override
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
+    }
+
+    /**
+     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
+     * May only be called on scoring streams.
+     * @return never null, never empty
+     */
+    public Class[] getExpectedJustificationTypes() {
+        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not have any expected matches.");
     }
 
 }

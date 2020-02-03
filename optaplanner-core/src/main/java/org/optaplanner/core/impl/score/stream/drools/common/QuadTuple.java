@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-public final class QuadTuple<A, B, C, D> {
+public final class QuadTuple<A, B, C, D> implements FactTuple {
     public final A a;
     public final B b;
     public final C c;
@@ -31,6 +33,11 @@ public final class QuadTuple<A, B, C, D> {
         this.c = c;
         this.d = d;
         this.hashCode = Objects.hash(a, b, c, d);
+    }
+
+    @Override
+    public List<Object> asList() {
+        return Arrays.asList(a, b, c, d);
     }
 
     @Override

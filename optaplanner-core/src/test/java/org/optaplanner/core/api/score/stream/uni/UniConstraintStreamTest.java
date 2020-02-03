@@ -266,7 +266,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     // ************************************************************************
-    // IfExists
+    // If (not) exists
     // ************************************************************************
 
     @Test
@@ -434,10 +434,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2));
     }
-
-    // ************************************************************************
-    // IfNotExists
-    // ************************************************************************
 
     @Test
     public void ifNotExists_0Joiner0Filter() {

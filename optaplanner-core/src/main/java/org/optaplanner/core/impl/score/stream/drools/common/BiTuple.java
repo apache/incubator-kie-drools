@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-public final class BiTuple<A, B> {
+public final class BiTuple<A, B> implements FactTuple {
     public final A a;
     public final B b;
     private final int hashCode;
@@ -27,6 +29,11 @@ public final class BiTuple<A, B> {
         this.a = a;
         this.b = b;
         this.hashCode = Objects.hash(a, b);
+    }
+
+    @Override
+    public List<Object> asList() {
+        return Arrays.asList(a, b);
     }
 
     @Override

@@ -104,6 +104,12 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent).getCondition()
+                .getExpectedJustificationTypes();
+    }
+
+    @Override
     public String toString() {
         return "TriScoring()";
     }

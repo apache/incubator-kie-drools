@@ -322,6 +322,24 @@
           "methodName": "ifNotExists",
           "elementKind": "method",
           "justification": "Introduced ifNotExists() to UniConstraintStream."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifExists(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifExists",
+          "elementKind": "method",
+          "justification": "Introduced existence building blocks to BiConstraintStream."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifNotExists(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifNotExists",
+          "elementKind": "method",
+          "justification": "Introduced existence building blocks to BiConstraintStream."
         }
       ]
     }

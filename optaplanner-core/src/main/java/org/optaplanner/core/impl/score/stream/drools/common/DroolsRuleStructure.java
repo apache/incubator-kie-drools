@@ -283,4 +283,29 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
+    /**
+     * Determines the types we expect to see as the result of this rule.
+     *
+     * <p>Example 1:
+     * For {@link DroolsBiRuleStructure} before regrouping, we expect this to return an array of A and B's fact type.
+     *
+     * <p>Example 2:
+     * For {@link DroolsBiRuleStructure} after regrouping, we expect this to return an array consisting of only
+     * {@link BiTuple} class.
+     *
+     * @return never null
+     */
+    public Class[] getExpectedJustificationTypes() {
+        PatternDef<PatternVar> pattern = getPrimaryPatternBuilder().build();
+        Class<PatternVar> type = pattern.getFirstVariable().getType();
+        if (FactTuple.class.isAssignableFrom(type)) {
+            // There is one expected constraint justification, and that is of the tuple type.
+            return new Class[] {type};
+        }
+        // There are plenty expected constraint justifications, one for each variable.
+        return getVariableTypes();
+    }
+
+    abstract protected Class[] getVariableTypes();
+
 }

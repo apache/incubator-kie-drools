@@ -232,7 +232,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     // ************************************************************************
-    // If (Not) Exists
+    // If (not) exists
     // ************************************************************************
 
     /**

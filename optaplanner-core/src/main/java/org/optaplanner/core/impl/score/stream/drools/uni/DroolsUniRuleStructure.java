@@ -81,6 +81,11 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
         return dependents;
     }
 
+    @Override
+    protected Class[] getVariableTypes() {
+        return new Class[] { a.getType() };
+    }
+
     public <B> DroolsUniRuleStructure<A, PatternVar> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
         ExprViewItem item = PatternDSL.exists(existencePattern);
         if (!shouldExist) {

@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-public final class TriTuple<A, B, C> {
+public final class TriTuple<A, B, C> implements FactTuple {
     public final A a;
     public final B b;
     public final C c;
@@ -29,6 +31,11 @@ public final class TriTuple<A, B, C> {
         this.b = b;
         this.c = c;
         this.hashCode = Objects.hash(a, b, c);
+    }
+
+    @Override
+    public List<Object> asList() {
+        return Arrays.asList(a, b, c);
     }
 
     @Override
@@ -54,4 +61,5 @@ public final class TriTuple<A, B, C> {
     public String toString() {
         return "TriTuple(" + a + ", " + b + ", " + c + ")";
     }
+
 }
