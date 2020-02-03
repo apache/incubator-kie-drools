@@ -32,10 +32,13 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
@@ -57,6 +60,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final boolean isPattern;
     private final boolean oneClassPerRule;
     private final Collection<T> packageSources = new ArrayList<>();
+    private final Map<String, CompositePackageDescr> compositePackages = new HashMap<>();
+
+    private Map<String, CompositePackageDescr> additionalPackages;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
         super(configuration);
@@ -68,6 +74,35 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void buildPackages(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr pkg : packages) {
+            compositePackages.put( pkg.getNamespace(), pkg );
+        }
+    }
+
+    @Override
+    public void addPackage(final PackageDescr packageDescr) {
+        CompositePackageDescr pkgDescr = compositePackages.get(packageDescr.getNamespace());
+        if (pkgDescr == null) {
+            compositePackages.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
+        } else {
+            pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
+        }
+
+        InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
+        for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
+            try {
+                Class<?> globalType = pkg.getTypeResolver().resolveType( globalDescr.getType() );
+                addGlobal( globalDescr.getIdentifier(), globalType );
+                pkg.addGlobal( globalDescr.getIdentifier(), globalType );
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
+        }
+    }
+
+    @Override
+    public void postBuild() {
+        Collection<CompositePackageDescr> packages = compositePackages.values();
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
@@ -75,6 +110,24 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
+    }
+
+    @Override
+    protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+            }
+
+            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
+            if (pkgRegistry == null) {
+                getOrCreatePackageRegistry( packageDescr );
+            } else {
+                for (ImportDescr importDescr : packageDescr.getImports()) {
+                    pkgRegistry.registerImport(importDescr.getTarget());
+                }
+            }
+        }
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
