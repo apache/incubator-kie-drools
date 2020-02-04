@@ -89,8 +89,8 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
 
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
-            if (patterBinding.size() == 2 && findLastBinding(allExpressions) != null) {
-                Optional<MethodCallExpr> lastBinding = Optional.ofNullable(findLastBinding(allExpressions));
+            MethodCallExpr lastBinding = findLastBinding(allExpressions);
+            if (patterBinding.size() == 2 && lastBinding != null) {
                 composeTwoBindingIntoExpression(newBindingExpression, lastBinding, accumulateDSL);
             } else {
                 MethodCallExpr lastPattern = findLastPattern(allExpressions);
@@ -105,12 +105,11 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     private void composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression,
-                                                 Optional<MethodCallExpr> optLastBinding,
+                                                 MethodCallExpr lastBinding,
                                                  MethodCallExpr accumulateDSL) {
-        optLastBinding.ifPresent(lastBinding ->
-                                         composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString)
-                                                 .ifPresent(inputName -> lastBinding.getParentNode()
-                                                         .ifPresent(n -> replaceBindWithInput(newBindingExpression, accumulateDSL, inputName))));
+        composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString)
+                .ifPresent(inputName -> lastBinding.getParentNode()
+                        .ifPresent(n -> replaceBindWithInput(newBindingExpression, accumulateDSL, inputName)));
     }
 
     private void replaceBindWithInput(MethodCallExpr newBindingExpression, MethodCallExpr accumulateDSL, String inputName) {
