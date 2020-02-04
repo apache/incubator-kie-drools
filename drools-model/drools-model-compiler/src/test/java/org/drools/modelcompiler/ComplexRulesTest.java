@@ -39,7 +39,6 @@ import org.drools.modelcompiler.domain.RootFact;
 import org.drools.modelcompiler.domain.SubFact;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.CaseData;
 
 import static org.junit.Assert.assertEquals;
 
@@ -676,6 +675,25 @@ public class ComplexRulesTest extends BaseModelTest {
         }
     }
 
+    public static class CaseData {
+
+        private final Object value;
+
+        public CaseData( Object value ) {
+            this.value = value;
+        }
+
+        public Map<String, Object> getData() {
+            Map<String, Object> map = new HashMap<>();
+            map.put( "test", value );
+            return map;
+        }
+
+        public CaseData getMe() {
+            return this;
+        }
+    }
+
     @Test
     public void testGetOnMapField() {
         // DROOLS-4999
@@ -688,34 +706,24 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        ksession.insert( new CaseData() {
-            @Override
-            public Map<String, Object> getData() {
-                Map<String, Object> map = new HashMap<>();
-                map.put( "test", 5 );
-                return map;
-            }
+        ksession.insert( new CaseData( 5 ) );
 
-            @Override
-            public Object getData( String name ) {
-                throw new UnsupportedOperationException();
-            }
+        assertEquals(1, ksession.fireAllRules());
+    }
 
-            @Override
-            public void add( String name, Object data ) {
-                throw new UnsupportedOperationException();
-            }
+    @Test
+    public void testEqualsOnMapField() {
+        // DROOLS-4999
+        String str =
+                "import " + CaseData.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $d: CaseData( me.data['test'] == \"OK\" )\n" +
+                "then\n" +
+                "end\n";
 
-            @Override
-            public void remove( String name ) {
-                throw new UnsupportedOperationException();
-            }
+        KieSession ksession = getKieSession( str );
 
-            @Override
-            public String getDefinitionId() {
-                throw new UnsupportedOperationException();
-            }
-        } );
+        ksession.insert( new CaseData( "OK" ) );
 
         assertEquals(1, ksession.fireAllRules());
     }
