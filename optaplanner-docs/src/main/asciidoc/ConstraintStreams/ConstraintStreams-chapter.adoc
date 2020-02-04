@@ -488,6 +488,9 @@ The following example finds a computer which runs the most power-demanding proce
 
 Conditional propagation enables you to exclude constraint matches from the constraint stream based on the presence or
 absence of some other object.
+
+image::ConstraintStreams/constraintStreamIfExists.png[align="center"]
+
 The following example penalizes computers which have at least one process running:
 
 [source,java,options="nowrap"]
