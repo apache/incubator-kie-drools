@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1213,8 +1214,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  dialect \"java\"\n" +
                         "  when\n" +
                         "  $max1 : Number() from accumulate(\n" +
-                        "    StockTick(isSetDueDate == true\n" +
-                        "       ,$time : dueDate);\n" +
+                        "    StockTick(isSetDueDate == true, $time : dueDate);\n" +
                         "    max($time.getTime().getTime()))\n" +
                         "then\n" +
                         "end\n";
@@ -1224,7 +1224,7 @@ public class AccumulateTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         ksession.insert(st);
         StockTick st2 = new StockTick("IBM");
-        st2.setDueDate(Calendar.getInstance());
+        st2.setDueDate(new GregorianCalendar(2020, Calendar.FEBRUARY, 4));
         ksession.insert(st2);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }

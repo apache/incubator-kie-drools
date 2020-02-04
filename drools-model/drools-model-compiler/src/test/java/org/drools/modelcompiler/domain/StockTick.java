@@ -61,4 +61,8 @@ public class StockTick extends StockFact {
     public boolean getIsSetDueDate() {
         return null != dueDate;
     }
+
+    public boolean getIsSetTimeField() {
+        return 0 != timeField;
+    }
 }
