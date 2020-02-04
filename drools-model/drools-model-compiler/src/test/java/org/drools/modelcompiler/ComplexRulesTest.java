@@ -18,7 +18,9 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.modelcompiler.domain.ChildFactComplex;
 import org.drools.modelcompiler.domain.ChildFactWithEnum1;
@@ -37,6 +39,7 @@ import org.drools.modelcompiler.domain.RootFact;
 import org.drools.modelcompiler.domain.SubFact;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.CaseData;
 
 import static org.junit.Assert.assertEquals;
 
@@ -671,5 +674,49 @@ public class ComplexRulesTest extends BaseModelTest {
         } finally {
             System.clearProperty("drools.propertySpecific");
         }
+    }
+
+    @Test
+    public void testGetOnMapField() {
+        // DROOLS-4999
+        String str =
+                "import " + CaseData.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $d: CaseData( ((Number)data.get(\"test\")).intValue() > 3 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new CaseData() {
+            @Override
+            public Map<String, Object> getData() {
+                Map<String, Object> map = new HashMap<>();
+                map.put( "test", 5 );
+                return map;
+            }
+
+            @Override
+            public Object getData( String name ) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void add( String name, Object data ) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void remove( String name ) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String getDefinitionId() {
+                throw new UnsupportedOperationException();
+            }
+        } );
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }
