@@ -457,6 +457,7 @@ The return value for this collector is a 32-bit signed integer (`int`). There ar
 * `java.math.BigInteger`-based variant `sumBigInteger()`
 * `java.time.Duration`-based variant `sumDuration()`
 * `java.time.Period`-based variant `sumPeriod()`
+* generic `sum()` variant for summing up custom types.
 
 
 [collectorsMinMax]
@@ -480,6 +481,60 @@ The following example finds a computer which runs the most power-demanding proce
                         computer -> ...);
     }
 ----
+
+
+[[constraintStreamsConditionalPropagation]]
+=== Conditional propagation
+
+Conditional propagation enables you to exclude constraint matches from the constraint stream based on the presence or
+absence of some other object.
+The following example penalizes computers which have at least one process running on them:
+
+[source,java,options="nowrap"]
+----
+    private Constraint runningComputer(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudComputer.class)
+                .ifExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
+                .penalize("runningComputer",
+                        HardSoftScore.ONE_SOFT,
+                        computer -> ...);
+    }
+----
+
+Note the use of the `ifExists()` building block.
+On `UniConstraintStream`, the `ifExistsOther()` building block is also available, useful in situations where your
+`from()` constraint match type is the same as your `ifExists()` type.
+
+Conversely, the `ifNotExists()` (and `ifNotExistsOther()` on `UniConstraintStream`) are available to achieve the
+opposite effect:
+
+[source,java,options="nowrap"]
+----
+    private Constraint unusedComputer(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudComputer.class)
+                .ifNotExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
+                .penalize("unusedComputer",
+                        HardSoftScore.ONE_HARD,
+                        computer -> ...);
+    }
+----
+
+Here, only the computers without processes running on them are penalized.
+
+Also note the use of the `Joiner` class to limit the constraint matches.
+For a description of `Joiners`, see <<constraintStreamsJoin,joining>>.
+Conditional propagation operates much like joining, with the exception of not increasing the
+<<constraintStreamsCardinality, stream cardinality>>.
+The matches from `ifExists()` and other similar building blocks are not available further down the stream.
+
+[NOTE]
+====
+For performance reasons, using conditional propagation with the appropriate `Joiner` is preferable to joining.
+While using `join()` creates a cartesian product of the facts being joined, with conditional propagation, the resulting
+stream only has at most the original number of constraint matches in it.
+Joining should only be used in cases where the other fact is actually required for another operation further down
+the stream.
+====
 
 
 [[constraintStreamsImplementations]]
