@@ -2001,4 +2001,24 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testIntToShortCast() {
+        String str = "import " + Address.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $address : Address( shortNumber == null ||  shortNumber == 0, \n" +
+                "                           $interimVar : number)\n" +
+                "then\n" +
+                "    $address.setShortNumber((short)$interimVar);\n" +
+                "    update($address);\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        Address address = new Address();
+        address.setNumber(1);
+        ksession1.insert( address );
+        assertEquals( 1, ksession1.fireAllRules() );
+    }
 }
