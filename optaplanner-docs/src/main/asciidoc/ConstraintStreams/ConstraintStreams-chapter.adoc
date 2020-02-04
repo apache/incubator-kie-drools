@@ -488,7 +488,7 @@ The following example finds a computer which runs the most power-demanding proce
 
 Conditional propagation enables you to exclude constraint matches from the constraint stream based on the presence or
 absence of some other object.
-The following example penalizes computers which have at least one process running on them:
+The following example penalizes computers which have at least one process running:
 
 [source,java,options="nowrap"]
 ----
@@ -502,11 +502,11 @@ The following example penalizes computers which have at least one process runnin
 ----
 
 Note the use of the `ifExists()` building block.
-On `UniConstraintStream`, the `ifExistsOther()` building block is also available, useful in situations where your
-`from()` constraint match type is the same as your `ifExists()` type.
+On `UniConstraintStream`, the `ifExistsOther()` building block is also available which is useful in situations where the
+`from()` constraint match type is the same as the `ifExists()` type.
 
-Conversely, the `ifNotExists()` (and `ifNotExistsOther()` on `UniConstraintStream`) are available to achieve the
-opposite effect:
+Conversely, if the `ifNotExists()` building block is used (as well as the `ifNotExistsOther()` building block on
+`UniConstraintStream`) you can achieve the opposite affect:
 
 [source,java,options="nowrap"]
 ----
@@ -519,17 +519,17 @@ opposite effect:
     }
 ----
 
-Here, only the computers without processes running on them are penalized.
+Here, only the computers without processes running are penalized.
 
 Also note the use of the `Joiner` class to limit the constraint matches.
-For a description of `Joiners`, see <<constraintStreamsJoin,joining>>.
+For a description of available joiners, see <<constraintStreamsJoin,joining>>.
 Conditional propagation operates much like joining, with the exception of not increasing the
 <<constraintStreamsCardinality, stream cardinality>>.
-The matches from `ifExists()` and other similar building blocks are not available further down the stream.
+Matches from these building blocks are not available further down the stream.
 
 [NOTE]
 ====
-For performance reasons, using conditional propagation with the appropriate `Joiner` is preferable to joining.
+For performance reasons, using conditional propagation with the appropriate `Joiner` instance is preferable to joining.
 While using `join()` creates a cartesian product of the facts being joined, with conditional propagation, the resulting
 stream only has at most the original number of constraint matches in it.
 Joining should only be used in cases where the other fact is actually required for another operation further down
