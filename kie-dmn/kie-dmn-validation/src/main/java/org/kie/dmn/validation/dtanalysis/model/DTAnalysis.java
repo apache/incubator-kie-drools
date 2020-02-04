@@ -333,7 +333,7 @@ public class DTAnalysis {
 
     private DMNDTAnalysisMessage overlapToStandardDMNMessage(Overlap overlap) {
         return new DMNDTAnalysisMessage(this,
-                                        Severity.WARN,
+                                        Severity.INFO,
                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
                                                               overlap.asHumanFriendly(ddtaTable)),
                                         Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
@@ -700,7 +700,7 @@ public class DTAnalysis {
         }
         if (overlaps.isEmpty() && sourceDT.getHitPolicy() != HitPolicy.UNIQUE) {
             passThruMessages.add(new DMNDTAnalysisMessage(this,
-                                                          Severity.INFO,
+                                                          Severity.WARN,
                                                           MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE,
                                                                                 nameOrIDOfTable()),
                                                           Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE.getType()));
@@ -716,13 +716,13 @@ public class DTAnalysis {
             }
             if (overlapsShareSameOutput && sourceDT.getHitPolicy() != HitPolicy.ANY) {
                 passThruMessages.add(new DMNDTAnalysisMessage(this,
-                                                              Severity.INFO,
+                                                              sourceDT.getHitPolicy() == HitPolicy.UNIQUE ? Severity.ERROR : Severity.WARN,
                                                               MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_ANY,
                                                                                     nameOrIDOfTable()),
                                                               Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_ANY.getType()));
             } else if (!overlapsShareSameOutput && sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
                 passThruMessages.add(new DMNDTAnalysisMessage(this,
-                                                              Severity.INFO,
+                                                              Severity.ERROR,
                                                               MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY,
                                                                                     nameOrIDOfTable()),
                                                               Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY.getType()));
@@ -736,7 +736,7 @@ public class DTAnalysis {
 
     private String nameOrIDOfTable() {
         if (sourceDT.getParent() instanceof DMNElement) {
-            return new StringBuilder("\"").append(((NamedElement) sourceDT.getParent()).getName()).append("\"").toString();
+            return ((NamedElement) sourceDT.getParent()).getName();
         } else {
             return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
         }

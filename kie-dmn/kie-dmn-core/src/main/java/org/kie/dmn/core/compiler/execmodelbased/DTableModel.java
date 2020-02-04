@@ -114,7 +114,7 @@ public class DTableModel {
                                    null,
                                    null,
                                    Msg.MISSING_OUTPUT_VALUES,
-                                   dt.getParent() );
+                                   dtName );
         }
     }
 
