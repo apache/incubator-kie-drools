@@ -94,7 +94,11 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
         }
 
-        InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        for (final ImportDescr importDescr : packageDescr.getImports()) {
+            pkgRegistry.addImport(importDescr);
+        }
         for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
             try {
                 Class<?> globalType = pkg.getTypeResolver().resolveType( globalDescr.getType() );
