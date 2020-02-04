@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNModelInfo implements Serializable {
 
     private String namespace;
@@ -52,7 +50,6 @@ public class DMNModelInfo implements Serializable {
         return res;
     }
 
-    @JsonProperty("model-namespace")
     public String getNamespace() {
         return namespace;
     }
@@ -61,7 +58,6 @@ public class DMNModelInfo implements Serializable {
         this.namespace = namespace;
     }
 
-    @JsonProperty("model-name")
     public String getName() {
         return name;
     }
@@ -70,7 +66,6 @@ public class DMNModelInfo implements Serializable {
         this.name = name;
     }
 
-    @JsonProperty("model-id")
     public String getId() {
         return id;
     }
@@ -79,7 +74,6 @@ public class DMNModelInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonProperty("decisions")
     public Collection<DMNDecisionInfo> getDecisions() {
         return decisions;
     }
@@ -88,7 +82,6 @@ public class DMNModelInfo implements Serializable {
         this.decisions = decisions;
     }
 
-    @JsonProperty("inputs")
     public Collection<DMNInputDataInfo> getInputs() {
         return inputs;
     }
@@ -97,7 +90,6 @@ public class DMNModelInfo implements Serializable {
         this.inputs = inputs;
     }
 
-    @JsonProperty("itemDefinitions")
     public Collection<DMNItemDefinitionInfo> getItemDefinitions() {
         return itemDefinitions;
     }
@@ -106,7 +98,6 @@ public class DMNModelInfo implements Serializable {
         this.itemDefinitions = itemDefinitions;
     }
 
-    @JsonProperty("decisionServices")
     public Collection<DMNDecisionServiceInfo> getDecisionServices() {
         return decisionServices;
     }

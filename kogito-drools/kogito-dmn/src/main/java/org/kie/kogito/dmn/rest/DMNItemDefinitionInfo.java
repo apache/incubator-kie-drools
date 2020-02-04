@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 
 import org.kie.dmn.model.api.ItemDefinition;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNItemDefinitionInfo implements Serializable {
 
     private String id;
@@ -61,7 +59,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         return res;
     }
 
-    @JsonProperty("itemdefinition-id")
     public String getId() {
         return id;
     }
@@ -70,7 +67,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonProperty("itemdefinition-name")
     public String getName() {
         return name;
     }
@@ -79,7 +75,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.name = name;
     }
 
-    @JsonProperty("itemdefinition-typeRef")
     public String getTypeRef() {
         return typeRef;
     }
@@ -88,7 +83,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.typeRef = typeRef;
     }
 
-    @JsonProperty("itemdefinition-allowedValues")
     public DMNUnaryTestsInfo getAllowedValues() {
         return allowedValues;
     }
@@ -97,7 +91,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.allowedValues = allowedValues;
     }
 
-    @JsonProperty("itemdefinition-itemComponent")
     public List<DMNItemDefinitionInfo> getItemComponent() {
         return itemComponent;
     }
@@ -106,7 +99,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.itemComponent = itemComponent;
     }
 
-    @JsonProperty("itemdefinition-typeLanguage")
     public String getTypeLanguage() {
         return typeLanguage;
     }
@@ -115,7 +107,6 @@ public class DMNItemDefinitionInfo implements Serializable {
         this.typeLanguage = typeLanguage;
     }
 
-    @JsonProperty("itemdefinition-isCollection")
     public Boolean getIsCollection() {
         return isCollection;
     }

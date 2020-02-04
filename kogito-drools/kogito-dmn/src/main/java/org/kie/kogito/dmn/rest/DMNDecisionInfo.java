@@ -20,8 +20,6 @@ import java.io.Serializable;
 
 import org.kie.dmn.api.core.ast.DecisionNode;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNDecisionInfo implements Serializable {
 
     private String id;
@@ -38,7 +36,6 @@ public class DMNDecisionInfo implements Serializable {
         return res;
     }
 
-    @JsonProperty("decision-id")
     public String getId() {
         return id;
     }
@@ -47,7 +44,6 @@ public class DMNDecisionInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonProperty("decision-name")
     public String getName() {
         return name;
     }

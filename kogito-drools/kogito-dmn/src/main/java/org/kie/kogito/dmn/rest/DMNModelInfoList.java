@@ -20,8 +20,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNModelInfoList implements Serializable {
 
     private DMNModelInfo[] models;
@@ -33,7 +31,6 @@ public class DMNModelInfoList implements Serializable {
         this.models = models.toArray(new DMNModelInfo[]{});
     }
 
-    @JsonProperty("models")
     public List<DMNModelInfo> getModels() {
         return Arrays.asList(models);
     }

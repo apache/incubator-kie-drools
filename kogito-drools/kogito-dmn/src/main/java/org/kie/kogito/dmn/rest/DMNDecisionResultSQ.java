@@ -24,8 +24,6 @@ import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
 
     private String decisionId;
@@ -52,7 +50,6 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         return res;
     }
 
-    @JsonProperty("decision-id")
     @Override
     public String getDecisionId() {
         return decisionId;
@@ -62,7 +59,6 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.decisionId = decisionId;
     }
 
-    @JsonProperty("decision-name")
     @Override
     public String getDecisionName() {
         return decisionName;
@@ -72,7 +68,6 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.decisionName = decisionName;
     }
 
-    @JsonProperty("status")
     @Override
     public DecisionEvaluationStatus getEvaluationStatus() {
         return status;
@@ -82,7 +77,6 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.status = status;
     }
 
-    @JsonProperty("result")
     @Override
     public Object getResult() {
         return result;
@@ -92,7 +86,6 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
         this.result = MarshallingStubUtils.stubDMNResult(result, String::valueOf);
     }
 
-    @JsonProperty("messages")
     public List<DMNMessage> getMessages() {
         return (List) messages;
     }

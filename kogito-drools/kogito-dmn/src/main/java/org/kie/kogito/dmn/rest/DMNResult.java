@@ -25,14 +25,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.internal.utils.MapBackedDMNContext;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
 
@@ -62,7 +61,6 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         this.modelName = modelName;
     }
 
-    @JsonProperty("model-namespace")
     public String getNamespace() {
         return namespace;
     }
@@ -71,7 +69,6 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         this.namespace = namespace;
     }
 
-    @JsonProperty("model-name")
     public String getModelName() {
         return modelName;
     }
@@ -80,7 +77,6 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         this.modelName = modelName;
     }
 
-    @JsonProperty("dmn-context")
     public Map<String, Object> getDmnContext() {
         return dmnContext;
     }
@@ -104,13 +100,12 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         }
     }
 
-    @JsonProperty
+    @JsonIgnore
     @Override
     public DMNContext getContext() {
         return MapBackedDMNContext.of(dmnContext);
     }
 
-    @JsonProperty("messages")
     @Override
     public List<DMNMessage> getMessages() {
         return (List) messages;
@@ -128,7 +123,6 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         return messages.stream().anyMatch(m -> DMNMessage.Severity.ERROR.equals(m.getSeverity()));
     }
 
-    @JsonProperty("decision-results")
     @Override
     public List<DMNDecisionResult> getDecisionResults() {
         return new ArrayList<>(decisionResults.values());

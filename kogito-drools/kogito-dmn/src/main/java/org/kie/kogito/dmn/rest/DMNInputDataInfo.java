@@ -25,8 +25,6 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.model.api.InputData;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNInputDataInfo implements Serializable {
 
     private String id;
@@ -54,7 +52,6 @@ public class DMNInputDataInfo implements Serializable {
         return res;
     }
 
-    @JsonProperty("inputdata-id")
     public String getId() {
         return id;
     }
@@ -63,7 +60,6 @@ public class DMNInputDataInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonProperty("inputdata-name")
     public String getName() {
         return name;
     }
@@ -72,7 +68,6 @@ public class DMNInputDataInfo implements Serializable {
         this.name = name;
     }
 
-    @JsonProperty("inputdata-typeRef")
     public String getTypeRef() {
         return typeRef;
     }

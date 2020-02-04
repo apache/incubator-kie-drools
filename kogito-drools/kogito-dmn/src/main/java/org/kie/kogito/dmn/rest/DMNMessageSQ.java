@@ -18,13 +18,11 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.internal.builder.InternalMessage;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNMessageSQ implements Serializable, DMNMessage {
 
@@ -62,16 +60,12 @@ public class DMNMessageSQ implements Serializable, DMNMessage {
         }
     }
 
-    @JsonProperty("dmn-message-severity")
     private DMNMessageSeverityKS severity;
 
-    @JsonProperty("message")
     private String message;
 
-    @JsonProperty("message-type")
     private DMNMessageType messageType;
 
-    @JsonProperty("source-id")
     private String sourceId;
 
     public DMNMessageSQ() {

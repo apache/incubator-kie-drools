@@ -18,8 +18,6 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DMNUnaryTestsInfo implements Serializable {
 
     private String text;
@@ -29,7 +27,6 @@ public class DMNUnaryTestsInfo implements Serializable {
         // Intentionally blank.
     }
 
-    @JsonProperty("unarytests-text")
     public String getText() {
         return text;
     }
@@ -38,7 +35,6 @@ public class DMNUnaryTestsInfo implements Serializable {
         this.text = text;
     }
 
-    @JsonProperty("unarytests-expressionLanguage")
     public String getExpressionLanguage() {
         return expressionLanguage;
     }
