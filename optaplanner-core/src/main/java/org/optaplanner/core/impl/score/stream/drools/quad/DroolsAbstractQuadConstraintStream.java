@@ -28,6 +28,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
@@ -59,6 +60,33 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public QuadConstraintStream<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsFilterQuadConstraintStream<>(constraintFactory, this, predicate);
+        addChildStream(stream);
+        return stream;
+    }
+
+    // ************************************************************************
+    // If (not) exists
+    // ************************************************************************
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(false, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsExistsQuadConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }

@@ -177,15 +177,19 @@ public final class DroolsUniCondition<A, PatternVar>
                 ruleStructure.getVariableIdSupplier()));
     }
 
-    public <B> DroolsUniCondition<A, PatternVar> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+    @SafeVarargs
+    public final <B> DroolsUniCondition<A, PatternVar> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
         return andIfExistsOrNot(true, otherClass, biJoiners);
     }
 
-    public <B> DroolsUniCondition<A, PatternVar> andIfNotExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+    @SafeVarargs
+    public final <B> DroolsUniCondition<A, PatternVar> andIfNotExists(Class<B> otherClass,
+            BiJoiner<A, B>... biJoiners) {
         return andIfExistsOrNot(false, otherClass, biJoiners);
     }
 
-    private <B> DroolsUniCondition<A, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<B> otherClass,
+    @SafeVarargs
+    private final <B> DroolsUniCondition<A, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... biJoiners) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
@@ -252,7 +256,7 @@ public final class DroolsUniCondition<A, PatternVar>
             BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
                     currentMappingIndex, rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
-                        joinVars[currentMappingIndex], predicate, index);
+                    joinVars[currentMappingIndex], predicate, index);
         }
         // And finally we add the filter to the B pattern
         return applyFilters(newARuleStructure, existencePattern, biPredicate, shouldExist);

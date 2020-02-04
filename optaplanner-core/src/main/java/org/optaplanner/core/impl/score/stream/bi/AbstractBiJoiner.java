@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
 
@@ -57,6 +58,19 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
             return joinerList.get(0);
         }
         return new CompositeBiJoiner<>(joinerList);
+    }
+
+    public boolean matches(A a, B b) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a);
+            Object rightMapping = getRightMapping(i).apply(b);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public abstract Function<A, Object> getLeftMapping(int index);

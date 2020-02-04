@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
@@ -38,7 +39,7 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
     }
 
     @SafeVarargs
-    public final static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
+    public static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
         for (TriJoiner<A, B, C> joiner : joiners) {
             if (joiner instanceof NoneTriJoiner) {
@@ -57,6 +58,19 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
             return joinerList.get(0);
         }
         return new CompositeTriJoiner<>(joinerList);
+    }
+
+    public boolean matches(A a, B b, C c) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b);
+            Object rightMapping = getRightMapping(i).apply(c);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public abstract BiFunction<A, B, Object> getLeftMapping(int index);

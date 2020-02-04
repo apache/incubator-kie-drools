@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraint
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
 public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
@@ -61,6 +62,10 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
+        if (joiner instanceof FilteringTriJoiner) {
+            return join(otherStream)
+                    .filter(((FilteringTriJoiner<A, B, C>) joiner).getFilter());
+        }
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsJoinTriConstraintStream<>(constraintFactory, this,
                         (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
@@ -72,17 +77,20 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // If (Not) Exists
     // ************************************************************************
 
+    @SafeVarargs
     @Override
-    public <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    public final <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         return ifExistsOrNot(true, otherClass, joiners);
     }
 
+    @SafeVarargs
     @Override
-    public <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    public final <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         return ifExistsOrNot(false, otherClass, joiners);
     }
 
-    private <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
+    @SafeVarargs
+    private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         DroolsExistsBiConstraintStream<Solution_, A, B> stream =
                 new DroolsExistsBiConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);

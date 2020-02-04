@@ -106,16 +106,18 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     // ************************************************************************
-    // If (Not) Exists
+    // If (not) exists
     // ************************************************************************
 
+    @SafeVarargs
     @Override
-    public <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    public final <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         throw new UnsupportedOperationException();
     }
 
+    @SafeVarargs
     @Override
-    public <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    public final <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         throw new UnsupportedOperationException();
     }
 

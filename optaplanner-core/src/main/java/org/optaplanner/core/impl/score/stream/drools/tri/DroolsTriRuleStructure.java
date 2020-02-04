@@ -23,7 +23,10 @@ import java.util.function.LongSupplier;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.DSL;
+import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
@@ -77,6 +80,16 @@ public class DroolsTriRuleStructure<A, B, C, PatternVar> extends DroolsRuleStruc
         this.shelved = Collections.unmodifiableList(shelved);
         this.prerequisites = Collections.unmodifiableList(prerequisites);
         this.dependents = Collections.unmodifiableList(dependents);
+    }
+
+    public <D> DroolsTriRuleStructure<A, B, C, PatternVar> existsOrNot(PatternDSL.PatternDef<D> existencePattern,
+            boolean shouldExist) {
+        ExprViewItem item = DSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = DSL.not(item);
+        }
+        return new DroolsTriRuleStructure<>(a, b, c, primaryPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
     }
 
     public Variable<A> getA() {

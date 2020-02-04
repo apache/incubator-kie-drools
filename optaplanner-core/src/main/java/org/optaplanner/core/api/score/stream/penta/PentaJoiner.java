@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.common;
+package org.optaplanner.core.api.score.stream.penta;
 
-public abstract class AbstractJoiner {
+import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 
-    public abstract JoinerType[] getJoinerTypes();
+/**
+ * Created with {@link Joiners}.
+ * Used by {@link QuadConstraintStream#ifExists(Class, PentaJoiner)}, ...
+ * @see Joiners
+ */
+public interface PentaJoiner<A, B, C, D, E> {
 
 }

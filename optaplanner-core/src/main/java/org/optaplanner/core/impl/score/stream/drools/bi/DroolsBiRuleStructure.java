@@ -23,6 +23,7 @@ import java.util.function.LongSupplier;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ExprViewItem;
@@ -35,7 +36,7 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
 
     private final Variable<A> a;
     private final Variable<B> b;
-    private final DroolsPatternBuilder<PatternVar> targetPattern;
+    private final DroolsPatternBuilder<PatternVar> primaryPattern;
     private final List<ViewItemBuilder<?>> shelved;
     private final List<ViewItemBuilder<?>> prerequisites;
     private final List<ViewItemBuilder<?>> dependents;
@@ -45,7 +46,7 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
         super(variableIdSupplier);
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
-        this.targetPattern = bRuleStructure.getPrimaryPatternBuilder();
+        this.primaryPattern = bRuleStructure.getPrimaryPatternBuilder();
         List<ViewItemBuilder<?>> newShelved = new ArrayList<>(aRuleStructure.getShelvedRuleItems());
         newShelved.addAll(bRuleStructure.getShelvedRuleItems());
         this.shelved = Collections.unmodifiableList(newShelved);
@@ -58,16 +59,26 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
     }
 
     public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable,
-            DroolsPatternBuilder<PatternVar> targetPattern, List<ViewItemBuilder<?>> shelved,
+            DroolsPatternBuilder<PatternVar> primaryPattern, List<ViewItemBuilder<?>> shelved,
             List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
             LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
-        this.targetPattern = targetPattern;
+        this.primaryPattern = primaryPattern;
         this.shelved = Collections.unmodifiableList(shelved);
         this.prerequisites = Collections.unmodifiableList(prerequisites);
         this.dependents = Collections.unmodifiableList(dependents);
+    }
+
+    public <C> DroolsBiRuleStructure<A, B, PatternVar> existsOrNot(PatternDSL.PatternDef<C> existencePattern,
+            boolean shouldExist) {
+        ExprViewItem item = DSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = DSL.not(item);
+        }
+        return new DroolsBiRuleStructure<>(a, b, primaryPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
     }
 
     public Variable<A> getA() {
@@ -90,22 +101,12 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
 
     @Override
     public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
-        return targetPattern;
+        return primaryPattern;
     }
 
     @Override
     public List<ViewItemBuilder<?>> getDependents() {
         return dependents;
-    }
-
-    public <C> DroolsBiRuleStructure<A, B, PatternVar> existsOrNot(PatternDSL.PatternDef<C> existencePattern,
-            boolean shouldExist) {
-        ExprViewItem item = PatternDSL.exists(existencePattern);
-        if (!shouldExist) {
-            item = PatternDSL.not(item);
-        }
-        return new DroolsBiRuleStructure<>(a, b, targetPattern, shelved, prerequisites, mergeDependents(item),
-                getVariableIdSupplier());
     }
 
     @Override

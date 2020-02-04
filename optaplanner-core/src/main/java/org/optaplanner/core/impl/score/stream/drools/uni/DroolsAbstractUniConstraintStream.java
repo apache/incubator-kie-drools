@@ -79,20 +79,23 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     // ************************************************************************
-    // If (Not) Exists
+    // If (not) exists
     // ************************************************************************
 
+    @SafeVarargs
     @Override
-    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+    public final <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         return ifExistsOrNot(true, otherClass, joiners);
     }
 
+    @SafeVarargs
     @Override
-    public <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+    public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         return ifExistsOrNot(false, otherClass, joiners);
     }
 
-    private <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, Class<B> otherClass,
+    @SafeVarargs
+    private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
         DroolsExistsUniConstraintStream<Solution_, A> stream =
                 new DroolsExistsUniConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);

@@ -38,7 +38,6 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
@@ -62,19 +61,6 @@ public final class DroolsBiCondition<A, B, PatternVar>
         super(ruleStructure);
     }
 
-    private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {
-        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            Object leftMapping = triJoiner.getLeftMapping(i).apply(a, b);
-            Object rightMapping = triJoiner.getRightMapping(i).apply(c);
-            if (!joinerType.matches(leftMapping, rightMapping)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public DroolsBiCondition<A, B, PatternVar> andFilter(BiPredicate<A, B> predicate) {
         Predicate3<PatternVar, A, B> filter = (__, a, b) -> predicate.test(a, b);
         Variable<A> aVariable = ruleStructure.getA();
@@ -92,21 +78,26 @@ public final class DroolsBiCondition<A, B, PatternVar>
         DroolsUniRuleStructure<C, CPatternVar> cRuleStructure = cCondition.getRuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
         UnaryOperator<PatternDef<CPatternVar>> expander = p -> p.expr("Filter using " + triJoiner,
-                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c));
+                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> triJoiner.matches(a, b, c));
         DroolsUniRuleStructure<C, CPatternVar> newCRuleStructure = cRuleStructure.amend(expander);
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }
 
-    public <C> DroolsBiCondition<A, B, PatternVar> andIfExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> DroolsBiCondition<A, B, PatternVar> andIfExists(Class<C> otherClass,
+            TriJoiner<A, B, C>... joiners) {
         return andIfExistsOrNot(true, otherClass, joiners);
     }
 
-    public <C> DroolsBiCondition<A, B, PatternVar> andIfNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> DroolsBiCondition<A, B, PatternVar> andIfNotExists(Class<C> otherClass,
+            TriJoiner<A, B, C>... joiners) {
         return andIfExistsOrNot(false, otherClass, joiners);
     }
 
-    private <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
+    @SafeVarargs
+    private final <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
@@ -148,7 +139,7 @@ public final class DroolsBiCondition<A, B, PatternVar>
             return applyFilters(existencePattern, predicate, shouldExist);
         }
         // There is no gamma index in Drools, therefore we replace joining with a filter.
-        TriPredicate<A, B, C> joinFilter = (a, b, c) -> matches(joiner, a, b, c);
+        TriPredicate<A, B, C> joinFilter = joiner::matches;
         TriPredicate<A, B, C> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the C pattern
         return applyFilters(existencePattern, result, shouldExist);

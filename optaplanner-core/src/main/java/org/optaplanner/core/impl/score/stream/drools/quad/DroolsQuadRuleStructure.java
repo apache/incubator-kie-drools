@@ -23,7 +23,10 @@ import java.util.function.LongSupplier;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.DSL;
+import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
@@ -81,6 +84,17 @@ public class DroolsQuadRuleStructure<A, B, C, D, PatternVar> extends DroolsRuleS
         this.prerequisites = Collections.unmodifiableList(prerequisites);
         this.dependents = Collections.unmodifiableList(dependents);
     }
+
+    public <E> DroolsQuadRuleStructure<A, B, C, D, PatternVar> existsOrNot(PatternDSL.PatternDef<E> existencePattern,
+            boolean shouldExist) {
+        ExprViewItem item = DSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = DSL.not(item);
+        }
+        return new DroolsQuadRuleStructure<>(a, b, c, d, primaryPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
+    }
+
 
     public Variable<A> getA() {
         return a;

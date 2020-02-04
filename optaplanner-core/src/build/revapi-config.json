@@ -340,6 +340,24 @@
           "methodName": "ifNotExists",
           "elementKind": "method",
           "justification": "Introduced existence building blocks to BiConstraintStream."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifExists(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifExists",
+          "elementKind": "method",
+          "justification": "Introduced existence building blocks to TriConstraintStream."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifNotExists(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifNotExists",
+          "elementKind": "method",
+          "justification": "Introduced existence building blocks to QuadConstraintStream."
         }
       ]
     }

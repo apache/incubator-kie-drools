@@ -122,16 +122,18 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     // ************************************************************************
-    // If (Not) Exists
+    // If (not) exists
     // ************************************************************************
 
+    @SafeVarargs
     @Override
-    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+    public final <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         throw new UnsupportedOperationException();
     }
 
+    @SafeVarargs
     @Override
-    public <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+    public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         throw new UnsupportedOperationException();
     }
 

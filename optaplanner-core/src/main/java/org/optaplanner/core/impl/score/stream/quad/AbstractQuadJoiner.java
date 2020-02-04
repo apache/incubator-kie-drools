@@ -20,14 +20,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner implements QuadJoiner<A, B, C, D> {
 
+    private final QuadPredicate<A, B, C, D> filter;
+
+    protected AbstractQuadJoiner() {
+        this.filter = null;
+    }
+
+    protected AbstractQuadJoiner(QuadPredicate<A, B, C, D> filter) {
+        this.filter = filter;
+    }
+
     @SafeVarargs
-    public final static <A, B, C, D> QuadJoiner<A, B, C, D> merge(QuadJoiner<A, B, C, D>... joiners) {
+    public static <A, B, C, D> AbstractQuadJoiner<A, B, C, D> merge(QuadJoiner<A, B, C, D>... joiners) {
         List<SingleQuadJoiner<A, B, C, D>> joinerList = new ArrayList<>();
         for (QuadJoiner<A, B, C, D> joiner : joiners) {
             if (joiner instanceof NoneQuadJoiner) {
@@ -48,6 +60,19 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner impl
         return new CompositeQuadJoiner<>(joinerList);
     }
 
+    public boolean matches(A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public abstract TriFunction<A, B, C, Object> getLeftMapping(int index);
 
     public abstract TriFunction<A, B, C, Object[]> getLeftCombinedMapping();
@@ -55,5 +80,9 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner impl
     public abstract Function<D, Object> getRightMapping(int index);
 
     public abstract Function<D, Object[]> getRightCombinedMapping();
+
+    public QuadPredicate<A, B, C, D> getFilter() {
+        return filter;
+    }
 
 }

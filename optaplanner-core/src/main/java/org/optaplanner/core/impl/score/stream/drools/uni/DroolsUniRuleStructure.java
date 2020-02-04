@@ -57,6 +57,20 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
         this.dependents = Collections.emptyList();
     }
 
+    public <B> DroolsUniRuleStructure<A, PatternVar> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
+        ExprViewItem item = PatternDSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = PatternDSL.not(item);
+        }
+        return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
+    }
+
+    public DroolsUniRuleStructure<A, PatternVar> amend(UnaryOperator<PatternDef<PatternVar>> expander) {
+        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
+                dependents, getVariableIdSupplier());
+    }
+
     public Variable<A> getA() {
         return a;
     }
@@ -84,20 +98,6 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
     @Override
     protected Class[] getVariableTypes() {
         return new Class[] { a.getType() };
-    }
-
-    public <B> DroolsUniRuleStructure<A, PatternVar> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
-        ExprViewItem item = PatternDSL.exists(existencePattern);
-        if (!shouldExist) {
-            item = PatternDSL.not(item);
-        }
-        return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
-                getVariableIdSupplier());
-    }
-
-    public DroolsUniRuleStructure<A, PatternVar> amend(UnaryOperator<PatternDef<PatternVar>> expander) {
-        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
-                dependents, getVariableIdSupplier());
     }
 
 }

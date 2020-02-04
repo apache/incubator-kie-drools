@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.stream.quad;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,11 +40,13 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtra;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
 import static java.util.function.Function.identity;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -112,6 +115,280 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     // TODO
+
+    // ************************************************************************
+    // If (not) exists
+    // ************************************************************************
+
+    @Test
+    public void ifExists_0Joiner0Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifExists(TestdataLavishValueGroup.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        TestdataLavishValueGroup valueGroup = solution.getFirstValueGroup();
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(), solution.getFirstEntity()));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(valueGroup);
+        solution.getValueGroupList().remove(valueGroup);
+        scoreDirector.afterProblemFactRemoved(valueGroup);
+        assertScore(scoreDirector);
+    }
+
+    @Test
+    public void ifExists_0Join1Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getValueList().get(1));
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifExists(TestdataLavishValueGroup.class,
+                            filtering((entityA, entityB, entityAGroup, value, valueGroup) ->
+                                    Objects.equals(value.getValueGroup(), valueGroup)))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity2, entity1, entityGroup, solution.getFirstValue()),
+                assertMatch(entity2, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()),
+                assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
+
+        // Incremental
+        TestdataLavishValueGroup toRemove = solution.getFirstValueGroup();
+        scoreDirector.beforeProblemFactRemoved(toRemove);
+        solution.getValueGroupList().remove(toRemove);
+        scoreDirector.afterProblemFactRemoved(toRemove);
+        assertScore(scoreDirector);
+    }
+
+    @Test
+    public void ifExists_1Join0Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifExists(TestdataLavishEntityGroup.class,
+                            equal((entityA, entityB, groupA, valueA) -> entityA.getEntityGroup(), identity()))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity2, entity1, entityGroup, solution.getFirstValue()),
+                assertMatch(entity2, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()),
+                assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
+        assertScore(scoreDirector,
+                assertMatch(entity2, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()),
+                assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
+    }
+
+    @Test
+    public void ifExists_1Join1Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifExists(TestdataLavishEntityGroup.class,
+                            equal((entityA, entityB, groupA, valueA) -> entityA.getEntityGroup(), identity()),
+                            filtering((entityA, entityB, groupA, valueA, groupB) ->
+                                    entityA.getCode().contains("MyEntity") || groupA.getCode().contains("MyEntity")))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity2, entity1, entityGroup, solution.getFirstValue()));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
+        assertScore(scoreDirector);
+    }
+
+    @Test
+    public void ifNotExists_0Joiner0Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifNotExists(TestdataLavishValueGroup.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        TestdataLavishValueGroup valueGroup = solution.getFirstValueGroup();
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(valueGroup);
+        solution.getValueGroupList().remove(valueGroup);
+        scoreDirector.afterProblemFactRemoved(valueGroup);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(), solution.getFirstEntity()));
+    }
+
+    @Test
+    public void ifNotExists_0Join1Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getValueList().get(1));
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifNotExists(TestdataLavishValueGroup.class,
+                            filtering((entityA, entityB, entityAGroup, value, valueGroup) ->
+                                    Objects.equals(value.getValueGroup(), valueGroup)))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
+
+        // Incremental
+        TestdataLavishValueGroup toRemove = solution.getFirstValueGroup();
+        scoreDirector.beforeProblemFactRemoved(toRemove);
+        solution.getValueGroupList().remove(toRemove);
+        scoreDirector.afterProblemFactRemoved(toRemove);
+        assertScore(scoreDirector,
+                assertMatch(entity2, entity1, entityGroup, solution.getFirstValue()),
+                assertMatch(entity2, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()),
+                assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
+    }
+
+    @Test
+    public void ifNotExists_1Join0Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifNotExists(TestdataLavishEntityGroup.class,
+                            equal((entityA, entityB, groupA, valueA) -> entityB.getEntityGroup(), identity()))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
+        assertScore(scoreDirector,
+                assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
+    }
+
+    @Test
+    public void ifNotExists_1Join1Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
+                    .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
+                    .ifNotExists(TestdataLavishEntityGroup.class,
+                            equal((entityA, entityB, groupA, valueA) -> entityA.getEntityGroup(), identity()),
+                            filtering((entityA, entityB, groupA, valueA, groupB) ->
+                                    !(entityA.getCode().contains("MyEntity") && groupB.getCode().contains("MyEntity"))))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity2, entity1, entityGroup, solution.getFirstValue()));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
+        assertScore(scoreDirector);
+    }
 
     // ************************************************************************
     // Group by
@@ -393,14 +670,14 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> {
-                    QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base =
-                            factory.fromUniquePair(TestdataEntity.class)
-                                    .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                    .join(TestdataValue.class);
-                    return new Constraint[]{
-                            base.penalize("myConstraint1", SimpleBigDecimalScore.ONE),
-                            base.penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
-                                    (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
+            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base =
+                    factory.fromUniquePair(TestdataEntity.class)
+                            .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                            .join(TestdataValue.class);
+            return new Constraint[]{
+                    base.penalize("myConstraint1", SimpleBigDecimalScore.ONE),
+                    base.penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                            (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
             };
         }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(
