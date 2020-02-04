@@ -32,7 +32,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -56,7 +55,6 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.sanitizeDrlNameExpr;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -94,8 +92,7 @@ public class FromVisitor {
         }
 
         if (parsedExpression instanceof MethodCallExpr ) {
-            MethodCallExpr sanitized = sanitizeDrlNameExpr((MethodCallExpr) parsedExpression);
-            return fromMethodExpr(expression, sanitized);
+            return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
         }
 
         if (parsedExpression instanceof ObjectCreationExpr ) {
@@ -169,7 +166,7 @@ public class FromVisitor {
             return of( createEntryPointCall(bindingId) );
         }
         if ( contextHasDeclaration( bindingId ) ) {
-            return of( createFromCall(expression, bindingId, optContainsBinding.isPresent()) );
+            return of( createFromCall(expression, bindingId, optContainsBinding.isPresent(), null) );
         }
         return of(createUnitDataCall(bindingId));
     }
@@ -182,8 +179,16 @@ public class FromVisitor {
         return fromCall;
     }
 
-    private Optional<Expression> fromExpressionUsingArguments(String expression, NodeWithArguments<?> methodCallExpr) {
+    private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        String bindingId = addFromArgument( methodCallExpr, fromCall );
+
+        return bindingId != null ?
+                of(addLambdaToFromExpression( expression, bindingId, fromCall )) :
+                of(addNoArgLambdaToFromExpression( expression, fromCall ));
+    }
+
+    private String addFromArgument( MethodCallExpr methodCallExpr, MethodCallExpr fromCall ) {
         String bindingId = null;
 
         for (Expression argument : methodCallExpr.getArguments()) {
@@ -195,13 +200,10 @@ public class FromVisitor {
                 fromCall.addArgument( context.getVarExpr(argumentName));
             }
         }
-
-        return bindingId != null ?
-                of(addLambdaToFromExpression( expression, bindingId, fromCall )) :
-                of(addNoArgLambdaToFromExpression( expression, fromCall ));
+        return bindingId;
     }
 
-    private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
+    private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {
         final Expression sanitizedMethodCallExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(methodCallExpr);
         return findViaScopeWithPredicate(sanitizedMethodCallExpr, e -> {
             if (e instanceof NameExpr) {
@@ -210,7 +212,7 @@ public class FromVisitor {
             return false;
         })
         .filter( Expression::isNameExpr )
-        .map( e -> createFromCall(expression, e.asNameExpr().toString(), true) );
+        .map( e -> createFromCall(expression, e.asNameExpr().toString(), true, methodCallExpr) );
     }
 
     private boolean contextHasDeclaration(String name) {
@@ -223,9 +225,12 @@ public class FromVisitor {
         return entryPointCall;
     }
 
-    private Expression createFromCall( String expression, String bindingId, boolean hasBinding ) {
+    private Expression createFromCall( String expression, String bindingId, boolean hasBinding, MethodCallExpr methodCallExpr ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         fromCall.addArgument( context.getVarExpr(bindingId));
+        if (methodCallExpr != null) {
+            addFromArgument( methodCallExpr, fromCall );
+        }
         return hasBinding ? addLambdaToFromExpression( expression, bindingId, fromCall ) : fromCall;
     }
 

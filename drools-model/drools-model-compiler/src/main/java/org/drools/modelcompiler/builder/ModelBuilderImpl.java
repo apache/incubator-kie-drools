@@ -60,9 +60,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final boolean isPattern;
     private final boolean oneClassPerRule;
     private final Collection<T> packageSources = new ArrayList<>();
-    private final Map<String, CompositePackageDescr> compositePackages = new HashMap<>();
 
-    private Map<String, CompositePackageDescr> additionalPackages;
+    private Collection<CompositePackageDescr> compositePackages;
+    private Map<String, CompositePackageDescr> compositePackagesMap;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
         super(configuration);
@@ -74,16 +74,22 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void buildPackages(Collection<CompositePackageDescr> packages) {
-        for (CompositePackageDescr pkg : packages) {
-            compositePackages.put( pkg.getNamespace(), pkg );
-        }
+        this.compositePackages = packages;
     }
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        CompositePackageDescr pkgDescr = compositePackages.get(packageDescr.getNamespace());
+        if (compositePackagesMap == null) {
+            compositePackagesMap = new HashMap<>();
+            for (CompositePackageDescr pkg : compositePackages) {
+                compositePackagesMap.put( pkg.getNamespace(), pkg );
+            }
+            compositePackages = null;
+        }
+
+        CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
         if (pkgDescr == null) {
-            compositePackages.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
+            compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
         } else {
             pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
         }
@@ -102,7 +108,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void postBuild() {
-        Collection<CompositePackageDescr> packages = compositePackages.values();
+        Collection<CompositePackageDescr> packages = compositePackages == null ? compositePackagesMap.values() : compositePackages;
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
