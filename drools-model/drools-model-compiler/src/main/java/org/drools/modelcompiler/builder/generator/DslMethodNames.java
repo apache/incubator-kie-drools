@@ -73,6 +73,7 @@ public class DslMethodNames {
     public static final String ELSE_WHEN_CALL = "elseWhen";
     public static final String THEN_CALL = "then";
     public static final String BREAKING_CALL = "breaking";
+    public static final String GET_CHANNEL_CALL = "getChannel";
 
     // and/or
     public static final String AND_CALL = "D.and";
