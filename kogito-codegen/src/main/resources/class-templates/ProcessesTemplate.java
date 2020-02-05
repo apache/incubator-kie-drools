@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
@@ -15,8 +13,8 @@ public class ApplicationProcesses implements Processes {
     Object processes;
         
     private Map<String, Process<? extends Model>> mappedProcesses = new HashMap<>();
-    
-    @PostConstruct
+
+    @javax.annotation.PostConstruct
     public void setup() {
         
         for (Process<? extends Model> process : processes) {

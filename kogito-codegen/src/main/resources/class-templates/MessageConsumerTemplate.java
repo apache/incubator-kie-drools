@@ -3,8 +3,6 @@ package com.myspace.demo;
 import java.util.TimeZone;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.Application;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.process.Process;
@@ -27,9 +25,13 @@ public class $Type$MessageConsumer {
     Optional<Boolean> useCloudEvents = Optional.of(true);
     
     private ObjectMapper json = new ObjectMapper();
-        
-    public void configure() {
+
+    {
         json.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
+    }
+
+    public void configure() {
+
     }
     
 	public void consume(String payload) {
