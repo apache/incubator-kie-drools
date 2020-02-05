@@ -821,7 +821,7 @@ public class DrlxParseUtil {
     }
 
     public static String addCurlyBracesToBlock(String blockString) {
-        return String.format("{%s}", blockString);
+        return String.format("{\n%s\n}", blockString);
     }
 
     public static String addSemicolon(String block) {
