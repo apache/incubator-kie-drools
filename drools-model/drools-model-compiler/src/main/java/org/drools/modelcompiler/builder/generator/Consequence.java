@@ -199,7 +199,11 @@ public class Consequence {
                                   compile.getUsedBindings());
     }
     private BlockStmt rewriteConsequence(String consequence) {
-        String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
+        String ruleConsequenceRewrittenForPrimitives =
+                new PrimitiveTypeConsequenceRewrite(context)
+                .rewrite(addCurlyBracesToBlock(consequence.trim()));
+
+        String ruleConsequenceAsBlock = rewriteModifyBlock(ruleConsequenceRewrittenForPrimitives);
         try {
             return parseBlock( ruleConsequenceAsBlock );
         } catch (ParseProblemException e) {
