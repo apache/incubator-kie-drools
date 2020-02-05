@@ -29,11 +29,6 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>net.steppschuh.markdowngenerator</groupId>
-        <artifactId>markdowngenerator</artifactId>
-        <version>1.3.1.1</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -103,11 +98,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.steppschuh.markdowngenerator</groupId>
-      <artifactId>markdowngenerator</artifactId>
       <scope>test</scope>
     </dependency>
 
