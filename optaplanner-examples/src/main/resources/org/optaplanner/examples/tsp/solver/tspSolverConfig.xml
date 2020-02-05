@@ -8,6 +8,7 @@
 
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.tsp.optional.score.TspConstraintProvider</constraintProviderClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
