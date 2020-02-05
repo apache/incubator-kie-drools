@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.quarkus.infinispan.client.Remote;
 import io.vertx.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.infinispan.client.hotrod.Flag;
 import org.infinispan.client.hotrod.RemoteCache;
+import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.QueryFactory;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -56,9 +56,9 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     @Inject
     public InfinispanJobRepository(Vertx vertx,
                                    JobStreams jobStreams,
-                                   @Remote(SCHEDULED_JOBS) RemoteCache<String, ScheduledJob> cache) {
+                                   RemoteCacheManager remoteCacheManager) {
         super(vertx, jobStreams);
-        this.cache = cache;
+        this.cache = remoteCacheManager.administration().getOrCreateCache(SCHEDULED_JOBS, (String) null);
         this.queryFactory = Search.getQueryFactory(cache);
     }
 

@@ -17,30 +17,19 @@
 package org.kie.kogito.jobs.service.repository.infinispan;
 
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
-import javax.annotation.Priority;
-import javax.enterprise.event.Observes;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.interceptor.Interceptor;
 
-import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.health.Readiness;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.kie.kogito.infinispan.health.InfinispanHealthCheck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Priority(Interceptor.Priority.PLATFORM_BEFORE)
-@Singleton
+@ApplicationScoped
 public class InfinispanConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanConfiguration.class);
     public static final String PERSISTENCE_CONFIG_KEY = "kogito.jobs-service.persistence";
 
     /**
@@ -53,32 +42,6 @@ public class InfinispanConfiguration {
         }
 
         public static final String SCHEDULED_JOBS = "SCHEDULED_JOBS";
-
-        public static String[] all() {
-            return new String[]{SCHEDULED_JOBS};
-        }
-    }
-
-    private Optional<RemoteCacheManager> cacheManager;
-
-    @Inject
-    public InfinispanConfiguration(Instance<RemoteCacheManager> cacheManagerInstance,
-                                   @ConfigProperty(name = PERSISTENCE_CONFIG_KEY)
-                                           Optional<String> persistence) {
-
-        LOGGER.info("Persistence config {}", persistence);
-        this.cacheManager = persistence
-                .filter("infinispan"::equals)
-                .map(p -> cacheManagerInstance.get());
-    } 
-
-    CompletionStage<Void> onStart(@Observes StartupEvent startupEvent) {
-        return ReactiveStreams.of(Caches.all())
-                .forEach(name -> cacheManager
-                        .map(RemoteCacheManager::administration)
-                        .ifPresent(adm -> adm.getOrCreateCache(name, (String) null)))
-                .run()
-                .thenAccept(c -> LOGGER.info("Executed Infinispan configuration"));
     }
 
     @Produces
