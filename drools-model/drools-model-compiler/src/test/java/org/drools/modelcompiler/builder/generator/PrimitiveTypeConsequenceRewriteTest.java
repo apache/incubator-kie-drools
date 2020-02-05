@@ -15,7 +15,7 @@ public class PrimitiveTypeConsequenceRewriteTest {
     @Test
     public void shouldConvertCastOfShortToShortValue() {
         RuleContext context = createContext();
-        context.addDeclaration("$interimVar", Short.class);
+        context.addDeclaration("$interimVar", int.class);
 
         String rewritten = new PrimitiveTypeConsequenceRewrite(context)
                 .rewrite("{ $address.setShortNumber((short)$interimVar); }");
