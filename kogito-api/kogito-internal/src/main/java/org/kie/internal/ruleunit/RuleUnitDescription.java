@@ -19,6 +19,8 @@ package org.kie.internal.ruleunit;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.kie.kogito.rules.RuleUnitConfig;
+
 public interface RuleUnitDescription {
 
     /**
@@ -53,5 +55,7 @@ public interface RuleUnitDescription {
     Collection<? extends RuleUnitVariable> getUnitVarDeclarations();
 
     boolean hasDataSource( String name );
+
+    RuleUnitConfig getConfig();
 
 }

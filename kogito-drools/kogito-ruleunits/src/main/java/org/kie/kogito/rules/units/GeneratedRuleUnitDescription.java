@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import org.drools.core.addon.TypeResolver;
 import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.RuleUnitConfig;
 
 public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
 
@@ -36,6 +37,7 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
         this.name = name;
         this.simpleName = name.substring(name.lastIndexOf('.') + 1);
         this.packageName = name.substring(0, name.lastIndexOf('.'));
+        setConfig(RuleUnitConfig.Default);
     }
 
     public GeneratedRuleUnitDescription(String name, TypeResolver typeResolver) {
@@ -99,6 +101,7 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
             throw new IllegalArgumentException(e);
         }
     }
+
     private static Class<?> uncheckedLoadClass(ClassLoader classLoader, String fqcn) {
         try {
             return classLoader.loadClass(fqcn);

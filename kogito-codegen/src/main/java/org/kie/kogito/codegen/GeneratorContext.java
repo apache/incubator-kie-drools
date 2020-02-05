@@ -18,6 +18,7 @@ package org.kie.kogito.codegen;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -32,20 +33,26 @@ public class GeneratorContext {
     private static final String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
     public static GeneratorContext ofResourcePath(File resourcePath) {
-        return new GeneratorContext(resourcePath);
+        Properties applicationProperties = new Properties();
+
+        try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
+            applicationProperties.load(fileReader);
+        } catch (IOException ioe) {
+            LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
+        }
+        return new GeneratorContext(applicationProperties);
+    }
+
+    public static GeneratorContext ofProperties(Properties props) {
+        return new GeneratorContext(props);
     }
 
     private KogitoBuildContext buildContext;
 
     private Properties applicationProperties = new Properties();
 
-    private GeneratorContext(File resourcePath) {
-
-        try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
-            applicationProperties.load(fileReader);
-        } catch (IOException ioe) {
-            LOGGER.warn("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
-        }
+    private GeneratorContext(Properties properties) {
+        this.applicationProperties = properties;
     }
 
     public GeneratorContext withBuildContext(KogitoBuildContext buildContext) {
@@ -59,5 +66,9 @@ public class GeneratorContext {
 
     public Optional<String> getApplicationProperty(String property) {
         return Optional.ofNullable(applicationProperties.getProperty(property));
+    }
+
+    public Collection<String> getApplicationProperties() {
+        return applicationProperties.stringPropertyNames();
     }
 }

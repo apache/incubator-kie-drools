@@ -2,6 +2,8 @@ package org.kie.kogito.maven.plugin;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -14,9 +16,11 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -36,6 +40,7 @@ import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateModel",
@@ -98,7 +103,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     @Parameter(property = "kogito.di.enabled", defaultValue = "true")
     private boolean dependencyInjection;
-    
+
     @Parameter(property = "kogito.persistence.enabled", defaultValue = "false")
     private boolean persistence;
 
@@ -169,21 +174,21 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     private ApplicationGenerator createApplicationGenerator(boolean generateRuleUnits, boolean generateProcesses, boolean generateDecisions) throws IOException, MojoExecutionException {
         String appPackageName = project.getGroupId();
-        
+
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
         boolean usePersistence = persistence || hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean useMonitoring = hasClassOnClasspath("org.kie.addons.monitoring.rest.MetricsResource"); 
-        
-        
+        boolean useMonitoring = hasClassOnClasspath("org.kie.addons.monitoring.rest.MetricsResource");
+
+
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
                                                                            null);
-        
+
         GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
         context.withBuildContext(discoverKogitoRuntimeContext(project));
 
@@ -194,7 +199,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                         .withMonitoring(useMonitoring)
                         .withClassLoader(projectClassLoader)
                         .withGeneratorContext(context);
-        
+
         if (generateRuleUnits) {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withKModule(getKModuleModel())
@@ -202,7 +207,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
 
         if (generateProcesses) {
-            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath())) 
+            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withPersistence(usePersistence)
                     .withClassLoader(projectClassLoader)
             ;
@@ -259,17 +264,17 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
-    
+
     protected boolean hasClassOnClasspath(String className) {
         try {
             Set<Artifact> elements = project.getDependencyArtifacts();
             URL[] urls = new URL[elements.size()];
-            
+
             int i = 0;
             Iterator<Artifact> it = elements.iterator();
             while (it.hasNext()) {
                 Artifact artifact = it.next();
-                
+
                 urls[i] = artifact.getFile().toURI().toURL();
                 i++;
             }

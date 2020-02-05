@@ -23,10 +23,12 @@ import java.util.Optional;
 
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+import org.kie.kogito.rules.RuleUnitConfig;
 
 public abstract class AbstractRuleUnitDescription implements RuleUnitDescription {
 
     private final Map<String, RuleUnitVariable> varDeclarations = new HashMap<>();
+    private RuleUnitConfig config;
 
     @Override
     public Optional<Class<?>> getDatasourceType(String name) {
@@ -70,4 +72,12 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
         varDeclarations.put(varDeclaration.getName(), varDeclaration);
     }
 
+    protected void setConfig(RuleUnitConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    public RuleUnitConfig getConfig() {
+        return config;
+    }
 }

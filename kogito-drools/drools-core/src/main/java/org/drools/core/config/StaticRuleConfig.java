@@ -15,39 +15,19 @@
 
 package org.drools.core.config;
 
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.kogito.rules.RuleConfig;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 
 public class StaticRuleConfig implements RuleConfig {
-    
-    private final RuleEventListenerConfig ruleEventListenerConfig;
-    private final EventProcessingOption eventProcessing;
-    private final ClockTypeOption clockType;
 
-    public StaticRuleConfig(RuleEventListenerConfig ruleEventListenerConfig, EventProcessingOption eventProcessing, ClockTypeOption clockType) {
-        this.ruleEventListenerConfig = ruleEventListenerConfig;
-        this.eventProcessing = eventProcessing;
-        this.clockType = clockType;
-    }
+    private final RuleEventListenerConfig ruleEventListenerConfig;
 
     public StaticRuleConfig(RuleEventListenerConfig ruleEventListenerConfig) {
-        this(ruleEventListenerConfig, EventProcessingOption.CLOUD, ClockTypeOption.REALTIME);
+        this.ruleEventListenerConfig = ruleEventListenerConfig;
     }
 
     @Override
     public RuleEventListenerConfig ruleEventListeners() {
         return ruleEventListenerConfig;
-    }
-
-    @Override
-    public EventProcessingOption eventProcessingMode() {
-        return eventProcessing;
-    }
-
-    @Override
-    public ClockTypeOption clockType() {
-        return clockType;
     }
 }

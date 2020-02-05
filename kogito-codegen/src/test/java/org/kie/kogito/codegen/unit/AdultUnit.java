@@ -19,13 +19,14 @@ package org.kie.kogito.codegen.unit;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.Results;
 import org.kie.kogito.conf.Clock;
+import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.SessionsPool;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 
 @SessionsPool(1)
-@Clock( Clock.Type.PSEUDO )
+@Clock( ClockType.PSEUDO )
 public class AdultUnit implements RuleUnitData {
     private int adultAge = 18;
     private DataStore<Person> persons = DataSource.createStore();
