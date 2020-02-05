@@ -34,6 +34,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
@@ -42,6 +43,7 @@ import org.drools.modelcompiler.util.LambdaUtil;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
@@ -74,7 +76,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
-        MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
+        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         usedDeclaration.stream().map(context::getVarExpr).forEach(bindAsDSL::addArgument);
@@ -114,8 +116,14 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     private void replaceBindWithInput(MethodCallExpr newBindingExpression, MethodCallExpr accumulateDSL, String inputName) {
         Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-        accumulateDSL.setArgument(0, input);
+        findBind(accumulateDSL).forEach(m -> m.replace(input));
         newBindingsConcatenated.add(newBindingExpression);
+    }
+
+    private static List<MethodCallExpr> findBind(Expression dsl) {
+        return dsl.findAll(MethodCallExpr.class,
+                           mc -> DrlxParseUtil.findRootNodeViaScope(mc)
+                                   .filter(l -> l.isMethodCallExpr() && l.asMethodCallExpr().getNameAsString().equals(BIND_CALL)).isPresent());
     }
 
     private Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
