@@ -1206,30 +1206,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    public void testAccumulateWithMaxCalendarNullDate() {
-        //DROOLS-4990
-        String str =
-                "import " + StockTick.class.getCanonicalName() + ";\n" +
-                        "rule AccumulateMaxDate\n" +
-                        "  dialect \"java\"\n" +
-                        "  when\n" +
-                        "  $max1 : Number() from accumulate(\n" +
-                        "    StockTick(isSetDueDate == true, $time : dueDate);\n" +
-                        "    max($time.getTime().getTime()))\n" +
-                        "then\n" +
-                        "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        StockTick st = new StockTick("RHT");
-        ksession.insert(st);
-        StockTick st2 = new StockTick("IBM");
-        st2.setDueDate(new GregorianCalendar(2020, Calendar.FEBRUARY, 4));
-        ksession.insert(st2);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
-    }
-
-    @Test
     public void testAccumulateWithMaxCalendarAndConstraint() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
