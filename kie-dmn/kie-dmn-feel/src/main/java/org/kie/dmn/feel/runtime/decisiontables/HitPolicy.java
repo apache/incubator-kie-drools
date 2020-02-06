@@ -187,7 +187,16 @@ public enum HitPolicy {
                     .distinct()
                     .count();
             if ( distinctOutputEntry > 1 ) {
-                throw new RuntimeException( "multiple rules can match, but they [must] all have the same output" );
+                ctx.notifyEvt( () -> {
+                                        List<Integer> ruleMatches = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                                        return new HitPolicyViolationEvent(
+                                                FEELEvent.Severity.ERROR,
+                                                "'Multiple rules can match, but they [must] all have the same output '"  + dt.getName() + "'. Matched rules: " + ruleMatches,
+                                                dt.getName(),
+                                                ruleMatches );
+                                }
+                );
+                return null;
             }
 
             ctx.notifyEvt( () -> {

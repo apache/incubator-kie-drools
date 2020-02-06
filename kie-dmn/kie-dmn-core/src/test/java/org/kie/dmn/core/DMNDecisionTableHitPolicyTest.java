@@ -332,4 +332,31 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(result.get("Collect"), is(BigDecimal.valueOf(50)));
     }
 
+    @Test
+    public void testDecisionTableHitPolicyAnyWithOverlap_DoOverlap() {
+        final DMNResult dmnResult = executeHitPolicyAnyWithOverlap(20);
+        assertThat(dmnResult.hasErrors(), is(true));
+        assertTrue(dmnResult.getMessages().size() > 0);
+        assertTrue(dmnResult.getMessages().stream().anyMatch(dm -> dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.ERROR)));
+        assertThat(dmnResult.getDecisionResultByName("a decision").getResult(), nullValue());
+    }
+
+    @Test
+    public void testDecisionTableHitPolicyAnyWithOverlap_NoOverlap() {
+        final DMNResult dmnResult = executeHitPolicyAnyWithOverlap(-1);
+        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("a decision").getResult(), is("boh"));
+    }
+
+    private DMNResult executeHitPolicyAnyWithOverlap(long number) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("hitpolicyAnyWithOverlap.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_84872d6e-44c2-4c7c-a5b1-46be7b672fc8", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a number", number);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        return dmnResult;
+    }
 }
