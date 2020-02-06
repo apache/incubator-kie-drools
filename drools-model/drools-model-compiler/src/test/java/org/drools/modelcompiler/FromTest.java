@@ -29,7 +29,6 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -252,6 +251,35 @@ public class FromTest extends BaseModelTest {
                 "end \n";
 
         KieSession ksession = getKieSession( str );
+
+        PetPerson petPerson = new PetPerson( "me" );
+        Map<String, Pet> petMap = new HashMap<>();
+        petMap.put("Dog", new Pet( Pet.PetType.dog ));
+        petMap.put("Cat", new Pet( Pet.PetType.cat ));
+        petPerson.setPets( petMap );
+
+        ksession.insert( petPerson );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testGlobalInFromExpression() {
+        // DROOLS-4999
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + PetPerson.class.getCanonicalName() + "\n" +
+                "import " + Pet.class.getCanonicalName() + "\n" +
+                "global String petName;\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : PetPerson ( )\n" +
+                "    $pet : Pet ( type == Pet.PetType.dog ) from $p.getPet(petName)\n" +
+                "then\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal( "petName", "Dog" );
 
         PetPerson petPerson = new PetPerson( "me" );
         Map<String, Pet> petMap = new HashMap<>();

@@ -477,11 +477,11 @@ public class DirectCompilerTest {
     }
 
     private CompiledFEELExpression parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
 
         ParseTree tree = parser.compilation_unit();
 
-        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
         BaseNode node = v.visit(tree);
         DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
         

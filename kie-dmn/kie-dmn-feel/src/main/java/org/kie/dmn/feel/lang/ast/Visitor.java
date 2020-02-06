@@ -25,7 +25,7 @@ public interface Visitor<T> {
     T visit(NumberNode n);
     T visit(StringNode n);
     T visit(NullNode n);
-    T visit(TypeNode n);
+    T visit(CTypeNode n);
     T visit(NameDefNode n);
     T visit(NameRefNode n);
     T visit(QualifiedNameNode n);

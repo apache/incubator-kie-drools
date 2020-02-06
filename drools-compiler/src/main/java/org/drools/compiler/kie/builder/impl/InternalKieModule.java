@@ -28,6 +28,7 @@ import java.util.zip.ZipFile;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -150,6 +151,10 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default CompilationCache getCompilationCache( String kbaseName) { return null; }
+
+    default InternalKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+        throw new UnsupportedOperationException();
+    }
 
     static InternalKieModule createKieModule(ReleaseId releaseId, File jar) {
         try (ZipFile zipFile = new ZipFile(jar)) {

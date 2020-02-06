@@ -38,7 +38,7 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNTypeTest {
 
-    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV11();
+    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV11(Collections.emptyMap());
     private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_6ecff8d8-42d6-4e77-9759-83c2f3fae418" id="_6ecff8d8-42d6-4e77-9759-83c2f3fae418" name="base model" namespace="http://www.trisotech.com/definitions/_6ecff8d8-42d6-4e77-9759-83c2f3fae418" exporter="DMN Modeler" exporterVersion="6.8.0" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="base person" label="base person">
+        <semantic:itemComponent id="_854766be-4532-498f-af1b-b884646e15b6" name="full name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_f5984019-9859-4167-a599-674bed137ed3" name="age">
+            <semantic:typeRef>number</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:decisionService id="_6ecff8d8-42d6-4e77-9759-83c2f3fae418_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_6ecff8d8-42d6-4e77-9759-83c2f3fae418_DS_VAR" typeRef="Any"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_974b99a4-9c41-4b91-984a-d973fd0997e7_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_974b99a4-9c41-4b91-984a-d973fd0997e7_DS_VAR" typeRef="Any"/>
+    </semantic:decisionService>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_974b99a4-9c41-4b91-984a-d973fd0997e7" triso:modelElementRef="_e429dcf2-dc57-4d60-b4c5-8b4f0aaa5793" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</semantic:definitions>

@@ -134,6 +134,7 @@ public class DMNFEELHelper {
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
+        feelctx.setFEELTypeRegistry(model.getTypeRegistry());
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
@@ -286,6 +287,7 @@ public class DMNFEELHelper {
         return feel.newCompilerContext();
     }
 
+    @Deprecated
     public CompiledExpression compile( DMNModelImpl model, DMNElement element, Msg.Message msg, String dtableName, String expr, CompilerContext feelctx, int index ) {
         CompiledExpression compiled = feel.compile( expr, feelctx );
         processEvents( model, element, msg, expr, dtableName, index );

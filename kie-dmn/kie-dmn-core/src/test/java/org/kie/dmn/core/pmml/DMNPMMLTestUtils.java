@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler;
+package org.kie.dmn.core.pmml;
 
-import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
+public class DMNPMMLTestUtils {
 
-public interface DMNTypeRegistry extends FEELTypeRegistry {
+    private static final String DETECT_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
 
-    DMNType unknown();
+    public static final boolean jpmmlEnabled() {
+        try {
+            ClassLoader classLoader = DMNKMeansModelPMMLTest.class.getClassLoader();
+            classLoader.loadClass(DETECT_JPMML_CLASS);
 
-    DMNType registerType(DMNType type);
-
-    DMNType resolveType(String namespace, String name);
-
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

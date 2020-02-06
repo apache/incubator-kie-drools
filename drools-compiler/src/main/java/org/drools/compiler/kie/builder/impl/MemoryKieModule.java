@@ -108,7 +108,8 @@ public class MemoryKieModule extends AbstractKieModule
         return "MemoryKieModule[releaseId=" + getReleaseId() + "]";
     }
 
-    MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+    @Override
+    public MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
         MemoryKieModule clone = new MemoryKieModule(releaseId, kModuleModel, newFs);
         for (InternalKieModule dep : getKieDependencies().values()) {
             clone.addKieDependency(dep);

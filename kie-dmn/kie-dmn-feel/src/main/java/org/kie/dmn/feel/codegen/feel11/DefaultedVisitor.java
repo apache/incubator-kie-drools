@@ -22,6 +22,7 @@ import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.CTypeNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
@@ -50,7 +51,6 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
@@ -90,7 +90,7 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visit(TypeNode n) {
+    public T visit(CTypeNode n) {
         return defaultVisit(n);
     }
 
