@@ -28,7 +28,7 @@ public class PrimitiveTypeConsequenceRewrite {
         try {
             blockStmt = StaticJavaParser.parseBlock(consequence);
         } catch (ParseProblemException e) {
-            logger.warn("Cannot post process consequence: " + consequence);
+            logger.warn(String.format("Cannot post process consequence: %s", consequence));
             return consequence;
         }
         for (Statement t : blockStmt.getStatements()) {
