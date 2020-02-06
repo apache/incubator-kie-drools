@@ -52,6 +52,7 @@ public class PMMLIsRegresssionModelExecutor {
         }));
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(targetFieldName, result.get());
+        toReturn.setResultObjectName(targetFieldName);
         return toReturn;
     }
 

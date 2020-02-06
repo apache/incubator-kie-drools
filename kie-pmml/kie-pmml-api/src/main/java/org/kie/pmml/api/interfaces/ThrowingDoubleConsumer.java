@@ -17,27 +17,20 @@ package org.kie.pmml.api.interfaces;
 
 import java.util.Objects;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
-
 /**
- * Exception-throwing <code>Function</code>
+ * Exception-throwing <code>DoubleConsumer</code>
  */
 @FunctionalInterface
-public interface ThrowingFunction<T, R, E extends Exception> {
+public interface ThrowingDoubleConsumer<E extends Exception> {
 
-    R apply(T elem) throws E, KieEnumException;
+    void accept(double var1) throws  E;
 
-    default <V> ThrowingFunction<V, R, E> compose(ThrowingFunction<? super V, ? extends T, E> before) {
-        Objects.requireNonNull(before);
-        return (V v) -> apply(before.apply(v));
-    }
-
-    default <V> ThrowingFunction<T, V, E> andThen(ThrowingFunction<? super R, ? extends V, E> after) {
+    default ThrowingDoubleConsumer< E> andThen(ThrowingDoubleConsumer<E> after) throws E {
         Objects.requireNonNull(after);
-        return (T t) -> after.apply(apply(t));
+        return (t) -> {
+            this.accept(t);
+            after.accept(t);
+        };
     }
 
-    static <T, E extends Exception> ThrowingFunction<T, T, E> identity() {
-        return (t) -> t;
-    }
 }

@@ -47,7 +47,7 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
 
     @Override
     public boolean evaluate(Map<String, Object> values) {
-        logger.info(String.format("evaluate %s", this.toString()));
+        logger.info("{} evaluate {}", this, values);
         return true;
     }
 

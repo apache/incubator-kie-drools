@@ -47,13 +47,13 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     @Override
     public boolean evaluate(Map<String, Object> values) {
-        logger.info(String.format("evaluate %s", this.toString()));
+        logger.info("{} evaluate {}", this, values);
         boolean toReturn = false;
        if (values.containsKey(name)) {
-           logger.info("found matching parameter, evaluate ");
+           logger.info("found matching parameter, evaluating... ");
            toReturn = evaluation(values.get(name));
        }
-        logger.info(String.format("return %s", toReturn));
+        logger.info("return {}", toReturn);
        return toReturn;
     }
 
@@ -104,7 +104,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     }
 
     private boolean evaluation(Object inputValue) {
-        logger.info(String.format("evaluation %s", inputValue));
+        logger.info("evaluation {}", inputValue);
         switch (operator) {
             case EQUAL:
                 return value.equals(inputValue);

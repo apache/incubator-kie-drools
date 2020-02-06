@@ -71,13 +71,13 @@ public class RoundtripPMMLTreeModelExecutorTest {
     public void setUp() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ResourceFactory.newFileResource( getFile("TreeSample.xml") ).setResourceType( ResourceType.PMML ) );
+        kfs.write(ResourceFactory.newFileResource(getFile("TreeSample.xml")).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         kieBuilder.getKieModule().getReleaseId();
         Results res = kieBuilder.getResults();
         assertNotNull(res);
         assertTrue(res.getMessages(Message.Level.ERROR).isEmpty());
-        KieBase kbase = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+        KieBase kbase = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId()).getKieBase();
         KieSession session = kbase.newKieSession();
         pmmlRuntime = session.getKieRuntime(PMMLRuntime.class);
         assertNotNull(pmmlRuntime);
@@ -93,93 +93,88 @@ public class RoundtripPMMLTreeModelExecutorTest {
 
     @Test
     public void evaluateWillPlay_1() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
-        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+        commonEvaluate(modelName, inputData, WILL_PLAY);
     }
 
     @Test
     public void evaluateWillPlay_2() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
-        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+        commonEvaluate(modelName, inputData, WILL_PLAY);
     }
 
     @Test
     public void evaluateWillPlay_3() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
         inputData.put(HUMIDITY, 65);
-        commonEvaluate(model, modelName, inputData, WILL_PLAY);
+        commonEvaluate(modelName, inputData, WILL_PLAY);
     }
 
     @Test
     public void evaluateWillPlay_4() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
         inputData.put(HUMIDITY, 95);
-        commonEvaluate(model, modelName, inputData, NO_PLAY);
+        commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
     @Test
     public void evaluateWillPlay_5() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(HUMIDITY, 95);
         inputData.put(TEMPERATURE, 95);
-        commonEvaluate(model, modelName, inputData, NO_PLAY);
+        commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
     @Test
     public void evaluateWillPlay_6() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(HUMIDITY, 95);
         inputData.put(TEMPERATURE, 40);
-        commonEvaluate(model, modelName, inputData, NO_PLAY);
+        commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
     @Test
     public void evaluateMayPlay_1() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, OVERCAST);
-        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+        commonEvaluate(modelName, inputData, MAY_PLAY);
         inputData.put(OUTLOOK, RAIN);
-        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+        commonEvaluate(modelName, inputData, MAY_PLAY);
     }
 
     @Test
     public void evaluateMayPlay_2() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, OVERCAST);
         inputData.put(TEMPERATURE, 80);
-        commonEvaluate(model, modelName, inputData, MAY_PLAY);
+        commonEvaluate(modelName, inputData, MAY_PLAY);
     }
 
     @Test
     public void evaluateMayPlay_3() throws Exception {
-        final KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new Exception("Failed to retrieve the model"));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, RAIN);
         inputData.put(HUMIDITY, 40);
-        commonEvaluate(model, modelName, inputData, NO_PLAY);
+        commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
-
-    private void commonEvaluate(KiePMMLModel model, String modelName, Map<String, Object> inputData, String expectedScore) throws KiePMMLException {
+    private void commonEvaluate(String modelName, Map<String, Object> inputData, String expectedScore) throws KiePMMLException {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        commonEvaluate(pmmlContext, expectedScore);
+    }
+
+    private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) throws KiePMMLException {
+        final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
         PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext);
         assertNotNull(retrieved);
         logger.info(retrieved.toString());

@@ -87,6 +87,6 @@ public class PMMLIsRegresssionModelExecutorTest {
         }
         double retrievedDouble = (double)retrieved.getResultVariables().get(TARGETFIELD_NAME);
         assertEquals(expected, retrievedDouble, 0.00001);
-        logger.info("Expected " + expected + " retrieved " + retrievedDouble);
+        logger.info("Expected {} retrieved {}", expected, retrievedDouble);
     }
 }

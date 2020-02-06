@@ -25,6 +25,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 
+import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.tree.factories.KiePMMLNodeFactory.getNode;
 
 public class KiePMMLTreeModelFactory {
@@ -38,10 +39,7 @@ public class KiePMMLTreeModelFactory {
         log.info("getKiePMMLModel " + model);
         String name = model.getModelName();
         // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
-        Optional<String> targetFieldName = model.getMiningSchema().getMiningFields().stream()
-                .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()))
-                .map(miningField -> miningField.getName().getValue())
-                .findFirst();
+        Optional<String> targetFieldName = getTargetField(model);
         return KiePMMLTreeModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
                 .withNode(getNode(model.getNode(), dataDictionary))

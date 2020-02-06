@@ -39,6 +39,27 @@
     <module>kie-pmml-integration-tests</module>
   </modules>
 
+  <properties>
+    <version.blueprinter>1.0</version.blueprinter>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>blueprinter-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>blueprinter-maven-plugin</artifactId>
+          <version>${version.blueprinter}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 
 </project>

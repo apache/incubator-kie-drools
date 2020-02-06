@@ -41,9 +41,9 @@ public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
         if (!(input instanceof Number)) {
             throw new KiePMMLException("Expected a Number, received a " + input.getClass().getName());
         }
-        double inputDouble = ((Number)input).doubleValue();
+        double inputDouble = ((Number) input).doubleValue();
         double toReturn = exponent == 1 ? inputDouble * coefficient.doubleValue() : Math.pow(inputDouble, exponent) * coefficient.doubleValue();
-        logger.info(this.toString() +  " evaluate " + input + " return " + toReturn);
+        logger.info("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;
     }
 

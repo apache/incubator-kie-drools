@@ -17,7 +17,9 @@ package org.kie.pmml.api.interfaces;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 
 /**
  * Factory for <b>wrappers</b> around custom <b>exception-throwing</b> functional interfaces
@@ -46,6 +48,26 @@ public class FunctionalWrapperFactory {
     }
 
     /**
+     * <code>Function</code> <code>wrapper</code> for exception-throwing <code>ToDoubleFunction</code>
+     *
+     * @param throwingToDoubleFunction
+     * @param <T>
+     * @param <E>
+     * @return
+     * @throws E
+     */
+    public static <T, E extends Exception> ToDoubleFunction<T> throwingToDoubleFunctionWrapper(ThrowingToDoubleFunction<T, E> throwingToDoubleFunction) throws E {
+        return t -> {
+            try {
+                return throwingToDoubleFunction.applyAsDouble(t);
+            } catch (Exception e) {
+                throwActualException(e);
+                return -1;
+            }
+        };
+    }
+
+    /**
      * <code>Consumer</code> <code>wrapper</code> for exception-throwing <code>Consumer</code>
      *
      * @param throwingConsumer
@@ -55,6 +77,24 @@ public class FunctionalWrapperFactory {
      * @throws E
      */
     public static <T, E extends Exception> Consumer<T> throwingConsumerWrapper(ThrowingConsumer<T, E> throwingConsumer) throws E {
+        return t -> {
+            try {
+                throwingConsumer.accept(t);
+            } catch (Exception e) {
+                throwActualException(e);
+            }
+        };
+    }
+
+    /**
+     * <code>DoubleConsumer</code> <code>wrapper</code> for exception-throwing <code>DoubleConsumer</code>
+     *
+     * @param throwingConsumer
+     * @param <E>
+     * @return
+     * @throws E
+     */
+    public static <E extends Exception> DoubleConsumer throwingDoubleConsumerWrapper(ThrowingDoubleConsumer<E> throwingConsumer) throws E {
         return t -> {
             try {
                 throwingConsumer.accept(t);

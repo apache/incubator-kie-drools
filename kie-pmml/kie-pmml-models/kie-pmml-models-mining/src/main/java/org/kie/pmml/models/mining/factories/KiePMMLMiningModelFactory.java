@@ -16,31 +16,29 @@
 package org.kie.pmml.models.mining.factories;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.mining.KiePMMLMiningModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.mining.factories.KiePMMLSegmentationFactory.getSegmentation;
 
 public class KiePMMLMiningModelFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLMiningModelFactory.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(KiePMMLMiningModelFactory.class.getName());
 
     private KiePMMLMiningModelFactory() {
     }
 
     public static KiePMMLMiningModel getKiePMMLMiningModel(DataDictionary dataDictionary, MiningModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel " + model);
+        log.info("getKiePMMLModel {}", model);
         String name = model.getModelName();
-        Optional<String> targetFieldName = model.getMiningSchema().getMiningFields().stream()
-                .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()))
-                .map(miningField -> miningField.getName().getValue())
-                .findFirst();
+        Optional<String> targetFieldName = getTargetField(model);
         return KiePMMLMiningModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
                 .withScorable(model.isScorable())

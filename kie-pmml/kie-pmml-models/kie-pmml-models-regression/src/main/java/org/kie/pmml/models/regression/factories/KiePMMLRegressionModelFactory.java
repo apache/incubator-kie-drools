@@ -17,7 +17,6 @@ package org.kie.pmml.models.regression.factories;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
@@ -27,21 +26,24 @@ import org.kie.pmml.api.model.enums.OP_TYPE;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.api.model.regression.enums.MODEL_TYPE;
 import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.regression.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 
 public class KiePMMLRegressionModelFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLRegressionModelFactory.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(KiePMMLRegressionModelFactory.class.getName());
 
     private KiePMMLRegressionModelFactory() {
     }
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel " + model);
+        log.info("getKiePMMLModel {}", model);
         String name = model.getModelName();
-        Optional<String> targetFieldName = model.getTargetField() != null ? Optional.of(model.getTargetField().getValue()) : Optional.empty();
+        Optional<String> targetFieldName = getTargetField(model);
         final Optional<OP_TYPE> opType = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName.orElse(null), field.getName().getValue()))
                 .findFirst()

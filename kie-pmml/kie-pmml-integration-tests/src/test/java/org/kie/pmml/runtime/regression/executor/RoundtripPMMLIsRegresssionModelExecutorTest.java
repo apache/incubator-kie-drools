@@ -18,7 +18,6 @@ package org.kie.pmml.runtime.regression.executor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,13 +69,13 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
     public void setUp() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ResourceFactory.newFileResource( getFile("LinearRegressionSample.xml") ).setResourceType( ResourceType.PMML ) );
+        kfs.write(ResourceFactory.newFileResource(getFile("LinearRegressionSample.xml")).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         kieBuilder.getKieModule().getReleaseId();
         Results res = kieBuilder.getResults();
         assertNotNull(res);
         assertTrue(res.getMessages(Message.Level.ERROR).isEmpty());
-        KieBase kbase = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+        KieBase kbase = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId()).getKieBase();
         KieSession session = kbase.newKieSession();
         pmmlRuntime = session.getKieRuntime(PMMLRuntime.class);
         assertNotNull(pmmlRuntime);
@@ -92,31 +91,33 @@ public class RoundtripPMMLIsRegresssionModelExecutorTest {
     }
 
     private void commonEvaluate(int age, double salary, String carLocation, String modelName) throws KiePMMLException {
-        final Optional<KiePMMLModel> model = pmmlRuntime.getModel(modelName);
-        assertTrue(model.isPresent());
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, model.get().getPmmlMODEL());
-        assertTrue(model.get() instanceof KiePMMLRegressionModel);
-        KiePMMLRegressionModel kiePMMLRegressionModel = (KiePMMLRegressionModel)model.get();
-        assertEquals(1,kiePMMLRegressionModel.getRegressionTables().size());
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
-        PMML4Result retrieved = pmmlRuntime.evaluate(model.get(), pmmlContext);
-        assertNotNull(retrieved);
-        logger.info(retrieved.toString());
-        assertNotNull(retrieved.getResultVariables());
-        assertTrue(retrieved.getResultVariables().containsKey(TARGETFIELD_NAME));
         double expected = INTERCEPT + AGE_COEFF * age + SALARY_COEFF * salary;
         if (CARPARK.equals(carLocation)) {
             expected += CARPARK_COEFF;
         } else if (STREET.equals(carLocation)) {
             expected += STREET_COEFF;
         }
+        commonEvaluate(pmmlContext, expected);
+    }
+
+    private void commonEvaluate(PMMLContext pmmlContext, double expected) throws KiePMMLException {
+        final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
+        assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
+        assertTrue(model instanceof KiePMMLRegressionModel);
+        assertEquals(1, ((KiePMMLRegressionModel) model).getRegressionTables().size());
+        PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext);
+        assertNotNull(retrieved);
+        logger.info(retrieved.toString());
+        assertNotNull(retrieved.getResultVariables());
+        assertTrue(retrieved.getResultVariables().containsKey(TARGETFIELD_NAME));
         double retrievedDouble = (double) retrieved.getResultVariables().get(TARGETFIELD_NAME);
         assertEquals(expected, retrievedDouble, 0.00001);
-        logger.info("Expected " + expected + " retrieved " + retrievedDouble);
+        logger.info("Expected {} retrieved {}", expected, retrievedDouble);
     }
 }

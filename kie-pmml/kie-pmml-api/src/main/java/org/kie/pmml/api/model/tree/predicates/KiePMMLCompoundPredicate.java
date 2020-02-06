@@ -37,6 +37,9 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     private BinaryOperator<Boolean> operatorFunction;
     private List<KiePMMLPredicate> kiePMMLPredicates;
 
+    private KiePMMLCompoundPredicate(BOOLEAN_OPERATOR booleanOperator) {
+        this.booleanOperator = booleanOperator;
+    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -48,12 +51,12 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     @Override
     public boolean evaluate(Map<String, Object> values) {
-        logger.info(String.format("evaluate %s", this.toString()));
+        logger.info("{} valuate {}", this, values);
         Boolean toReturn = null;
         for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
             toReturn = operatorFunction.apply(toReturn, kiePMMLPredicate.evaluate(values));
         }
-        logger.info(String.format("return %s", toReturn));
+        logger.info("return {}", toReturn);
         return toReturn != null ? toReturn : false;
     }
 
@@ -101,10 +104,6 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), booleanOperator, operatorFunction, kiePMMLPredicates);
-    }
-
-    private KiePMMLCompoundPredicate(BOOLEAN_OPERATOR booleanOperator) {
-        this.booleanOperator = booleanOperator;
     }
 
     public static class Builder extends KiePMMLPredicate.Builder<KiePMMLCompoundPredicate> {

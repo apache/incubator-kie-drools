@@ -44,15 +44,15 @@ public class KiePMMLNode extends KiePMMLIDed {
 
     public boolean evaluate(Map<String, Object> values) {
         result = null;
-        logger.info(String.format("%s: evaluate %s", id, this.score));
+        logger.info("{}: evaluate {}", id, this.score);
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
-            logger.info(String.format("%s: matching predicate, evaluating... ", id));
-            logger.info(String.format("%s: preliminary set %s", id, score));
+            logger.info("{}: matching predicate, evaluating... ", id);
+            logger.info("{}: preliminary set {}", id, score);
             result = score;
             if (kiePMMLNodes != null) {
                 for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
                     if (kiePMMLNode.evaluate(values)) {
-                        logger.info(String.format("%s: matching node, update set %s", id, kiePMMLNode.result));
+                        logger.info("{}: matching node, update set {}", id, kiePMMLNode.result);
                         result = kiePMMLNode.result;
                         break;
                     }
@@ -60,7 +60,7 @@ public class KiePMMLNode extends KiePMMLIDed {
             }
             return true;
         }
-        logger.info(String.format("%s: no matching predicate, set %s", id, result));
+        logger.info("{}: no matching predicate, set {}", id, result);
         return false;
     }
 

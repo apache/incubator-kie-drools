@@ -47,6 +47,10 @@ public class KiePMMLSegmentation extends KiePMMLIDedExtensioned {
         return multipleModelMethod;
     }
 
+    public List<KiePMMLSegment> getSegments() {
+        return segments;
+    }
+
     @Override
     public String toString() {
         return "KiePMMLSegmentation{" +

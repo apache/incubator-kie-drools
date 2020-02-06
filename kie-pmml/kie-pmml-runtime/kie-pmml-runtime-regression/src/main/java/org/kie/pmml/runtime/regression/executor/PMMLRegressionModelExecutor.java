@@ -35,12 +35,12 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context) throws KiePMMLException {
+    public PMML4Result evaluate(KiePMMLModel model, PMMLContext pmmlContext) throws KiePMMLException {
         if (!(model instanceof KiePMMLRegressionModel)) {
             throw new KiePMMLModelException("Expected a KiePMMLRegressionModel, received a " + model.getClass().getName());
         }
         final KiePMMLRegressionModel regressionModel = (KiePMMLRegressionModel) model;
-        return (regressionModel).isRegression() ? evaluateRegression(regressionModel, context) : evaluateNotRegression(regressionModel, context);
+        return (regressionModel).isRegression() ? evaluateRegression(regressionModel, pmmlContext) : evaluateNotRegression(regressionModel, pmmlContext);
     }
 
 
