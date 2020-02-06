@@ -525,8 +525,8 @@ public class ExpressionTyper {
             result = of(fieldAccessExpr(originalTypeCursor, ((NullSafeFieldAccessExpr) firstNode).getName()));
 
         } else if (firstNode instanceof MethodCallExpr) {
-            Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
-                    .flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
+            Optional<Expression> scopeExpr = ((MethodCallExpr) firstNode).getScope();
+            Optional<DeclarationSpec> scopeDecl = scopeExpr.flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -534,6 +534,10 @@ public class ExpressionTyper {
                 type = scopeDecl.get().getDeclarationClass();
                 scope = new NameExpr( scopeDecl.get().getBindingId() );
                 context.addUsedDeclarations( scopeDecl.get().getBindingId() );
+            } else if (scopeExpr.isPresent()) {
+                TypedExpressionCursor parsedScope = processFirstNode(drlxExpr, childNodes, scopeExpr.get(), isInLineCast, originalTypeCursor).get();
+                type = parsedScope.typeCursor;
+                scope = parsedScope.expressionCursor;
             } else {
                 type = originalTypeCursor;
                 scope = new NameExpr( THIS_PLACEHOLDER );
@@ -776,7 +780,7 @@ public class ExpressionTyper {
         } else if (List.class.isAssignableFrom( rawClass ) || Map.class.isAssignableFrom( rawClass )) {
             MethodCallExpr result = new MethodCallExpr( nameExpr.expressionCursor, "get" );
             result.addArgument( indexExpr.getExpression() );
-            java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[0] : Object.class;
+            java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[List.class.isAssignableFrom( rawClass ) ? 0 : 1] : Object.class;
             return of(new TypedExpressionCursor( result, resultType ));
         }
 
@@ -940,6 +944,14 @@ public class ExpressionTyper {
         public TypedExpressionCursor(Expression expressionCursor, java.lang.reflect.Type typeCursor) {
             this.expressionCursor = expressionCursor;
             this.typeCursor = typeCursor;
+        }
+
+        @Override
+        public String toString() {
+            return "TypedExpressionCursor{" +
+                    "expressionCursor=" + expressionCursor +
+                    ", typeCursor=" + typeCursor +
+                    '}';
         }
     }
 }

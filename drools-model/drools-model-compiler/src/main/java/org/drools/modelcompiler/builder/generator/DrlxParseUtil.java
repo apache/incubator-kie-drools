@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
@@ -61,7 +60,6 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.LiteralStringValueExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -83,6 +81,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
@@ -97,9 +96,7 @@ import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.drools.core.addon.TypeResolver;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -821,28 +818,6 @@ public class DrlxParseUtil {
         } else {
             return e;
         }
-    }
-
-    public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
-        NodeList<Expression> arguments = NodeList.nodeList();
-        for(Expression e : me.getArguments()) {
-            arguments.add(sanitizeExpr(e, me));
-        }
-        me.getScope().map((Expression e) -> sanitizeExpr(e, me)).ifPresent(me::setScope);
-
-        me.setArguments(arguments);
-        return me;
-    }
-
-    private static Expression sanitizeExpr(Expression e, Expression parent) {
-        Expression sanitized;
-        if (e instanceof DrlNameExpr) {
-            sanitized = new NameExpr(PrintUtil.printConstraint(e));
-            sanitized.setParentNode(parent);
-        } else {
-            sanitized = e;
-        }
-        return sanitized;
     }
 
     public static String addCurlyBracesToBlock(String blockString) {

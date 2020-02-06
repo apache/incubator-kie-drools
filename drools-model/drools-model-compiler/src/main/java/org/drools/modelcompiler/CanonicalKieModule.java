@@ -34,12 +34,14 @@ import java.util.stream.Stream;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -624,6 +626,12 @@ public class CanonicalKieModule implements InternalKieModule {
 
     public InternalKieModule getInternalKieModule() {
         return internalKieModule;
+    }
+
+    @Override
+    public CanonicalKieModule cloneForIncrementalCompilation( ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+        MemoryKieModule clonedInternal = (( MemoryKieModule ) internalKieModule).cloneForIncrementalCompilation( releaseId, kModuleModel, newFs );
+        return new CanonicalKieModule(clonedInternal);
     }
 
     // Delegate methods

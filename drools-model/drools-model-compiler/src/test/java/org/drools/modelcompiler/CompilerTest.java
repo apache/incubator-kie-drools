@@ -46,6 +46,7 @@ import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -2000,5 +2002,19 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( me );
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testConsequenceGetContext() throws Exception {
+        String str =
+                "import " + ProcessContext.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Object()\n" +
+                "then\n" +
+                "  ProcessContext clazz = drools.getContext(ProcessContext.class);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        assertNotNull( ksession);
     }
 }

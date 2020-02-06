@@ -337,7 +337,7 @@ public abstract class AccumulateVisitor {
                     .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call" + accumulateFunctionParameter))
                     .getExpression();
         } else if (accumulateFunctionParameter.isMethodCallExpr()) {
-            parameterConverted = DrlxParseUtil.sanitizeDrlNameExpr((MethodCallExpr) accumulateFunctionParameter);
+            parameterConverted = (MethodCallExpr) accumulateFunctionParameter;
         } else if (accumulateFunctionParameter.isFieldAccessExpr()) {
             parameterConverted = new ExpressionTyper(context, Object.class, null, false)
                     .toTypedExpression(accumulateFunctionParameter)

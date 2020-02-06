@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.compiler.BPMN2ProcessFactory;
-import org.drools.compiler.compiler.CMMNCaseFactory;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
@@ -111,6 +109,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
         buildProcesses();
         buildOthers();
+        kBuilder.postBuild();
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;
