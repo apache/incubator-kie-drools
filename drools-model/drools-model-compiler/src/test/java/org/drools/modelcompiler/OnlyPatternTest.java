@@ -6,7 +6,7 @@ import org.junit.runners.Parameterized;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 
 @RunWith(Parameterized.class)
-public class OnlyPatternTest extends BaseModelTest {
+public abstract class OnlyPatternTest extends BaseModelTest {
 
     public OnlyPatternTest(RUN_TYPE testRunType) {
         super(testRunType);
