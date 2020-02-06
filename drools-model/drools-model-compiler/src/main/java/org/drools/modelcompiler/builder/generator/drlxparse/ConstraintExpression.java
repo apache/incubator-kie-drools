@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.rule.builder.util.ConstraintUtils;
 import org.kie.api.definition.type.Position;
 
 public class ConstraintExpression {
@@ -50,6 +51,8 @@ public class ConstraintExpression {
 
         // I really hope we won't be comparing Strings with newline here.
         String expressionWithoutNewLines = expression.replace("\n", "");
+
+        expressionWithoutNewLines = ConstraintUtils.normalizeConstraintExpression(expressionWithoutNewLines, patternType);
 
         return new ConstraintExpression( expressionWithoutNewLines );
     }

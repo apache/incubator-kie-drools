@@ -16,9 +16,13 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.drools.compiler.rule.builder.util.ConstraintUtils;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
@@ -139,5 +143,4 @@ public class NodeSharingTest extends BaseModelTest {
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Person.class ) );
         assertEquals( 1, otn.getSinks().length );
     }
-
 }
