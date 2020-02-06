@@ -189,15 +189,7 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll() {
-        BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> projectClass;
-        try {
-            Class<?> canonicalModelKieProjectClass = Class.forName("org.drools.modelcompiler.ExecutableModelProject");
-            projectClass = getSupplier(canonicalModelKieProjectClass);
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-            log.warn("drools-model-compiler not found on the classpath, defaulting to plain DRL compilation");
-            projectClass = KieModuleKieProject::new;
-        }
-        return buildAll(projectClass, o -> true);
+        return buildAll( KieModuleKieProject::new, o -> true );
     }
 
     @Override
