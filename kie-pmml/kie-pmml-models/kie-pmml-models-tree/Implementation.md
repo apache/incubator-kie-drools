@@ -3,7 +3,7 @@ TreeModel implementation
 
 General plan for the drools implementation:
 
-1. the compiler (the current module) is invoked at kjar generation (or during runtime for hot-loading of PMML file)
+1. the compiler (the current module) is invoked at kjar generation (or during runtime for hot-loading of PMML file) (to define: should the assembler check for already existing classes before invoking the compiler? If so, how/if to manage "updated" classes ?)
 1. the compiler read the PMML file and transform it to "descr" object (see  [BaseDescr](https://github.com/kiegroup/drools/blob/master/drools-compiler/src/main/java/org/drools/compiler/lang/descr/BaseDescr.java), [DescrFactory](https://github.com/kiegroup/drools/blob/master/drools-compiler/src/main/java/org/drools/compiler/lang/api/DescrFactory.java), [DescrBuilderTest](https://github.com/kiegroup/drools/blob/master/drools-compiler/src/test/java/org/drools/compiler/lang/api/DescrBuilderTest.java) )
 1. regardless of how the compiler is invoked, the drools compiler must be invoked soon after it to have java-class generated based on the descr object
 1. the runtime assembler put the generated classes in the kie base

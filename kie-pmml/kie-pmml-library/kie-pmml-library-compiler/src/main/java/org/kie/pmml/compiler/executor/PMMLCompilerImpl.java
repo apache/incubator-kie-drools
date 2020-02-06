@@ -18,7 +18,6 @@ package org.kie.pmml.compiler.executor;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
@@ -28,6 +27,8 @@ import org.dmg.pmml.PMML;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.compiler.utils.KiePMMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
@@ -38,12 +39,12 @@ import static org.kie.pmml.library.commons.implementations.KiePMMLModelRetriever
  */
 public class PMMLCompilerImpl implements PMMLCompiler {
 
-    private static final Logger log = Logger.getLogger(PMMLCompilerImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
 
     @Override
     public List<KiePMMLModel> getResults(InputStream inputStream) throws JAXBException, SAXException, KiePMMLException {
-        log.info("getResults " + inputStream);
+        logger.info("getResults {}", inputStream);
         PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
         return getResults(commonPMMLModel);
     }
@@ -54,7 +55,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      */
     private List<KiePMMLModel> getResults(PMML pmml) throws KiePMMLException {
-        log.info("getResults " + pmml);
+        logger.info("getResults {}", pmml);
         DataDictionary dataDictionary = pmml.getDataDictionary();
         return pmml
                 .getModels()

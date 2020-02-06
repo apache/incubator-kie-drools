@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.regression.executor;
 
-import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
@@ -24,6 +23,8 @@ import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.regression.factories.KiePMMLRegressionModelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
@@ -32,7 +33,7 @@ import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODE
  */
 public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
 
-    private static final Logger log = Logger.getLogger(RegressionModelImplementationProvider.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -42,7 +43,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     @Override
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel " + dataDictionary + " " + model);
+        log.info("getKiePMMLModel {} {}", dataDictionary, model);
         return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
     }
 }

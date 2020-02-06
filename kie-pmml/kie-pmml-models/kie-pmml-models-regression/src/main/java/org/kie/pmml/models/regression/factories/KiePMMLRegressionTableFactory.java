@@ -16,26 +16,27 @@
 package org.kie.pmml.models.regression.factories;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.models.regression.factories.KiePMMLNumericPredictorFactory.getKiePMMLNumericPredictors;
 
 public class KiePMMLRegressionTableFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLRegressionTableFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableFactory.class.getName());
 
     public static List<KiePMMLRegressionTable> getRegressionTables(List<RegressionTable> regressionTables) {
-        log.info("getRegressionTables " + regressionTables);
+        logger.info("getRegressionTables {}", regressionTables);
         return regressionTables.stream().map(KiePMMLRegressionTableFactory :: getRegressionTable).collect(Collectors.toList());
     }
 
     public static KiePMMLRegressionTable getRegressionTable(RegressionTable regressionTable) {
-        log.info("getRegressionTable " + regressionTable);
+        logger.info("getRegressionTable {}", regressionTable);
         return KiePMMLRegressionTable.builder()
                 .withIntercept(regressionTable.getIntercept())
                 .withCategoricalPredictors(KiePMMLCategoricalPredictorFactory.getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors()))

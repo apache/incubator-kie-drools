@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.models.tree.executor;
 
-import java.util.logging.Logger;
-
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -24,6 +22,8 @@ import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.tree.factories.KiePMMLTreeModelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
 
@@ -32,17 +32,17 @@ import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
  */
 public class TreeModelImplementationProvider implements ModelImplementationProvider<TreeModel, KiePMMLTreeModel> {
 
-    private static final Logger log = Logger.getLogger(TreeModelImplementationProvider.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
-        log.info("getPMMLModelType");
+        logger.info("getPMMLModelType");
         return PMML_MODEL_TYPE;
     }
 
     @Override
     public KiePMMLTreeModel getKiePMMLModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel " + dataDictionary + " " + model);
+        logger.info("getKiePMMLModel {} {}", dataDictionary, model);
         return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
     }
 }

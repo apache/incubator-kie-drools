@@ -16,7 +16,6 @@
 package org.kie.pmml.models.mining.factories;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
@@ -24,6 +23,8 @@ import org.dmg.pmml.mining.Segmentation;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.mining.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.api.model.mining.segmentation.KiePMMLSegmentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
@@ -31,17 +32,17 @@ import static org.kie.pmml.models.mining.factories.KiePMMLSegmentFactory.getSegm
 
 public class KiePMMLSegmentationFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLSegmentationFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentationFactory.class.getName());
 
 
 
     public static List<KiePMMLSegmentation> getSegmentations(List<Segmentation> segmentations, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getSegmentations " + segmentations);
+        logger.info("getSegmentations {}", segmentations);
         return segmentations.stream().map(throwingFunctionWrapper(segmentation -> getSegmentation(segmentation, dataDictionary))).collect(Collectors.toList());
     }
 
     public static KiePMMLSegmentation getSegmentation(Segmentation segmentation, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getSegmentation " + segmentation);
+        logger.info("getSegmentation {}", segmentation);
         return KiePMMLSegmentation.builder(getKiePMMLExtensions(segmentation.getExtensions()),
                                                                           MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
                 .withSegments(getSegments(segmentation.getSegments(), dataDictionary))

@@ -16,7 +16,6 @@
 package org.kie.pmml.models.tree.factories;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
@@ -26,23 +25,25 @@ import org.dmg.pmml.tree.ComplexNode;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.tree.KiePMMLNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.models.core.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLNodeFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLNodeFactory.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(KiePMMLNodeFactory.class.getName());
 
 
 
     public static List<KiePMMLNode> getNodes(List<Node> nodes, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getNodes " + nodes);
+        log.info("getNodes {}", nodes);
         return nodes.stream().map(throwingFunctionWrapper(node -> getNode(node, dataDictionary))).collect(Collectors.toList());
     }
 
     public static KiePMMLNode getNode(Node node, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getNode " + node);
+        log.info("getNode {}", node);
         KiePMMLNode.Builder builder = KiePMMLNode.builder()
                 .withScore(node.getScore().toString())
                 .withKiePMMLPredicate(getPredicate(node.getPredicate(), dataDictionary));

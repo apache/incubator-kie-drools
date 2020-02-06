@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
@@ -41,23 +40,25 @@ import org.kie.pmml.api.model.tree.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.api.model.tree.predicates.KiePMMLTruePredicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class KiePMMLPredicateFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLPredicateFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredicateFactory.class.getName());
 
     private KiePMMLPredicateFactory() {
     }
 
     public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getPredicates " + predicates);
+        logger.info("getPredicates {}", predicates);
         return predicates.stream().map(throwingFunctionWrapper(predicate -> getPredicate(predicate, dataDictionary))).collect(Collectors.toList());
     }
 
     public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) throws KiePMMLException {
-        log.info("getPredicate " + predicate);
+        logger.info("getPredicate {}", predicate);
         if (predicate instanceof SimplePredicate) {
             final DataType dataType = dataDictionary.getDataFields().stream()
                     .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))

@@ -16,27 +16,27 @@
 package org.kie.pmml.models.tree.factories;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.tree.factories.KiePMMLNodeFactory.getNode;
 
 public class KiePMMLTreeModelFactory {
 
-    private static final Logger log = Logger.getLogger(KiePMMLTreeModelFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelFactory.class.getName());
 
     private KiePMMLTreeModelFactory() {
     }
 
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel " + model);
+        logger.info("getKiePMMLModel {}",  model);
         String name = model.getModelName();
         // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
         Optional<String> targetFieldName = getTargetField(model);

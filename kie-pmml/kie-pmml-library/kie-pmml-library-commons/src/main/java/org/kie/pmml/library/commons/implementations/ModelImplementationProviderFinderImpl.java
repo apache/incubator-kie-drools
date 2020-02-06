@@ -19,29 +19,30 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
-import java.util.logging.Logger;
 
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default <code>ModelImplementationProviderFinder</code> using Java SPI
  */
 public class ModelImplementationProviderFinderImpl implements ModelImplementationProviderFinder {
 
-    private static final Logger log = Logger.getLogger(ModelImplementationProviderFinderImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ModelImplementationProviderFinderImpl.class.getName());
 
     private ServiceLoader<ModelImplementationProvider> loader = ServiceLoader.load(ModelImplementationProvider.class);
 
     @Override
     @SuppressWarnings("rawtypes")
     public List<ModelImplementationProvider> getImplementations(boolean refresh) {
-        log.info("getImplementations " + refresh);
+        logger.info("getImplementations {}", refresh);
         List<ModelImplementationProvider> toReturn = new ArrayList<>();
         Iterator<ModelImplementationProvider> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        log.info("toReturn " + toReturn + " " + toReturn.size());
-        toReturn.forEach(provider -> log.info(provider.getPMMLModelType() + " : " + provider.toString()));
+        logger.info("toReturn {} {}", toReturn , toReturn.size());
+        toReturn.forEach(provider -> logger.info("{} : {}", provider.getPMMLModelType(), provider));
         return toReturn;
     }
 

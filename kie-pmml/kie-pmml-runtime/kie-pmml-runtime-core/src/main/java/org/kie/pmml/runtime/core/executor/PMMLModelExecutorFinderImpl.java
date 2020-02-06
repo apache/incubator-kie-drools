@@ -19,23 +19,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
 
-    private static final Logger log = Logger.getLogger(PMMLModelExecutorFinderImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(PMMLModelExecutorFinderImpl.class.getName());
 
     private ServiceLoader<PMMLModelExecutor> loader = ServiceLoader.load(PMMLModelExecutor.class);
 
     @Override
     @SuppressWarnings("rawtypes")
     public List<PMMLModelExecutor> getImplementations(boolean refresh) {
-        log.info("getImplementations " + refresh);
+        log.info("getImplementations {}", refresh);
         List<PMMLModelExecutor> toReturn = new ArrayList<>();
         Iterator<PMMLModelExecutor> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        log.info("toReturn " + toReturn + " " + toReturn.size());
-        toReturn.forEach(provider -> log.info(provider.getPMMLModelType() + " : " + provider.toString()));
+        log.info("toReturn {} {}", toReturn, toReturn.size());
+        toReturn.forEach(provider -> log.info("{} : {}", provider.getPMMLModelType(),  provider));
         return toReturn;
     }
 
