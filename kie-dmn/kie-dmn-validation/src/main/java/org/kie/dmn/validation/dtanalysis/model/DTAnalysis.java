@@ -157,7 +157,7 @@ public class DTAnalysis {
             DMNMessage m = new DMNDTAnalysisMessage(this,
                                                     Severity.WARN,
                                                     MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED,
-                                                                          sourceDT.getOutputLabel(),
+                                                                          nameOrIDOfTable(),
                                                                           error.getMessage()),
                                                     Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED.getType());
             results.add(m);
@@ -178,7 +178,7 @@ public class DTAnalysis {
             DMNMessage m = new DMNDTAnalysisMessage(this,
                                                     Severity.INFO,
                                                     MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY,
-                                                                          sourceDT.getOutputLabel()),
+                                                                          nameOrIDOfTable()),
                                                     Msg.DTANALYSIS_EMPTY.getType());
             results.add(m);
             return results;
