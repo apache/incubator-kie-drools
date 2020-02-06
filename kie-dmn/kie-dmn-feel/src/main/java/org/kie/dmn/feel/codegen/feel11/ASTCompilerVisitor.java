@@ -39,6 +39,7 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -51,6 +52,7 @@ import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.CTypeNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
@@ -288,10 +290,13 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     }
 
     @Override
-    public DirectCompilerResult visit(TypeNode n) {
-        return DirectCompilerResult.of(
-                Expressions.determineTypeFromName(n.getText()),
-                BuiltInType.UNKNOWN);
+    public DirectCompilerResult visit(CTypeNode n) {
+        if (!(n.getType() instanceof BuiltInType)) {
+            throw new UnsupportedOperationException();
+        }
+        BuiltInType feelCType = (BuiltInType) n.getType();
+        return DirectCompilerResult.of(new FieldAccessExpr(Constants.BuiltInTypeT, feelCType.name()),
+                                       BuiltInType.UNKNOWN);
     }
 
     @Override

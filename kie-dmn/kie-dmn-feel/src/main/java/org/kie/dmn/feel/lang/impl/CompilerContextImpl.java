@@ -25,6 +25,8 @@ import java.util.Set;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
+import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
 public class CompilerContextImpl implements CompilerContext {
@@ -33,6 +35,7 @@ public class CompilerContextImpl implements CompilerContext {
     private Map<String, Type> inputVariableTypes = new HashMap<>();
     private Set<FEELFunction> customFunctions = new LinkedHashSet<>();
     private boolean doCompile;
+    private FEELTypeRegistry typeRegistry = DefaultBuiltinFEELTypeRegistry.INSTANCE;
 
     /**
      * PLEASE NOTICE: it is recommended to instance the CompilerContext via the FEEL instance, so to have all profile configuration applied correctly.
@@ -87,5 +90,15 @@ public class CompilerContextImpl implements CompilerContext {
     @Override
     public void setDoCompile( boolean doCompile ) {
         this.doCompile = doCompile;
+    }
+
+    @Override
+    public void setFEELTypeRegistry(FEELTypeRegistry typeRegistry) {
+        this.typeRegistry = typeRegistry;
+    }
+
+    @Override
+    public FEELTypeRegistry getFEELFeelTypeRegistry() {
+        return this.typeRegistry;
     }
 }

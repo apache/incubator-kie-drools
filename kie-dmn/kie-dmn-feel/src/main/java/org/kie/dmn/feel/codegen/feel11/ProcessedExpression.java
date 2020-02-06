@@ -40,7 +40,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         super(expression, ctx, profiles);
         this.defaultBackend = defaultBackend;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
-        ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
+        ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
         List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
         if (!heuristicChecks.isEmpty()) {
             for (FEELEventListener listener : ctx.getListeners()) {

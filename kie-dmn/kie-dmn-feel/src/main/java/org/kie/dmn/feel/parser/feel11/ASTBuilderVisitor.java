@@ -57,13 +57,17 @@ import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
+import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.TypeContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
     
     private ScopeHelper scopeHelper;
+    private FEELTypeRegistry typeRegistry;
 
     private static class ScopeHelper {
         Deque<Map<String, Type>> stack;
@@ -98,9 +102,10 @@ public class ASTBuilderVisitor
         }
     }
 
-    public ASTBuilderVisitor(Map<String, Type> inputTypes) {
+    public ASTBuilderVisitor(Map<String, Type> inputTypes, FEELTypeRegistry typeRegistry) {
         this.scopeHelper = new ScopeHelper();
         this.scopeHelper.addTypes(inputTypes);
+        this.typeRegistry = typeRegistry != null ? typeRegistry : DefaultBuiltinFEELTypeRegistry.INSTANCE;
     }
 
     @Override
@@ -589,7 +594,15 @@ public class ASTBuilderVisitor
 
     @Override
     public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
-        return ASTBuilderFactory.newTypeNode( ctx );
+        List<String> qns = new ArrayList<>();
+        if (ctx.qualifiedName() != null) {
+            ctx.qualifiedName().nameRef().forEach(nr -> qns.add(EvalHelper.normalizeVariableName(ParserHelper.getOriginalText(nr))));
+        } else if (ctx.FUNCTION() != null) {
+            qns.add("function");
+        } else {
+            throw new IllegalStateException("grammar rule changed.");
+        }
+        return ASTBuilderFactory.newCTypeNode(ctx, typeRegistry.resolveFEELType(qns));
     }
 
     @Override

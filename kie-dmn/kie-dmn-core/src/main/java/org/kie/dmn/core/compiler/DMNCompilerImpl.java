@@ -71,7 +71,6 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenListType;
@@ -573,6 +572,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                         type.setCollection( itemDef.isIsCollection() );
                     }
                 }
+                if (type.isCollection()) {
+                    type.setFeelType(new GenListType(type.getFeelType()));
+                }
                 if( topLevel ) {
                     DMNType registered = dmnModel.getTypeRegistry().registerType( type );
                     if( registered != type ) {
@@ -585,9 +587,6 @@ public class DMNCompilerImpl implements DMNCompiler {
                                                Msg.DUPLICATED_ITEM_DEFINITION,
                                                itemDef.getName() );
                     }
-                }
-                if (type.isCollection()) {
-                    type.setFeelType(new GenListType(type.getFeelType()));
                 }
             }
         } else {
@@ -608,17 +607,11 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            itemDef.getName() );
                 }
             }
-            Map<String, Type> fieldsAsFEEL = new HashMap<>();
             for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
                 DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
                 DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
                 fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
                 compType.addField(fieldDef.getName(), fieldType);
-                fieldsAsFEEL.put(fieldDef.getName(), ((BaseDMNTypeImpl) fieldType).getFeelType());
-            }
-            type.setFeelType(new MapBackedType(type.getName(), fieldsAsFEEL));
-            if (type.isCollection()) {
-                type.setFeelType(new GenListType(type.getFeelType()));
             }
         }
         return type;

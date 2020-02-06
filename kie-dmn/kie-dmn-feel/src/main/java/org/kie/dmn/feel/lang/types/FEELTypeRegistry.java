@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler;
+package org.kie.dmn.feel.lang.types;
 
-import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
+import java.util.List;
 
-public interface DMNTypeRegistry extends FEELTypeRegistry {
+import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.Type;
 
-    DMNType unknown();
+/**
+ * Used for:
+ * instance of itemDef
+ * itemDef resolutions.
+ */
+public interface FEELTypeRegistry {
 
-    DMNType registerType(DMNType type);
+    Scope getItemDefScope(Scope parent);
 
-    DMNType resolveType(String namespace, String name);
+    Type resolveFEELType(List<String> qns);
 
 }
