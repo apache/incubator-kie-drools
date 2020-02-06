@@ -2,8 +2,6 @@ package org.kie.kogito.maven.plugin;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -16,11 +14,9 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -41,14 +37,13 @@ import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.DeclaredTypeCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
-import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
-@Mojo(name = "generateModel",
+@Mojo(name = "generateDeclaredTypes",
         requiresDependencyResolution = ResolutionScope.NONE,
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateModelMojo extends AbstractKieMojo {
+public class GenerateDeclaredTypes extends AbstractKieMojo {
 
 
     public static final List<String> DROOLS_EXTENSIONS = Arrays.asList(".drl", ".xls", ".xlsx", ".csv");
@@ -104,7 +99,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     @Parameter(property = "kogito.di.enabled", defaultValue = "true")
     private boolean dependencyInjection;
-
+    
     @Parameter(property = "kogito.persistence.enabled", defaultValue = "false")
     private boolean persistence;
 
@@ -112,7 +107,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
     private File kieSourcesDirectory;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         try {
             generateModel();
         } catch (IOException e) {
@@ -123,15 +118,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
     private void generateModel() throws MojoExecutionException, IOException {
         // if unspecified, then default to checking for file type existence
         // if not null, the property has been overridden, and we should use the specified value
-        boolean genProcesses = generateProcesses == null ? processesExist() : Boolean.parseBoolean(generateProcesses);
         boolean genRules = generateRules == null ? rulesExist() : Boolean.parseBoolean(generateRules);
-        boolean genDecisions = generateDecisions == null ? decisionsExist() : Boolean.parseBoolean(generateDecisions);
 
         project.addCompileSourceRoot(generatedSources.getPath());
 
         setSystemProperties(properties);
 
-        ApplicationGenerator appGen = createApplicationGenerator(genProcesses, genRules, genDecisions);
+        ApplicationGenerator appGen = createApplicationGenerator(genRules);
 
         Collection<GeneratedFile> generatedFiles;
         if (generatePartial) {
@@ -149,19 +142,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
-    private boolean decisionsExist() throws IOException {
-        try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
-            return paths.map(p -> p.toString().toLowerCase()).anyMatch(p -> p.endsWith(".dmn"));
-        }
-    }
-
-    private boolean processesExist() throws IOException {
-        try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
-            return paths.map(p -> p.toString().toLowerCase())
-                    .anyMatch(p -> p.endsWith(".bpmn") || p.endsWith(".bpmn2"));
-        }
-    }
-
     private boolean rulesExist() throws IOException {
         try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
             return paths.map(p -> p.toString().toLowerCase())
@@ -174,70 +154,34 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private ApplicationGenerator createApplicationGenerator(
-            boolean generateProcesses,
-            boolean generateRuleUnits,
-            boolean generateDecisions) throws IOException, MojoExecutionException {
+            boolean generateRuleUnits) throws MojoExecutionException {
         String appPackageName = project.getGroupId();
-
+        
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
-        boolean usePersistence = persistence || hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean useMonitoring = hasClassOnClasspath("org.kie.addons.monitoring.rest.MetricsResource");
-
-
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
                                                                            null);
-
+        
         GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
         context.withBuildContext(discoverKogitoRuntimeContext(project));
 
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
                         .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
-                        .withPersistence(usePersistence)
-                        .withMonitoring(useMonitoring)
                         .withClassLoader(projectClassLoader)
                         .withGeneratorContext(context);
 
-        if (generateProcesses) {
-            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))
-                    .withPersistence(usePersistence)
-                    .withClassLoader(projectClassLoader);
-        }
-
         if (generateRuleUnits) {
-            appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
-                    .withKModule(getKModuleModel())
+            appGen.withGenerator(DeclaredTypeCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withClassLoader(projectClassLoader);
         }
-
-        if (generateDecisions) {
-            appGen.withGenerator(DecisionCodegen.ofPath(kieSourcesDirectory.toPath()));
-        }
-
+        
         return appGen;
-    }
-
-    private KieModuleModel getKModuleModel() throws IOException {
-        if (!project.getResources().isEmpty()) {
-            Path moduleXmlPath = Paths.get(project.getResources().get(0).getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
-            try {
-                return KieModuleModelImpl.fromXML(
-                        new ByteArrayInputStream(
-                                Files.readAllBytes(moduleXmlPath)));
-            } catch (NoSuchFileException e) {
-                getLog().debug("kmodule.xml is missing. Returned the default value.", e);
-                return new KieModuleModelImpl();
-            }
-        } else {
-            getLog().debug("kmodule.xml is missing. Returned the default value.");
-            return new KieModuleModelImpl();
-        }
     }
 
     private void writeGeneratedFile(GeneratedFile f) throws IOException {
@@ -267,26 +211,5 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
-
-    protected boolean hasClassOnClasspath(String className) {
-        try {
-            Set<Artifact> elements = project.getDependencyArtifacts();
-            URL[] urls = new URL[elements.size()];
-
-            int i = 0;
-            Iterator<Artifact> it = elements.iterator();
-            while (it.hasNext()) {
-                Artifact artifact = it.next();
-
-                urls[i] = artifact.getFile().toURI().toURL();
-                i++;
-            }
-            try (URLClassLoader cl = new URLClassLoader(urls)) {
-                cl.loadClass(className);
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    
 }

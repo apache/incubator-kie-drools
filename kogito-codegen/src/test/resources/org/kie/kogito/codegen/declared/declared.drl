@@ -1,0 +1,13 @@
+package org.kie.kogito.codegen.declared;
+
+global InvalidType ignored;
+
+declare StringContainer
+    value: String
+end
+
+rule thisShouldBeIgnore when
+    FakeType( doesnotexists )
+then
+    ThisIs invalid = nobodyShouldCare();
+end

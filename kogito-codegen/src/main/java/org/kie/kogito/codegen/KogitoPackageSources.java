@@ -78,6 +78,24 @@ public class KogitoPackageSources extends PackageSources {
         return sources;
     }
 
+    public static KogitoPackageSources dumpPojos( PackageModel pkgModel) {
+        KogitoPackageSources sources = new KogitoPackageSources();
+
+        List<String> pojoClasses = new ArrayList<>();
+        PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
+        for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
+            sources.pojoSources.add(new GeneratedFile(declaredType.getName(), logSource( declaredType.getSource() )));
+            pojoClasses.add(declaredType.getClassName());
+        }
+
+        if (!pojoClasses.isEmpty()) {
+            sources.reflectConfigSource = new GeneratedFile("META-INF/native-image/" + pkgModel.getPathName() + "/reflect-config.json", reflectConfigSource(pojoClasses));
+        }
+
+        return sources;
+    }
+
+
     public Map<String, String> getModelsByUnit() {
         return modelsByUnit;
     }

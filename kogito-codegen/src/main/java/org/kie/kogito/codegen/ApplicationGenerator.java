@@ -165,6 +165,9 @@ public class ApplicationGenerator {
 
         for (Generator generator : generators) {
             ApplicationSection section = generator.section();
+            if (section == null) {
+                continue;
+            }
             cls.addMember(section.fieldDeclaration());
             cls.addMember(section.factoryMethod());
             cls.addMember(section.classDeclaration());
@@ -208,7 +211,8 @@ public class ApplicationGenerator {
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.add(generateApplicationConfigDescriptor());
         if (useInjection()) {
-            generators.forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
+            generators.stream().filter(gen -> gen.section() != null)
+                    .forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
         }
         this.labelers.forEach(l -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, l.generateLabels()));
         
