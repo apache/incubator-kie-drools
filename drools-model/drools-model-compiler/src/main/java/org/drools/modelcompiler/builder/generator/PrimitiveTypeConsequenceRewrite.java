@@ -2,16 +2,21 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.Optional;
 
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrimitiveTypeConsequenceRewrite {
 
     private final RuleContext context;
+
+    private static final Logger logger = LoggerFactory.getLogger(PrimitiveTypeConsequenceRewrite.class);
 
     public PrimitiveTypeConsequenceRewrite(RuleContext context) {
         this.context = context;
@@ -19,7 +24,13 @@ public class PrimitiveTypeConsequenceRewrite {
 
     public String rewrite(String consequence) {
 
-        BlockStmt blockStmt = StaticJavaParser.parseBlock(consequence);
+        BlockStmt blockStmt;
+        try {
+            blockStmt = StaticJavaParser.parseBlock(consequence);
+        } catch (ParseProblemException e) {
+            logger.warn("Cannot post process consequence: " + consequence);
+            return consequence;
+        }
         for (Statement t : blockStmt.getStatements()) {
             t.findAll(CastExpr.class, ce -> ce.getExpression().isNameExpr()).forEach(this::convertStatement);
         }
