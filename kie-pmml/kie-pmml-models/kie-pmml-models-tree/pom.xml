@@ -3,67 +3,22 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kie-pmml-models</artifactId>
     <groupId>org.drools</groupId>
+    <artifactId>kie-pmml-models</artifactId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
 
   <artifactId>kie-pmml-models-tree</artifactId>
 
   <name>KIE :: PMML :: Models :: Tree</name>
-  <description>PMML Trees implementation</description>
+  <description>PMML Tree implementation</description>
 
-  <dependencies>
-    <!-- PMML -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-core</artifactId>
-    </dependency>
-    <!-- DROOLS/KIE -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <!-- EXTERNAL -->
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <!-- TEST -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <modules>
+    <module>kie-pmml-models-tree-library</module>
+    <module>kie-pmml-models-tree-runtime</module>
+  </modules>
 
 
 </project>

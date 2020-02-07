@@ -16,10 +16,6 @@
     <module>kie-pmml-runtime-api</module>
     <module>kie-pmml-runtime-assembler</module>
     <module>kie-pmml-runtime-core</module>
-    <module>kie-pmml-runtime-archetype</module>
-    <module>kie-pmml-runtime-regression</module>
-    <module>kie-pmml-runtime-tree</module>
-    <module>kie-pmml-runtime-mining</module>
   </modules>
 
 </project>

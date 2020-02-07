@@ -4,15 +4,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.drools</groupId>
-    <artifactId>kie-pmml-runtime</artifactId>
+    <artifactId>kie-pmml-models-mining</artifactId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-runtime-mining</artifactId>
+  <artifactId>kie-pmml-models-mining-library</artifactId>
 
-  <name>KIE :: PMML :: Runtime :: Mining</name>
-  <description>PMML Mining implementation</description>
+  <name>KIE :: PMML :: Models :: Mining :: Library</name>
+  <description>PMML Library Mining implementation</description>
 
   <properties>
     <!-- TODO REMOVE -->
@@ -23,10 +23,20 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-core</artifactId>
+      <artifactId>kie-pmml-library-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-core</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-library-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
@@ -39,11 +49,23 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-core</artifactId>
+        <artifactId>kie-pmml-library-commons</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-library-api</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <version>${version.org.kie}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
