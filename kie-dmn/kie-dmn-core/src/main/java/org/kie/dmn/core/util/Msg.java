@@ -130,10 +130,10 @@ public final class Msg {
     public static final Message4 DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN                = new Message4( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Rule %s defines %s which is outside the domain min/max %s of column %s");
     public static final Message1 DTANALYSIS_GAP                                      = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Gap detected: %s");
     public static final Message1 DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING          = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Columns: %s relate to FEEL string values which can be enumerated for the inputs; Gap analysis skipped.");
-    public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap detected: %s");
-    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE                 = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE, "Overlap detected: %s. Unique hit policy decision tables can only have one matching rule.");
-    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_ANY                    = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY   , "Overlap detected: %s. Any hit policy decision tables allows multiple rules to match, but they [must] all have the same output");
-    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_FIRST, "Decision Table '%s' uses First hit policy. First hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
+    public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap observed: %s");
+    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE                 = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE, "Overlap detected: %s. UNIQUE hit policy decision tables can only have one matching rule.");
+    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_ANY                    = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY   , "Overlap detected: %s. ANY hit policy decision tables allows multiple rules to match, but they [must] all have the same output");
+    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_FIRST, "Decision Table '%s' uses FIRST hit policy. FIRST hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE           = new Message2( DMNMessageType.DECISION_TABLE_MASKED_RULE, "Rule %s is masked by rule: %s");
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE       = new Message2( DMNMessageType.DECISION_TABLE_MISLEADING_RULE, "Rule %s is a misleading rule. It could be misleading over other rules, such as rule: %s");
     public static final Message4 DTANALYSIS_SUBSUMPTION_RULE                         = new Message4( DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE, "Subsumption: Rule %s contains rule: %s; rules can be contracted, by keeping rule %s and erasing rule %s");
@@ -142,7 +142,11 @@ public final class Msg {
     public static final Message0 DTANALYSIS_1STNFVIOLATION_RULE_ORDER                = new Message0( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: hit policy Rule Order is a violation of First Normal Form; consider changing for example to Output Order or Collect");
     public static final Message1 DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES           = new Message1( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: Rules %s are duplicates");
     public static final Message2 DTANALYSIS_2NDNFVIOLATION                           = new Message2( DMNMessageType.DECISION_TABLE_2NDNFVIOLATION, "Second Normal Form Violation: Input %s is irrelevant for rules %s. Consider combining these rules over the irrelevant input");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE             = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "The HitPolicy for decision table '%s' should be UNIQUE");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_ANY                = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have the same output value, so the HitPolicy for decision table '%s' should be ANY");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY           = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have different output value, so the HitPolicy for decision table '%s' should be PRIORITY");
 
+    
     public static interface Message {
         String getMask();
 
