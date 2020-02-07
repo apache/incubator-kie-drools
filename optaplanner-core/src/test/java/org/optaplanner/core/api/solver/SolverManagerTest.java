@@ -20,6 +20,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -28,6 +29,7 @@ import java.util.function.Function;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -37,8 +39,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
 
 public class SolverManagerTest {
 
@@ -240,4 +245,87 @@ public class SolverManagerTest {
         assertTrue(eventCount.get() < 4);
     }
 
+    /**
+     * In order to effectively test the terminateEarly() and close() methods there had to be a way how to make the job
+     * status change in a deterministic way while solving jobs on separate threads. The test waits for a status change in
+     * a loop and time-outs when it doesn't reach it's expected status.
+     */
+    @Ignore("https://issues.redhat.com/browse/PLANNER-1836")
+    @Test
+    public void terminateEarlyAndClose() throws InterruptedException {
+        final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
+
+        // Having only one solver running at the same time is important for predicting solver status behaviour.
+        SolverManager<TestdataSolution, Long> solverManager =
+                SolverManager.create(solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
+
+        Long firstProblemId = 1L;
+        Long secondProblemId = 2L;
+
+        // Submit the first problem. Status changes from SOLVING_SCHEDULED to SOLVING_ACTIVE.
+        solverManager.solve(firstProblemId, PlannerTestUtils.generateTestdataSolution("s1"));
+        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.SOLVING_ACTIVE);
+
+        // Second problem not yet submitted to solverManager, tries to terminate it leading to a debug output:
+        // DEBUG Ignoring terminateEarly() call because problemId (1) is not solving.
+        // Asserting a logger message was determined as being too complex for using only on this
+        // one occurrence and would result in cluttering up the code. The output was checked manually.
+        solverManager.terminateEarly(secondProblemId);
+        assertSame(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(secondProblemId));
+        // Did not affect the actively solving job.
+        assertSame(SolverStatus.SOLVING_ACTIVE, solverManager.getSolverStatus(firstProblemId));
+
+        // Schedule second job while waiting for the first job to finish. It stays in the SOLVING_SCHEDULED status.
+        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
+        assertSame(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(secondProblemId));
+
+        // Terminate second job which is in scheduled status. The status changes from SOLVING_SCHEDULED to NOT_SOLVING
+        solverManager.terminateEarly(secondProblemId);
+        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
+
+        // Reschedule second job. It reintroduces it to the solverManager by changing status from NOT_SOLVING to
+        // SOLVING_SCHEDULED in which it stays.
+        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
+        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.SOLVING_SCHEDULED);
+
+        // Terminate the first job which triggers it to change it's status from SOLVING_ACTIVE to NOT_SOLVING.
+        // Automatically starts working on the second job. Its status changes from STATUS_SCHEDULED to STATUS_ACTIVE.
+        solverManager.terminateEarly(firstProblemId);
+        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.NOT_SOLVING);
+        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.SOLVING_ACTIVE);
+
+        // Terminate the second job, its status changes from SOLVING_ACTIVE to NOT_SOLVING. Both jobs stopped solving.
+        solverManager.terminateEarly(secondProblemId);
+        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
+        assertSame(SolverStatus.NOT_SOLVING, solverManager.getSolverStatus(firstProblemId));
+
+        // Reintroduce the problems to solverManager and attempt to close them all at once using solverManager.close().
+        // The first job's status changes from SOLVING_ACTIVE to NOT_SOLVING.
+        // The second job's status changes from SOLVING_SCHEDULED to NOT_SOLVING.
+        solverManager.solve(firstProblemId, PlannerTestUtils.generateTestdataSolution("s1"));
+        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.SOLVING_ACTIVE);
+
+        solverManager.solve(secondProblemId, PlannerTestUtils.generateTestdataSolution("s2"));
+        assertSame(SolverStatus.SOLVING_SCHEDULED, solverManager.getSolverStatus(secondProblemId));
+
+        solverManager.close();
+        waitForJobStatusChangeOrTimeout(solverManager, firstProblemId, SolverStatus.NOT_SOLVING);
+        waitForJobStatusChangeOrTimeout(solverManager, secondProblemId, SolverStatus.NOT_SOLVING);
+    }
+
+    private void waitForJobStatusChangeOrTimeout(SolverManager<TestdataSolution, Long> solverManager, Long problemId, SolverStatus expectedStatusChange) throws InterruptedException {
+        long t = System.currentTimeMillis();
+        long end = t + 5000;
+        // Check every 5 milliseconds for solverJob status change for 5 seconds at maximum, otherwise time-out and fail.
+        while (t < end) {
+            if (solverManager.getSolverStatus(problemId) == expectedStatusChange) {
+                return;
+            }
+            TimeUnit.MILLISECONDS.sleep(5);
+            t = System.currentTimeMillis();
+        }
+        fail("Job with id " + problemId + " took too long and timed-out not changing its status from "
+                     + solverManager.getSolverStatus(problemId) + " to " + expectedStatusChange + ".");
+    }
 }
