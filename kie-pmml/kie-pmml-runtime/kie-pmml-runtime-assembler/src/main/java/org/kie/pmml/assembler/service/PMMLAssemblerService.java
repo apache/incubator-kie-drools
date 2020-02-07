@@ -57,7 +57,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
+        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         addModels(kbuilderImpl, getKiePMMLModelsFromResource(kbuilderImpl, resource));
     }

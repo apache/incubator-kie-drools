@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
-import static org.kie.pmml.models.tree.factories.KiePMMLNodeFactory.getNode;
+import static org.kie.pmml.models.tree.factories.KiePMMLDescrFactory.getBaseDescr;
 
 public class KiePMMLTreeModelFactory {
 
@@ -40,9 +40,10 @@ public class KiePMMLTreeModelFactory {
         String name = model.getModelName();
         // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
         Optional<String> targetFieldName = getTargetField(model);
+        String packageName = "to.be.fixed"; // TODO {gcardosi} - how to retrieve/generate package name?
         return KiePMMLTreeModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
-                .withNode(getNode(model.getNode(), dataDictionary))
+                .withContent(getBaseDescr(dataDictionary, model, packageName))
                 .withTargetField(targetFieldName.orElse(null))
                 .build();
     }

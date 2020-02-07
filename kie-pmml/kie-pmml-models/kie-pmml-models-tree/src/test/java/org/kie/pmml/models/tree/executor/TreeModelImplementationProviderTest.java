@@ -22,6 +22,10 @@ import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
+import org.drools.compiler.lang.DrlDumper;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
@@ -36,7 +40,6 @@ import static org.junit.Assert.assertTrue;
 public class TreeModelImplementationProviderTest {
 
     private final static TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
-
 
     @Test
     public void getPMMLModelType() {
@@ -53,9 +56,41 @@ public class TreeModelImplementationProviderTest {
         commonVerifyKiePMMLTreeModel(originalModel, PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), originalModel));
     }
 
+    @Test
+    public void puppa() {
+        PackageDescrBuilder packBuilder =
+                DescrFactory.newPackage()
+                        .name("org.drools.compiler")
+                        .newRule().name("r1")
+                        .lhs()
+                        .and()
+                        .or()
+                        .pattern("StockTick").constraint("price > 100").constraint("price < 200").end()
+                        .pattern("StockTick").constraint("price < 10").end()
+                        .end()
+                        .pattern("StockTick").constraint("company == \"RHT\"").end()
+                        .end()
+                        .end()
+                        .rhs("    System.out.println(\"foo\");\n")
+                        .end()
+                        .newRule().name("r2")
+                        .lhs()
+                        .pattern(String.class.getName()).id("ciiccio", false)
+                        .end()
+                        .end().rhs("puppadone").end();
+        PackageDescr pkg = packBuilder.getDescr();
+        String drl = new DrlDumper().dump(packBuilder.getDescr());
+        System.out.println(drl);
+    }
+
     private void commonVerifyKiePMMLTreeModel(TreeModel originalModel, KiePMMLTreeModel kiePMMLTreeModel) {
         assertEquals(originalModel.getModelName(), kiePMMLTreeModel.getName());
         // TODO {gcardosi} complete test
-
+        final Object content = kiePMMLTreeModel.getDroolContent();
+        assertNotNull(content);
+        assertTrue(content instanceof PackageDescr);
+        final PackageDescr retrieved = (PackageDescr)content;
+        final DrlDumper dumper = new DrlDumper();
+        System.out.println(dumper.dump(retrieved));
     }
 }

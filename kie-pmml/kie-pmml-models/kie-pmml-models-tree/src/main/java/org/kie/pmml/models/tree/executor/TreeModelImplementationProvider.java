@@ -21,11 +21,11 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
 import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
-import org.kie.pmml.models.tree.factories.KiePMMLTreeModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.models.tree.factories.KiePMMLTreeModelFactory.getKiePMMLTreeModel;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
@@ -43,6 +43,6 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     @Override
     public KiePMMLTreeModel getKiePMMLModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
         logger.info("getKiePMMLModel {} {}", dataDictionary, model);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
+        return getKiePMMLTreeModel(dataDictionary, model);
     }
 }

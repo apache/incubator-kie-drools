@@ -17,28 +17,21 @@ package org.kie.pmml.api.model.tree;
 
 import java.util.Objects;
 
+import org.kie.pmml.api.model.KiePMMLDrooledModel;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html>Tree</a>
  */
-public class KiePMMLTreeModel extends KiePMMLModel {
+public class KiePMMLTreeModel extends KiePMMLDrooledModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TREE_MODEL;
 
     private static final long serialVersionUID = 3107205976845585067L;
 
-    private KiePMMLNode node;
-
     private String algorithmName;
-
-
-    public KiePMMLNode getNode() {
-        return node;
-    }
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
         return new Builder(name, miningFunction);
@@ -51,7 +44,7 @@ public class KiePMMLTreeModel extends KiePMMLModel {
     @Override
     public String toString() {
         return "KiePMMLTreeModel{" +
-                "node=" + node +
+                "content=" + droolContent +
                 ", algorithmName='" + algorithmName + '\'' +
                 ", pmmlMODEL=" + pmmlMODEL +
                 ", miningFunction=" + miningFunction +
@@ -74,16 +67,16 @@ public class KiePMMLTreeModel extends KiePMMLModel {
             return false;
         }
         KiePMMLTreeModel treeModel = (KiePMMLTreeModel) o;
-        return Objects.equals(node, treeModel.node) &&
+        return Objects.equals(droolContent, treeModel.droolContent) &&
                 Objects.equals(algorithmName, treeModel.algorithmName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), node, algorithmName);
+        return Objects.hash(super.hashCode(), droolContent, algorithmName);
     }
 
-    public static class Builder extends KiePMMLModel.Builder<KiePMMLTreeModel> {
+    public static class Builder extends KiePMMLDrooledModel.Builder<KiePMMLTreeModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
             super(name, "TreeModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLTreeModel::new);
@@ -95,10 +88,11 @@ public class KiePMMLTreeModel extends KiePMMLModel {
             return this;
         }
 
-        public Builder withNode(KiePMMLNode node) {
-            toBuild.node = node;
-            return this;
+        @Override
+        public Builder withContent(Object content) {
+            return (Builder) super.withContent(content);
         }
+
 
         @Override
         public Builder withTargetField(String targetField) {

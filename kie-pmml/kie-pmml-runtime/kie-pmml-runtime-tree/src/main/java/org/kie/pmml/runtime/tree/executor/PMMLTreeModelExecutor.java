@@ -47,6 +47,14 @@ public class PMMLTreeModelExecutor implements PMMLModelExecutor {
         executionParams.add(treeModel);
         executionParams.add(toReturn);
         executionParams.add(unwrappedInputParams);
+        /*
+        FactType nameType = ksession.getKieBase().getFactType("org.test", "ExtendedName");
+        Object name = nameType.newInstance();
+        nameType.set(name, "value", "Mario");
+
+        ksession.insert(name);
+        ksession.fireAllRules();
+         */
         kSession.execute(executionParams);
         return toReturn;
     }

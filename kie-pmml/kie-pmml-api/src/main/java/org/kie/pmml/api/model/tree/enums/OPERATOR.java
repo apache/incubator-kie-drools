@@ -25,20 +25,22 @@ import org.kie.pmml.api.exceptions.KieEnumException;
  */
 public enum OPERATOR {
 
-    EQUAL("equal"),
-    NOT_EQUAL("notEqual"),
-    LESS_THAN("lessThan"),
-    LESS_OR_EQUAL("lessOrEqual"),
-    GREATER_THAN("greaterThan"),
-    GREATER_OR_EQUAL("greaterOrEqual"),
-    IS_MISSING("isMissing"),
-    IS_NOT_MISSING("isNotMissing");
+    EQUAL("equal", "=="),
+    NOT_EQUAL("notEqual", "!="),
+    LESS_THAN("lessThan" , "<"),
+    LESS_OR_EQUAL("lessOrEqual", "<="),
+    GREATER_THAN("greaterThan", ">"),
+    GREATER_OR_EQUAL("greaterOrEqual", ">="),
+    IS_MISSING("isMissing", ""),
+    IS_NOT_MISSING("isNotMissing", "");
 
 
-    private String name;
+    private final String name;
+    private final String operator;
 
-    OPERATOR(String name) {
+    OPERATOR(String name, String operator) {
         this.name = name;
+        this.operator = operator;
     }
 
     public static OPERATOR byName(String name) throws KieEnumException {
@@ -47,5 +49,9 @@ public enum OPERATOR {
 
     public String getName() {
         return name;
+    }
+
+    public String getOperator() {
+        return operator;
     }
 }
