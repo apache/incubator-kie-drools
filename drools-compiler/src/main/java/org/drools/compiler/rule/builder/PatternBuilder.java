@@ -1148,14 +1148,16 @@ public class PatternBuilder
             }
         }
 
-        ValueType vtype = extractor.getValueType();
-        String operator = relDescr.getOperator().trim();
-        LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, value2, operator, isConstant);
+        LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, value2, isConstant);
 
         if (restrictionDescr != null) {
+            ValueType vtype = extractor.getValueType();
             FieldValue field = getFieldValue(context, vtype, restrictionDescr.getText().trim());
             if (field != null) {
-                Constraint constraint = getConstraintBuilder(context).buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr, aliases);
+                Constraint constraint = getConstraintBuilder(context)
+                        .buildLiteralConstraint(context, pattern, vtype, field, expr,
+                                value1, relDescr.getOperator(), relDescr.isNegated(), value2,
+                                extractor, restrictionDescr, aliases);
                 if (constraint != null) {
                     return constraint;
                 }
@@ -1204,7 +1206,7 @@ public class PatternBuilder
             if (declr != null) {
                 declarations = new Declaration[]{declr};
             } else {
-                declarations = getDeclarationsForReturnValue(context, relDescr, operator, value2);
+                declarations = getDeclarationsForReturnValue(context, relDescr, value2);
                 if (declarations == null) {
                     return null;
                 }
@@ -1214,9 +1216,9 @@ public class PatternBuilder
         return getConstraintBuilder(context).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr, aliases);
     }
 
-    private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
+    private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String value2) {
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
-        ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr(operator, relDescr, value2);
+        ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr(relDescr.getOperator(), relDescr, value2);
 
         AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                                                                          returnValueRestrictionDescr,
@@ -1274,11 +1276,10 @@ public class PatternBuilder
     protected LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
                                                                    RelationalExprDescr exprDescr,
                                                                    String rightValue,
-                                                                   String operator,
                                                                    boolean isRightLiteral) {
         // is it a literal? Does not include enums
         if (isRightLiteral) {
-            return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+            return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
         }
 
         // is it an enum?
@@ -1290,7 +1291,7 @@ public class PatternBuilder
             try {
                 context.getDialect().getTypeResolver().resolveType(mainPart);
                 if (lastPart.indexOf('(') < 0 && lastPart.indexOf('.') < 0 && lastPart.indexOf('[') < 0) {
-                    return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+                    return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
                 }
             } catch (ClassNotFoundException e) {
                 // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
