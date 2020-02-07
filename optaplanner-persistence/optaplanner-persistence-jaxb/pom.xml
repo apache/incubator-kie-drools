@@ -66,6 +66,11 @@
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
     </dependency>
+    <!-- MOXy needed for JSON -->
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.moxy</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
