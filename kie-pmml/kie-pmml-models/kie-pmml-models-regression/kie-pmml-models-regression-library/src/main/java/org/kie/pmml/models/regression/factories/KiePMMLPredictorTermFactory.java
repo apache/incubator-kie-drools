@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.kie.pmml.api.model.regression.KiePMMLPredictorTerm;
 
-import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
-import static org.kie.pmml.models.core.factories.KiePMMLFieldRefFactory.getKiePMMLFieldRefs;
+import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.library.commons.factories.KiePMMLFieldRefFactory.getKiePMMLFieldRefs;
 
 public class KiePMMLPredictorTermFactory {
 

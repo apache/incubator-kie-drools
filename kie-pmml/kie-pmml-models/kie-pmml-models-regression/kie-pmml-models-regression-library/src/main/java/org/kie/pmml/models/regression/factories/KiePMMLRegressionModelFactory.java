@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.models.core.utils.ModelUtils.getTargetField;
+import static org.kie.pmml.library.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.regression.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 
 public class KiePMMLRegressionModelFactory {

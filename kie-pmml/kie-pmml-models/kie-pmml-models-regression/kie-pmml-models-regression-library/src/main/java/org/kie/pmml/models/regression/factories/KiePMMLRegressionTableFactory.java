@@ -23,7 +23,7 @@ import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.models.regression.factories.KiePMMLNumericPredictorFactory.getKiePMMLNumericPredictors;
 
 public class KiePMMLRegressionTableFactory {

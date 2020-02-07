@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.core.factories;
+package org.kie.pmml.library.commons.factories;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.FieldRef;
 import org.kie.pmml.api.model.expressions.KiePMMLFieldRef;
 
-import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 
 public class KiePMMLFieldRefFactory {
 

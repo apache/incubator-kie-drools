@@ -18,7 +18,7 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-core</artifactId>
+      <artifactId>kie-pmml-library-commons</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
@@ -40,7 +40,7 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-core</artifactId>
+        <artifactId>kie-pmml-library-commons</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->

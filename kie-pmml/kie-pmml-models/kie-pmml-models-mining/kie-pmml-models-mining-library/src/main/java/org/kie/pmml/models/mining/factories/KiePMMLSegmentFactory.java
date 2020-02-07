@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.library.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
-import static org.kie.pmml.models.core.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
-import static org.kie.pmml.models.core.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.library.commons.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLSegmentFactory {
 
