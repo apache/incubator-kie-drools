@@ -23,11 +23,11 @@ import org.junit.Test;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
-import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
-import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.api.model.regression.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -21,7 +21,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.mining.KiePMMLMiningModel;
+import org.kie.pmml.models.mining.api.model.KiePMMLMiningModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

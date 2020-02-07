@@ -24,12 +24,12 @@ import org.dmg.pmml.tree.ClassifierNode;
 import org.dmg.pmml.tree.ComplexNode;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.tree.KiePMMLNode;
+import org.kie.pmml.models.tree.api.model.KiePMMLNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.library.commons.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.models.tree.api.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLNodeFactory {
 

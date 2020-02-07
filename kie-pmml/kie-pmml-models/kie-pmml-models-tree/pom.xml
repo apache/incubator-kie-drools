@@ -16,9 +16,27 @@
   <description>PMML Tree implementation</description>
 
   <modules>
+    <module>kie-pmml-models-tree-api</module>
     <module>kie-pmml-models-tree-library</module>
     <module>kie-pmml-models-tree-runtime</module>
   </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-drooled</artifactId>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-drooled</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 
 </project>

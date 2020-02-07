@@ -17,15 +17,15 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-runtime-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-tree-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>
@@ -59,6 +59,11 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-tree-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

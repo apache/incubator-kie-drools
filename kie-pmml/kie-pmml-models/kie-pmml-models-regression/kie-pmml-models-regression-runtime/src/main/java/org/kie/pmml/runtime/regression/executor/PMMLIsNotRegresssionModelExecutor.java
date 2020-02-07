@@ -16,7 +16,7 @@
 package org.kie.pmml.runtime.regression.executor;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 
 public class PMMLIsNotRegresssionModelExecutor {

@@ -1,13 +1,13 @@
 package org.kie.pmml.runtime.tree.executor
 
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel
 import org.kie.api.pmml.PMML4Result
 import org.kie.api.pmml.PMMLRequestData
 import java.util.Optional
 import java.util.Map
-import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate
 import java.util.Collections
-import org.kie.pmml.api.model.tree.KiePMMLNode
+import org.kie.pmml.models.tree.api.model.KiePMMLNode
 
 /*function Optional<String> evaluate(Map<String, Object> values, KiePMMLPredicate kiePMMLPredicate) {
         java.util.function.BinaryOperator<Optional<Boolean>> binaryOperator = getBooleanOperator();

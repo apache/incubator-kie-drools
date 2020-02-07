@@ -20,6 +20,10 @@
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml-library-commons</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-regression-api</artifactId>
+    </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
     <dependency>
@@ -41,6 +45,11 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-library-commons</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-regression-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->

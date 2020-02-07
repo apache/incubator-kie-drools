@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.PredictorTerm;
-import org.kie.pmml.api.model.regression.KiePMMLPredictorTerm;
+import org.kie.pmml.models.regression.api.model.KiePMMLPredictorTerm;
 
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.library.commons.factories.KiePMMLFieldRefFactory.getKiePMMLFieldRefs;

@@ -23,9 +23,9 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
-import org.kie.pmml.api.model.regression.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 

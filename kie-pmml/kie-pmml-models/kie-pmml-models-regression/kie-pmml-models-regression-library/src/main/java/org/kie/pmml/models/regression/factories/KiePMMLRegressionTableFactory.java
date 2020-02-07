@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

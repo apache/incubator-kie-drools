@@ -23,9 +23,9 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
-import org.kie.pmml.api.model.regression.enums.MODEL_TYPE;
-import org.kie.pmml.api.model.regression.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
+import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -11,7 +11,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;

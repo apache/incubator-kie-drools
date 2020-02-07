@@ -20,13 +20,13 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.mining.KiePMMLMiningModel;
+import org.kie.pmml.models.mining.api.model.KiePMMLMiningModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.mining.factories.KiePMMLMiningModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.model.mining.KiePMMLMiningModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.models.mining.api.model.KiePMMLMiningModel.PMML_MODEL_TYPE;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Mining</b>

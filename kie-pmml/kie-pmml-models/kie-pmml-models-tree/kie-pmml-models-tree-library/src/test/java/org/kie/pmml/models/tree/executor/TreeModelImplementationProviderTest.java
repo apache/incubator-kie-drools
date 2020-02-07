@@ -29,7 +29,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel;
 import org.kie.pmml.library.testutils.TestUtils;
 import org.xml.sax.SAXException;
 

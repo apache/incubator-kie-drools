@@ -19,12 +19,12 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel;
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.model.tree.KiePMMLTreeModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.models.tree.api.model.KiePMMLTreeModel.PMML_MODEL_TYPE;
 import static org.kie.pmml.models.tree.factories.KiePMMLTreeModelFactory.getKiePMMLTreeModel;
 
 /**

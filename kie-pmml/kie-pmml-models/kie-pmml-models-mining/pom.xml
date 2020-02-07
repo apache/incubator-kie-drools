@@ -16,6 +16,7 @@
   <description>PMML Mining implementation</description>
 
   <modules>
+    <module>kie-pmml-models-mining-api</module>
     <module>kie-pmml-models-mining-library</module>
     <module>kie-pmml-models-mining-runtime</module>
   </modules>

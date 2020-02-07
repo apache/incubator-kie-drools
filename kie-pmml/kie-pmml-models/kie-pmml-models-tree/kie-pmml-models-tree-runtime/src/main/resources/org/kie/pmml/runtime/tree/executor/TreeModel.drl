@@ -1,13 +1,13 @@
 package org.kie.pmml.runtime.tree.executor
 
-import org.kie.pmml.api.model.tree.KiePMMLNode
-import org.kie.pmml.api.model.tree.KiePMMLTreeModel
-import org.kie.pmml.api.model.tree.enums.OPERATOR
-import org.kie.pmml.api.model.tree.predicates.KiePMMLCompoundPredicate
-import org.kie.pmml.api.model.tree.predicates.KiePMMLFalsePredicate
-import org.kie.pmml.api.model.tree.predicates.KiePMMLTruePredicate
-import org.kie.pmml.api.model.tree.predicates.KiePMMLPredicate
-import org.kie.pmml.api.model.tree.predicates.KiePMMLSimplePredicate
+import org.kie.pmml.models.tree.api.model.KiePMMLNode
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel
+import org.kie.pmml.models.tree.api.model.enums.OPERATOR
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLCompoundPredicate
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLFalsePredicate
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLTruePredicate
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLSimplePredicate
 import org.kie.api.pmml.ParameterInfo
 import org.kie.api.pmml.PMML4Result
 import org.kie.api.pmml.PMMLRequestData

@@ -20,13 +20,13 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.regression.factories.KiePMMLRegressionModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.model.regression.KiePMMLRegressionModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>

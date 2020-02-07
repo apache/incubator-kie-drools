@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.Segmentation;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.mining.enums.MULTIPLE_MODEL_METHOD;
-import org.kie.pmml.api.model.mining.segmentation.KiePMMLSegmentation;
+import org.kie.pmml.models.mining.api.model.enums.MULTIPLE_MODEL_METHOD;
+import org.kie.pmml.models.mining.api.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

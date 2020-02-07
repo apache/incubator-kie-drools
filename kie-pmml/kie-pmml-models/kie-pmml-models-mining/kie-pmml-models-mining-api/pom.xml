@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-pmml-models-mining</artifactId>
+    <groupId>org.drools</groupId>
+    <version>7.33.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-mining-api</artifactId>
+
+  <name>KIE :: PMML :: Models :: Mining :: API</name>
+  <description>PMML API for  Mining implementation</description>
+
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-tree-api</artifactId>
+    </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- PMML -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-tree-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- EXTERNAL -->
+      <!-- TEST -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-api</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>

@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.regression.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

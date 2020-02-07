@@ -26,7 +26,6 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.True;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
@@ -42,7 +41,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.api.KiePMMLStatusHolder;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.model.enums.DATA_TYPE;
-import org.kie.pmml.api.model.tree.enums.OPERATOR;
+import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

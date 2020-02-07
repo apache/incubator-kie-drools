@@ -15,6 +15,10 @@
   <description>PMML Runtime Regression implementation</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-regression-api</artifactId>
+    </dependency>
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -27,6 +31,11 @@
   <dependencyManagement>
     <dependencies>
       <!-- PMML -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-regression-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-core</artifactId>
