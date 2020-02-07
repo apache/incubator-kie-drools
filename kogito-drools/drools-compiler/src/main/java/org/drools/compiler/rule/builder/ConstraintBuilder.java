@@ -61,6 +61,7 @@ public interface ConstraintBuilder {
                                              String expression,
                                              String leftValue,
                                              String operator,
+                                             boolean negated,
                                              String rightValue,
                                              InternalReadAccessor extractor,
                                              LiteralRestrictionDescr restrictionDescr,

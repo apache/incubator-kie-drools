@@ -43,7 +43,7 @@ public class OperatorDescr extends BaseDescr {
     public OperatorDescr(String operator,
                          boolean negated,
                          List<String> parameters) {
-        this.operator = operator;
+        setOperator( operator );
         this.negated = negated;
         this.parameters = parameters;
     }
@@ -53,7 +53,7 @@ public class OperatorDescr extends BaseDescr {
     }
 
     public void setOperator( String operator ) {
-        this.operator = operator;
+        this.operator = operator.trim();
     }
 
     public boolean isNegated() {
