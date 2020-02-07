@@ -35,6 +35,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -61,11 +62,10 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static java.util.stream.Collectors.toSet;
-
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -78,6 +78,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBloc
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.GET_CHANNEL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -127,6 +128,7 @@ public class Consequence {
                         .stream()
                         .filter( s -> isNameExprWithName( s, "kcontext" ) )
                         .forEach( n -> n.replace( new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) );
+                rewriteChannels(ruleConsequence);
             } else {
                 return null;
             }
@@ -211,6 +213,23 @@ public class Consequence {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
         }
         return null;
+    }
+
+    private void rewriteChannels(BlockStmt consequence) {
+        consequence.findAll(MethodCallExpr.class)
+                   .stream()
+                   .map(MethodCallExpr::getScope)
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .filter(sc -> sc instanceof ArrayAccessExpr)
+                   .map(aae -> (ArrayAccessExpr)aae)
+                   .filter(aae -> aae.getName().asNameExpr().getNameAsString().equals("channels"))
+                   .forEach(aae -> {
+                       String channelName = aae.getIndex().asStringLiteralExpr().asString();
+                       MethodCallExpr mce = new MethodCallExpr(new NameExpr("drools"), GET_CHANNEL_CALL);
+                       mce.addArgument("\"" + channelName + "\"");
+                       aae.replace(mce);
+                   });
     }
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {

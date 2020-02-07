@@ -24,6 +24,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.model.BitMask;
+import org.drools.model.Channel;
 import org.drools.model.Drools;
 import org.drools.model.DroolsEntryPoint;
 import org.kie.api.definition.rule.Rule;
@@ -168,5 +169,10 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     public KnowledgeHelper asKnowledgeHelper() {
         return knowledgeHelper;
+    }
+
+    @Override
+    public Channel getChannel(String name) {
+        return new ChannelImpl(knowledgeHelper.getChannel(name));
     }
 }
