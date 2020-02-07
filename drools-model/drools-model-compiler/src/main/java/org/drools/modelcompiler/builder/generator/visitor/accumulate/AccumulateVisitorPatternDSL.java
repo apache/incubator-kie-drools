@@ -96,7 +96,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);
 
-            newBindingExpression.setScope(pattern);
+            newBindingExpression.setScope(oldBind.getScope().orElseThrow(RuntimeException::new));
             oldBind.replace(newBindingExpression);
         });
     }
