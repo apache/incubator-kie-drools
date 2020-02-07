@@ -23,7 +23,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
@@ -126,7 +126,7 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     }
 
     @Override
-    public void inherit(LocalSearchForagerConfig inheritedConfig) {
+    public LocalSearchForagerConfig inherit(LocalSearchForagerConfig inheritedConfig) {
         foragerClass = ConfigUtils.inheritOverwritableProperty(foragerClass,
                 inheritedConfig.getForagerClass());
         pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType,
@@ -137,6 +137,12 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
                 inheritedConfig.getFinalistPodiumType());
         breakTieRandomly = ConfigUtils.inheritOverwritableProperty(breakTieRandomly,
                 inheritedConfig.getBreakTieRandomly());
+        return this;
+    }
+
+    @Override
+    public LocalSearchForagerConfig copyConfig() {
+        return new LocalSearchForagerConfig().inherit(this);
     }
 
 }

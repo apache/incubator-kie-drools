@@ -71,12 +71,18 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
     }
 
     @Override
-    public void inherit(MoveIteratorFactoryConfig inheritedConfig) {
+    public MoveIteratorFactoryConfig inherit(MoveIteratorFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveIteratorFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveIteratorFactoryClass, inheritedConfig.getMoveIteratorFactoryClass());
         moveIteratorFactoryCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 moveIteratorFactoryCustomProperties, inheritedConfig.getMoveIteratorFactoryCustomProperties());
+        return this;
+    }
+
+    @Override
+    public MoveIteratorFactoryConfig copyConfig() {
+        return new MoveIteratorFactoryConfig().inherit(this);
     }
 
     @Override

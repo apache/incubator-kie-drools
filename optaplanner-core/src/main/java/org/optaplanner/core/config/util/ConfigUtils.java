@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 

@@ -77,8 +77,9 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
     }
 
     @Override
-    public void inherit(C inheritedConfig) {
+    public C inherit(C inheritedConfig) {
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
+        return (C) this;
     }
 
     @Override

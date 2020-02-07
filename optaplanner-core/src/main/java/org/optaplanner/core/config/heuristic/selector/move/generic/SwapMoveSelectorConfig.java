@@ -153,12 +153,18 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     }
 
     @Override
-    public void inherit(SwapMoveSelectorConfig inheritedConfig) {
+    public SwapMoveSelectorConfig inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig, inheritedConfig.getSecondaryEntitySelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
+        return this;
+    }
+
+    @Override
+    public SwapMoveSelectorConfig copyConfig() {
+        return new SwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

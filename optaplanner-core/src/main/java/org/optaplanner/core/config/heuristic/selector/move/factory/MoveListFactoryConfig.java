@@ -81,12 +81,18 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
     }
 
     @Override
-    public void inherit(MoveListFactoryConfig inheritedConfig) {
+    public MoveListFactoryConfig inherit(MoveListFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveListFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveListFactoryClass, inheritedConfig.getMoveListFactoryClass());
         moveListFactoryCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 moveListFactoryCustomProperties, inheritedConfig.getMoveListFactoryCustomProperties());
+        return this;
+    }
+
+    @Override
+    public MoveListFactoryConfig copyConfig() {
+        return new MoveListFactoryConfig().inherit(this);
     }
 
     @Override

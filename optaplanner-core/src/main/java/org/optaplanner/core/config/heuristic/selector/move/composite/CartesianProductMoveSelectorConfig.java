@@ -29,7 +29,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("cartesianProductMoveSelector")
 public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<CartesianProductMoveSelectorConfig> {
@@ -87,12 +87,18 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     @Override
-    public void inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
+    public CartesianProductMoveSelectorConfig inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
         ignoreEmptyChildIterators = ConfigUtils.inheritOverwritableProperty(
                 ignoreEmptyChildIterators, inheritedConfig.getIgnoreEmptyChildIterators());
+        return this;
+    }
+
+    @Override
+    public CartesianProductMoveSelectorConfig copyConfig() {
+        return new CartesianProductMoveSelectorConfig().inherit(this);
     }
 
     @Override

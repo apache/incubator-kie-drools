@@ -81,10 +81,16 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
     }
 
     @Override
-    public void inherit(TailChainSwapMoveSelectorConfig inheritedConfig) {
+    public TailChainSwapMoveSelectorConfig inherit(TailChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
+        return this;
+    }
+
+    @Override
+    public TailChainSwapMoveSelectorConfig copyConfig() {
+        return new TailChainSwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

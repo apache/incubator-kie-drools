@@ -88,10 +88,16 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
     }
 
     @Override
-    public void inherit(KOptMoveSelectorConfig inheritedConfig) {
+    public KOptMoveSelectorConfig inherit(KOptMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
+        return this;
+    }
+
+    @Override
+    public KOptMoveSelectorConfig copyConfig() {
+        return new KOptMoveSelectorConfig().inherit(this);
     }
 
     @Override

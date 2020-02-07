@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move;
 
 import org.junit.Test;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -27,25 +28,45 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
+
+    public static class AssertingMoveSelectorConfig extends MoveSelectorConfig<AssertingMoveSelectorConfig> {
+
+        private final MoveSelector baseMoveSelector;
+        private final SelectionCacheType expectedMinimumCacheType;
+        private final boolean expectedRandomSelection;
+
+        public AssertingMoveSelectorConfig(MoveSelector baseMoveSelector,
+                SelectionCacheType expectedMinimumCacheType, boolean expectedRandomSelection) {
+            this.baseMoveSelector = baseMoveSelector;
+            this.expectedMinimumCacheType = expectedMinimumCacheType;
+            this.expectedRandomSelection = expectedRandomSelection;
+        }
+
+        @Override
+        protected MoveSelector buildBaseMoveSelector(
+                HeuristicConfigPolicy configPolicy,
+                SelectionCacheType minimumCacheType, boolean randomSelection) {
+            assertEquals(expectedMinimumCacheType, minimumCacheType);
+            assertEquals(expectedRandomSelection, randomSelection);
+            return baseMoveSelector;
+        }
+
+        @Override
+        public AssertingMoveSelectorConfig copyConfig() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     @Test
     public void phaseOriginal() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.PHASE, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.PHASE, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -60,16 +81,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepOriginal() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.STEP, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.STEP, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -84,16 +97,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void justInTimeOriginal() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.JUST_IN_TIME, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -106,16 +111,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void phaseRandom() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.PHASE, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.PHASE, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -130,16 +127,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepRandom() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.STEP, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.STEP, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -154,16 +143,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void justInTimeRandom() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
-                assertEquals(true, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.JUST_IN_TIME, true);
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -176,16 +157,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void phaseShuffled() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.PHASE, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.PHASE, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -199,16 +172,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepShuffled() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
-        MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
-            @Override
-            protected MoveSelector buildBaseMoveSelector(
-                    HeuristicConfigPolicy configPolicy,
-                    SelectionCacheType minimumCacheType, boolean randomSelection) {
-                assertEquals(SelectionCacheType.STEP, minimumCacheType);
-                assertEquals(false, randomSelection);
-                return baseMoveSelector;
-            }
-        };
+        MoveSelectorConfig moveSelectorConfig = new AssertingMoveSelectorConfig(
+                baseMoveSelector, SelectionCacheType.STEP, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -228,6 +193,15 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 return baseMoveSelector;
+            }
+            @Override
+            public AbstractConfig inherit(AbstractConfig inheritedConfig) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public AbstractConfig copyConfig() {
+                throw new UnsupportedOperationException();
             }
         };
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);

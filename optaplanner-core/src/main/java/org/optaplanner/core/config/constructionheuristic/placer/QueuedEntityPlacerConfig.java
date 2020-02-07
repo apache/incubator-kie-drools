@@ -29,7 +29,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -38,7 +37,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("queuedEntityPlacer")
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
@@ -184,11 +182,16 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     }
 
     @Override
-    public void inherit(QueuedEntityPlacerConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public QueuedEntityPlacerConfig inherit(QueuedEntityPlacerConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
+        return this;
+    }
+
+    @Override
+    public QueuedEntityPlacerConfig copyConfig() {
+        return new QueuedEntityPlacerConfig().inherit(this);
     }
 
     @Override

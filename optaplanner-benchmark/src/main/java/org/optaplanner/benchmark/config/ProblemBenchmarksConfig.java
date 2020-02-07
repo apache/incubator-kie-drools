@@ -266,7 +266,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     @Override
-    public void inherit(ProblemBenchmarksConfig inheritedConfig) {
+    public ProblemBenchmarksConfig inherit(ProblemBenchmarksConfig inheritedConfig) {
         solutionFileIOClass = ConfigUtils.inheritOverwritableProperty(solutionFileIOClass,
                 inheritedConfig.getSolutionFileIOClass());
         xStreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xStreamAnnotatedClassList,
@@ -281,6 +281,12 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
                 inheritedConfig.getProblemStatisticTypeList());
         singleStatisticTypeList = ConfigUtils.inheritMergeableListProperty(singleStatisticTypeList,
                 inheritedConfig.getSingleStatisticTypeList());
+        return this;
+    }
+
+    @Override
+    public ProblemBenchmarksConfig copyConfig() {
+        return new ProblemBenchmarksConfig().inherit(this);
     }
 
 }

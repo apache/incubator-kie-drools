@@ -83,7 +83,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
@@ -720,7 +720,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     @Override
-    public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
+    public ScoreDirectorFactoryConfig inherit(ScoreDirectorFactoryConfig inheritedConfig) {
         if (scoreDefinitionClass == null && scoreDefinitionType == null
                 && bendableHardLevelsSize == null && bendableSoftLevelsSize == null) {
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
@@ -759,6 +759,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
         generateDroolsTestOnError = ConfigUtils.inheritOverwritableProperty(
                 generateDroolsTestOnError, inheritedConfig.isGenerateDroolsTestOnError());
+        return this;
+    }
+
+    @Override
+    public ScoreDirectorFactoryConfig copyConfig() {
+        return new ScoreDirectorFactoryConfig().inherit(this);
     }
 
 }

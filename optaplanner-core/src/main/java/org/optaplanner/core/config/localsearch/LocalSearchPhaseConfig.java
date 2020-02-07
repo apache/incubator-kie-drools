@@ -45,11 +45,11 @@ import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
@@ -303,7 +303,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     }
 
     @Override
-    public void inherit(LocalSearchPhaseConfig inheritedConfig) {
+    public LocalSearchPhaseConfig inherit(LocalSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         localSearchType = ConfigUtils.inheritOverwritableProperty(localSearchType,
                 inheritedConfig.getLocalSearchType());
@@ -311,6 +311,12 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
         acceptorConfig = ConfigUtils.inheritConfig(acceptorConfig, inheritedConfig.getAcceptorConfig());
         foragerConfig = ConfigUtils.inheritConfig(foragerConfig, inheritedConfig.getForagerConfig());
+        return this;
+    }
+
+    @Override
+    public LocalSearchPhaseConfig copyConfig() {
+        return new LocalSearchPhaseConfig().inherit(this);
     }
 
 }

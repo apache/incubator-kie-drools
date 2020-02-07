@@ -69,9 +69,15 @@ public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorCo
     }
 
     @Override
-    public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
+    public PillarChangeMoveSelectorConfig inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
+        return this;
+    }
+
+    @Override
+    public PillarChangeMoveSelectorConfig copyConfig() {
+        return new PillarChangeMoveSelectorConfig().inherit(this);
     }
 
     @Override

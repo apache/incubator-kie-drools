@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRa
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("acceptor")
 public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
@@ -576,7 +576,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     }
 
     @Override
-    public void inherit(AcceptorConfig inheritedConfig) {
+    public AcceptorConfig inherit(AcceptorConfig inheritedConfig) {
         acceptorClassList = ConfigUtils.inheritMergeableListProperty(acceptorClassList,
                 inheritedConfig.getAcceptorClassList());
         if (acceptorTypeList == null) {
@@ -628,7 +628,12 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 inheritedConfig.getStepCountingHillClimbingSize());
         stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
                 inheritedConfig.getStepCountingHillClimbingType());
+        return this;
+    }
 
+    @Override
+    public AcceptorConfig copyConfig() {
+        return new AcceptorConfig().inherit(this);
     }
 
 }

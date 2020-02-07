@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
@@ -97,13 +97,19 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
     }
 
     @Override
-    public void inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {
+    public SubChainSwapMoveSelectorConfig inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         subChainSelectorConfig = ConfigUtils.inheritConfig(subChainSelectorConfig, inheritedConfig.getSubChainSelectorConfig());
         secondarySubChainSelectorConfig = ConfigUtils.inheritConfig(secondarySubChainSelectorConfig, inheritedConfig.getSecondarySubChainSelectorConfig());
         selectReversingMoveToo = ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo,
                 inheritedConfig.getSelectReversingMoveToo());
+        return this;
+    }
+
+    @Override
+    public SubChainSwapMoveSelectorConfig copyConfig() {
+        return new SubChainSwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

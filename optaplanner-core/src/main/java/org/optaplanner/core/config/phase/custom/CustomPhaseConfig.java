@@ -158,7 +158,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     }
 
     @Override
-    public void inherit(CustomPhaseConfig inheritedConfig) {
+    public CustomPhaseConfig inherit(CustomPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         customPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
                 customPhaseCommandClassList, inheritedConfig.getCustomPhaseCommandClassList());
@@ -168,6 +168,12 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
                 customProperties, inheritedConfig.getCustomProperties());
         forceUpdateBestSolution = ConfigUtils.inheritOverwritableProperty(forceUpdateBestSolution,
                 inheritedConfig.getForceUpdateBestSolution());
+        return this;
+    }
+
+    @Override
+    public CustomPhaseConfig copyConfig() {
+        return new CustomPhaseConfig().inherit(this);
     }
 
 }

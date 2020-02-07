@@ -468,9 +468,9 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     }
 
     @Override
-    public void inherit(C inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public C inherit(C inheritedConfig) {
         inheritCommon(inheritedConfig);
+        return (C) this;
     }
 
     /**

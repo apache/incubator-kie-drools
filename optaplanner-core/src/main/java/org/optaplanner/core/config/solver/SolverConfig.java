@@ -665,7 +665,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @param inheritedConfig never null
      */
     @Override
-    public void inherit(SolverConfig inheritedConfig) {
+    public SolverConfig inherit(SolverConfig inheritedConfig) {
         classLoader = ConfigUtils.inheritOverwritableProperty(classLoader, inheritedConfig.getClassLoader());
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
         daemon = ConfigUtils.inheritOverwritableProperty(daemon, inheritedConfig.getDaemon());
@@ -687,6 +687,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());
+        return this;
+    }
+
+    @Override
+    public SolverConfig copyConfig() {
+        return new SolverConfig().inherit(this);
     }
 
 }

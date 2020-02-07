@@ -116,12 +116,18 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     @Override
-    public void inherit(UnionMoveSelectorConfig inheritedConfig) {
+    public UnionMoveSelectorConfig inherit(UnionMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
         selectorProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 selectorProbabilityWeightFactoryClass, inheritedConfig.getSelectorProbabilityWeightFactoryClass());
+        return this;
+    }
+
+    @Override
+    public UnionMoveSelectorConfig copyConfig() {
+        return new UnionMoveSelectorConfig().inherit(this);
     }
 
     @Override

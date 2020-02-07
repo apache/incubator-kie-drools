@@ -42,8 +42,14 @@ public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
     }
 
     @Override
-    public void inherit(NoChangePhaseConfig inheritedConfig) {
+    public NoChangePhaseConfig inherit(NoChangePhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        return this;
+    }
+
+    @Override
+    public NoChangePhaseConfig copyConfig() {
+        return new NoChangePhaseConfig().inherit(this);
     }
 
 }

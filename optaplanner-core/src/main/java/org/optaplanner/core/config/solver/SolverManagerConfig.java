@@ -114,11 +114,17 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
     }
 
     @Override
-    public void inherit(SolverManagerConfig inheritedConfig) {
+    public SolverManagerConfig inherit(SolverManagerConfig inheritedConfig) {
         parallelSolverCount = ConfigUtils.inheritOverwritableProperty(parallelSolverCount,
                 inheritedConfig.getParallelSolverCount());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
+        return this;
+    }
+
+    @Override
+    public SolverManagerConfig copyConfig() {
+        return new SolverManagerConfig().inherit(this);
     }
 
 }

@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNear
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("nearbySelection")
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
@@ -275,8 +275,7 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     }
 
     @Override
-    public void inherit(NearbySelectionConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public NearbySelectionConfig inherit(NearbySelectionConfig inheritedConfig) {
         originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig, inheritedConfig.getOriginEntitySelectorConfig());
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
                 inheritedConfig.getNearbyDistanceMeterClass());
@@ -298,6 +297,12 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
                 inheritedConfig.getBetaDistributionAlpha());
         betaDistributionBeta = ConfigUtils.inheritOverwritableProperty(betaDistributionBeta,
                 inheritedConfig.getBetaDistributionBeta());
+        return this;
+    }
+
+    @Override
+    public NearbySelectionConfig copyConfig() {
+        return new NearbySelectionConfig().inherit(this);
     }
 
 }

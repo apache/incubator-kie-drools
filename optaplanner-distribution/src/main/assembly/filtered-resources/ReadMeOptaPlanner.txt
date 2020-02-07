@@ -57,3 +57,10 @@ OptaPlanner's api packages are backwards compatible.
 The impl packages are not, apply the upgrade recipe if you use them:
   https://www.optaplanner.org/download/upgradeRecipe/
 For more specific information, see the first chapter of the reference manual.
+
+
+Questions?
+----------
+
+If you have any questions, visit:
+  https://www.optaplanner.org/community/getHelp.html

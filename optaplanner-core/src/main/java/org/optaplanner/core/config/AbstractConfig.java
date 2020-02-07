@@ -37,30 +37,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 public abstract class AbstractConfig<C extends AbstractConfig> {
 
     // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    /**
-     * @return never null
-     */
-    public C newInstance() {
-        Class<C> configClass = (Class<C>) getClass();
-        try {
-            return configClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException("The configClass (" + configClass
-                    + ") does not have a public no-arg constructor.\n"
-                    + "This is a bug, please report an issue with this stacktrace.", e);
-        }
-    }
-
-    public C copyConfig() {
-        C copy = newInstance();
-        copy.inherit(this);
-        return copy;
-    }
-
-    // ************************************************************************
     // Helper methods
     // ************************************************************************
 
@@ -156,8 +132,15 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
      * After the inheritance, if a property on this {@link AbstractConfig} composition is replaced,
      * it should not affect the inherited composition instance.
      * @param inheritedConfig never null
+     * @return this
      */
-    public abstract void inherit(C inheritedConfig);
+    public abstract C inherit(C inheritedConfig);
+
+    /**
+     * Typically implemented by constructing a new instance and calling {@link #inherit(AbstractConfig)} on it
+     * @return new instance
+     */
+    public abstract C copyConfig();
 
     @Override
     public String toString() {

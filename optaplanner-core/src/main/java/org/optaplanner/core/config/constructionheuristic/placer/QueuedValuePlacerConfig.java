@@ -38,7 +38,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("queuedValuePlacer")
 public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlacerConfig> {
@@ -166,12 +165,17 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     }
 
     @Override
-    public void inherit(QueuedValuePlacerConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public QueuedValuePlacerConfig inherit(QueuedValuePlacerConfig inheritedConfig) {
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
+        return this;
+    }
+
+    @Override
+    public QueuedValuePlacerConfig copyConfig() {
+        return new QueuedValuePlacerConfig().inherit(this);
     }
 
     @Override

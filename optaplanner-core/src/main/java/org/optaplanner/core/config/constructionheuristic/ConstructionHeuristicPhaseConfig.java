@@ -42,11 +42,11 @@ import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuri
 import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("constructionHeuristic")
 public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
@@ -296,7 +296,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     }
 
     @Override
-    public void inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
+    public ConstructionHeuristicPhaseConfig inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());
@@ -309,6 +309,12 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
         foragerConfig = ConfigUtils.inheritConfig(foragerConfig, inheritedConfig.getForagerConfig());
+        return this;
+    }
+
+    @Override
+    public ConstructionHeuristicPhaseConfig copyConfig() {
+        return new ConstructionHeuristicPhaseConfig().inherit(this);
     }
 
 }

@@ -48,7 +48,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("exhaustiveSearch")
 public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
@@ -268,7 +268,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     }
 
     @Override
-    public void inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
+    public ExhaustiveSearchPhaseConfig inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,
                 inheritedConfig.getExhaustiveSearchType());
@@ -280,6 +280,12 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                 inheritedConfig.getValueSorterManner());
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         moveSelectorConfig = ConfigUtils.<MoveSelectorConfig>inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
+        return this;
+    }
+
+    @Override
+    public ExhaustiveSearchPhaseConfig copyConfig() {
+        return new ExhaustiveSearchPhaseConfig().inherit(this);
     }
 
 }

@@ -145,10 +145,16 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
     }
 
     @Override
-    public void inherit(ChangeMoveSelectorConfig inheritedConfig) {
+    public ChangeMoveSelectorConfig inherit(ChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
+        return this;
+    }
+
+    @Override
+    public ChangeMoveSelectorConfig copyConfig() {
+        return new ChangeMoveSelectorConfig().inherit(this);
     }
 
     @Override

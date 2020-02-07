@@ -23,7 +23,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelect
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
-abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSelectorConfig<T>> extends MoveSelectorConfig<T> {
+public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarMoveSelectorConfig<C>> extends MoveSelectorConfig<C> {
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
@@ -55,12 +55,13 @@ abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSele
     }
 
     @Override
-    public void inherit(T inheritedConfig) {
+    public C inherit(C inheritedConfig) {
         super.inherit(inheritedConfig);
         subPillarType = ConfigUtils.inheritOverwritableProperty(subPillarType, inheritedConfig.getSubPillarType());
         subPillarSequenceComparatorClass = ConfigUtils.inheritOverwritableProperty(subPillarSequenceComparatorClass,
                 inheritedConfig.getSubPillarSequenceComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
+        return (C) this;
     }
 
 }

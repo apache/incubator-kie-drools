@@ -83,11 +83,17 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
     }
 
     @Override
-    public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
+    public PillarSwapMoveSelectorConfig inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig, inheritedConfig.getSecondaryPillarSelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
+        return this;
+    }
+
+    @Override
+    public PillarSwapMoveSelectorConfig copyConfig() {
+        return new PillarSwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

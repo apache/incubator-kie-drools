@@ -127,11 +127,17 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     }
 
     @Override
-    public void inherit(SolverBenchmarkConfig inheritedConfig) {
+    public SolverBenchmarkConfig inherit(SolverBenchmarkConfig inheritedConfig) {
         solverConfig = ConfigUtils.inheritConfig(solverConfig, inheritedConfig.getSolverConfig());
         problemBenchmarksConfig = ConfigUtils.inheritConfig(problemBenchmarksConfig,
                 inheritedConfig.getProblemBenchmarksConfig());
         subSingleCount = ConfigUtils.inheritOverwritableProperty(subSingleCount, inheritedConfig.getSubSingleCount());
+        return this;
+    }
+
+    @Override
+    public SolverBenchmarkConfig copyConfig() {
+        return new SolverBenchmarkConfig().inherit(this);
     }
 
 }

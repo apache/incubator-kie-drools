@@ -639,7 +639,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     }
 
     @Override
-    public void inherit(TerminationConfig inheritedConfig) {
+    public TerminationConfig inherit(TerminationConfig inheritedConfig) {
         terminationClass = ConfigUtils.inheritOverwritableProperty(terminationClass,
                 inheritedConfig.getTerminationClass());
         terminationCompositionStyle = ConfigUtils.inheritOverwritableProperty(terminationCompositionStyle,
@@ -684,6 +684,12 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getScoreCalculationCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
+        return this;
+    }
+
+    @Override
+    public TerminationConfig copyConfig() {
+        return new TerminationConfig().inherit(this);
     }
 
 }

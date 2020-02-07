@@ -148,7 +148,7 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     }
 
     @Override
-    public void inherit(BenchmarkReportConfig inheritedConfig) {
+    public BenchmarkReportConfig inherit(BenchmarkReportConfig inheritedConfig) {
         locale = ConfigUtils.inheritOverwritableProperty(locale, inheritedConfig.getLocale());
         solverRankingType = ConfigUtils.inheritOverwritableProperty(solverRankingType,
                 inheritedConfig.getSolverRankingType());
@@ -156,6 +156,12 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
                 inheritedConfig.getSolverRankingComparatorClass());
         solverRankingWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(solverRankingWeightFactoryClass,
                 inheritedConfig.getSolverRankingWeightFactoryClass());
+        return this;
+    }
+
+    @Override
+    public BenchmarkReportConfig copyConfig() {
+        return new BenchmarkReportConfig().inherit(this);
     }
 
 }

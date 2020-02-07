@@ -38,7 +38,13 @@ public class BestSolutionRecallerConfig extends AbstractConfig<BestSolutionRecal
     }
 
     @Override
-    public void inherit(BestSolutionRecallerConfig inheritedConfig) {
+    public BestSolutionRecallerConfig inherit(BestSolutionRecallerConfig inheritedConfig) {
+        return this;
+    }
+
+    @Override
+    public BestSolutionRecallerConfig copyConfig() {
+        return new BestSolutionRecallerConfig().inherit(this);
     }
 
 }

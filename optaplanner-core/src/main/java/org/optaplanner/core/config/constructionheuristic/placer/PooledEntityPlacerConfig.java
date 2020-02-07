@@ -37,7 +37,6 @@ import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacer
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("pooledEntityPlacer")
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
@@ -172,10 +171,15 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     }
 
     @Override
-    public void inherit(PooledEntityPlacerConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public PooledEntityPlacerConfig inherit(PooledEntityPlacerConfig inheritedConfig) {
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
+        return this;
+    }
+
+    @Override
+    public PooledEntityPlacerConfig copyConfig() {
+        return new PooledEntityPlacerConfig().inherit(this);
     }
 
     @Override

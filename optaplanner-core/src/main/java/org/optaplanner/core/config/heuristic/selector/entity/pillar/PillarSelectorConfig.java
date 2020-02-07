@@ -180,8 +180,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     @Override
-    public void inherit(PillarSelectorConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public PillarSelectorConfig inherit(PillarSelectorConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         subPillarEnabled = ConfigUtils.inheritOverwritableProperty(subPillarEnabled,
                 inheritedConfig.getSubPillarEnabled());
@@ -189,6 +188,12 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                 inheritedConfig.getMinimumSubPillarSize());
         maximumSubPillarSize = ConfigUtils.inheritOverwritableProperty(maximumSubPillarSize,
                 inheritedConfig.getMaximumSubPillarSize());
+        return this;
+    }
+
+    @Override
+    public PillarSelectorConfig copyConfig() {
+        return new PillarSelectorConfig().inherit(this);
     }
 
     @Override

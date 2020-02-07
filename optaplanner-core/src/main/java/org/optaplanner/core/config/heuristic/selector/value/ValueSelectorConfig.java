@@ -661,8 +661,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     }
 
     @Override
-    public void inherit(ValueSelectorConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public ValueSelectorConfig inherit(ValueSelectorConfig inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
@@ -686,6 +685,12 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
         selectedCountLimit = ConfigUtils.inheritOverwritableProperty(
                 selectedCountLimit, inheritedConfig.getSelectedCountLimit());
+        return this;
+    }
+
+    @Override
+    public ValueSelectorConfig copyConfig() {
+        return new ValueSelectorConfig().inherit(this);
     }
 
     @Override

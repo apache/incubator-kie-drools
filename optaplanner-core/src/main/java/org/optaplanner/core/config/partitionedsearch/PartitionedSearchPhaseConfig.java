@@ -37,9 +37,9 @@ import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,7 +219,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     }
 
     @Override
-    public void inherit(PartitionedSearchPhaseConfig inheritedConfig) {
+    public PartitionedSearchPhaseConfig inherit(PartitionedSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
                 inheritedConfig.getSolutionPartitionerClass());
@@ -231,6 +231,12 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                 inheritedConfig.getRunnablePartThreadLimit());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());
+        return this;
+    }
+
+    @Override
+    public PartitionedSearchPhaseConfig copyConfig() {
+        return new PartitionedSearchPhaseConfig().inherit(this);
     }
 
 }

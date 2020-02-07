@@ -179,6 +179,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void solve() {
         contextRunner
+                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
                 .run(context -> {
                     SolverManager solverManager = context.getBean(SolverManager.class);

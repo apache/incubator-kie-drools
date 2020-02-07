@@ -542,8 +542,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     }
 
     @Override
-    public void inherit(EntitySelectorConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
+    public EntitySelectorConfig inherit(EntitySelectorConfig inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
@@ -568,6 +567,12 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
         selectedCountLimit = ConfigUtils.inheritOverwritableProperty(
                 selectedCountLimit, inheritedConfig.getSelectedCountLimit());
+        return this;
+    }
+
+    @Override
+    public EntitySelectorConfig copyConfig() {
+        return new EntitySelectorConfig().inherit(this);
     }
 
     @Override
