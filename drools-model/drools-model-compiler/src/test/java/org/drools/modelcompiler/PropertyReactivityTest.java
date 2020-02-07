@@ -550,4 +550,26 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals( 2, ksession.fireAllRules(5) );
     }
+
+    @Test
+    public void testComplexArgument() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R \n" +
+                "when\n" +
+                "    $p: Person(address.street == \"street1\")\n" +
+                "then\n" +
+                "    modify($p) { setLikes( String.valueOf(($p.getAddress().getStreet() + $p.getAddress().getCity()))) };\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        me.setAddress(new Address("street1", 2, "city1"));
+        ksession.insert( me );
+
+        assertEquals(1, ksession.fireAllRules(10));
+
+        assertEquals( "street1city1", me.getLikes() );
+    }
 }
