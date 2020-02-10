@@ -25,14 +25,14 @@
     <version>7.33.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-pmml-legacy</artifactId>
+  <artifactId>kie-pmml</artifactId>
   <packaging>bundle</packaging>
 
-  <name>KIE :: PMML - Compiler :: Legacy</name>
+  <name>KIE :: PMML - Compiler </name>
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <properties>
-    <java.module.name>org.kie.pmml-legacy</java.module.name>
+    <java.module.name>org.kie.pmml</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 

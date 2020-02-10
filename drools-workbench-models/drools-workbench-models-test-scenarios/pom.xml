@@ -67,7 +67,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-legacy</artifactId>
+      <artifactId>kie-pmml</artifactId>
     </dependency>
 
     <dependency>
@@ -82,7 +82,7 @@
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-legacy</artifactId>
+        <artifactId>kie-pmml</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

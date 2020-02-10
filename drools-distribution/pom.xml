@@ -150,11 +150,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-legacy</artifactId>
+      <artifactId>kie-pmml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-legacy</artifactId>
+      <artifactId>kie-pmml</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -209,12 +209,12 @@
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-legacy</artifactId>
+        <artifactId>kie-pmml</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-legacy</artifactId>
+        <artifactId>kie-pmml</artifactId>
         <classifier>sources</classifier>
         <version>${version.org.kie}</version>
       </dependency>
