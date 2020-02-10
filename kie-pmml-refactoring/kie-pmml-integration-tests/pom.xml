@@ -44,6 +44,11 @@
       <scope>test</scope>
     </dependency>
     <!-- Library :: Models -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-regression-library</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Runtime -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -56,6 +61,17 @@
       <scope>test</scope>
     </dependency>
     <!-- Runtime :: Implementations -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-regression-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-models-regression-runtime</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
     <!-- DROOLS/KIE -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -125,8 +141,27 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-regression-library</artifactId>
+        <version>${version.org.kie}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-assembler</artifactId>
         <version>${version.org.kie}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-regression-runtime</artifactId>
+        <version>${version.org.kie}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-models-regression-runtime</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>tests</classifier>
         <scope>test</scope>
       </dependency>
     </dependencies>
