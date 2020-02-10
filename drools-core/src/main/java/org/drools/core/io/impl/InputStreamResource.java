@@ -16,10 +16,7 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.kie.api.io.Resource;
-
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +24,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
+
+import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
+import org.kie.api.io.Resource;
 
 public class InputStreamResource extends BaseResource implements InternalResource {
 
@@ -49,6 +50,9 @@ public class InputStreamResource extends BaseResource implements InternalResourc
     }
 
     public InputStream getInputStream() throws IOException {
+        if (bytes != null) {
+            return new ByteArrayInputStream( bytes );
+        }
         return stream;
     }
 
