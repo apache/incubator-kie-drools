@@ -75,7 +75,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         }
         StringBuilder sbGaps = new StringBuilder("Validator messages:\n");
         for (DMNMessage msg : dmnMessages) {
-            sbGaps.append(String.format("%8s %s", msg.getLevel(), msg.getText()));
+            sbGaps.append(String.format("%8s %s", msg.getLevel(), msg.getMessage()));
             sbGaps.append("\n");
         }
         LOG.debug(sbGaps.toString());

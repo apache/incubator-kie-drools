@@ -137,6 +137,8 @@ public class DMNDTAnalyser {
         analysis.compute1stNFViolations();
         LOG.debug("compute2ndNFViolations");
         analysis.compute2ndNFViolations();
+        LOG.debug("computeHitPolicyRecommender");
+        analysis.computeHitPolicyRecommender();
         return analysis;
     }
 

@@ -667,7 +667,7 @@ public class DMNEvaluatorCompiler {
             null,
             null,
             Msg.MISSING_OUTPUT_VALUES,
-            dt.getParent() );
+            dtName );
         }
         java.util.List<DTDecisionRule> rules = new ArrayList<>();
         index = 0;

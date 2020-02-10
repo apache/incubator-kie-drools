@@ -35,6 +35,10 @@ public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
                                                               null, true, null, null,
                                                               BuiltInType.UNKNOWN );
 
+    public DMNTypeRegistryV12() {
+        super(Collections.emptyMap());
+    }
+
     public DMNTypeRegistryV12(Map<String, QName> aliases) {
         super(aliases);
     }

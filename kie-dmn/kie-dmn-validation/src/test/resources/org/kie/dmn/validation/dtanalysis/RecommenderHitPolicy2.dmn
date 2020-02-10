@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6" id="_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6" exporter="DMN Modeler" exporterVersion="6.7.1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tLevel" label="tLevel">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="expression">
+            <semantic:text>&gt;=0</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15" name="Level">
+        <semantic:variable name="Level" id="_09a643aa-0f89-4216-ab5a-58179fa86b33" typeRef="tLevel"/>
+    </semantic:inputData>
+    <semantic:decision id="_0cd2bcb7-1882-4e26-8d7f-3dd35b04c2d4" name="Evaluation">
+        <semantic:variable name="Evaluation" id="_4d97f0f6-9bf8-4693-b049-dadd34243900" typeRef="string"/>
+        <semantic:informationRequirement id="_e3435805-4eed-4fcc-83d0-7a26c50a82a6">
+            <semantic:requiredInput href="#_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_3aa68aee-6314-482f-a0be-84c2411d65d7" hitPolicy="UNIQUE" outputLabel="Evaluation" typeRef="string" triso:expressionId="_7af1784f-15c3-406c-b908-8fa9c8a3766b">
+            <semantic:input id="_de33d278-570e-4065-9d68-9f8ba6f4d1e6" label="Level">
+                <semantic:inputExpression typeRef="tLevel">
+                    <semantic:text>Level</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="expression">
+                    <semantic:text>&gt;=0</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_26189690-cdb6-466d-b2d7-289380c47e83" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_663e0683-f440-4031-bdb9-0acd121d4651">
+                <semantic:inputEntry id="_b544eee7-d7b9-491d-83a4-e4916029e7f6">
+                    <semantic:text>[0..80)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_6a5f720b-5063-4b3e-8062-c06fd6903e90">
+                    <semantic:text>"No risk"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_86e048f5-273a-4b59-9a5a-adcf699ef613">
+                <semantic:inputEntry id="_9a7df30a-fca1-4d36-93e1-f64e8d69cda7">
+                    <semantic:text>[80..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_8581780c-bef1-458e-83df-5402019af2cb">
+                    <semantic:text>"Harmful"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text>"Harmful sound levels"</semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_9ad17ef0-3226-4c07-9a83-bd72ef71612d">
+                <semantic:inputEntry id="_c04cae1e-a7e8-46d6-8cdc-2cfa4f6adcb9">
+                    <semantic:text>&gt;=120</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_e08a897c-9c66-4ee0-89b0-d3c74996c9cf">
+                    <semantic:text>"Danger"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text>"Seconds of exposure may cause irreversible damage"</semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

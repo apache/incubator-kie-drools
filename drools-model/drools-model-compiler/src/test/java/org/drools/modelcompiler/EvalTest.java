@@ -395,7 +395,6 @@ public class EvalTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("this runs in pattern but not in flow")
     public void testEvalWithGlobal2() {
         final String drl1 =
                 "import " + Result.class.getCanonicalName() + ";\n" +

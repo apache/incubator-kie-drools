@@ -175,6 +175,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                              String expression,
                                              String leftValue,
                                              String operator,
+                                             boolean negated,
                                              String rightValue,
                                              InternalReadAccessor extractor,
                                              LiteralRestrictionDescr restrictionDescr,
@@ -196,7 +197,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         String mvelExpr = normalizeMVELLiteralExpression(expression, leftValue, operator, rightValue, restrictionDescr);
-        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator, negated);
         MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, aliases);
         EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, restrictionDescr, aliases));
         return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor, operators);

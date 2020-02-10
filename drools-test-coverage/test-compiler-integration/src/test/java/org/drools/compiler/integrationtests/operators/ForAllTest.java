@@ -127,8 +127,6 @@ public class ForAllTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
 
-//        ReteDumper.dumpRete( kbase );
-
         final KieSession ksession = kbase.newKieSession();
         try {
 
@@ -172,5 +170,36 @@ public class ForAllTest {
         }
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testWithIndexedAlpha() throws Exception {
+        // DROOLS-5019
+
+        String pkg = "org.drools.compiler.integrationtests.operators";
+
+        String drl =
+                "rule R1 when\n" +
+                "  forall( $s: String() String( this == $s, toString == \"A\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  String( toString == \"B\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R3 when\n" +
+                "  String( toString == \"C\" )\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+
+        KieSession ksession1 = kbase.newKieSession();
+        ksession1.insert( "A" );
+        assertEquals(1, ksession1.fireAllRules());
+
+        KieSession ksession2 = kbase.newKieSession();
+        ksession2.insert( "D" );
+        assertEquals(0, ksession2.fireAllRules());
     }
 }
