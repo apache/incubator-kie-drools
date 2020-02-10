@@ -252,7 +252,7 @@ public class ChangeSetBuilder {
         }
     }
 
-    private static String getDefaultPackageName() {
+    public static String getDefaultPackageName() {
         if (defaultPackageName == null) {
             defaultPackageName = new KnowledgeBuilderConfigurationImpl().getDefaultPackageName();
         }

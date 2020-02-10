@@ -41,6 +41,8 @@ import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NE
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL_EXTERNALIZE_LAMBDA;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL_EXTERNALIZE_LAMBDA;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -51,7 +53,10 @@ public abstract class BaseModelTest {
         STANDARD_FROM_DRL( false ),
         STANDARD_WITH_ALPHA_NETWORK( true ),
         PATTERN_WITH_ALPHA_NETWORK( true ),
-        FLOW_WITH_ALPHA_NETWORK( true );
+        FLOW_WITH_ALPHA_NETWORK( true ),
+
+        FLOW_DSL_EXTERNALIZE_LAMBDA( false ),
+        PATTERN_DSL_EXTERNALIZE_LAMBDA( false );
 
         private boolean alphaNetworkCompiler;
 
@@ -79,11 +84,20 @@ public abstract class BaseModelTest {
             FLOW_WITH_ALPHA_NETWORK,
     };
 
+    final static Object[] WITH_EXTERNALIZE_LAMBDA = {
+            RUN_TYPE.STANDARD_FROM_DRL,
+            FLOW_DSL,
+            PATTERN_DSL,
+            FLOW_DSL_EXTERNALIZE_LAMBDA,
+            PATTERN_DSL_EXTERNALIZE_LAMBDA,
+    };
 
     @Parameters(name = "{0}")
     public static Object[] params() {
         if(Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"))) {
             return WITH_ALPHA_NETWORK;
+        } else if (Boolean.valueOf(System.getProperty("externalizeLambdaTestEnabled"))) {
+            return WITH_EXTERNALIZE_LAMBDA;
         } else {
             return PLAIN;
         }
@@ -129,19 +143,24 @@ public abstract class BaseModelTest {
     protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules ) {
         ks.getRepository().removeKieModule( releaseId );
 
-        KieFileSystem kfs = ks.newKieFileSystem();
-        if ( model != null ) {
-            kfs.writeKModuleXML( model.toXML() );
+        if (model == null) {
+            model = ks.newKieModuleModel();
         }
+        if (asList(FLOW_DSL_EXTERNALIZE_LAMBDA, PATTERN_DSL_EXTERNALIZE_LAMBDA).contains(testRunType)) {
+            model.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+        }
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML( model.toXML() );
+
         kfs.writePomXML( KJARUtils.getPom( releaseId ) );
         for (int i = 0; i < stringRules.length; i++) {
             kfs.write( stringRules[i].path, stringRules[i].content );
         }
 
         KieBuilder kieBuilder;
-        if (asList(FLOW_DSL, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        if (asList(FLOW_DSL, FLOW_WITH_ALPHA_NETWORK, FLOW_DSL_EXTERNALIZE_LAMBDA).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelFlowProject.class);
-        } else if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        } else if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK, PATTERN_DSL_EXTERNALIZE_LAMBDA).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);

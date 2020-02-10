@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -79,11 +80,14 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResourceChange.Type;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.ResourceChangeSet.RuleLoadOrder;
 
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
+import static org.drools.compiler.kie.util.ChangeSetBuilder.getDefaultPackageName;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -444,7 +448,50 @@ public class CanonicalKieModule implements InternalKieModule {
 
         KieJarChangeSet internalChanges = internalKieModule.getChanges(((CanonicalKieModule) newKieModule).internalKieModule);
         internalChanges.removeFile( PROJECT_MODEL_RESOURCE_CLASS );
+
+        replaceWithMergeChangeType(result, internalChanges);
+
         return result.merge(internalChanges);
+    }
+
+    private void replaceWithMergeChangeType(KieJarChangeSet result, KieJarChangeSet internalChanges) {
+        Map<String, Set<String>> genuineUpdatedRules = new HashMap<>();
+        for (ResourceChangeSet resourceChangeSet : internalChanges.getChanges().values()) {
+            for (ResourceChange change : resourceChangeSet.getChanges()) {
+                if (change.getChangeType() == ChangeType.UPDATED && change.getType() == Type.RULE) {
+                    String ruleName = change.getName();
+                    String pkgName = resourceChangeSet.getLoadOrder()
+                                                      .stream()
+                                                      .map(RuleLoadOrder::getPkgName)
+                                                      .findFirst()
+                                                      .orElse(getDefaultPackageName());
+                    if (!genuineUpdatedRules.containsKey(pkgName)) {
+                        genuineUpdatedRules.put(pkgName, new HashSet<String>());
+                    }
+                    genuineUpdatedRules.get(pkgName).add(ruleName);
+                }
+            }
+        }
+
+        for (ResourceChangeSet resourceChangeSet : result.getChanges().values()) {
+            List<ResourceChange> toRemove = new ArrayList<>();
+            List<ResourceChange> toAdd = new ArrayList<>();
+            for (ResourceChange change : resourceChangeSet.getChanges()) {
+                if (change.getChangeType() == ChangeType.UPDATED && change.getType() == Type.RULE) {
+                    String ruleName = change.getName();
+                    String pkgName = resourceChangeSet.getResourceName();
+                    if (genuineUpdatedRules.containsKey(pkgName) && genuineUpdatedRules.get(pkgName).contains(ruleName)) {
+                        // no op. The rule should be updated
+                    } else {
+                        // This rule should be merged rather than updated
+                        toRemove.add(change);
+                        toAdd.add(new ResourceChange(ChangeType.MERGED, Type.RULE, change.getName()));
+                    }
+                }
+            }
+            resourceChangeSet.getChanges().removeAll(toRemove);
+            resourceChangeSet.getChanges().addAll(toAdd);
+        }
     }
 
     private ResourceChangeSet buildAllItemsChangeSet( Model oldModel, ChangeType changeType ) {
