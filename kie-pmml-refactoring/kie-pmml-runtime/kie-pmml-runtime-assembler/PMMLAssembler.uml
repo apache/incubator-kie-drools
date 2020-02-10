@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.kie.pmml.assembler.service</OriginalElement>
+  <nodes>
+    <node x="0.0" y="395.0">org.kie.pmml.assembler.converter.KiePMMLConverter</node>
+    <node x="0.0" y="213.0">org.kie.pmml.assembler.service.PMMLAssemblerService</node>
+    <node x="0.0" y="318.0">org.kie.pmml.compiler.executor.PMMLCompilerExecutor</node>
+    <node x="0.0" y="82.0">org.kie.pmml.assembler.executor.PMMLAssemblerExecutorImpl</node>
+    <node x="50.5" y="0.0">org.kie.pmml.assembler.executor.PMMLAssemblerExecutor</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.kie.pmml.assembler.executor.PMMLAssemblerExecutorImpl" target="org.kie.pmml.assembler.executor.PMMLAssemblerExecutor">
+      <point x="0.0" y="-43.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6811534500514932" x="1829.6487435828153" y="83.99999999999994" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
