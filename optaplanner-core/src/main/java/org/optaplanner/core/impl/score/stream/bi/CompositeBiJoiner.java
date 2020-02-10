@@ -29,7 +29,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     private final Function<A, ?>[] leftMappings;
     private final Function<B, ?>[] rightMappings;
 
-    public CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
+    CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
@@ -52,12 +52,13 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
         return (Function<A, Object>) leftMappings[index];
     }
 
     @Override
     public Function<A, Object[]> getLeftCombinedMapping() {
-        final Function<A, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<A, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(Function[]::new);
         return (A a) -> Arrays.stream(mappings)
@@ -74,12 +75,13 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
         return (Function<B, Object>) rightMappings[index];
     }
 
     @Override
     public Function<B, Object[]> getRightCombinedMapping() {
-        final Function<B, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<B, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (B b) -> Arrays.stream(mappings)

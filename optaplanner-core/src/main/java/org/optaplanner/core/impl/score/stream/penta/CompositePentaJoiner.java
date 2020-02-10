@@ -30,7 +30,7 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
     private final Function<E, ?>[] rightMappings;
 
-    public CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
+    CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
@@ -53,12 +53,13 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
         return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
     }
 
     @Override
     public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        final QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, joinerList.size())
+        QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(QuadFunction[]::new);
         return (A a, B b, C c, D d) -> Arrays.stream(mappings)
@@ -75,12 +76,13 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public Function<E, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
         return (Function<E, Object>) rightMappings[index];
     }
 
     @Override
     public Function<E, Object[]> getRightCombinedMapping() {
-        final Function<E, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<E, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (E e) -> Arrays.stream(mappings)

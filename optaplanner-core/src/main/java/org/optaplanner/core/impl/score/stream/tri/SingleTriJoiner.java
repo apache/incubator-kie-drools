@@ -51,12 +51,13 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int index) {
-        return (BiFunction<A, B, Object>) leftMapping;
+        assertMappingIndex(index);
+        return (BiFunction<A, B, Object>) getLeftMapping();
     }
 
     @Override
     public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        return (A a, B b) -> new Object[]{leftMapping.apply(a, b)};
+        return (A a, B b) -> new Object[]{getLeftMapping().apply(a, b)};
     }
 
     @Override
@@ -66,11 +67,12 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     @Override
     public Function<C, Object> getRightMapping(int index) {
-        return (Function<C, Object>) rightMapping;
+        assertMappingIndex(index);
+        return (Function<C, Object>) getRightMapping();
     }
 
     @Override
     public Function<C, Object[]> getRightCombinedMapping() {
-        return (C c) -> new Object[]{rightMapping.apply(c)};
+        return (C c) -> new Object[]{getRightMapping().apply(c)};
     }
 }
