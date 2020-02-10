@@ -66,6 +66,7 @@ import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -543,21 +544,19 @@ public class DMNCompilerImpl implements DMNCompiler {
                 if( topLevel || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
 
                     // we have to clone this type definition into a new one
+                    String name = itemDef.getName();
+                    String namespace = dmnModel.getNamespace();
+                    String id = itemDef.getId();
                     BaseDMNTypeImpl baseType = type;
-                    type = type.clone();
-
-                    type.setBaseType( baseType );
-                    type.setNamespace( dmnModel.getNamespace() );
-                    type.setName( itemDef.getName() );
 
                     Type baseFEELType = type.getFeelType();
                     if (baseFEELType instanceof BuiltInType) { // Then it is an ItemDefinition in place for "aliasing" a base FEEL type, for having type(itemDefname) I need to define its SimpleType.
-                        type.setFeelType(new AliasFEELType(itemDef.getName(), (BuiltInType) baseFEELType));
+                        baseFEELType = new AliasFEELType(itemDef.getName(), (BuiltInType) baseFEELType);
                     }
 
-                    type.setAllowedValues(null);
+                    List<UnaryTest> av = null;
                     if ( allowedValuesStr != null ) {
-                        List<UnaryTest> av = ctx.getFeelHelper().evaluateUnaryTests(
+                        av = ctx.getFeelHelper().evaluateUnaryTests(
                                 ctx,
                                 allowedValuesStr.getText(),
                                 dmnModel,
@@ -566,14 +565,19 @@ public class DMNCompilerImpl implements DMNCompiler {
                                 allowedValuesStr.getText(),
                                 node.getName()
                         );
-                        type.setAllowedValues( av );
                     }
-                    if ( itemDef.isIsCollection() ) {
-                        type.setCollection( itemDef.isIsCollection() );
+
+                    boolean isCollection = itemDef.isIsCollection();
+                    if (isCollection) {
+                        baseFEELType = new GenListType(baseFEELType);
                     }
-                }
-                if (type.isCollection()) {
-                    type.setFeelType(new GenListType(type.getFeelType()));
+
+                    if (type instanceof CompositeTypeImpl) {
+                        CompositeTypeImpl compositeTypeImpl = (CompositeTypeImpl) type;
+                        type = new CompositeTypeImpl(namespace, name, id, isCollection, compositeTypeImpl.getFields(), baseType, baseFEELType);
+                    } else if (type instanceof SimpleTypeImpl) {
+                        type = new SimpleTypeImpl(namespace, name, id, isCollection, av, baseType, baseFEELType);
+                    }
                 }
                 if( topLevel ) {
                     DMNType registered = dmnModel.getTypeRegistry().registerType( type );
@@ -593,6 +597,9 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a composite type
             DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
+            if (compType.isCollection()) {
+                compType.setFeelType(new GenListType(compType.getFeelType()));
+            }
             type = compType;
             if( topLevel ) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType( type );
