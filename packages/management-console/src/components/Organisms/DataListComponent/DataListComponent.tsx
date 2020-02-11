@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
+import { useGetProcessInstancesQuery } from '../.././../graphql/types';
 
 interface IOwnProps {
   setInitData: any;
@@ -30,41 +29,20 @@ const DataListComponent: React.FC<IOwnProps> = ({
   isLoading,
   setIsError
 }) => {
-  const GET_INSTANCES = gql`
-    query getInstances($state: [ProcessInstanceState!]) {
-      ProcessInstances(
-        where: {
-          parentProcessInstanceId: { isNull: true }
-          state: { in: $state }
-        }
-      ) {
-        id
-        processId
-        processName
-        parentProcessInstanceId
-        roles
-        state
-        start
-        lastUpdate
-        addons
-        endpoint
-        error {
-          nodeDefinitionId
-          message
-        }
-      }
-    }
-  `;
-  const { loading, error, data, refetch, networkStatus } = useQuery(
-    GET_INSTANCES,
-    {
-      variables: {
-        state: ['ACTIVE']
-      },
-      fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true
-    }
-  );
+  const {
+    loading,
+    error,
+    data,
+    refetch,
+    networkStatus
+  } = useGetProcessInstancesQuery({
+    variables: {
+      state: [ProcessInstanceState.Active]
+    },
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true
+  });
+
   useEffect(() => {
     setIsError(false);
     setInitData(data);
@@ -77,6 +55,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
       </Bullseye>
     );
   }
+
   if (networkStatus === 4) {
     return (
       <Bullseye>
@@ -84,6 +63,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
       </Bullseye>
     );
   }
+
   if (error) {
     setIsError(true);
     return (
@@ -99,7 +79,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   }
 
   return (
-    <DataList aria-label="Expandable data list example">
+    <DataList aria-label="Process instance list">
       {!loading &&
         initData !== undefined &&
         initData.ProcessInstances.map((item, index) => {

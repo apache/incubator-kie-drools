@@ -454,7 +454,7 @@ export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
 };
 
 export type GetChildInstancesQueryVariables = {
-  instanceId?: Maybe<Scalars['String']>;
+  rootProcessInstanceId?: Maybe<Scalars['String']>;
 };
 
 export type GetChildInstancesQuery = { __typename?: 'Query' } & {
@@ -509,6 +509,12 @@ export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
           | 'end'
           | 'endpoint'
         > & {
+            parentProcessInstance: Maybe<
+              { __typename?: 'ProcessInstance' } & Pick<
+                ProcessInstance,
+                'id' | 'processName'
+              >
+            >;
             childProcessInstances: Maybe<
               Array<
                 { __typename?: 'ProcessInstance' } & Pick<
@@ -604,9 +610,9 @@ export type GetProcessInstancesQueryResult = ApolloReactCommon.QueryResult<
   GetProcessInstancesQueryVariables
 >;
 export const GetChildInstancesDocument = gql`
-  query getChildInstances($instanceId: String) {
+  query getChildInstances($rootProcessInstanceId: String) {
     ProcessInstances(
-      where: { parentProcessInstanceId: { equal: $instanceId } }
+      where: { rootProcessInstanceId: { equal: $rootProcessInstanceId } }
     ) {
       id
       processId
@@ -639,7 +645,7 @@ export const GetChildInstancesDocument = gql`
  * @example
  * const { data, loading, error } = useGetChildInstancesQuery({
  *   variables: {
- *      instanceId: // value for 'instanceId'
+ *      rootProcessInstanceId: // value for 'rootProcessInstanceId'
  *   },
  * });
  */
@@ -682,6 +688,10 @@ export const GetProcessInstanceByIdDocument = gql`
       processId
       processName
       parentProcessInstanceId
+      parentProcessInstance {
+        id
+        processName
+      }
       roles
       variables
       state

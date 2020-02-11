@@ -35,6 +35,7 @@ module.exports = typeDefs = gql`
     processId: String!
     processName: String
     parentProcessInstanceId: String
+    parentProcessInstance: ProcessInstance
     rootProcessInstanceId: String
     rootProcessId: String
     roles: [String!]
@@ -44,7 +45,7 @@ module.exports = typeDefs = gql`
     variables: String
     start: DateTime!
     end: DateTime
-    childProcessInstanceId: [String!]
+    childProcessInstances: [ProcessInstance!]
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!

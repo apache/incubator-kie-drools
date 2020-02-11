@@ -3,12 +3,15 @@ module.exports = data = [
     id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
     processId: 'hotelBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+    parentProcessInstance: {
+      id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processName: 'travels'
+    },
     processName: 'HotelBooking',
     rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'COMPLETED',
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     endpoint: 'http://localhost:4000',
     error: {
@@ -50,6 +53,10 @@ module.exports = data = [
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf863',
     processId: 'flightBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+    parentProcessInstance: {
+      id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processName: 'travels'
+    },
     processName: 'FlightBooking',
     rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
@@ -62,7 +69,6 @@ module.exports = data = [
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
     nodes: [
@@ -97,12 +103,15 @@ module.exports = data = [
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
     processId: 'flightBooking',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+    parentProcessInstance: {
+      id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processName: 'travels'
+    },
     processName: 'FlightBooking',
     rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'COMPLETED',
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     endpoint: 'http://localhost:4000',
     error: {
@@ -144,13 +153,13 @@ module.exports = data = [
     id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     processId: 'travels',
     parentProcessInstanceId: null,
+    parentProcessInstance: null,
     processName: 'travels',
     roles: [],
     state: 'ERROR',
     rootProcessInstanceId: null,
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
       nodeDefinitionId: 'e4448857-fa0c-403b-ad69-f0a353458c9e',
@@ -244,15 +253,15 @@ module.exports = data = [
     childProcessInstances: [
       {
         id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
-        processName: 'subprocess-1'
+        processName: 'FlightBooking'
       },
       {
         id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
-        processName: 'subprocess-2'
+        processName: 'HotelBooking'
       },
       {
         id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf863',
-        processName: 'subprocess-2'
+        processName: 'FlightBooking'
       }
     ]
   },
@@ -260,13 +269,16 @@ module.exports = data = [
     id: 'fc1b6535-d557-40df-82c8-b425b9dc531b',
     processId: 'flightBooking',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+    parentProcessInstance: {
+      id: '538f9feb-5a14-4096-b791-2055b38da7c6',
+      processName: 'travels'
+    },
     processName: 'FlightBooking',
     rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     roles: [],
     state: 'ERROR',
     addons: ['prometheus-monitoring'],
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
       nodeDefinitionId: 'cq125e139d5-4e77-48c9-84ae-34578e90433n',
@@ -308,13 +320,16 @@ module.exports = data = [
     id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
     processId: 'hotelBooking',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+    parentProcessInstance: {
+      id: '538f9feb-5a14-4096-b791-2055b38da7c6',
+      processName: 'travels'
+    },
     rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     processName: 'HotelBooking',
     roles: [],
     state: 'ABORTED',
     addons: ['process-management'],
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578ek1839b',
@@ -355,13 +370,13 @@ module.exports = data = [
     id: '538f9feb-5a14-4096-b791-2055b38da7c6',
     processId: 'travels',
     parentProcessInstanceId: null,
+    parentProcessInstance: null,
     processName: 'travels',
     rootProcessInstanceId: null,
     roles: [],
     state: 'ERROR',
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e9817n',
       message: 'Something went wrong'
@@ -446,10 +461,11 @@ module.exports = data = [
     childProcessInstances: [
       {
         id: 'fc1b6535-d557-40df-82c8-b425b9dc531b',
-        processName: 'subprocess-1'
-      }, {
+        processName: 'FlightBooking'
+      },
+      {
         id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
-        processName: 'subprocess-2'
+        processName: 'HotelBooking'
       }
     ]
   },
@@ -457,6 +473,7 @@ module.exports = data = [
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processId: 'travels',
     parentProcessInstanceId: null,
+    parentProcessInstance: null,
     processName: 'travels',
     roles: [],
     state: 'ACTIVE',
@@ -468,7 +485,6 @@ module.exports = data = [
       message: 'Something went wrong'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: null,
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -549,10 +565,11 @@ module.exports = data = [
     childProcessInstances: [
       {
         id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-        processName: 'subprocess-1'
-      }, {
+        processName: 'FlightBooking'
+      },
+      {
         id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
-        processName: 'subprocess-2'
+        processName: 'HotelBooking'
       }
     ]
   },
@@ -560,6 +577,10 @@ module.exports = data = [
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
     processId: 'flightBooking',
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    parentProcessInstance: {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+      processName: 'travels'
+    },
     processName: 'FlightBooking',
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
@@ -571,7 +592,6 @@ module.exports = data = [
       message: 'Something went wrong'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -601,15 +621,21 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstances: [{
-      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
-      processName: 'subprocess'
-    }]
+    childProcessInstances: [
+      {
+        id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+        processName: 'FlightBooking test 1'
+      }
+    ]
   },
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
     processId: 'flightBooking test1',
     parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+    parentProcessInstance: {
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+      processName: 'FlightBooking'
+    },
     processName: 'FlightBooking test 1',
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
@@ -621,7 +647,6 @@ module.exports = data = [
       message: 'Something went wrong'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -651,15 +676,21 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstances: [{
-      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
-      processName: 'subprocess'
-    }]
+    childProcessInstances: [
+      {
+        id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
+        processName: 'FlightBooking test 2'
+      }
+    ]
   },
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
     processId: 'flightBooking test2',
     parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+    parentProcessInstance: {
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
+      processName: 'FlightBooking test 1'
+    },
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processName: 'FlightBooking test 2',
     roles: [],
@@ -671,7 +702,6 @@ module.exports = data = [
       message: 'Something went wrong'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -707,6 +737,10 @@ module.exports = data = [
     id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
     processId: 'hotelBooking',
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+    parentProcessInstance: {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+      processName: 'travels'
+    },
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processName: 'HotelBooking',
     roles: [],
@@ -718,7 +752,6 @@ module.exports = data = [
       message: 'Something went wrong'
     },
     start: '2019-10-22T03:40:44.089Z',
-    lastUpdate: '2019-12-25T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     variables:
       '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',

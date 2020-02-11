@@ -1,6 +1,5 @@
 import { TimeAgo } from '@n1ru4l/react-time-ago';
 import React, { useCallback, useState, useEffect } from 'react';
-import gql from 'graphql-tag';
 import axios from 'axios';
 import {
   Alert,
@@ -22,8 +21,8 @@ import {
   Modal
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { useApolloClient } from 'react-apollo';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
+import { useGetChildInstancesLazyQuery } from '../../../graphql/types';
 
 /* tslint:disable:no-string-literal */
 
@@ -55,38 +54,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [isOpen, setisOpen] = useState(false);
   const [isLoaded, setisLoaded] = useState(false);
   const [isChecked, setisChecked] = useState(false);
-  const [childList, setChildList] = useState([]);
+  const [childList, setChildList] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const client = useApolloClient();
-
-  const GET_CHILD_INSTANCES = gql`
-    query getChildInstances($rootProcessInstanceId: String) {
-      ProcessInstances(
-        where: { rootProcessInstanceId: { equal: $rootProcessInstanceId } }
-      ) {
-        id
-        processId
-        processName
-        parentProcessInstanceId
-        rootProcessInstanceId
-        roles
-        state
-        start
-        lastUpdate
-        endpoint
-        addons
-        error {
-          nodeDefinitionId
-          message
-        }
-      }
-    }
-  `;
+  const [getChildInstances, { loading, data }] = useGetChildInstancesLazyQuery({
+    fetchPolicy: 'network-only'
+  });
   const handleViewError = useCallback(
     async (_processID, _instanceID, _endpoint) => {
       setOpenModal(true);
@@ -174,21 +151,22 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           ]
         : [...expanded, _id];
     setexpanded(newExpanded);
+
     if (!isLoaded) {
-      await client
-        .query({
-          query: GET_CHILD_INSTANCES,
-          variables: {
-            rootProcessInstanceId: processInstanceData.id
-          },
-          fetchPolicy: 'network-only'
-        })
-        .then(result => {
-          setChildList(result.data);
-          setisLoaded(true);
-        });
+      getChildInstances({
+        variables: {
+          rootProcessInstanceId: processInstanceData.id
+        }
+      });
     }
   };
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setChildList(data);
+      setisLoaded(true);
+    }
+  }, [data]);
 
   const handleSkipButton = async () => {
     setOpenModal(!openModal);

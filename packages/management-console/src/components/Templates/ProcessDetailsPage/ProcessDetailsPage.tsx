@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/react-hooks';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,7 +7,6 @@ import {
   PageSection,
   Title
 } from '@patternfly/react-core';
-import gql from 'graphql-tag';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
@@ -16,43 +14,19 @@ import ProcessDetailsProcessDiagram from '../../Organisms/ProcessDetailsProcessD
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
+import { useGetProcessInstanceByIdQuery } from '../../../graphql/types';
 
 const ProcessDetailsPage = ({ match }) => {
   const id = match.params.instanceID;
-  const GET_PROCESS_INSTANCE = gql`
-    query getProcessInstanceById($id: String) {
-      ProcessInstances(where: { id: { equal: $id } }) {
-        id
-        processId
-        processName
-        parentProcessInstanceId
-        roles
-        variables
-        state
-        lastUpdate
-        start
-        end
-        endpoint
-        childProcessInstanceId
-        nodes {
-          id
-          name
-          type
-          enter
-          exit
-        }
-      }
-    }
-  `;
-  const { data, loading, error } = useQuery(GET_PROCESS_INSTANCE, {
+
+  const { loading, error, data } = useGetProcessInstanceByIdQuery({
     variables: { id }
   });
 
-  {
-    if (loading) {
-      return <p>Loading...</p>;
-    }
+  if (loading) {
+    return <p>Loading...</p>;
   }
+
   return (
     <>
       <Page>

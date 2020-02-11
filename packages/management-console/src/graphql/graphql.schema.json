@@ -763,7 +763,7 @@
       {
         "kind": "SCALAR",
         "name": "DateTime",
-        "description": "An ISO-8601 compliant DateTime Scalar",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
