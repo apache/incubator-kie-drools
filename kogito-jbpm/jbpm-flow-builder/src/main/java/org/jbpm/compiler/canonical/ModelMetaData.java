@@ -16,10 +16,17 @@
 
 package org.jbpm.compiler.canonical;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import org.drools.core.util.StringUtils;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.internal.kogito.codegen.Generated;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -29,6 +36,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -44,16 +52,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.internal.kogito.codegen.Generated;
-
-import static com.github.javaparser.StaticJavaParser.parse;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class ModelMetaData {
 
@@ -63,14 +63,22 @@ public class ModelMetaData {
     private final VariableDeclarations variableScope;
     private String modelClassName;
     private String visibility;
+    private boolean hidden;
+    private String templateName;
 
-    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope) {
+    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden) {
+        this(processId, packageName, modelClassSimpleName, visibility, variableScope, hidden, "/class-templates/ModelTemplate.java");
+    }
+    
+    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden, String templateName) {
         this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
         this.variableScope = variableScope;
         this.modelClassName = packageName + '.' + modelClassSimpleName;
         this.visibility = visibility;
+        this.hidden = hidden;
+        this.templateName = templateName;
     }
 
     public String generate() {
@@ -130,7 +138,7 @@ public class ModelMetaData {
     }
 
     private CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/ModelTemplate.java"));
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream(templateName));
         compilationUnit.setPackageDeclaration(packageName);
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 
@@ -142,7 +150,8 @@ public class ModelMetaData {
         if (!WorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
             modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogit-codegen")), 
                                                                                                                           new MemberValuePair("reference", new StringLiteralExpr(processId)),
-                                                                                                                          new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))))));
+                                                                                                                          new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))),
+                                                                                                                          new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
         }
         modelClass.setName(modelClassSimpleName);
 
@@ -155,8 +164,10 @@ public class ModelMetaData {
         // setup of static fromMap method body        
         BlockStmt staticFromMap = new BlockStmt();
 
-        FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");
-        staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
+        if (modelClass.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getId")).isPresent()) {
+            FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");
+            staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
+        }
 
         for (Map.Entry<String, String> variable : variableScope.getTypes().entrySet()) {
 

@@ -198,7 +198,10 @@ public class ProcessCodegen extends AbstractGenerator {
         List<String> publicProcesses = new ArrayList<>();
 
         Map<String, ModelMetaData> processIdToModel = new HashMap<>();
+        
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
+        Map<String, InputModelClassGenerator> processIdToInputModelGenerator = new HashMap<>();
+        Map<String, OutputModelClassGenerator> processIdToOutputModelGenerator = new HashMap<>();
 
         Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
         Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
@@ -208,7 +211,14 @@ public class ProcessCodegen extends AbstractGenerator {
             ModelClassGenerator mcg = new ModelClassGenerator(workFlowProcess);
             processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
             processIdToModel.put(workFlowProcess.getId(), mcg.generate());
+            
+            InputModelClassGenerator imcg = new InputModelClassGenerator(workFlowProcess);
+            processIdToInputModelGenerator.put(workFlowProcess.getId(), imcg);
+            
+            OutputModelClassGenerator omcg = new OutputModelClassGenerator(workFlowProcess);
+            processIdToOutputModelGenerator.put(workFlowProcess.getId(), omcg);
         }
+        
 
         // then we generate user task inputs and outputs if any
         for (WorkflowProcess workFlowProcess : processes.values()) {
@@ -243,7 +253,7 @@ public class ProcessCodegen extends AbstractGenerator {
             String classPrefix = StringUtils.capitalize(execModelGen.extractedProcessId());
             WorkflowProcess workFlowProcess = execModelGen.process();
             ModelClassGenerator modelClassGenerator =
-                    processIdToModelGenerator.get(execModelGen.getProcessId());
+                    processIdToModelGenerator.get(execModelGen.getProcessId());   
 
             ProcessGenerator p = new ProcessGenerator(
                     workFlowProcess,
@@ -276,7 +286,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
             if (generateReactiveResources) {
 
-                LOGGER.info("Generating Reactive REST Resources.");
+                LOGGER.debug("Generating Reactive REST Resources.");
                 // create REST resource class for process
                 resourceGenerator = new ReactiveResourceGenerator(
                                             workFlowProcess,
@@ -284,7 +294,7 @@ public class ProcessCodegen extends AbstractGenerator {
                                             execModelGen.className(),
                                             applicationCanonicalName);
             } else {
-                LOGGER.info("Generating REST Resources.");
+                LOGGER.debug("Generating REST Resources.");
                 // create REST resource class for process
                 resourceGenerator = new ResourceGenerator(
                                             workFlowProcess,
@@ -339,6 +349,18 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {
+            ModelMetaData mmd = modelClassGenerator.generate();
+            storeFile( Type.MODEL, modelClassGenerator.generatedFilePath(),
+                      mmd.generate());
+        }
+        
+        for (InputModelClassGenerator modelClassGenerator : processIdToInputModelGenerator.values()) {
+            ModelMetaData mmd = modelClassGenerator.generate();
+            storeFile( Type.MODEL, modelClassGenerator.generatedFilePath(),
+                      mmd.generate());
+        }
+        
+        for (OutputModelClassGenerator modelClassGenerator : processIdToOutputModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile( Type.MODEL, modelClassGenerator.generatedFilePath(),
                       mmd.generate());

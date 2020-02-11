@@ -65,6 +65,7 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -155,7 +156,26 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         String name = extractModelClassName(process.getId());
 
         return new ModelMetaData(process.getId(), packageName, name, process.getVisibility(),
-                                 VariableDeclarations.of((VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE)));
+                                 VariableDeclarations.of((VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE)),
+                                 false);
+    }
+    
+    public ModelMetaData generateInputModel(WorkflowProcess process) {
+        String packageName = process.getPackageName();
+        String name = extractModelClassName(process.getId()) + "Input";
+
+        return new ModelMetaData(process.getId(), packageName, name, process.getVisibility(),
+                                 VariableDeclarations.ofInput((VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE)),
+                                 true, "/class-templates/ModelNoIDTemplate.java");
+    }
+    
+    public ModelMetaData generateOutputModel(WorkflowProcess process) {
+        String packageName = process.getPackageName();
+        String name = extractModelClassName(process.getId()) + "Output";
+
+        return new ModelMetaData(process.getId(), packageName, name, process.getVisibility(),
+                                 VariableDeclarations.ofOutput((VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE)),
+                                 true);
     }
 
     public static String extractModelClassName(String processId) {
@@ -234,9 +254,10 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
                 if (!visitedVariables.add(variable.getName())) {
                     continue;
                 }
+                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
                 ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
                 ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
-                addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "variable", new StringLiteralExpr(variable.getName()), variableValue);
+                addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "variable", new StringLiteralExpr(variable.getName()), variableValue, new StringLiteralExpr(Variable.VARIABLE_TAGS), tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr());
             }
         }
     }

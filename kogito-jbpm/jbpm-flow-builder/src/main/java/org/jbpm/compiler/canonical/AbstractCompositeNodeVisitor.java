@@ -24,6 +24,7 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -68,9 +69,10 @@ public class AbstractCompositeNodeVisitor extends AbstractVisitor {
                 if (!visitedVariables.add(variable.getName())) {
                     continue;
                 }
+                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
                 ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
                 ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
-                addFactoryMethodWithArgs(contextNode, body, "variable", new StringLiteralExpr(variable.getName()), variableValue);
+                addFactoryMethodWithArgs(contextNode, body, "variable", new StringLiteralExpr(variable.getName()), variableValue, new StringLiteralExpr(Variable.VARIABLE_TAGS), (tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }
         }
     }

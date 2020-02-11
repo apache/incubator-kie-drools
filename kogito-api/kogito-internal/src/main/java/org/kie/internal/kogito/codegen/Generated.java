@@ -40,4 +40,11 @@ public @interface Generated {
     * @return alternative name
     */
    String name() default "";
+   
+   /**
+    * Optional flag indicating that the generated class shall be hidden from 
+    * other generators.
+    * @return true if the class should be hidden otherwise false
+    */
+   boolean hidden() default false;
 }

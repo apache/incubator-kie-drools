@@ -17,6 +17,7 @@
 package org.jbpm.process.core.context.variable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -32,6 +33,7 @@ public class VariableScope extends AbstractContext {
 
     public static final String VARIABLE_SCOPE = "VariableScope";
     public static final String CASE_FILE_PREFIX = "caseFile_";
+
     
     private static final long serialVersionUID = 510l;
     
@@ -114,4 +116,30 @@ public class VariableScope extends AbstractContext {
 		variableStrictEnabled = turnedOn;
 	}
 
+    public boolean isReadOnly(String name) {
+        Variable v = findVariable(name);
+        
+        if (v != null) {
+            return v.hasTag(Variable.READONLY_TAG);
+        }
+        return false;
+    }
+
+    public boolean isRequired(String name) {
+        Variable v = findVariable(name);
+        
+        if (v != null) {
+            return v.hasTag(Variable.REQUIRED_TAG);
+        }
+        return false;
+    }
+    
+    public List<String> tags(String name) {
+        Variable v = findVariable(name);
+        
+        if (v != null) {
+            return v.getTags();
+        }
+        return Collections.emptyList();
+    }
 }

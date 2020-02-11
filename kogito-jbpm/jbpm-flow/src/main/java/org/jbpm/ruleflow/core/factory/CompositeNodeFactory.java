@@ -16,12 +16,12 @@
 
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -59,11 +59,22 @@ public class CompositeNodeFactory extends RuleFlowNodeContainerFactory {
     	return variable(name, type, null);
     }
     
-    public CompositeNodeFactory variable(String name, DataType type, Object value) {
+    public CompositeNodeFactory variable(String name, DataType type, Object value) {     
+        return variable(name, type, value, null, null);
+    }
+    
+    public CompositeNodeFactory variable(String name, DataType type, String metaDataName, Object metaDataValue) {
+        return variable(name, type, null, metaDataName, metaDataValue);
+    }
+    
+    public CompositeNodeFactory variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue) {
     	Variable variable = new Variable();
     	variable.setName(name);
     	variable.setType(type);
     	variable.setValue(value);
+    	if (metaDataName != null && metaDataValue != null) {
+            variable.setMetaData(metaDataName, metaDataValue);
+        }
     	VariableScope variableScope = (VariableScope)
 			getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
 		if (variableScope == null) {

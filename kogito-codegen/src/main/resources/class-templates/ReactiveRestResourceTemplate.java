@@ -41,14 +41,14 @@ public class $Type$ReactiveResource {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)    
-    public CompletionStage<$Type$> createResource_$name$($Type$ resource) {
+    public CompletionStage<$Type$Output> createResource_$name$($Type$Input resource) {
         if (resource == null) {
-            resource = new $Type$();
+            resource = new $Type$Input();
         }
-        final $Type$ value = resource;
+        final $Type$Input value = resource;
         return CompletableFuture.supplyAsync(() -> {
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.createInstance(value);
+                ProcessInstance<$Type$> pi = process.createInstance(mapInput(value, new $Type$()));
                 pi.start();
                 return getModel(pi);
             });
@@ -57,10 +57,10 @@ public class $Type$ReactiveResource {
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<List<$Type$>> getResources_$name$() {
+    public CompletionStage<List<$Type$Output>> getResources_$name$() {
         return CompletableFuture.supplyAsync(() -> {
             return process.instances().values().stream()
-                    .map(ProcessInstance::variables)
+                    .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                  .collect(Collectors.toList());
         });   
     }
@@ -68,11 +68,11 @@ public class $Type$ReactiveResource {
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<$Type$> getResource_$name$(@PathParam("id") String id) {
+    public CompletionStage<$Type$Output> getResource_$name$(@PathParam("id") String id) {
         return CompletableFuture.supplyAsync(() -> {
             return process.instances()
                     .findById(id)
-                    .map(ProcessInstance::variables)
+                    .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                     .orElse(null);
         });
     }
@@ -80,7 +80,7 @@ public class $Type$ReactiveResource {
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<$Type$> deleteResource_$name$(@PathParam("id") final String id) {
+    public CompletionStage<$Type$Output> deleteResource_$name$(@PathParam("id") final String id) {
         return CompletableFuture.supplyAsync(() -> {
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 ProcessInstance<$Type$> pi = process.instances()
@@ -100,7 +100,7 @@ public class $Type$ReactiveResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<$Type$> updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
+    public CompletionStage<$Type$Output> updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
         return CompletableFuture.supplyAsync(() -> {
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 ProcessInstance<$Type$> pi = process.instances()
@@ -110,7 +110,7 @@ public class $Type$ReactiveResource {
                     return null;
                 } else {
                     pi.updateVariables(resource);
-                    return pi.variables();
+                    return mapOutput(new $Type$Output(), pi.variables());
                 }
             });
         });
@@ -129,12 +129,12 @@ public class $Type$ReactiveResource {
         });
     }
     
-    protected $Type$ getModel(ProcessInstance<$Type$> pi) {
+    protected $Type$Output getModel(ProcessInstance<$Type$> pi) {
         if (pi.status() == ProcessInstance.STATE_ERROR && pi.error().isPresent()) {
             throw new ProcessInstanceExecutionException(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
         }
         
-        return pi.variables();
+        return mapOutput(new $Type$Output(), pi.variables());
     }
     
     protected Policy[] policies(String user, List<String> groups) {
@@ -146,5 +146,17 @@ public class $Type$ReactiveResource {
             identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
         }
         return new Policy[] {SecurityPolicy.of(identity)};
+    }
+    
+    protected $Type$ mapInput($Type$Input input, $Type$ resource) {
+        resource.fromMap(input.toMap());
+        
+        return resource;
+    }
+    
+    protected $Type$Output mapOutput($Type$Output output, $Type$ resource) {
+        output.fromMap(resource.toMap());
+        
+        return output;
     }
 }

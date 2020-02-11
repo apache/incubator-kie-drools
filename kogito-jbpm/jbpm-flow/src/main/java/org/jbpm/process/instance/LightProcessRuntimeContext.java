@@ -110,5 +110,6 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
             }
         }
 
+        variableScopeInstance.enforceRequiredVariables();
     }
 }

@@ -76,7 +76,8 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
                                                           metadata.getPackageName(),
                                                           subProcessModelClassName,
                                                           WorkflowProcess.PRIVATE_VISIBILITY,
-                                                          VariableDeclarations.of(inputTypes));
+                                                          VariableDeclarations.of(inputTypes),
+                                                          false);
 
         retValue.ifPresent(retValueExpression -> {
             retValueExpression.findAll(ClassOrInterfaceType.class)

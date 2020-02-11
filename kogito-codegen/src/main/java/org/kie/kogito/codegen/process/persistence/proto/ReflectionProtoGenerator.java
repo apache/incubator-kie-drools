@@ -72,10 +72,17 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
     protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
+        
         Generated generatedData = clazz.getAnnotation(Generated.class);
         if (generatedData != null) {
             name = generatedData.name().isEmpty() ? name : generatedData.name();
+            if (generatedData.hidden()) {
+                // since class is marked as hidden skip processing of that class
+                return null;
+            }
         }
+        
+        
 
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
@@ -132,6 +139,10 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
                                         "import \"kogito-types.proto\";", 
                                         "option kogito_model = \"" + generatedData.name() +"\";", 
                                         "option kogito_id = \"" + processId +"\";");
+            if (modelProto.getMessages().isEmpty()) {
+                // no messages, nothing to do
+                return;
+            }
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata").setComment(INDEX_COMMENT);
             

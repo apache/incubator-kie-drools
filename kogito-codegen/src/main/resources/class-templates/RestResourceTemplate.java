@@ -41,14 +41,14 @@ public class $Type$Resource {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)    
-    public $Type$ createResource_$name$(@Context HttpHeaders httpHeaders, $Type$ resource) {
+    public $Type$Output createResource_$name$(@Context HttpHeaders httpHeaders, $Type$Input resource) {
         if (resource == null) {
-            resource = new $Type$();
+            resource = new $Type$Input();
         }
-        final $Type$ value = resource;
+        final $Type$Input value = resource;
 
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.createInstance(value);
+            ProcessInstance<$Type$> pi = process.createInstance(mapInput(value, new $Type$()));
             String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
             
             if (startFromNode != null) {
@@ -63,26 +63,26 @@ public class $Type$Resource {
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
-    public List<$Type$> getResources_$name$() {
+    public List<$Type$Output> getResources_$name$() {
         return process.instances().values().stream()
-                .map(ProcessInstance::variables)
+                .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                 .collect(Collectors.toList());
     }
 
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ getResource_$name$(@PathParam("id") String id) {
+    public $Type$Output getResource_$name$(@PathParam("id") String id) {
         return process.instances()
                 .findById(id)
-                .map(ProcessInstance::variables)
+                .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                 .orElse(null);
     }
 
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ deleteResource_$name$(@PathParam("id") final String id) {
+    public $Type$Output deleteResource_$name$(@PathParam("id") final String id) {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.instances()
                     .findById(id)
@@ -100,7 +100,7 @@ public class $Type$Resource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
+    public $Type$Output updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.instances()
                     .findById(id)
@@ -109,7 +109,7 @@ public class $Type$Resource {
                 return null;
             } else {
                 pi.updateVariables(resource);
-                return pi.variables();
+                return mapOutput(new $Type$Output(), pi.variables());
             }
         });
     }
@@ -126,12 +126,12 @@ public class $Type$Resource {
                 .orElse(null);
     }
     
-    protected $Type$ getModel(ProcessInstance<$Type$> pi) {
+    protected $Type$Output getModel(ProcessInstance<$Type$> pi) {
         if (pi.status() == ProcessInstance.STATE_ERROR && pi.error().isPresent()) {
             throw new ProcessInstanceExecutionException(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
         }
         
-        return pi.variables();
+        return mapOutput(new $Type$Output(), pi.variables());
     }
     
     protected Policy[] policies(String user, List<String> groups) {
@@ -143,5 +143,17 @@ public class $Type$Resource {
             identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
         }
         return new Policy[] {SecurityPolicy.of(identity)};
+    }
+    
+    protected $Type$ mapInput($Type$Input input, $Type$ resource) {
+        resource.fromMap(input.toMap());
+        
+        return resource;
+    }
+    
+    protected $Type$Output mapOutput($Type$Output output, $Type$ resource) {
+        output.fromMap(resource.getId(), resource.toMap());
+        
+        return output;
     }
 }

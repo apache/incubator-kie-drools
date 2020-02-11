@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
@@ -675,4 +677,126 @@ public class UserTaskTest extends AbstractCodegenTest {
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Test
+    public void testApprovalWithReadonlyVariableTags() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/approval-with-readonly-variable-tags.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Class<?> resourceClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
+        assertNotNull(resourceClazz);
+        
+        Field approverField = resourceClazz.getDeclaredField("approver");
+        assertThat(approverField).isNotNull();
+        assertThat(approverField.getType().getCanonicalName()).isEqualTo(String.class.getCanonicalName());
+        
+        Process<? extends Model> p = app.processes().processById("approvals");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("approver", "john");
+        m.fromMap(parameters);
+        
+        
+        ProcessInstance processInstance = p.createInstance(m);
+        processInstance.start();
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE, processInstance.status()); 
+        
+        final Model updates = p.createModel();
+        parameters = new HashMap<>();
+        parameters.put("approver", "mary");
+        updates.fromMap(parameters);
+        // updating readonly variable should fail
+        assertThrows(VariableViolationException.class, () -> processInstance.updateVariables(updates));
+
+        processInstance.abort();
+        
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED, processInstance.status());
+    } 
+    
+    @Test
+    public void testApprovalWithInternalVariableTags() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/approval-with-internal-variable-tags.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Class<?> resourceClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
+        assertNotNull(resourceClazz);
+        // internal variables are not exposed on the model
+        assertThrows(NoSuchFieldException.class, () -> resourceClazz.getDeclaredField("approver"));
+        
+        Process<? extends Model> p = app.processes().processById("approvals");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE, processInstance.status()); 
+
+        processInstance.abort();
+        
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED, processInstance.status());
+    } 
+
+    @Test
+    public void testApprovalWithRequiredVariableTags() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/approval-with-required-variable-tags.bpmn2");        
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("approvals");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+        
+        assertThrows(VariableViolationException.class, () -> {
+            ProcessInstance<?> processInstance = p.createInstance(m);
+            processInstance.start();
+        });
+ 
+    } 
+    
+    @Test
+    public void testApprovalWithIOVariableTags() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/approval-with-io-variable-tags.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Class<?> modelClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
+        assertNotNull(modelClazz);
+        assertNotNull(modelClazz.getDeclaredField("decision"));
+        assertNotNull(modelClazz.getDeclaredField("approver"));
+        
+        Class<?> inputModelClazz = Class.forName("org.acme.travels.ApprovalsModelInput", true, testClassLoader());
+        assertNotNull(inputModelClazz);
+        assertNotNull(inputModelClazz.getDeclaredField("approver"));
+        assertThrows(NoSuchFieldException.class, () -> inputModelClazz.getDeclaredField("decision"));
+        assertThrows(NoSuchFieldException.class, () -> inputModelClazz.getDeclaredField("id"));
+        
+        Class<?> outputModelClazz = Class.forName("org.acme.travels.ApprovalsModelOutput", true, testClassLoader());
+        assertNotNull(outputModelClazz);
+        assertNotNull(outputModelClazz.getDeclaredField("decision"));
+        assertNotNull(outputModelClazz.getDeclaredField("id"));
+        assertThrows(NoSuchFieldException.class, () -> outputModelClazz.getDeclaredField("approver"));
+        
+        Process<? extends Model> p = app.processes().processById("approvals");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("approver", "mary");
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE, processInstance.status()); 
+
+        processInstance.abort();
+        
+        assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED, processInstance.status());
+    } 
 }

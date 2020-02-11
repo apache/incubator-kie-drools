@@ -16,6 +16,9 @@
 
 package org.drools.core.event;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -28,15 +31,17 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
     private String instanceId;
     private Object oldValue;
     private Object newValue;
+    private List<String> tags;
 
     public ProcessVariableChangedEventImpl(final String id, final String instanceId,
-            final Object oldValue, final Object newValue,
+            final Object oldValue, final Object newValue, List<String> tags,
             final ProcessInstance processInstance, KieRuntime kruntime ) {
         super( processInstance, kruntime );
         this.id = id;
         this.instanceId = instanceId;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.tags = tags == null ? Collections.emptyList() : tags;
     }
     
     public String getVariableInstanceId() {
@@ -53,6 +58,14 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
     
     public Object getNewValue() {
         return newValue;
+    }
+
+    public boolean hasTag(String tag) {
+        return tags.contains(tag);
+    }
+    
+    public List<String> getTags() {
+        return tags;
     }
 
     public String toString() {

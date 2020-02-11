@@ -28,6 +28,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.kie.kogito.process.VariableViolationException;
 
 /**
  * 
@@ -85,19 +86,24 @@ public class VariableScopeInstance extends AbstractContextInstance {
         	if (value == null) {
         		return;
         	}
-        } 
+        }
+ 
+        // check if variable that is being set is readonly and has already been set
+        if (oldValue != null && getVariableScope().isReadOnly(name)) {
+            throw new VariableViolationException(getProcessInstance().getId(), name, "Variable '" + name + "' is already set and is marked as read only");
+        }
         ProcessEventSupport processEventSupport = ((InternalProcessRuntime) getProcessInstance()
     		.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
     	processEventSupport.fireBeforeVariableChanged(
 			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
 			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
-			oldValue, value, getProcessInstance(),
+			oldValue, value, getVariableScope().tags(name), getProcessInstance(),
 			getProcessInstance().getKnowledgeRuntime());
         internalSetVariable(name, value);
         processEventSupport.fireAfterVariableChanged(
 			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
 			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
-    		oldValue, value, getProcessInstance(),
+    		oldValue, value, getVariableScope().tags(name), getProcessInstance(),
 			getProcessInstance().getKnowledgeRuntime());
     }
     
@@ -123,4 +129,12 @@ public class VariableScopeInstance extends AbstractContextInstance {
     	}
 	}
 
+    public void enforceRequiredVariables() {
+        VariableScope variableScope = getVariableScope();
+        for (Variable variable : variableScope.getVariables()) {
+            if (variableScope.isRequired(variable.getName()) && !variables.containsKey(variable.getName())) {                
+                throw new VariableViolationException(getProcessInstance().getId(), variable.getName(), "Variable '" + variable.getName() + "' is required but not set");
+            }
+        }
+    }
 }

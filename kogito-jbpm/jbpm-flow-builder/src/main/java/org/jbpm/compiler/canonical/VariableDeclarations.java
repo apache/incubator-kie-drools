@@ -17,6 +17,7 @@ package org.jbpm.compiler.canonical;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -26,6 +27,32 @@ public class VariableDeclarations {
     public static VariableDeclarations of(VariableScope vscope) {
         HashMap<String, String> vs = new HashMap<>();
         for (Variable variable : vscope.getVariables()) {
+            if (variable.hasTag(Variable.INTERNAL_TAG)) {
+                continue;
+            }
+            
+            vs.put(variable.getName(), variable.getType().getStringType());
+        }
+        return of(vs);
+    }
+    
+    public static VariableDeclarations ofInput(VariableScope vscope) {
+        
+        return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.OUTPUT_TAG));
+    }
+    
+    public static VariableDeclarations ofOutput(VariableScope vscope) {
+        
+        return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.INPUT_TAG));
+    }
+    
+    public static VariableDeclarations of(VariableScope vscope, Predicate<Variable> filterOut) {
+        HashMap<String, String> vs = new HashMap<>();
+        for (Variable variable : vscope.getVariables()) {
+            if (filterOut.test(variable)) {
+                continue;
+            }
+            
             vs.put(variable.getName(), variable.getType().getStringType());
         }
         return of(vs);
