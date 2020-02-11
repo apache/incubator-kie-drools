@@ -35,7 +35,7 @@ public class PMMLIsRegresssionModelExecutor {
 
     public static PMML4Result evaluateRegression(KiePMMLRegressionModel regressionModel, PMMLContext context) throws KiePMMLException {
         final List<KiePMMLRegressionTable> regressionTables = regressionModel.getRegressionTables();
-        if (StringUtils.isEmpty(regressionModel.getTargetField().trim())) {
+        if (regressionModel.getTargetField() == null || StringUtils.isEmpty(regressionModel.getTargetField().trim())) {
             throw new KiePMMLException("TargetField required, retrieved " + regressionModel.getTargetField());
         }
         if (regressionTables.size() != 1) {

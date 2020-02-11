@@ -123,6 +123,9 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return Objects.hash(super.hashCode(), regressionTables, miningFunction, algorithmName, modelType, targetField, targetOpType, regressionNormalizationMethod, isScorable);
     }
 
+    protected KiePMMLRegressionModel() {
+    }
+
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
