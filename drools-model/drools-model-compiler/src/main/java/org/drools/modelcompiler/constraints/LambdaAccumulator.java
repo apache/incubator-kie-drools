@@ -49,7 +49,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public int hashCode() {
-        return Objects.hash(accumulateFunction, reverseSupport);
+        return Objects.hash(accumulateFunction);
     }
 
     private final AccumulateFunction accumulateFunction;
