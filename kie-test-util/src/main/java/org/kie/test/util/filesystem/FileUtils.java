@@ -33,7 +33,7 @@ public class FileUtils {
      * @throws IOException
      */
     public static File getFile(String fileName)  {
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
         File toReturn = ResourceHelper.getResourcesByExtension(extension)
                 .filter(file -> file.getName().equals(fileName))
                 .findFirst()
@@ -53,4 +53,7 @@ public class FileUtils {
         return new FileInputStream(sourceFile);
     }
 
+    private FileUtils() {
+        // Avoid instantiating class
+    }
 }

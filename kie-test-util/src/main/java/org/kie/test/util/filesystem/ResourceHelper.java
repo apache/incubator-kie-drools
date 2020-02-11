@@ -33,13 +33,6 @@ public class ResourceHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceHelper.class);
 
-    private ResourceHelper() {
-    }
-
-    static String[] getClassPathElements() {
-        return System.getProperty("java.class.path", ".").split(System.getProperty("path.separator"));
-    }
-
     /**
      * Scan into classpath folders to find resources with the required extension
      * @param extension to find
@@ -48,20 +41,6 @@ public class ResourceHelper {
     public static Stream<File> getResourcesByExtension(String extension) {
         return Arrays.stream(getClassPathElements())
                 .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$")));
-    }
-
-    /**
-     * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
-     * @param path to folder or jar
-     * @param pattern to find
-     * @return stream of matching resources
-     */
-    static Stream<File> internalGetResources(String path, Pattern pattern) {
-        final File file = new File(path);
-        if (!file.isDirectory()) {
-            return Stream.empty();
-        }
-        return getResourcesFromDirectory(file, pattern);
     }
 
     /**
@@ -90,5 +69,27 @@ public class ResourceHelper {
                     }
                     return Stream.empty();
                 });
+    }
+
+    static String[] getClassPathElements() {
+        return System.getProperty("java.class.path", ".").split(System.getProperty("path.separator"));
+    }
+
+    /**
+     * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
+     * @param path to folder or jar
+     * @param pattern to find
+     * @return stream of matching resources
+     */
+    static Stream<File> internalGetResources(String path, Pattern pattern) {
+        final File file = new File(path);
+        if (!file.isDirectory()) {
+            return Stream.empty();
+        }
+        return getResourcesFromDirectory(file, pattern);
+    }
+
+    private ResourceHelper() {
+        // Avoid instantiating class
     }
 }
