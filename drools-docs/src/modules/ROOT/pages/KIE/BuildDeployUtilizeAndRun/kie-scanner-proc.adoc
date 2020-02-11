@@ -6,7 +6,7 @@ The KIE scanner in {PRODUCT} monitors your Maven repository for new `SNAPSHOT` v
 
 [IMPORTANT]
 ====
-For production environments, do not use a KIE scanner or `SNAPSHOT` project versions to avoid accidental or unexpected project updates. The KIE scanner is intended for development environments that use `SNAPSHOT` project versions.
+For production environments, do not use a KIE scanner with `SNAPSHOT` project versions to avoid accidental or unexpected project updates. The KIE scanner is intended for development environments that use `SNAPSHOT` project versions.
 
 ifdef::PAM,JBPM[]
 Avoid using a KIE scanner with business processes. Using a KIE scanner with processes can lead to unforeseen updates that can then cause errors in long-running processes when changes are not compatible with running process instances.
