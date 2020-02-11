@@ -16,9 +16,15 @@
 
 package org.kie.test.util.filesystem;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
 
@@ -27,7 +33,9 @@ public class FileUtilsTest {
 
     @Test
     public void getFileExisting() {
-        FileUtils.getFile(TEST_FILE);
+        final File retrieved = FileUtils.getFile(TEST_FILE);
+        assertTrue(retrieved.exists());
+        assertEquals(TEST_FILE, retrieved.getName());
     }
 
     @Test(expected = AssertionError.class)
@@ -37,7 +45,9 @@ public class FileUtilsTest {
 
     @Test
     public void getFileInputStreamExisting() throws IOException {
-        FileUtils.getFileInputStream(TEST_FILE);
+        final FileInputStream retrieved = FileUtils.getFileInputStream(TEST_FILE);
+        assertNotNull(retrieved);
+        retrieved.close();
     }
 
     @Test(expected = AssertionError.class)
