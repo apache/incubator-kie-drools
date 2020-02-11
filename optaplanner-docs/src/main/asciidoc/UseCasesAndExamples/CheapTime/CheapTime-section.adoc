@@ -27,7 +27,7 @@ Soft constraints (addendum to the original problem definition):
 
 * Start early: prefer starting a task sooner rather than later.
 
-The problem is defined by the ICON challenge.
+The problem is defined by the ICON challenge 2014.
 
 
 [[cheapTimeSchedulingProblemSize]]
