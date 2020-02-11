@@ -204,7 +204,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Value <= `100` and <= `288`
 * Search space <= `10^20078`
 |* Nearly realistic
-* http://iconchallenge.insight-centre.org/challenge-energy[ICON Energy]
+* ICON Energy
 |* <<annotationAlternatives,Field annotations>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
