@@ -38,6 +38,7 @@ import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.api.Constants.RELEASE_ID;
 import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class PMMLAssemblerService implements KieAssemblerService {
@@ -81,9 +82,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws Exception {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
-        final String releaseId = kbuilderImpl.getKnowledgeBase().getResolvedReleaseId().toExternalForm();
-        logger.info("getKiePMMLModelsFromResource releaseId {}", releaseId);
-        return pmmlCompiler.getResults(resource.getInputStream(), releaseId);
+        // TODO {gcardosi} replace with dynamically generated one
+        logger.info("getKiePMMLModelsFromResource releaseId {}", RELEASE_ID);
+        return pmmlCompiler.getResults(resource.getInputStream(), RELEASE_ID);
     }
 
     private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
