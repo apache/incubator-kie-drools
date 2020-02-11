@@ -129,4 +129,7 @@ public class FunctionalWrapperFactory {
         throw (E) exception;
     }
 
+    private FunctionalWrapperFactory() {
+        // Avoid instantiation
+    }
 }

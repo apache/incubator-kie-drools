@@ -75,4 +75,8 @@ public class PMMLIsRegresssionModelExecutor {
                 .forEach(throwingConsumerWrapper(kiePMMLRegressionTablePredictor ->
                                                          result.accumulateAndGet(kiePMMLRegressionTablePredictor.evaluate(parameterInfo.getValue()), Double::sum)));
     }
+
+    private PMMLIsRegresssionModelExecutor() {
+        // Avoid instantiation
+    }
 }

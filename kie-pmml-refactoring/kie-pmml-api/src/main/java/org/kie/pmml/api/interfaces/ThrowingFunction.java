@@ -25,7 +25,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 @FunctionalInterface
 public interface ThrowingFunction<T, R, E extends Exception> {
 
-    R apply(T elem) throws E, KieEnumException;
+    R apply(T elem) throws E;
 
     default <V> ThrowingFunction<V, R, E> compose(ThrowingFunction<? super V, ? extends T, E> before) {
         Objects.requireNonNull(before);
@@ -38,6 +38,6 @@ public interface ThrowingFunction<T, R, E extends Exception> {
     }
 
     static <T, E extends Exception> ThrowingFunction<T, T, E> identity() {
-        return (t) -> t;
+        return t -> t;
     }
 }

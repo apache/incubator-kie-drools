@@ -25,4 +25,7 @@ public class PMMLIsNotRegresssionModelExecutor {
         return null;
     }
 
+    private PMMLIsNotRegresssionModelExecutor() {
+        // Avoid instantiation
+    }
 }

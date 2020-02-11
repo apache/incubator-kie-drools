@@ -41,4 +41,7 @@ public class ModelUtils {
                 .findFirst();
     }
 
+    private ModelUtils() {
+        // Avoid instantiation
+    }
 }

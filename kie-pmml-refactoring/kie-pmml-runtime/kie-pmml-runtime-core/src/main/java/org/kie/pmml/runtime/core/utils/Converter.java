@@ -39,6 +39,7 @@ public class Converter {
 
     }
 
-
-
+    private Converter() {
+        // Avoid instantiation
+    }
 }

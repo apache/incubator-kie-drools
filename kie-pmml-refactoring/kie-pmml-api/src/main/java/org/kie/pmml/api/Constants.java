@@ -20,4 +20,7 @@ public class Constants {
     // TODO {gcardosi} replace with dynamically generated one
     public static final String RELEASE_ID = "org.drools:kie-pmml-refactoring</artifactId:7.33.0-SNAPSHOT";
 
+    private Constants() {
+        // Avoid instantiation
+    }
 }

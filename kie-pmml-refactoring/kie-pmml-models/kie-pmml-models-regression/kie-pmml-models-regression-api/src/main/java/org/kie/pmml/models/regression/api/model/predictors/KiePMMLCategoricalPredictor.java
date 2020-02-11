@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.api.model.predictors;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -24,14 +25,14 @@ public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor
 
     private static final long serialVersionUID = -3937947927611073965L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCategoricalPredictor.class.getName());
-    private Object value;
+    private Serializable value;
 
-    public KiePMMLCategoricalPredictor(String name, Object value, Number coefficient) {
+    public KiePMMLCategoricalPredictor(String name, Serializable value, Number coefficient) {
         super(name, coefficient);
         this.value = value;
     }
 
-    public Object getValue() {
+    public Serializable getValue() {
         return value;
     }
 

@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 import org.kie.pmml.api.model.abstracts.KiePMMLIDedNamed;
 import org.kie.pmml.api.model.enums.MINING_FUNCTION;
 import org.kie.pmml.api.model.enums.PMML_MODEL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * KIE representation of PMML model
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 public abstract class KiePMMLModel extends KiePMMLIDedNamed {
 
     private static final long serialVersionUID = -6845971260164057040L;
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLModel.class.getName());
 
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;

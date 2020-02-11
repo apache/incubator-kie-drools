@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.factories;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,11 @@ public class KiePMMLRegressionTableFactory {
                 .withExtensions(getKiePMMLExtensions(regressionTable.getExtensions()))
                 .withNumericPredictors(getKiePMMLNumericPredictors(regressionTable.getNumericPredictors()))
                 .withPredictorTerms(KiePMMLPredictorTermFactory.getKiePMMLPredictorTerms(regressionTable.getPredictorTerms()))
-                .withTargetCategory(regressionTable.getTargetCategory())
+                .withTargetCategory((Serializable) regressionTable.getTargetCategory())
                 .build();
     }
 
-
+    private KiePMMLRegressionTableFactory() {
+        // Avoid instantiation
+    }
 }

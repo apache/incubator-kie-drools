@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.api.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
 
     private static final long serialVersionUID = 1703573265998162350L;
     private Number intercept;
-    private Object targetCategory;
+    private Serializable targetCategory;
     private List<KiePMMLExtension> extensions;
     private Set<KiePMMLNumericPredictor> numericPredictors;
     private List<KiePMMLCategoricalPredictor> categoricalPredictors;
@@ -135,7 +136,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
             return this;
         }
 
-        public Builder withTargetCategory(Object targetCategory) {
+        public Builder withTargetCategory(Serializable targetCategory) {
             toBuild.targetCategory = targetCategory;
             return this;
         }

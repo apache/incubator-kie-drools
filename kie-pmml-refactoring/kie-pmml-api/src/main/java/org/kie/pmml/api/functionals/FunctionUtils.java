@@ -27,9 +27,9 @@ public class FunctionUtils {
      * @return
      */
     public static <K, V> Map<K, V> mapOf(K k1, V v1) {
-        return new HashMap<K, V>() {{
-            put(k1, v1);
-        }};
+        Map<K, V> toReturn = new HashMap<>();
+        toReturn.put(k1, v1);
+        return toReturn;
     }
 
     /**
@@ -42,10 +42,10 @@ public class FunctionUtils {
      * @return
      */
     public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2) {
-        return new HashMap<K, V>() {{
-            put(k1, v1);
-            put(k2, v2);
-        }};
+        Map<K, V> toReturn = new HashMap<>();
+        toReturn.put(k1, v1);
+        toReturn.put(k2, v2);
+        return toReturn;
     }
 
     /**
@@ -60,11 +60,11 @@ public class FunctionUtils {
      * @return
      */
     public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2,  K k3, V v3) {
-        return new HashMap<K, V>() {{
-            put(k1, v1);
-            put(k2, v2);
-            put(k3, v3);
-        }};
+        Map<K, V> toReturn = new HashMap<>();
+        toReturn.put(k1, v1);
+        toReturn.put(k2, v2);
+        toReturn.put(k3, v3);
+        return toReturn;
     }
 
     /**
@@ -81,12 +81,15 @@ public class FunctionUtils {
      * @return
      */
     public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2,  K k3, V v3,  K k4, V v4) {
-        return new HashMap<K, V>() {{
-            put(k1, v1);
-            put(k2, v2);
-            put(k3, v3);
-            put(k4, v4);
-        }};
+        Map<K, V> toReturn = new HashMap<>();
+        toReturn.put(k1, v1);
+        toReturn.put(k2, v2);
+        toReturn.put(k3, v3);
+        toReturn.put(k4, v4);
+        return toReturn;
     }
 
+    private FunctionUtils() {
+        // Avoid instantiation
+    }
 }

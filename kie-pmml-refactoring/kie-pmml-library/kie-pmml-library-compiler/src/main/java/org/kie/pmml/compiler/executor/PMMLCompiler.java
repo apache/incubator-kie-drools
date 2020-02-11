@@ -18,6 +18,7 @@ package org.kie.pmml.compiler.executor;
 import java.io.InputStream;
 import java.util.List;
 
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.model.KiePMMLModel;
 /**
  * Actual implementations are required to convert a <b>PMML</b> xml to
@@ -30,7 +31,8 @@ public interface PMMLCompiler {
      * @param inputStream
      * @param kbuilder Using <code>Object</code> to avoid coupling with drools
      * @return
+     * @throws KiePMMLException
      */
-    List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws Exception;
+    List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws KiePMMLException;
 
 }

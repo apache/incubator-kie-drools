@@ -54,4 +54,7 @@ public class KiePMMLModelRetriever {
                 .findFirst();
     }
 
+    private KiePMMLModelRetriever() {
+        // Avoid instantiation
+    }
 }

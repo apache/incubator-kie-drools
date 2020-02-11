@@ -41,14 +41,15 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
-    public PMMLCompilerImpl() {
-    }
-
     @Override
-    public List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws JAXBException, SAXException, KiePMMLException {
+    public List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws KiePMMLException {
         logger.info("getResults {}", inputStream);
-        PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
-        return getResults(commonPMMLModel, kbuilder);
+        try {
+            PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
+            return getResults(commonPMMLModel, kbuilder);
+        } catch (JAXBException | SAXException e) {
+            throw  new KiePMMLException("Failed to get results", e);
+        }
     }
 
     /**

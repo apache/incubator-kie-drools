@@ -27,7 +27,7 @@ public interface ThrowingConsumer<T, E extends Exception> {
 
     default ThrowingConsumer<T, E> andThen(ThrowingConsumer<? super T, E> after) throws E {
         Objects.requireNonNull(after);
-        return (t) -> {
+        return t -> {
             this.accept(t);
             after.accept(t);
         };

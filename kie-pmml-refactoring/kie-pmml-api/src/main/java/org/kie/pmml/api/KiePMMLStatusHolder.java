@@ -23,8 +23,6 @@ public class KiePMMLStatusHolder {
     private String status;
     private String result;
 
-    public KiePMMLStatusHolder() {
-    }
 
     public String getStatus() {
         return status;

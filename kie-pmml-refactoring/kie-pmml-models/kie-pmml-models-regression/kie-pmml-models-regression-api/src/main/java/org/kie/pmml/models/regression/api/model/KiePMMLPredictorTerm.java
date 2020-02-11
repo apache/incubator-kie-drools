@@ -16,6 +16,7 @@
 package org.kie.pmml.models.regression.api.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.pmml.api.model.KiePMMLExtension;
 import org.kie.pmml.api.model.abstracts.KiePMMLExtensionedTerm;
@@ -40,5 +41,36 @@ public class KiePMMLPredictorTerm extends KiePMMLExtensionedTerm {
 
     public List<KiePMMLFieldRef> getFieldRefs() {
         return fieldRefs;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLPredictorTerm{" +
+                "fieldRefs=" + fieldRefs +
+                ", coefficient=" + coefficient +
+                ", extensions=" + extensions +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLPredictorTerm that = (KiePMMLPredictorTerm) o;
+        return Objects.equals(fieldRefs, that.fieldRefs) &&
+                Objects.equals(coefficient, that.coefficient);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fieldRefs, coefficient);
     }
 }

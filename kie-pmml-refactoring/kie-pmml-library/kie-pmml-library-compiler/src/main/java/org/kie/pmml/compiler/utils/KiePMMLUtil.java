@@ -52,4 +52,8 @@ public class KiePMMLUtil {
     public static PMML load(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
     }
+
+    private KiePMMLUtil() {
+        // Avoid instantiation
+    }
 }
