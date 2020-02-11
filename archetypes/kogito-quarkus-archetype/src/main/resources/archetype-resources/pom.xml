@@ -9,7 +9,7 @@
 
   <properties>
     <quarkus.version>${version.io.quarkus}</quarkus.version>
-    <kogito.version>${version.org.kie.kogito}</kogito.version>
+    <kogito.version>${project.version}</kogito.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>

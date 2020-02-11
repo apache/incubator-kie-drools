@@ -9,6 +9,19 @@
   <packaging>pom</packaging>
   <name>Kogito Maven Archetypes</name>
   <description>Various Kogito Maven archetypes for project generation</description>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>kogito-springboot-starter</module>    
     <module>kogito-springboot-archetype</module>

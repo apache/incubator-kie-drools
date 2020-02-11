@@ -17,7 +17,7 @@
 
   <properties>
     <java.version>1.8</java.version>    
-    <kogito.version>${version.org.kie.kogito}</kogito.version>
+    <kogito.version>${project.version}</kogito.version>
   </properties>
 
   <dependencies>

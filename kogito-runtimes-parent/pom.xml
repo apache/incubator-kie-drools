@@ -4,24 +4,135 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-bom-parent</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
-  </parent>
-
+  <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-runtimes</artifactId>
+  <version>8.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Kogito Runtimes</name>
   <description>Kogito Runtimes</description>
 
+  <url>http://kogito.kie.org</url>
+  <inceptionYear>2019</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <checkstyle.header.template>.*</checkstyle.header.template>
+    <checkstyle.header.extensions>java</checkstyle.header.extensions>
+
     <!--
       JaCoCo coverage data file location. Using a single file for appending in the project's root directory makes it
       possible to measure cross-module test coverage -->
     <!--suppress UnresolvedMavenProperty -->
+    <version.org.jacoco.agent>0.8.4</version.org.jacoco.agent>
+    <version.jacoco.plugin>${version.org.jacoco.agent}</version.jacoco.plugin>
     <jacoco.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.exec.file>
+
+    <!-- plugin versions -->
+    <version.antapacheregexp>1.8.2</version.antapacheregexp>
+    <version.antrun.plugin>1.8</version.antrun.plugin>
+    <version.asciidoctor.plugin>1.5.2.1</version.asciidoctor.plugin>
+    <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
+    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
+    <version.clean.plugin>3.1.0</version.clean.plugin>
+    <version.compiler.plugin>3.8.0-jboss-1</version.compiler.plugin>
+    <version.copyrename.plugin>1.0</version.copyrename.plugin>
+    <version.dependency.plugin>2.8</version.dependency.plugin>
+    <version.deploy.plugin>2.8.2</version.deploy.plugin>
+    <version.exec.plugin>1.6.0</version.exec.plugin>
+    <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
+    <version.install.plugin>2.5.2</version.install.plugin>
+    <version.invoker.plugin>2.0.0</version.invoker.plugin>
+    <version.jandex.plugin>1.0.6</version.jandex.plugin>
+    <version.jar.plugin>3.1.0</version.jar.plugin>
+    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.javancss.plugin>2.0</version.javancss.plugin>
+    <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
+    <version.license.plugin>1.8.0</version.license.plugin>
+    <version.maven>3.5.4</version.maven>
+    <version.maven.plugin>3.4</version.maven.plugin>
+    <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
+    <version.plexus>1.6</version.plexus>
+    <version.plexus.classworld>2.5.2</version.plexus.classworld>
+    <version.plugin.plugin>3.5.2</version.plugin.plugin>
+    <version.project.sources.plugin>0.3</version.project.sources.plugin>
+    <version.resources.plugin>3.1.0</version.resources.plugin>
+    <version.site.plugin>3.7.1</version.site.plugin>
+    <version.shade.plugin>3.0.0</version.shade.plugin>
+    <version.source.plugin>3.0.1</version.source.plugin>
+    <version.surefire>2.22.1</version.surefire> <!-- minimum required by JUnit 5 -->
+    <version.surefire.report.plugin>2.6</version.surefire.report.plugin>
+    <version.swagger.plugin>2.1.0</version.swagger.plugin>
+    <version.taglist.plugin>2.4</version.taglist.plugin>
+    <version.versions.plugin>2.1</version.versions.plugin>
+
+    <!-- dependencies versions -->
+    <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
+    <version.com.fasterxml.jackson>2.9.10</version.com.fasterxml.jackson>
+    <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
+    <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
+    <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
+    <version.com.oracle.substratevm>19.2.1</version.com.oracle.substratevm>
+    <version.com.squareup.okhttp3>3.12.6</version.com.squareup.okhttp3>
+    <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
+    <version.com.thoughtworks.xstream>1.4.11.1</version.com.thoughtworks.xstream>
+    <version.cz.xtf>0.14</version.cz.xtf>
+
+    <version.javassist>3.20.0-GA</version.javassist>
+    <version.javax.activation>1.2.0</version.javax.activation>
+    <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
+    <version.javax.inject>1</version.javax.inject>
+    <version.javax.json>1.1.4</version.javax.json>
+    <version.javax.json.bind>1.0</version.javax.json.bind>
+    <version.javax.xml.bind>2.3.0</version.javax.xml.bind>
+    <version.json-unit-assertj>2.9.0</version.json-unit-assertj>
+
+    <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
+
+    <version.io.fabric8.kubernetes-client>4.6.2</version.io.fabric8.kubernetes-client>
+    <version.io.prometheus>0.5.0</version.io.prometheus>
+    <version.io.quarkus>1.1.0.Final</version.io.quarkus>
+    <version.io.restassured>4.1.2</version.io.restassured>
+    <version.io.smallrye.reactive>1.0.8</version.io.smallrye.reactive>
+
+    <version.org.antlr>3.5.2</version.org.antlr>
+    <version.org.antlr4>4.7.2</version.org.antlr4>
+    <version.org.assertj>3.13.2</version.org.assertj>
+    <version.org.eclipse.jdt>3.19.0</version.org.eclipse.jdt>
+    <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
+    <version.org.infinispan>10.0.0.Final</version.org.infinispan>
+    <version.org.infinispan.image>10.0.0.Final-1</version.org.infinispan.image>
+    <version.org.infinispan.protostream>4.3.0.Final</version.org.infinispan.protostream>
+    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
+    <version.org.junit.minor>5.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
+    <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
+    <version.org.junit.jupiter>${version.org.junit}</version.org.junit.jupiter>
+    <version.org.junit.vintage>${version.org.junit}</version.org.junit.vintage>
+    <version.org.junit.platform>1.${version.org.junit.minor}</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.keycloak.image>8.0.1</version.org.keycloak.image>
+    <version.org.mockito>3.0.0</version.org.mockito>
+    <version.org.mvel>2.4.4.Final</version.org.mvel>
+    <version.org.kie7>7.32.0.Final</version.org.kie7>
+    <version.org.reflections>0.9.11</version.org.reflections>
+    <version.org.slf4j>1.7.25</version.org.slf4j>
+    <version.org.springframework.kafka>2.2.2.RELEASE</version.org.springframework.kafka>
+
+    <version.testcontainers>1.12.3</version.testcontainers>
+    <version.xmlunit>2.2.1</version.xmlunit>
   </properties>
 
   <repositories>
@@ -43,13 +154,49 @@
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
+           as the Maven Central is now treated as the first (default) repository (because it is before the JBoss.org one).
+           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
+           first repository the JBoss.org Nexus would be contacted first and since it is quite slow it slows down the build.
+           We use JBoss.org repo only to download our SNAPSHOTs. -->
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
   <scm>
     <connection>scm:git:https://github.com/kiegroup/kogito-runtimes.git</connection>
     <developerConnection>scm:git:git@github.com:kiegroup/kogito-runtimes.git</developerConnection>
     <url>https://github.com/kiegroup/kogito-runtimes</url>
   </scm>
 
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>http://kogito.kie.org/community/team.html</url>
+    </developer>
+  </developers>
+
   <modules>
+    <module>bom</module>
     <module>api</module>
     <module>drools</module>
     <module>jbpm</module>
@@ -64,23 +211,512 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-deps-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-api</artifactId>
+        <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-core</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-decisiontables</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-compiler</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-core</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-core</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.kie7}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mvel</groupId>
+        <artifactId>mvel2</artifactId>
+        <version>${version.org.mvel}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${version.com.google.protobuf}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jdt</groupId>
+        <artifactId>ecj</artifactId>
+        <version>${version.org.eclipse.jdt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr-runtime</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4</artifactId>
+        <version>${version.org.antlr4}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${version.org.antlr4}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${version.javassist}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <!-- used by DMN for BigDecimal arithmetics -->
+      <dependency>
+        <groupId>ch.obermuhlner</groupId>
+        <artifactId>big-math</artifactId>
+        <version>${version.ch.obermuhlner}</version>
+      </dependency>
+
+      <!-- code generation -->
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>${version.com.github.javaparser}</version>
+      </dependency>
+
+      <!-- marshalling -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+
+      <!-- http communication -->
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>${version.com.squareup.okhttp3}</version>
+      </dependency>
+      <!--  kubernetes and OpenShift clients -->
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-client</artifactId>
+        <version>${version.io.fabric8.kubernetes-client}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>openshift-client</artifactId>
+        <version>${version.io.fabric8.kubernetes-client}</version>
+      </dependency>
+      <!-- metrics - prometheus -->
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient</artifactId>
+        <version>${version.io.prometheus}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_common</artifactId>
+        <version>${version.io.prometheus}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.ws.rs</groupId>
+        <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency> <!-- TODO move this dep into surefire-plugin when all modules are migrated to JUnit 5 -->
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-engine</artifactId>
+        <version>${version.org.junit.platform}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>${version.org.junit.platform}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${version.org.junit.vintage}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.org.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${version.org.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${version.org.hamcrest}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>${version.org.hamcrest}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.java.dev.glazedlists</groupId>
+        <artifactId>glazedlists_java15</artifactId>
+        <version>${version.net.java.dev.glazedlists}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${version.xmlunit}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${version.json-unit-assertj}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.testcontainers}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${version.maven}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${version.maven}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${version.maven}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${version.maven.plugin}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>${version.plexus}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>${version.plexus}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>${version.plexus.classworld}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.json.bind</groupId>
+        <artifactId>javax.json.bind-api</artifactId>
+        <version>${version.javax.json.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.json</groupId>
+        <artifactId>javax.json-api</artifactId>
+        <version>${version.javax.json}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${version.javax.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>${version.com.sun.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>${version.com.sun.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>javax.activation</artifactId>
+        <version>${version.javax.activation}</version>
+      </dependency>
+
+      <!-- Quarkus -->
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-resteasy</artifactId>
+        <version>${version.io.quarkus}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-arc</artifactId>
+        <version>${version.io.quarkus}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-junit5</artifactId>
+        <version>${version.io.quarkus}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.oracle.substratevm</groupId>
+        <artifactId>svm</artifactId>
+        <version>${version.com.oracle.substratevm}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>smallrye-reactive-messaging-provider</artifactId>
+        <version>${version.io.smallrye.reactive}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>${version.javax.inject}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${version.javax.annotation-api}</version>
+      </dependency>
+
+      <!-- infinispan -->
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-client-hotrod</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan.protostream</groupId>
+        <artifactId>protostream</artifactId>
+        <version>${version.org.infinispan.protostream}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-server-hotrod</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-remote-query-server</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-query</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-core</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-query-dsl</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-remote-query-client</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-commons</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+
+      <!-- spring related -->
+      <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka</artifactId>
+        <version>${version.org.springframework.kafka}</version>
+      </dependency>
+
+      <!-- predictions/machine learning related -->
+      <dependency>
+        <groupId>com.github.haifengl</groupId>
+        <artifactId>smile-core</artifactId>
+        <version>${version.com.github.haifengl.smile}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${version.io.restassured}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cz.xtf</groupId>
+        <artifactId>core</artifactId>
+        <version>${version.cz.xtf}</version>
+      </dependency>
+      <dependency>
+        <groupId>cz.xtf</groupId>
+        <artifactId>builder</artifactId>
+        <version>${version.cz.xtf}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.agent</artifactId>
+        <version>${version.org.jacoco.agent}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>${version.org.reflections}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-server-mock</artifactId>
+        <version>${version.io.fabric8.kubernetes-client}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <profiles>
+    <profile>
+      <id>snapshot</id>
+      <properties>
+        <version.org.kie7>7.33.0-SNAPSHOT</version.org.kie7>
+      </properties>
+    </profile>
+
     <profile>
       <id>run-code-coverage</id>
       <properties>
@@ -150,6 +786,7 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <activation>
         <property>
@@ -169,5 +806,537 @@
         <sonar.pullrequest.github.repository>${env.CHANGE_URL}</sonar.pullrequest.github.repository>
       </properties>
     </profile>
+
+    <profile>
+      <id>default-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <version>${version.surefire}</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
+                  </goals>
+                  <configuration>
+                    <includes>
+                      <include>**/*IntegrationTest.java</include>
+                      <include>**/*IT.java</include>
+                    </includes>
+                    <excludes>
+                      <exclude>**/Native*IntegrationTest.java</exclude>
+                      <exclude>**/Native*IT.java</exclude>
+                    </excludes>
+                    <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>native</id>
+      <activation>
+        <property>
+          <name>native</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>io.quarkus</groupId>
+              <artifactId>quarkus-maven-plugin</artifactId>
+              <version>${version.io.quarkus}</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>native-image</goal>
+                  </goals>
+                  <configuration>
+                    <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <version>${version.surefire}</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
+                  </goals>
+                  <configuration>
+                    <includes>
+                      <include>**/*IntegrationTest.java</include>
+                      <include>**/*IT.java</include>
+                    </includes>
+                    <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+                    <systemProperties>
+                      <native.image.path>${project.build.directory}/${project.build.finalName}-runner
+                      </native.image.path>
+                    </systemProperties>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.clean.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${version.install.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-install</id>
+              <phase>install</phase>
+              <goals>
+                <goal>install</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${version.site.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-site</id>
+              <phase>site</phase>
+              <goals>
+                <goal>site</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.dependency.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.deploy.plugin}</version>
+          <configuration>
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.compiler.plugin}</version>
+          <configuration>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <testSource>${maven.compiler.source}</testSource>
+            <testTarget>${maven.compiler.target}</testTarget>
+            <compilerArgs>
+              <arg>-Xlint:unchecked</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${version.antrun.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.ant</groupId>
+              <artifactId>ant-apache-regexp</artifactId>
+              <version>${version.antapacheregexp}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.resources.plugin}</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.surefire}</version>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <excludes>
+              <exclude>**/*IntegrationTest.java</exclude>
+            </excludes>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            <systemPropertyVariables>
+              <apple.awt.UIElement>true</apple.awt.UIElement>
+              <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
+              <org.uberfire.nio.git.ssh.enabled>false</org.uberfire.nio.git.ssh.enabled>
+              <org.uberfire.sys.repo.monitor.disabled>true</org.uberfire.sys.repo.monitor.disabled>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${version.exec.plugin}</version>
+        </plugin>
+        <!-- Packaging -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries combine.children="append">
+                    <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+            <execution>
+              <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+              <configuration>
+                <skipIfEmpty>true</skipIfEmpty>
+                <excludes>
+                  <exclude>**/logback-test.xml</exclude>
+                  <exclude>**/jndi.properties</exclude>
+                </excludes>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.source.plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>attach-test-sources</id>
+              <goals>
+                <goal>test-jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${java.module.name}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>project-sources-maven-plugin</artifactId>
+          <version>${version.project.sources.plugin}</version>
+          <executions>
+            <execution>
+              <id>project-sources-archive</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>archive</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.build.helper.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>parse-version</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>${version.asciidoctor.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>native2ascii-maven-plugin</artifactId>
+          <version>${version.native2ascii.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.coderplus.maven.plugins</groupId>
+          <artifactId>copy-rename-maven-plugin</artifactId>
+          <version>${version.copyrename.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <!-- Entry needed to enable jdocbook unzipping -->
+              <groupId>org.jboss.maven.plugins</groupId>
+              <artifactId>maven-jdocbook-plugin</artifactId>
+              <version>${version.jdocbook.plugin}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>${version.invoker.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${version.versions.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <!-- Manually push changes (including git tags) after nexus staged repo is successfully closed -->
+            <pushChanges>false</pushChanges>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${version.shade.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.mycila.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <version>${version.license.plugin}</version>
+          <configuration>
+            <!-- TODO this is buggy as it only works for first level modules -->
+            <header>${basedir}/../LICENSE-ASL-2.0-HEADER.txt</header>
+            <includes>
+              <include>**/*.java</include>
+              <include>**/*.drl</include>
+            </includes>
+            <mapping>
+              <drl>JAVADOC_STYLE</drl>
+            </mapping>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.javadoc.plugin}</version>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/8/docs/api</link>
+            </links>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+            <quiet>true</quiet>
+            <additionalparam>${javadoc.additional.params}</additionalparam>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${version.findbugs.plugin}</version>
+          <configuration>
+            <maxRank>6</maxRank>
+            <effort>Max</effort>
+            <xmlOutput>true</xmlOutput>
+            <failOnError>${findbugs.failOnViolation}</failOnError>
+            <excludeFilterFile>findbugs-excludes.xml</excludeFilterFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-maven-plugin</artifactId>
+          <version>${version.org.kie}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${version.plugin.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${version.io.quarkus}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.openapitools.swagger</groupId>
+          <artifactId>swagger-maven-plugin</artifactId>
+          <version>${version.swagger.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${version.jacoco.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jboss.jandex</groupId>
+          <artifactId>jandex-maven-plugin</artifactId>
+          <version>${version.jandex.plugin}</version>
+          <executions>
+            <execution>
+              <id>make-index</id>
+              <goals>
+                <goal>jandex</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <!-- also adds generated sources to -source artifact -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!-- Entry needed to create, install and deploy sources jars -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <!-- Note: It's not possible to configure reporting plugins in pluginManagement in m2.0.4 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${version.surefire.report.plugin}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javancss-maven-plugin</artifactId>
+        <version>${version.javancss.plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>${version.taglist.plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

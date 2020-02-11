@@ -22,16 +22,6 @@ pipeline {
                 sh 'printenv'
             }
         }
-        stage('Build kogito-bom') {
-            steps {
-                dir("kogito-bom") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        maven.runMavenWithSubmarineSettings('clean install', true)
-                    }
-                }
-            }
-        }
         stage('Build kogito-runtimes') {
             steps {
                 script {
