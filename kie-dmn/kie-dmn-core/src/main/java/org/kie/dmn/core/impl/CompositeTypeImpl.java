@@ -58,9 +58,6 @@ public class CompositeTypeImpl
                     ((MapBackedType) feelType).addField( field.getKey(), ((BaseDMNTypeImpl)field.getValue()).getFeelType() );
                 }
             }
-            if (isCollection) {
-                setFeelType(new GenListType(getFeelType()));
-            }
         }
     }
 
