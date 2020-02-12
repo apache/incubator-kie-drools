@@ -262,7 +262,7 @@ The following constraint stream removes all of Beth's shifts from all `Shift` ma
 ----
 
 The following example retrieves a list of shifts where an employee has asked for a day off from a bi-constraint match
-of `Shift`and `DayOff`:
+of `Shift` and `DayOff`:
 
 [source,java,options="nowrap"]
 ----
@@ -331,7 +331,7 @@ image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
 The following `Joiner` types are supported:
 
-- `equalTo` for joining constraint matches where they `equals()` one another.
+- `equal` for joining constraint matches where they `equals()` one another.
 - `greaterThan`, `greaterThanOrEqual`, `lessThan` and `lessThanOrEqual` for joining `Comparable` constraint matches per
 the prescribed ordering.
 
