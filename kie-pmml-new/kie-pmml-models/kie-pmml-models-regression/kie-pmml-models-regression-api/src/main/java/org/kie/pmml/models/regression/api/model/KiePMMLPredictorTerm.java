@@ -17,9 +17,9 @@ package org.kie.pmml.models.regression.api.model;
 
 import java.util.List;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.abstracts.KiePMMLExtensionedTerm;
-import org.kie.pmml.api.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedTerm;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 public class KiePMMLPredictorTerm extends KiePMMLExtensionedTerm {
 

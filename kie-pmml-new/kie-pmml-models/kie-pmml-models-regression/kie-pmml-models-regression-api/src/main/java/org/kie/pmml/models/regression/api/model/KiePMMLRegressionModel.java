@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 

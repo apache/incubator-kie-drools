@@ -23,19 +23,20 @@ import org.dmg.pmml.tree.BranchNode;
 import org.dmg.pmml.tree.ClassifierNode;
 import org.dmg.pmml.tree.ComplexNode;
 import org.dmg.pmml.tree.Node;
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.tree.api.model.KiePMMLNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.models.tree.api.factories.KiePMMLPredicateFactory.getPredicate;
 
 public class KiePMMLNodeFactory {
 
     private static final Logger log = LoggerFactory.getLogger(KiePMMLNodeFactory.class.getName());
 
-
+    private KiePMMLNodeFactory() {
+    }
 
     public static List<KiePMMLNode> getNodes(List<Node> nodes, DataDictionary dataDictionary) throws KiePMMLException {
         log.info("getNodes {}", nodes);
@@ -52,8 +53,5 @@ public class KiePMMLNodeFactory {
         }
         return builder
                 .build();
-    }
-
-    private KiePMMLNodeFactory() {
     }
 }

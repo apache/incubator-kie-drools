@@ -24,11 +24,9 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -39,7 +37,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.test.util.filesystem.FileUtils.getFile;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class PMMLCompilerImplTest {

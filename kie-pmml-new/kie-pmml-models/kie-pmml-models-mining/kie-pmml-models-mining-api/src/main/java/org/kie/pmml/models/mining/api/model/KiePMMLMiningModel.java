@@ -17,9 +17,9 @@ package org.kie.pmml.models.mining.api.model;
 
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.api.model.segmentation.KiePMMLSegmentation;
 
 /**
@@ -126,6 +126,5 @@ public class KiePMMLMiningModel extends KiePMMLModel {
         public Builder withTargetField(String targetField) {
             return (Builder) super.withTargetField(targetField);
         }
-
     }
 }

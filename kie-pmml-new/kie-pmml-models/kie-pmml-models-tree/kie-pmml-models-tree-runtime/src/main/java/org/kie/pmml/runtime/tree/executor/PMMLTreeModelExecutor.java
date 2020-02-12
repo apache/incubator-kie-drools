@@ -1,6 +1,6 @@
 package org.kie.pmml.runtime.tree.executor;
 
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drooled.executor.DrooledModelExecutor;
 
 public class PMMLTreeModelExecutor extends DrooledModelExecutor {
@@ -47,6 +47,4 @@ public class PMMLTreeModelExecutor extends DrooledModelExecutor {
 //        kSession.execute(executionParams);
 //        return toReturn;
 //    }
-
-
 }

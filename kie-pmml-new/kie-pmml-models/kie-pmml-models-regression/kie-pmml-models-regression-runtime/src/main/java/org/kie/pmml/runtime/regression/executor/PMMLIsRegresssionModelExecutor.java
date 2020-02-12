@@ -22,14 +22,14 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
 
 public class PMMLIsRegresssionModelExecutor {
 

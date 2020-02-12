@@ -18,8 +18,8 @@ package org.kie.pmml.models.mining.api.model.segmentation;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.abstracts.KiePMMLIDedExtensioned;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDedExtensioned;
 import org.kie.pmml.models.mining.api.model.enums.MULTIPLE_MODEL_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +34,10 @@ public class KiePMMLSegmentation extends KiePMMLIDedExtensioned {
 
     private final MULTIPLE_MODEL_METHOD multipleModelMethod;
     private List<KiePMMLSegment> segments;
+
+    private KiePMMLSegmentation(MULTIPLE_MODEL_METHOD multipleModelMethod) {
+        this.multipleModelMethod = multipleModelMethod;
+    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -81,10 +85,6 @@ public class KiePMMLSegmentation extends KiePMMLIDedExtensioned {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), multipleModelMethod, segments);
-    }
-
-    private KiePMMLSegmentation(MULTIPLE_MODEL_METHOD multipleModelMethod) {
-        this.multipleModelMethod = multipleModelMethod;
     }
 
     public static class Builder extends KiePMMLIDedExtensioned.Builder<KiePMMLSegmentation> {

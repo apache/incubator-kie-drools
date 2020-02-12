@@ -24,17 +24,16 @@ import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredict
 
 public class KiePMMLNumericPredictorFactory {
 
+    private KiePMMLNumericPredictorFactory() {
+    }
 
     public static Set<KiePMMLNumericPredictor> getKiePMMLNumericPredictors(List<NumericPredictor> numericPredictors) {
-        return numericPredictors.stream().map(KiePMMLNumericPredictorFactory:: getKiePMMLNumericPredictor).collect(Collectors.toSet());
+        return numericPredictors.stream().map(KiePMMLNumericPredictorFactory::getKiePMMLNumericPredictor).collect(Collectors.toSet());
     }
 
     public static KiePMMLNumericPredictor getKiePMMLNumericPredictor(NumericPredictor numericPredictor) {
         return new KiePMMLNumericPredictor(numericPredictor.getName().getValue(),
-                                               numericPredictor.getExponent(),
-                                               numericPredictor.getCoefficient());
-    }
-
-    private KiePMMLNumericPredictorFactory() {
+                                           numericPredictor.getExponent(),
+                                           numericPredictor.getCoefficient());
     }
 }

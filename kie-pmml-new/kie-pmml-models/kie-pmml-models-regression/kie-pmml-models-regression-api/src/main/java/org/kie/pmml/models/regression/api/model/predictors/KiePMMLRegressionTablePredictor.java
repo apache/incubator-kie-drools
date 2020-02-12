@@ -17,8 +17,8 @@ package org.kie.pmml.models.regression.api.model.predictors;
 
 import java.util.Objects;
 
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.abstracts.KiePMMLTerm;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.abstracts.KiePMMLTerm;
 
 public abstract class KiePMMLRegressionTablePredictor extends KiePMMLTerm {
 

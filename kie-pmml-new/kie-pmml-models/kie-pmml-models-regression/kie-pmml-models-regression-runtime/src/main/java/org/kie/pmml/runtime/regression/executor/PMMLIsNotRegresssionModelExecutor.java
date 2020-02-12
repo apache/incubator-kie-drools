@@ -24,5 +24,4 @@ public class PMMLIsNotRegresssionModelExecutor {
     public static PMML4Result evaluateNotRegression(KiePMMLRegressionModel regressionModel, PMMLContext context) {
         return null;
     }
-
 }

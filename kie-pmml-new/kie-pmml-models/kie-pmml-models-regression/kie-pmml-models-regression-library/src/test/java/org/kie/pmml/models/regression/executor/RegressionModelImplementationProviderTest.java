@@ -22,15 +22,15 @@ import java.util.Optional;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.OP_TYPE;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.library.testutils.TestUtils;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.library.testutils.TestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -113,6 +113,4 @@ public class RegressionModelImplementationProviderTest {
         assertEquals(value, retrieved.getValue());
         assertEquals(coefficient, retrieved.getCoefficient());
     }
-
-
 }

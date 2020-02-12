@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
 

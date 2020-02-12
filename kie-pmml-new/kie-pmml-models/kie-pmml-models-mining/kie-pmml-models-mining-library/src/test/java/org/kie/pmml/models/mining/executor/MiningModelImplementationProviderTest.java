@@ -17,7 +17,7 @@
 package org.kie.pmml.models.mining.executor;
 
 import org.junit.Test;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,5 +34,4 @@ public class MiningModelImplementationProviderTest {
     public void getKiePMMLModel() throws Exception {
         // TODO
     }
-
 }

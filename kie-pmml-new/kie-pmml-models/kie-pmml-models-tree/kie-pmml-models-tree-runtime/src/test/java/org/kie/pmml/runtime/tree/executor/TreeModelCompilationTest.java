@@ -39,5 +39,4 @@ public class TreeModelCompilationTest {
             fail(e.getMessage());
         }
     }
-
 }

@@ -17,7 +17,7 @@ package org.kie.pmml.models.regression.api.model.predictors;
 
 import java.util.Objects;
 
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

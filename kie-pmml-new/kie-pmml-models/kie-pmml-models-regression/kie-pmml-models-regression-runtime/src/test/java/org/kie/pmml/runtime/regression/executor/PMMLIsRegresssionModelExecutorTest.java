@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +85,7 @@ public class PMMLIsRegresssionModelExecutorTest {
         } else if (STREET.equals(carLocation)) {
             expected += STREET_COEFF;
         }
-        double retrievedDouble = (double)retrieved.getResultVariables().get(TARGETFIELD_NAME);
+        double retrievedDouble = (double) retrieved.getResultVariables().get(TARGETFIELD_NAME);
         assertEquals(expected, retrievedDouble, 0.00001);
         logger.info("Expected {} retrieved {}", expected, retrievedDouble);
     }

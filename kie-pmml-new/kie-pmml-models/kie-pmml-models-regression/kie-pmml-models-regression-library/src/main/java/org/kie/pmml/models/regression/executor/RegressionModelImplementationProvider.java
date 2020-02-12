@@ -17,8 +17,8 @@ package org.kie.pmml.models.regression.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.factories.KiePMMLRegressionModelFactory;

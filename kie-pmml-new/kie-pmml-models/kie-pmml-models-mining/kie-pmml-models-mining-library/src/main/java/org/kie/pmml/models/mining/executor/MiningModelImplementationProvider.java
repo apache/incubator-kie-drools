@@ -17,8 +17,8 @@ package org.kie.pmml.models.mining.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.kie.pmml.models.mining.api.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.factories.KiePMMLMiningModelFactory;
@@ -43,6 +43,6 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     @Override
     public KiePMMLMiningModel getKiePMMLModel(DataDictionary dataDictionary, MiningModel model, Object kBuilder) throws KiePMMLException {
         logger.info("getKiePMMLModel {} {}", dataDictionary, model);
-        return KiePMMLMiningModelFactory.getKiePMMLMiningModel( dataDictionary, model, kBuilder);
+        return KiePMMLMiningModelFactory.getKiePMMLMiningModel(dataDictionary, model, kBuilder);
     }
 }

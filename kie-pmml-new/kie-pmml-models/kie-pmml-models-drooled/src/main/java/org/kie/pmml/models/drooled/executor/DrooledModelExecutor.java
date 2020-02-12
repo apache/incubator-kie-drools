@@ -15,15 +15,15 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLDrooledModel;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLDrooledModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.runtime.core.utils.Converter.getUnwrappedParametersMap;
 
 public class DrooledModelExecutor implements PMMLModelExecutor {
@@ -59,11 +59,11 @@ public class DrooledModelExecutor implements PMMLModelExecutor {
         return toReturn;
     }
 
-    private List<FactType> getParameterFactTypes(Map<String, Object> unwrappedInputParams, final StatelessKieSession kSession, final  List<TypeDeclarationDescr> typeDeclarations, final List<EnumDeclarationDescr> enumDeclarations) throws KiePMMLException {
+    private List<FactType> getParameterFactTypes(Map<String, Object> unwrappedInputParams, final StatelessKieSession kSession, final List<TypeDeclarationDescr> typeDeclarations, final List<EnumDeclarationDescr> enumDeclarations) throws KiePMMLException {
         return unwrappedInputParams.entrySet().stream().map(throwingFunctionWrapper(entry -> getParameterFactType(entry.getKey(), entry.getValue(), kSession, typeDeclarations, enumDeclarations))).collect(Collectors.toList());
     }
 
-    private FactType getParameterFactType(String parameterName, Object parameterValue, final StatelessKieSession kSession, final  List<TypeDeclarationDescr> typeDeclarations, final List<EnumDeclarationDescr> enumDeclarations) throws KiePMMLException {
+    private FactType getParameterFactType(String parameterName, Object parameterValue, final StatelessKieSession kSession, final List<TypeDeclarationDescr> typeDeclarations, final List<EnumDeclarationDescr> enumDeclarations) throws KiePMMLException {
         try {
             Optional<FactType> toReturn = typeDeclarations.stream()
                     .filter(typeDeclaration -> typeDeclaration.getTypeName().equals(parameterName))

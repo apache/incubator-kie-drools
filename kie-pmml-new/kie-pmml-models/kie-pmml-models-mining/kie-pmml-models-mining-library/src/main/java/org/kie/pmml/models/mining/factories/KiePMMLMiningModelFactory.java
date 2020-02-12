@@ -19,8 +19,8 @@ import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.mining.api.model.KiePMMLMiningModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,6 @@ public class KiePMMLMiningModelFactory {
     }
 
     /**
-     *
      * @param dataDictionary
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools

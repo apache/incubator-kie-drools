@@ -20,16 +20,16 @@ import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.OP_TYPE;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.library.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.regression.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 

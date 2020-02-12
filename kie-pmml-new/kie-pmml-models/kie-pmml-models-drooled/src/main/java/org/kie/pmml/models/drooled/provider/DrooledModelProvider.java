@@ -19,14 +19,12 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLDrooledModel;
+import org.kie.pmml.commons.model.KiePMMLDrooledModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Abstract <code>ModelImplementationProvider</code> for <b>KiePMMLDrooledModel</b>s
@@ -36,6 +34,10 @@ public abstract class DrooledModelProvider<T extends Model, E extends KiePMMLDro
     private static final Logger logger = LoggerFactory.getLogger(DrooledModelProvider.class.getName());
 
     protected final KieServices kieServices;
+
+    protected DrooledModelProvider() {
+        this.kieServices = KieServices.Factory.get();
+    }
 
     @Override
     public E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) throws KiePMMLException {
@@ -50,10 +52,6 @@ public abstract class DrooledModelProvider<T extends Model, E extends KiePMMLDro
         }
         ((KnowledgeBuilderImpl) kBuilder).addPackage(toReturn.getPackageDescr());
         return toReturn;
-    }
-
-    protected DrooledModelProvider() {
-        this.kieServices = KieServices.Factory.get();
     }
 
     public abstract E getKiePMMLDrooledModel(DataDictionary dataDictionary, T model) throws KiePMMLException;

@@ -23,9 +23,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.abstracts.KiePMMLIDed;
-import org.kie.pmml.api.model.abstracts.KiePMMLNamed;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLNamed;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
@@ -41,6 +41,9 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
     private Set<KiePMMLPredictorTerm> predictorTerms;
     private Map<String, KiePMMLNumericPredictor> numericPredictorsMap = new HashMap<>();
     private Map<String, List<KiePMMLCategoricalPredictor>> categoricalPredictorMaps = new HashMap<>();
+
+    private KiePMMLRegressionTable() {
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -121,10 +124,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return Objects.hash(super.hashCode(), intercept, targetCategory, extensions, numericPredictors, categoricalPredictors, predictorTerms, numericPredictorsMap, categoricalPredictorMaps);
     }
 
-    private KiePMMLRegressionTable() {
-    }
-
-    public static class Builder  extends KiePMMLIDed.Builder<KiePMMLRegressionTable> {
+    public static class Builder extends KiePMMLIDed.Builder<KiePMMLRegressionTable> {
 
         private Builder() {
             super("RegressionTable-", KiePMMLRegressionTable::new);
@@ -164,6 +164,5 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
             toBuild.predictorTerms = predictorTerms;
             return this;
         }
-
     }
 }

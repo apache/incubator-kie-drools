@@ -17,9 +17,9 @@ package org.kie.pmml.models.mining.api.model.segmentation;
 
 import java.util.List;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.abstracts.KiePMMLIDedExtensioned;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDedExtensioned;
 import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +28,14 @@ public class KiePMMLSegment extends KiePMMLIDedExtensioned {
 
     private static final long serialVersionUID = 8447087369287427969L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegment.class);
-
-    private double weight = 1;
     private final KiePMMLPredicate kiePMMLPredicate;
     private final KiePMMLModel model;
+    private double weight = 1;
+
+    private KiePMMLSegment(KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
+        this.kiePMMLPredicate = kiePMMLPredicate;
+        this.model = model;
+    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -51,11 +55,6 @@ public class KiePMMLSegment extends KiePMMLIDedExtensioned {
 
     public KiePMMLModel getModel() {
         return model;
-    }
-
-    private KiePMMLSegment(KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
-        this.kiePMMLPredicate = kiePMMLPredicate;
-        this.model = model;
     }
 
     public static class Builder extends KiePMMLIDedExtensioned.Builder<KiePMMLSegment> {

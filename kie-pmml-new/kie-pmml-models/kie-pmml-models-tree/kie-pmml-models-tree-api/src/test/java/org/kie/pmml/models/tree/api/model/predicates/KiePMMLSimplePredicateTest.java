@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
@@ -142,5 +142,4 @@ public class KiePMMLSimplePredicateTest {
         commonEvaluate(retrieved.evaluate(Collections.singletonMap(NAME, 34.7)), false, true);
         commonEvaluate(retrieved.evaluate(Collections.singletonMap(NAME, 34.5)), false, false);
     }*/
-
 }

@@ -1,23 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-/*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package ${package}.models.tree.api.factories;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,20 +13,38 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
-import ${package}.api.exceptions.KieDataFieldException;
-import ${package}.api.exceptions.KiePMMLException;
-import ${package}.api.model.enums.DATA_TYPE;
-import ${package}.models.tree.api.model.enums.BOOLEAN_OPERATOR;
-import ${package}.models.tree.api.model.enums.OPERATOR;
-import ${package}.models.tree.api.model.predicates.KiePMMLCompoundPredicate;
-import ${package}.models.tree.api.model.predicates.KiePMMLFalsePredicate;
-import ${package}.models.tree.api.model.predicates.KiePMMLPredicate;
-import ${package}.models.tree.api.model.predicates.KiePMMLSimplePredicate;
-import ${package}.models.tree.api.model.predicates.KiePMMLTruePredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ${package}.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+#set($symbol_pound='#')
+        #set($symbol_dollar='$')
+        #set($symbol_escape='\' )
+        /*
+         * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+         *
+         * Licensed under the Apache License, Version 2.0 (the "License");
+         * you may not use this file except in compliance with the License.
+         * You may obtain a copy of the License at
+         *
+         *     http://www.apache.org/licenses/LICENSE-2.0
+         *
+         * Unless required by applicable law or agreed to in writing, software
+         * distributed under the License is distributed on an "AS IS" BASIS,
+         * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         * See the License for the specific language governing permissions and
+         * limitations under the License.
+         */
+        package ${package}.models.tree.api.factories;
+        {package}.api.exceptions.KieDataFieldException;
+        {package}.api.exceptions.KiePMMLException;
+        {package}.api.model.enums.DATA_TYPE;
+        {package}.models.tree.api.model.enums.BOOLEAN_OPERATOR;
+        {package}.models.tree.api.model.enums.OPERATOR;
+        {package}.models.tree.api.model.predicates.KiePMMLCompoundPredicate;
+        {package}.models.tree.api.model.predicates.KiePMMLFalsePredicate;
+        {package}.models.tree.api.model.predicates.KiePMMLPredicate;
+        {package}.models.tree.api.model.predicates.KiePMMLSimplePredicate;
+        {package}.models.tree.api.model.predicates.KiePMMLTruePredicate;{package}.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class KiePMMLPredicateFactory {
 

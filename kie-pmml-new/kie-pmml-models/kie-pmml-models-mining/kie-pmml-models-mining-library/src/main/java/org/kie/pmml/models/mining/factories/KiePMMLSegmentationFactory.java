@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.Segmentation;
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.mining.api.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.api.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.models.mining.factories.KiePMMLSegmentFactory.getSegments;
 
@@ -34,7 +34,8 @@ public class KiePMMLSegmentationFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentationFactory.class.getName());
 
-
+    private KiePMMLSegmentationFactory() {
+    }
 
     public static List<KiePMMLSegmentation> getSegmentations(List<Segmentation> segmentations, DataDictionary dataDictionary, Object kBuilder) throws KiePMMLException {
         logger.info("getSegmentations {}", segmentations);
@@ -44,11 +45,8 @@ public class KiePMMLSegmentationFactory {
     public static KiePMMLSegmentation getSegmentation(Segmentation segmentation, DataDictionary dataDictionary, Object kBuilder) throws KiePMMLException {
         logger.info("getSegmentation {}", segmentation);
         return KiePMMLSegmentation.builder(getKiePMMLExtensions(segmentation.getExtensions()),
-                                                                          MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
+                                           MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
                 .withSegments(getSegments(segmentation.getSegments(), dataDictionary, kBuilder))
                 .build();
-    }
-
-    private KiePMMLSegmentationFactory() {
     }
 }

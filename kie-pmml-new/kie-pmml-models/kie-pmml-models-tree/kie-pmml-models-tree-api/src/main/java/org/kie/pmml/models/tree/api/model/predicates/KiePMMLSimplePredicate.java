@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,10 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     private String name;
     private Object value;
 
+    private KiePMMLSimplePredicate(String name, OPERATOR operator) {
+        this.name = name;
+        this.operator = operator;
+    }
 
     /**
      * Builder to auto-generate the <b>id</b>
@@ -49,12 +53,12 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     public boolean evaluate(Map<String, Object> values) {
         logger.info("{} evaluate {}", this, values);
         boolean toReturn = false;
-       if (values.containsKey(name)) {
-           logger.info("found matching parameter, evaluating... ");
-           toReturn = evaluation(values.get(name));
-       }
+        if (values.containsKey(name)) {
+            logger.info("found matching parameter, evaluating... ");
+            toReturn = evaluation(values.get(name));
+        }
         logger.info("return {}", toReturn);
-       return toReturn;
+        return toReturn;
     }
 
     public String getName() {
@@ -141,12 +145,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         }
     }
 
-    private KiePMMLSimplePredicate(String name, OPERATOR operator) {
-        this.name = name;
-        this.operator = operator;
-    }
-
-    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLSimplePredicate>  {
+    public static class Builder extends KiePMMLPredicate.Builder<KiePMMLSimplePredicate> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, OPERATOR operator) {
             super(extensions, "SimplePredicate-", () -> new KiePMMLSimplePredicate(name, operator));

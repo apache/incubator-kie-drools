@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,6 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
 
         private Builder(List<KiePMMLExtension> extensions) {
             super(extensions, "TruePredicate-", KiePMMLTruePredicate::new);
-
         }
     }
 }

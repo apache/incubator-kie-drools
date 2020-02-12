@@ -17,10 +17,9 @@ package org.kie.pmml.models.regression.api.model.enums;
 
 import java.util.Arrays;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html#xsdType_REGRESSIONNORMALIZATIONMETHOD>REGRESSIONNORMALIZATIONMETHOD</a>
  */
 public enum REGRESSION_NORMALIZATION_METHOD {
@@ -40,11 +39,11 @@ public enum REGRESSION_NORMALIZATION_METHOD {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public static REGRESSION_NORMALIZATION_METHOD byName(String name) throws KieEnumException {
+        return Arrays.stream(REGRESSION_NORMALIZATION_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
     }
 
-    public static REGRESSION_NORMALIZATION_METHOD byName(String name) throws KieEnumException {
-        return  Arrays.stream(REGRESSION_NORMALIZATION_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
+    public String getName() {
+        return name;
     }
 }

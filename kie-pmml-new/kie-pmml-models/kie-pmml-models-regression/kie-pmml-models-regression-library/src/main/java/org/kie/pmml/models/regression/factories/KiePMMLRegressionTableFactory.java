@@ -32,7 +32,7 @@ public class KiePMMLRegressionTableFactory {
 
     public static List<KiePMMLRegressionTable> getRegressionTables(List<RegressionTable> regressionTables) {
         logger.info("getRegressionTables {}", regressionTables);
-        return regressionTables.stream().map(KiePMMLRegressionTableFactory :: getRegressionTable).collect(Collectors.toList());
+        return regressionTables.stream().map(KiePMMLRegressionTableFactory::getRegressionTable).collect(Collectors.toList());
     }
 
     public static KiePMMLRegressionTable getRegressionTable(RegressionTable regressionTable) {
@@ -46,6 +46,4 @@ public class KiePMMLRegressionTableFactory {
                 .withTargetCategory(regressionTable.getTargetCategory())
                 .build();
     }
-
-
 }

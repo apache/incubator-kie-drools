@@ -1,9 +1,9 @@
 #set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-<?xml version="1.0" encoding="UTF-8"?>
-<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://www.drools.org/xsd/kmodule">
+    #set( $symbol_dollar = '$' )
+    #set( $symbol_escape = '\' )
+    <?xml version="1.0" encoding="UTF-8"?>
+<kmodule
+    xmlns="http://www.drools.org/xsd/kmodule">
 
   <kbase name="PMML${modelName}ModelBase" packages="${package}.runtime.tree.executor">
     <ksession name="PMML${modelName}ModelSession" type="stateless" default="true"/>

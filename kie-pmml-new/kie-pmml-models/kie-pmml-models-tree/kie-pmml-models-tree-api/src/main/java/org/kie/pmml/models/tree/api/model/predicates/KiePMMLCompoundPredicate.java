@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.tree.api.model.enums.BOOLEAN_OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

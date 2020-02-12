@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.mining.Segment;
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.mining.api.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.library.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
 import static org.kie.pmml.models.tree.api.factories.KiePMMLPredicateFactory.getPredicate;

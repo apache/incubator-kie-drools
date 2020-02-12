@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.interfaces;
-
-import java.util.Objects;
+package org.kie.pmml.models.drooled.executor;
 
 /**
- * Exception-throwing <code>DoubleConsumer</code>
+ * Class used inside drools. Rules are fired based on the value of status
  */
-@FunctionalInterface
-public interface ThrowingDoubleConsumer<E extends Exception> {
+public class KiePMMLStatusHolder {
 
-    void accept(double var1) throws  E;
+    private String status;
+    private String result;
 
-    default ThrowingDoubleConsumer< E> andThen(ThrowingDoubleConsumer<E> after) throws E {
-        Objects.requireNonNull(after);
-        return (t) -> {
-            this.accept(t);
-            after.accept(t);
-        };
+    public KiePMMLStatusHolder() {
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 }

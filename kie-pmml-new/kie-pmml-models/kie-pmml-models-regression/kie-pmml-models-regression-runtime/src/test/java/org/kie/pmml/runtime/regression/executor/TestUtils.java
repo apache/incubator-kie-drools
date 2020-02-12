@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
@@ -36,7 +36,6 @@ import org.kie.pmml.runtime.core.utils.PMMLRequestDataBuilder;
  * @see <a href=http://dmg.org/pmml/v4-2-1/Regression.html>Regression</a>
  */
 public class TestUtils {
-
 
     public static final String MODEL_NAME = "Sample for linear regression";
     public static final String ALGORITHM_NAME = "linearRegression";
@@ -54,7 +53,6 @@ public class TestUtils {
     public static final double STREET_COEFF = 325.03;
     public static final double AGE_COEFF = 7.1;
     public static final double SALARY_COEFF = 0.01;
-
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel() {
         return KiePMMLRegressionModel.builder(MODEL_NAME, _MINING_FUNCTION)
@@ -100,8 +98,4 @@ public class TestUtils {
         }
         return pmmlRequestDataBuilder.build();
     }
-
-
-
-
 }

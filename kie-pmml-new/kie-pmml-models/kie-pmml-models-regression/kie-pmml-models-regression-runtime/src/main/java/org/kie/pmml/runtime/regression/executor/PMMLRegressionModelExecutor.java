@@ -16,9 +16,9 @@
 package org.kie.pmml.runtime.regression.executor;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
@@ -42,6 +42,4 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
         final KiePMMLRegressionModel regressionModel = (KiePMMLRegressionModel) model;
         return (regressionModel).isRegression() ? evaluateRegression(regressionModel, pmmlContext) : evaluateNotRegression(regressionModel, pmmlContext);
     }
-
-
 }

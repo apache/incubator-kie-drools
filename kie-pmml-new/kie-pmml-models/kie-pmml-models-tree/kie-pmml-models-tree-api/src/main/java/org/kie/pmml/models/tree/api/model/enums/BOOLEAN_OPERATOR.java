@@ -17,10 +17,9 @@ package org.kie.pmml.models.tree.api.model.enums;
 
 import java.util.Arrays;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
  */
 public enum BOOLEAN_OPERATOR {
@@ -29,7 +28,6 @@ public enum BOOLEAN_OPERATOR {
     AND("and"),
     XOR("xor"),
     SURROGATE("surrogate");
-
 
     private String name;
 

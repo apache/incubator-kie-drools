@@ -38,16 +38,16 @@ import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.api.KiePMMLStatusHolder;
-import org.kie.pmml.api.exceptions.KieEnumException;
-import org.kie.pmml.api.model.enums.DATA_TYPE;
+import org.kie.pmml.commons.exceptions.KieEnumException;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingBiConsumerWrapper;
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingBiConsumerWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
 
 /**
  * Class used to generate a <b>DROOLS</b> (descr) object out of a<b>TreeMoodel</b>
@@ -145,7 +145,7 @@ public class KiePMMLDescrFactory {
         switch (booleanOperator) {
             case OR:
                 StringBuilder constraintBuilder = new StringBuilder();
-                for (int i = 0; i < predicates.size(); i ++) {
+                for (int i = 0; i < predicates.size(); i++) {
                     if (i > 0) {
                         constraintBuilder.append(" OR ");
                     }

@@ -19,8 +19,8 @@ import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class KiePMMLTreeModelFactory {
     }
 
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) throws KiePMMLException {
-        logger.info("getKiePMMLModel {}",  model);
+        logger.info("getKiePMMLModel {}", model);
         String name = model.getModelName();
         // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
         Optional<String> targetFieldName = getTargetField(model);

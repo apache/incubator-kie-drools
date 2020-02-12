@@ -30,9 +30,9 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.api.exceptions.KieDataFieldException;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.DATA_TYPE;
+import org.kie.pmml.commons.exceptions.KieDataFieldException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.tree.api.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
 import org.kie.pmml.models.tree.api.model.predicates.KiePMMLCompoundPredicate;
@@ -43,7 +43,7 @@ import org.kie.pmml.models.tree.api.model.predicates.KiePMMLTruePredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class KiePMMLPredicateFactory {
 

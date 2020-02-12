@@ -23,17 +23,16 @@ import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPre
 
 public class KiePMMLCategoricalPredictorFactory {
 
+    private KiePMMLCategoricalPredictorFactory() {
+    }
 
     public static List<KiePMMLCategoricalPredictor> getKiePMMLCategoricalPredictors(List<CategoricalPredictor> categoricalPredictors) {
-        return categoricalPredictors.stream().map(KiePMMLCategoricalPredictorFactory :: getKiePMMLCategoricalPredictor).collect(Collectors.toList());
+        return categoricalPredictors.stream().map(KiePMMLCategoricalPredictorFactory::getKiePMMLCategoricalPredictor).collect(Collectors.toList());
     }
 
     public static KiePMMLCategoricalPredictor getKiePMMLCategoricalPredictor(CategoricalPredictor categoricalPredictor) {
         return new KiePMMLCategoricalPredictor(categoricalPredictor.getName().getValue(),
                                                categoricalPredictor.getValue(),
                                                categoricalPredictor.getCoefficient());
-    }
-
-    private KiePMMLCategoricalPredictorFactory() {
     }
 }

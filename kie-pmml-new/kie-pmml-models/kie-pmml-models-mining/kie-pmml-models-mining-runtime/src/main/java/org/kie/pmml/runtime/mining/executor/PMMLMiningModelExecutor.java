@@ -24,15 +24,15 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.models.mining.api.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.api.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.api.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate;
-import org.kie.pmml.api.model.tuples.KiePMMLNameValue;
-import org.kie.pmml.api.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.runtime.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.runtime.api.executor.PMMLContext;
 import org.kie.pmml.runtime.api.executor.PMMLRuntime;
@@ -40,7 +40,7 @@ import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.runtime.core.utils.Converter.getUnwrappedParametersMap;
 
 /**
@@ -74,8 +74,8 @@ public class PMMLMiningModelExecutor implements PMMLModelExecutor {
                                                      new AbstractMap.SimpleImmutableEntry<KiePMMLSegment, Optional<PMML4Result>>(segment, evaluateSegment(segment, pmmlContext, releaseId))))
                 .filter(entry -> entry.getValue().isPresent())
                 .map(throwingFunctionWrapper(entry -> new AbstractMap.SimpleImmutableEntry<KiePMMLSegment, KiePMMLNameValue>(entry.getKey(),
-                                                                                                                   getKiePMMLNameValue(entry.getValue().get(), multipleModelMethod, entry.getKey().getWeight()))))
-                .collect(Collectors.toMap(entry ->   entry.getKey().getId(),
+                                                                                                                             getKiePMMLNameValue(entry.getValue().get(), multipleModelMethod, entry.getKey().getWeight()))))
+                .collect(Collectors.toMap(entry -> entry.getKey().getId(),
                                           AbstractMap.SimpleImmutableEntry::getValue,
                                           (o1, o2) -> o1,
                                           (Supplier<LinkedHashMap<String, KiePMMLNameValue>>) LinkedHashMap::new));
@@ -102,7 +102,6 @@ public class PMMLMiningModelExecutor implements PMMLModelExecutor {
      * Returns a <code>KiePMMLNameValue</code> representation of the <code>PMML4Result</code>.
      * <b>It is based on the assumption there is only one result to be considered, defined as</b>
      * {@link PMML4Result#getResultObjectName() }
-     *
      * @param result
      * @param multipleModelMethod
      * @param weight
@@ -148,5 +147,4 @@ public class PMMLMiningModelExecutor implements PMMLModelExecutor {
                 throw new KiePMMLException("Unrecognized MULTIPLE_MODEL_METHOD " + multipleModelMethod);
         }
     }
-
 }

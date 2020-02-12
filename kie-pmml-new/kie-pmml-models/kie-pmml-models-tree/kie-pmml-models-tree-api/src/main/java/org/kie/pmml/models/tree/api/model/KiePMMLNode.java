@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.abstracts.KiePMMLIDed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDed;
 import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

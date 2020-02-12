@@ -17,8 +17,8 @@ package org.kie.pmml.models.tree.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drooled.provider.DrooledModelProvider;
 import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel;
 import org.slf4j.Logger;

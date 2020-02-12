@@ -15,12 +15,10 @@
  */
 package org.kie.pmml.models.tree.api.model;
 
-import java.util.Objects;
-
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.kie.pmml.api.model.KiePMMLDrooledModel;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLDrooledModel;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html>Tree</a>
@@ -41,14 +39,11 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
         return algorithmName;
     }
 
-
-
     public static class Builder extends KiePMMLDrooledModel.Builder<KiePMMLTreeModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
             super(name, "TreeModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLTreeModel::new);
         }
-
 
         public Builder withAlgorithmName(String algorithmName) {
             toBuild.algorithmName = algorithmName;
@@ -64,7 +59,5 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
         public Builder withPackageDescr(PackageDescr packageDescr) {
             return (Builder) super.withPackageDescr(packageDescr);
         }
-
-
     }
 }

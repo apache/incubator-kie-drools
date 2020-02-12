@@ -17,7 +17,7 @@ package org.kie.pmml.models.tree.api.model.predicates;
 
 import java.util.Map;
 
-import org.kie.pmml.api.model.abstracts.KiePMMLIDedExtensioned;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDedExtensioned;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
@@ -36,5 +36,4 @@ public abstract class KiePMMLPredicate extends KiePMMLIDedExtensioned {
      * @return
      */
     public abstract boolean evaluate(Map<String, Object> values);
-
 }

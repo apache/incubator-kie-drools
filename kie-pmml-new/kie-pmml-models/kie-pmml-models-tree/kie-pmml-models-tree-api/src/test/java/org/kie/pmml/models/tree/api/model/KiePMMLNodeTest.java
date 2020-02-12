@@ -48,7 +48,6 @@ public class KiePMMLNodeTest {
     private final String OVERCAST = "overcast";
     private final String RAIN = "rain";
 
-
     private KiePMMLNode WILL_PLAY_NODE;
 
     /*
@@ -103,8 +102,8 @@ public class KiePMMLNodeTest {
     @Before
     public void setup() {
         KiePMMLCompoundPredicate compoundPredicate1 = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND,
-                                                                                 Arrays.asList(getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.LESS_THAN, 90),
-                                                                                               getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.GREATER_THAN, 50)));
+                                                                                  Arrays.asList(getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.LESS_THAN, 90),
+                                                                                                getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.GREATER_THAN, 50)));
         KiePMMLNode willPlayLevel3 = KiePMMLNode.builder()
                 .withScore(WILL_PLAY)
                 .withKiePMMLPredicate(getKiePMMLSimplePredicate(HUMIDITY, OPERATOR.LESS_THAN, 80)).build();
@@ -133,7 +132,6 @@ public class KiePMMLNodeTest {
                 .withKiePMMLNodes(Arrays.asList(willPlayLevel2, noPlayLevel2WillPlay))
                 .build();
 
-
         KiePMMLCompoundPredicate compoundPredicate3 = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND,
                                                                                   Arrays.asList(getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.GREATER_THAN, 60),
                                                                                                 getKiePMMLSimplePredicate(TEMPERATURE, OPERATOR.LESS_THAN, 100),
@@ -152,7 +150,6 @@ public class KiePMMLNodeTest {
                 .withKiePMMLPredicate(compoundPredicate4)
                 .build();
 
-
         KiePMMLCompoundPredicate compoundPredicate5 = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.OR,
                                                                                   Arrays.asList(getKiePMMLSimplePredicate(OUTLOOK, OPERATOR.EQUAL, OVERCAST),
                                                                                                 getKiePMMLSimplePredicate(OUTLOOK, OPERATOR.EQUAL, RAIN)));
@@ -166,9 +163,6 @@ public class KiePMMLNodeTest {
                 .withKiePMMLNodes(Arrays.asList(willPlayLevel1, mayPlayLevel1))
                 .build();
     }
-
-
-
 
     @Test
     public void builder() {

@@ -17,10 +17,9 @@ package org.kie.pmml.models.regression.api.model.enums;
 
 import java.util.Arrays;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html#xsdElement_RegressionModel>RegressionModel</a>
  */
 public enum MODEL_TYPE {

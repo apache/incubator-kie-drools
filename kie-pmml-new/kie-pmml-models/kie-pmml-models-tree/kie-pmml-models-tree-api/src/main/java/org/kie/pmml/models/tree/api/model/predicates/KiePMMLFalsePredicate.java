@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_False>False</a>
@@ -80,7 +80,6 @@ public class KiePMMLFalsePredicate extends KiePMMLPredicate {
 
         private Builder(List<KiePMMLExtension> extensions) {
             super(extensions, "FalsePredicate-", KiePMMLFalsePredicate::new);
-
         }
     }
 }

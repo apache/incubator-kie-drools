@@ -17,23 +17,21 @@ package org.kie.pmml.models.tree.api.model.enums;
 
 import java.util.Arrays;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
 public enum OPERATOR {
 
     EQUAL("equal", "=="),
     NOT_EQUAL("notEqual", "!="),
-    LESS_THAN("lessThan" , "<"),
+    LESS_THAN("lessThan", "<"),
     LESS_OR_EQUAL("lessOrEqual", "<="),
     GREATER_THAN("greaterThan", ">"),
     GREATER_OR_EQUAL("greaterOrEqual", ">="),
     IS_MISSING("isMissing", ""),
     IS_NOT_MISSING("isNotMissing", "");
-
 
     private final String name;
     private final String operator;

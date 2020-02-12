@@ -53,14 +53,18 @@ public class PMMLAssemblerServiceTest {
     @Test
     public void addResources() throws Exception {
         Resource secondSampleResource = new InputStreamResource(getFileInputStream("SecondLinearRegressionSample.xml"));
-        ResourceWithConfiguration firstResourceWithConfiguration = new ResourceWithConfigurationImpl(firstSampleResource, new ResourceConfigurationImpl(), o -> { }, o -> { });
-        ResourceWithConfiguration secondResourceWithConfiguration = new ResourceWithConfigurationImpl(secondSampleResource, new ResourceConfigurationImpl(), o -> { }, o -> { });
+        ResourceWithConfiguration firstResourceWithConfiguration = new ResourceWithConfigurationImpl(firstSampleResource, new ResourceConfigurationImpl(), o -> {
+        }, o -> {
+        });
+        ResourceWithConfiguration secondResourceWithConfiguration = new ResourceWithConfigurationImpl(secondSampleResource, new ResourceConfigurationImpl(), o -> {
+        }, o -> {
+        });
         Collection<ResourceWithConfiguration> resources = Arrays.asList(firstResourceWithConfiguration, secondResourceWithConfiguration);
         pmmlAssemblerService.addResources(knowledgeBuilder, resources, ResourceType.PMML);
         assertNotNull(knowledgeBuilder.getKnowledgeBase().getKiePackages());
-        knowledgeBuilder.getKnowledgeBase().getKiePackages().forEach( kpkg -> {
-            assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML ));
-            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML );
+        knowledgeBuilder.getKnowledgeBase().getKiePackages().forEach(kpkg -> {
+            assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML));
+            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
             assertNotNull(pmmlPackage.getAllModels());
             Assert.assertEquals(4, pmmlPackage.getAllModels().size());
             assertNotNull(pmmlPackage.getAllModels().get("First sample for first linear regression"));
@@ -71,23 +75,23 @@ public class PMMLAssemblerServiceTest {
             assertNotNull(pmmlPackage.getModelByName("First sample for second linear regression"));
             assertNotNull(pmmlPackage.getAllModels().get("Second sample for second linear regression"));
             assertNotNull(pmmlPackage.getModelByName("Second sample for second linear regression"));
-        } );
+        });
     }
 
     @Test
     public void addResource() throws Exception {
         pmmlAssemblerService.addResource(knowledgeBuilder, firstSampleResource, ResourceType.PMML, new ResourceConfigurationImpl());
         assertNotNull(knowledgeBuilder.getKnowledgeBase().getKiePackages());
-        knowledgeBuilder.getKnowledgeBase().getKiePackages().forEach( kpkg -> {
-            assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML ));
-            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML );
+        knowledgeBuilder.getKnowledgeBase().getKiePackages().forEach(kpkg -> {
+            assertNotNull(((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML));
+            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
             assertNotNull(pmmlPackage.getAllModels());
             Assert.assertEquals(2, pmmlPackage.getAllModels().size());
             assertNotNull(pmmlPackage.getAllModels().get("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getModelByName("First sample for first linear regression"));
             assertNotNull(pmmlPackage.getAllModels().get("Second sample for first linear regression"));
             assertNotNull(pmmlPackage.getModelByName("Second sample for first linear regression"));
-        } );
+        });
     }
 
     @Test
@@ -101,5 +105,4 @@ public class PMMLAssemblerServiceTest {
     @Test
     public void getKiePMMLModelsFromResource() {
     }
-
 }

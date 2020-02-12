@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-import org.kie.pmml.api.exceptions.KieEnumException;
-import org.kie.pmml.api.interfaces.ThrowingFunction;
-import org.kie.pmml.api.model.tuples.KiePMMLNameValue;
-import org.kie.pmml.api.model.tuples.KiePMMLValueWeight;
+import org.kie.pmml.commons.exceptions.KieEnumException;
+import org.kie.pmml.commons.interfaces.ThrowingFunction;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingToDoubleFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingToDoubleFunctionWrapper;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/MultipleModels.html#xsdType_MULTIPLE-MODEL-METHOD>MULTIPLE-MODEL-METHOD</a>

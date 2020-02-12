@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.tree.api.model.enums.BOOLEAN_OPERATOR;
 
 import static org.junit.Assert.assertEquals;

@@ -13,48 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.model;
+package org.kie.pmml.commons.model;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.kie.pmml.api.model.abstracts.KiePMMLIDedNamed;
-import org.kie.pmml.api.model.enums.MINING_FUNCTION;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.pmml.commons.model.abstracts.KiePMMLIDedNamed;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * KIE representation of PMML model
+ * KIE representation of PMML model that use <b>drool</b> for implementation
  */
-public abstract class KiePMMLModel extends KiePMMLIDedNamed {
+public abstract class KiePMMLDrooledModel extends KiePMMLModel {
 
     private static final long serialVersionUID = -6845971260164057040L;
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLModel.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDrooledModel.class.getName());
 
-    protected PMML_MODEL pmmlMODEL;
-    protected MINING_FUNCTION miningFunction;
-    protected String targetField;
+    protected PackageDescr packageDescr;
 
-    protected KiePMMLModel() {
+    protected KiePMMLDrooledModel() {
     }
 
-    public PMML_MODEL getPmmlMODEL() {
-        return pmmlMODEL;
-    }
-
-    public MINING_FUNCTION getMiningFunction() {
-        return miningFunction;
-    }
-
-    public String getTargetField() {
-        return targetField;
+    public PackageDescr getPackageDescr() {
+        return packageDescr;
     }
 
     @Override
     public String toString() {
-        return "KiePMMLModel{" +
-                "pmmlMODEL=" + pmmlMODEL +
+        return "KiePMMLDrooledModel{" +
+                "packageDescr=" + packageDescr +
+                ", pmmlMODEL=" + pmmlMODEL +
                 ", miningFunction=" + miningFunction +
                 ", targetField='" + targetField + '\'' +
                 ", name='" + name + '\'' +
@@ -74,18 +66,16 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
         if (!super.equals(o)) {
             return false;
         }
-        KiePMMLModel that = (KiePMMLModel) o;
-        return pmmlMODEL == that.pmmlMODEL &&
-                miningFunction == that.miningFunction &&
-                Objects.equals(targetField, that.targetField);
+        KiePMMLDrooledModel that = (KiePMMLDrooledModel) o;
+        return Objects.equals(packageDescr, that.packageDescr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction, targetField);
+        return Objects.hash(super.hashCode(), packageDescr);
     }
 
-    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
+    public abstract static class Builder<T extends KiePMMLDrooledModel> extends KiePMMLIDedNamed.Builder<T> {
 
         protected Builder(String name, String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
             super(name, prefix, supplier);
@@ -97,7 +87,10 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
             toBuild.targetField = targetField;
             return this;
         }
+
+        public Builder<T> withPackageDescr(PackageDescr packageDescr) {
+            toBuild.packageDescr = packageDescr;
+            return this;
+        }
     }
-
-
 }
