@@ -29,7 +29,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
@@ -37,7 +37,7 @@ import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 

@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
-
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+package org.kie.pmml.commons.model.expressions;
 
 /**
- *
+ * @see <a href=http://dmg.org/pmml/v4-4/Transformations.html#xsdGroup_EXPRESSION>EXPRESSION</a>
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+public interface KiePMMLExpression {
 
-    KiePMMLModel getModelByName(String name);
-
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
 }

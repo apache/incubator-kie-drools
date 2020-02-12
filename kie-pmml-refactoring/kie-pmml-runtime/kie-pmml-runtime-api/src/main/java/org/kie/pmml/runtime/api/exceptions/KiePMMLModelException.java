@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.runtime.api.exceptions;
 
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 /**
  * Exception raised whenever there is an error on the <code>KiePMMLModel</code> as whole (e.g. un unexpected implementation received)

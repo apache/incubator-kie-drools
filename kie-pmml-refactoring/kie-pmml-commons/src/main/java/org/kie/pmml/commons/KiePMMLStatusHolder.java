@@ -13,22 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
-
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+package org.kie.pmml.commons;
 
 /**
- *
+ * Class used inside drools. Rules are fired based on the value of status
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+public class KiePMMLStatusHolder {
 
-    KiePMMLModel getModelByName(String name);
+    private String status;
+    private String result;
 
-    Map<String, KiePMMLModel> getAllModels();
+    public KiePMMLStatusHolder() {
+    }
 
-    void addAll(Collection<KiePMMLModel> toAdd);
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 }

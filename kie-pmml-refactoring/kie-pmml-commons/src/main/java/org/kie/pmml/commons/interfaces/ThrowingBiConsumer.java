@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
+package org.kie.pmml.commons.interfaces;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import java.util.Objects;
 
 /**
- *
+ * Exception-throwing <code>BiConsumer</code>
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+@FunctionalInterface
+public interface ThrowingBiConsumer<T, U, E extends Exception> {
 
-    KiePMMLModel getModelByName(String name);
+    void accept(T var1, U var2) throws E;
 
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
+    default ThrowingBiConsumer<T, U, E> andThen(ThrowingBiConsumer<? super T, ? super U, E> after) {
+        Objects.requireNonNull(after);
+        return (l, r) -> {
+            this.accept(l, r);
+            after.accept(l, r);
+        };
+    }
 }

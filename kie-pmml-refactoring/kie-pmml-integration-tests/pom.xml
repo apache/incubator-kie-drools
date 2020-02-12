@@ -19,7 +19,7 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-api</artifactId>
+      <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -88,7 +88,7 @@
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-api</artifactId>
+        <artifactId>kie-pmml-commons</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>

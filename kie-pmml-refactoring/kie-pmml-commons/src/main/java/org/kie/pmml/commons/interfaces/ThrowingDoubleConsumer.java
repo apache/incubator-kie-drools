@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
+package org.kie.pmml.commons.interfaces;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import java.util.Objects;
 
 /**
- *
+ * Exception-throwing <code>DoubleConsumer</code>
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+@FunctionalInterface
+public interface ThrowingDoubleConsumer<E extends Exception> {
 
-    KiePMMLModel getModelByName(String name);
+    void accept(double var1) throws E;
 
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
+    default ThrowingDoubleConsumer<E> andThen(ThrowingDoubleConsumer<E> after) throws E {
+        Objects.requireNonNull(after);
+        return (t) -> {
+            this.accept(t);
+            after.accept(t);
+        };
+    }
 }

@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
+package org.kie.pmml.commons.model.abstracts;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 
-/**
- *
- */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+public abstract class KiePMMLExtensionedTerm extends KiePMMLExtensionedNamed {
 
-    KiePMMLModel getModelByName(String name);
+    private static final long serialVersionUID = 1452775408881599004L;
 
-    Map<String, KiePMMLModel> getAllModels();
+    public KiePMMLExtensionedTerm(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
+    }
 
-    void addAll(Collection<KiePMMLModel> toAdd);
+    public abstract Number getCoefficient();
 }

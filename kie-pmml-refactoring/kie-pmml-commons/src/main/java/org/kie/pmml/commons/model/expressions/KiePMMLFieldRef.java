@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.executor;
+package org.kie.pmml.commons.model.expressions;
 
-import java.io.InputStream;
 import java.util.List;
 
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedNamed;
 
-/**
- * Actual implementations are required to convert a <b>PMML</b> xml to
- * to a <code>List&lt;KiePMMLModel&gt;</code>
- */
-public interface PMMLCompiler {
+public class KiePMMLFieldRef extends KiePMMLExtensionedNamed implements KiePMMLExpression {
 
-    /**
-     * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code>
-     * @param inputStream
-     * @param kbuilder Using <code>Object</code> to avoid coupling with drools
-     * @return
-     */
-    List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws Exception;
+    private static final long serialVersionUID = -8710217937035493376L;
+
+    private String mapMissingTo;
+
+    public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
+        super(name, extensions);
+        this.mapMissingTo = mapMissingTo;
+    }
+
+    public String getMapMissingTo() {
+        return mapMissingTo;
+    }
 }

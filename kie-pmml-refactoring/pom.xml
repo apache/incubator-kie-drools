@@ -35,7 +35,7 @@
     <module>kie-pmml-library</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-runtime</module>
-    <module>kie-pmml-api</module>
+    <module>kie-pmml-commons</module>
     <module>kie-pmml-integration-tests</module>
   </modules>
 

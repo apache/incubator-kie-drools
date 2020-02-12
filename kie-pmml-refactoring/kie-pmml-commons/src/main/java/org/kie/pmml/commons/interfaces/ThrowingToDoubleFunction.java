@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
-
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+package org.kie.pmml.commons.interfaces;
 
 /**
- *
+ * Exception-throwing <code>ToDoubleFunction</code>
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+@FunctionalInterface
+public interface ThrowingToDoubleFunction<T, E extends Exception> {
 
-    KiePMMLModel getModelByName(String name);
-
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
+    double applyAsDouble(T var1) throws E;
 }

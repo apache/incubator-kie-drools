@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.FieldRef;
-import org.kie.pmml.api.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 

@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
+package org.kie.pmml.commons.exceptions;
 
-import java.util.Collection;
-import java.util.Map;
+public class KieDataFieldException extends KiePMMLException {
 
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+    private static final long serialVersionUID = -2024081845051149460L;
 
-/**
- *
- */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+    public KieDataFieldException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    KiePMMLModel getModelByName(String name);
-
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
+    public KieDataFieldException(String message) {
+        super(message);
+    }
 }
