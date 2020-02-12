@@ -15,9 +15,6 @@
 
   <modules>
     <module>kie-pmml-models-regression</module>
-    <module>kie-pmml-models-tree</module>
-    <module>kie-pmml-models-mining</module>
-    <module>kie-pmml-models-drooled</module>
   </modules>
 
 
