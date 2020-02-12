@@ -81,8 +81,12 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     public void addPackage(final PackageDescr packageDescr) {
         if (compositePackagesMap == null) {
             compositePackagesMap = new HashMap<>();
-            for (CompositePackageDescr pkg : compositePackages) {
-                compositePackagesMap.put( pkg.getNamespace(), pkg );
+            if(compositePackages != null) {
+                for (CompositePackageDescr pkg : compositePackages) {
+                    compositePackagesMap.put(pkg.getNamespace(), pkg);
+                }
+            } else {
+                compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr(packageDescr.getResource(), packageDescr));
             }
             compositePackages = null;
         }
