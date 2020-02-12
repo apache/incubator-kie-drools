@@ -25,6 +25,7 @@
   <inceptionYear>2006</inceptionYear>
 
   <properties>
+    <jacoco.agent.argLine/>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
   </properties>
 
@@ -121,47 +122,13 @@
 
     <profile>
       <id>run-code-coverage</id>
-      <properties>
-        <jacoco.excludes>*Lexer:org.optaplanner.core.impl.testdata.domain.*:*TestdataAbstractSolutionBasedSolution</jacoco.excludes>
-
-        <!-- jacoco.exec.file is defined in kie-parent -->
-        <!--suppress UnresolvedMavenProperty -->
-        <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
-        <surefire.argLine>
-          -Dfile.encoding=${project.build.sourceEncoding}
-          ${jacoco.agent.line}
-        </surefire.argLine>
-      </properties>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.codehaus.cargo</groupId>
-              <artifactId>cargo-maven2-plugin</artifactId>
-              <configuration>
-                <configuration>
-                  <properties>
-                    <cargo.start.jvmargs>${jacoco.agent.line}</cargo.start.jvmargs>
-                  </properties>
-                </configuration>
-              </configuration>
-            </plugin>
-            <plugin>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <argLine>${surefire.argLine}</argLine>
-              </configuration>
-              <dependencies>
-                <dependency>
-                  <groupId>org.jacoco</groupId>
-                  <artifactId>org.jacoco.agent</artifactId>
-                  <version>${version.jacoco.plugin}</version>
-                  <classifier>runtime</classifier>
-                </dependency>
-              </dependencies>
-            </plugin>
-          </plugins>
-        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
@@ -273,6 +240,36 @@
               </configuration>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>jacoco-prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <append>true</append>
+                <destFile>${jacoco.exec.file}</destFile>
+                <excludes>
+                  <exclude>*Lexer</exclude>
+                  <exclude>org.optaplanner.core.impl.testdata.domain.*</exclude>
+                  <exclude>*TestdataAbstractSolutionBasedSolution</exclude>
+                </excludes>
+                <propertyName>jacoco.agent.argLine</propertyName>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
+            <argLine>@{jacoco.agent.argLine}</argLine>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
