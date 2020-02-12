@@ -315,9 +315,9 @@ public class MemoryFileSystem
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((fileContents == null) ? 0 : fileContents.hashCode());
+        result = prime * result + fileContents.hashCode();
         result = prime * result + ((folder == null) ? 0 : folder.hashCode());
-        result = prime * result + ((folders == null) ? 0 : folders.hashCode());
+        result = prime * result + folders.hashCode();
         return result;
     }
 
@@ -327,16 +327,12 @@ public class MemoryFileSystem
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         MemoryFileSystem other = (MemoryFileSystem) obj;
-        if ( fileContents == null ) {
-            if ( other.fileContents != null ) return false;
-        } else if ( !fileContents.equals( other.fileContents ) ) return false;
+
         if ( folder == null ) {
             if ( other.folder != null ) return false;
         } else if ( !folder.equals( other.folder ) ) return false;
-        if ( folders == null ) {
-            if ( other.folders != null ) return false;
-        } else if ( !folders.equals( other.folders ) ) return false;
-        return true;
+
+        return fileContents.equals( other.fileContents ) && folders.equals( other.folders );
     }
 
     @Override
