@@ -10,7 +10,6 @@ grammar FEEL_1_1;
 
 @parser::header {
     import org.kie.dmn.feel.parser.feel11.ParserHelper;
-    import org.kie.dmn.feel.parser.feel11.Keywords;
 }
 
 @parser::members {
@@ -22,10 +21,6 @@ grammar FEEL_1_1;
 
     public ParserHelper getHelper() {
         return helper;
-    }
-
-    private boolean isKeyword( Keywords k ) {
-        return k.symbol.equals( _input.LT(1).getText() );
     }
 
     private String getOriginalText( ParserRuleContext ctx ) {
