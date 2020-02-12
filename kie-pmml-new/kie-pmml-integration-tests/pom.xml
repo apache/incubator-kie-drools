@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kie-pmml-new</artifactId>
@@ -44,16 +44,6 @@
       <scope>test</scope>
     </dependency>
     <!-- Library :: Models -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-tree-library</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Runtime -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -66,22 +56,6 @@
       <scope>test</scope>
     </dependency>
     <!-- Runtime :: Implementations -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-runtime</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-tree-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- DROOLS/KIE -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -151,38 +125,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-library</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-tree-library</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
         <artifactId>kie-pmml-runtime-assembler</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-runtime</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-runtime</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-tree-runtime</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>

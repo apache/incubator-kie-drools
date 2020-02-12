@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.kie.api.io.ResourceType;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.runtime.api.container.PMMLPackage;
 
 public class PMMLPackageImpl implements PMMLPackage {

@@ -19,12 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.FieldRef;
-import org.kie.pmml.api.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 
 public class KiePMMLFieldRefFactory {
 
+    private KiePMMLFieldRefFactory() {
+    }
 
     public static List<KiePMMLFieldRef> getKiePMMLFieldRefs(List<FieldRef> fieldRefs) {
         return fieldRefs.stream().map(KiePMMLFieldRefFactory::getKiePMMLFieldRef).collect(Collectors.toList());
@@ -35,8 +37,4 @@ public class KiePMMLFieldRefFactory {
                                    getKiePMMLExtensions(fieldRef.getExtensions()),
                                    fieldRef.getMapMissingTo());
     }
-
-    private KiePMMLFieldRefFactory() {
-    }
-
 }

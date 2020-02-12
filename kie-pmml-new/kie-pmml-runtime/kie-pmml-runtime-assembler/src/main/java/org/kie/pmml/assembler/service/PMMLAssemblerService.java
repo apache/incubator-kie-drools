@@ -24,13 +24,12 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
@@ -38,7 +37,7 @@ import org.kie.pmml.runtime.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -65,7 +64,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     protected void addModels(KnowledgeBuilderImpl kbuilderImpl, List<KiePMMLModel> toAdd) {
         // TODO {gcardosi} verify correct creation/adding of PMMLPackage
-        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry( new PackageDescr() );
+        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(new PackageDescr());
         InternalKnowledgePackage kpkgs = pkgReg.getPackage();
         ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
         PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());

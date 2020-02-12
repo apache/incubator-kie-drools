@@ -16,16 +16,17 @@
 package org.kie.pmml.library.commons.implementations;
 
 import java.util.Optional;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLModel;
-import org.kie.pmml.api.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
+import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class KiePMMLModelRetriever {
 
@@ -34,8 +35,6 @@ public class KiePMMLModelRetriever {
 
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to returns a <code>Optional&lt;KiePMMLModel&gt;</code>
-     *
-     *
      * @param dataDictionary
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
@@ -53,5 +52,4 @@ public class KiePMMLModelRetriever {
                 .map(throwingFunctionWrapper(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder)))
                 .findFirst();
     }
-
 }

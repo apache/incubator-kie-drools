@@ -40,8 +40,9 @@ public class PMMLRequestDataBuilder {
 
     public PMMLRequestData build() {
         PMMLRequestData data = new PMMLRequestData(correlationId, modelName);
-        parameters.forEach(pi -> {data.addRequestParam(pi);});
+        parameters.forEach(pi -> {
+            data.addRequestParam(pi);
+        });
         return data;
     }
-
 }

@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.Extension;
-import org.kie.pmml.api.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 
 public class KiePMMLExtensionFactory {
 
+    private KiePMMLExtensionFactory() {
+    }
 
     public static List<KiePMMLExtension> getKiePMMLExtensions(List<Extension> extensions) {
         return extensions.stream().map(KiePMMLExtensionFactory::getKiePMMLExtension).collect(Collectors.toList());
@@ -31,8 +33,4 @@ public class KiePMMLExtensionFactory {
     public static KiePMMLExtension getKiePMMLExtension(Extension extension) {
         return new KiePMMLExtension(extension.getExtender(), extension.getName(), extension.getValue(), extension.getContent());
     }
-
-    private KiePMMLExtensionFactory() {
-    }
-
 }

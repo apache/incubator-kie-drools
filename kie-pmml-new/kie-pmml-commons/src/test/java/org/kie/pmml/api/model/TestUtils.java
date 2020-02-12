@@ -42,5 +42,4 @@ public class TestUtils {
             assertEquals(expectedValue, toEvaluate.get());
         }
     }
-
 }

@@ -41,7 +41,7 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
         List<ModelImplementationProvider> toReturn = new ArrayList<>();
         Iterator<ModelImplementationProvider> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        logger.info("toReturn {} {}", toReturn , toReturn.size());
+        logger.info("toReturn {} {}", toReturn, toReturn.size());
         toReturn.forEach(provider -> logger.info("{} : {}", provider.getPMMLModelType(), provider));
         return toReturn;
     }

@@ -32,5 +32,4 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     public PMMLRequestData getRequestData() {
         return (PMMLRequestData) get(PMML_REQUEST_DATA);
     }
-
 }

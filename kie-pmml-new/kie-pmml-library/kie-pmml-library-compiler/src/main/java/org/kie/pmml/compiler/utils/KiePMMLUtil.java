@@ -30,7 +30,6 @@ import org.xml.sax.SAXException;
 public class KiePMMLUtil {
 
     /**
-     *
      * @param source
      * @return
      * @throws SAXException
@@ -41,12 +40,10 @@ public class KiePMMLUtil {
     }
 
     /**
-     *
      * @param is
      * @return
      * @throws SAXException
      * @throws JAXBException
-     *
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
     public static PMML load(InputStream is) throws SAXException, JAXBException {

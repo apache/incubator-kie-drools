@@ -25,11 +25,7 @@ import org.dmg.pmml.PMML;
 import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
 
-
-
-
 public class TestUtils {
-
 
     /**
      * Load a <code>PMML</code> from the given <b>file</b>
@@ -60,11 +56,9 @@ public class TestUtils {
      * @return
      * @throws SAXException
      * @throws JAXBException
-     *
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
     public static PMML loadFromInputStream(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
     }
-
 }

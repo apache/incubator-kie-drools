@@ -21,6 +21,4 @@ import org.kie.api.runtime.Context;
 public interface PMMLContext extends Context {
 
     PMMLRequestData getRequestData();
-
-
 }

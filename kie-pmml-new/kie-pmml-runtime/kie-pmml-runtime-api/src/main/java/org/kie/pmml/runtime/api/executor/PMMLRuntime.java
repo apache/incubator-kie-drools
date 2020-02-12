@@ -20,41 +20,33 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.model.KiePMMLModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLRuntime {
 
     /**
      * Returns a list of all models available to this runtime
-     *
      * @return the list of available models. An empty list in
-     *         case no model is available.
+     * case no model is available.
      */
     List<KiePMMLModel> getModels();
 
     /**
      * Returns the model registered with the given model name.
-     *
      * @param modelName the name of the model
-     *
      * @return the corresponding an <code>Optional</code> with
      * the <code>KiePMMLModel</code> retrieved, or an <b>empty</b> one if none
      * is registered with the given name.
      */
-    Optional<KiePMMLModel> getModel(String modelName );
-
+    Optional<KiePMMLModel> getModel(String modelName);
 
     /**
      * Evaluate the model, given the context
-     *
      * @param model the model to evaluate
      * @param context the context with all the input variables
      * @param releaseId Used to indirectly retrieve same instance of kiecontainer
-     *
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId ) throws KiePMMLException;
-
-
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLException;
 }
