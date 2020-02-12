@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>kie-pmml-new</artifactId>
+    <version>7.33.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+
+  <artifactId>kie-pmml-runtime</artifactId>
+  <name>KIE :: PMML :: Runtime </name>
+  <description>Integration inside KIE runtime environment</description>
+
+  <modules>
+    <module>kie-pmml-runtime-api</module>
+    <module>kie-pmml-runtime-assembler</module>
+    <module>kie-pmml-runtime-core</module>
+  </modules>
+
+</project>
