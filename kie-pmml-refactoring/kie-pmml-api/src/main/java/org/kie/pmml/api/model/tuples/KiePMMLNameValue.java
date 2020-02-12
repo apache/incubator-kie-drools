@@ -39,7 +39,6 @@ public class KiePMMLNameValue {
         return value;
     }
 
-
     @Override
     public String toString() {
         return "KiePMMLNameValue{" +

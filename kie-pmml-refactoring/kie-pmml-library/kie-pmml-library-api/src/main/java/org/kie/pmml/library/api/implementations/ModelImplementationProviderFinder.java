@@ -29,5 +29,4 @@ public interface ModelImplementationProviderFinder {
      * @return
      */
     List<ModelImplementationProvider> getImplementations(boolean refresh);
-
 }

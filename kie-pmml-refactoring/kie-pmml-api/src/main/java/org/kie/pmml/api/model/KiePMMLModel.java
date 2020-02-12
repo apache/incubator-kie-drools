@@ -98,6 +98,4 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
             return this;
         }
     }
-
-
 }

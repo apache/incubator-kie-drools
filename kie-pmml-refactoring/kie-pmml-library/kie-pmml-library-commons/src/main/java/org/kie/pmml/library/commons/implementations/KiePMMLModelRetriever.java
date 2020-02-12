@@ -16,6 +16,7 @@
 package org.kie.pmml.library.commons.implementations;
 
 import java.util.Optional;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -34,8 +35,6 @@ public class KiePMMLModelRetriever {
 
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to returns a <code>Optional&lt;KiePMMLModel&gt;</code>
-     *
-     *
      * @param dataDictionary
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
@@ -53,5 +52,4 @@ public class KiePMMLModelRetriever {
                 .map(throwingFunctionWrapper(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder)))
                 .findFirst();
     }
-
 }

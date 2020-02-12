@@ -28,7 +28,6 @@ public class FunctionalWrapperFactory {
 
     /**
      * <code>Function</code> <code>wrapper</code> for exception-throwing <code>Function</code>
-     *
      * @param throwingFunction
      * @param <T>
      * @param <R>
@@ -49,7 +48,6 @@ public class FunctionalWrapperFactory {
 
     /**
      * <code>Function</code> <code>wrapper</code> for exception-throwing <code>ToDoubleFunction</code>
-     *
      * @param throwingToDoubleFunction
      * @param <T>
      * @param <E>
@@ -69,7 +67,6 @@ public class FunctionalWrapperFactory {
 
     /**
      * <code>Consumer</code> <code>wrapper</code> for exception-throwing <code>Consumer</code>
-     *
      * @param throwingConsumer
      * @param <T>
      * @param <E>
@@ -88,7 +85,6 @@ public class FunctionalWrapperFactory {
 
     /**
      * <code>DoubleConsumer</code> <code>wrapper</code> for exception-throwing <code>DoubleConsumer</code>
-     *
      * @param throwingConsumer
      * @param <E>
      * @return
@@ -106,7 +102,6 @@ public class FunctionalWrapperFactory {
 
     /**
      * <code>BiConsumer</code> <code>wrapper</code> for exception-throwing <code>BiConsumer</code>
-     *
      * @param throwingBiConsumer
      * @param <T>
      * @param <U>
@@ -128,5 +123,4 @@ public class FunctionalWrapperFactory {
     private static <E extends Exception> void throwActualException(Exception exception) throws E {
         throw (E) exception;
     }
-
 }

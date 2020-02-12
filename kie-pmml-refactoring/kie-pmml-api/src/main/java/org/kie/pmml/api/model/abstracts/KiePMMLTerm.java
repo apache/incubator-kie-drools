@@ -24,9 +24,4 @@ public abstract class KiePMMLTerm extends KiePMMLNamed {
     }
 
     public abstract Number getCoefficient();
-
-
-
-
-
 }

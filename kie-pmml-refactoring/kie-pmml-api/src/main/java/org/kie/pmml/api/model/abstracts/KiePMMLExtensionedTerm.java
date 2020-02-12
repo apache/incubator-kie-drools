@@ -23,11 +23,9 @@ public abstract class KiePMMLExtensionedTerm extends KiePMMLExtensionedNamed {
 
     private static final long serialVersionUID = 1452775408881599004L;
 
-
     public KiePMMLExtensionedTerm(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
 
     public abstract Number getCoefficient();
-
 }

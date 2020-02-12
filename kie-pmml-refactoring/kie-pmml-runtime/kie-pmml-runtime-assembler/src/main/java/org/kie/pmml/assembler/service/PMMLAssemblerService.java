@@ -24,7 +24,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -65,7 +64,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     protected void addModels(KnowledgeBuilderImpl kbuilderImpl, List<KiePMMLModel> toAdd) {
         // TODO {gcardosi} verify correct creation/adding of PMMLPackage
-        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry( new PackageDescr() );
+        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(new PackageDescr());
         InternalKnowledgePackage kpkgs = pkgReg.getPackage();
         ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
         PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());

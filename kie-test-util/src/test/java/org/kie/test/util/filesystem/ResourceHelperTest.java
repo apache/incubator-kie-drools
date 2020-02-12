@@ -24,15 +24,16 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesByExtension;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesFromDirectory;
 
 public class ResourceHelperTest {
 
     private static final String TEST_FILE = "TestFile.txt";
-
-
 
     @Test
     public void getResourcesByExtensionExisting() {
@@ -95,6 +96,5 @@ public class ResourceHelperTest {
         } else {
             assertTrue(retrieved.isEmpty());
         }
-
     }
 }

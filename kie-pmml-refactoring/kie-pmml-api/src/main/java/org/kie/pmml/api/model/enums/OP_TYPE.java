@@ -20,7 +20,6 @@ import java.util.Arrays;
 import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-2-1/DataDictionary.html#xsdType_OPTYPE>OPTYPE</a>
  */
 public enum OP_TYPE {
@@ -35,11 +34,11 @@ public enum OP_TYPE {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public static OP_TYPE byName(String name) throws KieEnumException {
+        return Arrays.stream(OP_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
     }
 
-    public static OP_TYPE byName(String name) throws KieEnumException {
-        return  Arrays.stream(OP_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+    public String getName() {
+        return name;
     }
 }

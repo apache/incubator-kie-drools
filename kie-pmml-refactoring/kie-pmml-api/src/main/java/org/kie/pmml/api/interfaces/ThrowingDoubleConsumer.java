@@ -23,14 +23,13 @@ import java.util.Objects;
 @FunctionalInterface
 public interface ThrowingDoubleConsumer<E extends Exception> {
 
-    void accept(double var1) throws  E;
+    void accept(double var1) throws E;
 
-    default ThrowingDoubleConsumer< E> andThen(ThrowingDoubleConsumer<E> after) throws E {
+    default ThrowingDoubleConsumer<E> andThen(ThrowingDoubleConsumer<E> after) throws E {
         Objects.requireNonNull(after);
         return (t) -> {
             this.accept(t);
             after.accept(t);
         };
     }
-
 }

@@ -27,9 +27,9 @@ public class ModelUtils {
 
     /**
      * Return an <code>Optional</code> with the name of the field whose <b>usageType</b> is <code>TARGET</code> or <code>PREDICTED</code>
-     *
+     * <p>
      * While the xsd schema does not strictly enforce this, it seems that <b>by convention</b> majority of models has only one target.
-     *
+     * <p>
      * (see https://github.com/jpmml/jpmml-evaluator/issues/64 discussion)
      * @param model
      * @return
@@ -40,5 +40,4 @@ public class ModelUtils {
                 .map(miningField -> miningField.getName().getValue())
                 .findFirst();
     }
-
 }

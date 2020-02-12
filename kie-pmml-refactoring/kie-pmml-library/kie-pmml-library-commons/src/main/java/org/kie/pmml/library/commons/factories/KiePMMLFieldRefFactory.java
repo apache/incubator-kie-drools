@@ -25,6 +25,8 @@ import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.get
 
 public class KiePMMLFieldRefFactory {
 
+    private KiePMMLFieldRefFactory() {
+    }
 
     public static List<KiePMMLFieldRef> getKiePMMLFieldRefs(List<FieldRef> fieldRefs) {
         return fieldRefs.stream().map(KiePMMLFieldRefFactory::getKiePMMLFieldRef).collect(Collectors.toList());
@@ -35,8 +37,4 @@ public class KiePMMLFieldRefFactory {
                                    getKiePMMLExtensions(fieldRef.getExtensions()),
                                    fieldRef.getMapMissingTo());
     }
-
-    private KiePMMLFieldRefFactory() {
-    }
-
 }

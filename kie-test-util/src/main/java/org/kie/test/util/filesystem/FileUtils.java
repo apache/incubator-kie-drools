@@ -26,13 +26,17 @@ import static org.junit.Assert.assertNotNull;
  */
 public class FileUtils {
 
+    private FileUtils() {
+        // Avoid instantiating class
+    }
+
     /**
      * Retrieve the <code>File</code> of the given <b>file</b>
      * @param fileName
      * @return
      * @throws IOException
      */
-    public static File getFile(String fileName)  {
+    public static File getFile(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
         File toReturn = ResourceHelper.getResourcesByExtension(extension)
                 .filter(file -> file.getName().equals(fileName))
@@ -51,9 +55,5 @@ public class FileUtils {
     public static FileInputStream getFileInputStream(String fileName) throws IOException {
         File sourceFile = getFile(fileName);
         return new FileInputStream(sourceFile);
-    }
-
-    private FileUtils() {
-        // Avoid instantiating class
     }
 }

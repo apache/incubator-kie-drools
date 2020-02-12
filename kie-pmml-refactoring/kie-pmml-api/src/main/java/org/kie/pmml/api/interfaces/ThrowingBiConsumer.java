@@ -22,6 +22,7 @@ import java.util.Objects;
  */
 @FunctionalInterface
 public interface ThrowingBiConsumer<T, U, E extends Exception> {
+
     void accept(T var1, U var2) throws E;
 
     default ThrowingBiConsumer<T, U, E> andThen(ThrowingBiConsumer<? super T, ? super U, E> after) {

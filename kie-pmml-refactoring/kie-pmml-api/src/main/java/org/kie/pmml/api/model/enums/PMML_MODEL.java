@@ -21,9 +21,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
  * PMML models
- *
- *  @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdGroup_MODEL-ELEMENT>MODEL-ELEMENT</a>
- *
+ * @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdGroup_MODEL-ELEMENT>MODEL-ELEMENT</a>
  */
 public enum PMML_MODEL {
 
@@ -53,12 +51,11 @@ public enum PMML_MODEL {
         this.name = name;
     }
 
+    public static PMML_MODEL byName(String name) throws KieEnumException {
+        return Arrays.stream(PMML_MODEL.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find PMMLModelType with name: " + name));
+    }
+
     public String getName() {
         return name;
     }
-
-    public static PMML_MODEL byName(String name) throws KieEnumException {
-        return  Arrays.stream(PMML_MODEL.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find PMMLModelType with name: " + name));
-    }
-
 }

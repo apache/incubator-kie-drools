@@ -34,12 +34,11 @@ public enum VALUE_PROPERTY {
         this.name = name;
     }
 
+    public static VALUE_PROPERTY byName(String name) throws KieEnumException {
+        return Arrays.stream(VALUE_PROPERTY.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find VALUE_PROPERTY with name: " + name));
+    }
+
     public String getName() {
         return name;
     }
-
-    public static VALUE_PROPERTY byName(String name) throws KieEnumException {
-        return  Arrays.stream(VALUE_PROPERTY.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find VALUE_PROPERTY with name: " + name));
-    }
-
 }

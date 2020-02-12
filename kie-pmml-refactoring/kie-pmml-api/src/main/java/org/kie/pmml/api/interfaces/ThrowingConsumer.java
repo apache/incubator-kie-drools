@@ -23,7 +23,7 @@ import java.util.Objects;
 @FunctionalInterface
 public interface ThrowingConsumer<T, E extends Exception> {
 
-    void accept(T t) throws  E;
+    void accept(T t) throws E;
 
     default ThrowingConsumer<T, E> andThen(ThrowingConsumer<? super T, E> after) throws E {
         Objects.requireNonNull(after);
@@ -32,5 +32,4 @@ public interface ThrowingConsumer<T, E extends Exception> {
             after.accept(t);
         };
     }
-
 }

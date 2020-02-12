@@ -24,7 +24,6 @@ import org.kie.pmml.runtime.api.executor.PMMLContext;
 public interface PMMLModelExecutor {
 
     /**
-     *
      * @return the <code>PMMLModelType</code> this <code>PMMLModelExecutor</code>
      * is specific for
      */
@@ -32,7 +31,6 @@ public interface PMMLModelExecutor {
 
     /**
      * Evaluate the model, given the context
-     *
      * @param model the model to evaluate
      * @param context the context with all the input variables
      * @param releaseId Used to indirectly retrieve same instance of kiecontainer
@@ -40,5 +38,4 @@ public interface PMMLModelExecutor {
      * @throws KiePMMLException
      */
     PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLException;
-
 }

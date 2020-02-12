@@ -20,7 +20,6 @@ import java.util.Arrays;
 import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD>INVALID-VALUE-TREATMENT-METHOD</a>
  */
 public enum INVALID_VALUE_TREATMENT_METHOD {
@@ -39,11 +38,11 @@ public enum INVALID_VALUE_TREATMENT_METHOD {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public static INVALID_VALUE_TREATMENT_METHOD byName(String name) throws KieEnumException {
+        return Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
     }
 
-    public static INVALID_VALUE_TREATMENT_METHOD byName(String name) throws KieEnumException {
-        return  Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+    public String getName() {
+        return name;
     }
 }

@@ -23,6 +23,8 @@ import org.kie.pmml.api.model.KiePMMLExtension;
 
 public class KiePMMLExtensionFactory {
 
+    private KiePMMLExtensionFactory() {
+    }
 
     public static List<KiePMMLExtension> getKiePMMLExtensions(List<Extension> extensions) {
         return extensions.stream().map(KiePMMLExtensionFactory::getKiePMMLExtension).collect(Collectors.toList());
@@ -31,8 +33,4 @@ public class KiePMMLExtensionFactory {
     public static KiePMMLExtension getKiePMMLExtension(Extension extension) {
         return new KiePMMLExtension(extension.getExtender(), extension.getName(), extension.getValue(), extension.getContent());
     }
-
-    private KiePMMLExtensionFactory() {
-    }
-
 }

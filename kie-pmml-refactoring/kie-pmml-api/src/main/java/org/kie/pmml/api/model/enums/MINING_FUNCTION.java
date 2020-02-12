@@ -20,7 +20,6 @@ import java.util.Arrays;
 import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
- *
  * @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdType_MINING-FUNCTION>MINING-FUNCTION</a>
  */
 public enum MINING_FUNCTION {
@@ -39,11 +38,11 @@ public enum MINING_FUNCTION {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public static MINING_FUNCTION byName(String name) throws KieEnumException {
+        return Arrays.stream(MINING_FUNCTION.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
     }
 
-    public static MINING_FUNCTION byName(String name) throws KieEnumException {
-        return  Arrays.stream(MINING_FUNCTION.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+    public String getName() {
+        return name;
     }
 }

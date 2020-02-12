@@ -27,7 +27,6 @@ public class Converter {
 
     /**
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> values of the given map.
-     *
      * @param parameterMap
      * @return
      */
@@ -36,9 +35,5 @@ public class Converter {
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                                           e -> e.getValue().getValue()));
-
     }
-
-
-
 }

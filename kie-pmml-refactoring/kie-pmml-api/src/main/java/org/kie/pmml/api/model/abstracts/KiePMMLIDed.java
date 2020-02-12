@@ -86,8 +86,5 @@ public class KiePMMLIDed implements Serializable {
         public T build() {
             return toBuild;
         }
-
     }
-
-
 }

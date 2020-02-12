@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public class PMMLRuntimeImpl implements PMMLRuntime {
 
-    private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class);
 
     private final KieBase knowledgeBase;
     private final PMMLModelExecutorFinderImpl pmmlModelExecutorFinder;
@@ -50,13 +50,13 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     @Override
     public List<KiePMMLModel> getModels() {
         logger.info("getModels");
-        List<KiePMMLModel> models = new ArrayList<>(  );
-        knowledgeBase.getKiePackages().forEach( kpkg -> {
-            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML );
-            if( pmmlPackage != null ) {
+        List<KiePMMLModel> models = new ArrayList<>();
+        knowledgeBase.getKiePackages().forEach(kpkg -> {
+            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
+            if (pmmlPackage != null) {
                 models.addAll(pmmlPackage.getAllModels().values());
             }
-        } );
+        });
         return models;
     }
 
@@ -79,7 +79,6 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     /**
      * Returns an <code>Optional&lt;PMMLModelExecutor&gt;</code> to allow
      * incremental development of different model-specific executors
-     *
      * @param pmmlMODEL
      * @return
      */

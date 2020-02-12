@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.kie.pmml.api.model.KiePMMLModel;
+
 /**
  * Actual implementations are required to convert a <b>PMML</b> xml to
  * to a <code>List&lt;KiePMMLModel&gt;</code>
@@ -32,5 +33,4 @@ public interface PMMLCompiler {
      * @return
      */
     List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws Exception;
-
 }
