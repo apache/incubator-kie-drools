@@ -1,0 +1,42 @@
+package org.kie.pmml.runtime.tree.executor
+
+import org.kie.pmml.models.tree.api.model.KiePMMLTreeModel
+import org.kie.api.pmml.PMML4Result
+import org.kie.api.pmml.PMMLRequestData
+import java.util.Optional
+import java.util.Map
+import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate
+import java.util.Collections
+import org.kie.pmml.models.tree.api.model.KiePMMLNode
+
+/*function Optional<String> evaluate(Map<String, Object> values, KiePMMLPredicate kiePMMLPredicate) {
+        java.util.function.BinaryOperator<Optional<Boolean>> binaryOperator = getBooleanOperator();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            if (kiePMMLPredicates != null) {
+                Optional<Boolean> evaluation = Optional.empty();
+                for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
+                    evaluation = binaryOperator.apply(Optional.empty(), kiePMMLPredicate.evaluate(Collections.singletonMap(entry.getKey(), entry.getValue())));
+                }
+                // If there is a matching predicates, ev
+                if (evaluation.isPresent() || evaluation.get()) {
+                    if (kiePMMLNodes != null) {
+                        for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
+                            Optional<String> nodeEvaluation = kiePMMLNode.evaluate(values);
+                            if (nodeEvaluation.isPresent()) {
+                                return nodeEvaluation;
+                            }
+                        }
+                    }
+                }
+            }
+            if (kiePMMLNodes != null) {
+                for (KiePMMLNode kiePMMLNode : kiePMMLNodes) {
+                    Optional<String> evaluation = kiePMMLNode.evaluate(values);
+                    if (evaluation.isPresent()) {
+                        return evaluation;
+                    }
+                }
+            }
+        }
+       return Optional.empty();
+    }*/

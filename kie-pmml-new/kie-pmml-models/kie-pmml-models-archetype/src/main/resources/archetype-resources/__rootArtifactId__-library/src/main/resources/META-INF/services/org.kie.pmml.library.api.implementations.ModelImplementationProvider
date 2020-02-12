@@ -1,0 +1,2 @@
+# SPI implementation
+${package}.${artifactModelName}.executor.${modelName}ModelImplementationProvider
