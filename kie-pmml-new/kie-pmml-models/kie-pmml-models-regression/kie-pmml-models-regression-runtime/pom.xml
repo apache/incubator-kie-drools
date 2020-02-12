@@ -25,6 +25,10 @@
       <artifactId>kie-pmml-runtime-core</artifactId>
     </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+    </dependency>
     <!-- TEST -->
   </dependencies>
 

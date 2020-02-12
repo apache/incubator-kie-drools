@@ -15,10 +15,14 @@
  */
 package org.kie.pmml.models.regression.factories;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -44,10 +48,12 @@ public class KiePMMLRegressionModelFactory {
         log.info("getKiePMMLModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetField(model);
-        final Optional<OP_TYPE> opType = dataDictionary.getDataFields().stream()
+        final Optional<DataField> targetDataField = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName.orElse(null), field.getName().getValue()))
-                .findFirst()
-                .map(throwingFunctionWrapper(field -> OP_TYPE.byName(field.getOpType().value())));
+                .findFirst();
+        final Optional<List<Serializable>> targetValues = targetDataField.map(dataField -> dataField.getValues().stream()
+                .map(value -> (Serializable) value.getValue()).collect(Collectors.toList()));
+        final Optional<OP_TYPE> opType = targetDataField.map(throwingFunctionWrapper(field -> OP_TYPE.byName(field.getOpType().value())));
         return KiePMMLRegressionModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
                 .withModelType(model.getModelType() != null ? MODEL_TYPE.byName(model.getModelType().value()) : null)

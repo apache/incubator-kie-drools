@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.api.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +42,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private OP_TYPE targetOpType;
     private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = null;
     private boolean isScorable = true;
+    private List<Serializable> targetValues;
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
         return new Builder(name, miningFunction);
@@ -74,8 +76,16 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return isScorable;
     }
 
+    public List<Serializable> getTargetValues() {
+        return targetValues;
+    }
+
     public boolean isRegression() {
         return Objects.equals(MINING_FUNCTION.REGRESSION, miningFunction) && (targetField == null || Objects.equals(OP_TYPE.CONTINUOUS, targetOpType));
+    }
+
+    public boolean isBinary() {
+        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
     }
 
     @Override
@@ -123,6 +133,9 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return Objects.hash(super.hashCode(), regressionTables, miningFunction, algorithmName, modelType, targetField, targetOpType, regressionNormalizationMethod, isScorable);
     }
 
+    protected KiePMMLRegressionModel() {
+    }
+
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
@@ -146,6 +159,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
         public Builder withTargetOpType(OP_TYPE targetOpType) {
             toBuild.targetOpType = targetOpType;
+            return this;
+        }
+
+        public Builder withTargetValues(List<Serializable> targetValues) {
+            toBuild.targetValues = targetValues;
             return this;
         }
 

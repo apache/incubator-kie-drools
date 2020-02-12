@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.regression.executor;
+package org.kie.pmml.commons.enums;
 
-import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
-import org.kie.pmml.runtime.api.executor.PMMLContext;
+import java.util.Arrays;
 
-public class PMMLIsNotRegresssionModelExecutor {
+import org.kie.pmml.commons.exceptions.KieEnumException;
 
-    public static PMML4Result evaluateNotRegression(KiePMMLRegressionModel regressionModel, PMMLContext context) {
-        return null;
+public enum StatusCode {
+    OK("OK"),
+    FAIL("FAIL");
+
+    private final String name;
+
+    StatusCode(String name) {
+        this.name = name;
     }
+
+    public static StatusCode byName(String name) throws KieEnumException {
+        return Arrays.stream(StatusCode.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
 }

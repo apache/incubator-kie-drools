@@ -59,9 +59,9 @@ import static org.kie.pmml.runtime.regression.executor.TestUtils.TARGETFIELD_NAM
 import static org.kie.pmml.runtime.regression.executor.TestUtils.getPMMLRequestData;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
-public class RoundtripPMMLIsRegresssionModelExecutorTest {
+public class RoundtripPMMLRegresssionModelEvaluatorTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLIsRegresssionModelExecutorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLRegresssionModelEvaluatorTest.class);
 
     private PMMLRuntime pmmlRuntime;
 
