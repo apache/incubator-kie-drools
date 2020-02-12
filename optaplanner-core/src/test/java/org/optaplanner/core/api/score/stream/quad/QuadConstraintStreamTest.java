@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
 import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
@@ -688,6 +689,27 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    public void penalize_negative() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
+
+        String constraintName = "myConstraint";
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
+                (factory) -> new Constraint[] {
+                        factory.fromUniquePair(TestdataLavishEntity.class)
+                                .join(TestdataLavishEntityGroup.class)
+                                .join(TestdataLavishValue.class)
+                                .penalize(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+    }
+
+    @Test
     public void reward_Int() {
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
@@ -769,6 +791,27 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("1.2")), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void reward_negative() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
+
+        String constraintName = "myConstraint";
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
+                (factory) -> new Constraint[] {
+                        factory.fromUniquePair(TestdataLavishEntity.class)
+                                .join(TestdataLavishEntityGroup.class)
+                                .join(TestdataLavishValue.class)
+                                .reward(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
     // ************************************************************************

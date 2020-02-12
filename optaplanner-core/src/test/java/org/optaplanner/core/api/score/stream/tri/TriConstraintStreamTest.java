@@ -45,6 +45,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
@@ -830,6 +831,26 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    public void penalize_negative() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+
+        String constraintName = "myConstraint";
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
+                (factory) -> new Constraint[] {
+                        factory.from(TestdataLavishEntity.class)
+                                .join(TestdataLavishEntityGroup.class)
+                                .join(TestdataLavishValue.class)
+                                .penalize(constraintName, SimpleScore.ONE, (entity, group, value) -> -1)
+                }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+    }
+
+    @Test
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -908,6 +929,26 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void reward_negative() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+
+        String constraintName = "myConstraint";
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
+                (factory) -> new Constraint[] {
+                        factory.from(TestdataLavishEntity.class)
+                                .join(TestdataLavishEntityGroup.class)
+                                .join(TestdataLavishValue.class)
+                                .reward(constraintName, SimpleScore.ONE, (entity, group, value) -> -1)
+                }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
     // ************************************************************************

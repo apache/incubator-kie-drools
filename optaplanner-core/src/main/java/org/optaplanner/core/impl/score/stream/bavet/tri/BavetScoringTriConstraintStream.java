@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,6 +112,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
             if (intMatchWeigher != null) {
                 scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a, b, c);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -127,6 +128,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
             if (longMatchWeigher != null) {
                 scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a, b, c);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -142,6 +144,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {

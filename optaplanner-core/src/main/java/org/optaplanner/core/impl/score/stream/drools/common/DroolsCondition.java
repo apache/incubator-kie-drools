@@ -167,20 +167,48 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             int impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             long impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             BigDecimal impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
     }
+
+    private static void assertPositiveImpact(RuleContext kcontext, int impact) {
+        if (impact < 0) {
+            throwOnNegativeImpact(kcontext, impact);
+        }
+    }
+
+    private static void assertPositiveImpact(RuleContext kcontext, long impact) {
+        if (impact < 0L) {
+            throwOnNegativeImpact(kcontext, impact);
+        }
+    }
+
+    private static void assertPositiveImpact(RuleContext kcontext, BigDecimal impact) {
+        if (impact.signum() < 0) {
+            throwOnNegativeImpact(kcontext, impact);
+        }
+    }
+
+    private static void throwOnNegativeImpact(RuleContext constraint, Object impact) {
+        String name = constraint.getRule().getPackageName() + "." + constraint.getRule().getName();
+        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                "Check constraint provider implementation.");
+    }
+
 
     protected ViewItem<?> getInnerAccumulatePattern(PatternDef<PatternVar> mainAccumulatePattern) {
         Stream<ViewItemBuilder<?>> primaryAndPrerequisites = Stream.concat(ruleStructure.getPrerequisites().stream(),

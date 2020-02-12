@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
@@ -66,6 +68,30 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     @Override
     public BavetConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, int impact) {
+        if (impact < 0) {
+            throwOnNegativeImpact(constraint, impact);
+        }
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, long impact) {
+        if (impact < 0L) {
+            throwOnNegativeImpact(constraint, impact);
+        }
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, BigDecimal impact) {
+        if (impact.signum() < 0) {
+            throwOnNegativeImpact(constraint, impact);
+        }
+    }
+
+    private static void throwOnNegativeImpact(Constraint constraint, Object impact) {
+        String name = constraint.getConstraintPackage() + "." + constraint.getConstraintName();
+        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                "Check constraint provider implementation.");
     }
 
 }
