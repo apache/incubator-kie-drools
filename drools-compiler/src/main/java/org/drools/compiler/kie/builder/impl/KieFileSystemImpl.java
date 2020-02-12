@@ -26,7 +26,6 @@ import java.util.Properties;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.io.impl.ReaderResource;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.KieFileSystem;
@@ -79,7 +78,7 @@ public class KieFileSystemImpl
                 String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
                 int prefixPos = target.indexOf( prefix );
                 String path = prefixPos >= 0 ? target.substring( prefixPos ) : prefix + target;
-                if (resource instanceof ReaderResource || resource.getResourceType() == ResourceType.XSD) {
+                if (resource.getResourceType() == ResourceType.XSD) {
                     write( path, (( InternalResource ) resource).getBytes() );
                 } else {
                     write( path, resource );

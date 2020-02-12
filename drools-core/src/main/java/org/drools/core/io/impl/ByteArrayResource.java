@@ -45,8 +45,6 @@ public class ByteArrayResource extends BaseResource
     public ByteArrayResource(byte[] bytes) {
         if ( bytes == null ) {
             throw new IllegalArgumentException( "Provided byte array can not be null" );
-        } else if ( bytes.length == 0 ) {
-            throw new IllegalArgumentException( "Provided byte array can not be empty" );
         }
         this.bytes = bytes;
     }

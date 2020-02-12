@@ -15,6 +15,8 @@
 
 package org.drools.compiler.api;
 
+import java.util.Collection;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -26,9 +28,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import java.util.Collection;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class KnowledgeBuilderTest {
@@ -105,17 +107,6 @@ public class KnowledgeBuilderTest {
         return null;
     }
     
-    @Test
-    public void testEmptyByteResource() throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        try {
-            builder.add(ResourceFactory.newByteArrayResource(new byte[0]), ResourceType.DRL);
-            fail();
-        } catch ( IllegalArgumentException e ) {
-            
-        }
-    }
-
     @Test
     public void testMalformedDrl() throws Exception {
         // DROOLS-928
