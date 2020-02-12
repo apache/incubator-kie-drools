@@ -11,9 +11,9 @@ image::dmn/dmn-custom-datatypes-tab.png[]
 //.Diagram properties tab
 //image::dmn/dmn-diagram-properties-tab.png[]
 
-The following tables list the `Driver`, `Violation`, and `Fine` custom data types that you will create for this project.
+The following tables list the `tDriver`, `tViolation`, and `tFine` custom data types that you will create for this project.
 
-.Driver custom data types
+.`tDriver` custom data type
 [cols="1,1", options="header"]
 |===
 |Name |Type
@@ -26,7 +26,7 @@ The following tables list the `Driver`, `Violation`, and `Fine` custom data type
 |Points |number
 |===
 
-.Violation custom data types
+.`tViolation` custom data type
 [cols="1,1", options="header"]
 |===
 |Name |Type
@@ -39,7 +39,7 @@ The following tables list the `Driver`, `Violation`, and `Fine` custom data type
 |Actual Speed |number
 |===
 
-.Fine custom data types
+.`tFine` custom data type
 [cols="1,1", options="header"]
 |===
 |Name |Type
