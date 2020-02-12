@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.runtime.regression.executor.PMMLIsRegresssionModelExecutor.evaluateRegression;
+import static org.kie.pmml.runtime.regression.executor.PMMLRegresssionModelEvaluator.evaluateRegression;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.AGE_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.ALGORITHM_NAME;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK;
@@ -55,9 +55,9 @@ import static org.kie.pmml.runtime.regression.executor.TestUtils.getKiePMMLRegre
 import static org.kie.pmml.runtime.regression.executor.TestUtils.getKiePMMLRegressionTable;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.getPMMLRequestData;
 
-public class PMMLIsRegresssionModelExecutorTest {
+public class PMMLRegresssionModelEvaluatorTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PMMLIsRegresssionModelExecutorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PMMLRegresssionModelEvaluatorTest.class);
 
     private KiePMMLRegressionModel kiePMMLRegressionModel;
 
@@ -135,7 +135,7 @@ public class PMMLIsRegresssionModelExecutorTest {
         inputData.put("salary", salary);
         inputData.put("car_location", carLocation);
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetField(), getKiePMMLRegressionTable(), pmmlRequestData);
+        PMML4Result retrieved = evaluateRegression(kiePMMLRegressionModel.getTargetField(), kiePMMLRegressionModel.getRegressionNormalizationMethod(), getKiePMMLRegressionTable(), pmmlRequestData);
         commonEvaluate(retrieved, age,  salary,  carLocation);
     }
 
