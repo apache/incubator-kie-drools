@@ -83,14 +83,6 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
         throw new IOException( "descr does not support readers");
     }
 
-    public long getLastModified() {
-        throw new IllegalStateException( "descr does not have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "descr does not have a modified date" );
-    }
-    
     public KieDescr getDescr() {
         return this.descr;
     }

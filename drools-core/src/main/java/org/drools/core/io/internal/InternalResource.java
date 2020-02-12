@@ -42,10 +42,6 @@ public interface InternalResource extends Resource {
     
     Collection<Resource> listResources();
     
-    long getLastModified();
-    
-    long getLastRead();
-    
     /**
      * Returns the description of the resource. This is just a text description
      * of the resource used to add more information about it.

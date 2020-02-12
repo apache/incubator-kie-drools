@@ -100,14 +100,6 @@ public class ByteArrayResource extends BaseResource
         throw new FileNotFoundException( "byte[] cannot be resolved to URL" );
     }
     
-    public long getLastModified() {
-        throw new IllegalStateException( "reader does have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "reader does have a modified date" );
-    }
-    
     public boolean isDirectory() {
         return false;
     }

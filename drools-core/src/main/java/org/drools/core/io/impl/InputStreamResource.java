@@ -76,14 +76,6 @@ public class InputStreamResource extends BaseResource implements InternalResourc
         return false;
     }
     
-    public long getLastModified() {
-        throw new IllegalStateException( "InputStream does have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "InputStream does have a modified date" );
-    }
-    
     public boolean isDirectory() {
         return false;
     }

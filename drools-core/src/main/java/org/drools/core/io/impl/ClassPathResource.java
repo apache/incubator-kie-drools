@@ -16,6 +16,7 @@
 
 package org.drools.core.io.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,9 +26,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
-import java.net.JarURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +53,6 @@ public class ClassPathResource extends BaseResource
     private String      encoding;
     private ClassLoader classLoader;
     private Class< ? >  clazz;
-    private long        lastRead;
 
     public ClassPathResource() {
 
@@ -145,13 +143,7 @@ public class ClassPathResource extends BaseResource
      * @see java.lang.Class#getResourceAsStream(String)
      */
     public InputStream getInputStream() throws IOException {
-        //update the lastRead field
-        this.lastRead = this.getLastModified();
-
-        //Some ClassLoaders caches the result of getResourceAsStream() this is
-        //why we get the Input Stream from the URL of the resource
-        //@see JBRULES-2960
-        return this.getURL().openStream();
+        return bytes != null ? new ByteArrayInputStream( this.bytes ) : this.getURL().openStream();
     }
 
     /**
@@ -178,51 +170,6 @@ public class ClassPathResource extends BaseResource
     public boolean hasURL() {
         return true;
     }
-
-    public long getLastModified() {
-        URLConnection conn = null;
-        try {
-            conn = getURL().openConnection();
-            if (conn instanceof JarURLConnection) {
-                // There is a bug in sun's jar url connection that causes file handle leaks when calling getLastModified()
-                // Since the time stamps of jar file contents can't vary independent from the jar file timestamp, just use
-                // the jar file timestamp
-                URL jarURL = ((JarURLConnection)conn).getJarFileURL();
-                if (jarURL.getProtocol().equals("file")) {
-                    // Return the last modified time of the underlying file - saves some opening and closing
-                    return new File(jarURL.getFile()).lastModified();
-                } else {
-                    // Use the URL mechanism
-                    URLConnection jarConn = null;
-                    try {
-                        jarConn = jarURL.openConnection();
-                        return jarConn.getLastModified();
-                    } catch (IOException e) {
-                        return -1;
-                    } finally {
-                        try {
-                            if (jarConn!=null) jarConn.getInputStream().close();
-                        } catch (IOException e) { }
-                    }
-                }
-            } else {
-                return conn.getLastModified();
-            }
-        } catch ( IOException e ) {
-            throw new RuntimeException( "Unable to get LastModified for ClasspathResource", e );
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.getInputStream().close();
-                } catch (IOException e) { }
-            }
-        }
-    }
-
-    public long getLastRead() {
-        return this.lastRead;
-    }
-
     public String getEncoding() {
         return encoding;
     }
@@ -289,10 +236,6 @@ public class ClassPathResource extends BaseResource
         return path;
     }
 
-    protected void setLastRead(long lastRead) {
-        this.lastRead = lastRead;
-    }
-    
     public boolean equals(Object object) {
         if (!(object instanceof ClassPathResource)) {
             return false;
